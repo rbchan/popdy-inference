@@ -1,0 +1,111 @@
+---
+title: "Inference for Models of Population Dynamics"
+subtitle: Basic models of population dynamics
+author: Richard Chandler
+output:
+  xaringan::moon_reader:
+    self_contained: false
+    css: "../../api-lectures.css"
+    chakra: "../../libs/remark-latest.min.js"
+    nature:
+      titleSlideClass: ["center", "middle", "title-slide"]
+      countIncrementalSlides: false
+---
+
+
+## Overview
+
+Everyone should be familiar with the following models, but we will review them in some detail:
+
+- Exponential and geometric growth
+
+- Logistic growth
+
+- Stage-structured (matrix) models
+
+- Stochastic versions of the above
+
+
+For every model, you should know the equations and you should know how to implement it in `R`.
+
+
+---
+
+## Stage structured models
+
+$${\bf n}(t+1) = {\bf A}{\bf n}(t)$$
+
+where $A$ is the projection matrix and $n$ is the vector of stage-specific abundances
+
+--
+
+Example with 3 stages (juveniles, subadults, and adults)
+
+
+---
+
+## Stage-structured models in `R`
+
+```{r stage-ex}
+f1 <- 0.0   ## Juvenile fecundity
+f2 <- 0.5   ## Subadult fecundity
+f3 <- 1.5   ## Adult fecundity
+s1 <- 0.3   ## Juvenile survival
+s2 <- 0.5   ## Subadult survival
+s3 <- 0.8   ## Adult survival
+A <- matrix(c(f1, f2, f3,
+              s1,  0,  0,
+               0, s2, s3), nrow=3, ncol=3, byrow=TRUE)
+A
+```
+
+-- 
+
+Why do we structure the projection matrix this way?
+
+--
+
+The answer is that it allows us to do convenient operations (e.g., eigenanalysis and matrix multiplication) on the computer. 
+
+---
+
+## Matrix multiplication
+
+
+---
+
+## Eigenanalysis
+
+---
+
+## Asymptotic growth rate
+
+```{r lambda}
+eA <- eigen(A)
+lambda <- Re(eA$values[1])
+lambda ## Asymtotic growth rate
+```
+
+---
+
+## Net reproductive rate
+
+---
+
+## Stable stage distribution
+
+---
+
+## Reproductive value
+
+
+---
+
+
+## Stage-structured model with transition probabilities
+
+---
+
+## Stochastic stage-structured models
+
+
