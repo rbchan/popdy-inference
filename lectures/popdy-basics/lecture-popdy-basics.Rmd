@@ -80,6 +80,10 @@ The answer is that it allows us to do convenient operations (e.g., eigenanalysis
 
 ## Asymptotic growth rate
 
+The dominant eigenvalue is the asymptotic growth rate ($\lambda$)
+
+If $\lambda<1$, the population is expected to decline
+
 ```{r lambda}
 eA <- eigen(A)
 lambda <- Re(eA$values[1])
@@ -90,13 +94,26 @@ lambda ## Asymtotic growth rate
 
 ## Net reproductive rate
 
----
+The expected number of female offspring produced by an individual over the course of its lifetime is called the net reproductive rate $R_0$. As with $\lambda$, the population is expected to increase if $R_0>1$.
 
+
+
+---
 ## Stable stage distribution
+
+The stable stage distribution describes the proportion of individuals that are expected to occur in each stage
+
+```{r ss}
+w0 <- Re(eA$vectors[,1])
+w <- w0/sum(w0)
+w  
+```
 
 ---
 
 ## Reproductive value
+
+Reproductive value describes the relative contribution of each stage class to future generations.
 
 
 ---
