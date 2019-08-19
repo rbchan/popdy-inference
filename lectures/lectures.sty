@@ -1,0 +1,143 @@
+
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{lectures}[2019/08/19 Custom Package]
+
+
+
+
+%% 'sans serif' option
+\DeclareOption{sans}{
+  \renewcommand*\sfdefault{lmss} % cmss, lmss, phv, qhv, qag
+  \renewcommand{\familydefault}{\sfdefault}
+}
+
+%% 'roman' option
+\DeclareOption{roman}{
+  \renewcommand{\familydefault}{\rmdefault}
+}
+
+\DeclareOption{mroman}{
+  \renewcommand\mathfamilydefault{\rmdefault}
+}
+
+%\renewcommand*\sfdefault{lmss} % cmss, lmss (latin modern), phv (Helvetica) qhv, qag
+%\renewcommand*\rmdefault{ptm} %
+
+
+
+
+
+
+\ExecuteOptions{sans,mroman}
+
+\ProcessOptions\relax
+
+%% Traditional LaTeX or TeX follows...
+
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{pgfpages}
+\usepackage{verbatim}
+%\usepackage{color}
+%\usepackage[T1]{fontenc}
+\usepackage{framed}
+
+
+
+\mode<handout>{
+  \usetheme{default}
+  \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+}
+
+
+
+
+% footline
+\setbeamertemplate{footline}%[frame number]
+{
+  \begin{beamercolorbox}[sep=0.4em,wd=\paperwidth,leftskip=0.5cm,rightskip=0.1cm]{footlinecolor}
+    \insertsectionnavigationhorizontal{0.9\textwidth}{}{\hfill \insertframenumber~/ \inserttotalframenumber}
+  \end{beamercolorbox}
+}
+\setbeamertemplate{navigation symbols}{}
+\beamertemplatenavigationsymbolsempty
+
+
+% Frame title
+\setbeamertemplate{frametitle}
+{
+  \vspace{-1mm}
+  \begin{beamercolorbox}[sep=0.3em,wd=\paperwidth]{footlinecolor}
+  \insertframetitle
+  \end{beamercolorbox}
+  {\hspace{1pt} \large \color{black}{\insertframesubtitle}}
+  \vspace{-0.5cm}
+}
+
+
+% Table of contents
+\setbeamertemplate{section in toc}[ball]
+\setbeamertemplate{subsection in toc}[ball]
+
+
+
+% Blocks
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+
+% Colors
+\usecolortheme{default}
+% \setbeamercolor{item}{fg=gray}
+\setbeamercolor{block title}{fg=white,bg=gb}%bg=gray!50}
+\setbeamercolor{block body}{bg=blue!10}
+% \setbeamercolor{block title alerted}{bg=gray!50}
+% \setbeamercolor{block body alerted}{bg=blue!10}
+%\setbeamercolor{titlelike}{fg=MidnightBlue, bg=white}
+\setbeamercolor{titlelike}{fg=white}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{section number projected}{fg=white,bg=gb}
+\setbeamercolor{subsection number projected}{fg=white,bg=gb}
+\setbeamercolor{item projected}{fg=white,bg=gb}
+%\setbeamercolor{footlinecolor}{bg=beamer@blendedblue}%{bg=blue!350}
+%\setbeamercolor{footlinecolor}{bg=gb}
+\setbeamercolor{footlinecolor}{bg=NavyBlue}
+\setbeamercolor{section in head/foot}{fg=white}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{itemize item}{fg=black}
+\definecolor{gold}{RGB}{255,215,0}
+\definecolor{gb}{RGB}{0,30,60} % I like 0,50,100
+\definecolor{bb}{rgb}{0.2,.2,.7}
+
+
+% Fonts
+\usefonttheme{structuresmallcapsserif}
+%\setbeamerfont{my font A}{size=\large,series=\bfseries,family=\sffamily}
+%\setbeamerfont{title}{shape=\itshape,family=\rmfamily,series=\bfseries,size=\Huge}
+\setbeamerfont{item projected}{size=\large}
+\setbeamerfont{items projected}{size=\large}
+%\setbeamerfont{enumerate item}{size=\huge}
+%\setbeamerfont{enumerate items}{size=\huge}
+%\setbeamerfont{enumerate item projected}{size=\huge}
+
+
+
+
+% Itemize and enumerate
+\setbeamertemplate{itemize item}{\color{beamer@blendedblue} \Large $\bullet$}
+\setbeamertemplate{enumerate item}[ball]
+\setbeamertemplate{enumerate item}[ball]
+
+
+%\setbeamercovered{transparent}
+
+
+\newcommand{\R}{{\bf R}}
+\newcommand{\jags}{{\bf JAGS}}
+
+
+
+
+
+
+\endinput
