@@ -57,7 +57,7 @@
 
 
 
-\hypersetup{pdfpagemode=UseNone,pdfstartview=FitH}
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
 
@@ -68,23 +68,6 @@
 %\newcommand{\R}{{\bf R}}
 
 
-%% Switching from Sweave to knitr
-%\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl,formatcom=\color{red}}
-%\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom=\color{MidnightBlue}}
-%\DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl}
-
-
-
-% <<knitr-setup, include=FALSE>>=
-% opts_hooks$set(comment=function(x) return("comment"=NA))
-% ##knit_hooks$set(inline = function(x) {
-% ##    if(!require(highr)) {
-% ##        install.packages("highr")
-% ##    }
-% ##    if (is.numeric(x)) return(knitr:::format_sci(x, 'latex'))
-% ##    highr:::hi_latex(x)
-% ##})
-% @
 
 
 
@@ -93,9 +76,9 @@
 
 
 
-
-
-
+%<<knitr-setup,include=FALSE,purl=FALSE>>=
+%##opts_chunk$set(comment=NA)
+%@
 
 
 %% New command for inline code that isn't to be evaluated
@@ -114,7 +97,7 @@
 %  \maketitle
   {\centering
 %  \textcolor{RoyalBlue}{\huge \bf Lab 1 -- Introduction to \R} \\
-  {\huge \bf Lab 1 -- Introduction to \R} \\
+  {\huge \bf Lecture 1 -- Overview} \\
   \vspace{0.9cm}
 %  \includegraphics[width=0.4\textwidth]{figs/Rlogo} \\
   \vspace{0.5cm}
@@ -130,7 +113,7 @@
 
 
 
-\section{Why?}
+\section{Overview}
 
 
 \begin{frame}[plain]
@@ -143,80 +126,46 @@
 
 
 \begin{frame}
-  \frametitle{Good and Not So Good Things About \R}
-%  {\Large \textcolor{bb}{Good}}
-  {\Large Good}
-  \large
-  \begin{itemize}%[<+->]
-    \item<1-> Powerful platform for statistical analysis %Flexible %If you're going to use a stats program, might as well use one that does everything!
-%    \item<1-> Many \inr{packages} \colorbox{BurntOrange}{written} for ecologists
-    \item<1-> Many packages written for ecologists
-    \item<1-> It's free
-    \item<1-> Scripts save time
-    \item<1-> \R~teaches you statistics
-  \end{itemize}
-  \vspace{0.5cm}
-  \uncover<2->{
-%  \pause
-  {\Large Not so good??}}
+  \frametitle{Overview}
+  {\Large Themes}
   \begin{itemize}
-    \item<2-> Steep learning curve
-    \item<2-> Help pages written for people familiar with \R
-    \item<2-> Developed by statisticians for statisticians
-    \item<2-> Not as fast as some languages
+    \item<2-> We need models
+    \item<3-> In the old days, models were used strictly for theory
+    \item<4-> Now we can fit models to data. 
+    \item<5-> Confronting models with data has ushered in a revolution. Let's us:
+      \begin{itemize}
+        \item Evaluate hypotheses
+        \item Make predictions
+        \item Inform management decisions
+        \item Forecast future outcomes
+      \end{itemize}
+   \item<6-> Hierarchical models are the key
   \end{itemize}
-%  }
 \end{frame}
 
 
 
 
+\section{Examples}
 
 
-\begin{frame}[fragile]
-  \frametitle{Vectorized arithmetic}
-  How could we calculate the body mass index (BMI = $\text{weight}/\text{height}^2$) from the following data:
-  \begin{center}
-    \begin{tabular}{ccccccc}
-      \hline
-      & \multicolumn{6}{c}{Individual} \\
-      \cline{2-7}
-      & 1 & 2 & 3 & 4 & 5 & 6 \\
-      \hline
-      Weight & 60 & 72 & 57 & 90 & 95 & 72 \\
-      Height & 1.8 & 1.8 & 1.7 & 1.9 & 1.7 & 1.9 \\
-      \hline
-    \end{tabular}
-  \end{center}
-  \pause
-  First, create the vectors:
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{weight} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{60}\hlstd{,} \hlnum{72}\hlstd{,} \hlnum{57}\hlstd{,} \hlnum{90}\hlstd{,} \hlnum{95}\hlstd{,} \hlnum{72}\hlstd{)}
-\hlstd{height} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1.8}\hlstd{,} \hlnum{1.8}\hlstd{,} \hlnum{1.7}\hlstd{,} \hlnum{1.9}\hlstd{,} \hlnum{1.7}\hlstd{,} \hlnum{1.9}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  Then, evaluate the equation in just one line:
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{BMI} \hlkwb{<-} \hlstd{weight}\hlopt{/}\hlstd{height}\hlopt{^}\hlnum{2}
-\hlstd{BMI}
-\end{alltt}
-\begin{verbatim}
-## [1] 18.51852 22.22222 19.72318 24.93075 32.87197 19.94460
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+\subsection{Central Georgia Black Bears}
+
+
+
+\subsection{Chiricahua Leopard Frogs}
+
+
+
+\section{Syllabus}
 
 
 
 
 
+
+    
+    
 
 
 
