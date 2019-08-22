@@ -1,23 +1,24 @@
 # WILD 8390
 # Estimation of Fish and Wildlife Population Parameters
 
-Lecture: M, W, F 11:15 - 12:05, room 1-304
-
-Lab: M 1:25 - 3:20 or Tue 2:00 - 4:00, room 4-419
-
+Lecture: Tues, Thurs 9:45 -- 1100??, roomXXXX
 
 
 ## Instructor
 
-Dr. Richard B. Chandler, Room 3-409B, Phone 2-5815, [rchandler@warnell.uga.edu](rchandler@warnell.uga.edu)
+Dr. Richard B. Chandler, Room 3-409B, Phone 2-5815, [rchandler@warnell.uga.edu](rchandler@warnell.uga.edu) 
 Office Hours: TBD
+
+## Teaching Assistant
+
+Heater Gaya, XXXXX
 
 
 ## Course Objectives
 
 
-## Approach
 
+## Approach
 
 ## Schedule
 
@@ -25,27 +26,27 @@ Office Hours: TBD
 | Week | Topic | Reading  |
 | ---- | ----- | -------- |
 |      |  PART I - Classical models of population dynamics          |             |
-| 1    | Course introduction                                        |             |
-|      | Classical models of population dynamics in `R`             |             |
-| 2    | Stochastic models                                          |             |
-|      | Stage-structured models                                    |             |
-| 3    | Metapopulation models                                      |             |
-|      | Fitting models to data                                     |             |
+| 1    | Models of population dynamics in `R`                       |             |
+|      | Stochastic models                                          |             |
+| 2    | Stage-structured models                                    |             |
+|      | Metapopulation models                                      |             |
+| 3    | Fitting models to data                                     |             |
+|      | Single-season occupancy models                             |             |
 |      |  PART II - Fitting models to data on unmarked individuals  |             |
 | 4    | Single-season occupancy models                             |             |
-|      | Single-season occupancy models                             |             |
+|      | Dynamic occupancy models                                   |             |
 | 5    | Dynamic occupancy models                                   |             |
-|      | Dynamic occupancy models                                   |             | 
-| 6    | Binomial N-mixture models                                  |             | 
 |      | Binomial N-mixture models                                  |             | 
-| 7    | Multinomial N-mixture models                               |             | 
-|      | Multinomial N-mixture models                               |             | 
-| 8    | Dynamic N-mixture models                                   |             | 
-|      | Distance sampling models                                   |             | 
+| 6    | Binomial N-mixture models                                  |             | 
+|      | Dynamic N-mixture models                                   |             | 
+| 7    | Multinomial N-mixture models -- Removal sampling           |             | 
+|      | Multinomial N-mixture models -- Double observer sampling   |             | 
+| 8    | Multinomial N-mixture models -- Distance sampling          |             | 
+|      | Conventional distance sampling models                      |             | 
 |      |  PART III - Fitting models to data on marked individuals   |             |
 | 9    | Closed-population capture-recapture models                 |             |
 |      | Closed-population capture-recapture models                 |             |
-| 10   | Closed-population capture-recapture models                 |             |
+| 10   | Known-fate survival models                                 |             |
 |      | Cormack-Jolly-Seber models of survival                     |             |
 | 11   | Cormack-Jolly-Seber models of survival                     |             |
 |      | Jolly-Seber models of survival and recruitment             |             |
