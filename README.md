@@ -14,7 +14,7 @@ Class meetings will consist of a mixture of lectures and computer exercises.
 Students will analyze their own data, write up their results, and present their findings at the end of the semester. Two rounds of peer review will be involved. Weekly computer problems will also be assigned. 
 
 ## Misc
-~~Lecture and lab slides are created using [xaringan](https://github.com/yihui/xaringan).~~ I tried, but it's hard to beat latex+Beamer+knitr.
+Lecture slides created using [LaTeX](https://www.latex-project.org/), [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)), and [knitr](https://yihui.org/knitr/).
 
 ## History
 This course is based loosely off of "Estimation of Fish and Wildlife Population Parameters (WILD 8390)", a course taught by Dr. Mike Conroy for approximately 30 years. I had the great fortune of co-instructing the course with Mike for two years. 

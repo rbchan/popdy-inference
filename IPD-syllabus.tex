@@ -37,9 +37,9 @@ Room 1057-C130 Life Sciences \\
 \textbf{Instructor}                 & \hspace{0.01cm} & \textbf{Teaching Assistant} \\
 Dr. Richard Chandler                & & Heather Gaya\\
 % Office: 3-409-B                     & & Office: 3-402& Office: 4-306B   \\
-Phone: 706-542-5818                 & & --- \\
+%Phone: 706-542-5818                 & & --- \\
 email: rchandler@warnell.uga.edu    & & Heather.Gaya@uga.edu \\
-Virtual office hours: Mon 10:00-11:00 \&  & & --- \\
+Virtual office hours: Mon 10:00-11:00 \&  & & Fri 10:00-11:00 \\
    Thurs 2:00--3:00 & & \\
 \end{tabular}
 
@@ -59,9 +59,9 @@ Classical courses on population dynamics focus on theoretical models
 of how populations should behave under a set of assumptions.
 Evaluating how actual populations behave requires confronting models
 with data. Recently developed staistical tools make it possible to fit
-models of population dynamics to field data influenced by measurement
-error. This course will explain how to use these tools for statistical
-inference and prediction.  
+models of population dynamics to field data while accounting for
+observation error. This course will explain how to use these tools for
+statistical inference and prediction.  
 
 
 \vspace{-2mm}
@@ -172,28 +172,30 @@ exercises.
 %\newpage
 
 \section*{\normalsize Tentative Course Outline}
-%\vspace{-5mm}
-%\large
+\vspace{-6mm}
 
 \begin{center}
 \begin{tabular}[c]{lll}
 \hline \hline
 {\bf Date} & {\bf Lecture}                                & {\bf Reading}                    \\
 \hline
-           \multicolumn{3}{c}{PART I -- Background}                                          \\
+           \multicolumn{3}{c}{PART 1 -- BACKGROUND}                                          \\
 \hline
 Aug 20     & Introduction                                 &                                  \\
 \hline
-Aug 25     & Classical models of population dynamics      & Foreward, Preface, Chapter 1     \\
+Aug 25     & Classical models of population dynamics      & AHM Foreward, Preface, Chapter 1     \\
 Aug 27     & Classical statistical models                 & AHM Chapters 2-3                 \\
 \hline
-           \multicolumn{3}{c}{PART II -- Static models}                                      \\
+           \multicolumn{3}{c}{PART 2 -- STATIC MODELS}                                      \\
+           \multicolumn{3}{c}{\it PART 2a -- Spatially-referenced, temporally replicated binary data}             \\
 \hline
 Sept 1     & Occupancy models -- simulation               & AHM Ch 4 and Ch 10 (pp 551--564) \\
 Sept 3     & Occupancy models -- fitting models           &                                  \\
 \hline
 Sept 8     & Occupancy models -- covariates               & AHM Chapter 10 (pp 564--590)     \\
 Sept 10    & Occupancy models -- predication              & AHM Chapter 10 (pp 591--600)     \\
+\hline
+           \multicolumn{3}{c}{\it PART 2b -- Spatially-referenced, temporally replicated count data}             \\
 \hline
 Sept 15    & Binomial $N$-mixture models -- simulation    & AHM Chapter 6 (pp 219--228)      \\
 Sept 17    & Binomial $N$-mixture models -- fitting       & AHM Chapter 6 (pp 229--245)      \\
@@ -202,12 +204,18 @@ Sept 22    & Binomial $N$-mixture models -- GoF           & AHM Chapter 6 (pp 24
 Sept 24    & Binomial $N$-mixture models -- prediction    & AHM Chapter 6 (pp 254--282)      \\
 \hline
 Sept 29    & Binomial $N$-mixture models -- extensions    & AHM Chapter 6 (pp 282--312)      \\
+\hline
+           \multicolumn{3}{c}{\it PART 2c -- Spatially-referenced, aggregated mark-recapture data} \\
+\hline
 Oct 1      & Multinomial $N$-mixture models -- simulation & AHM Chapter 7 (pp 313--323)      \\
 \hline
 Oct 6      & Multinomial $N$-mixture models -- fitting    & AHM Chapter 7 (pp 323--349)      \\
 Oct 8      & Multinomial $N$-mixture models -- fitting    & AHM Chapter 7 (pp 349--366)      \\
 \hline
 Oct 13     & Multinomial $N$-mixture models -- prediction & AHM Chapter 7 (pp 367--392)      \\
+\hline
+           \multicolumn{3}{c}{\it PART 2d -- Distance sampling and mark-recapture data} \\
+\hline
 Oct 15     & Distance sampling -- conventional            & AHM Chapter 8 (pp 393--426)      \\
 \hline
 Oct 20     & Distance sampling -- hierarchical            & AHM Chapter 8 (pp 426--461)      \\
@@ -216,16 +224,23 @@ Oct 22     & Non-spatial capture-recapture                & SCR Chapters 1 and 4
 Oct 27     & Spatial capture-recapture                    & SCR Chapter 5                    \\
 Oct 29     & Spatial capture-recapture                    & SCR Chapters 6 and 7             \\
 \hline
-           \multicolumn{3}{c}{PART III -- Dynamic models}                                    \\
+           \multicolumn{3}{c}{PART 3 -- DYNAMIC MODELS}                                    \\
+           \multicolumn{3}{c}{\it PART 3a -- Modeling local colonization and extinction} \\
 \hline
 Nov 3      & Dynamic occupancy models                     & TBD                              \\
 Nov 5      & Dynamic occupancy models                     & TBD                              \\
 \hline
+           \multicolumn{3}{c}{\it PART 3b -- Modeling local recruitment and apparent survival} \\
+\hline
 Nov 10     & Dynamic $N$-mixture models                   & Due: first draft                 \\
 Nov 12     & Dynamic $N$-mixture models                   & TBD                              \\
 \hline
+           \multicolumn{3}{c}{\it PART 3c -- Individual-level recruitment, survival, and movement} \\
+\hline
 Nov 17     & Dynamic capture-recapture models             & TBD                              \\
 Nov 19     & Dynamic spatial capture-recapture models     & SCR Chapter 5                    \\
+\hline
+           \multicolumn{3}{c}{PART 4 -- STUDENT PRESENTATIONS}                                    \\
 \hline
 Nov 24     & Student presentations                        & Due: peer review                 \\
 Nov 26     & Thanksgiving Break                           &                                  \\
@@ -240,10 +255,17 @@ Dec 8      & No class (Friday schedule)                   & Due: Final paper    
 \end{tabular}
 \end{center}
 
-The course syllabus is a general plan for the course; deviations announced to the class by the instructor may be necessary.
-
 
 \clearpage
+
+
+\vspace{-2mm}
+\section*{\normalsize Disclaimer}
+\vspace{-4mm}
+
+The course syllabus is a general plan for the course; deviations
+announced to the class by the instructor may be necessary. 
+
 
 \vspace{-2mm}
 \section*{\normalsize Academic Coaching}
