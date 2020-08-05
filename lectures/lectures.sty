@@ -1,9 +1,5 @@
-
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{lectures}[2019/08/19 Custom Package]
-
-
-
 
 %% 'sans serif' option
 \DeclareOption{sans}{
@@ -24,16 +20,11 @@
 %\renewcommand*\rmdefault{ptm} %
 
 
-
-
-
-
 \ExecuteOptions{sans,mroman}
 
 \ProcessOptions\relax
 
 %% Traditional LaTeX or TeX follows...
-
 
 \usepackage{hyperref}
 \usepackage{graphicx}
@@ -44,14 +35,10 @@
 \usepackage{framed}
 
 
-
 \mode<handout>{
   \usetheme{default}
   \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
 }
-
-
-
 
 % footline
 \setbeamertemplate{footline}%[frame number]
@@ -79,7 +66,6 @@
 % Table of contents
 \setbeamertemplate{section in toc}[ball]
 \setbeamertemplate{subsection in toc}[ball]
-
 
 
 % Blocks
@@ -121,8 +107,6 @@
 %\setbeamerfont{enumerate item}{size=\huge}
 %\setbeamerfont{enumerate items}{size=\huge}
 %\setbeamerfont{enumerate item projected}{size=\huge}
-
-
 
 
 % Itemize and enumerate
