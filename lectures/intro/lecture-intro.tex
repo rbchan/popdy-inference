@@ -51,8 +51,8 @@
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
-%\usepackage[roman]{../lectures}
-\usepackage[sans]{../lectures}
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
 
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
@@ -97,17 +97,18 @@
 \begin{frame}[plain]
   \LARGE
 %  \maketitle
-  {\centering
-%  \textcolor{RoyalBlue}{\huge \bf Lab 1 -- Introduction to \R} \\
-  {\huge \bf Lecture 1 -- Overview} \\
-  \vspace{0.9cm}
-  \vspace{0.5cm}
-  WILD(FISH) 8390 \par
+  \centering
+  % \textcolor{RoyalBlue}{\huge \bf Lab 1 -- Introduction to \R} \\
+  {\huge %\bf
+    Lecture 1 -- Overview} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters
+  \vfill
   Richard Chandler \\
   University of Georgia \\
-  }
 \end{frame}
 
 
@@ -130,17 +131,16 @@
   \frametitle{Overview}
   {\Large Themes}
   \begin{itemize}
-    \item<2-> We need models
-    \item<3-> In the old days, models were used strictly for theory
-    \item<4-> Now we can fit models to data. 
-    \item<5-> Confronting models with data has ushered in a revolution. Let's us:
+    \item<2-> We need models to:
       \begin{itemize}
         \item Evaluate hypotheses
         \item Make predictions
         \item Inform management decisions
         \item Forecast future outcomes
       \end{itemize}
-   \item<6-> Hierarchical models are the key
+    \item<3-> In the old days, models were mainly just for theory
+    \item<4-> New statistical tools let us confront models with data
+    \item<5-> Hierarchical models are the key
   \end{itemize}
 \end{frame}
 
@@ -150,6 +150,79 @@
 
 
 \section{Examples}
+
+
+\subsection{Chiricahua Leopard Frogs}
+
+\begin{frame}
+  \frametitle{Chiricahua Leopard Frogs}
+  Sites are discrete habitat patches (wetlands) \\
+  Surrounding landscape is suitable for movement but not reproduction \\
+  Data are binary detection/non-detection data
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \fbox{\includegraphics[width=\textwidth]{figs/lich}}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \fbox{\includegraphics[width=\textwidth]{figs/lich-dist}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Recovery Plan}
+  \begin{columns}
+    \wide
+    \includegraphics[width=\textwidth]{figs/lich-recovery-plan}
+  \end{columns}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Estimated extinction risk}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}%[<+->]
+      \item<1-> We estimated extinction probability to be 2\% by 2100
+      \item[]
+      \item<2-> What can be done about it?
+        \begin{itemize}
+        \item<3-> Control predators
+        \item<4-> Increase hydroperiod in existing wetlands
+        \item<5-> Create new wetlands\dots
+%        \item<6-> \dots but where?
+        \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+%        \includegraphics[width=0.4\textwidth]{figs/extinction3}
+%        \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Extinction risk}
+  \begin{center}
+    \includegraphics[width=\textwidth]{figs/lich-forecasts}
+  \end{center}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Colonization Probability Maps}
+  \begin{center}
+    \includegraphics[width=0.7\textwidth]{figs/colMap1-9nohill}
+  \end{center}
+\end{frame}
 
 
 \subsection{Central Georgia Black Bears}
@@ -172,7 +245,7 @@
 
 
 
-\subsection{Chiricahua Leopard Frogs}
+
 
 
 
@@ -181,7 +254,10 @@
 
 
 
+\begin{frame}
+  \frametitle{Books}
 
+\end{frame}
 
     
     
