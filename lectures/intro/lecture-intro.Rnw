@@ -17,9 +17,15 @@
 
 
 
+% Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
 @
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-intro")
+@ 
 
 
 <<knitr-theme,include=FALSE,purl=FALSE>>=
@@ -55,10 +61,8 @@ knit_theme$set("edit-kwrite")
 %  \textcolor{RoyalBlue}{\huge \bf Lab 1 -- Introduction to \R} \\
   {\huge \bf Lecture 1 -- Overview} \\
   \vspace{0.9cm}
-%  \includegraphics[width=0.4\textwidth]{figs/Rlogo} \\
   \vspace{0.5cm}
-%  August 13 \& 14, 2018 \\
-  WILD 8390 \par
+  WILD(FISH) 8390 \par
   \vfill
   \large
   Richard Chandler \\
@@ -80,6 +84,7 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
+\section{Motivation}
 
 \begin{frame}
   \frametitle{Overview}
@@ -102,12 +107,28 @@ knit_theme$set("edit-kwrite")
 
 
 
+
+
 \section{Examples}
 
 
 \subsection{Central Georgia Black Bears}
 
 
+\begin{frame}
+  \frametitle{Bears}
+  \begin{enumerate}
+    \item Black
+      \begin{enumerate}
+        \item LA
+        \item GA
+      \end{enumerate}
+    \item Brown
+  \end{enumerate}
+  \[
+    \prod_{i=1}^N \frac{\lambda({\bm s}_i)}{\int_{\mathcal{S}} \lambda({\bm s}) \mathrm{d}{\bm s}}
+  \]
+\end{frame}
 
 
 
