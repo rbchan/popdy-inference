@@ -63,8 +63,6 @@
 \author{Richard Chandler}
 %\date{January 14, 2019}
 
-%\newcommand{\R}{{\bf R}}
-
 
 
 % Load function to compile and open PDF
@@ -135,18 +133,62 @@
       \begin{itemize}
         \item Evaluate hypotheses
         \item Make predictions
-        \item Inform management decisions
         \item Forecast future outcomes
+        \item Inform management decisions
       \end{itemize}
-    \item<3-> In the old days, models were mainly just for theory
+    \item<3-> In the old days, models were mainly used in theoretical science
     \item<4-> New statistical tools let us confront models with data
-    \item<5-> Hierarchical models are the key
+    \item<5-> Hierarchical models allow us to describe specific,
+      conditionally related, ecological and observation processes
   \end{itemize}
 \end{frame}
 
 
 
 
+\begin{frame}
+  \frametitle{Classical models of population dynamics}
+  Classical models of population dynamics provide a critical reference
+  for developing custom models for specific populations and
+  applications. \\
+  \pause
+  \vfill
+  A working knowledge of the following models is important:
+  \begin{itemize}
+    \item Exponential growth
+    \item Logistic growth
+    \item Stage-structured matrix models
+    \item Metapopulation models
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Classical statistical models}
+  Classical statistical models are equally important to understand \\
+  \pause
+  \vfill
+  You should be familiar with:
+  \begin{itemize}
+    \item Linear models (including the various *NOVAs)
+    \item Generalized linear models (eg, logistic regression)
+    \item Generalized linear mixed effects models
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  % \frametitle{C}
+  \LARGE %\huge
+  \centering
+  % Knowledge of theory or stats isn't enough on its own \\
+  % \pause
+  % \vfill
+  % You need to know how to confront models with data \\
+  How do we bridge the gap between theoretical models and statistical 
+  models?  \\
+\end{frame}
 
 
 \section{Examples}
@@ -156,12 +198,20 @@
 
 \begin{frame}
   \frametitle{Chiricahua Leopard Frogs}
-  Sites are discrete habitat patches (wetlands) \\
-  Surrounding landscape is suitable for movement but not reproduction \\
-  Data are binary detection/non-detection data
   \begin{columns}
+    \setlength\fboxsep{0pt}
     \begin{column}{0.5\textwidth}
-      \fbox{\includegraphics[width=\textwidth]{figs/lich}}
+      \small
+      \vbox to .8\textheight{
+        Sites are discrete habitat patches \\
+        \vfill
+        Surrounding landscape is suitable for movement but not
+        reproduction \\
+        \vfill
+        Data are binary detection data \\
+        \vfill
+        \fbox{\includegraphics[width=\textwidth]{figs/lich}}
+      }
     \end{column}
     \begin{column}{0.5\textwidth}
       \fbox{\includegraphics[width=\textwidth]{figs/lich-dist}}
@@ -186,13 +236,15 @@
   \begin{columns}
     \begin{column}{0.6\textwidth}
       \begin{itemize}%[<+->]
-      \item<1-> We estimated extinction probability to be 2\% by 2100
+      \item<1-> We fit metapopulation models to the detection data
       \item[]
-      \item<2-> What can be done about it?
+      \item<2-> We estimated extinction probability to be 2\% by 2100
+      \item[]
+      \item<3-> What can be done about it?
         \begin{itemize}
-        \item<3-> Control predators
+        \item<4-> Control predators
         \item<4-> Increase hydroperiod in existing wetlands
-        \item<5-> Create new wetlands\dots
+        \item<4-> Create new wetlands\dots
 %        \item<6-> \dots but where?
         \end{itemize}
       \end{itemize}
@@ -200,7 +252,7 @@
     \begin{column}{0.4\textwidth}
       \begin{center}
 %        \includegraphics[width=0.4\textwidth]{figs/extinction3}
-%        \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
+        \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
       \end{center}
     \end{column}
   \end{columns}
@@ -230,17 +282,17 @@
 
 \begin{frame}
   \frametitle{Bears}
-  \begin{enumerate}
-    \item Black
-      \begin{enumerate}
-        \item LA
-        \item GA
-      \end{enumerate}
-    \item Brown
-  \end{enumerate}
-  \[
-    \prod_{i=1}^N \frac{\lambda({\bm s}_i)}{\int_{\mathcal{S}} \lambda({\bm s}) \mathrm{d}{\bm s}}
-  \]
+  % \begin{enumerate}
+  %   \item Black
+  %     \begin{enumerate}
+  %       \item LA
+  %       \item GA
+  %     \end{enumerate}
+  %   \item Brown
+  % \end{enumerate}
+  % \[
+  %   \prod_{i=1}^N \frac{\lambda({\bm s}_i)}{\int_{\mathcal{S}} \lambda({\bm s}) \mathrm{d}{\bm s}}
+  % \]
 \end{frame}
 
 
@@ -256,10 +308,23 @@
 
 \begin{frame}
   \frametitle{Books}
-  AHM \\
-  SCR \\
-  {\centering Other good ones \\}
-  Statistical rethinking \\
+  \begin{columns}[c]
+    \begin{column}{0.5\textwidth}
+      \centering
+      AHM \\
+      \includegraphics[height=6cm]{figs/KeryRoyleBookCover} \\
+    \end{column}
+    \hfill
+    \begin{column}{0.5\textwidth}
+      \centering
+      SCR \\
+      \includegraphics[height=6cm]{figs/SCRcover} \\
+    \end{column}
+  \end{columns}
+  % \vfill
+  % {\centering Other good ones \\}
+  % Statistical rethinking \\
+  % Hierarchical modeling in ecology
 \end{frame}
 
 
@@ -269,7 +334,9 @@
 
 \begin{frame}
   \frametitle{Assignment}
-  Read
+  \Large
+  \centering
+  Read: Applied Hierarchical Modeling (AHM) front-matter and chapter 1 \\
 \end{frame}
 
 
