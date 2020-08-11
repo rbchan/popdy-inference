@@ -96,7 +96,7 @@ knit_theme$set("edit-kwrite")
         \item Forecast future outcomes
         \item Inform management decisions
       \end{itemize}
-    \item<3-> In the old days, models were mainly used in theoretical science
+    \item<3-> In the old days, models were mainly used in theoretical settings
     \item<4-> New statistical tools let us confront models with data
     \item<5-> Hierarchical models allow us to describe specific,
       conditionally related, ecological and observation processes
@@ -125,7 +125,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Classical statistical models}
-  Classical statistical models are equally important to understand \\
+  Classical statistical models are equally important \\
   \pause
   \vfill
   You should be familiar with:
@@ -192,13 +192,14 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{Estimated extinction risk}
+  \frametitle{Estimated extinction risk\footnote{\scriptsize Howell et al. (2020, Ecological Applications)}}
   \begin{columns}
     \begin{column}{0.6\textwidth}
       \begin{itemize}%[<+->]
-      \item<1-> We fit metapopulation models to the detection data
+      \item<1-> Metapopulation models fit to the detection
+        data 
       \item[]
-      \item<2-> We estimated extinction probability to be 2\% by 2100
+      \item<2-> Extinction probability estimated to be 2\% by 2100
       \item[]
       \item<3-> What can be done about it?
         \begin{itemize}
@@ -209,7 +210,7 @@ knit_theme$set("edit-kwrite")
         \end{itemize}
       \end{itemize}
     \end{column}
-    \begin{column}{0.4\textwidth}
+    \begin{column}{0.38\textwidth}
       \begin{center}
 %        \includegraphics[width=0.4\textwidth]{figs/extinction3}
         \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
@@ -276,7 +277,9 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Central Georgia Black Bears}
-  Female-based population model revealed population growth \\
+  Female-based population model revealed population
+  growth\footnote{Hooker et al. (2020, Journal of Wildlife Management)} \\
+  \vfill
   \centering
   \includegraphics[width=0.9\textwidth]{figs/fig-5_abundance} \\
 \end{frame}
@@ -294,6 +297,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Central Georgia Black Bears}
   Extinction risk low unless harvest increases by $>$10 females/year \\
+  \vfill
   \centering
   \includegraphics[width=0.45\textwidth]{figs/fig-6_forecasts_h0-h20} \\
 \end{frame}
@@ -335,8 +339,18 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Assignment}
   \Large
-  \centering
+%  \centering
   Read: Applied Hierarchical Modeling (AHM) front-matter and chapter 1 \\
+  \vfill
+  Install: \href{https://sourceforge.net/projects/mcmc-jags/files/}{\jags},
+  \href{https://www.r-project.org/}{\R}, and the following packages:
+  \begin{itemize}
+    \tt
+    \item unmarked
+    \item rjags
+    \item jagsUI
+  \end{itemize}
+
 \end{frame}
 
 
