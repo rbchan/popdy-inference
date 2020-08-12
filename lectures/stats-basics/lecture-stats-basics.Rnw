@@ -1,0 +1,112 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+\title{Lecture 3 -- Basic statistical models}
+\author{Richard Chandler}
+
+
+
+
+% Load function to compile and open PDF
+<<build-fun,include=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+@
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-stats-basics")
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+##knit_theme$set("navajo-night")
+knit_theme$set("edit-kwrite")
+@
+
+
+
+%<<knitr-setup,include=FALSE,purl=FALSE>>=
+%##opts_chunk$set(comment=NA)
+%@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\begin{document}
+
+% This would affect all code boxes. Not a good idea.
+% \setlength\fboxsep{0pt}
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\huge Lecture 3 -- Refresher of basic statistical models} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+\section{Linear models}
+
+
+\begin{frame}[plain]
+  \frametitle{Today's Topics}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+
+
+
+
+
+\section{Generalized linear models}
+
+
+\begin{frame}
+  \frametitle{GLMs}
+\end{frame}
+
+
+
+
+\section{Mixed effects models}
+
+\begin{frame}
+  \frametitle{GLMMs}
+\end{frame}
+
+
+
+
+
+
+\end{document}
