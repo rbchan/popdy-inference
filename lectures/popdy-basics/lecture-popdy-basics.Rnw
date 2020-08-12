@@ -1,10 +1,8 @@
 \documentclass[color=usenames,dvipsnames]{beamer}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
-%\usepackage[roman]{../lectures}
-\usepackage[sans]{../lectures}
-
-
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
 
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
@@ -13,15 +11,19 @@
 
 \title{Lecture 2 -- Basic models of population Dynamics}
 \author{Richard Chandler}
-\date{January 14, 2019}
-
-%\newcommand{\R}{{\bf R}}
+%\date{January 14, 2019}
 
 
 
+% Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
 @
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-popdy-basics")
+@ 
 
 
 <<knitr-theme,include=FALSE,purl=FALSE>>=
@@ -53,19 +55,17 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[plain]
   \LARGE
 %  \maketitle
-  {\centering
-%  \textcolor{RoyalBlue}{\huge \bf Lab 1 -- Introduction to \R} \\
-  {\huge \bf Lecture 2 -- Basic models of population dynamics} \\
-  \vspace{0.9cm}
-%  \includegraphics[width=0.4\textwidth]{figs/Rlogo} \\
-  \vspace{0.5cm}
-%  August 13 \& 14, 2018 \\
-  WILD 8390 \par
+  \centering
+  {\huge Lecture 2 -- Basic models of population dynamics} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
   \vfill
   \large
   Richard Chandler \\
   University of Georgia \\
-  }
 \end{frame}
 
 
@@ -83,18 +83,143 @@ knit_theme$set("edit-kwrite")
 
 
 
+\begin{frame}
+  \frametitle{BIDE model}
+  Abundance at time $t$
+  \[
+    N_t = N_{t-1} + B_{t-1} + I_{t-1} - D_{t-1} - E_{t-1}
+  \]
+\end{frame}
 
 
 
 
 
-\section{Exponential and geometric growth}
+
+\section{Exponential and logistic growth}
 
 
-\section{Logistic growth}
+\begin{frame}
+  \frametitle{From BIDE to geometric growth}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Geometric growth}
+  Abundance at time $t$
+  \[
+    N_t = N_0(1+r)^t
+  \]
+  \pause
+  \vfill
+  Recursive version
+  \[
+    N_t = N_{t-1} + N_{t-1}r
+  \]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Geometric growth in \R~-- Option 1}
+<<geo1,size='scriptsize',out.width='0.55\\textwidth',fig.align="center">>=
+time <- 0:100         
+T <- length(time)     ## number of time points
+r <- 0.01             ## growth rate
+N1 <- 10*(1+r)^time   ## abundance at time t. N(0)=10
+plot(time, N1, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Geometric growth in \R~-- Option 2}
+<<geo2,size='tiny',out.width='0.55\\textwidth',fig.align="center">>=
+N2 <- c(10, c(NA, T-1))  ## initial abundance = 10
+for(t in 2:T) {
+    N2[t] <- N2[t-1] + N2[t-1]*r
+}
+plot(time, N1, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
+lines(time, N2, col=rgb(0,0,1,0.5), lwd=10)
+legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
+       lwd=c(1,10), col=c(1, rgb(0,0,1,0.5)))
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Exponential growth}
+  % Instantaneous rate of change
+  % \[
+  %   \frac{dN}{dt} = rN
+  % \]
+  % \pause
+  % \vfill
+  Abundance at time $t$
+  \[
+    N(t) = N(0)e^{rt}
+  \]
+\end{frame}
+
+
+
+
+
+
+
+%\section{Logistic growth}
+
+\begin{frame}
+  \frametitle{Logistic growth}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Discrete-time logistic growth}
+
+\end{frame}
+
+
+
+
+
+\section{Matrix models}
+
+\begin{frame}
+  \frametitle{Age-structured population model}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Size-structured population model}
+
+\end{frame}
+
+
+\section{Metapopulation models}
+
+\begin{frame}
+  \frametitle{\large Abundance-based metapopulation population model}
+  Can be formulated as matrix model
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{\large Occupancy-based metapopulation population model}
+
+\end{frame}
+
 
 
 \section{Stochasticity}
+
 
 
 

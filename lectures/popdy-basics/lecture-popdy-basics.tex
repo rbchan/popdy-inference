@@ -1,0 +1,298 @@
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+\title{Lecture 2 -- Basic models of population Dynamics}
+\author{Richard Chandler}
+%\date{January 14, 2019}
+
+
+
+% Load function to compile and open PDF
+
+
+% Compile and open PDF
+
+
+
+
+
+
+
+%<<knitr-setup,include=FALSE,purl=FALSE>>=
+%##opts_chunk$set(comment=NA)
+%@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+% This would affect all code boxes. Not a good idea.
+% \setlength\fboxsep{0pt}
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\huge Lecture 2 -- Basic models of population dynamics} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+\section{BIDE model}
+
+
+\begin{frame}[plain]
+  \frametitle{Today's Topics}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{BIDE model}
+  Abundance at time $t$
+  \[
+    N_t = N_{t-1} + B_{t-1} + I_{t-1} - D_{t-1} - E_{t-1}
+  \]
+\end{frame}
+
+
+
+
+
+
+\section{Exponential and logistic growth}
+
+
+\begin{frame}
+  \frametitle{From BIDE to geometric growth}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Geometric growth}
+  Abundance at time $t$
+  \[
+    N_t = N_0(1+r)^t
+  \]
+  \pause
+  \vfill
+  Recursive version
+  \[
+    N_t = N_{t-1} + N_{t-1}r
+  \]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Geometric growth in \R~-- Option 1}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{time} \hlkwb{<-} \hlnum{0}\hlopt{:}\hlnum{100}
+\hlstd{T} \hlkwb{<-} \hlkwd{length}\hlstd{(time)}     \hlcom{## number of time points}
+\hlstd{r} \hlkwb{<-} \hlnum{0.01}             \hlcom{## growth rate}
+\hlstd{N1} \hlkwb{<-} \hlnum{10}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{+}\hlstd{r)}\hlopt{^}\hlstd{time}   \hlcom{## abundance at time t. N(0)=10}
+\hlkwd{plot}\hlstd{(time, N1,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Abundance"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{cex.lab}\hlstd{=}\hlnum{1.5}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.55\textwidth]{figure/geo1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Geometric growth in \R~-- Option 2}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{N2} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{10}\hlstd{,} \hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{, T}\hlopt{-}\hlnum{1}\hlstd{))}  \hlcom{## initial abundance = 10}
+\hlkwa{for}\hlstd{(t} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{T) \{}
+    \hlstd{N2[t]} \hlkwb{<-} \hlstd{N2[t}\hlopt{-}\hlnum{1}\hlstd{]} \hlopt{+} \hlstd{N2[t}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{r}
+\hlstd{\}}
+\hlkwd{plot}\hlstd{(time, N1,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Abundance"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{cex.lab}\hlstd{=}\hlnum{1.5}\hlstd{)}
+\hlkwd{lines}\hlstd{(time, N2,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.5}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{10}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{27}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Geometric growth - option 1"}\hlstd{,} \hlstr{"Geometric growth - option 2"}\hlstd{),}
+       \hlkwc{lwd}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{10}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.5}\hlstd{)))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.55\textwidth]{figure/geo2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Exponential growth}
+  % Instantaneous rate of change
+  % \[
+  %   \frac{dN}{dt} = rN
+  % \]
+  % \pause
+  % \vfill
+  Abundance at time $t$
+  \[
+    N(t) = N(0)e^{rt}
+  \]
+\end{frame}
+
+
+
+
+
+
+
+%\section{Logistic growth}
+
+\begin{frame}
+  \frametitle{Logistic growth}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Discrete-time logistic growth}
+
+\end{frame}
+
+
+
+
+
+\section{Matrix models}
+
+\begin{frame}
+  \frametitle{Age-structured population model}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Size-structured population model}
+
+\end{frame}
+
+
+\section{Metapopulation models}
+
+\begin{frame}
+  \frametitle{\large Abundance-based metapopulation population model}
+  Can be formulated as matrix model
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{\large Occupancy-based metapopulation population model}
+
+\end{frame}
+
+
+
+\section{Stochasticity}
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+\end{document}
