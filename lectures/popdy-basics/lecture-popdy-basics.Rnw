@@ -150,6 +150,19 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{\large Geometric growth with stochastic growth rate}
+  Normally-distributed growth rate
+  \[
+    N_t = N_{t-1} + N_{t-1}r_{t-1}
+  \]
+  \[
+    r_t \sim \mathrm{Norm}(\bar{r}, \sigma^2)
+  \]
+\end{frame}
+
+
+
 
 
 \begin{frame}
@@ -218,7 +231,7 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 
 
 
-\section{Stochasticity}
+%\section{Stochasticity}
 
 
 
