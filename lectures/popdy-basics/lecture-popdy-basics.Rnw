@@ -1,6 +1,7 @@
 \documentclass[color=usenames,dvipsnames]{beamer}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
+
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
@@ -71,7 +72,7 @@ knit_theme$set("edit-kwrite")
 
 
 
-\section{BIDE model}
+\section{BIDE model}%, exponential, logistic models}
 
 
 \begin{frame}[plain]
@@ -87,8 +88,51 @@ knit_theme$set("edit-kwrite")
   \frametitle{BIDE model}
   Abundance at time $t$
   \[
-    N_t = N_{t-1} + B_{t-1} + I_{t-1} - D_{t-1} - E_{t-1}
+%    N_t = N_{t-1} + B_{t-1} + I_{t-1} - D_{t-1} - E_{t-1}
+    N_{t+1} = N_t + {\color{red}B}_t + {\color{red}I}_t - {\color{red}D}_t - {\color{red}E}_t
   \]
+  \textcolor{red}{B}=Births, {\color{red}I}=Immigrations,
+  {\color{red}D}=Deaths, {\color{red}E}=Emigrations \\
+  \pause
+  \vfill
+  Geometric growth is a simplification of \textcolor{red}{BIDE}. \\
+  \pause
+  \vfill
+  Exponential growth is a continuous time version of geometric growth.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{From {\color{red} BIDE} To Geometric Growth}
+  {\bf \large Ignore immigration and emigration}
+  \[
+  N_{t+1} = N_t + B_t - D_t
+  \]
+  \vspace{0.5cm}
+  \begin{tabular}{ccl}
+    $N_t$ & = & Abundance at time $t$ \\
+    {\color{red} $B$}    & = & Births       \\
+    {\color{red} $D$}    & = & Deaths       \\
+  \end{tabular}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{From {\color{red} BIDE} To Geometric Growth}
+    \textbf{Step 1:} Divide both sides by $N_{t}$
+      \[
+        \frac{N_{t+1}}{N_{t}} \quad = \quad 1 + \frac{B_t}{N_{t}} - \frac{D_t}{N_{t}}
+      \]
+   \pause
+    \textbf{Step 2:} Write in terms of \textit{per capita} birth and death \textit{rates}
+      \[
+        \frac{N_{t+1}}{N_{t}} \quad  = \quad 1 + b - d \quad = \quad 1 + r \quad = \quad \lambda
+      \]
+    \pause
+    \textbf{Step 3:} Geometric growth \par
+    \begin{center}
+      $N_{t+1} = N_t + N_tr$
+    \end{center}
 \end{frame}
 
 
@@ -100,19 +144,14 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{From BIDE to geometric growth}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Geometric growth}
-  Abundance at time $t$
+  \frametitle{Geometric growth -- two formulations}
+  Option 1 (arbitrary time step)
   \[
     N_t = N_0(1+r)^t
   \]
   \pause
   \vfill
-  Recursive version
+  Option 2 (recursive, one time step at a time)
   \[
     N_t = N_{t-1} + N_{t-1}r
   \]
@@ -123,7 +162,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[fragile]
   \frametitle{Geometric growth in \R~-- Option 1}
-<<geo1,size='scriptsize',out.width='0.55\\textwidth',fig.align="center">>=
+<<geo1,size='scriptsize',out.width='0.9\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
 time <- 0:100         
 T <- length(time)     ## number of time points
 r <- 0.01             ## growth rate
@@ -137,7 +176,7 @@ plot(time, N1, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
 
 \begin{frame}[fragile]
   \frametitle{Geometric growth in \R~-- Option 2}
-<<geo2,size='tiny',out.width='0.55\\textwidth',fig.align="center">>=
+<<geo2,size='tiny',out.width='0.9\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
 N2 <- c(10, c(NA, T-1))  ## initial abundance = 10
 for(t in 2:T) {
     N2[t] <- N2[t-1] + N2[t-1]*r
@@ -151,7 +190,7 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 
 
 \begin{frame}
-  \frametitle{\large Geometric growth with stochastic growth rate}
+  \frametitle{Geometric growth with stochastic rate}
   Normally-distributed growth rate
   \[
     N_t = N_{t-1} + N_{t-1}r_{t-1}
@@ -163,19 +202,53 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Geometric growth with stochastic rate}
+<<geo3,size='tiny',out.width='0.9\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
+N3 <- c(10, c(NA, T-1))  ## initial abundance = 10
+r <- rep(NA, T-1)
+for(t in 2:T) {
+    r[t-1] <- rnorm(n=1, mean=0.01, sd=0.2)
+    N3[t] <- N2[t-1] + N2[t-1]*r[t-1]
+}
+plot(time, N3, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
+@ 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \centering
+  \begin{enumerate}
+    \item<1-> Assess the impacts of changing $\bar{r}$ and $\sigma$ in the
+      geometric growth model using the settings in the previous examples.
+    \item[]
+    \item<2-> Simulate abundance using the model $N_t = N_{t-1} +
+      N_{t-1}r + X_{t-1}$ with $X_t \sim \mathrm{Norm}(0, 10)$ and
+      $r=0.1$. Let the other settings be the same as before.
+\end{enumerate}
+\end{frame}
+
+
 
 
 \begin{frame}
   \frametitle{Exponential growth}
-  % Instantaneous rate of change
-  % \[
-  %   \frac{dN}{dt} = rN
-  % \]
-  % \pause
-  % \vfill
   Abundance at time $t$
   \[
     N(t) = N(0)e^{rt}
+  \]
+  \pause
+%  \vfill
+  Notice how similar this is to the first version of geometric growth
+  from earlier $N_t = N_0(1+r)^t$. \\
+  \pause
+  \vfill
+  It is simply the continuous-time version of geometric growth, with
+  instantaneous rate of change:
+  \[
+    \frac{dN}{dt} = rN
   \]
 \end{frame}
 
@@ -189,13 +262,82 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 
 \begin{frame}
   \frametitle{Logistic growth}
-
+  Continuous-time version has instantaneous growth rate
+  \[
+    \frac{dN}{dt} = rN\left(1-\frac{N}{K}\right)
+  \]
+  \pause
+  \vfill
+  Discrete-time model (difference equation) looks like this:
+  \[
+    N_t = N_{t-1} + rN_{t-1}\left(1-\frac{N_{t-1}}{K}\right)
+  \]
+  \pause
+  \vfill
+  Discrete-time model can result in over-compensation and chaos
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Discrete-time logistic growth}
 
+
+\begin{frame}[fragile]
+  \frametitle{What happens when we change $r$?}
+<<Nl0,echo=FALSE>>=
+Time <- 0:100
+T <- length(Time)
+rmax <- .1
+K <- 50
+Nl <- rep(0, T)
+Nl[1] <- 2
+for(t in 2:T) {
+    Nl[t] <- Nl[t-1] + Nl[t-1]*rmax*(1 - Nl[t-1]/K)
+}
+Nl4 <- Nl3 <- Nl2 <- Nl
+Nl4[1] <- Nl3[1] <- Nl2[1] <- 2
+for(t in 2:T) {
+    Nl2[t] <- Nl2[t-1] + Nl2[t-1]*0.5*(1-Nl2[t-1]/K)
+    Nl3[t] <- Nl3[t-1] + Nl3[t-1]*2.0*(1-Nl3[t-1]/K)
+    Nl4[t] <- Nl4[t-1] + Nl4[t-1]*3.0*(1-Nl4[t-1]/K)
+}
+@
+<<Nl,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+plot(Time, Nl, lwd=4, type="l", ylim=c(0, 100), cex.lab=1.3,
+     xlab="Time (t)", ylab="Population size (N)", col="purple")
+legend(0, 100, c("r=0.1", "", "", ""),
+       lwd=4, col=c("purple", NA, NA, NA))
+@
+<<Nl2,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+plot(Time, Nl, lwd=4, type="l", ylim=c(0, 100), cex.lab=1.3,
+     xlab="Time (t)", ylab="Population size (N)", col="purple")
+lines(Time, Nl2, lwd=4, col="blue")
+legend(0, 100, c("r=0.1", "r=0.5", "", ""),
+       lwd=4, col=c("purple", "blue", NA, NA))
+@
+<<Nl3,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+plot(Time, Nl, lwd=4, type="l", ylim=c(0, 100), cex.lab=1.3,
+     xlab="Time (t)", ylab="Population size (N)", col="purple",
+     main="Damped oscillation")
+lines(Time, Nl2, lwd=4, col="blue")
+lines(Time, Nl3, lwd=4, col="orange")
+legend(0, 100, c("r=0.1", "r=0.5", "r=2.0", ""),
+       lwd=4, col=c("purple", "blue", "orange", NA))
+@
+<<Nl4,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+plot(Time, Nl, lwd=4, type="l", ylim=c(0, 100), cex.lab=1.3,
+     xlab="Time (t)", ylab="Population size (N)", col="purple",
+     main="Chaos")
+lines(Time, Nl2, lwd=4, col="blue")
+lines(Time, Nl3, lwd=4, col="orange")
+lines(Time, Nl4, lwd=4, col="gray")
+legend(0, 100, c("r=0.1", "r=0.5", "r=2.0", "r=3.0"),
+       lwd=4, col=c("purple", "blue", "orange", "gray"))
+@
+\begin{center}
+  \only<1|handout:0>{\includegraphics[width=\textwidth]{figure/Nl-1}}
+  \only<2|handout:0>{\includegraphics[width=\textwidth]{figure/Nl2-1}}
+  \only<3|handout:0>{\includegraphics[width=\textwidth]{figure/Nl3-1}}
+  \only<4>{\includegraphics[width=\textwidth]{figure/Nl4-1}}
+\end{center}
 \end{frame}
 
 
