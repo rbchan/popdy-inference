@@ -1,5 +1,4 @@
-%\documentclass[color=usenames,dvipsnames]{beamer}
-\documentclass[color=usenames,dvipsnames,handout]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -50,6 +49,7 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
@@ -84,6 +84,15 @@
 %% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+%\newenvironment{redenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
+
+%\newenvironment{grayoutenv}{\only{\color{gray!10}}}{}
+%\newenvironment{grayoutenv}{\only{\setbeamercolor{itemize item}{fg=gray!10}}}{}
+\newenvironment{grayoutenv}{
+    \only{\color{gray!20}
+    \setbeamercolor{itemize item}{fg=gray!20}
+    \setbeamercolor{itemize subitem}{fg=gray!20}}}{}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -103,7 +112,7 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters
+  Estimation of Fish and Wildlife Population Parameters \\
   \vfill
   Richard Chandler \\
   University of Georgia \\
@@ -129,17 +138,23 @@
   \frametitle{Overview}
   {\Large Themes}
   \begin{itemize}
-    \item<2-> We need models to:
-      \begin{itemize}
+    \item<1-| grayout@6-> We need models to:
+      \begin{itemize}[<1-| grayout@6->]
         \item Evaluate hypotheses
         \item Make predictions
         \item Forecast future outcomes
         \item Inform management decisions
       \end{itemize}
-    \item<3-> In the old days, models were mainly used in theoretical settings
-    \item<4-> New statistical tools let us confront models with data
+    \item<3-| grayout@6-> In the old days, models were mainly used in theoretical settings
+    \item<4-| grayout@6-> New statistical tools let us confront models with data
     \item<5-> Hierarchical models allow us to describe specific,
       conditionally related, ecological and observation processes
+    \item<6-> Before we even collect our data, we should:
+      \begin{itemize}
+        \item have hypotheses about processes that are likely to give
+          rise to our observations
+        \item know how to formalize these processes using models
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
