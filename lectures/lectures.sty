@@ -2,39 +2,35 @@
 \ProvidesPackage{lectures}[2019/08/19 Custom Package]
 
 
-%% 'sans serif' option
+%% options
 \DeclareOption{sans}{
   \renewcommand*\sfdefault{lmss} % cmss, lmss, phv, qhv, qag
-  \renewcommand{\familydefault}{\sfdefault}
+  \renewcommand{\familydefault}{\sfdefault} % 'sans serif' option
 }
-%% 'roman' option
 \DeclareOption{roman}{
-  \renewcommand{\familydefault}{\rmdefault}
+  \renewcommand{\familydefault}{\rmdefault} % 'roman' option
 }
 \DeclareOption{mroman}{
   \renewcommand\mathfamilydefault{\rmdefault}
 }
+\ExecuteOptions{sans,mroman}
+\ProcessOptions\relax
 
-%\renewcommand*\sfdefault{lmss} % cmss, lmss (latin modern), phv (Helvetica) qhv, qag
-%\renewcommand*\rmdefault{ptm} %
 
+
+%% commands
 \newcommand{\R}{{\tt R}}
 \newcommand{\jags}{{\tt JAGS}}
 \newcommand{\wide}{\column{\dimexpr\paperwidth-12pt}} % Must be in columns environment
 
 
-\ExecuteOptions{sans,mroman}
 
-\ProcessOptions\relax
-
-%% Traditional LaTeX or TeX follows...
-
+%% packages
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{pgfpages}
 \usepackage{verbatim}
 \usepackage{bm}
-%\usepackage{color}
 %\usepackage[T1]{fontenc}
 \usepackage{framed}
 % Usually some of the following fonts are available:
@@ -46,6 +42,7 @@
 %\usepackage{pifont}
 
 
+%% modes
 \mode<handout>{
   \usetheme{default}
   \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
@@ -53,7 +50,7 @@
 
 
 
-% Colors
+%% Colors
 \definecolor{gold}{RGB}{255,215,0}
 \definecolor{gb}{RGB}{0,30,60} % I like 0,50,100
 \definecolor{bb}{rgb}{0.2,.2,.7}
@@ -144,13 +141,15 @@
 
 
 
-% Fonts
+%% Fonts
 \usefonttheme{structuresmallcapsserif}
 %\setbeamerfont{my font A}{size=\large,series=\bfseries,family=\sffamily}
 %\setbeamerfont{title}{shape=\itshape,family=\rmfamily,series=\bfseries,size=\Huge}
 
 
 %\setbeamercovered{transparent}
+
+
 
 
 

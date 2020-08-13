@@ -1,5 +1,5 @@
-\documentclass[color=usenames,dvipsnames]{beamer}
-%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+\documentclass{beamer}
+%\documentclass[handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
@@ -42,11 +42,9 @@ knit_theme$set("edit-kwrite")
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
-%\newenvironment{redenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
 
-%\newenvironment{grayoutenv}{\only{\color{gray!10}}}{}
-%\newenvironment{grayoutenv}{\only{\setbeamercolor{itemize item}{fg=gray!10}}}{}
-\newenvironment{grayoutenv}{
+%% environments
+\newenvironment{grayoutenv}{  % grey out text and markers in itemize environs
     \only{\color{gray!20}
     \setbeamercolor{itemize item}{fg=gray!20}
     \setbeamercolor{itemize subitem}{fg=gray!20}}}{}

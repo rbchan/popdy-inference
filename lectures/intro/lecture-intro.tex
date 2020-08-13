@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass{beamer}\usepackage[]{graphicx}\usepackage[]{color}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -49,7 +49,7 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+%\documentclass[handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
@@ -85,11 +85,9 @@
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
-%\newenvironment{redenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
 
-%\newenvironment{grayoutenv}{\only{\color{gray!10}}}{}
-%\newenvironment{grayoutenv}{\only{\setbeamercolor{itemize item}{fg=gray!10}}}{}
-\newenvironment{grayoutenv}{
+%% environments
+\newenvironment{grayoutenv}{  % grey out text and markers in itemize environs
     \only{\color{gray!20}
     \setbeamercolor{itemize item}{fg=gray!20}
     \setbeamercolor{itemize subitem}{fg=gray!20}}}{}
@@ -151,7 +149,7 @@
       conditionally related, ecological and observation processes
     \item<6-> Before we even collect our data, we should:
       \begin{itemize}
-        \item have hypotheses about processes that are likely to give
+        \item have hypotheses about the processes that are likely to give
           rise to our observations
         \item know how to formalize these processes using models
       \end{itemize}
