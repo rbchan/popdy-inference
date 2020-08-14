@@ -95,22 +95,22 @@ knit_theme$set("edit-kwrite")
   \frametitle{Overview}
   {\Large Themes}
   \begin{itemize}
-    \item<1-| grayout@6-> We need models to:
-      \begin{itemize}[<1-| grayout@6->]
+    \item<1-| grayout@5-> We need models to:
+      \begin{itemize}[<1-| grayout@5->]
         \item Evaluate hypotheses
         \item Make predictions
         \item Forecast future outcomes
         \item Inform management decisions
       \end{itemize}
-    \item<3-| grayout@6-> In the old days, models were mainly used in theoretical settings
-    \item<4-| grayout@6-> New statistical tools let us confront models with data
-    \item<5-> Hierarchical models allow us to describe specific,
+    \item<2-| grayout@5-> In the old days, models were mainly used in theoretical settings
+    \item<3-| grayout@5-> New statistical tools let us confront models with data
+    \item<4-| grayout@5-> Hierarchical models allow us to describe specific,
       conditionally related, ecological and observation processes
-    \item<6-> Before we even collect our data, we should:
+    \item<5-> Before we even collect our data, we should:
       \begin{itemize}
-        \item have hypotheses about the processes that are likely to give
+        \item write down hypotheses about the processes that are likely to give 
           rise to our observations
-        \item know how to formalize these processes using models
+        \item formalize these processes as statistical models
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -168,6 +168,7 @@ knit_theme$set("edit-kwrite")
 
 \subsection{Chiricahua Leopard Frogs}
 
+
 \begin{frame}
   \frametitle{Chiricahua Leopard Frogs}
   \begin{columns}
@@ -187,6 +188,33 @@ knit_theme$set("edit-kwrite")
     \end{column}
     \begin{column}{0.5\textwidth}
       \fbox{\includegraphics[width=\textwidth]{figs/lich-dist}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Metapopulation ecology}
+  \begin{columns}
+    \setlength\fboxsep{0pt}
+    \begin{column}{0.6\textwidth}
+      \small
+      \vbox to 0.7\textheight{
+        Large body of theory \\
+        % \pause
+        \vfill
+        \uncover<2->{One branch of metapopulation theory focuses on
+          distance-dependent colonization and extinction processes} \\
+        % \pause
+        \vfill
+        \uncover<3->{If we know the patch coordinates and we have data from
+          multiple sites and multiple time periods, we can fit the
+          models} \\
+      }
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \fbox{\includegraphics[width=\textwidth]{figs/HanskiBookCover}}
     \end{column}
   \end{columns}
 \end{frame}
@@ -286,6 +314,29 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Harvest theory}
+  \begin{columns}
+    \setlength\fboxsep{0pt}
+    \begin{column}{0.6\textwidth}
+      \small
+      \vbox to 0.6\textheight{
+        \uncover<1->{Theory goes back about a century} \\
+        % \pause
+        \vfill
+        \uncover<2->{Much of it focuses on the importance of density dependence} \\
+        % \pause
+        \vfill
+        \uncover<3->{Think back to ``maximum sustainable yield''}
+      }
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \fbox{\includegraphics[width=\textwidth]{figs/GetzHaightBookCover}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
 
 \begin{frame}
   \frametitle{Central Georgia Black Bears}
@@ -335,6 +386,27 @@ knit_theme$set("edit-kwrite")
       \centering
       SCR \\
       \includegraphics[height=6cm]{figs/SCRcover} \\
+    \end{column}
+  \end{columns}
+  % \vfill
+  % {\centering Other good ones \\}
+  % Statistical rethinking \\
+  % Hierarchical modeling in ecology
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Recommended reading}
+  \begin{columns}[c]
+    \setlength\fboxsep{0pt}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[height=6cm]{figs/RoyleDorazioBookCover} \\
+    \end{column}
+    \hfill
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[height=6cm]{figs/McElreathBookCover} \\
     \end{column}
   \end{columns}
   % \vfill
