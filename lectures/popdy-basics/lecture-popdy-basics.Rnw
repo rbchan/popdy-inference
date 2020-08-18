@@ -5,6 +5,9 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,snakes,backgrounds}
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -151,7 +154,7 @@ knit_theme$set("edit-kwrite")
   \]
   \pause
   \vfill
-  Option 2 (recursive, one time step at a time)
+  Option 2 (recursive, one step at a time)
   \[
     N_t = N_{t-1} + N_{t-1}r
   \]
@@ -189,7 +192,7 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Geometric growth with stochastic rate}
   Normally-distributed growth rate
   \[
@@ -198,19 +201,24 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
   \[
     r_t \sim \mathrm{Norm}(\bar{r}, \sigma^2)
   \]
+  \pause
+<<geo3code,size='small'>>=
+N3 <- c(10, c(NA, T-1))  ## initial abundance = 10
+r <- rep(NA, T-1)
+rbar <- 0.01
+sigma <- 0.2
+for(t in 2:T) {
+    r[t-1] <- rnorm(n=1, mean=rbar, sd=sigma)
+    N3[t] <- N2[t-1] + N2[t-1]*r[t-1]
+}
+@
 \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Geometric growth with stochastic rate}
-<<geo3,size='tiny',out.width='0.9\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
-N3 <- c(10, c(NA, T-1))  ## initial abundance = 10
-r <- rep(NA, T-1)
-for(t in 2:T) {
-    r[t-1] <- rnorm(n=1, mean=0.01, sd=0.2)
-    N3[t] <- N2[t-1] + N2[t-1]*r[t-1]
-}
+<<geo3,size='scriptsize',out.width='0.99\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
 plot(time, N3, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
 @ 
 \end{frame}
@@ -227,7 +235,7 @@ plot(time, N3, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
     \item<2-> Simulate abundance using the model $N_t = N_{t-1} +
       N_{t-1}r + X_{t-1}$ with $X_t \sim \mathrm{Norm}(0, 10)$ and
       $r=0.1$. Let the other settings be the same as before.
-\end{enumerate}
+  \end{enumerate}
 \end{frame}
 
 
@@ -348,28 +356,339 @@ legend(0, 100, c("r=0.1", "r=0.5", "r=2.0", "r=3.0"),
 
 \begin{frame}
   \frametitle{Age-structured population model}
-
+%  \begin{itemize}
+    % \item Age isn't always the best way to think about population structure
+    % \item<2-> For some populations, it is much more useful to think about size
+    %   structure or even spatial structure.
+    % \item<3->  These ``stage-structured'' models differ from age-structured models
+    %   in that individuals can remain in a stage class (with
+    %   probability $1-p_i$) for multiple time periods.
+    % \end{itemize}
+  Age-structured model with 3 age classes.
+  \vfill
+  \tikzstyle{level 1} = [circle, draw, text width=0.5cm, minimum size=1.5cm,
+  node distance=3cm, text centered, fill=blue!10]
+  \pause
+  \begin{center}
+%   \uncover<2>{
+   \begin{tikzpicture} \footnotesize %\small
+      \node [level 1] (n1) [yshift=-5mm] {$n_{1,t}$};
+      \node [level 1, right of=n1] (n2) [yshift=0mm] {$n_{2,t}$};
+      \node [level 1, right of=n2] (n3) [yshift=0mm] {$n_{3,t}$};
+      \draw[->,thick]  (n1) to node[above] {$s_1$} (n2);
+      \draw[->,thick] (n2) to node[above] {$s_2$} (n3);
+      \draw[->,thick] (n2) to [bend right=40] node[above] {$f_2$} (n1);
+      \draw[->,thick] (n3) to [bend right=60] node[above] {$f_3$} (n1);
+%      \draw[->,thick] (n2) to [loop below] node[below] {$(1-p_2)s_2$} (n2);
+      \draw[->,thick] (n3) to [loop below] node[below] {$s_3$} (n3);
+    \end{tikzpicture}
+  \end{center}
+% }
+  \pause
+  {Where $n_{i,t}$ is abundance of each age class $i$ at time $t$}
+  \begin{itemize}[<+->]
+    \item Depends on age class survival rates $s_{i}$
+    \item And age class birth rates $b_{i}$
+    \item Fecundity is often defined as the product of birth rate and offspring survival, $f_i = b_i
+      \times s_0$
+%    \item Note the lack of $t$ subscripts (for now)
+  \end{itemize}
 \end{frame}
+
 
 
 \begin{frame}
-  \frametitle{Size-structured population model}
-
+  \frametitle{How does this population grow?}
+  \Large
+  \begin{center}
+    \begin{tabular}{cl}
+      \hline
+      Age class & Equation \\
+      \hline
+      1 & $n_{1,t+1} = n_{1,t} \times f_1 + n_{2,t} \times f_2 + n_{3,t} \times f_3$ \\ \pause
+      2 & $n_{2,t+1} = n_{1,t} \times s_{1}$ \\ \pause
+      3 & $n_{3,t+1} = n_{2,t} \times s_{2} + n_{3,t} \times s_3$ \\
+      \hline
+    \end{tabular}
+  \end{center}
 \end{frame}
 
 
-\section{Metapopulation models}
+
+
+
 
 \begin{frame}
-  \frametitle{\large Abundance-based metapopulation population model}
-  Can be formulated as matrix model
+  \frametitle{Matrix models}
+  \large
+  These two expressions are equivalent: \par
+  \vspace{0.5cm}
+  \begin{tabular}{cl}
+    \hline
+    Age class & Equation \\
+    \hline
+    1 & $n_{1,t+1} = n_{1,t} \times f_{1} + n_{2,t} \times f_{2} + n_{3,t} \times f_3$ \\
+    2 & $n_{2,t+1} = n_{1,t} \times s_{1}$ \\
+    3 & $n_{3,t+1} = n_{2,t} \times s_{2} + n_{3,t} \times s_3$ \\
+    \hline
+  \end{tabular}
+  \vfill
+  {\centering AND \par}
+  \vfill
+  \[
+    {\bf n}_{t+1} = {\bf A}\times {\bf n}_{t}
+  \]
 \end{frame}
+
 
 
 \begin{frame}
-  \frametitle{\large Occupancy-based metapopulation population model}
-
+  \frametitle{Matrix multiplication and Leslie matrix}
+  \Large
+  \begin{center}
+    \[
+    \begin{bmatrix}
+      n_{1,t+1} \\
+      n_{2,t+1} \\
+      n_{3,t+1} 
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      f_1 & f_2 & f_3 \\
+      s_1 & 0 & 0 \\
+      0 & s_2 & s_3 \\
+    \end{bmatrix}
+    \times
+    \begin{bmatrix}
+      n_{1,t} \\
+      n_{2,t} \\
+      n_{3,t} \\
+    \end{bmatrix}
+    \]
+  \end{center}
 \end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Population size, $n_{i,t}$}
+<<proj1code,size='footnotesize'>>=
+T <- 30                         ## time steps
+n <- matrix(NA, nrow=3, ncol=T) ## age-class abundance matrix    
+n[,1] <- c(50, 40, 10)          ## abundance at t=1
+s <- c(0.4, 0.5, 0.3)           ## survival rates
+f <- c(0, 0.8, 1.7)             ## fecundities
+
+A <- matrix(c(f, s[1], 0, 0, 0, s[2], s[3]), 
+            nrow=3, ncol=3, byrow=TRUE)  
+A                               ## Leslie matrix
+
+for(t in 2:T) {
+    n[,t] <- A %*% n[,t-1]      ## matrix multiplication
+}
+
+lambda <- n[,-1] / n[,-T]       ## growth rates
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Population size, $n_{i,t}$}
+<<proj1,size='scriptsize',out.width='0.99\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
+matplot(1:T, t(n), type="o", pch=16, xlab="Time", ylab="Population size",
+        cex.lab=1.3, ylim=c(0, 60), col=c("black", "orange", "purple"))
+legend(20, 60, c("Age class 1", "Age class 2", "Age class 3"),
+       col=c("black", "orange", "purple"), pch=16, lty=1:3)
+@
+% \vspace{0.9cm}
+% \begin{center}
+%   \includegraphics[width=0.85\textwidth]{figure/proj1-1}
+% \end{center}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Growth rates, $\lambda_{i,t} = n_{i,t+1}/n_{i,t}$}
+<<lambda1,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+matplot(t(lambda), type="o", pch=16,
+        xlab="Time", ylab="Population growth rate (lambda)",
+        cex.lab=1.3,
+        col=c("black", "orange", "purple"))
+legend(20, 2.4, c("Age class 1", "Age class 2", "Age class 3"),
+       col=c("black", "orange", "purple"), pch=16, lty=1:3)
+@
+\vspace{-0.9cm}
+\begin{center}
+  \includegraphics[width=0.99\textwidth]{figure/lambda1-1}
+\end{center}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Age distribution, $c_{i,t} = n_{i,t}/N_t$}
+<<prop1,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+N <- colSums(n)
+C <- sweep(n, 2, N, "/")
+matplot(1:T, t(C), type="o", pch=16, xlab="Time",
+        cex.lab=1.3,
+        ylab="Proportion in age class",
+        col=c("black", "orange", "purple"), ylim=c(0, 1))
+legend(20, 1, c("Age class 1", "Age class 2", "Age class 3"),
+       col=c("black", "orange", "purple"), pch=16, lty=1:3)
+@
+\vspace{-0.9cm}
+\begin{center}
+  \includegraphics[width=0.99\textwidth]{figure/prop1-1}
+\end{center}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{In-class exercise}
+  {\centering
+  Add environmental stochasticity to the age-structured population
+  model according to:
+  \[
+    {\bf n}_{t+1} = {\bf A}\times {\bf n}_{t} + {\bm \varepsilon}_t
+  \]
+  }
+  where $\varepsilon_{i,t} \sim \mathrm{Norm}(0,0.5)$.
+  \pause
+  \vfill
+  The key is to use \inr{rnorm} to draw 3 random numbers at each time 
+  step, and then add these random values to:
+<<proj1recode,size='footnotesize',eval=FALSE>>=
+for(t in 2:T) {
+    n[,t] <- A %*% n[,t-1]               
+}
+@
+  
+\end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Properties of simple age-structured models}
+%   \large
+%   Age distribution converges to a {\bf stable age
+%     distribution} when survival and fecundity rates are constant. \\
+%   \pause
+%   \vfill
+%   Stable age distribution is the proportion of individuals in each age
+%   class when the population converges. \\
+%   \pause
+%   \vfill
+%   Growth rates of each age class differ at first, but converge
+%   once the stable age distribution is reached. \\
+%   \pause
+%   \vfill
+%   Asymptotic growth rate is $\lambda$ (without subscript). \\
+%   \pause
+%   \vfill
+%   Growth rate at the stable age distribution is the same for
+%   all age classes, and it is geometric! \\
+% \end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Stage-structured population models}
+  \begin{itemize}
+    \item Age isn't always the best way to think about population structure
+    \item<2-> For some populations, it is much more useful to think about size
+      structure or even spatial structure.
+    \item<3->  These ``stage-structured'' models differ from age-structured models
+      in that individuals can remain in a stage class (with
+      probability $1-p_i$) for multiple time periods.
+  \end{itemize}
+%  \vfill
+  \tikzstyle{level 1} = [circle, draw, text width=0.5cm, minimum size=1.5cm,
+  node distance=3cm, text centered, fill=blue!10]
+  \begin{center}
+   \uncover<4>{
+   \begin{tikzpicture} \footnotesize %\small
+      \node [level 1] (n1) [yshift=-5mm] {$n_{1,t}$};
+      \node [level 1, right of=n1] (n2) [yshift=0mm] {$n_{2,t}$};
+      \node [level 1, right of=n2] (n3) [yshift=0mm] {$n_{3,t}$};
+      \draw[->,thick]  (n1) to node[above] {$s_1$} (n2);
+      \draw[->,thick] (n2) to node[above] {$p_2s_2$} (n3);
+      \draw[->,thick] (n2) to [bend right=40] node[above] {$f_2$} (n1);
+      \draw[->,thick] (n3) to [bend right=60] node[above] {$f_3$} (n1);
+      \draw[->,thick] (n2) to [loop below] node[below] {$(1-p_2)s_2$} (n2);
+      \draw[->,thick] (n3) to [loop below] node[below] {$s_3$} (n3);
+   \end{tikzpicture}
+   }
+  \end{center}
+\end{frame}
+
+
+
+
+
+
+%\begin{comment}
+\begin{frame}
+  \frametitle{Stage-structured population models}
+  \large
+  In stage-structured models, individuals transition from one
+  stage to the next with probability $p_i$. \par
+  \vfill
+  \pause
+  A simple example of a projection matrix like this:
+  \pause
+  \vfill
+  \begin{center}
+    \[
+    {\bf A} =
+    \begin{bmatrix}
+      f_1 & f_2        & f_3 \\
+      s_1 & s_2(1-p_2) & 0   \\
+      0   & s_2 p_2    & s_3 \\
+    \end{bmatrix}
+    \]
+  \end{center}
+%\pause
+%\vfill
+%This example allows for individual to remain in stages 2 and 3 for
+%more than one time period.
+\end{frame}
+%\end{comment}
+
+
+
+
+
+%% Save these for the occupancy lecture
+% \section{Metapopulation models}
+
+% \begin{frame}
+%   \frametitle{\large Abundance-based metapopulation population model}
+%   Can be formulated as matrix model
+% \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{\large Occupancy-based metapopulation population model}
+
+% \end{frame}
 
 
 
@@ -378,6 +697,30 @@ legend(0, 100, c("r=0.1", "r=0.5", "r=2.0", "r=3.0"),
 
 
 
+
+
+
+
+\begin{frame}
+  \frametitle{Summary}
+  Vital rates ($s$ and $f$) are usually age-specific. \\
+  \pause
+  \vfill
+  Population growth will depend on age distribution. \\
+  \pause
+  \vfill
+  If vital rates are constant, population will reach stable
+  age distribution with constant growth rate $\lambda$. \\
+  \pause
+  \vfill
+  Matrix models can be used to compute other quantities like
+  \emph{reproductive value} that describe how each age class
+  contributes to population growth. \\
+  \pause
+  \vfill
+  But what about space and other forms of individual variation? And
+  what about movement?
+\end{frame}
 
 
 
