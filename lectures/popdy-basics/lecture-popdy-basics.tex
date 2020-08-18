@@ -717,6 +717,40 @@
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Eigenanalysis shortcut}
+  We can compute $\lambda$, stable age distribution, and reproductive
+  value by projecting the population forward and then computing values
+  after the population converges.
+  \pause
+  \vfill
+  An easier way is to use eigenanalysis:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{vw} \hlkwb{<-} \hlkwd{eigen}\hlstd{(A)}
+\hlkwd{Re}\hlstd{(vw}\hlopt{$}\hlstd{values[}\hlnum{1}\hlstd{])}                          \hlcom{## lambda}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.9280799
+\end{verbatim}
+\begin{alltt}
+\hlkwd{Re}\hlstd{(vw}\hlopt{$}\hlstd{vectors[,}\hlnum{1}\hlstd{]}\hlopt{/}\hlkwd{sum}\hlstd{(vw}\hlopt{$}\hlstd{vectors[,}\hlnum{1}\hlstd{]))}    \hlcom{## stable age distribution}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.5636647 0.2429380 0.1933973
+\end{verbatim}
+\begin{alltt}
+\hlstd{vw2} \hlkwb{<-} \hlkwd{eigen}\hlstd{(}\hlkwd{t}\hlstd{(A))}
+\hlkwd{Re}\hlstd{(vw2}\hlopt{$}\hlstd{vectors[,}\hlnum{1}\hlstd{]}\hlopt{/}\hlkwd{sum}\hlstd{(vw2}\hlopt{$}\hlstd{vectors[,}\hlnum{1}\hlstd{]))}  \hlcom{## reproductive values}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1659238 0.3849765 0.4490997
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
 
 %% Save these for the occupancy lecture
 % \section{Metapopulation models}

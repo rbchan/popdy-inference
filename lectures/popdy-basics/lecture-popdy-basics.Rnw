@@ -675,6 +675,23 @@ for(t in 2:T) {
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Eigenanalysis shortcut}
+  We can compute $\lambda$, stable age distribution, and reproductive
+  value by projecting the population forward and then computing values
+  after the population converges.
+  \pause
+  \vfill
+  An easier way is to use eigenanalysis:
+<<eig,size='scriptsize'>>=
+vw <- eigen(A)
+Re(vw$values[1])                          ## lambda
+Re(vw$vectors[,1]/sum(vw$vectors[,1]))    ## stable age distribution
+vw2 <- eigen(t(A))
+Re(vw2$vectors[,1]/sum(vw2$vectors[,1]))  ## reproductive values
+@ 
+\end{frame}
+
 
 %% Save these for the occupancy lecture
 % \section{Metapopulation models}
