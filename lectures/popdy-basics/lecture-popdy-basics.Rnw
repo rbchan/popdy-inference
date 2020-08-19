@@ -742,7 +742,33 @@ Re(vw2$vectors[,1]/sum(vw2$vectors[,1]))  ## reproductive values
 
 
     
-    
+
+\begin{frame}
+  \frametitle{Assignment}
+  \small
+  Create a self-contained R script (or better yet an Rmarkdown file)
+  to do the following:
+  \begin{enumerate}
+    \footnotesize
+    \item Simulate abundance from the model: $N_{t+1} = N_{t} + B_{t}
+      - D_{t}$ with $B_{t} \sim \mathrm{Pois}(N_{t-1} \times b)$ and
+      $D_t \sim \mathrm{Bin}(N_{t-1}, d)$. Start with $b=0.2$ and
+      $d=0.3$. Use 100 time steps and an initial value of abundance:
+      $N_1=50$. Repeat the simulation at least 3 times. What value of
+      $d$ would you need to acheive stochastic equilibrium?
+    \item Repeat the second class exercise, but make one element
+      (survival or fecundity) of the Leslie matrix stochastic.
+    \item Simulate logistic regression data according to
+      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
+      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
+      covariate using \inr{x <- rnorm(100)}.
+    \item Fit a logistic regression model to the simulated data ($y$
+      and $x$) using the \inr{glm} function. Create a figure showing
+      the $x$ and $y$ with the fitted regression line. You can use the
+      \inr{predict} function to get the fitted line.
+  \end{enumerate}
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC.  
+\end{frame}
 
 
 
