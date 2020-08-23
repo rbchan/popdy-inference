@@ -65,7 +65,7 @@
 
 \title{Lecture 2 -- Basic models of population Dynamics}
 \author{Richard Chandler}
-%\date{January 14, 2019}
+
 
 
 
@@ -804,19 +804,23 @@
 
 \begin{frame}
   \frametitle{Assignment}
-  \small
+  % \small
+  \scriptsize
   Create a self-contained R script (or better yet an Rmarkdown file)
   to do the following:
   \begin{enumerate}
-    \footnotesize
-    \item Simulate abundance from the model: $N_{t+1} = N_{t} + B_{t}
-      - D_{t}$ with $B_{t} \sim \mathrm{Pois}(N_{t-1} \times b)$ and
-      $D_t \sim \mathrm{Bin}(N_{t-1}, d)$. Start with $b=0.2$ and
+    % \footnotesize
+    \scriptsize
+    \item Simulate abundance from the model: $N_t = N_{t-1} + B_{t-1}
+      - D_{t-1}$ with $B_{t-1} \sim \mathrm{Pois}(N_{t-1} \times b)$ and
+      $D_{t-1} \sim \mathrm{Bin}(N_{t-1}, d)$. Start with $b=0.2$ and
       $d=0.3$. Use 100 time steps and an initial value of abundance:
       $N_1=50$. Repeat the simulation at least 3 times. What value of
-      $d$ would you need to acheive stochastic equilibrium?
+      $d$ would you need to acheive stochastic equilibrium? Graph the
+      results with time on the x-axis and abundance on the y-axis.
     \item Repeat the second class exercise, but make one element
-      (survival or fecundity) of the Leslie matrix stochastic.
+      (survival or fecundity) of the Leslie matrix stochastic. Graph a
+      single simulation of abundance over time.
     \item Simulate logistic regression data according to
       $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
       + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
@@ -826,7 +830,7 @@
       the $x$ and $y$ with the fitted regression line. You can use the
       \inr{predict} function to get the fitted line.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC.  
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Aug 31. 
 \end{frame}
 
 
