@@ -26,6 +26,7 @@ source("../rnw2pdf.R")
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-popdy-basics")
 rnw2pdf("lecture-popdy-basics", tangle=TRUE)
 @ 
 
@@ -179,7 +180,7 @@ plot(time, N1, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
 
 \begin{frame}[fragile]
   \frametitle{Geometric growth in \R~-- Option 2}
-<<geo2,size='tiny',out.width='0.9\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
+<<geo2,size='tiny',out.width='0.8\\textwidth',fig.width=8,fig.height=5,fig.align="center">>=
 time <- 0:100         
 T <- length(time)     ## number of time points
 r <- 0.01             ## growth rate
@@ -238,7 +239,7 @@ plot(time, N3, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
       geometric growth model using the settings in the previous examples.
     \item[]
     \item<2-> Simulate abundance using the model $N_t = N_{t-1} +
-      N_{t-1}r + X_{t-1}$ with $X_t \sim \mathrm{Norm}(0, 10)$ and
+      N_{t-1}r + X_{t-1}$ with $X_t \sim \mathrm{Norm}(0, 2)$ and
       $r=0.1$. Let the other settings be the same as before.
   \end{enumerate}
 \end{frame}
@@ -380,6 +381,7 @@ legend(0, 100, c("r=0.1", "r=0.5", "r=2.0", "r=3.0"),
       \node [level 1] (n1) [yshift=-5mm] {$n_{1,t}$};
       \node [level 1, right of=n1] (n2) [yshift=0mm] {$n_{2,t}$};
       \node [level 1, right of=n2] (n3) [yshift=0mm] {$n_{3,t}$};
+      \draw[->,thick] (n1) to [loop above] node[above] {$f_1$} (n1);
       \draw[->,thick]  (n1) to node[above] {$s_1$} (n2);
       \draw[->,thick] (n2) to node[above] {$s_2$} (n3);
       \draw[->,thick] (n2) to [bend right=40] node[above] {$f_2$} (n1);
@@ -750,13 +752,14 @@ Re(vw2$vectors[,1]/sum(vw2$vectors[,1]))  ## reproductive values
 
 \begin{frame}
   \frametitle{Assignment}
-  % \small
-  \scriptsize
+  \small
+  % \scriptsize
   Create a self-contained R script (or better yet an Rmarkdown file)
   to do the following:
   \begin{enumerate}
+    \small
     % \footnotesize
-    \scriptsize
+    % \scriptsize
     \item Simulate abundance from the model: $N_t = N_{t-1} + B_{t-1}
       - D_{t-1}$ with $B_{t-1} \sim \mathrm{Pois}(N_{t-1} \times b)$ and
       $D_{t-1} \sim \mathrm{Bin}(N_{t-1}, d)$. Start with $b=0.2$ and
@@ -767,14 +770,14 @@ Re(vw2$vectors[,1]/sum(vw2$vectors[,1]))  ## reproductive values
     \item Repeat the second class exercise, but make one element
       (survival or fecundity) of the Leslie matrix stochastic. Graph a
       single simulation of abundance over time.
-    \item Simulate logistic regression data according to
-      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
-      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
-      covariate using \inr{x <- rnorm(100)}.
-    \item Fit a logistic regression model to the simulated data ($y$
-      and $x$) using the \inr{glm} function. Create a figure showing
-      the $x$ and $y$ with the fitted regression line. You can use the
-      \inr{predict} function to get the fitted line.
+    % \item Simulate logistic regression data according to
+    %   $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
+    %   + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
+    %   covariate using \inr{x <- rnorm(100)}.
+    % \item Fit a logistic regression model to the simulated data ($y$
+    %   and $x$) using the \inr{glm} function. Create a figure showing
+    %   the $x$ and $y$ with the fitted regression line. You can use the
+    %   \inr{predict} function to get the fitted line.
   \end{enumerate}
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Aug 31. 
 \end{frame}

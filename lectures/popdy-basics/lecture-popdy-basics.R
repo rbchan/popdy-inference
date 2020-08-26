@@ -1,4 +1,5 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
+## rnw2pdf("lecture-popdy-basics")
 ## rnw2pdf("lecture-popdy-basics", tangle=TRUE)
 
 
@@ -12,8 +13,11 @@ N1 <- 10*(1+r)^time   ## abundance at time t. N(0)=10
 plot(time, N1, xlab="Time", ylab="Abundance", type="l", cex.lab=1.5)
 
 
-## ----geo2,size='tiny',out.width='0.9\\textwidth',fig.width=8,fig.height=5,fig.align="center"----
-N2 <- c(10, c(NA, T-1))  ## initial abundance = 10
+## ----geo2,size='tiny',out.width='0.8\\textwidth',fig.width=8,fig.height=5,fig.align="center"----
+time <- 0:100         
+T <- length(time)     ## number of time points
+r <- 0.01             ## growth rate
+N2 <- c(10, rep(NA, T-1))  ## initial abundance = 10
 for(t in 2:T) {
     N2[t] <- N2[t-1] + N2[t-1]*r
 }
@@ -24,13 +28,15 @@ legend(0, 27, c("Geometric growth - option 1", "Geometric growth - option 2"),
 
 
 ## ----geo3code,size='small'----------------------------------------------------
-N3 <- c(10, c(NA, T-1))  ## initial abundance = 10
+time <- 0:100         
+T <- length(time)     ## number of time points
+N3 <- c(10, rep(NA, T-1))  ## initial abundance = 10
 r <- rep(NA, T-1)
 rbar <- 0.01
 sigma <- 0.2
 for(t in 2:T) {
     r[t-1] <- rnorm(n=1, mean=rbar, sd=sigma)
-    N3[t] <- N2[t-1] + N2[t-1]*r[t-1]
+    N3[t] <- N3[t-1] + N3[t-1]*r[t-1]
 }
 
 
