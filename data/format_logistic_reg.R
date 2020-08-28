@@ -25,7 +25,7 @@ grouse.surveys <- grouse.surveys.in
 grouse.surveys$routePoint <- factor(paste(grouse.surveys$Route,
                                           grouse.surveys$Point.ID, sep="_"))
 
-with(grouse.surveys.in,
+with(grouse.surveys,
      ave(seq_along(routePoint), routePoint, FUN=seq_along))
 
 ## Subset Coweeta data by sites surveyed during *standard* survey
