@@ -1,7 +1,7 @@
 list.files()
 
 
-## Import data
+## Import Coweeta data
 
 sites.in <- read.csv("Site_Data_WILD8390.csv")
 dets.in <- read.csv("Detection_Data_WILD8390.csv")
@@ -12,7 +12,23 @@ str(dets.in)
 str(surveys.in)
 
 
-## Subset data by sites surveyed during *standard* survey
+## Import grouse data
+
+grouse.dets.in <- read.csv("GrouseDetectionsQuery.csv")
+grouse.surveys.in <- read.csv("RuffedGrouseDrummingSurveys Query.csv")
+
+str(grouse.dets.in)
+str(grouse.surveys.in)
+
+
+grouse.surveys <- grouse.surveys.in
+grouse.surveys$routePoint <- factor(paste(grouse.surveys$Route,
+                                          grouse.surveys$Point.ID, sep="_"))
+
+with(grouse.surveys.in,
+     ave(seq_along(routePoint), routePoint, FUN=seq_along))
+
+## Subset Coweeta data by sites surveyed during *standard* survey
 
 site.names <- c(
     grep("PCCow", sites.in$PointName, value=TRUE),
