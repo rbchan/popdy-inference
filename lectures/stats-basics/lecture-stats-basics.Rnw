@@ -8,11 +8,8 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 \title{Lecture 3 -- Basic statistical models}
 \author{Richard Chandler}
-
-
 
 
 % Load function to compile and open PDF
@@ -85,50 +82,52 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Linear models (LMs)}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Linear models (LMs)}
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Is this a linear model?}
-\[
-y = 20 + 0.5 x
-\]
-<<linmod1,include=FALSE,fig.show="hide">>=
-par(mai=c(0.8,0.8,0.1,0.1))
-plot(function(x) 20 + 0.5*x, 0, 10, ylab="y")
-@
-\begin{center}
-  \includegraphics[width=0.6\textwidth]{figure/linmod1-1}
-\end{center}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Is this a linear model?}
+% \[
+% y = 20 + 0.5 x
+% \]
+% <<linmod1,include=FALSE,fig.show="hide">>=
+% par(mai=c(0.8,0.8,0.1,0.1))
+% plot(function(x) 20 + 0.5*x, 0, 10, ylab="y")
+% @
+% \begin{center}
+%   \includegraphics[width=0.6\textwidth]{figure/linmod1-1}
+% \end{center}
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Is this a linear model?}
-\[
-y = 20 + 0.5 x - 0.3 x^2
-\]
-<<linmod2,include=FALSE,fig.show='hide'>>=
-par(mai=c(0.8,0.8,0.1,0.1))
-plot(function(x) 20 + 0.5*x - 0.3*x^2 , 0, 10, ylab="y")
-@
-\begin{center}
-  \includegraphics[width=0.6\textwidth]{figure/linmod2-1}
-\end{center}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Is this a linear model?}
+% \[
+% y = 20 + 0.5 x - 0.3 x^2
+% \]
+% <<linmod2,include=FALSE,fig.show='hide'>>=
+% par(mai=c(0.8,0.8,0.1,0.1))
+% plot(function(x) 20 + 0.5*x - 0.3*x^2 , 0, 10, ylab="y")
+% @
+% \begin{center}
+%   \includegraphics[width=0.6\textwidth]{figure/linmod2-1}
+% \end{center}
+% \end{frame}
 
 
 
 \begin{frame}
   \frametitle{Linear models}
-  All fixed-effects regression and ANOVA models are linear models \\
-  \vfill
-  You must understand linear models before you can apply more advanced models such as GLMs, GAMS, GLMMs, etc\dots
+%  \small
+  All ANOVAs and fixed-effects regression models are linear models \\
+  \vspace{12pt}
+  You must understand linear models before you can apply more advanced
+  models such as GLMs, GAMS, GLMMs, etc\dots  
   \vfill
   \centering
   \includegraphics[width=0.25\textwidth]{figure/Rencher_Schaal_book} \hspace{1cm}
@@ -138,7 +137,7 @@ plot(function(x) 20 + 0.5*x - 0.3*x^2 , 0, 10, ylab="y")
 
 
 \begin{frame}
-  \frametitle{Linear model}
+  \frametitle{Linear models}
 {\bf A linear model is an equation of the form:}
 
 \[
@@ -146,23 +145,32 @@ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \var
 \]
 
 where the $\beta$'s are coefficients, and the $x$ values are predictor
-variables (or dummy variables for categorical predictors).
-\pause
-
-\vspace{0.5cm}
-
-{\bf This equation is often expressed in matrix notation as:}
+variables (or dummy variables for categorical predictors). \pause The
+residuals are assumed to be normally distributed:
 
 \[
-{\bf y} = {\bf X} {\bm{\beta}} + {\bm \varepsilon}
+  \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
 \]
 
-where $\bf X$ is a \alert{design matrix} and $\bm{\beta}$ is a
-vector of coefficients. \pause More on matrix notation later\dots
+\pause
+
+\vfill %\vspace{0.5cm}
+
+% {\bf This equation is often expressed in matrix notation as:}
+
+% \[
+% {\bf y} = {\bf X} {\bm{\beta}} + {\bm \varepsilon}
+% \]
+
+% where $\bf X$ is a \alert{design matrix} and $\bm{\beta}$ is a
+% vector of coefficients. %\pause More on matrix notation later\dots
+Linear models can also be written this way:
+\begin{gather*}
+  \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+  y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+\end{gather*}
+
 \end{frame}
-
-
-%\end{document}
 
 
 
@@ -186,17 +194,17 @@ Linear models can also include polynomial terms and interactions
 
 
 \begin{frame}[fragile]
-  \frametitle{Interpretting the $\beta$'s}% for continuous explanatory variables}
+  \frametitle{Interpretting the $\beta$'s}
   \small 
-  The intercept $\beta_0$ is the expected value of $y$, when all $x$'s are 0 \\
+  The intercept $\beta_0$ is the expected value of $y$, when all $x=0$ \\
   \pause
   \vfill
-  If $x$ is a {\bf continuous} explanatory variable: %, $\beta$ is
+  If $x_1$ is a {\bf continuous} explanatory variable: %, $\beta$ is
   \begin{itemize}
-    \item $\beta$ can usually be interpretted as a \textit{slope}
+    \item $\beta_1$ can usually be interpretted as a \textit{slope}
       parameter.
-    \item In this case, $\beta$ is the
-      change in $y$ resulting from a 1 unit change in $x$ (while
+    \item In this case, $\beta_1$ is the
+      change in $y$ resulting from a 1 unit change in $x_1$ (while
       holding the other predictors constant).
     \end{itemize}
 \pause
@@ -244,44 +252,44 @@ lm(y~x)
     \item The $\beta$ coefficients for the other levels of the factor
       are differences from the reference level.
   \end{itemize}
-  \pause
-  \vfill
-  The default method corresponds to:
-<<contr-trt,size='small'>>=
-options(contrasts=c("contr.treatment","contr.poly"))
-@
+%   \pause
+%   \vfill
+%   The default method corresponds to:
+% <<contr-trt,size='small'>>=
+% options(contrasts=c("contr.treatment","contr.poly"))
+% @
 \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{\small Interpretting $\beta$'s for categorical explantory variables}
-  Another common method for creating dummy variables results in
-  $\beta$'s that can be interpretted as the $\alpha$'s from the
-  additive models that we saw earlier in the class.
-  \pause
-  \vfill
-  With this method:
-  \begin{itemize}
-    \item The $\beta$ associated with each level of the factor is the
-      difference from the intercept
-    \item The intercept can be interpetted as the grand mean if the
-      continuous variables have been centered
-    \item One of the levels of the factor will not be displayed
-      because it is redundant when the intercept is estimated
-  \end{itemize}
-  \pause
-  \vfill
-  This method corresponds to:
-<<contr-sum,size='small',eval=FALSE>>=
-options(contrasts=c("contr.sum","contr.poly"))
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{\small Interpretting $\beta$'s for categorical explantory variables}
+%   Another common method for creating dummy variables results in
+%   $\beta$'s that can be interpretted as the $\alpha$'s from the
+%   additive models that we saw earlier in the class.
+%   \pause
+%   \vfill
+%   With this method:
+%   \begin{itemize}
+%     \item The $\beta$ associated with each level of the factor is the
+%       difference from the intercept
+%     \item The intercept can be interpetted as the grand mean if the
+%       continuous variables have been centered
+%     \item One of the levels of the factor will not be displayed
+%       because it is redundant when the intercept is estimated
+%   \end{itemize}
+%   \pause
+%   \vfill
+%   This method corresponds to:
+% <<contr-sum,size='small',eval=FALSE>>=
+% options(contrasts=c("contr.sum","contr.poly"))
+% @
+% \end{frame}
 
 
 
-\subsection{Example}
+% \subsection{Example}
 
 
 
@@ -301,16 +309,17 @@ options(contrasts=c("contr.sum","contr.poly"))
 
 
 
+% \begin{frame}
+%   \frametitle{Generalized linear models (GLMs)}
+% \end{frame}
+
+
+
+
+
 \begin{frame}
   \frametitle{Generalized linear models (GLMs)}
-\end{frame}
-
-
-
-
-
-\begin{frame}
-  \frametitle{Motivation}
+  % \frametitle{Motivation}
   %% {\bf Limitations of linear models}
   %% \begin{itemize}[<+->]
   %%   \item Not appropriate when response variable is discrete
@@ -344,7 +353,7 @@ options(contrasts=c("contr.sum","contr.poly"))
 
 
 \begin{frame}
-  \frametitle{Outline}
+  \frametitle{Two important GLMs}
   {\bf Logistic regression \\}
   \begin{itemize}
     \item The response variable is usually binary and modeled with a
@@ -396,14 +405,14 @@ options(contrasts=c("contr.sum","contr.poly"))
   \frametitle{From linear to generalized linear}
   {\bf Linear model}
   \begin{gather*}
-    \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+    \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
   \end{gather*}
   \pause
   \vfill
   {\bf Generalized Linear model}
   \begin{gather*}
-    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim f(\mu_i)
   \end{gather*}
   \pause
@@ -419,21 +428,21 @@ options(contrasts=c("contr.sum","contr.poly"))
   \frametitle{Alternative representations}
   {\bf This:}
   \begin{gather*}
-    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim f(\mu_i)
   \end{gather*}
   \pause
   {\bf Is the same as this:}
   \begin{gather*}
-    \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots) \\
+    \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
     y_i \sim f(\mu_i)
   \end{gather*}
-  \pause
-  {\bf Is the same as this:}
-  \begin{gather*}
-    g(\mu_i) = {\bf X}{\bm \beta} \\
-    y_i \sim f(\mu_i)
-  \end{gather*}
+  % \pause
+  % {\bf Is the same as this:}
+  % \begin{gather*}
+  %   g(\mu_i) = {\bf X}{\bm \beta} \\
+  %   y_i \sim f(\mu_i)
+  % \end{gather*}
 \end{frame}
 
 
@@ -703,7 +712,7 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
 
 % \section{The {\tt glm} function}
 
-\subsubsection{Example}
+%\subsubsection{Example}
 
 
 
@@ -717,7 +726,7 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
   \frametitle{Poisson Regression}
   \Large
     \begin{gather*}
-      \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+      \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
       y_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
@@ -814,97 +823,97 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
 
 
 
-\begin{frame}
-  \frametitle{Assessing model fit}
-  {The most common problem in Poisson regression is
-    {\alert{overdispersion}}. \\}
-  \pause
-  \vfill
-  {Overdispersion is the situation in which there is more variability
-    in the data than predicted by the model. \\}
-  \pause
-  \vfill
-  {Overdispersion cannot be assessed by simply comparing the mean and
-    variance of the response variable. \\}
-  \pause
-  \vfill
-  {The presence of many zeros is not necessarily
-    indicative of overdispersion. \\}
-  \pause
-  \vfill
-  {Overdispersion can be assessed using a goodness-of-fit test. \\}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Assessing model fit}
+%   {The most common problem in Poisson regression is
+%     {\alert{overdispersion}}. \\}
+%   \pause
+%   \vfill
+%   {Overdispersion is the situation in which there is more variability
+%     in the data than predicted by the model. \\}
+%   \pause
+%   \vfill
+%   {Overdispersion cannot be assessed by simply comparing the mean and
+%     variance of the response variable. \\}
+%   \pause
+%   \vfill
+%   {The presence of many zeros is not necessarily
+%     indicative of overdispersion. \\}
+%   \pause
+%   \vfill
+%   {Overdispersion can be assessed using a goodness-of-fit test. \\}
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Goodness-of-fit}
-The fit of a Poisson regression can be assessed using a $\chi^2$
-test. \\
-\pause
-\vfill
-The test statistic is the residual deviance:
-\[
-  D = 2 \left\{\sum y_i \log\left(\frac{y_i}{\hat{\lambda_i}}\right) - (y_i-\hat{\lambda}_i)\right\}
-\]
-\pause
-\vfill
-If the null hypothesis is true (ie, the model fits the data), $D$ should
-follow $\chi^2$ distribution with $N-K$ degrees-of-freedom.
-\pause
-\vfill
-<<dev,size='footnotesize',eval=FALSE>>=
-N <- nrow(frogData)                   # sample size
-K <- length(coef(fm2))                # number of parameters
-df.resid <- N-K                       # degrees-of-freedom
-Dev <- deviance(fm2)                  # residual deviance
-p.value <- 1-pchisq(Dev, df=df.resid) # p-value
-p.value                               # fail to reject H0
-@
-\end{frame}
-
-
-
-
-
-\begin{frame}
-  \frametitle{What if model doesn't fit the data?}
-  \Large
-  {\bf Alternatives to the Poisson distribution}
-  \begin{itemize}
-    \item Negative binomial
-    \item Zero-inflated Poisson
-  \end{itemize}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Goodness-of-fit}
+% The fit of a Poisson regression can be assessed using a $\chi^2$
+% test. \\
+% \pause
+% \vfill
+% The test statistic is the residual deviance:
+% \[
+%   D = 2 \left\{\sum y_i \log\left(\frac{y_i}{\hat{\lambda_i}}\right) - (y_i-\hat{\lambda}_i)\right\}
+% \]
+% \pause
+% \vfill
+% If the null hypothesis is true (ie, the model fits the data), $D$ should
+% follow $\chi^2$ distribution with $N-K$ degrees-of-freedom.
+% \pause
+% \vfill
+% <<dev,size='footnotesize',eval=FALSE>>=
+% N <- nrow(frogData)                   # sample size
+% K <- length(coef(fm2))                # number of parameters
+% df.resid <- N-K                       # degrees-of-freedom
+% Dev <- deviance(fm2)                  # residual deviance
+% p.value <- 1-pchisq(Dev, df=df.resid) # p-value
+% p.value                               # fail to reject H0
+% @
+% \end{frame}
 
 
 
 
 
-\begin{frame}
-  \frametitle{Negative binomial distribution}
-<<nb1,fig.show='hide',echo=FALSE>>=
-x <- 0:25
-plot(x, dnbinom(x, mu=2, size=10), type="h", lwd=5, col="blue", lend="butt",
-     xlab="Response variable", ylab="Probability",
-     main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 10", ")", sep="")), cex.lab=1.5 )
-@
-<<nb2,fig.show='hide',echo=FALSE>>=
-plot(x, dnbinom(x, mu=2, size=5), type="h", lwd=5, col="blue", lend="butt",
-     xlab="Response variable", ylab="Probability",
-     main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 5", ")", sep="")), cex.lab=1.5 )
-@
-<<nb3,fig.show='hide',echo=FALSE>>=
-plot(x, dnbinom(x, mu=2, size=.1), type="h", lwd=5, col="blue", lend="butt",
-     xlab="Response variable", ylab="Probability",
-     main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 0.1", ")", sep="")), cex.lab=1.5 )
-@
-\begin{center}
-  \only<1>{\includegraphics[width=0.75\textwidth]{figure/nb1-1}}
-  \only<2 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb2-1}}
-  \only<3 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb3-1}}
-\end{center}
-\end{frame}
+% \begin{frame}
+%   \frametitle{What if the model doesn't fit the data?}
+%   \Large
+%   {\bf Alternatives to the Poisson distribution}
+%   \begin{itemize}
+%     \item Negative binomial
+%     \item Zero-inflated Poisson
+%   \end{itemize}
+% \end{frame}
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Negative binomial distribution}
+% <<nb1,fig.show='hide',echo=FALSE>>=
+% x <- 0:25
+% plot(x, dnbinom(x, mu=2, size=10), type="h", lwd=5, col="blue", lend="butt",
+%      xlab="Response variable", ylab="Probability",
+%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 10", ")", sep="")), cex.lab=1.5 )
+% @
+% <<nb2,fig.show='hide',echo=FALSE>>=
+% plot(x, dnbinom(x, mu=2, size=5), type="h", lwd=5, col="blue", lend="butt",
+%      xlab="Response variable", ylab="Probability",
+%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 5", ")", sep="")), cex.lab=1.5 )
+% @
+% <<nb3,fig.show='hide',echo=FALSE>>=
+% plot(x, dnbinom(x, mu=2, size=.1), type="h", lwd=5, col="blue", lend="butt",
+%      xlab="Response variable", ylab="Probability",
+%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 0.1", ")", sep="")), cex.lab=1.5 )
+% @
+% \begin{center}
+%   \only<1>{\includegraphics[width=0.75\textwidth]{figure/nb1-1}}
+%   \only<2 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb2-1}}
+%   \only<3 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb3-1}}
+% \end{center}
+% \end{frame}
 
 
 
@@ -953,26 +962,17 @@ distribution} \par}
 
 
 
-\begin{frame}
-  \frametitle{Previous examples}
-  \Large
-%  \begin{itemize}
-%    \item
-  ANOVA with random block effects
-  \pause
-  \vfill
-%    \item[]
-%    \item
-  Nested ANOVA
-  \pause
-  \vfill
-%    \item[]
-%    \item
-  Split-plot ANOVA
-%    \item[]
-%    \item Repeated measures ANOVA
-%  \end{itemize}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Previous examples}
+%   \Large
+%   ANOVA with random block effects
+%   \pause
+%   \vfill
+%   Nested ANOVA
+%   \pause
+%   \vfill
+%   Split-plot ANOVA
+% \end{frame}
 
 
 
@@ -1017,67 +1017,73 @@ distribution} \par}
 
 
 
+% \begin{frame}
+%   \frametitle{Matrix representation}
+%   \Large
+%   \[
+%     {\bf y} = {\bf X}{\bm \beta} + {\bm \gamma} + {\bm \varepsilon}
+%   \]
+%   \pause
+%   \[
+%     {\bm \gamma} \sim \mbox{Normal}(0, \sigma^2_d)
+%   \]
+%   \[
+%     {\bm \varepsilon} \sim \mbox{Normal}(0, \sigma^2)
+%   \]
+% \end{frame}
+
+
+
+
+
+
+
+
+
+% \section{Summary}
+
+
+% \begin{frame}
+%   \frametitle{Summary}
+%   \large
+%   Linear mixed-effects models are useful anytime you have
+%   fixed effects and normally-distriubted random effects \\
+%   \pause
+%   \vfill
+%   They allow for (serial, spatial, etc\dots) correlation among
+%   observations within a level of the grouping variable \\
+% %  \end{itemize}
+% \end{frame}
+
+
+
+
+
 \begin{frame}
-  \frametitle{Matrix representation}
-  \Large
-  \[
-    {\bf y} = {\bf X}{\bm \beta} + {\bm \gamma} + {\bm \varepsilon}
-  \]
-  \pause
-  \[
-    {\bm \gamma} \sim \mbox{Normal}(0, \sigma^2_d)
-  \]
-  \[
-    {\bm \varepsilon} \sim \mbox{Normal}(0, \sigma^2)
-  \]
+  \frametitle{Assignment}
+  \small
+  % \scriptsize
+  Create a self-contained R script (or better yet an Rmarkdown file)
+  to do the following:
+  \begin{enumerate}
+    \small
+    % \footnotesize
+    % \scriptsize
+    \item Simulate logistic regression data according to
+      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
+      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
+      covariate using \inr{x <- rnorm(100)}.
+    \item Fit a logistic regression model to the simulated data ($y$
+      and $x$) using the \inr{glm} function. Create a figure showing
+      the $x$ and $y$ with the fitted regression line. You can use the
+      \inr{predict} function to get the fitted line.
+  \end{enumerate}
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
 \end{frame}
-
-
-
-
-
-
-
-
-
-\section{Summary}
-
-
-\begin{frame}
-  \frametitle{Summary}
-  \large
-%  \begin{itemize}[<+->]
-%    \item
-  Linear mixed-effects models are useful anytime you have
-  fixed effects and normally-distriubted random effects \\
-  \pause
-  \vfill
-%    \item
-  They allow for (serial, spatial, etc\dots) correlation among
-  observations within a level of the grouping variable \\
-  \pause
-  \vfill
-%    \item
-  These models can be used for repeated measures data as an
-  alternative to MANOVA or the split-plot method with adjusted
-  $P$-values \\
-  \pause
-  \vfill
-%    \item
-  We do not want you to use this approach for the repeated
-  measures questions in the exam. \\
-  \pause
-  \vfill
-%    \item
-  But we will expect you to know how to fit linear
-      mixed-effects models using {\tt lme}, as we have already done
-%  \end{itemize}
-\end{frame}
-
-
 
 
 
 
 
 \end{document}
+
