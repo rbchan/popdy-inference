@@ -86,31 +86,107 @@ library(USAboundaries)
 library(elevatr)
 library(sf)
 library(rgdal)
+library(sp)
+library(raster)
+library(lme4)
 
-cs <- make_EPSG()
 
-grep("zone=16", cs$prj4, value=TRUE)
+## The grouse data are a bit tricky because the study area spans two UTM Zones
 
+## cs <- make_EPSG()
+## grep("zone=16", cs$prj4, value=TRUE)
+
+## proj4strings
 utm.z16 <- "+proj=utm +zone=16 +datum=WGS84 +units=m +no_defs +type=crs"
 utm.z17 <- "+proj=utm +zone=17 +datum=WGS84 +units=m +no_defs +type=crs"
+longlat <- "+proj=longlat +datum=WGS84 +no_defs +type=crs"
 
-grouse.elev <- get_elev_point(grouse.data[,c("utmE","utmN")],
-                              prj=utm.z17, src="aws")
+us.states <- us_states()
+ga.nc.sc.tn <- st_geometry(us.states)[us.states$stusps %in%
+                                      c("GA", "NC", "SC", "TN")]
+
+## st_crs(ga.nc.sc.tn)
+## cs[cs$code==4326,]
+
+## Convert to SpatialPoints class
+grouse.coords.z16 <- SpatialPoints(grouse.data[,c("utmE", "utmN")],
+                                   proj4string=CRS(utm.z16))
+grouse.coords.z17 <- SpatialPoints(grouse.data[,c("utmE", "utmN")],
+                                   proj4string=CRS(utm.z17))
+
+## Project to longlat
+grouse.coords.longlat <- coordinates(spTransform(grouse.coords.z16, CRS(longlat)))
+grouse.coords.longlat[grouse.data$utmZone=="17S",] <- 
+    coordinates(spTransform(grouse.coords.z17, CRS(longlat)))[grouse.data$utmZone=="17S",]
+
+plot(ga.nc.sc.tn, axes=TRUE)
+points(grouse.coords.longlat)
+
+
+dir.create("../lectures/stats-basics/figs")
+
+pdf("../lectures/stats-basics/figs/grouse_map_locs.pdf", width=6, height=5)
+plot(ga.nc.sc.tn, axes=TRUE, xlim=c(-85.6,-82.9), ylim=c(34.5, 35.5))
+points(grouse.coords.longlat, pch=3, cex=0.5, col=gray(0.7))
+text(-83.5, 34.4, "Georgia", pos=1)
+text(-83.5, 35.2, "North Carolina", pos=1)
+text(-85, 35.2, "Tennessee", pos=1)
+dev.off()
+system("gopen ../lectures/stats-basics/figs/grouse_map_locs.pdf")
+
+
+pdf("../lectures/stats-basics/figs/grouse_map_locs_dets.pdf", width=6, height=5)
+par(mai=c(0.7,0.8,0.1,0.1))
+plot(ga.nc.sc.tn, axes=TRUE, xlim=c(-85,-83), ylim=c(34.6, 35.2), las=1)
+points(grouse.coords.longlat, pch=3, cex=0.5, col=gray(0.7))
+points(grouse.coords.longlat, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
+text(-83.5, 34.5, "Georgia", pos=1)
+text(-83.5, 35.2, "North Carolina", pos=1)
+text(-84.7, 35.2, "Tennessee", pos=1)
+dev.off()
+system("gopen ../lectures/stats-basics/figs/grouse_map_locs_dets.pdf")
+
+
+rar <- raster(extent(-85, -83, 34.6, 35.2), crs=longlat, res=0.001)
+## rar[] <- 0
+
+
+region.elev <- get_elev_raster(rar, z=7)#, ##prj="+proj=longlat +datum=WGS84 +no_defs", ##src="aws",
+#                               clip="bbox")
+
+region.elev <- crop(region.elev, rar)
+
+plot(region.elev)
+
+
+
+
+pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf", width=12.4, height=5)
+par(mai=c(0.7,0.8,0.2,0.1))
+plot(region.elev, xlim=c(-84.9,-83), ylim=c(34.4, 35.2))
+plot(ga.nc.sc.tn, add=TRUE)#, las=1)
+points(grouse.coords.longlat, pch=3, cex=0.5, col=2)
+points(grouse.coords.longlat, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
+text(-83.5, 34.7, "Georgia", pos=1)
+text(-83.5, 35.2, "North Carolina", pos=1)
+text(-84.7, 35.2, "Tennessee", pos=1)
+dev.off()
+system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf")
+
+
+
+
+
+
+grouse.elev <- get_elev_point(as.data.frame(grouse.coords.longlat),
+                              prj=longlat, src="aws")
 
 grouse.data$elevation <- grouse.elev@data$elevation
-grouse.data$zone
 
 str(grouse.data)
 
 
 
-## TODO project to UTM
-us.states <- us_states()
-ga.nc.sc.tn <- st_geometry(us.states)[us.states$stusps %in%
-                                      c("GA", "NC", "SC", "TN")]
-
-plot(ga.nc.sc.tn)
-with(grouse.data, points(utmN ~ utmE, pch=3, col=4))
 
 
 
@@ -128,6 +204,9 @@ gm4 <- glm(presence ~ elevation+I(elevation^2), binomial, grouse.data)
 gm5 <- glm(presence ~ elevation+I(elevation^2)+utmZone, binomial,
            grouse.data)
 
+AIC(gm1,gm2,gm3,gm4,gm5)
+
+
 summary(gm1)
 summary(gm2)
 summary(gm3)
@@ -135,12 +214,11 @@ summary(gm4)
 summary(gm5)
 
 
-library(lme4)
 
 grouse.data$route <- factor(grouse.data$route)
 
 
-gmm1 <- glmer(presence ~ scale(elevation)+I(scale(elevation)^2)+(1|route),
+gmm1 <- glmer(presence ~ scale(elevation)+utmZone+(1|route),
               data=grouse.data,
               family=binomial)
 summary(gmm1)
