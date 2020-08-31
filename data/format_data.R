@@ -106,6 +106,8 @@ ga.nc.sc.tn <- st_geometry(us.states)[us.states$stusps %in%
 
 ga.nc.sc.tn.utm <- st_transform(ga.nc.sc.tn, crs=CRS(utm.z17))
 
+
+## We have a problem
 plot(Coordinates..northing. ~ Coordinates..easting., grouse.surveys.in, asp=1, pch=3)
 plot(ga.nc.sc.tn.utm, add=TRUE)
 
@@ -125,6 +127,9 @@ grouse.coords.z17 <- SpatialPoints(grouse.data[,c("utmE", "utmN")],
 grouse.coords.longlat <- coordinates(spTransform(grouse.coords.z16, CRS(longlat)))
 grouse.coords.longlat[grouse.data$utmZone=="17S",] <- 
     coordinates(spTransform(grouse.coords.z17, CRS(longlat)))[grouse.data$utmZone=="17S",]
+
+all(rownames(grouse.data)==rownames(grouse.coords.longlat)) ## Must be TRUE
+
 
 grouse.coords.utm17 <- spTransform(SpatialPoints(grouse.coords.longlat,
                                                  proj4string=CRS(longlat)),
@@ -150,7 +155,6 @@ with(grouse.data, {
 
 
 
-all(rownames(grouse.data)==rownames(grouse.coords.longlat)) ## Must be TRUE
 
 
 dir.create("../lectures/stats-basics/figs")
