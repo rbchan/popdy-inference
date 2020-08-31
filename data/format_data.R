@@ -59,7 +59,7 @@ str(grouse.surveys.wide)
 grouse.counts <- unclass(table(grouse.dets$routePoint))
 
 grouse.data <- data.frame(abundance=grouse.counts,
-                         presence=ifelse(grouse.counts>0, 1L, 0L))
+                          presence=ifelse(grouse.counts>0, 1L, 0L))
 rownames(grouse.data) <- names(grouse.counts)
 
 reorder.surveys <- match(rownames(grouse.data),
@@ -75,7 +75,6 @@ colnames(grouse.data) <- c("abundance", "presence", "route", "utmE", "utmN", "ut
 str(grouse.data)
 
 
-with(grouse.data, plot(utmN ~ utmE, asp=1, pch=3))
 
 
 ## Spatial data
@@ -97,13 +96,21 @@ library(lme4)
 ## grep("zone=16", cs$prj4, value=TRUE)
 
 ## proj4strings
-utm.z16 <- "+proj=utm +zone=16 +datum=WGS84 +units=m +no_defs +type=crs"
-utm.z17 <- "+proj=utm +zone=17 +datum=WGS84 +units=m +no_defs +type=crs"
+utm.z16 <- "+proj=utm +zone=16S +datum=WGS84 +units=m +no_defs +type=crs"
+utm.z17 <- "+proj=utm +zone=17S +datum=WGS84 +units=m +no_defs +type=crs"
 longlat <- "+proj=longlat +datum=WGS84 +no_defs +type=crs"
 
 us.states <- us_states()
 ga.nc.sc.tn <- st_geometry(us.states)[us.states$stusps %in%
                                       c("GA", "NC", "SC", "TN")]
+
+ga.nc.sc.tn.utm <- st_transform(ga.nc.sc.tn, crs=CRS(utm.z17))
+
+plot(Coordinates..northing. ~ Coordinates..easting., grouse.surveys.in, asp=1, pch=3)
+plot(ga.nc.sc.tn.utm, add=TRUE)
+
+
+
 
 ## st_crs(ga.nc.sc.tn)
 ## cs[cs$code==4326,]
@@ -119,14 +126,38 @@ grouse.coords.longlat <- coordinates(spTransform(grouse.coords.z16, CRS(longlat)
 grouse.coords.longlat[grouse.data$utmZone=="17S",] <- 
     coordinates(spTransform(grouse.coords.z17, CRS(longlat)))[grouse.data$utmZone=="17S",]
 
-plot(ga.nc.sc.tn, axes=TRUE)
+grouse.coords.utm17 <- spTransform(SpatialPoints(grouse.coords.longlat,
+                                                 proj4string=CRS(longlat)),
+                                   CRS(utm.z17))
+
+plot(ga.nc.sc.tn.utm)
+points(grouse.coords.utm17)
+
+
+plot(ga.nc.sc.tn)
 points(grouse.coords.longlat)
+
+plot(grouse.coords.longlat, asp=1)
+points(grouse.coords.longlat, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
+plot(ga.nc.sc.tn, add=TRUE)
+
+
+with(grouse.data, {
+    plot(utmN ~ utmE, asp=1, pch=3)
+    points(utmN ~ utmE, pch=16, cex=abundance, col=rgb(0,0,1,0.5))
+    plot(ga.nc.sc.tn.utm, add=TRUE)
+})
+
+
+
+all(rownames(grouse.data)==rownames(grouse.coords.longlat)) ## Must be TRUE
 
 
 dir.create("../lectures/stats-basics/figs")
 
 pdf("../lectures/stats-basics/figs/grouse_map_locs.pdf", width=6, height=5)
-plot(ga.nc.sc.tn, axes=TRUE, xlim=c(-85.6,-82.9), ylim=c(34.5, 35.5))
+par(mai=c(0.7,0.8,0.1,0.1))
+plot(ga.nc.sc.tn, axes=TRUE, xlim=c(-85.6,-82.9), ylim=c(34.5, 35.5), las=1)
 points(grouse.coords.longlat, pch=3, cex=0.5, col=gray(0.7))
 text(-83.5, 34.4, "Georgia", pos=1)
 text(-83.5, 35.2, "North Carolina", pos=1)

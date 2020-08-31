@@ -166,7 +166,7 @@
   All ANOVAs and fixed-effects regression models are linear models \\
   \vspace{12pt}
   You must understand linear models before you can apply more advanced
-  models such as GLMs, GAMS, GLMMs, etc\dots  
+  models such as GLMs, GAMS, hierarchical models etc\dots  
   \vfill
   \centering
   \includegraphics[width=0.25\textwidth]{figure/Rencher_Schaal_book} \hspace{1cm}
@@ -177,7 +177,8 @@
 
 \begin{frame}
   \frametitle{Linear models}
-{\bf A linear model is an equation of the form:}
+  {%\bf
+    Linear models look like this:}
 
 \[
 y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \varepsilon_i
@@ -217,7 +218,7 @@ Linear models can also be written this way:
 \begin{frame}
   \frametitle{Interpretting the $\beta$'s}
 You must be able to interpret the $\beta$
-coefficients {\it for any model that you fit to your data}.
+coefficients for {\it any model} that you fit to your data.
 \pause
 \vfill
 A linear model might have dozens of continuous and categorical
@@ -338,6 +339,20 @@ Linear models can also include polynomial terms and interactions
 % \subsection{Example}
 
 
+
+\begin{frame}
+  \frametitle{Ruffed grouse data}
+  \centering
+  \includegraphics[width=\textwidth]{figs/RUGR}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Ruffed grouse data}
+  \centering
+  \includegraphics[width=\textwidth]{figs/grouse_map_locs}
+\end{frame}
 
 
 
@@ -513,6 +528,7 @@ Linear models can also include polynomial terms and interactions
 
 \begin{frame}
   \frametitle{Link functions}
+  \centering
   \begin{tabular}{llcc}
     \hline
     Distribution & link name\footnote{\scriptsize These are the most common link functions, but others are available} & link equation             & inverse link equation       \\
@@ -995,9 +1011,9 @@ Linear models can also include polynomial terms and interactions
 
 
 
-\begin{frame}
-  \frametitle{Generalized linear mixed effects models (GLMMs)}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Generalized linear mixed effects models (GLMMs)}
+% \end{frame}
 
 
 
@@ -1006,22 +1022,23 @@ Linear models can also include polynomial terms and interactions
 \begin{frame}
   \frametitle{Fixed vs random effects, revisited}
 %  \large
-  {\bf In the context of mixed-effects models\dots \par}
-  \vspace{0.5cm}
+{\bf In the context of mixed-effects models\dots \par}
+\vspace{0.5cm}
+
 {\bf Fixed effect \par}
-A parameter that would not change if you repeated your study
+A constant parameter
 
 \pause
 \vspace{1cm}
 
 {\bf Random effect \par}
-A parameter that would change if you repeated your study
+A parameter that is a random variable
 
 \pause
 \vfill
 {\centering \bf
 \alert{Random effects will always be associated with a probability
-distribution} \par}
+  distribution} \par}  
 \end{frame}
 
 
@@ -1141,6 +1158,13 @@ distribution} \par}
       and $x$) using the \inr{glm} function. Create a figure showing
       the $x$ and $y$ with the fitted regression line. You can use the
       \inr{predict} function to get the fitted line.
+    \item Fit 4 Poisson regression models to the Canada Warbler
+      data. Try to explain as much variation in abundance as you can
+      using the two explanatory variables: {\tt elevation} and
+      {\tt year}. You can use quadratic effects and
+      interactions. Interpret the estimates from the model with the 
+      lowest AIC, and create a graph depicting the estimated
+      relationships. 
   \end{enumerate}
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
 \end{frame}
