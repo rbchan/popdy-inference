@@ -1,0 +1,153 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+\title{Lecture 4 -- Occuancy models: simulation and fitting }
+\author{Richard Chandler}
+
+
+% Load function to compile and open PDF
+<<build-fun,include=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+@
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-occupancyI")
+rnw2pdf("lecture-occupancyI", tangle=TRUE)
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+##knit_theme$set("navajo-night")
+knit_theme$set("edit-kwrite")
+@
+
+
+
+%<<knitr-setup,include=FALSE,purl=FALSE>>=
+%##opts_chunk$set(comment=NA)
+%@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\begin{document}
+
+
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\huge Lecture 4 -- Occupancy models: simulation and fitting} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+\section{Motivation}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Today's Topics}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+\begin{frame}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\section{Simulation}
+
+
+
+\section{Model fitting}
+
+
+\subsection{Likelihood-based methods}
+
+
+\subsection{Bayesian methods}
+
+
+
+\section{Real data}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Assignment}
+  \small
+  % \scriptsize
+  Create a self-contained R script (or better yet an Rmarkdown file)
+  to do the following:
+  \begin{enumerate}
+    \small
+    % \footnotesize
+    % \scriptsize
+    \item Simulate logistic regression data according to
+      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
+      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
+      covariate using \inr{x <- rnorm(100)}.
+    \item Fit a logistic regression model to the simulated data ($y$
+      and $x$) using the \inr{glm} function. Create a figure showing
+      $x$ and $y$ with the fitted regression line. Use
+      \inr{predict} to get the fitted line.
+    \item Fit 4 Poisson regression models to the Canada Warbler
+      data. Try to explain as much variation in abundance as you can
+      using the two explanatory variables: {\tt elevation} and
+      {\tt year}. You can use quadratic effects and
+      interactions. Interpret the estimates from the model with the 
+      lowest AIC, and create a graph depicting the estimated
+      relationships. 
+  \end{enumerate}
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
+\end{frame}
+
+
+
+
+
+\end{document}
+
