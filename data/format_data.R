@@ -70,7 +70,8 @@ keepvars <- c("Route..", "Coordinates..easting.", "Coordinates..northing.",
 
 grouse.data <- cbind(grouse.data,
                      grouse.surveys.wide[reorder.surveys,keepvars])
-colnames(grouse.data) <- c("abundance", "presence", "route", "utmE", "utmN", "utmZone")
+colnames(grouse.data) <- c("abundance", "presence", "route", "utmE", "utmN",
+                           "utmZone")
 
 str(grouse.data)
 
@@ -91,7 +92,6 @@ library(lme4)
 
 
 ## The grouse data are a bit tricky because the study area spans two UTM Zones
-
 ## cs <- make_EPSG()
 ## grep("zone=16", cs$prj4, value=TRUE)
 
@@ -104,11 +104,12 @@ us.states <- us_states()
 ga.nc.sc.tn <- st_geometry(us.states)[us.states$stusps %in%
                                       c("GA", "NC", "SC", "TN")]
 
-ga.nc.sc.tn.utm <- st_transform(ga.nc.sc.tn, crs=CRS(utm.z17))
+ga.nc.sc.tn.utm <- st_transform(ga.nc.sc.tn, crs=CRS(utm.z16))
 
 
 ## We have a problem
-plot(Coordinates..northing. ~ Coordinates..easting., grouse.surveys.in, asp=1, pch=3)
+plot(Coordinates..northing. ~ Coordinates..easting., grouse.surveys.in,
+     asp=1, pch=3)
 plot(ga.nc.sc.tn.utm, add=TRUE)
 
 
@@ -135,21 +136,49 @@ grouse.coords.utm17 <- spTransform(SpatialPoints(grouse.coords.longlat,
                                                  proj4string=CRS(longlat)),
                                    CRS(utm.z17))
 
-plot(ga.nc.sc.tn.utm)
+grouse.coords.utm16 <- spTransform(SpatialPoints(grouse.coords.longlat,
+                                                 proj4string=CRS(longlat)),
+                                   CRS(utm.z16))
+
+
+
+coordinates(grouse.coords.z17)-coordinates(grouse.coords.utm17)
+
+plot(ga.nc.sc.tn.utm, axes=TRUE)
+points(grouse.coords.utm17)
+
+plot(ga.nc.sc.tn.utm, xlim=c(2e5,4e5), ylim=c(37e5,4e6))
 points(grouse.coords.utm17)
 
 
 plot(ga.nc.sc.tn)
 points(grouse.coords.longlat)
 
+
+plot(grouse.coords.longlat, asp=1)
+points(grouse.coords.longlat[grouse.data$utmZone=="16S",], pch=16, col=2)
+points(grouse.coords.longlat[grouse.data$utmZone=="17S",], pch=16, col=4)
+plot(ga.nc.sc.tn, add=TRUE)
+
+
 plot(grouse.coords.longlat, asp=1)
 points(grouse.coords.longlat, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
 plot(ga.nc.sc.tn, add=TRUE)
+
+plot(grouse.coords.utm17, asp=1)
+points(grouse.coords.utm17, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
+plot(ga.nc.sc.tn.utm, add=TRUE)
+
+
+plot(grouse.coords.utm16, asp=1)
+points(grouse.coords.utm16, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
+plot(ga.nc.sc.tn.utm, add=TRUE)
 
 
 with(grouse.data, {
     plot(utmN ~ utmE, asp=1, pch=3)
     points(utmN ~ utmE, pch=16, cex=abundance, col=rgb(0,0,1,0.5))
+##    points(utmN ~ utmE, subset=utmZone=="16S", pch=16, cex=2, col=2)
     plot(ga.nc.sc.tn.utm, add=TRUE)
 })
 
@@ -186,7 +215,8 @@ rar <- raster(extent(-85, -83, 34.6, 35.2), crs=longlat, res=0.001)
 ## rar[] <- 0
 
 
-region.elev <- get_elev_raster(rar, z=7)#, ##prj="+proj=longlat +datum=WGS84 +no_defs", ##src="aws",
+region.elev <- get_elev_raster(rar, z=7)#,
+##prj="+proj=longlat +datum=WGS84 +no_defs", ##src="aws",
 #                               clip="bbox")
 
 region.elev <- crop(region.elev, rar)

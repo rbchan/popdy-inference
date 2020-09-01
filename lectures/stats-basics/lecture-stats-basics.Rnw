@@ -203,25 +203,25 @@ Linear models can also include polynomial terms and interactions
   If $x_1$ is a {\bf continuous} explanatory variable: %, $\beta$ is
   \begin{itemize}
     \item $\beta_1$ can usually be interpretted as a \textit{slope}
-      parameter.
+      parameter
     \item In this case, $\beta_1$ is the
       change in $y$ resulting from a 1 unit change in $x_1$ (while
-      holding the other predictors constant).
+      holding the other predictors constant)
     \end{itemize}
 \pause
 \vfill
 <<linmod,include=FALSE>>=
 set.seed(3400)  
-x <- runif(100, 0, 50)  
+x1 <- runif(100, 0, 50)  
 y <- rnorm(100, 10 + 1*x, 5)
-plot(x, y)
-abline(lm(y~x))
+plot(x1, y)
+abline(lm(y~x1))
 @
 \centering
 \begin{columns}
   \begin{column}{0.5\textwidth}
 <<linmod-out,size='tiny'>>=
-lm(y~x)
+lm(y~x1)
 @ 
   \end{column}
   \begin{column}{0.4\textwidth}
@@ -251,7 +251,7 @@ lm(y~x)
     \item One level of the factor is treated as a \alert{reference level}
     \item The reference level is associated with the intercept
     \item The $\beta$ coefficients for the other levels of the factor
-      are differences from the reference level.
+      are differences from the reference level
   \end{itemize}
 %   \pause
 %   \vfill
@@ -260,6 +260,37 @@ lm(y~x)
 % options(contrasts=c("contr.treatment","contr.poly"))
 % @
 \end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\small Interpretting $\beta$'s for categorical explantory variables}
+\small 
+<<linmod-xc,include=FALSE>>=
+set.seed(3400)  
+xc <- gl(4, 25) 
+y <- rnorm(100, model.matrix(~xc)%*%c(10,1,-1,2), 5)
+ym <- tapply(y, xc, mean)
+yse <- sqrt(sum(resid(lm(y~xc))^2)/96)/sqrt(25)
+bpx <- barplot(ym, ylim=c(0, 15), xlab="Treatment group",
+               ylab="Group mean", cex.lab=1.3)
+arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
+@
+\centering
+%\begin{columns}
+%  \begin{column}{0.5\textwidth}
+<<linmod-xc-out,size='tiny'>>=
+lm(y~xc)
+@ 
+%  \end{column}
+%  \begin{column}{0.4\textwidth}
+  \includegraphics[width=0.5\textwidth]{figure/linmod-xc-1} \\
+%  \end{column}
+%\end{columns}
+\end{frame}
+
 
 
 
@@ -313,9 +344,65 @@ lm(y~x)
 
 \begin{frame}[fragile]
   \frametitle{Ruffed grouse data}
+  Import the grouse data and convert \inr{route} and \inr{utmZone} to
+  factors.  
+<<read-grouse,size='tiny'>>=
+grouse.data <- read.csv("grouse_data_glm.csv", row.names=1)
+grouse.data$route <- factor(grouse.data$route)
+grouse.data$utmZone <- factor(grouse.data$utmZone)
+str(grouse.data)
+@   
 \end{frame}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Grouse data}
+  Fit a linear model to the abundance data
+<<grouse-fm1,size='scriptsize'>>=
+fm1 <- lm(abundance ~ elevation + utmZone, grouse.data)
+summary(fm1)
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Grouse data}
+  Predict grouse abundance at a sequence of elevations for
+  each part of the study area. \\
+  \vfill
+  First, create a new \inr{data.frame} with the explanatory values of
+  interest.
+<<grouse-pred-dat,size='scriptsize'>>=
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data.west <- data.frame(elevation=elev.seq, utmZone="16S")
+pred.data.east <- data.frame(elevation=elev.seq, utmZone="17S")
+@
+\pause
+\vfill
+  Now get the predictions.
+<<grouse-pred,size='scriptsize'>>=
+pred.west <- predict(fm1, newdata=pred.data.west, se=TRUE)
+pred.east <- predict(fm1, newdata=pred.data.east, se=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Grouse data}
+<<grouse-pred-plot,fig.width=7,fig.height=5,out.width="0.85\\textwidth",fig.align='center',size='scriptsize'>>=
+plot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))
+lines(elev.seq, pred.west$fit, col="blue", lwd=2)
+lines(elev.seq, pred.east$fit, col="grey", lwd=2)
+legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
+@ 
+\end{frame}
 
 
 
@@ -609,7 +696,7 @@ plot(function(x) plogis(5 + -0.08*x), from=0, to=100,
 
 
 
-\subsection{Logistic regression}
+\section{Logistic regression}
 
 
 \begin{frame}
@@ -741,8 +828,23 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
 
 
 
+\begin{frame}
+  \frametitle{In-class exercise}
+  \begin{enumerate}
+  \item Fit the following model to the grouse data
+    \begin{gather*}
+      \mathrm{logit}(p_i) = \beta_0 + \beta_1\mathrm{ELEV}_i \\
+      y_i \sim \mathrm{Bern}(p_i)
+    \end{gather*}
+  \item Predict and graph occurrence probability ($p$) over a range of
+    elevations. Use the same sequence of elevations as we used in the
+    linear model example.
+  \end{enumerate}
+\end{frame}
 
-\subsection{Poisson regression}
+
+
+\section{Poisson regression}
 
 
 
@@ -942,85 +1044,103 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
 
 
 
-\section{Mixed effects models}
-
-
-
-\begin{frame}[plain]
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
-
-
-
-
-% \begin{frame}
-%   \frametitle{Generalized linear mixed effects models (GLMMs)}
-% \end{frame}
-
-
-
-
 
 \begin{frame}
-  \frametitle{Fixed vs random effects, revisited}
-%  \large
-{\bf In the context of mixed-effects models\dots \par}
-\vspace{0.5cm}
-
-{\bf Fixed effect \par}
-A constant parameter
-
-\pause
-\vspace{1cm}
-
-{\bf Random effect \par}
-A parameter that is a random variable
-
-\pause
-\vfill
-{\centering \bf
-\alert{Random effects will always be associated with a probability
-  distribution} \par}  
+  \frametitle{In-class exercise}
+  \begin{enumerate}
+  \item Fit the following model to the grouse data
+    \begin{gather*}
+      \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{ZONE:17S}\\
+      y_i \sim \mathrm{Pois}(\lambda_i)
+    \end{gather*}
+  \item Predict and graph the expected value of abundance ($\lambda$)
+    over a range of elevations. Use the same sequence of elevations as
+    we used in the previous examples.
+  \end{enumerate}
 \end{frame}
 
 
 
-% \begin{frame}
-%   \frametitle{Previous examples}
+
+% \section{Mixed effects models}
+
+
+
+% \begin{frame}[plain]
+%   \frametitle{Outline}
 %   \Large
-%   ANOVA with random block effects
-%   \pause
-%   \vfill
-%   Nested ANOVA
-%   \pause
-%   \vfill
-%   Split-plot ANOVA
+%   \tableofcontents[currentsection]
 % \end{frame}
 
 
 
 
-\begin{frame}
-  \frametitle{A simple example}
-  \large
-  \[
-    y_{ij} = \beta_0 + \beta_1 x_{i1} + \gamma_j + \varepsilon_{ij}
-  \]
-  where
-  \[
-    \gamma_j \sim \mbox{Normal}(0, \sigma^2_d)
-  \]
-  and
-  \[
-    \varepsilon_{ij} \sim \mbox{Normal}(0, \sigma^2)
-  \]
-  \pause
-  \vfill
-  \centering
-  This amounts to a linear regression with a random intercept \\
-\end{frame}
+% % \begin{frame}
+% %   \frametitle{Generalized linear mixed effects models (GLMMs)}
+% % \end{frame}
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Fixed vs random effects, revisited}
+% %  \large
+% {\bf In the context of mixed-effects models\dots \par}
+% \vspace{0.5cm}
+
+% {\bf Fixed effect \par}
+% A constant parameter
+
+% \pause
+% \vspace{1cm}
+
+% {\bf Random effect \par}
+% A parameter that is a random variable
+
+% \pause
+% \vfill
+% {\centering \bf
+% \alert{Random effects will always be associated with a probability
+%   distribution} \par}  
+% \end{frame}
+
+
+
+% % \begin{frame}
+% %   \frametitle{Previous examples}
+% %   \Large
+% %   ANOVA with random block effects
+% %   \pause
+% %   \vfill
+% %   Nested ANOVA
+% %   \pause
+% %   \vfill
+% %   Split-plot ANOVA
+% % \end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{A simple example}
+%   \large
+%   \[
+%     y_{ij} = \beta_0 + \beta_1 x_{i1} + \gamma_j + \varepsilon_{ij}
+%   \]
+%   where
+%   \[
+%     \gamma_j \sim \mbox{Normal}(0, \sigma^2_d)
+%   \]
+%   and
+%   \[
+%     \varepsilon_{ij} \sim \mbox{Normal}(0, \sigma^2)
+%   \]
+%   \pause
+%   \vfill
+%   \centering
+%   This amounts to a linear regression with a random intercept \\
+% \end{frame}
 
 
 
