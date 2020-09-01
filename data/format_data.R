@@ -143,6 +143,7 @@ grouse.coords.utm16 <- spTransform(SpatialPoints(grouse.coords.longlat,
 
 
 coordinates(grouse.coords.z17)-coordinates(grouse.coords.utm17)
+coordinates(grouse.coords.z16)-coordinates(grouse.coords.utm16)
 
 plot(ga.nc.sc.tn.utm, axes=TRUE)
 points(grouse.coords.utm17)
@@ -345,7 +346,7 @@ str(det.arr)
 
 
 ## Function to format logistic regression data for selected species
-formatLogisticRegData <- function(detArray, sites, species) {
+formatGLMData <- function(detArray, sites, species) {
     dim.dets <- dim(detArray)
     nYears <- dim.dets[3]
     yrs <- dimnames(detArray)[[3]]
@@ -370,10 +371,10 @@ formatLogisticRegData <- function(detArray, sites, species) {
         
 
 
-cawa.data <- formatLogisticRegData(det.arr, sites, "CAWA")
-howa.data <- formatLogisticRegData(det.arr, sites, "HOWA")
-veer.data <- formatLogisticRegData(det.arr, sites, "VEER")
-woth.data <- formatLogisticRegData(det.arr, sites, "WOTH")
+cawa.data <- formatGLMData(det.arr, sites, "CAWA")
+howa.data <- formatGLMData(det.arr, sites, "HOWA")
+veer.data <- formatGLMData(det.arr, sites, "VEER")
+woth.data <- formatGLMData(det.arr, sites, "WOTH")
 
 str(cawa.data)
 

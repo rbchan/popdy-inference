@@ -177,7 +177,7 @@ Linear models can also be written this way:
 
 
 \begin{frame}
-  \frametitle{Interpretting the $\beta$'s}
+  \frametitle{Interpreting the $\beta$'s}
 You must be able to interpret the $\beta$
 coefficients for {\it any model} that you fit to your data.
 \pause
@@ -195,14 +195,14 @@ Linear models can also include polynomial terms and interactions
 
 
 \begin{frame}[fragile]
-  \frametitle{Interpretting the $\beta$'s}
+  \frametitle{Interpreting the $\beta$'s}
   \small 
   The intercept $\beta_0$ is the expected value of $y$, when all $x=0$ \\
   \pause
   \vfill
   If $x_1$ is a {\bf continuous} explanatory variable: %, $\beta$ is
   \begin{itemize}
-    \item $\beta_1$ can usually be interpretted as a \textit{slope}
+    \item $\beta_1$ can usually be interpreted as a \textit{slope}
       parameter
     \item In this case, $\beta_1$ is the
       change in $y$ resulting from a 1 unit change in $x_1$ (while
@@ -213,7 +213,7 @@ Linear models can also include polynomial terms and interactions
 <<linmod,include=FALSE>>=
 set.seed(3400)  
 x1 <- runif(100, 0, 50)  
-y <- rnorm(100, 10 + 1*x, 5)
+y <- rnorm(100, 10 + 1*x1, 5)
 plot(x1, y)
 abline(lm(y~x1))
 @
@@ -234,8 +234,8 @@ lm(y~x1)
 
 
 \begin{frame}[fragile]
-  \frametitle{\small Interpretting $\beta$'s for categorical explantory variables}
-  Things are more complicated for {\bf categorical} explantory
+  \frametitle{\small Interpreting $\beta$'s for categorical explanatory variables}
+  Things are more complicated for {\bf categorical} explanatory
   variables (i.e., factors) because they must be converted to dummy
   variables
   \pause
@@ -266,7 +266,7 @@ lm(y~x1)
 
 
 \begin{frame}[fragile]
-  \frametitle{\small Interpretting $\beta$'s for categorical explantory variables}
+  \frametitle{\small Interpreting $\beta$'s for categorical explanatory variables}
 \small 
 <<linmod-xc,include=FALSE>>=
 set.seed(3400)  
@@ -344,8 +344,9 @@ lm(y~xc)
 
 \begin{frame}[fragile]
   \frametitle{Ruffed grouse data}
-  Import the grouse data and convert \inr{route} and \inr{utmZone} to
-  factors.  
+  \small
+  Import the data and convert \inr{route} and \inr{utmZone} to
+  factors. 
 <<read-grouse,size='tiny'>>=
 grouse.data <- read.csv("grouse_data_glm.csv", row.names=1)
 grouse.data$route <- factor(grouse.data$route)
@@ -371,7 +372,7 @@ summary(fm1)
 \begin{frame}[fragile]
   \frametitle{Grouse data}
   Predict grouse abundance at a sequence of elevations for
-  each part of the study area. \\
+  each region (east or west side) of the study area. \\
   \vfill
   First, create a new \inr{data.frame} with the explanatory values of
   interest.
@@ -724,7 +725,7 @@ plot(function(x) plogis(5 + -0.08*x), from=0, to=100,
         \normalsize
         \item Presence/absence studies
         \item Survival studies
-        \item Disease prevalance studies
+        \item Disease prevalence studies
       \end{itemize}
 %  \end{itemize}
 \end{frame}
@@ -1048,14 +1049,15 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
 \begin{frame}
   \frametitle{In-class exercise}
   \begin{enumerate}
-  \item Fit the following model to the grouse data
-    \begin{gather*}
-      \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{ZONE:17S}\\
-      y_i \sim \mathrm{Pois}(\lambda_i)
-    \end{gather*}
-  \item Predict and graph the expected value of abundance ($\lambda$)
-    over a range of elevations. Use the same sequence of elevations as
-    we used in the previous examples.
+    \item Fit the following model to the grouse data
+      \begin{gather*}
+        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
+        y_i \sim \mathrm{Pois}(\lambda_i)
+      \end{gather*}
+    \item Predict and graph the expected value of abundance ($\lambda$)
+      over a range of elevations. Use the same sequence of elevations as
+      we used in the previous examples.
+    \item Simulate a new response variable $y$ using the fitted model
   \end{enumerate}
 \end{frame}
 
@@ -1220,8 +1222,8 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
       covariate using \inr{x <- rnorm(100)}.
     \item Fit a logistic regression model to the simulated data ($y$
       and $x$) using the \inr{glm} function. Create a figure showing
-      the $x$ and $y$ with the fitted regression line. You can use the
-      \inr{predict} function to get the fitted line.
+      $x$ and $y$ with the fitted regression line. Use
+      \inr{predict} to get the fitted line.
     \item Fit 4 Poisson regression models to the Canada Warbler
       data. Try to explain as much variation in abundance as you can
       using the two explanatory variables: {\tt elevation} and
