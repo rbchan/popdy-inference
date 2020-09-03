@@ -274,7 +274,7 @@ system("gopen ../lectures/stats-basics/figs/grouse_map_locs_dets.pdf")
 
 
 ##rar <- raster(extent(-85, -83, 34.6, 35.2), crs=longlat, res=0.001)
-rar <- raster(extent(71e4, 88e4, 378e4, 39e5), crs=utm.z16, res=100)
+rar <- raster(extent(70e4, 88e4, 378e4, 39e5), crs=utm.z16, res=100)
 ## rar[] <- 0
 
 
@@ -302,9 +302,9 @@ dev.off()
 system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf")
 
 
-pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf", width=7.41, height=5)
+pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf", width=8.3, height=5)
 par(mai=c(0.7,0.9,0.1,0.1))
-plot(region.elev, xlim=c(71e4, 87e4), ylim=c(378e4, 39e5), las=1)
+plot(region.elev, xlim=c(70e4, 87e4), ylim=c(379e4, 39e5), las=1)
 plot(ga.nc.sc.tn.utm, add=TRUE)
 points(grouse.data[,c("utmE", "utmN")], pch=3, cex=0.5, col=gray(0.7))
 points(grouse.data[,c("utmE", "utmN")], pch=16, cex=grouse.data$abundance*2,
@@ -318,10 +318,14 @@ system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf")
 
 
 
-grouse.elev <- get_elev_point(as.data.frame(grouse.coords.longlat),
-                              prj=longlat, src="aws")
+## grouse.elev <- get_elev_point(as.data.frame(grouse.coords.longlat),
+##                               prj=longlat, src="aws")
+grouse.elev <- get_elev_point(as.data.frame(grouse.data[!is.na(grouse.data$utmE),
+                                                        c("utmE","utmN")]),
+                              prj=utm.z16, src="aws")
 
-grouse.data$elevation <- grouse.elev@data$elevation
+grouse.data$elevation <- NA_real_
+grouse.data$elevation[!is.na(grouse.data$utmE)] <- grouse.elev@data$elevation
 
 str(grouse.data)
 
@@ -332,6 +336,7 @@ str(grouse.data)
 
 write.csv(grouse.data, file="grouse_data_glm.csv")
 
+plot(grouse.data$elev, grouse.data$abund)
 
 with(grouse.data, plot(abundance ~ elevation))
 with(grouse.data, boxplot(abundance ~ utmZone))
