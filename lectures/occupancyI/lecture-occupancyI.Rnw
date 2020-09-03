@@ -70,6 +70,7 @@ knit_theme$set("edit-kwrite")
 
 
 
+
 \section{Motivation}
 
 
@@ -81,9 +82,122 @@ knit_theme$set("edit-kwrite")
   \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
 \end{frame}
 
+
+
 \begin{frame}
+  \frametitle{Motivation}
+  We often want to do a logistic regression, but the data are subject
+  to measurement error. \\  
+  \pause
+  \vfill
+  Specifically, wildlife data are often fraught with false negatives
+  (ie, the species was there but we didn't detect it) \\
+  \pause
+  \vfill
+  Ignoring this source of measurement error can result in misleading
+  inferences \\
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Ignoring detection probability}
+  Show some examples
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Accounting for detection probability}
+  The model for the state process is the same as logistic regression:
+  \begin{gather*}
+    \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+    z_i \sim \mathrm{Bern}(\psi_i)
+  \end{gather*}
+  The model for the observation process conditional on the state process:
+  \begin{gather*}
+    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 x_{ij1} + \alpha_2 x_{ij2} + \cdots \\
+    y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+  \end{gather*}
   
 \end{frame}
+
+
+\section{Simulation}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation}
+  Simplest case with no covariates: \\
+  \vfill
+  \begin{enumerate}[<+->]
+  \item Specify the parameters and dimensions
+<<sim-nocov1,size='small'>>=
+psi <- 0.3
+p <- 0.2
+nSites <- 20
+nVisits <- 4
+@
+  \item Now, simulate presence-absence
+<<sim-nocov2,size='small'>>=
+set.seed(349)  ## Just to make it reproducible
+z <- rbinom(nSites, size=1, psi)
+@ 
+  \item Simulate observations
+<<sim-nocov3,size='small'>>=
+y <- matrix(NA, nrow=nSites, ncol=nVisits)
+for(i in 1:nSites) {
+    y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p)
+}
+@   
+\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+<<sim-nocov-dat,size='scriptsize'>>=
+y
+@ 
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    Summary stats
+<<sim-nocov-ss1,size='scriptsize'>>=
+siteDets <- rowSums(y) # Dets at each site
+table(siteDets)        # Frequency
+@
+\pause
+\vfill
+\small
+Proportion of sites known to be occupied
+<<sim-nocov-ss2,size='scriptsize'>>=
+naiveOccupancy <- sum(siteDets>0)/nSites
+naiveOccupancy 
+@
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\section{Model fitting}
+
 
 
 \begin{frame}
@@ -94,21 +208,99 @@ knit_theme$set("edit-kwrite")
 
 
 
-\section{Simulation}
-
-
-
-\section{Model fitting}
-
-
 \subsection{Likelihood-based methods}
+
+
+\begin{frame}
+  \frametitle{Likelihood-based methods}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+%  \small
+Install and load the package  
+<<un-install,eval=FALSE>>=
+install.packages("unmarked")  
+library(unmarked)
+@
+\pause
+\vfill
+Documentation
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+%  \small
+Create \inr{unmarkedFrame}
+<<un-umf,size='small'>>=
+umf <- unmarkedFrameOccu(y=y)
+summary(umf)
+@   
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+  \small
+Fit the single-season occupancy model
+<<un-fit,size='footnotesize'>>=
+fm <- occu(~1 ~1, umf)
+summary(fm)
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+Occupancy estimate ($\hat{\psi}$)
+<<un-back1,size='footnotesize'>>=
+backTransform(fm, type="state")
+@
+\pause
+\vfill
+Detection probability estimate ($\hat{p}$)
+<<un-back2,size='footnotesize'>>=
+backTransform(fm, type="det")
+@   
+\end{frame}
+
+
 
 
 \subsection{Bayesian methods}
 
 
+\begin{frame}
+  \frametitle{Bayesian methods}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{JAGS and the jagsUI package}
+  
+\end{frame}
+
 
 \section{Real data}
+
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
 
 
 
@@ -126,21 +318,10 @@ knit_theme$set("edit-kwrite")
     \small
     % \footnotesize
     % \scriptsize
-    \item Simulate logistic regression data according to
-      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
-      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
-      covariate using \inr{x <- rnorm(100)}.
-    \item Fit a logistic regression model to the simulated data ($y$
-      and $x$) using the \inr{glm} function. Create a figure showing
-      $x$ and $y$ with the fitted regression line. Use
-      \inr{predict} to get the fitted line.
-    \item Fit 4 Poisson regression models to the Canada Warbler
-      data. Try to explain as much variation in abundance as you can
-      using the two explanatory variables: {\tt elevation} and
-      {\tt year}. You can use quadratic effects and
-      interactions. Interpret the estimates from the model with the 
-      lowest AIC, and create a graph depicting the estimated
-      relationships. 
+    \item Simulate 
+    \item Fit 
+    \item Fit 4 models to the Canada Warbler
+      data. 
   \end{enumerate}
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
 \end{frame}

@@ -109,6 +109,7 @@
 
 
 
+
 \section{Motivation}
 
 
@@ -120,9 +121,177 @@
   \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
 \end{frame}
 
+
+
 \begin{frame}
+  \frametitle{Motivation}
+  We often want to do a logistic regression, but the data are subject
+  to measurement error. \\  
+  \pause
+  \vfill
+  Specifically, wildlife data are often fraught with false negatives
+  (ie, the species was there but we didn't detect it) \\
+  \pause
+  \vfill
+  Ignoring this source of measurement error can result in misleading
+  inferences \\
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Ignoring detection probability}
+  Show some examples
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Accounting for detection probability}
+  The model for the state process is the same as logistic regression:
+  \begin{gather*}
+    \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+    z_i \sim \mathrm{Bern}(\psi_i)
+  \end{gather*}
+  The model for the observation process conditional on the state process:
+  \begin{gather*}
+    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 x_{ij1} + \alpha_2 x_{ij2} + \cdots \\
+    y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+  \end{gather*}
   
 \end{frame}
+
+
+\section{Simulation}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation}
+  Simplest case with no covariates: \\
+  \vfill
+  \begin{enumerate}[<+->]
+  \item Specify the parameters and dimensions
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{psi} \hlkwb{<-} \hlnum{0.3}
+\hlstd{p} \hlkwb{<-} \hlnum{0.2}
+\hlstd{nSites} \hlkwb{<-} \hlnum{20}
+\hlstd{nVisits} \hlkwb{<-} \hlnum{4}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \item Now, simulate presence-absence
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hlstd{(}\hlnum{349}\hlstd{)}  \hlcom{## Just to make it reproducible}
+\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \item Simulate observations
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i]}\hlopt{*}\hlstd{p)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2] [,3] [,4]
+##  [1,]    0    0    0    0
+##  [2,]    0    0    0    0
+##  [3,]    0    0    0    0
+##  [4,]    0    0    0    0
+##  [5,]    0    0    0    0
+##  [6,]    0    0    0    0
+##  [7,]    0    0    0    0
+##  [8,]    0    0    0    0
+##  [9,]    0    0    0    0
+## [10,]    0    0    0    0
+## [11,]    1    0    1    0
+## [12,]    0    0    0    0
+## [13,]    0    0    0    0
+## [14,]    0    0    0    0
+## [15,]    0    0    0    0
+## [16,]    0    0    0    0
+## [17,]    0    0    0    0
+## [18,]    0    0    0    0
+## [19,]    0    0    0    0
+## [20,]    1    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    Summary stats
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)} \hlcom{# Dets at each site}
+\hlkwd{table}\hlstd{(siteDets)}        \hlcom{# Frequency}
+\end{alltt}
+\begin{verbatim}
+## siteDets
+##  0  1  2 
+## 18  1  1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+\small
+Proportion of sites known to be occupied
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(siteDets}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
+\hlstd{naiveOccupancy}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\section{Model fitting}
+
 
 
 \begin{frame}
@@ -133,21 +302,163 @@
 
 
 
-\section{Simulation}
-
-
-
-\section{Model fitting}
-
-
 \subsection{Likelihood-based methods}
+
+
+\begin{frame}
+  \frametitle{Likelihood-based methods}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+Install and load the package  
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{install.packages}\hlstd{(}\hlstr{"unmarked"}\hlstd{)}
+\hlkwd{library}\hlstd{(unmarked)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Documentation
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+Create \inr{unmarkedFrame}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y)}
+\hlkwd{summary}\hlstd{(umf)}
+\end{alltt}
+\begin{verbatim}
+## unmarkedFrame Object
+## 
+## 20 sites
+## Maximum number of observations per site: 4 
+## Mean number of observations per site: 4 
+## Sites with at least one detection: 2 
+## 
+## Tabulation of y observations:
+##  0  1 
+## 77  3
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+Fit the single-season occupancy model
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hlstd{, umf)}
+\hlkwd{summary}\hlstd{(fm)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## occu(formula = ~1 ~ 1, data = umf)
+## 
+## Occupancy (logit-scale):
+##  Estimate    SE     z P(>|z|)
+##     -1.81 0.946 -1.91  0.0558
+## 
+## Detection (logit-scale):
+##  Estimate   SE     z P(>|z|)
+##     -1.01 1.06 -0.96   0.337
+## 
+## AIC: 26.66992 
+## Number of sites: 20
+## optim convergence code: 0
+## optim iterations: 12 
+## Bootstrap iterations: 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+Occupancy estimate ($\hat{\psi}$)
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## Backtransformed linear combination(s) of Occupancy estimate(s)
+## 
+##  Estimate    SE LinComb (Intercept)
+##     0.141 0.114   -1.81           1
+## 
+## Transformation: logistic
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Detection probability estimate ($\hat{p}$)
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"det"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## Backtransformed linear combination(s) of Detection estimate(s)
+## 
+##  Estimate    SE LinComb (Intercept)
+##     0.266 0.206   -1.01           1
+## 
+## Transformation: logistic
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
 
 
 \subsection{Bayesian methods}
 
 
+\begin{frame}
+  \frametitle{Bayesian methods}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{JAGS and the jagsUI package}
+  
+\end{frame}
+
 
 \section{Real data}
+
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
 
 
 
@@ -165,21 +476,10 @@
     \small
     % \footnotesize
     % \scriptsize
-    \item Simulate logistic regression data according to
-      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
-      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
-      covariate using \inr{x <- rnorm(100)}.
-    \item Fit a logistic regression model to the simulated data ($y$
-      and $x$) using the \inr{glm} function. Create a figure showing
-      $x$ and $y$ with the fitted regression line. Use
-      \inr{predict} to get the fitted line.
-    \item Fit 4 Poisson regression models to the Canada Warbler
-      data. Try to explain as much variation in abundance as you can
-      using the two explanatory variables: {\tt elevation} and
-      {\tt year}. You can use quadratic effects and
-      interactions. Interpret the estimates from the model with the 
-      lowest AIC, and create a graph depicting the estimated
-      relationships. 
+    \item Simulate 
+    \item Fit 
+    \item Fit 4 models to the Canada Warbler
+      data. 
   \end{enumerate}
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
 \end{frame}
