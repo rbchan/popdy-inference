@@ -14,12 +14,19 @@ str(surveys.in)
 
 ## -------------------- Import grouse data ------------------------
 
+
+## For grouse.locs.in, the proj information is:
+## NAD83 UTM Zone 16N
+## GCS83 
+
+
 grouse.dets.in <- read.csv("GrouseDetectionsQuery.csv")
 grouse.surveys.in <- read.csv("RuffedGrouseDrummingSurveys Query.csv")
+grouse.locs.in <- read.csv("RUGR_Survey_Locations.csv")
 
 str(grouse.dets.in)
 str(grouse.surveys.in)
-
+str(grouse.locs.in)
 
 
 ## -------------------- Format grouse data ------------------------
@@ -36,6 +43,12 @@ grouse.dets$routePoint <- factor(paste(grouse.dets.in$Route,
                                        grouse.dets.in$Point.ID, sep="_"),
                                  levels=levels(grouse.surveys$routePoint))
 
+grouse.locs <- grouse.locs.in[,1:5]
+grouse.locs$routePoint <- factor(sub("-", "_", grouse.locs$ident))
+rownames(grouse.locs) <- grouse.locs$routePoint
+
+setdiff(grouse.locs$routePoint, grouse.surveys$routePoint)
+setdiff(grouse.surveys$routePoint, grouse.locs$routePoint)
 
 
 ## Create occasion index
@@ -65,7 +78,7 @@ rownames(grouse.data) <- names(grouse.counts)
 reorder.surveys <- match(rownames(grouse.data),
                          grouse.surveys.wide$routePoint)
 
-keepvars <- c("Route..", "Coordinates..easting.", "Coordinates..northing.",
+keepvars <- c("Route..", ##"Coordinates..easting.", "Coordinates..northing.",
               "UTM.Zone")
 
 grouse.data <- cbind(grouse.data,
@@ -74,6 +87,21 @@ colnames(grouse.data) <- c("abundance", "presence", "route", "utmE", "utmN",
                            "utmZone")
 
 str(grouse.data)
+
+
+grouse.data$utmE <- grouse.locs[match(rownames(grouse.data),
+                                      grouse.locs$routePoint), "x_proj"]
+grouse.data$utmN <- grouse.locs[match(rownames(grouse.data),
+                                      grouse.locs$routePoint), "y_proj"]
+
+str(grouse.data)
+
+
+
+
+plot(grouse.data[,c("utmE", "utmN")], asp=1)
+points(grouse.locs[,c("x_proj", "y_proj")], pch=16, col=2)
+points(grouse.data[,c("utmE", "utmN")])
 
 
 
@@ -94,10 +122,13 @@ library(lme4)
 ## The grouse data are a bit tricky because the study area spans two UTM Zones
 ## cs <- make_EPSG()
 ## grep("zone=16", cs$prj4, value=TRUE)
+grep("zone=16", cs$prj4, value=TRUE)
 
 ## proj4strings
-utm.z16 <- "+proj=utm +zone=16S +datum=WGS84 +units=m +no_defs +type=crs"
-utm.z17 <- "+proj=utm +zone=17S +datum=WGS84 +units=m +no_defs +type=crs"
+## utm.z16 <- "+proj=utm +zone=16S +datum=WGS84 +units=m +no_defs +type=crs"
+## utm.z17 <- "+proj=utm +zone=17S +datum=WGS84 +units=m +no_defs +type=crs"
+utm.z16 <- "+proj=utm +zone=16S +datum=NAD83 +units=m +no_defs +type=crs"
+utm.z17 <- "+proj=utm +zone=17S +datum=NAD83 +units=m +no_defs +type=crs"
 longlat <- "+proj=longlat +datum=WGS84 +no_defs +type=crs"
 
 us.states <- us_states()
@@ -108,9 +139,9 @@ ga.nc.sc.tn.utm <- st_transform(ga.nc.sc.tn, crs=CRS(utm.z16))
 
 
 ## We have a problem
-plot(Coordinates..northing. ~ Coordinates..easting., grouse.surveys.in,
-     asp=1, pch=3)
-plot(ga.nc.sc.tn.utm, add=TRUE)
+## plot(Coordinates..northing. ~ Coordinates..easting., grouse.surveys.in,
+##      asp=1, pch=3)
+## plot(ga.nc.sc.tn.utm, add=TRUE)
 
 
 
@@ -119,10 +150,16 @@ plot(ga.nc.sc.tn.utm, add=TRUE)
 ## cs[cs$code==4326,]
 
 ## Convert to SpatialPoints class
-grouse.coords.z16 <- SpatialPoints(grouse.data[,c("utmE", "utmN")],
+grouse.coords.z16 <- SpatialPoints(grouse.data[!is.na(grouse.data$utmE),
+                                               c("utmE", "utmN")],
                                    proj4string=CRS(utm.z16))
 grouse.coords.z17 <- SpatialPoints(grouse.data[,c("utmE", "utmN")],
                                    proj4string=CRS(utm.z17))
+
+plot(ga.nc.sc.tn.utm, axes=TRUE)
+points(grouse.coords.z16)
+
+
 
 ## Project to longlat
 grouse.coords.longlat <- coordinates(spTransform(grouse.coords.z16, CRS(longlat)))
@@ -189,7 +226,7 @@ with(grouse.data, {
 
 dir.create("../lectures/stats-basics/figs")
 
-pdf("../lectures/stats-basics/figs/grouse_map_locs.pdf", width=6, height=5)
+pdf("../lectures/stats-basics/figs/grouse_map_locs_longlat.pdf", width=6, height=5)
 par(mai=c(0.7,0.8,0.1,0.1))
 plot(ga.nc.sc.tn, axes=TRUE, xlim=c(-85.6,-82.9), ylim=c(34.5, 35.5), las=1)
 points(grouse.coords.longlat, pch=3, cex=0.5, col=gray(0.7))
@@ -197,10 +234,21 @@ text(-83.5, 34.4, "Georgia", pos=1)
 text(-83.5, 35.2, "North Carolina", pos=1)
 text(-85, 35.2, "Tennessee", pos=1)
 dev.off()
+system("gopen ../lectures/stats-basics/figs/grouse_map_locs_longlat.pdf")
+
+
+pdf("../lectures/stats-basics/figs/grouse_map_locs.pdf", width=6, height=5)
+par(mai=c(0.7,0.9,0.1,0.1))
+plot(ga.nc.sc.tn.utm, axes=TRUE, xlim=c(71e4, 85e4), ylim=c(378e4, 39e5), las=1)
+points(grouse.data[,c("utmE", "utmN")], pch=3, cex=0.5, col=gray(0.7))
+text(8e5, 381e4, "Georgia", pos=1)
+text(8e5, 389e4, "North Carolina", pos=1)
+text(72e4, 389e4, "Tennessee", pos=1)
+dev.off()
 system("gopen ../lectures/stats-basics/figs/grouse_map_locs.pdf")
 
 
-pdf("../lectures/stats-basics/figs/grouse_map_locs_dets.pdf", width=6, height=5)
+pdf("../lectures/stats-basics/figs/grouse_map_locs_dets_longlat.pdf", width=6, height=5)
 par(mai=c(0.7,0.8,0.1,0.1))
 plot(ga.nc.sc.tn, axes=TRUE, xlim=c(-85,-83), ylim=c(34.6, 35.2), las=1)
 points(grouse.coords.longlat, pch=3, cex=0.5, col=gray(0.7))
@@ -209,10 +257,24 @@ text(-83.5, 34.5, "Georgia", pos=1)
 text(-83.5, 35.2, "North Carolina", pos=1)
 text(-84.7, 35.2, "Tennessee", pos=1)
 dev.off()
+system("gopen ../lectures/stats-basics/figs/grouse_map_locs_dets_longlat.pdf")
+
+
+pdf("../lectures/stats-basics/figs/grouse_map_locs_dets.pdf", width=6, height=5)
+par(mai=c(0.7,0.9,0.1,0.1))
+plot(ga.nc.sc.tn.utm, axes=TRUE, xlim=c(71e4, 85e4), ylim=c(378e4, 39e5), las=1)
+points(grouse.data[,c("utmE", "utmN")], pch=3, cex=0.5, col=gray(0.7))
+points(grouse.data[,c("utmE", "utmN")], pch=16, cex=grouse.data$abundance*2,
+       col=rgb(0,0,1,0.5))
+text(8e5, 381e4, "Georgia", pos=1)
+text(8e5, 389e4, "North Carolina", pos=1)
+text(72e4, 389e4, "Tennessee", pos=1)
+dev.off()
 system("gopen ../lectures/stats-basics/figs/grouse_map_locs_dets.pdf")
 
 
-rar <- raster(extent(-85, -83, 34.6, 35.2), crs=longlat, res=0.001)
+##rar <- raster(extent(-85, -83, 34.6, 35.2), crs=longlat, res=0.001)
+rar <- raster(extent(71e4, 88e4, 378e4, 39e5), crs=utm.z16, res=100)
 ## rar[] <- 0
 
 
@@ -227,7 +289,7 @@ plot(region.elev)
 
 
 
-pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf", width=12.4, height=5)
+pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf", width=12.4, height=5)
 par(mai=c(0.7,0.8,0.2,0.1))
 plot(region.elev, xlim=c(-84.9,-83), ylim=c(34.4, 35.2))
 plot(ga.nc.sc.tn, add=TRUE)#, las=1)
@@ -237,9 +299,21 @@ text(-83.5, 34.7, "Georgia", pos=1)
 text(-83.5, 35.2, "North Carolina", pos=1)
 text(-84.7, 35.2, "Tennessee", pos=1)
 dev.off()
+system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf")
+
+
+pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf", width=7.41, height=5)
+par(mai=c(0.7,0.9,0.1,0.1))
+plot(region.elev, xlim=c(71e4, 87e4), ylim=c(378e4, 39e5), las=1)
+plot(ga.nc.sc.tn.utm, add=TRUE)
+points(grouse.data[,c("utmE", "utmN")], pch=3, cex=0.5, col=gray(0.7))
+points(grouse.data[,c("utmE", "utmN")], pch=16, cex=grouse.data$abundance*2,
+       col=rgb(0,0,1,0.5))
+text(8e5, 381e4, "Georgia", pos=1)
+text(8e5, 389e4, "North Carolina", pos=1)
+text(73e4, 389e4, "Tennessee", pos=1)
+dev.off()
 system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf")
-
-
 
 
 
