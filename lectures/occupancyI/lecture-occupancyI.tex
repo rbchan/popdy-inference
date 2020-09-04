@@ -115,7 +115,7 @@
 
 
 \begin{frame}[plain]
-  \frametitle{Today's Topics}
+  \frametitle{Outline}
   \Large
   \only<1>{\tableofcontents}%[hideallsubsections]}
   \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
@@ -125,16 +125,16 @@
 
 \begin{frame}
   \frametitle{Motivation}
-  We often want to do a logistic regression, but the data are subject
+  We often want to do logistic regression, but the data are subject
   to measurement error. \\  
   \pause
   \vfill
   Specifically, wildlife data are often fraught with false negatives
-  (ie, the species was there but we didn't detect it) \\
+  (ie, the species was there but we didn't detect it). \\
   \pause
   \vfill
   Ignoring this source of measurement error can result in misleading
-  inferences \\
+  inferences. \\
 \end{frame}
 
 
@@ -147,17 +147,27 @@
 
 \begin{frame}
   \frametitle{Accounting for detection probability}
+  \small
   The model for the state process is the same as logistic regression:
   \begin{gather*}
     \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
     z_i \sim \mathrm{Bern}(\psi_i)
   \end{gather*}
-  The model for the observation process conditional on the state process:
+  \pause
+  \vfill
+  Model for the observation process conditional on the state process:
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 x_{ij1} + \alpha_2 x_{ij2} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
-  
+  \pause
+%  \vfill
+%  \small
+  Definitions \\
+  $\psi_i$ -- probability that the species occurs at site $i$ \\
+  $z_i$ -- binary presence/absence variable at site $i$ \\
+  $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ \\
+  $y_{ij}$ -- binary detection/non-detection data
 \end{frame}
 
 
@@ -181,8 +191,8 @@
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{psi} \hlkwb{<-} \hlnum{0.3}
-\hlstd{p} \hlkwb{<-} \hlnum{0.2}
+\hlstd{psi} \hlkwb{<-} \hlnum{0.4}       \hlcom{## Occurrence probability}
+\hlstd{p} \hlkwb{<-} \hlnum{0.2}         \hlcom{## Detection probability}
 \hlstd{nSites} \hlkwb{<-} \hlnum{20}
 \hlstd{nVisits} \hlkwb{<-} \hlnum{4}
 \end{alltt}
@@ -192,8 +202,8 @@
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{set.seed}\hlstd{(}\hlnum{349}\hlstd{)}  \hlcom{## Just to make it reproducible}
-\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)}
+\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}    \hlcom{## Just to make it reproducible}
+\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)} \hlcom{## pres/absence}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -230,15 +240,15 @@
 ##       [,1] [,2] [,3] [,4]
 ##  [1,]    0    0    0    0
 ##  [2,]    0    0    0    0
-##  [3,]    0    0    0    0
+##  [3,]    1    0    0    0
 ##  [4,]    0    0    0    0
 ##  [5,]    0    0    0    0
 ##  [6,]    0    0    0    0
 ##  [7,]    0    0    0    0
 ##  [8,]    0    0    0    0
-##  [9,]    0    0    0    0
+##  [9,]    0    1    1    0
 ## [10,]    0    0    0    0
-## [11,]    1    0    1    0
+## [11,]    0    0    0    0
 ## [12,]    0    0    0    0
 ## [13,]    0    0    0    0
 ## [14,]    0    0    0    0
@@ -247,7 +257,7 @@
 ## [17,]    0    0    0    0
 ## [18,]    0    0    0    0
 ## [19,]    0    0    0    0
-## [20,]    1    0    0    0
+## [20,]    0    1    0    1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -255,7 +265,9 @@
   \begin{column}{0.6\textwidth}
     \pause
 %    \scriptsize
-    Summary stats
+    {\centering Summary stats \\}
+    \vspace{24pt}
+  Detections at each site \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -265,14 +277,14 @@
 \begin{verbatim}
 ## siteDets
 ##  0  1  2 
-## 18  1  1
+## 17  1  2
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
 \small
-Proportion of sites known to be occupied
+Proportion of sites known to be occupied \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -280,7 +292,7 @@ Proportion of sites known to be occupied
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.1
+## [1] 0.15
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -312,18 +324,34 @@ Proportion of sites known to be occupied
 
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
+%  \small
 Install and load the package  
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{install.packages}\hlstd{(}\hlstr{"unmarked"}\hlstd{)}
+\hlcom{## install.packages("unmarked")  }
 \hlkwd{library}\hlstd{(unmarked)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-Documentation
+Documentation (help files)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{help}\hlstd{(}\hlstr{"unmarked"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\vfill
+Documentation (vignettes)
+\begin{kframe}
+\begin{alltt}
+\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{)}
+\hlcom{## vignette("spp-dist")}
+\end{alltt}
+\end{kframe}
 \end{frame}
 
 
@@ -332,7 +360,8 @@ Documentation
 
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
-Create \inr{unmarkedFrame}
+%  \small
+Create an \inr{unmarkedFrame} with the simulated data.
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -345,11 +374,11 @@ Create \inr{unmarkedFrame}
 ## 20 sites
 ## Maximum number of observations per site: 4 
 ## Mean number of observations per site: 4 
-## Sites with at least one detection: 2 
+## Sites with at least one detection: 3 
 ## 
 ## Tabulation of y observations:
 ##  0  1 
-## 77  3
+## 75  5
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -361,8 +390,9 @@ Create \inr{unmarkedFrame}
 
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
+  \small
 Fit the single-season occupancy model
-\begin{knitrout}\footnotesize
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hlstd{, umf)}
@@ -375,16 +405,16 @@ Fit the single-season occupancy model
 ## 
 ## Occupancy (logit-scale):
 ##  Estimate    SE     z P(>|z|)
-##     -1.81 0.946 -1.91  0.0558
+##     -1.47 0.723 -2.04  0.0414
 ## 
 ## Detection (logit-scale):
-##  Estimate   SE     z P(>|z|)
-##     -1.01 1.06 -0.96   0.337
+##  Estimate    SE      z P(>|z|)
+##    -0.684 0.768 -0.891   0.373
 ## 
-## AIC: 26.66992 
+## AIC: 36.25049 
 ## Number of sites: 20
 ## optim convergence code: 0
-## optim iterations: 12 
+## optim iterations: 9 
 ## Bootstrap iterations: 0
 \end{verbatim}
 \end{kframe}
@@ -404,8 +434,8 @@ Occupancy estimate ($\hat{\psi}$)
 \begin{verbatim}
 ## Backtransformed linear combination(s) of Occupancy estimate(s)
 ## 
-##  Estimate    SE LinComb (Intercept)
-##     0.141 0.114   -1.81           1
+##  Estimate   SE LinComb (Intercept)
+##     0.186 0.11   -1.47           1
 ## 
 ## Transformation: logistic
 \end{verbatim}
@@ -423,7 +453,7 @@ Detection probability estimate ($\hat{p}$)
 ## Backtransformed linear combination(s) of Detection estimate(s)
 ## 
 ##  Estimate    SE LinComb (Intercept)
-##     0.266 0.206   -1.01           1
+##     0.335 0.171  -0.684           1
 ## 
 ## Transformation: logistic
 \end{verbatim}
@@ -431,6 +461,30 @@ Detection probability estimate ($\hat{p}$)
 \end{knitrout}
 \end{frame}
 
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+  There are two types of occupancy estimates. \\
+
+  The estimate $\hat{\psi}}$ that we computed earlier can be thought
+of as an expected value for a new site or for a new survey. 
+
+  We can also use Empirical Bayes methods to get an estimate of
+  occupancy for the sites that we sampled, at the time they were sampled
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{z.post} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
+\hlstd{z.post.mean} \hlkwb{<-}  \hlkwd{bup}\hlstd{(z.post,} \hlkwc{stat}\hlstd{=}\hlstr{"mean"}\hlstd{)}
+\hlstd{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(z.post,} \hlkwc{func}\hlstd{=}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{sum}\hlstd{(x),} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
+\hlkwd{plot}\hlstd{(}\hlkwd{table}\hlstd{(sites.occupied.post))}
+\hlkwd{abline}\hlstd{(}\hlkwc{v}\hlstd{=}\hlkwd{sum}\hlstd{(z),} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/bup-1} 
+
+\end{knitrout}
+\end{frame}
 
 
 

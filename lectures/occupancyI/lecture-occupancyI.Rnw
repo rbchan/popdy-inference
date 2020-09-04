@@ -76,7 +76,7 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}[plain]
-  \frametitle{Today's Topics}
+  \frametitle{Outline}
   \Large
   \only<1>{\tableofcontents}%[hideallsubsections]}
   \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
@@ -86,16 +86,16 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Motivation}
-  We often want to do a logistic regression, but the data are subject
+  We often want to do logistic regression, but the data are subject
   to measurement error. \\  
   \pause
   \vfill
   Specifically, wildlife data are often fraught with false negatives
-  (ie, the species was there but we didn't detect it) \\
+  (ie, the species was there but we didn't detect it). \\
   \pause
   \vfill
   Ignoring this source of measurement error can result in misleading
-  inferences \\
+  inferences. \\
 \end{frame}
 
 
@@ -108,17 +108,27 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Accounting for detection probability}
+  \small
   The model for the state process is the same as logistic regression:
   \begin{gather*}
     \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
     z_i \sim \mathrm{Bern}(\psi_i)
   \end{gather*}
-  The model for the observation process conditional on the state process:
+  \pause
+  \vfill
+  Model for the observation process conditional on the state process:
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 x_{ij1} + \alpha_2 x_{ij2} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
-  
+  \pause
+%  \vfill
+%  \small
+  Definitions \\
+  $\psi_i$ -- probability that the species occurs at site $i$ \\
+  $z_i$ -- binary presence/absence variable at site $i$ \\
+  $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ \\
+  $y_{ij}$ -- binary detection/non-detection data
 \end{frame}
 
 
@@ -140,15 +150,15 @@ knit_theme$set("edit-kwrite")
   \begin{enumerate}[<+->]
   \item Specify the parameters and dimensions
 <<sim-nocov1,size='small'>>=
-psi <- 0.3
-p <- 0.2
+psi <- 0.4       ## Occurrence probability
+p <- 0.2         ## Detection probability
 nSites <- 20
 nVisits <- 4
 @
   \item Now, simulate presence-absence
 <<sim-nocov2,size='small'>>=
-set.seed(349)  ## Just to make it reproducible
-z <- rbinom(nSites, size=1, psi)
+set.seed(3439)    ## Just to make it reproducible
+z <- rbinom(nSites, size=1, psi) ## pres/absence
 @ 
   \item Simulate observations
 <<sim-nocov3,size='small'>>=
@@ -177,7 +187,9 @@ y
   \begin{column}{0.6\textwidth}
     \pause
 %    \scriptsize
-    Summary stats
+    {\centering Summary stats \\}
+    \vspace{24pt}
+  Detections at each site \\
 <<sim-nocov-ss1,size='scriptsize'>>=
 siteDets <- rowSums(y) # Dets at each site
 table(siteDets)        # Frequency
@@ -185,7 +197,7 @@ table(siteDets)        # Frequency
 \pause
 \vfill
 \small
-Proportion of sites known to be occupied
+Proportion of sites known to be occupied \\
 <<sim-nocov-ss2,size='scriptsize'>>=
 naiveOccupancy <- sum(siteDets>0)/nSites
 naiveOccupancy 
@@ -220,13 +232,22 @@ naiveOccupancy
   \frametitle{R package `unmarked'}
 %  \small
 Install and load the package  
-<<un-install,eval=FALSE>>=
-install.packages("unmarked")  
+<<un-install>>=
+## install.packages("unmarked")  
 library(unmarked)
 @
 \pause
 \vfill
-Documentation
+Documentation (help files)
+<<un-help,eval=FALSE>>=
+help("unmarked")
+@
+\vfill
+Documentation (vignettes)
+<<un-vig,results='asis'>>=
+vignette(package="unmarked")
+## vignette("spp-dist")
+@ 
 \end{frame}
 
 
@@ -236,7 +257,7 @@ Documentation
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Create \inr{unmarkedFrame}
+Create an \inr{unmarkedFrame} with the simulated data.
 <<un-umf,size='small'>>=
 umf <- unmarkedFrameOccu(y=y)
 summary(umf)
@@ -251,7 +272,7 @@ summary(umf)
   \frametitle{R package `unmarked'}
   \small
 Fit the single-season occupancy model
-<<un-fit,size='footnotesize'>>=
+<<un-fit,size='scriptsize'>>=
 fm <- occu(~1 ~1, umf)
 summary(fm)
 @   
@@ -273,6 +294,24 @@ backTransform(fm, type="det")
 @   
 \end{frame}
 
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+  There are two types of occupancy estimates. \\
+
+  The estimate $\hat{\psi}}$ that we computed earlier can be thought
+of as an expected value for a new site or for a new survey. 
+
+  We can also use Empirical Bayes methods to get an estimate of
+  occupancy for the sites that we sampled, at the time they were sampled
+<<bup>>=
+z.post <- ranef(fm)  
+z.post.mean <-  bup(z.post, stat="mean")
+sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=1000)
+plot(table(sites.occupied.post))
+abline(v=sum(z), col="red")
+@   
+\end{frame}
 
 
 
