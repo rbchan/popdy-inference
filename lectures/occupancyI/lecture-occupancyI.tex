@@ -325,7 +325,7 @@ Proportion of sites known to be occupied \\
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Install and load the package  
+Install and load the package  \\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -336,7 +336,7 @@ Install and load the package
 \end{knitrout}
 \pause
 \vfill
-Documentation (help files)
+Documentation (help files) \\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -345,13 +345,15 @@ Documentation (help files)
 \end{kframe}
 \end{knitrout}
 \vfill
-Documentation (vignettes)
-\begin{kframe}
+Documentation (vignettes) \\
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{)}
+\hlkwd{print}\hlstd{(}\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{))}
 \hlcom{## vignette("spp-dist")}
 \end{alltt}
 \end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -361,7 +363,9 @@ Documentation (vignettes)
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Create an \inr{unmarkedFrame} with the simulated data.
+  Unlike standard model fitting functions like \inr{lm} and \inr{glm} 
+  that require data to be in \texttt{data.frames}, data for `unmarked'
+  has to be formatted in an \inr{unmarkedFrame}.
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -465,23 +469,99 @@ Detection probability estimate ($\hat{p}$)
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
   There are two types of occupancy estimates. \\
-
-  The estimate $\hat{\psi}}$ that we computed earlier can be thought
-of as an expected value for a new site or for a new survey. 
-
-  We can also use Empirical Bayes methods to get an estimate of
-  occupancy for the sites that we sampled, at the time they were sampled
-\begin{knitrout}
+  \begin{enumerate}%[<+->]
+  \item<1-> Unconditional occupancy $\psi=\Pr(z=1)$
+    \begin{itemize}
+      \item<1-> The estimate $\hat{\psi}$ that we computed earlier can be
+        thought of as a prediction that we could use for a new
+        site or a new time period
+    \end{itemize}
+  \item<2-> Conditional occupancy $\psi^* = \Pr(z_i=1|y_{i})$
+    \begin{itemize}
+      \item<2-> Conditional occupancy estimates only apply to sites in the
+        sample, at the time of sampling
+      \item<3-> Conditional occupancy is computed using Empirical Bayes
+        methods, with the \inr{ranef} and \inr{bup} functions.
+      \item<4-> These can be used to answer questions like:
+        \begin{itemize}
+          \item Which sites were occupied?
+          \item How many sites were occupied?
+        \end{itemize}
+    \end{itemize}
+  \item<5->[]  
+%\pause
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcom{## Posterior probs Pr(z_i=1)       }
 \hlstd{z.post} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
-\hlstd{z.post.mean} \hlkwb{<-}  \hlkwd{bup}\hlstd{(z.post,} \hlkwc{stat}\hlstd{=}\hlstr{"mean"}\hlstd{)}
-\hlstd{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(z.post,} \hlkwc{func}\hlstd{=}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{sum}\hlstd{(x),} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlkwd{table}\hlstd{(sites.occupied.post))}
-\hlkwd{abline}\hlstd{(}\hlkwc{v}\hlstd{=}\hlkwd{sum}\hlstd{(z),} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)}
+\hlcom{## Extract posterior means}
+\hlstd{psi.conditional} \hlkwb{<-}  \hlkwd{bup}\hlstd{(z.post,} \hlkwc{stat}\hlstd{=}\hlstr{"mean"}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\maxwidth]{figure/bup-1} 
+\end{knitrout}
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{round}\hlstd{(}\hlkwd{data.frame}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{psi.unconditional}\hlstd{=}\hlkwd{predict}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)[,}\hlnum{1}\hlstd{],}
+                 \hlstd{psi.conditional),} \hlnum{3}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##    y.1 y.2 y.3 y.4 psi.unconditional psi.conditional
+## 1    0   0   0   0             0.186           0.043
+## 2    0   0   0   0             0.186           0.043
+## 3    1   0   0   0             0.186           1.000
+## 4    0   0   0   0             0.186           0.043
+## 5    0   0   0   0             0.186           0.043
+## 6    0   0   0   0             0.186           0.043
+## 7    0   0   0   0             0.186           0.043
+## 8    0   0   0   0             0.186           0.043
+## 9    0   1   1   0             0.186           1.000
+## 10   0   0   0   0             0.186           0.043
+## 11   0   0   0   0             0.186           0.043
+## 12   0   0   0   0             0.186           0.043
+## 13   0   0   0   0             0.186           0.043
+## 14   0   0   0   0             0.186           0.043
+## 15   0   0   0   0             0.186           0.043
+## 16   0   0   0   0             0.186           0.043
+## 17   0   0   0   0             0.186           0.043
+## 18   0   0   0   0             0.186           0.043
+## 19   0   0   0   0             0.186           0.043
+## 20   0   1   0   1             0.186           1.000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+  How many sites were occupied? \pause
+  We can answer this using posterior prediction.
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nsim} \hlkwb{<-} \hlnum{1000}
+\hlstd{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(z.post,} \hlkwc{func}\hlstd{=}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{sum}\hlstd{(x),} \hlkwc{nsim}\hlstd{=nsim)}
+\hlkwd{par}\hlstd{(}\hlkwc{mai}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.9}\hlstd{,}\hlnum{0.9}\hlstd{,}\hlnum{0.1}\hlstd{,}\hlnum{0.1}\hlstd{))}
+\hlkwd{plot}\hlstd{(}\hlkwd{table}\hlstd{(sites.occupied.post)}\hlopt{/}\hlstd{nsim,} \hlkwc{lwd}\hlstd{=}\hlnum{5}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,}
+    \hlkwc{ylab}\hlstd{=}\hlstr{"Empirical Bayes posterior probability"}\hlstd{)}
+\hlkwd{abline}\hlstd{(}\hlkwc{v}\hlstd{=}\hlkwd{sum}\hlstd{(z),} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)} \hlcom{## Actual number occupied}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bup-hist-1} 
+
+}
+
+
 
 \end{knitrout}
 \end{frame}

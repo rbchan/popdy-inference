@@ -231,20 +231,20 @@ naiveOccupancy
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Install and load the package  
+Install and load the package  \\
 <<un-install>>=
 ## install.packages("unmarked")  
 library(unmarked)
 @
 \pause
 \vfill
-Documentation (help files)
+Documentation (help files) \\
 <<un-help,eval=FALSE>>=
 help("unmarked")
 @
 \vfill
-Documentation (vignettes)
-<<un-vig,results='asis'>>=
+Documentation (vignettes) \\
+<<un-vig>>=
 vignette(package="unmarked")
 ## vignette("spp-dist")
 @ 
@@ -257,7 +257,9 @@ vignette(package="unmarked")
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Create an \inr{unmarkedFrame} with the simulated data.
+  Unlike standard model fitting functions such as \inr{lm} and \inr{glm} 
+  that require data to be in \texttt{data.frames}, data for `unmarked'
+  has to be formatted in an \inr{unmarkedFrame}.
 <<un-umf,size='small'>>=
 umf <- unmarkedFrameOccu(y=y)
 summary(umf)
@@ -298,18 +300,58 @@ backTransform(fm, type="det")
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
   There are two types of occupancy estimates. \\
+  \begin{enumerate}%[<+->]
+  \item<1-> Unconditional occupancy $\psi=\Pr(z=1)$
+    \begin{itemize}
+      \item<1-> The estimate $\hat{\psi}$ that we computed earlier can be
+        thought of as a prediction that we could use for a new
+        site or a new time period
+    \end{itemize}
+  \item<2-> Conditional occupancy $\psi^* = \Pr(z_i=1|y_{i})$
+    \begin{itemize}
+      \item<2-> Conditional occupancy estimates only apply to sites in the
+        sample, at the time of sampling
+      \item<3-> Conditional occupancy is computed using Empirical Bayes
+        methods, with the \inr{ranef} and \inr{bup} functions.
+      \item<4-> These can be used to answer questions like:
+        \begin{itemize}
+          \item Which sites were occupied?
+          \item How many sites were occupied?
+        \end{itemize}
+    \end{itemize}
+  \item<5->[]  
+%\pause
+<<bup,size='scriptsize'>>=
+## Posterior probs Pr(z_i=1)       
+z.post <- ranef(fm)
+## Extract posterior means
+psi.conditional <-  bup(z.post, stat="mean") 
+@
+  \end{enumerate}
+\end{frame}
 
-  The estimate $\hat{\psi}}$ that we computed earlier can be thought
-of as an expected value for a new site or for a new survey. 
 
-  We can also use Empirical Bayes methods to get an estimate of
-  occupancy for the sites that we sampled, at the time they were sampled
-<<bup>>=
-z.post <- ranef(fm)  
-z.post.mean <-  bup(z.post, stat="mean")
-sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=1000)
-plot(table(sites.occupied.post))
-abline(v=sum(z), col="red")
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+<<psi-zpm,size='scriptsize'>>=
+round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[,1],
+                 psi.conditional), 3)
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+  How many sites were occupied? \pause
+  We can answer this using posterior prediction.
+<<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
+nsim <- 1000
+sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
+par(mai=c(0.9,0.9,0.1,0.1))
+plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
+    ylab="Empirical Bayes posterior probability")
+abline(v=sum(z), col="red") ## Actual number occupied
 @   
 \end{frame}
 
