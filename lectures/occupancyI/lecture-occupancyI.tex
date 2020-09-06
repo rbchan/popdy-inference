@@ -135,13 +135,17 @@
   \vfill
   Ignoring this source of measurement error can result in misleading
   inferences. \\
+  \begin{itemize}
+    \item Occupancy will be under-estimated
+    \item Habitat associations may be incorrect
+  \end{itemize}
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Ignoring detection probability}
-  Show some examples
-\end{frame}
+% \begin{frame}
+%   \frametitle{Ignoring detection probability}
+%   Show some examples
+% \end{frame}
 
 
 
@@ -188,10 +192,10 @@
   \vfill
   \begin{enumerate}[<+->]
   \item Specify the parameters and dimensions
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{psi} \hlkwb{<-} \hlnum{0.4}       \hlcom{## Occurrence probability}
+\hlstd{psi} \hlkwb{<-} \hlnum{0.5}       \hlcom{## Occurrence probability}
 \hlstd{p} \hlkwb{<-} \hlnum{0.2}         \hlcom{## Detection probability}
 \hlstd{nSites} \hlkwb{<-} \hlnum{20}
 \hlstd{nVisits} \hlkwb{<-} \hlnum{4}
@@ -199,7 +203,7 @@
 \end{kframe}
 \end{knitrout}
   \item Now, simulate presence-absence
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}    \hlcom{## Just to make it reproducible}
@@ -208,7 +212,7 @@
 \end{kframe}
 \end{knitrout}
   \item Simulate observations
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
@@ -244,20 +248,20 @@
 ##  [4,]    0    0    0    0
 ##  [5,]    0    0    0    0
 ##  [6,]    0    0    0    0
-##  [7,]    0    0    0    0
+##  [7,]    0    1    1    0
 ##  [8,]    0    0    0    0
-##  [9,]    0    1    1    0
-## [10,]    0    0    0    0
+##  [9,]    0    0    0    0
+## [10,]    0    1    0    1
 ## [11,]    0    0    0    0
 ## [12,]    0    0    0    0
 ## [13,]    0    0    0    0
 ## [14,]    0    0    0    0
 ## [15,]    0    0    0    0
-## [16,]    0    0    0    0
+## [16,]    0    1    1    0
 ## [17,]    0    0    0    0
-## [18,]    0    0    0    0
+## [18,]    1    0    1    0
 ## [19,]    0    0    0    0
-## [20,]    0    1    0    1
+## [20,]    0    1    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -277,7 +281,7 @@
 \begin{verbatim}
 ## siteDets
 ##  0  1  2 
-## 17  1  2
+## 14  2  4
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -292,7 +296,7 @@ Proportion of sites known to be occupied \\
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.15
+## [1] 0.3
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -325,7 +329,8 @@ Proportion of sites known to be occupied \\
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Install and load the package  \\
+  Install and load the package  %\\
+  \vspace{-12pt}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -336,7 +341,8 @@ Install and load the package  \\
 \end{knitrout}
 \pause
 \vfill
-Documentation (help files) \\
+Documentation (help files) %\\
+  \vspace{-12pt}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -345,15 +351,17 @@ Documentation (help files) \\
 \end{kframe}
 \end{knitrout}
 \vfill
-Documentation (vignettes) \\
+Documentation (vignettes) %\\
+  \vspace{-12pt}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(}\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{))}
+\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{)}
 \hlcom{## vignette("spp-dist")}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+
 \end{frame}
 
 
@@ -363,7 +371,7 @@ Documentation (vignettes) \\
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-  Unlike standard model fitting functions like \inr{lm} and \inr{glm} 
+  Unlike standard model fitting functions such as \inr{lm} and \inr{glm} 
   that require data to be in \texttt{data.frames}, data for `unmarked'
   has to be formatted in an \inr{unmarkedFrame}.
 \begin{knitrout}\small
@@ -378,11 +386,11 @@ Documentation (vignettes) \\
 ## 20 sites
 ## Maximum number of observations per site: 4 
 ## Mean number of observations per site: 4 
-## Sites with at least one detection: 3 
+## Sites with at least one detection: 6 
 ## 
 ## Tabulation of y observations:
 ##  0  1 
-## 75  5
+## 70 10
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -408,21 +416,22 @@ Fit the single-season occupancy model
 ## occu(formula = ~1 ~ 1, data = umf)
 ## 
 ## Occupancy (logit-scale):
-##  Estimate    SE     z P(>|z|)
-##     -1.47 0.723 -2.04  0.0414
+##  Estimate    SE      z P(>|z|)
+##     -0.52 0.613 -0.849   0.396
 ## 
 ## Detection (logit-scale):
-##  Estimate    SE      z P(>|z|)
-##    -0.684 0.768 -0.891   0.373
+##  Estimate    SE     z P(>|z|)
+##    -0.684 0.543 -1.26   0.208
 ## 
-## AIC: 36.25049 
+## AIC: 59.11882 
 ## Number of sites: 20
 ## optim convergence code: 0
-## optim iterations: 9 
+## optim iterations: 12 
 ## Bootstrap iterations: 0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+Estimates obtained using maximum likelihood
 \end{frame}
 
 
@@ -438,8 +447,8 @@ Occupancy estimate ($\hat{\psi}$)
 \begin{verbatim}
 ## Backtransformed linear combination(s) of Occupancy estimate(s)
 ## 
-##  Estimate   SE LinComb (Intercept)
-##     0.186 0.11   -1.47           1
+##  Estimate    SE LinComb (Intercept)
+##     0.373 0.143   -0.52           1
 ## 
 ## Transformation: logistic
 \end{verbatim}
@@ -457,7 +466,7 @@ Detection probability estimate ($\hat{p}$)
 ## Backtransformed linear combination(s) of Detection estimate(s)
 ## 
 ##  Estimate    SE LinComb (Intercept)
-##     0.335 0.171  -0.684           1
+##     0.335 0.121  -0.684           1
 ## 
 ## Transformation: logistic
 \end{verbatim}
@@ -514,26 +523,26 @@ Detection probability estimate ($\hat{p}$)
 \end{alltt}
 \begin{verbatim}
 ##    y.1 y.2 y.3 y.4 psi.unconditional psi.conditional
-## 1    0   0   0   0             0.186           0.043
-## 2    0   0   0   0             0.186           0.043
-## 3    1   0   0   0             0.186           1.000
-## 4    0   0   0   0             0.186           0.043
-## 5    0   0   0   0             0.186           0.043
-## 6    0   0   0   0             0.186           0.043
-## 7    0   0   0   0             0.186           0.043
-## 8    0   0   0   0             0.186           0.043
-## 9    0   1   1   0             0.186           1.000
-## 10   0   0   0   0             0.186           0.043
-## 11   0   0   0   0             0.186           0.043
-## 12   0   0   0   0             0.186           0.043
-## 13   0   0   0   0             0.186           0.043
-## 14   0   0   0   0             0.186           0.043
-## 15   0   0   0   0             0.186           0.043
-## 16   0   0   0   0             0.186           0.043
-## 17   0   0   0   0             0.186           0.043
-## 18   0   0   0   0             0.186           0.043
-## 19   0   0   0   0             0.186           0.043
-## 20   0   1   0   1             0.186           1.000
+## 1    0   0   0   0             0.373           0.104
+## 2    0   0   0   0             0.373           0.104
+## 3    1   0   0   0             0.373           1.000
+## 4    0   0   0   0             0.373           0.104
+## 5    0   0   0   0             0.373           0.104
+## 6    0   0   0   0             0.373           0.104
+## 7    0   1   1   0             0.373           1.000
+## 8    0   0   0   0             0.373           0.104
+## 9    0   0   0   0             0.373           0.104
+## 10   0   1   0   1             0.373           1.000
+## 11   0   0   0   0             0.373           0.104
+## 12   0   0   0   0             0.373           0.104
+## 13   0   0   0   0             0.373           0.104
+## 14   0   0   0   0             0.373           0.104
+## 15   0   0   0   0             0.373           0.104
+## 16   0   1   1   0             0.373           1.000
+## 17   0   0   0   0             0.373           0.104
+## 18   1   0   1   0             0.373           1.000
+## 19   0   0   0   0             0.373           0.104
+## 20   0   1   0   0             0.373           1.000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -573,13 +582,199 @@ Detection probability estimate ($\hat{p}$)
 
 \begin{frame}
   \frametitle{Bayesian methods}
-  
+  Bayesian methods incorporate prior distributions into inferences \\
+  \pause
+  \vfill
+  We often have prior information, and it's easy to use it \\
+  \pause
+  \vfill
+  If we don't have prior information, we can use vague priors and
+  obtain similar inferences as likelihood-based methods \\
+  \pause
+  \vfill
+  Ultimately, we want the posterior distribution of the model
+  parameters. We'll use MCMC to obtain samples from this
+  distribution. 
 \end{frame}
+
+
 
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  
+  We will use JAGS and the R package `jagsUI'. The basic steps are:
+  \begin{enumerate}%[<+->]
+    \item Write a model in the BUGS language in a text file
+    \item Put data in a named list
+    \item Create a function to generate random initial values
+    \item Specify the parameters you want to monitor
+    \item Use MCMC to draw posterior samples
+  \end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS language}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"occupancy-model.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## 
+## # Prior for occupancy parameter
+## psi ~ dunif(0,1)
+## 
+## # Prior for detection probability
+## p ~ dunif(0,1)
+## 
+## for(i in 1:nSites) {
+##   # Latent presence/absence
+##   z[i] ~ dbern(psi)   
+##   for(j in 1:nOccasions) {
+##     # Model for the data
+##     y[i,j] ~ dbern(z[i]*p)
+##   }
+## }
+## 
+## sitesOccupied <- sum(z)
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, nSites))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"sitesOccupied"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+## 
+## Parallel processing completed.
+## 
+## MCMC took 0.006 minutes.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.samples)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##                  Mean     SD Naive SE Time-series SE
+## deviance      40.9824 6.8249 0.088109       0.262220
+## p              0.3275 0.1116 0.001441       0.003578
+## psi            0.4349 0.1627 0.002101       0.005900
+## sitesOccupied  8.5223 2.7909 0.036030       0.116918
+## 
+## 2. Quantiles for each variable:
+## 
+##                  2.5%     25%     50%     75%   97.5%
+## deviance      32.6183 36.5054 39.8601 45.1113 57.8185
+## p              0.1279  0.2454  0.3231  0.4040  0.5512
+## psi            0.1814  0.3170  0.4131  0.5228  0.8356
+## sitesOccupied  6.0000  7.0000  8.0000 10.0000 17.0000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot-1} 
+
+}
+
+
+
+\end{knitrout}
 \end{frame}
 
 

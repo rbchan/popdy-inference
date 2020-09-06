@@ -96,13 +96,17 @@ knit_theme$set("edit-kwrite")
   \vfill
   Ignoring this source of measurement error can result in misleading
   inferences. \\
+  \begin{itemize}
+    \item Occupancy will be under-estimated
+    \item Habitat associations may be incorrect
+  \end{itemize}
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Ignoring detection probability}
-  Show some examples
-\end{frame}
+% \begin{frame}
+%   \frametitle{Ignoring detection probability}
+%   Show some examples
+% \end{frame}
 
 
 
@@ -149,19 +153,19 @@ knit_theme$set("edit-kwrite")
   \vfill
   \begin{enumerate}[<+->]
   \item Specify the parameters and dimensions
-<<sim-nocov1,size='small'>>=
-psi <- 0.4       ## Occurrence probability
+<<sim-nocov1,size='footnotesize'>>=
+psi <- 0.5       ## Occurrence probability
 p <- 0.2         ## Detection probability
 nSites <- 20
 nVisits <- 4
 @
   \item Now, simulate presence-absence
-<<sim-nocov2,size='small'>>=
+<<sim-nocov2,size='footnotesize'>>=
 set.seed(3439)    ## Just to make it reproducible
 z <- rbinom(nSites, size=1, psi) ## pres/absence
 @ 
   \item Simulate observations
-<<sim-nocov3,size='small'>>=
+<<sim-nocov3,size='footnotesize'>>=
 y <- matrix(NA, nrow=nSites, ncol=nVisits)
 for(i in 1:nSites) {
     y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p)
@@ -231,23 +235,27 @@ naiveOccupancy
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
 %  \small
-Install and load the package  \\
+  Install and load the package  %\\
+  \vspace{-12pt}
 <<un-install>>=
 ## install.packages("unmarked")  
 library(unmarked)
 @
 \pause
 \vfill
-Documentation (help files) \\
+Documentation (help files) %\\
+  \vspace{-12pt}
 <<un-help,eval=FALSE>>=
 help("unmarked")
 @
 \vfill
-Documentation (vignettes) \\
+Documentation (vignettes) %\\
+  \vspace{-12pt}
 <<un-vig>>=
 vignette(package="unmarked")
 ## vignette("spp-dist")
-@ 
+@
+
 \end{frame}
 
 
@@ -277,7 +285,8 @@ Fit the single-season occupancy model
 <<un-fit,size='scriptsize'>>=
 fm <- occu(~1 ~1, umf)
 summary(fm)
-@   
+@
+Estimates obtained using maximum likelihood
 \end{frame}
 
 
@@ -362,13 +371,106 @@ abline(v=sum(z), col="red") ## Actual number occupied
 
 \begin{frame}
   \frametitle{Bayesian methods}
-  
+  Bayesian methods incorporate prior distributions into inferences \\
+  \pause
+  \vfill
+  We often have prior information, and it's easy to use it \\
+  \pause
+  \vfill
+  If we don't have prior information, we can use vague priors and
+  obtain similar inferences as likelihood-based methods \\
+  \pause
+  \vfill
+  Ultimately, we want the posterior distribution of the model
+  parameters. We'll use MCMC to obtain samples from this
+  distribution. 
 \end{frame}
+
+
 
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  
+  We will use JAGS and the R package `jagsUI'. The basic steps are:
+  \begin{enumerate}%[<+->]
+    \item Write a model in the BUGS language in a text file
+    \item Put data in a named list
+    \item Create a function to generate random initial values
+    \item Specify the parameters you want to monitor
+    \item Use MCMC to draw posterior samples
+  \end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS language}
+<<bugs,size='scriptsize'>>=
+writeLines(readLines("occupancy-model.jag"))
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data,size='small'>>=
+jags.data <- list(y=y, nSites=nSites, nOccasions=nVisits)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits,size='small'>>=
+jags.inits <- function() {
+    list(psi=runif(1), p=runif(1), z=rep(1, nSites))
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars,size='small'>>=
+jags.pars <- c("psi", "p", "sitesOccupied")
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=F>>=
+jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+                                parameters.to.save=jags.pars,
+                                model.file="occupancy-model.jag",
+                                n.chains=3, n.adapt=100, n.burnin=0,
+                                n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum,size='scriptsize'>>=
+summary(jags.post.samples)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.samples)
+@ 
 \end{frame}
 
 
