@@ -321,10 +321,9 @@ Proportion of sites known to be occupied \\
 \subsection{Likelihood-based methods}
 
 
-\begin{frame}
-  \frametitle{Likelihood-based methods}
-  
-\end{frame}
+% \begin{frame}
+%   \frametitle{Likelihood-based methods}
+% \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
@@ -475,9 +474,26 @@ Detection probability estimate ($\hat{p}$)
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \begin{enumerate}
+    \item Simulate an occupancy dataset with:
+      \begin{itemize}
+        \item $\psi=0.6$
+        \item $p=0.1$
+        \item nSites=100
+        \item nVisits=5
+      \end{itemize}
+    \item Fit the model and report the estimates of $\psi$ and $p$
+  \end{enumerate}
+\end{frame}
+
+
+
 \begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
-  There are two types of occupancy estimates. \\
+  \frametitle{Two types of occupancy estimates}
+  % There are two types of occupancy estimates. \\
   \begin{enumerate}%[<+->]
   \item<1-> Unconditional occupancy $\psi=\Pr(z=1)$
     \begin{itemize}
@@ -489,9 +505,12 @@ Detection probability estimate ($\hat{p}$)
     \begin{itemize}
       \item<2-> Conditional occupancy estimates only apply to sites in the
         sample, at the time of sampling
-      \item<3-> Conditional occupancy is computed using Empirical Bayes
-        methods, with the \inr{ranef} and \inr{bup} functions.
-      \item<4-> These can be used to answer questions like:
+      \item<3-> In `unmarked', conditional occupancy is computed using
+        Empirical Bayes methods, with the \inr{ranef} and \inr{bup}
+        functions. In JAGS, full Bayesian inference is used instead. % of
+%        Empirical Bayes.
+      \item<4-> Conditional occupancy estimates can be used to answer
+        questions like: 
         \begin{itemize}
           \item Which sites were occupied?
           \item How many sites were occupied?
@@ -502,7 +521,7 @@ Detection probability estimate ($\hat{p}$)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## Posterior probs Pr(z_i=1)       }
+\hlcom{## Posterior probs Pr(z_i=1 | y_i)       }
 \hlstd{z.post} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
 \hlcom{## Extract posterior means}
 \hlstd{psi.conditional} \hlkwb{<-}  \hlkwd{bup}\hlstd{(z.post,} \hlkwc{stat}\hlstd{=}\hlstr{"mean"}\hlstd{)}
@@ -514,7 +533,7 @@ Detection probability estimate ($\hat{p}$)
 
 
 \begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
+  \frametitle{Occupancy estimates}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -585,7 +604,7 @@ Detection probability estimate ($\hat{p}$)
   Bayesian methods incorporate prior distributions into inferences \\
   \pause
   \vfill
-  We often have prior information, and it's easy to use it \\
+  We often have prior information, and it's easy to use \\
   \pause
   \vfill
   If we don't have prior information, we can use vague priors and
@@ -602,13 +621,18 @@ Detection probability estimate ($\hat{p}$)
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  We will use JAGS and the R package `jagsUI'. The basic steps are:
+  We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
+  be downloaded here: \url{https://sourceforge.net/projects/mcmc-jags/files/}. \\
+  \pause
+  \vfill
+  The basic steps of a Bayesian analysis with JAGS are:
   \begin{enumerate}%[<+->]
     \item Write a model in the BUGS language in a text file
     \item Put data in a named list
     \item Create a function to generate random initial values
     \item Specify the parameters you want to monitor
     \item Use MCMC to draw posterior samples
+    \item Use posterior samples for inference and prediction
   \end{enumerate}
 \end{frame}
 
@@ -694,9 +718,14 @@ Detection probability estimate ($\hat{p}$)
 
 \begin{frame}[fragile]
   \frametitle{MCMC}
+  \small
+  This function will compile the model, run adaptive MCMC, and then
+  draw posterior samples using 3 Markov chains run in parallel. \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcom{## install.packages("jagsUI")}
+\hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
                                 \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
                                 \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model.jag"}\hlstd{,}
@@ -778,16 +807,16 @@ Detection probability estimate ($\hat{p}$)
 \end{frame}
 
 
-\section{Real data}
+\section{Assignment}
 
 
 
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
 
 
 
@@ -799,18 +828,24 @@ Detection probability estimate ($\hat{p}$)
   \frametitle{Assignment}
   \small
   % \scriptsize
-  Create a self-contained R script (or better yet an Rmarkdown file)
+  Create a self-contained R script or Rmarkdown file
   to do the following:
   \begin{enumerate}
     \small
-    % \footnotesize
-    % \scriptsize
-    \item Simulate 
-    \item Fit 
-    \item Fit 4 models to the Canada Warbler
-      data. 
+    \item Import the Canada Warbler data and compute basic summary
+      stats like we did earlier.
+    \begin{itemize}
+      \item Data are ``point count data'' from North Carolina
+      \item Each 10-min survey was divided into 4, 2.5-min intervals 
+    \end{itemize}
+    \item Fit the single-season (static) occupancy model using
+      `unmarked' and `JAGS'. 
+    \item Create a \inr{data.frame} to compare the estimates of
+      $\psi$, $p$, and ``nSitesOccupied'' from the two
+      analyses. Compare point estimates and 95\% CIs. Describe any
+      differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
 \end{frame}
 
 
