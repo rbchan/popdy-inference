@@ -462,35 +462,7 @@ write.csv(cawa.data, file="cawa_data_glm.csv")
 
 
 
-fm1 <- glm(presence ~ elevation+I(elevation^2), binomial, cawa.data)
-fm2 <- glm(presence ~ year, binomial, cawa.data)
-fm3 <- glm(presence ~ elevation+I(elevation^2)+year, binomial, cawa.data)
-fm4 <- glm(presence ~ (elevation+I(elevation^2))*year, binomial, cawa.data)
-fm5 <- glm(presence ~ elevation*year, binomial, cawa.data)
-fm6 <- glm(presence ~ elevation+year, binomial, cawa.data)
+## Export 2017 CAWA data
+cawa.data.2017 <- ifelse(unclass(det.arr[,,"2017","CAWA"])>1, 1L, 0L)
 
-AIC(fm1, fm2, fm3, fm4, fm5, fm6)
-
-summary(fm3)
-
-elev.min <- min(cawa.data$elevation)
-elev.max <- max(cawa.data$elevation)
-
-yrs <- 2014:2020
-
-pred.data <- data.frame(year=factor(rep(as.character(yrs), each=50)),
-                        elevation=rep(seq(elev.min, elev.max, length=50),
-                                      times=length(yrs)))
-
-pred3 <- predict(fm3, newdata=pred.data, type="response", se.fit=TRUE)
-
-pred3dat <- data.frame(pred=pred3$fit, pred.data)
-
-plot(pred ~ elevation, pred3dat, subset=year=="2014",
-     type="l", ylim=c(0, 1))
-lines(pred ~ elevation, pred3dat, subset=year=="2015", col=2)
-lines(pred ~ elevation, pred3dat, subset=year=="2016", col=3)
-lines(pred ~ elevation, pred3dat, subset=year=="2017", col=4)
-lines(pred ~ elevation, pred3dat, subset=year=="2018", col=5)
-lines(pred ~ elevation, pred3dat, subset=year=="2019", col=6)
-lines(pred ~ elevation, pred3dat, subset=year=="2020", col=7)
+write.csv(cawa.data.2017, file="cawa_data_2017_occu.csv")
