@@ -336,7 +336,9 @@ Proportion of sites known to be occupied \\
 \hlcom{## install.packages("unmarked")  }
 \hlkwd{library}\hlstd{(unmarked)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: lattice}}\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -726,25 +728,19 @@ Detection probability estimate ($\hat{p}$)
 \begin{alltt}
 \hlcom{## install.packages("jagsUI")}
 \hlkwd{library}\hlstd{(jagsUI)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in library(jagsUI): there is no package called 'jagsUI'}}\begin{alltt}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
                                 \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
                                 \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model.jag"}\hlstd{,}
                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.006 minutes.
-\end{verbatim}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in jags.basic(data = jags.data, inits = jags.inits, parameters.to.save = jags.pars, : could not find function "{}jags.basic"{}}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -757,31 +753,9 @@ Detection probability estimate ($\hat{p}$)
 \begin{alltt}
 \hlkwd{summary}\hlstd{(jags.post.samples)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Iterations = 1:2000
-## Thinning interval = 1 
-## Number of chains = 3 
-## Sample size per chain = 2000 
-## 
-## 1. Empirical mean and standard deviation for each variable,
-##    plus standard error of the mean:
-## 
-##                  Mean     SD Naive SE Time-series SE
-## deviance      40.9824 6.8249 0.088109       0.262220
-## p              0.3275 0.1116 0.001441       0.003578
-## psi            0.4349 0.1627 0.002101       0.005900
-## sitesOccupied  8.5223 2.7909 0.036030       0.116918
-## 
-## 2. Quantiles for each variable:
-## 
-##                  2.5%     25%     50%     75%   97.5%
-## deviance      32.6183 36.5054 39.8601 45.1113 57.8185
-## p              0.1279  0.2454  0.3231  0.4040  0.5512
-## psi            0.1814  0.3170  0.4131  0.5228  0.8356
-## sitesOccupied  6.0000  7.0000  8.0000 10.0000 17.0000
-\end{verbatim}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.samples' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -795,14 +769,9 @@ Detection probability estimate ($\hat{p}$)
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jags.post.samples)}
 \end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot-1} 
-
-}
 
 
-
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
