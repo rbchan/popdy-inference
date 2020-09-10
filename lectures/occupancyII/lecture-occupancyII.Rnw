@@ -1,0 +1,547 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+\title{Lecture 5 -- Occuancy models: covariates and prediction }
+\author{Richard Chandler}
+
+
+% Load function to compile and open PDF
+<<build-fun,include=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+@
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-occupancyII")
+rnw2pdf("lecture-occupancyII", tangle=TRUE)
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+##knit_theme$set("navajo-night")
+knit_theme$set("edit-kwrite")
+@
+
+
+
+%<<knitr-setup,include=FALSE,purl=FALSE>>=
+%##opts_chunk$set(comment=NA)
+%@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\begin{document}
+
+
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\huge Lecture 5 -- Occupancy models: covariates and prediction} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Overview}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Overview}
+  We almost always have covariates, which are also called explanatory
+  variables, predictors, independent variables, etc\dots \\
+  \pause
+  \vfill
+  Covariates let us explain variation in occupancy and detection
+  probabililty, which is often the key to reliable prediction and the
+  assessment of hypotheses. \\
+  \pause
+  \vfill
+  In static occupancy models, there are two types of covariates
+  \begin{enumerate}
+    \item \textcolor{blue}{Site covariates} vary among sites
+      but not among occasions
+    \item \textcolor{purple}{Observation covariates} may vary among
+      sites and occasions
+  \end{enumerate}
+  \pause
+  \vfill
+  In both cases, covariates can be continuous or categorical. \\
+  \pause
+  \vfill
+  Observation covariates cannot be used to describe variation in
+  occupancy because occupancy is assumed to be constant over time.
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Ignoring detection probability}
+%   Show some examples
+% \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Covariates}
+  \small
+  State process
+  \begin{gather*}
+    \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+    \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    z_i \sim \mathrm{Bern}(\psi_i)
+  \end{gather*}
+  \pause
+  \vfill
+  Observation process
+  \begin{gather*}
+    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+    + \alpha_2 {\color{purple} w_{ij}} + \cdots \\
+    y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+  \end{gather*}
+  \pause
+%  \vfill
+%  \small
+  % Definitions \\
+  % $\psi_i$ -- probability that the species occurs at site $i$ \\
+  % $z_i$ -- binary presence/absence variable at site $i$ \\
+  % $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ \\
+  % $y_{ij}$ -- binary detection/non-detection data
+  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates. \\
+  $\color{purple} w$ is an observation covariate.
+\end{frame}
+
+
+\section{Simulation}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation}
+  Simplest case with no covariates: \\
+  \vfill
+  \begin{enumerate}[<+->]
+  \item Specify the parameters and dimensions
+<<sim-nocov1,size='footnotesize'>>=
+psi <- 0.5       ## Occurrence probability
+p <- 0.2         ## Detection probability
+nSites <- 20
+nVisits <- 4
+@
+  \item Now, simulate presence-absence
+<<sim-nocov2,size='footnotesize'>>=
+set.seed(3439)    ## Just to make it reproducible
+z <- rbinom(nSites, size=1, psi) ## pres/absence
+@ 
+  \item Simulate observations
+<<sim-nocov3,size='footnotesize'>>=
+y <- matrix(NA, nrow=nSites, ncol=nVisits)
+for(i in 1:nSites) {
+    y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p)
+}
+@   
+\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+<<sim-nocov-dat,size='scriptsize'>>=
+y
+@ 
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+  Detections at each site \\
+<<sim-nocov-ss1,size='scriptsize'>>=
+siteDets <- rowSums(y) # Dets at each site
+table(siteDets)        # Frequency
+@
+\pause
+\vfill
+\small
+Proportion of sites known to be occupied \\
+<<sim-nocov-ss2,size='scriptsize'>>=
+naiveOccupancy <- sum(siteDets>0)/nSites
+naiveOccupancy 
+@
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\section{Model fitting}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\subsection{Likelihood-based methods}
+
+
+% \begin{frame}
+%   \frametitle{Likelihood-based methods}
+% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+%  \small
+  Install and load the package  %\\
+  \vspace{-12pt}
+<<un-install>>=
+## install.packages("unmarked")  
+library(unmarked)
+@
+\pause
+\vfill
+Documentation (help files) %\\
+  \vspace{-12pt}
+<<un-help,eval=FALSE>>=
+help("unmarked")
+@
+\vfill
+Documentation (vignettes) %\\
+  \vspace{-12pt}
+<<un-vig>>=
+vignette(package="unmarked")
+## vignette("spp-dist")
+@
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+%  \small
+  Unlike standard model fitting functions such as \inr{lm} and \inr{glm} 
+  that require data to be in \texttt{data.frames}, data for `unmarked'
+  has to be formatted in an \inr{unmarkedFrame}.
+<<un-umf,size='small'>>=
+umf <- unmarkedFrameOccu(y=y)
+summary(umf)
+@   
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `unmarked'}
+  \small
+Fit the single-season occupancy model
+<<un-fit,size='scriptsize'>>=
+fm <- occu(~1 ~1, umf)
+summary(fm)
+@
+Estimates obtained using maximum likelihood
+\end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{R package `unmarked'}
+% Occupancy estimate ($\hat{\psi}$)
+% <<un-back1,size='footnotesize'>>=
+% backTransform(fm, type="state")
+% @
+% \pause
+% \vfill
+% Detection probability estimate ($\hat{p}$)
+% <<un-back2,size='footnotesize'>>=
+% backTransform(fm, type="det")
+% @   
+% \end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{In-class exercise}
+%   \begin{enumerate}
+%     \item Simulate an occupancy dataset with:
+%       \begin{itemize}
+%         \item $\psi=0.6$
+%         \item $p=0.1$
+%         \item nSites=100
+%         \item nVisits=5
+%       \end{itemize}
+%     \item Fit the model and report the estimates of $\psi$ and $p$
+%   \end{enumerate}
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Two types of occupancy estimates}
+%   % There are two types of occupancy estimates. \\
+%   \begin{enumerate}%[<+->]
+%   \item<1-> Unconditional occupancy $\psi=\Pr(z=1)$
+%     \begin{itemize}
+%       \item<1-> The estimate $\hat{\psi}$ that we computed earlier can be
+%         thought of as a prediction that we could use for a new
+%         site or a new time period
+%     \end{itemize}
+%   \item<2-> Conditional occupancy $\psi^* = \Pr(z_i=1|y_{i})$
+%     \begin{itemize}
+%       \item<2-> Conditional occupancy estimates only apply to sites in the
+%         sample, at the time of sampling
+%       \item<3-> In `unmarked', conditional occupancy is computed using
+%         Empirical Bayes methods, with the \inr{ranef} and \inr{bup}
+%         functions. In JAGS, full Bayesian inference is used instead. % of
+% %        Empirical Bayes.
+%       \item<4-> Conditional occupancy estimates can be used to answer
+%         questions like: 
+%         \begin{itemize}
+%           \item Which sites were occupied?
+%           \item How many sites were occupied?
+%         \end{itemize}
+%     \end{itemize}
+%   \item<5->[]  
+% %\pause
+% <<bup,size='scriptsize'>>=
+% ## Posterior probs Pr(z_i=1 | y_i)       
+% z.post <- ranef(fm)
+% ## Extract posterior means
+% psi.conditional <-  bup(z.post, stat="mean") 
+% @
+%   \end{enumerate}
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Occupancy estimates}
+% <<psi-zpm,size='scriptsize'>>=
+% round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[,1],
+%                  psi.conditional), 3)
+% @   
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{R package `unmarked'}
+%   How many sites were occupied? \pause
+%   We can answer this using posterior prediction.
+% <<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
+% nsim <- 1000
+% sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
+% par(mai=c(0.9,0.9,0.1,0.1))
+% plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
+%     ylab="Empirical Bayes posterior probability")
+% abline(v=sum(z), col="red") ## Actual number occupied
+% @   
+% \end{frame}
+
+
+
+\subsection{Bayesian methods}
+
+
+
+
+\begin{frame}
+  \frametitle{JAGS and the jagsUI package}
+  We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
+  be downloaded here: \url{https://sourceforge.net/projects/mcmc-jags/files/}. \\
+  \pause
+  \vfill
+  The basic steps of a Bayesian analysis with JAGS are:
+  \begin{enumerate}%[<+->]
+    \item Write a model in the BUGS language in a text file
+    \item Put data in a named list
+    \item Create a function to generate random initial values
+    \item Specify the parameters you want to monitor
+    \item Use MCMC to draw posterior samples
+    \item Use posterior samples for inference and prediction
+  \end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS language}
+<<bugs,size='scriptsize'>>=
+writeLines(readLines("occupancy-model.jag"))
+@ 
+\end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-12pt}
+% <<bugs-data,size='small'>>=
+% jags.data <- list(y=y, nSites=nSites, nOccasions=nVisits)
+% @
+% \pause
+% \vfill
+%   Initial values
+%   \vspace{-12pt}
+% <<bugs-inits,size='small'>>=
+% jags.inits <- function() {
+%     list(psi=runif(1), p=runif(1), z=rep(1, nSites))
+% }
+% @ 
+% \pause
+% \vfill
+%   Parameters to monitor
+%   \vspace{-12pt}
+% <<bugs-pars,size='small'>>=
+% jags.pars <- c("psi", "p", "sitesOccupied")
+% @ 
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{MCMC}
+%   \small
+%   This function will compile the model, run adaptive MCMC, and then
+%   draw posterior samples using 3 Markov chains run in parallel. \\
+% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE>>=
+% ## install.packages("jagsUI")
+% library(jagsUI)
+% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+%                                 parameters.to.save=jags.pars,
+%                                 model.file="occupancy-model.jag",
+%                                 n.chains=3, n.adapt=100, n.burnin=0,
+%                                 n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Summarize output}
+% <<bugs-sum,size='scriptsize'>>=
+% summary(jags.post.samples)
+% @ 
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.samples)
+% @ 
+% \end{frame}
+
+
+\section{Assignment}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Assignment}
+  \small
+  % \scriptsize
+  Create a self-contained R script or Rmarkdown file
+  to do the following:
+  \begin{enumerate}
+    \small
+    \item Import the Canada Warbler data and compute basic summary
+      stats like we did earlier.
+    \begin{itemize}
+      \item Data are ``point count data'' from North Carolina
+      \item Each 10-min survey was divided into 4, 2.5-min intervals 
+    \end{itemize}
+    \item Fit the single-season (static) occupancy model using
+      `unmarked' and `JAGS'. 
+    \item Create a \inr{data.frame} to compare the estimates of
+      $\psi$, $p$, and ``nSitesOccupied'' from the two
+      analyses. Compare point estimates and 95\% CIs. Describe any
+      differences you see in the estimates.
+  \end{enumerate}
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+
