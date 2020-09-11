@@ -134,7 +134,7 @@
   assessment of hypotheses. \\
   \pause
   \vfill
-  In static occupancy models, there are two types of covariates
+  In static occupancy models, there are two types of covariates:
   \begin{enumerate}
     \item \textcolor{blue}{Site covariates} vary among sites
       but not among occasions
@@ -161,7 +161,7 @@
 \begin{frame}
   \frametitle{Covariates}
   \small
-  State process
+  State model
   \begin{gather*}
     \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
     \beta_2 {\color{blue} x_{i2}} + \cdots \\
@@ -169,22 +169,24 @@
   \end{gather*}
   \pause
   \vfill
-  Observation process
+  Observation model
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
     + \alpha_2 {\color{purple} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
-%  \vfill
-%  \small
+  %  \vfill
+  %  \small
   % Definitions \\
   % $\psi_i$ -- probability that the species occurs at site $i$ \\
   % $z_i$ -- binary presence/absence variable at site $i$ \\
   % $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ \\
   % $y_{ij}$ -- binary detection/non-detection data
+  \vfill
   $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
-  $\color{purple} w$ is an observation covariate.
+  \vspace{12pt}
+  $\color{purple} w$ is an observation covariate
 \end{frame}
 
 
@@ -201,36 +203,41 @@
 
 \begin{frame}[fragile]
   \frametitle{Simulation}
-  Simplest case with no covariates: \\
+  \small
+  Two continuous covariates and one categorical covariate with 2 levels.
   \vfill
   \begin{enumerate}[<+->]
-  \item Specify the parameters and dimensions
-\begin{knitrout}\footnotesize
+  \item Covariates
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{psi} \hlkwb{<-} \hlnum{0.5}       \hlcom{## Occurrence probability}
-\hlstd{p} \hlkwb{<-} \hlnum{0.2}         \hlcom{## Detection probability}
-\hlstd{nSites} \hlkwb{<-} \hlnum{20}
-\hlstd{nVisits} \hlkwb{<-} \hlnum{4}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; nVisits} \hlkwb{<-} \hlnum{4}\hlstd{;} \hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)} \hlcom{## Make it reproducible}
+\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}    \hlcom{## Continuous covars}
+\hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Oak"}\hlstd{,} \hlstr{"Pine"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
+            \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlstd{wPine} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Pine"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}            \hlcom{## Dummy variable}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-  \item Now, simulate presence-absence
-\begin{knitrout}\footnotesize
+  \item Coefficients, $\psi$, and $p$
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}    \hlcom{## Just to make it reproducible}
-\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)} \hlcom{## pres/absence}
+\hlstd{beta0} \hlkwb{<-} \hlnum{1}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{0}
+\hlstd{psi} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{x2)}
+\hlstd{alpha0} \hlkwb{<-} \hlnum{0}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}\hlstd{; alpha2} \hlkwb{<-} \hlnum{0.5}
+\hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{alpha2}\hlopt{*}\hlstd{wPine)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-  \item Simulate observations
-\begin{knitrout}\footnotesize
+  \item Simulate presence-absence variable and observations
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)}            \hlcom{## pres/absence}
 \hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i]}\hlopt{*}\hlstd{p)}
+    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i]}\hlopt{*}\hlstd{p[i,])}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -251,30 +258,30 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
-##  [1,]    0    0    0    0
+##  [1,]    1    1    1    1
 ##  [2,]    0    0    0    0
-##  [3,]    1    0    0    0
-##  [4,]    0    0    0    0
-##  [5,]    0    0    0    0
+##  [3,]    0    0    0    0
+##  [4,]    1    1    0    1
+##  [5,]    1    1    1    1
 ##  [6,]    0    0    0    0
-##  [7,]    0    1    1    0
+##  [7,]    0    0    0    0
 ##  [8,]    0    0    0    0
-##  [9,]    0    0    0    0
-## [10,]    0    1    0    1
-## [11,]    0    0    0    0
-## [12,]    0    0    0    0
-## [13,]    0    0    0    0
-## [14,]    0    0    0    0
+##  [9,]    0    1    0    0
+## [10,]    0    1    1    1
+## [11,]    0    1    0    1
+## [12,]    0    0    0    1
+## [13,]    0    1    1    1
+## [14,]    1    0    1    1
 ## [15,]    0    0    0    0
-## [16,]    0    1    1    0
-## [17,]    0    0    0    0
-## [18,]    1    0    1    0
+## [16,]    0    0    0    0
+## [17,]    0    0    1    0
+## [18,]    0    0    0    0
 ## [19,]    0    0    0    0
-## [20,]    0    1    0    0
+## [20,]    0    0    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -293,8 +300,8 @@
 \end{alltt}
 \begin{verbatim}
 ## siteDets
-##  0  1  2 
-## 14  2  4
+##  0  1  2  3  4 
+## 47 20 13 12  8
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -309,17 +316,18 @@ Proportion of sites known to be occupied \\
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.3
+## [1] 0.53
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
   \end{column}
   \end{columns}
 \end{frame}
 
 
 
-\section{Model fitting}
+\section{Prediction}
 
 
 
@@ -334,75 +342,53 @@ Proportion of sites known to be occupied \\
 \subsection{Likelihood-based methods}
 
 
-% \begin{frame}
-%   \frametitle{Likelihood-based methods}
-% \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
-%  \small
-  Install and load the package  %\\
-  \vspace{-12pt}
-\begin{knitrout}
+  \frametitle{Prepare data in `unmarked'}
+  \small
+Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}: 
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## install.packages("unmarked")  }
-\hlkwd{library}\hlstd{(unmarked)}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(x1,x2),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{w}\hlstd{=w))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-Documentation (help files) %\\
-  \vspace{-12pt}
-\begin{knitrout}
+Reformat $w$ as a factor: %, but it's formatted as a matrix of
+%characters, we have to reformat it:
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{help}\hlstd{(}\hlstr{"unmarked"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\vfill
-Documentation (vignettes) %\\
-  \vspace{-12pt}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{)}
-\hlcom{## vignette("spp-dist")}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
-%  \small
-  Unlike standard model fitting functions such as \inr{lm} and \inr{glm} 
-  that require data to be in \texttt{data.frames}, data for `unmarked'
-  has to be formatted in an \inr{unmarkedFrame}.
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y)}
+\hlkwd{obsCovs}\hlstd{(umf)}\hlopt{$}\hlstd{w} \hlkwb{<-} \hlkwd{factor}\hlstd{(}\hlkwd{obsCovs}\hlstd{(umf)}\hlopt{$}\hlstd{w)} \hlcom{# Only necessary if w is provided as 'character' matrix}
 \hlkwd{summary}\hlstd{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
 ## 
-## 20 sites
+## 100 sites
 ## Maximum number of observations per site: 4 
 ## Mean number of observations per site: 4 
-## Sites with at least one detection: 6 
+## Sites with at least one detection: 53 
 ## 
 ## Tabulation of y observations:
-##  0  1 
-## 70 10
+##   0   1 
+## 286 114 
+## 
+## Site-level covariates:
+##        x1                 x2         
+##  Min.   :-1.96149   Min.   :-3.5949  
+##  1st Qu.:-0.77638   1st Qu.:-0.8903  
+##  Median :-0.11218   Median :-0.2529  
+##  Mean   :-0.04869   Mean   :-0.1119  
+##  3rd Qu.: 0.58804   3rd Qu.: 0.7182  
+##  Max.   : 3.28648   Max.   : 2.7145  
+## 
+## Observation-level covariates:
+##     w      
+##  Oak :208  
+##  Pine:192
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -413,117 +399,200 @@ Documentation (vignettes) %\\
 
 
 \begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
-  \small
-Fit the single-season occupancy model
-\begin{knitrout}\scriptsize
+  \frametitle{Fit the model}
+  \footnotesize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hlstd{, umf)}
-\hlkwd{summary}\hlstd{(fm)}
+\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlstd{x1}\hlopt{+}\hlstd{w} \hlopt{~}\hlstd{x1}\hlopt{+}\hlstd{x2, umf)}
+\hlstd{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## occu(formula = ~1 ~ 1, data = umf)
+## occu(formula = ~x1 + w ~ x1 + x2, data = umf)
 ## 
-## Occupancy (logit-scale):
-##  Estimate    SE      z P(>|z|)
-##     -0.52 0.613 -0.849   0.396
+## Occupancy:
+##             Estimate    SE       z P(>|z|)
+## (Intercept)   0.9867 0.448  2.2041 0.02751
+## x1           -1.4358 0.545 -2.6342 0.00843
+## x2            0.0299 0.306  0.0975 0.92231
 ## 
-## Detection (logit-scale):
-##  Estimate    SE     z P(>|z|)
-##    -0.684 0.543 -1.26   0.208
+## Detection:
+##             Estimate    SE      z  P(>|z|)
+## (Intercept)   -0.201 0.212 -0.945 3.45e-01
+## x1             1.278 0.206  6.215 5.14e-10
+## wPine          0.657 0.282  2.332 1.97e-02
 ## 
-## AIC: 59.11882 
-## Number of sites: 20
-## optim convergence code: 0
-## optim iterations: 12 
-## Bootstrap iterations: 0
+## AIC: 393.8525
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-Estimates obtained using maximum likelihood
+\pause
+\vfill
+Compare to actual parameter values:
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1,} \hlkwc{beta2}\hlstd{=beta2)}
+\end{alltt}
+\begin{verbatim}
+## beta0 beta1 beta2 
+##     1    -1     0
+\end{verbatim}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1,} \hlkwc{alpha2}\hlstd{=alpha2)}
+\end{alltt}
+\begin{verbatim}
+## alpha0 alpha1 alpha2 
+##    0.0    1.0    0.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{R package `unmarked'}
-% Occupancy estimate ($\hat{\psi}$)
-% <<un-back1,size='footnotesize'>>=
-% backTransform(fm, type="state")
-% @
-% \pause
-% \vfill
-% Detection probability estimate ($\hat{p}$)
-% <<un-back2,size='footnotesize'>>=
-% backTransform(fm, type="det")
-% @   
-% \end{frame}
+
+\begin{frame}
+  \frametitle{In-class exercise}
+%  \begin{enumerate}
+%  \item
+  Import the grouse data and fit the model:
+  \[
+    \mathrm{logit}(\psi_i)
+  \]
+%  \end{enumerate}
+\end{frame}
 
 
 
-% \begin{frame}
-%   \frametitle{In-class exercise}
-%   \begin{enumerate}
-%     \item Simulate an occupancy dataset with:
-%       \begin{itemize}
-%         \item $\psi=0.6$
-%         \item $p=0.1$
-%         \item nSites=100
-%         \item nVisits=5
-%       \end{itemize}
-%     \item Fit the model and report the estimates of $\psi$ and $p$
-%   \end{enumerate}
-% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
+  vary while holding other two covariates constant.  
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
+                        \hlkwc{x2}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Pine'}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Get predictions of $\psi$ for each row of prediction data.
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{psi.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                    \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Get predictions of $p$ for each row of prediction data.
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                  \hlkwc{type}\hlstd{=}\hlstr{'det'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Two types of occupancy estimates}
-%   % There are two types of occupancy estimates. \\
-%   \begin{enumerate}%[<+->]
-%   \item<1-> Unconditional occupancy $\psi=\Pr(z=1)$
-%     \begin{itemize}
-%       \item<1-> The estimate $\hat{\psi}$ that we computed earlier can be
-%         thought of as a prediction that we could use for a new
-%         site or a new time period
-%     \end{itemize}
-%   \item<2-> Conditional occupancy $\psi^* = \Pr(z_i=1|y_{i})$
-%     \begin{itemize}
-%       \item<2-> Conditional occupancy estimates only apply to sites in the
-%         sample, at the time of sampling
-%       \item<3-> In `unmarked', conditional occupancy is computed using
-%         Empirical Bayes methods, with the \inr{ranef} and \inr{bup}
-%         functions. In JAGS, full Bayesian inference is used instead. % of
-% %        Empirical Bayes.
-%       \item<4-> Conditional occupancy estimates can be used to answer
-%         questions like: 
-%         \begin{itemize}
-%           \item Which sites were occupied?
-%           \item How many sites were occupied?
-%         \end{itemize}
-%     \end{itemize}
-%   \item<5->[]  
-% %\pause
-% <<bup,size='scriptsize'>>=
-% ## Posterior probs Pr(z_i=1 | y_i)       
-% z.post <- ranef(fm)
-% ## Extract posterior means
-% psi.conditional <-  bup(z.post, stat="mean") 
-% @
-%   \end{enumerate}
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  \small
+  View $\psi$ predictions
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(psi.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##   Predicted     SE lower upper   x1 x2    w
+## 1      1.00 0.0099  0.80     1 -3.0  0 Pine
+## 2      0.99 0.0114  0.79     1 -2.9  0 Pine
+## 3      0.99 0.0131  0.79     1 -2.8  0 Pine
+## 4      0.99 0.0150  0.78     1 -2.6  0 Pine
+## 5      0.99 0.0172  0.77     1 -2.5  0 Pine
+## 6      0.99 0.0196  0.76     1 -2.4  0 Pine
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  View $p$ predictions
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(p.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##   Predicted    SE lower upper   x1 x2    w
+## 1     0.033 0.019 0.010 0.099 -3.0  0 Pine
+## 2     0.038 0.021 0.013 0.109 -2.9  0 Pine
+## 3     0.045 0.023 0.016 0.121 -2.8  0 Pine
+## 4     0.052 0.026 0.019 0.133 -2.6  0 Pine
+## 5     0.060 0.028 0.023 0.147 -2.5  0 Pine
+## 6     0.069 0.031 0.028 0.161 -2.4  0 Pine
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Occupancy estimates}
-% <<psi-zpm,size='scriptsize'>>=
-% round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[,1],
-%                  psi.conditional), 3)
-% @   
-% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlcom{## lines(Predicted ~ x1, p.pred, col="grey")}
+\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{""}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{NA}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlnum{NA}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-plot1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"grey"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-plot2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
 
 
 
@@ -547,48 +616,29 @@ Estimates obtained using maximum likelihood
 
 
 
-
-\begin{frame}
-  \frametitle{JAGS and the jagsUI package}
-  We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
-  be downloaded here: \url{https://sourceforge.net/projects/mcmc-jags/files/}. \\
-  \pause
-  \vfill
-  The basic steps of a Bayesian analysis with JAGS are:
-  \begin{enumerate}%[<+->]
-    \item Write a model in the BUGS language in a text file
-    \item Put data in a named list
-    \item Create a function to generate random initial values
-    \item Specify the parameters you want to monitor
-    \item Use MCMC to draw posterior samples
-    \item Use posterior samples for inference and prediction
-  \end{enumerate}
-\end{frame}
-
-
-
 \begin{frame}[fragile]
-  \frametitle{The BUGS language}
+  \frametitle{The BUGS model}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"occupancy-model.jag"}\hlstd{))}
-\end{alltt}
 \begin{verbatim}
 ## model {
 ## 
-## # Prior for occupancy parameter
-## psi ~ dunif(0,1)
+## # Priors for occupancy coefficients
+## beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+## beta1 ~ dnorm(0, 0.5)
+## beta2 ~ dnorm(0, 0.5)
 ## 
-## # Prior for detection probability
-## p ~ dunif(0,1)
+## # Priors for detection coefficients
+## alpha0 ~ dnorm(0, 0.5)  
+## alpha1 ~ dnorm(0, 0.5)
+## alpha2 ~ dnorm(0, 0.5)
 ## 
 ## for(i in 1:nSites) {
-##   # Latent presence/absence
-##   z[i] ~ dbern(psi)   
+##   logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
+##   z[i] ~ dbern(psi[i])            # Latent presence/absence
 ##   for(j in 1:nOccasions) {
-##     # Model for the data
-##     y[i,j] ~ dbern(z[i]*p)
+##     logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wPine[i,j]
+##     y[i,j] ~ dbern(z[i]*p[i,j])   # Data
 ##   }
 ## }
 ## 
@@ -604,69 +654,164 @@ Estimates obtained using maximum likelihood
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data,size='small'>>=
-% jags.data <- list(y=y, nSites=nSites, nOccasions=nVisits)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='small'>>=
-% jags.inits <- function() {
-%     list(psi=runif(1), p=runif(1), z=rep(1, nSites))
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars <- c("psi", "p", "sitesOccupied")
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=x1,} \hlkwc{x2}\hlstd{=x2,} \hlkwc{wPine}\hlstd{=wPine,}
+                  \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, nSites))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,}
+               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"alpha2"}\hlstd{,} \hlstr{"sitesOccupied"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-%   This function will compile the model, run adaptive MCMC, and then
-%   draw posterior samples using 3 Markov chains run in parallel. \\
-% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE>>=
-% ## install.packages("jagsUI")
-% library(jagsUI)
-% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-%                                 parameters.to.save=jags.pars,
-%                                 model.file="occupancy-model.jag",
-%                                 n.chains=3, n.adapt=100, n.burnin=0,
-%                                 n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## install.packages("jagsUI")}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model-covs.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+## 
+## Parallel processing completed.
+## 
+## MCMC took 0.022 minutes.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Summarize output}
-% <<bugs-sum,size='scriptsize'>>=
-% summary(jags.post.samples)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.samples)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##                    Mean      SD Naive SE Time-series SE
+## alpha0         -0.18986  0.2056 0.002655       0.006095
+## alpha1          1.24998  0.2031 0.002622       0.004348
+## alpha2          0.65006  0.2726 0.003519       0.007395
+## beta0           0.92742  0.3903 0.005039       0.016264
+## beta1          -1.37373  0.4696 0.006062       0.019693
+## beta2           0.04135  0.2938 0.003793       0.007092
+## deviance      311.05807 11.2700 0.145495       0.397345
+## sitesOccupied  67.45550  3.4756 0.044870       0.140560
+## 
+## 2. Quantiles for each variable:
+## 
+##                   2.5%      25%       50%       75%    97.5%
+## alpha0         -0.5887  -0.3297  -0.19107  -0.05123   0.2226
+## alpha1          0.8516   1.1142   1.24979   1.38091   1.6512
+## alpha2          0.1185   0.4662   0.65133   0.84229   1.1823
+## beta0           0.2375   0.6618   0.89793   1.16182   1.7604
+## beta1          -2.3760  -1.6722  -1.33238  -1.04487  -0.5579
+## beta2          -0.5389  -0.1561   0.04286   0.23728   0.6215
+## deviance      289.6256 303.3495 310.89209 318.52136 333.8347
+## sitesOccupied  60.0000  65.0000  68.00000  70.00000  74.0000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{,}\hlnum{8}\hlstd{)])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
 
 
 \section{Assignment}

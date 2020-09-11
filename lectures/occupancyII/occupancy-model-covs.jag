@@ -1,17 +1,21 @@
 model {
 
-# Prior for occupancy parameter
-psi ~ dunif(0,1)
+# Priors for occupancy coefficients
+beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
 
-# Prior for detection probability
-p ~ dunif(0,1)
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+alpha2 ~ dnorm(0, 0.5)
 
 for(i in 1:nSites) {
-  # Latent presence/absence
-  z[i] ~ dbern(psi)   
+  logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
+  z[i] ~ dbern(psi[i])            # Latent presence/absence
   for(j in 1:nOccasions) {
-    # Model for the data
-    y[i,j] ~ dbern(z[i]*p)
+    logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wPine[i,j]
+    y[i,j] ~ dbern(z[i]*p[i,j])   # Data
   }
 }
 
