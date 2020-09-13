@@ -42,6 +42,7 @@ grouse.dets <- grouse.dets.in
 grouse.dets$routePoint <- factor(paste(grouse.dets.in$Route,
                                        grouse.dets.in$Point.ID, sep="_"),
                                  levels=levels(grouse.surveys$routePoint))
+grouse.dets$Date <- as.Date(grouse.dets$Date, format="%m/%e/%y")
 
 grouse.locs <- grouse.locs.in[,1:5]
 grouse.locs$routePoint <- factor(sub("-", "_", grouse.locs$ident))
@@ -63,28 +64,53 @@ grouse.surveys.wide <- reshape(
               "Ericaceous.Cover"),
     drop=c("ID", "Sunrise", "Surveyed.Songbirds", "Notes", "Proofed."),
     direction="wide")
-                               
+
+grouse.surveys.wide$Date.1 <- as.Date(grouse.surveys.wide$Date.1,
+                                      format="%m/%e/%y")
+grouse.surveys.wide$Date.2 <- as.Date(grouse.surveys.wide$Date.2,
+                                      format="%m/%e/%y")
+grouse.surveys.wide$Date.3 <- as.Date(grouse.surveys.wide$Date.3,
+                                      format="%m/%e/%y")
+grouse.surveys.wide$Date.4 <- as.Date(grouse.surveys.wide$Date.4,
+                                      format="%m/%e/%y")
 
 str(grouse.surveys.wide)
 
+## Add the counts
+grouse.counts <- matrix(0L, nrow(grouse.surveys.wide), 3)
+grouse.counts[is.na(grouse.surveys.wide[,c("Date.1","Date.2","Date.3")])] <- NA
+colnames(grouse.counts) <- c("grouse1", "grouse2", "grouse3")
+
+for(i in 1:nrow(grouse.dets)) {
+    route.id.i <- which(grouse.surveys.wide$Route..==grouse.dets[i,"Route"] & 
+        grouse.surveys.wide$Point.ID==grouse.dets[i,"Point.ID"])
+    occasion.i <- which(
+        as.integer(grouse.surveys.wide[route.id.i,c("Date.1","Date.2","Date.3")]) ==
+        as.integer(grouse.dets[i,"Date"]))
+    grouse.counts[route.id.i,occasion.i] <- grouse.counts[route.id.i,occasion.i]+1
+}
+
+grouse.data <- cbind(grouse.surveys.wide, grouse.counts)
+rownames(grouse.data) <- grouse.surveys.wide$routePoint
+
+str(grouse.data)
+
 
 ## Combine detection and survey data
-grouse.counts <- unclass(table(grouse.dets$routePoint))
+## grouse.counts <- unclass(table(grouse.dets$routePoint))
 
-grouse.data <- data.frame(abundance=grouse.counts,
-                          presence=ifelse(grouse.counts>0, 1L, 0L))
-rownames(grouse.data) <- names(grouse.counts)
+## grouse.data <- data.frame(abundance=grouse.counts,
+##                           presence=ifelse(grouse.counts>0, 1L, 0L))
+## rownames(grouse.data) <- names(grouse.counts)
+## reorder.surveys <- match(rownames(grouse.data),
+##                          grouse.surveys.wide$routePoint)
 
-reorder.surveys <- match(rownames(grouse.data),
-                         grouse.surveys.wide$routePoint)
 
-keepvars <- c("Route..", ##"Coordinates..easting.", "Coordinates..northing.",
-              "UTM.Zone")
+## keepvars <- c("Route..", ##"Coordinates..easting.", "Coordinates..northing.",
+##               "UTM.Zone")
 
-grouse.data <- cbind(grouse.data,
-                     grouse.surveys.wide[reorder.surveys,keepvars])
-colnames(grouse.data) <- c("abundance", "presence", "route", "utmE", "utmN",
-                           "utmZone")
+## grouse.data <- cbind(grouse.data,
+##                      grouse.surveys.wide[reorder.surveys,keepvars])
 
 str(grouse.data)
 
@@ -93,6 +119,9 @@ grouse.data$utmE <- grouse.locs[match(rownames(grouse.data),
                                       grouse.locs$routePoint), "x_proj"]
 grouse.data$utmN <- grouse.locs[match(rownames(grouse.data),
                                       grouse.locs$routePoint), "y_proj"]
+
+## colnames(grouse.data) <- c("abundance", "presence", "route", "utmZone",
+##                            "utmE", "utmN")
 
 str(grouse.data)
 
@@ -153,11 +182,12 @@ ga.nc.sc.tn.utm <- st_transform(ga.nc.sc.tn, crs=CRS(utm.z16))
 grouse.coords.z16 <- SpatialPoints(grouse.data[!is.na(grouse.data$utmE),
                                                c("utmE", "utmN")],
                                    proj4string=CRS(utm.z16))
-grouse.coords.z17 <- SpatialPoints(grouse.data[,c("utmE", "utmN")],
+grouse.coords.z17 <- SpatialPoints(grouse.data[!is.na(grouse.data$utmE),
+                                               c("utmE", "utmN")],
                                    proj4string=CRS(utm.z17))
 
 plot(ga.nc.sc.tn.utm, axes=TRUE)
-points(grouse.coords.z16)
+points(grouse.coords.z16, cex=0.1, col=2)
 
 
 
@@ -289,17 +319,17 @@ plot(region.elev)
 
 
 
-pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf", width=12.4, height=5)
-par(mai=c(0.7,0.8,0.2,0.1))
-plot(region.elev, xlim=c(-84.9,-83), ylim=c(34.4, 35.2))
-plot(ga.nc.sc.tn, add=TRUE)#, las=1)
-points(grouse.coords.longlat, pch=3, cex=0.5, col=2)
-points(grouse.coords.longlat, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
-text(-83.5, 34.7, "Georgia", pos=1)
-text(-83.5, 35.2, "North Carolina", pos=1)
-text(-84.7, 35.2, "Tennessee", pos=1)
-dev.off()
-system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf")
+## pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf", width=12.4, height=5)
+## par(mai=c(0.7,0.8,0.2,0.1))
+## plot(region.elev, xlim=c(-84.9,-83), ylim=c(34.4, 35.2))
+## plot(ga.nc.sc.tn, add=TRUE)#, las=1)
+## points(grouse.coords.longlat, pch=3, cex=0.5, col=2)
+## points(grouse.coords.longlat, pch=16, cex=grouse.data$abundance*2, col=rgb(0,0,1,0.5))
+## text(-83.5, 34.7, "Georgia", pos=1)
+## text(-83.5, 35.2, "North Carolina", pos=1)
+## text(-84.7, 35.2, "Tennessee", pos=1)
+## dev.off()
+## system("gopen ../lectures/stats-basics/figs/grouse_map_elev_locs_dets_longlat.pdf")
 
 
 pdf("../lectures/stats-basics/figs/grouse_map_elev_locs_dets.pdf", width=8.3, height=5)
@@ -329,9 +359,12 @@ grouse.data$elevation[!is.na(grouse.data$utmE)] <- grouse.elev@data$elevation
 
 str(grouse.data)
 
+names(grouse.data)
 
-
-
+grouse.data.out <- grouse.data[,c("Route..", "Point.ID", "grouse1", "grouse2", "grouse3",
+                                  paste("Temperature", 1:3, sep="."),
+                                  paste("Date", 1:3, sep="."),
+                                  paste("Time", 1:3, sep="."))]
 
 
 write.csv(grouse.data, file="grouse_data_glm.csv")
