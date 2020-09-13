@@ -129,16 +129,16 @@
   variables, predictors, independent variables, etc\dots \\
   \pause
   \vfill
-  Covariates let us explain variation in occupancy and detection
-  probabililty, which is often the key to reliable prediction and the
-  assessment of hypotheses. \\
+  Explaining variation in occupancy and detection probabililty with
+  covariates is central to reliable prediction and scientific
+  investigation. \\  
   \pause
   \vfill
   In static occupancy models, there are two types of covariates:
   \begin{enumerate}
     \item \textcolor{blue}{Site covariates} vary among sites
       but not among occasions
-    \item \textcolor{purple}{Observation covariates} may vary among
+    \item \textcolor{Purple}{Observation covariates} may vary among
       sites and occasions
   \end{enumerate}
   \pause
@@ -146,8 +146,10 @@
   In both cases, covariates can be continuous or categorical. \\
   \pause
   \vfill
-  Observation covariates cannot be used to describe variation in
-  occupancy because occupancy is assumed to be constant over time.
+  \centering
+  \alert{Observation covariates cannot be used to describe variation
+    in occupancy because occupancy is assumed to be constant over
+    time.} \\ 
 \end{frame}
 
 
@@ -172,7 +174,7 @@
   Observation model
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{purple} w_{ij}} + \cdots \\
+    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
@@ -186,7 +188,7 @@
   \vfill
   $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
   \vspace{12pt}
-  $\color{purple} w$ is an observation covariate
+  $\color{Purple} w$ is an observation covariate
 \end{frame}
 
 
@@ -204,7 +206,7 @@
 \begin{frame}[fragile]
   \frametitle{Simulation}
   \small
-  Two continuous covariates and one categorical covariate with 2 levels.
+  Two continuous covariates and one categorical covariate with 2 levels
   \vfill
   \begin{enumerate}[<+->]
   \item Covariates
@@ -213,9 +215,9 @@
 \begin{alltt}
 \hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; nVisits} \hlkwb{<-} \hlnum{4}\hlstd{;} \hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)} \hlcom{## Make it reproducible}
 \hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}    \hlcom{## Continuous covars}
-\hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Oak"}\hlstd{,} \hlstr{"Pine"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
+\hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Cold"}\hlstd{,} \hlstr{"Hot"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
             \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
-\hlstd{wPine} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Pine"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}            \hlcom{## Dummy variable}
+\hlstd{wHot} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Hot"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}            \hlcom{## Dummy variable}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -226,11 +228,11 @@
 \hlstd{beta0} \hlkwb{<-} \hlnum{1}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{0}
 \hlstd{psi} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{x2)}
 \hlstd{alpha0} \hlkwb{<-} \hlnum{0}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}\hlstd{; alpha2} \hlkwb{<-} \hlnum{0.5}
-\hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{alpha2}\hlopt{*}\hlstd{wPine)}
+\hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{alpha2}\hlopt{*}\hlstd{wHot)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-  \item Simulate presence-absence variable and observations
+  \item Simulate occupancy and detection data
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -387,8 +389,8 @@ Reformat $w$ as a factor: %, but it's formatted as a matrix of
 ## 
 ## Observation-level covariates:
 ##     w      
-##  Oak :208  
-##  Pine:192
+##  Cold:208  
+##  Hot :192
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -422,7 +424,7 @@ Reformat $w$ as a factor: %, but it's formatted as a matrix of
 ##             Estimate    SE      z  P(>|z|)
 ## (Intercept)   -0.201 0.212 -0.945 3.45e-01
 ## x1             1.278 0.206  6.215 5.14e-10
-## wPine          0.657 0.282  2.332 1.97e-02
+## wHot           0.657 0.282  2.332 1.97e-02
 ## 
 ## AIC: 393.8525
 \end{verbatim}
@@ -454,19 +456,6 @@ Compare to actual parameter values:
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-%  \begin{enumerate}
-%  \item
-  Import the grouse data and fit the model:
-  \[
-    \mathrm{logit}(\psi_i)
-  \]
-%  \end{enumerate}
-\end{frame}
-
-
-
 
 
 \begin{frame}[fragile]
@@ -477,7 +466,7 @@ Compare to actual parameter values:
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
-                        \hlkwc{x2}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Pine'}\hlstd{)}
+                        \hlkwc{x2}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Hot'}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -517,13 +506,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(psi.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted     SE lower upper   x1 x2    w
-## 1      1.00 0.0099  0.80     1 -3.0  0 Pine
-## 2      0.99 0.0114  0.79     1 -2.9  0 Pine
-## 3      0.99 0.0131  0.79     1 -2.8  0 Pine
-## 4      0.99 0.0150  0.78     1 -2.6  0 Pine
-## 5      0.99 0.0172  0.77     1 -2.5  0 Pine
-## 6      0.99 0.0196  0.76     1 -2.4  0 Pine
+##   Predicted     SE lower upper   x1 x2   w
+## 1      1.00 0.0099  0.80     1 -3.0  0 Hot
+## 2      0.99 0.0114  0.79     1 -2.9  0 Hot
+## 3      0.99 0.0131  0.79     1 -2.8  0 Hot
+## 4      0.99 0.0150  0.78     1 -2.6  0 Hot
+## 5      0.99 0.0172  0.77     1 -2.5  0 Hot
+## 6      0.99 0.0196  0.76     1 -2.4  0 Hot
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -536,13 +525,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(p.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted    SE lower upper   x1 x2    w
-## 1     0.033 0.019 0.010 0.099 -3.0  0 Pine
-## 2     0.038 0.021 0.013 0.109 -2.9  0 Pine
-## 3     0.045 0.023 0.016 0.121 -2.8  0 Pine
-## 4     0.052 0.026 0.019 0.133 -2.6  0 Pine
-## 5     0.060 0.028 0.023 0.147 -2.5  0 Pine
-## 6     0.069 0.031 0.028 0.161 -2.4  0 Pine
+##   Predicted    SE lower upper   x1 x2   w
+## 1     0.033 0.019 0.010 0.099 -3.0  0 Hot
+## 2     0.038 0.021 0.013 0.109 -2.9  0 Hot
+## 3     0.045 0.023 0.016 0.121 -2.8  0 Hot
+## 4     0.052 0.026 0.019 0.133 -2.6  0 Hot
+## 5     0.060 0.028 0.023 0.147 -2.5  0 Hot
+## 6     0.069 0.031 0.028 0.161 -2.4  0 Hot
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -551,18 +540,19 @@ Get predictions of $p$ for each row of prediction data.
 
 
 
+
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlcom{## lines(Predicted ~ x1, p.pred, col="grey")}
-\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{""}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{NA}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlnum{NA}\hlstd{))}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.8\linewidth]{figure/pred-plot1-1} 
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-psi1-1} 
 
 }
 
@@ -572,24 +562,61 @@ Get predictions of $p$ for each row of prediction data.
 \end{frame}
 
 
+
+
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"grey"}\hlstd{))}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.8\linewidth]{figure/pred-plot2-1} 
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-p1-1} 
 
 }
 
 
 
 \end{knitrout}
+\end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
+% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
+% ## lines(Predicted ~ x1, p.pred, col="grey")
+% legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
+% @   
+% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"purple"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/pred-plot2-1} 
+
+}
+
+
+
+\end{knitrout}
+\pause
+\small
+\centering
+Major problems if you ignore imperfect detection in this case \\
 \end{frame}
 
 
@@ -609,6 +636,33 @@ Get predictions of $p$ for each row of prediction data.
 % abline(v=sum(z), col="red") ## Actual number occupied
 % @   
 % \end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \small
+  \begin{enumerate}
+    \item Fit this model:
+      \begin{gather*}
+        \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
+        z_i \sim \mathrm{Bern}(\psi_i) \\
+%      \end{gather*}
+%      \begin{gather*}
+        \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
+        \alpha_2 {\color{Purple} w_{ij}} \\
+        y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+      \end{gather*}
+      \pause
+    \item Predict $p$ again by letting $x_1$ vary, but this time, predict for
+      the case where $w$=`Cold'.
+    \item Graph $p$ as a function of $x_1$.
+  \end{enumerate}
+\end{frame}
+
 
 
 
@@ -637,7 +691,7 @@ Get predictions of $p$ for each row of prediction data.
 ##   logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
 ##   z[i] ~ dbern(psi[i])            # Latent presence/absence
 ##   for(j in 1:nOccasions) {
-##     logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wPine[i,j]
+##     logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wHot[i,j]
 ##     y[i,j] ~ dbern(z[i]*p[i,j])   # Data
 ##   }
 ## }
@@ -661,7 +715,7 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=x1,} \hlkwc{x2}\hlstd{=x2,} \hlkwc{wPine}\hlstd{=wPine,}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=x1,} \hlkwc{x2}\hlstd{=x2,} \hlkwc{wHot}\hlstd{=wHot,}
                   \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
 \end{alltt}
 \end{kframe}
@@ -703,7 +757,6 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## install.packages("jagsUI")}
 \hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
                                 \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
@@ -721,7 +774,7 @@ Get predictions of $p$ for each row of prediction data.
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.022 minutes.
+## MCMC took 0.023 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

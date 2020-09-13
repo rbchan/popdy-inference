@@ -14,7 +14,7 @@ for(i in 1:nSites) {
   logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
   z[i] ~ dbern(psi[i])            # Latent presence/absence
   for(j in 1:nOccasions) {
-    logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wPine[i,j]
+    logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wHot[i,j]
     y[i,j] ~ dbern(z[i]*p[i,j])   # Data
   }
 }

@@ -90,16 +90,16 @@ knit_theme$set("edit-kwrite")
   variables, predictors, independent variables, etc\dots \\
   \pause
   \vfill
-  Covariates let us explain variation in occupancy and detection
-  probabililty, which is often the key to reliable prediction and the
-  assessment of hypotheses. \\
+  Explaining variation in occupancy and detection probabililty with
+  covariates is central to reliable prediction and scientific
+  investigation. \\  
   \pause
   \vfill
   In static occupancy models, there are two types of covariates:
   \begin{enumerate}
     \item \textcolor{blue}{Site covariates} vary among sites
       but not among occasions
-    \item \textcolor{purple}{Observation covariates} may vary among
+    \item \textcolor{Purple}{Observation covariates} may vary among
       sites and occasions
   \end{enumerate}
   \pause
@@ -107,8 +107,10 @@ knit_theme$set("edit-kwrite")
   In both cases, covariates can be continuous or categorical. \\
   \pause
   \vfill
-  Observation covariates cannot be used to describe variation in
-  occupancy because occupancy is assumed to be constant over time.
+  \centering
+  \alert{Observation covariates cannot be used to describe variation
+    in occupancy because occupancy is assumed to be constant over
+    time.} \\ 
 \end{frame}
 
 
@@ -133,7 +135,7 @@ knit_theme$set("edit-kwrite")
   Observation model
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{purple} w_{ij}} + \cdots \\
+    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
@@ -147,7 +149,7 @@ knit_theme$set("edit-kwrite")
   \vfill
   $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
   \vspace{12pt}
-  $\color{purple} w$ is an observation covariate
+  $\color{Purple} w$ is an observation covariate
 \end{frame}
 
 
@@ -165,25 +167,25 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[fragile]
   \frametitle{Simulation}
   \small
-  Two continuous covariates and one categorical covariate with 2 levels.
+  Two continuous covariates and one categorical covariate with 2 levels
   \vfill
   \begin{enumerate}[<+->]
   \item Covariates
 <<sim-cov1,size='scriptsize'>>=
 nSites <- 100; nVisits <- 4; set.seed(3439) ## Make it reproducible
 x1 <- rnorm(nSites); x2 <- rnorm(nSites)    ## Continuous covars
-w <- matrix(sample(c("Oak", "Pine"), size=nSites*nVisits, replace=T),
+w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
             nrow=nSites, ncol=nVisits)
-wPine <- ifelse(w=="Pine", 1, 0)            ## Dummy variable
+wHot <- ifelse(w=="Hot", 1, 0)            ## Dummy variable
 @
   \item Coefficients, $\psi$, and $p$
 <<nsim-cov2,size='scriptsize'>>=
 beta0 <- 1; beta1 <- -1; beta2 <- 0
 psi <- plogis(beta0 + beta1*x1 + beta2*x2)
 alpha0 <- 0; alpha1 <- 1; alpha2 <- 0.5
-p <- plogis(alpha0 + alpha1*x1 + alpha2*wPine)
+p <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
 @   
-  \item Simulate presence-absence variable and observations
+  \item Simulate occupancy and detection data
 <<sim-cov3,size='scriptsize'>>=
 z <- rbinom(nSites, size=1, psi)            ## pres/absence
 y <- matrix(NA, nrow=nSites, ncol=nVisits)
@@ -291,19 +293,6 @@ c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-%  \begin{enumerate}
-%  \item
-  Import the grouse data and fit the model:
-  \[
-    \mathrm{logit}(\psi_i)
-  \]
-%  \end{enumerate}
-\end{frame}
-
-
-
 
 
 \begin{frame}[fragile]
@@ -312,7 +301,7 @@ c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
   vary while holding other two covariates constant.  
 <<preddat,size='small'>>=
 pred.data <- data.frame(x1=seq(from=-3, to=3, length=50),
-                        x2=0, w='Pine') 
+                        x2=0, w='Hot') 
 @
 \pause
 \vfill
@@ -350,23 +339,50 @@ print(head(p.pred), digits=2)
 
 
 
+
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-<<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
-## lines(Predicted ~ x1, p.pred, col="grey")
-legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
+<<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+plot(Predicted ~ x1, psi.pred, type="l", ylab="Occurrence probability", col="blue")
+lines(lower ~ x1, psi.pred, col="grey")
+lines(upper ~ x1, psi.pred, col="grey")
 @   
 \end{frame}
 
 
+
+
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-<<pred-plot2,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
-lines(Predicted ~ x1, p.pred, col="grey")
-legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "grey"))
+<<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+plot(Predicted ~ x1, p.pred, type="l", ylab="Detection probability", col="purple")
+lines(lower ~ x1, p.pred, col="grey")
+lines(upper ~ x1, p.pred, col="grey")
 @   
+\end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
+% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
+% ## lines(Predicted ~ x1, p.pred, col="grey")
+% legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
+% @   
+% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+<<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
+plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
+lines(Predicted ~ x1, p.pred, col="purple")
+legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
+@
+\pause
+\small
+\centering
+Major problems if you ignore imperfect detection in this case \\
 \end{frame}
 
 
@@ -386,6 +402,33 @@ legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "grey"))
 % abline(v=sum(z), col="red") ## Actual number occupied
 % @   
 % \end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \small
+  \begin{enumerate}
+    \item Fit this model (using the simulated data):
+      \begin{gather*}
+        \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
+        z_i \sim \mathrm{Bern}(\psi_i) \\
+%      \end{gather*}
+%      \begin{gather*}
+        \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
+        \alpha_2 {\color{Purple} w_{ij}} \\
+        y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+      \end{gather*}
+      \pause
+    \item Predict $p$ again by letting $x_1$ vary, but this time, predict for
+      the case where $w$=`Cold'.
+    \item Graph $p$ as a function of $x_1$.
+  \end{enumerate}
+\end{frame}
+
 
 
 
@@ -409,7 +452,7 @@ writeLines(readLines("occupancy-model-covs.jag"))
   Put data in a named list
   \vspace{-12pt}
 <<bugs-data,size='small'>>=
-jags.data <- list(y=y, x1=x1, x2=x2, wPine=wPine,
+jags.data <- list(y=y, x1=x1, x2=x2, wHot=wHot,
                   nSites=nSites, nOccasions=nVisits)
 @
 \pause
@@ -438,8 +481,7 @@ jags.pars <- c("beta0", "beta1", "beta2",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE,cache=TRUE>>=
-## install.packages("jagsUI")
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE,cache=FALSE>>=
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
                                 parameters.to.save=jags.pars,
@@ -503,12 +545,12 @@ plot(jags.post.samples[,c(4:6,8)])
   to do the following:
   \begin{enumerate}
     \small
-    \item Import the Canada Warbler data and compute basic summary
-      stats like we did earlier.
-    \begin{itemize}
-      \item Data are ``point count data'' from North Carolina
-      \item Each 10-min survey was divided into 4, 2.5-min intervals 
-    \end{itemize}
+    \item Import the Canada Warbler data. % and compute basic summary
+%      stats like we did earlier.
+%    \begin{itemize}
+%      \item Data are ``point count data'' from North Carolina
+%      \item Each 10-min survey was divided into 4, 2.5-min intervals 
+%    \end{itemize}
     \item Fit the single-season (static) occupancy model using
       `unmarked' and `JAGS'. 
     \item Create a \inr{data.frame} to compare the estimates of
