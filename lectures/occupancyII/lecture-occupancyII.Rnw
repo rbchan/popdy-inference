@@ -109,7 +109,7 @@ knit_theme$set("edit-kwrite")
   \vfill
   \centering
   \alert{Observation covariates cannot be used to describe variation
-    in occupancy because occupancy is assumed to be constant over
+    in occupancy because occupancy is assumed to be \\ constant over
     time.} \\ 
 \end{frame}
 
@@ -481,7 +481,7 @@ jags.pars <- c("beta0", "beta1", "beta2",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE,cache=FALSE>>=
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE,cache=TRUE>>=
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
                                 parameters.to.save=jags.pars,
@@ -518,6 +518,102 @@ plot(jags.post.samples[,1:3])
 plot(jags.post.samples[,c(4:6,8)])
 @ 
 \end{frame}
+
+
+\begin{frame}
+  \frametitle{Bayesian prediction}
+  Every MCMC iteration represents a sample from the posterior
+  distribution. \\
+  \pause
+  \vfill
+  Each sample of the occupancy and detection coefficients can be used
+  to make a prediction. \\
+  \pause
+  \vfill
+  The collection of predictions can be used to summarize the posterior 
+  predictive distribution. \\
+  \pause
+  \vfill
+  We will look at the distribution of prediction lines. \\  
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  \small
+  First, extract the $\psi$ coefficients
+<<psi-coefs,size='scriptsize'>>=
+psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
+head(psi.coef.post, n=4)
+@
+  \pause
+  \vfill
+  Create prediction matrix, one row for each MCMC iteration.
+%  Columns represent covariate values. 
+<<psi-predmat,size='scriptsize'>>=
+n.iter <- nrow(psi.coef.post)  
+psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
+@   
+  \pause
+  \vfill
+  Predict $\psi$ for each MCMC iteration.
+%  using covariate values from \inr{pred.data}. 
+<<psi-pred-bayes,size='scriptsize'>>=
+for(i in 1:n.iter) {
+    psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
+                                psi.coef.post[i,"beta1"]*pred.data$x1)
+}
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  Prediction line for first posterior sample.
+<<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png'>>=
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
+     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+@
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  All samples from the posterior predictive distribution
+<<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE>>=
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
+     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+for(i in 1:n.iter) {
+    lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
+}
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  Now with posterior mean and 95\% CI
+<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE>>=
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
+     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+for(i in 1:n.iter) {
+    lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
+}
+pred.post.mean <- colMeans(psi.post.pred)
+pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
+pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
+lines(pred.data$x1, pred.post.mean, col="blue")
+lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
+lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
+
+@ 
+\end{frame}
+
 
 
 \section{Assignment}
