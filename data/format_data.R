@@ -112,6 +112,8 @@ str(grouse.data)
 ## grouse.data <- cbind(grouse.data,
 ##                      grouse.surveys.wide[reorder.surveys,keepvars])
 
+colnames(grouse.data)[1:2] <- c("Route", "PointID")
+
 str(grouse.data)
 
 
@@ -361,13 +363,41 @@ str(grouse.data)
 
 names(grouse.data)
 
-grouse.data.out <- grouse.data[,c("Route..", "Point.ID", "grouse1", "grouse2", "grouse3",
-                                  paste("Temperature", 1:3, sep="."),
-                                  paste("Date", 1:3, sep="."),
-                                  paste("Time", 1:3, sep="."))]
+grouse.data.out <- grouse.data[,c("Route", "PointID", "grouse1", "grouse2", "grouse3",
+                                  "utmE", "utmN", "elevation",
+                                  paste("Temperature", 1:3, sep="."))] ##,
+##                                  paste("Precipitation", 1:3, sep="."),
+                                  paste("Cloud.Cover", 1:3, sep="."),
+##                                  paste("Date", 1:3, sep="."),
+##                                  paste("Time", 1:3, sep="."))]
+
+grouse.data.out[,paste0("grouse", 1:3)]  <- ifelse(grouse.data[,paste0("grouse", 1:3)]>0,
+                                                   1L, 0L)
+
+str(grouse.data.out)
+
+write.csv(grouse.data.out, file="grouse_data.csv")
 
 
-write.csv(grouse.data, file="grouse_data_glm.csv")
+
+
+
+library(unmarked)
+
+
+umf <- unmarkedFrameOccu(y=grouse.data.out[,paste0("grouse", 1:3)],
+                         siteCovs=data.frame(elev=grouse.data.out$elevation),
+                         obsCovs=list(temp=grouse.data.out[,paste0("Temperature.", 1:3)],
+                                      cloud=grouse.data.out[,paste0("Cloud.Cover.", 1:3)]))
+
+occu(~temp ~ elev+I(elev^2), umf, start=c(-5,0.003,-0.0001,3,-.1))
+
+
+
+
+
+
+
 
 plot(grouse.data$elev, grouse.data$abund)
 
@@ -428,8 +458,23 @@ surveys <- subset(surveys.in, PointName %in% site.names,
                   select=!(names(surveys.in) %in%
                            c("X", "min_time",
                              "stand_time", "Year")))
+
+surveys$Date <- as.Date(surveys$SurvDate, format="%Y-%m-%d")
+surveys <- surveys[order(surveys$PointName, surveys$Date),]
 str(surveys)
 
+
+
+## Create occasion index
+## surveys.2017 <- subset(surveys, format(Date, format="%Y")=="2017")
+
+## surveys.2017$occasion <- with(surveys.2017,
+##      ave(seq_along(PointName), PointName, FUN=seq_along))
+## str(surveys.2017)
+## surveys.2017.wide <- reshape(surveys.2017, idvar="PointName",
+##                              timevar="occasion", direction="wide")
+
+str(surveys.2017.wide)
 
 ## Detections
 names(dets.in)
@@ -497,5 +542,28 @@ write.csv(cawa.data, file="cawa_data_glm.csv")
 
 ## Export 2017 CAWA data
 cawa.data.2017 <- ifelse(unclass(det.arr[,,"2017","CAWA"])>1, 1L, 0L)
+
+surveys.2017 <- subset(surveys, format(Date, format="%Y")=="2017" &
+                                PointName %in% rownames(cawa.data.2017))
+surveys.2017$occasion <- with(surveys.2017,
+                              ave(seq_along(PointName), PointName, FUN=seq_along))
+surveys.2017 <- surveys.2017[surveys.2017$occasion==1,]
+
+
+## surveys.2017$occasion <- with(surveys.2017,
+##      ave(seq_along(PointName), PointName, FUN=seq_along))
+
+
+    
+match(surveys.2017$PointName, rownames(cawa.data.2017))
+
+cawa.data.2017 <- cbind(cawa.data.2017,
+                        surveys.2017[,c("SurvDate","SurvTime","Precipitation",
+                                        "Wind","Noise")])
+cawa.data.2017$Elevation <- sites.in[match(rownames(cawa.data.2017),
+                                           sites.in$PointName),"Elevation"]
+colnames(cawa.data.2017)[1:4] <- c("cawa1","cawa2","cawa3","cawa4")
+
+str(cawa.data.2017)
 
 write.csv(cawa.data.2017, file="cawa_data_2017_occu.csv")

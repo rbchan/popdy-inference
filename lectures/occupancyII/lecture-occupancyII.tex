@@ -1026,26 +1026,33 @@ Major problems if you ignore imperfect detection in this case \\
 
 \begin{frame}
   \frametitle{Assignment}
-  \small
-  % \scriptsize
+  % \small
+  \footnotesize
   Create a self-contained R script or Rmarkdown file
   to do the following:
+  \vfill
   \begin{enumerate}
-    \small
-    \item Import the Canada Warbler data. % and compute basic summary
-%      stats like we did earlier.
-%    \begin{itemize}
-%      \item Data are ``point count data'' from North Carolina
-%      \item Each 10-min survey was divided into 4, 2.5-min intervals 
-%    \end{itemize}
-    \item Fit the single-season (static) occupancy model using
-      `unmarked' and `JAGS'. 
-    \item Create a \inr{data.frame} to compare the estimates of
-      $\psi$, $p$, and ``nSitesOccupied'' from the two
-      analyses. Compare point estimates and 95\% CIs. Describe any
-      differences you see in the estimates.
-  \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+%    \small
+    \footnotesize
+    \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
+      \begin{itemize}
+        \footnotesize
+        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+        \item Site covs: \texttt{Elevation, Wind, Noise}
+      \end{itemize}
+    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
+      \begin{itemize}
+        \footnotesize
+        \item Response: \texttt{grouse1, grouse2, grouse3}
+        \item Site covs: \texttt{elevation}
+        \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
+      \end{itemize}
+    \item Make one prediction graph for each species 
+    \item Create the same graphs as above, but using Bayesian methods
+    \item What differences do you see between likelihood and Bayesian graphs?
+    \end{enumerate}
+    \vfill
+    Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
 \end{frame}
 
 
