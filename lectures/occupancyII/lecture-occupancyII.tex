@@ -58,7 +58,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 5 -- Occuancy models: covariates and prediction }
+\title{Lecture 5 -- Occupancy models: covariates and prediction }
 \author{Richard Chandler}
 
 
@@ -129,7 +129,7 @@
   variables, predictors, independent variables, etc\dots \\
   \pause
   \vfill
-  Explaining variation in occupancy and detection probabililty with
+  Explaining variation in occupancy and detection probability with
   covariates is central to reliable prediction and scientific
   investigation. \\  
   \pause
@@ -214,7 +214,7 @@
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; nVisits} \hlkwb{<-} \hlnum{4}\hlstd{;} \hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)} \hlcom{## Make it reproducible}
-\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,} \hlnum{0}\hlstd{,} \hlnum{0.5}\hlstd{); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,} \hlnum{100}\hlstd{,} \hlnum{10}\hlstd{)} \hlcom{## Continuous covs}
+\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,}\hlnum{100}\hlstd{,}\hlnum{10}\hlstd{)} \hlcom{## Continuous covs}
 \hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Cold"}\hlstd{,} \hlstr{"Hot"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
             \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
 \hlstd{wHot} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Hot"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}              \hlcom{## Dummy variable}
@@ -354,16 +354,18 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{alltt}
 \hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(x1,x2),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{w}\hlstd{=w))}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: obsCovs contains characters. Converting them to factors.}}\end{kframe}
 \end{knitrout}
 \pause
-\vfill
-Reformat $w$ as a factor: %, but it's formatted as a matrix of
+%\vfill
+%Reformat $w$ as a factor: %, but it's formatted as a matrix of
 %characters, we have to reformat it:
+%Summary
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{obsCovs}\hlstd{(umf)}\hlopt{$}\hlstd{w} \hlkwb{<-} \hlkwd{factor}\hlstd{(}\hlkwd{obsCovs}\hlstd{(umf)}\hlopt{$}\hlstd{w)} \hlcom{# Only necessary if w is provided as 'character' matrix}
 \hlkwd{summary}\hlstd{(umf)}
 \end{alltt}
 \begin{verbatim}
@@ -427,7 +429,7 @@ Reformat $w$ as a factor: %, but it's formatted as a matrix of
   estimates (MLEs) and it facilitates comparison of estimates.  \\
   \pause
   \vfill
-  We just have to remember to back-transform covariate when graphing
+  We just have to remember to back-transform covariates when graphing
   predictions.
 \end{frame}
 
@@ -840,7 +842,7 @@ Major problems if you ignore imperfect detection in this case \\
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.023 minutes.
+## MCMC took 0.04 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1073,19 +1075,41 @@ Major problems if you ignore imperfect detection in this case \\
 
 
 
+
+\begin{frame}
+  \frametitle{Summary of static occupancy models}
+  \small
+  Assumptions are made explicit by the model description, but it's worth emphasizing that: 
+  \begin{itemize}[<+->]
+    \item<2-> Occupancy is assumed to remain constant at each site during the sampling period
+    \item<3-> The definition of a `site' is critical, but can difficult in
+      some situations, such as in camera studies.
+    \item<4-> Abundance is assumed to be unimportant
+    \item<5-> Observations are assumed to be independent, conditional
+      on latent variables and covariates
+  \end{itemize}
+  \vfill
+  \uncover<6->{  
+    These assumptions can be relaxed if we have enough data. 
+  }
+  \begin{itemize}
+    \item<7-> Dynamic occupancy models
+    \begin{itemize}
+      \item Occupancy evolves as a function of local colonization
+        and extinction
+    \end{itemize}
+    \item<8-> $N$-mixture models
+    \begin{itemize}
+      \item Focus is on local abundance, rather than presence/absence
+    \end{itemize}
+  \end{itemize}
+  \vfill
+  \uncover<9->{We'll talk more about design issues later}
+\end{frame}
+
+
+
 \section{Assignment}
-
-
-
-
-% \begin{frame}
-%   \frametitle{Outline}
-%   \Large
-%   \tableofcontents[currentsection]
-% \end{frame}
-
-
-
 
 
 

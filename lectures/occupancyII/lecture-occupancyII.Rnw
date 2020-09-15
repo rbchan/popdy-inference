@@ -8,7 +8,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 5 -- Occuancy models: covariates and prediction }
+\title{Lecture 5 -- Occupancy models: covariates and prediction }
 \author{Richard Chandler}
 
 
@@ -90,7 +90,7 @@ knit_theme$set("edit-kwrite")
   variables, predictors, independent variables, etc\dots \\
   \pause
   \vfill
-  Explaining variation in occupancy and detection probabililty with
+  Explaining variation in occupancy and detection probability with
   covariates is central to reliable prediction and scientific
   investigation. \\  
   \pause
@@ -173,7 +173,7 @@ knit_theme$set("edit-kwrite")
   \item Covariates
 <<sim-cov1,size='scriptsize'>>=
 nSites <- 100; nVisits <- 4; set.seed(3439) ## Make it reproducible
-x1 <- rnorm(nSites, 0, 0.5); x2 <- rnorm(nSites, 100, 10) ## Continuous covs
+x1 <- rnorm(nSites,0,0.5); x2 <- rnorm(nSites,100,10) ## Continuous covs
 w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
             nrow=nSites, ncol=nVisits)
 wHot <- ifelse(w=="Hot", 1, 0)              ## Dummy variable
@@ -261,11 +261,11 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 umf <- unmarkedFrameOccu(y=y, siteCovs=data.frame(x1,x2), obsCovs=list(w=w))
 @
 \pause
-\vfill
-Reformat $w$ as a factor: %, but it's formatted as a matrix of
+%\vfill
+%Reformat $w$ as a factor: %, but it's formatted as a matrix of
 %characters, we have to reformat it:
+%Summary
 <<wfac,size='tiny'>>=
-obsCovs(umf)$w <- factor(obsCovs(umf)$w) # Only necessary if w is provided as 'character' matrix
 summary(umf)
 @ 
 \end{frame}
@@ -532,7 +532,7 @@ jags.pars <- c("beta0", "beta1", "beta2",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE>>=
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
                                 parameters.to.save=jags.pars,
@@ -633,7 +633,7 @@ plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
   All samples from the posterior predictive distribution
-<<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=FALSE,dpi=200>>=
+<<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
 plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
@@ -649,7 +649,7 @@ for(i in 1:n.iter) {
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
   Now with posterior mean and 95\% CI
-<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=FALSE,dpi=200>>=
+<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
 plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
@@ -666,19 +666,41 @@ lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
 
 
 
+
+\begin{frame}
+  \frametitle{Summary of static occupancy models}
+  \small
+  Assumptions are made explicit by the model description, but it's worth emphasizing that: 
+  \begin{itemize}[<+->]
+    \item<2-> Occupancy is assumed to remain constant at each site during the sampling period
+    \item<3-> The definition of a `site' is critical, but can difficult in
+      some situations, such as in camera studies.
+    \item<4-> Abundance is assumed to be unimportant
+    \item<5-> Observations are assumed to be independent, conditional
+      on latent variables and covariates
+  \end{itemize}
+  \vfill
+  \uncover<6->{  
+    These assumptions can be relaxed if we have enough data. 
+  }
+  \begin{itemize}
+    \item<7-> Dynamic occupancy models
+    \begin{itemize}
+      \item Occupancy evolves as a function of local colonization
+        and extinction
+    \end{itemize}
+    \item<8-> $N$-mixture models
+    \begin{itemize}
+      \item Focus is on local abundance, rather than presence/absence
+    \end{itemize}
+  \end{itemize}
+  \vfill
+  \uncover<9->{We'll talk more about design issues later}
+\end{frame}
+
+
+
 \section{Assignment}
-
-
-
-
-% \begin{frame}
-%   \frametitle{Outline}
-%   \Large
-%   \tableofcontents[currentsection]
-% \end{frame}
-
-
-
 
 
 
