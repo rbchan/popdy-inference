@@ -153,7 +153,7 @@ library(lme4)
 ## The grouse data are a bit tricky because the study area spans two UTM Zones
 ## cs <- make_EPSG()
 ## grep("zone=16", cs$prj4, value=TRUE)
-grep("zone=16", cs$prj4, value=TRUE)
+## grep("zone=16", cs$prj4, value=TRUE)
 
 ## proj4strings
 ## utm.z16 <- "+proj=utm +zone=16S +datum=WGS84 +units=m +no_defs +type=crs"
@@ -367,7 +367,7 @@ grouse.data.out <- grouse.data[,c("Route", "PointID", "grouse1", "grouse2", "gro
                                   "utmE", "utmN", "elevation",
                                   paste("Temperature", 1:3, sep="."))] ##,
 ##                                  paste("Precipitation", 1:3, sep="."),
-                                  paste("Cloud.Cover", 1:3, sep="."),
+##                                  paste("Cloud.Cover", 1:3, sep="."),
 ##                                  paste("Date", 1:3, sep="."),
 ##                                  paste("Time", 1:3, sep="."))]
 
@@ -376,7 +376,7 @@ grouse.data.out[,paste0("grouse", 1:3)]  <- ifelse(grouse.data[,paste0("grouse",
 
 str(grouse.data.out)
 
-write.csv(grouse.data.out, file="grouse_data.csv")
+write.csv(grouse.data.out, file="grouse_data_occu.csv")
 
 
 

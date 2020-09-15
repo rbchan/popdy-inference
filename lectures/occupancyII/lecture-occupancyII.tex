@@ -214,10 +214,10 @@
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; nVisits} \hlkwb{<-} \hlnum{4}\hlstd{;} \hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)} \hlcom{## Make it reproducible}
-\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}    \hlcom{## Continuous covars}
+\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,} \hlnum{0}\hlstd{,} \hlnum{0.5}\hlstd{); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,} \hlnum{100}\hlstd{,} \hlnum{10}\hlstd{)} \hlcom{## Continuous covs}
 \hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Cold"}\hlstd{,} \hlstr{"Hot"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
             \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
-\hlstd{wHot} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Hot"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}            \hlcom{## Dummy variable}
+\hlstd{wHot} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Hot"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}              \hlcom{## Dummy variable}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -265,24 +265,24 @@
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
 ##  [1,]    1    1    1    1
-##  [2,]    0    0    0    0
+##  [2,]    1    1    1    1
 ##  [3,]    0    0    0    0
 ##  [4,]    1    1    0    1
-##  [5,]    1    1    1    1
-##  [6,]    0    0    0    0
+##  [5,]    0    0    0    0
+##  [6,]    0    1    0    0
 ##  [7,]    0    0    0    0
 ##  [8,]    0    0    0    0
-##  [9,]    0    1    0    0
-## [10,]    0    1    1    1
-## [11,]    0    1    0    1
-## [12,]    0    0    0    1
-## [13,]    0    1    1    1
-## [14,]    1    0    1    1
+##  [9,]    1    0    0    0
+## [10,]    1    1    1    1
+## [11,]    1    1    0    1
+## [12,]    0    1    0    0
+## [13,]    1    1    1    1
+## [14,]    0    1    1    1
 ## [15,]    0    0    0    0
-## [16,]    0    0    0    0
-## [17,]    0    0    1    0
-## [18,]    0    0    0    0
-## [19,]    0    0    0    0
+## [16,]    1    0    1    1
+## [17,]    0    1    1    0
+## [18,]    0    1    0    1
+## [19,]    0    1    1    0
 ## [20,]    0    0    0    0
 \end{verbatim}
 \end{kframe}
@@ -303,7 +303,7 @@
 \begin{verbatim}
 ## siteDets
 ##  0  1  2  3  4 
-## 47 20 13 12  8
+## 30 12 17 26 15
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -318,7 +318,7 @@ Proportion of sites known to be occupied \\
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.53
+## [1] 0.7
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -372,20 +372,20 @@ Reformat $w$ as a factor: %, but it's formatted as a matrix of
 ## 100 sites
 ## Maximum number of observations per site: 4 
 ## Mean number of observations per site: 4 
-## Sites with at least one detection: 53 
+## Sites with at least one detection: 70 
 ## 
 ## Tabulation of y observations:
 ##   0   1 
-## 286 114 
+## 216 184 
 ## 
 ## Site-level covariates:
-##        x1                 x2         
-##  Min.   :-1.96149   Min.   :-3.5949  
-##  1st Qu.:-0.77638   1st Qu.:-0.8903  
-##  Median :-0.11218   Median :-0.2529  
-##  Mean   :-0.04869   Mean   :-0.1119  
-##  3rd Qu.: 0.58804   3rd Qu.: 0.7182  
-##  Max.   : 3.28648   Max.   : 2.7145  
+##        x1                 x2        
+##  Min.   :-0.98075   Min.   : 64.05  
+##  1st Qu.:-0.38819   1st Qu.: 91.10  
+##  Median :-0.05609   Median : 97.47  
+##  Mean   :-0.02434   Mean   : 98.88  
+##  3rd Qu.: 0.29402   3rd Qu.:107.18  
+##  Max.   : 1.64324   Max.   :127.15  
 ## 
 ## Observation-level covariates:
 ##     w      
@@ -398,6 +398,40 @@ Reformat $w$ as a factor: %, but it's formatted as a matrix of
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Standardizing}
+  It's almost always a good idea to standardize \alert{continuous} covariates. \\
+  \pause
+  \vfill
+  Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
+  \pause
+%  \vfill
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x1s} \hlkwb{<-} \hlstd{(x1}\hlopt{-}\hlkwd{mean}\hlstd{(x1))}\hlopt{/}\hlkwd{sd}\hlstd{(x1)}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x2s} \hlkwb{<-} \hlstd{(x2}\hlopt{-}\hlkwd{mean}\hlstd{(x2))}\hlopt{/}\hlkwd{sd}\hlstd{(x2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+%  \pause
+%  \vfill
+%  If all of your site covariates are continuous, you can use this
+%  shortcut with the \inr{scale} function:
+%<<umf-zcovs>>=
+%siteCovs(umf) <- scale(siteCovs(umf))
+%@
+  \pause
+  \vfill
+  Standardizing makes it easier to find the maximum likelihood
+  estimates (MLEs) and it facilitates comparison of estimates.  \\
+  \pause
+  \vfill
+  We just have to remember to back-transform covariate when graphing
+  predictions.
+\end{frame}
+
+
 
 
 \begin{frame}[fragile]
@@ -406,27 +440,27 @@ Reformat $w$ as a factor: %, but it's formatted as a matrix of
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlstd{x1}\hlopt{+}\hlstd{w} \hlopt{~}\hlstd{x1}\hlopt{+}\hlstd{x2, umf)}
+\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlstd{x1s}\hlopt{+}\hlstd{w} \hlopt{~}\hlstd{x1s}\hlopt{+}\hlstd{x2s, umf)}    \hlcom{## Notice standardized covariates}
 \hlstd{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## occu(formula = ~x1 + w ~ x1 + x2, data = umf)
+## occu(formula = ~x1s + w ~ x1s + x2s, data = umf)
 ## 
 ## Occupancy:
-##             Estimate    SE       z P(>|z|)
-## (Intercept)   0.9867 0.448  2.2041 0.02751
-## x1           -1.4358 0.545 -2.6342 0.00843
-## x2            0.0299 0.306  0.0975 0.92231
+##             Estimate    SE      z  P(>|z|)
+## (Intercept)    1.139 0.292  3.898 9.68e-05
+## x1s           -0.748 0.312 -2.401 1.63e-02
+## x2s           -0.147 0.262 -0.561 5.75e-01
 ## 
 ## Detection:
-##             Estimate    SE      z  P(>|z|)
-## (Intercept)   -0.201 0.212 -0.945 3.45e-01
-## x1             1.278 0.206  6.215 5.14e-10
-## wHot           0.657 0.282  2.332 1.97e-02
+##             Estimate    SE    z  P(>|z|)
+## (Intercept)    0.482 0.187 2.57 1.01e-02
+## x1s            0.862 0.170 5.06 4.23e-07
+## wHot           0.584 0.265 2.20 2.76e-02
 ## 
-## AIC: 393.8525
+## AIC: 455.6924
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -461,12 +495,13 @@ Compare to actual parameter values:
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
   Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
-  vary while holding other two covariates constant.  
+  vary while holding other two covariates constant. Important that we
+  use the standardized version of the continuous covariates.
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
-                        \hlkwc{x2}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Hot'}\hlstd{)}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1s}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
+                        \hlkwc{x2s}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Hot'}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -506,13 +541,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(psi.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted     SE lower upper   x1 x2   w
-## 1      1.00 0.0099  0.80     1 -3.0  0 Hot
-## 2      0.99 0.0114  0.79     1 -2.9  0 Hot
-## 3      0.99 0.0131  0.79     1 -2.8  0 Hot
-## 4      0.99 0.0150  0.78     1 -2.6  0 Hot
-## 5      0.99 0.0172  0.77     1 -2.5  0 Hot
-## 6      0.99 0.0196  0.76     1 -2.4  0 Hot
+##   Predicted    SE lower upper  x1s x2s   w
+## 1      0.97 0.035  0.77  1.00 -3.0   0 Hot
+## 2      0.96 0.037  0.77  1.00 -2.9   0 Hot
+## 3      0.96 0.039  0.76  0.99 -2.8   0 Hot
+## 4      0.96 0.041  0.76  0.99 -2.6   0 Hot
+## 5      0.95 0.043  0.76  0.99 -2.5   0 Hot
+## 6      0.95 0.045  0.75  0.99 -2.4   0 Hot
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -525,17 +560,18 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(p.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted    SE lower upper   x1 x2   w
-## 1     0.033 0.019 0.010 0.099 -3.0  0 Hot
-## 2     0.038 0.021 0.013 0.109 -2.9  0 Hot
-## 3     0.045 0.023 0.016 0.121 -2.8  0 Hot
-## 4     0.052 0.026 0.019 0.133 -2.6  0 Hot
-## 5     0.060 0.028 0.023 0.147 -2.5  0 Hot
-## 6     0.069 0.031 0.028 0.161 -2.4  0 Hot
+##   Predicted    SE lower upper  x1s x2s   w
+## 1      0.18 0.073 0.076  0.37 -3.0   0 Hot
+## 2      0.20 0.075 0.087  0.38 -2.9   0 Hot
+## 3      0.21 0.077 0.099  0.40 -2.8   0 Hot
+## 4      0.23 0.078 0.112  0.42 -2.6   0 Hot
+## 5      0.25 0.079 0.127  0.43 -2.5   0 Hot
+## 6      0.27 0.080 0.144  0.45 -2.4   0 Hot
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
+
 
 
 
@@ -546,9 +582,9 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized covariate (x1s)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -569,9 +605,36 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)} \hlcom{## Suppress x-axis}
+\hlstd{x1s.ticks} \hlkwb{<-} \hlopt{-}\hlnum{3}\hlopt{:}\hlnum{3}  \hlcom{## These are where tick marks for x1s would be}
+\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-psi1s-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -600,8 +663,10 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"x1"}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
+\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{)}
 \hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"purple"}\hlstd{))}
 \end{alltt}
 \end{kframe}
@@ -613,7 +678,7 @@ Get predictions of $p$ for each row of prediction data.
 
 
 \end{knitrout}
-\pause
+%\pause
 \small
 \centering
 Major problems if you ignore imperfect detection in this case \\
@@ -646,7 +711,7 @@ Major problems if you ignore imperfect detection in this case \\
   \frametitle{In-class exercise}
   \small
   \begin{enumerate}
-    \item Fit this model (using the simulated data):
+    \item Fit this model (to the simulated data):
       \begin{gather*}
         \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
         z_i \sim \mathrm{Bern}(\psi_i) \\
@@ -657,8 +722,8 @@ Major problems if you ignore imperfect detection in this case \\
         y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
       \end{gather*}
       \pause
-    \item Predict $p$ again by letting $x_1$ vary, but this time, predict for
-      the case where $w$=`Cold'.
+    \item Predict $p$ again by letting (standardized) $x_1$ vary, but
+      this time, predict for the case where $w$=`Cold'.
     \item Graph $p$ as a function of $x_1$.
   \end{enumerate}
 \end{frame}
@@ -715,7 +780,8 @@ Major problems if you ignore imperfect detection in this case \\
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=x1,} \hlkwc{x2}\hlstd{=x2,} \hlkwc{wHot}\hlstd{=wHot,}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=(x1}\hlopt{-}\hlkwd{mean}\hlstd{(x1))}\hlopt{/}\hlkwd{sd}\hlstd{(x1),}
+                  \hlkwc{x2}\hlstd{=(x2}\hlopt{-}\hlkwd{mean}\hlstd{(x2))}\hlopt{/}\hlkwd{sd}\hlstd{(x2),} \hlkwc{wHot}\hlstd{=wHot,}
                   \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
 \end{alltt}
 \end{kframe}
@@ -774,7 +840,7 @@ Major problems if you ignore imperfect detection in this case \\
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.022 minutes.
+## MCMC took 0.023 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -799,27 +865,27 @@ Major problems if you ignore imperfect detection in this case \\
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##                    Mean      SD Naive SE Time-series SE
-## alpha0         -0.18986  0.2056 0.002655       0.006095
-## alpha1          1.24998  0.2031 0.002622       0.004348
-## alpha2          0.65006  0.2726 0.003519       0.007395
-## beta0           0.92742  0.3903 0.005039       0.016264
-## beta1          -1.37373  0.4696 0.006062       0.019693
-## beta2           0.04135  0.2938 0.003793       0.007092
-## deviance      311.05807 11.2700 0.145495       0.397345
-## sitesOccupied  67.45550  3.4756 0.044870       0.140560
+##                   Mean     SD Naive SE Time-series SE
+## alpha0          0.4904 0.1849 0.002387       0.005376
+## alpha1          0.8528 0.1672 0.002158       0.003438
+## alpha2          0.5680 0.2636 0.003404       0.006831
+## beta0           1.1471 0.2829 0.003653       0.006852
+## beta1          -0.7536 0.2982 0.003849       0.007414
+## beta2          -0.1397 0.2632 0.003398       0.005036
+## deviance      352.0681 9.5658 0.123495       0.203053
+## sitesOccupied  73.4598 1.6965 0.021902       0.039058
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##                   2.5%      25%       50%       75%    97.5%
-## alpha0         -0.5887  -0.3297  -0.19107  -0.05123   0.2226
-## alpha1          0.8516   1.1142   1.24979   1.38091   1.6512
-## alpha2          0.1185   0.4662   0.65133   0.84229   1.1823
-## beta0           0.2375   0.6618   0.89793   1.16182   1.7604
-## beta1          -2.3760  -1.6722  -1.33238  -1.04487  -0.5579
-## beta2          -0.5389  -0.1561   0.04286   0.23728   0.6215
-## deviance      289.6256 303.3495 310.89209 318.52136 333.8347
-## sitesOccupied  60.0000  65.0000  68.00000  70.00000  74.0000
+##                    2.5%      25%      50%       75%    97.5%
+## alpha0          0.13808   0.3639   0.4906   0.61438   0.8608
+## alpha1          0.52512   0.7387   0.8519   0.96736   1.1800
+## alpha2          0.05466   0.3857   0.5673   0.74142   1.1009
+## beta0           0.62554   0.9525   1.1374   1.32587   1.7390
+## beta1          -1.36754  -0.9486  -0.7390  -0.54622  -0.2041
+## beta2          -0.67281  -0.3137  -0.1352   0.04209   0.3574
+## deviance      335.97151 345.2746 351.2139 358.04978 372.9426
+## sitesOccupied  70.00000  72.0000  73.0000  75.00000  77.0000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -896,11 +962,11 @@ Major problems if you ignore imperfect detection in this case \\
 \hlkwd{head}\hlstd{(psi.coef.post,} \hlkwc{n}\hlstd{=}\hlnum{4}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##          beta0      beta1     beta2
-## [1,] 0.6400490 -0.6390125 0.3240448
-## [2,] 0.6818219 -0.8099118 0.1445415
-## [3,] 0.6502291 -1.1891791 0.1055811
-## [4,] 0.3741007 -1.3171156 0.3431991
+##          beta0      beta1      beta2
+## [1,] 1.4303703 -0.7222436 -0.3066065
+## [2,] 1.2595470 -0.5734942 -0.1045532
+## [3,] 0.9932244 -0.8808514  0.1786295
+## [4,] 1.3039602 -0.4445683 -0.3572371
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -925,7 +991,7 @@ Major problems if you ignore imperfect detection in this case \\
 \begin{alltt}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
     \hlstd{psi.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(psi.coef.post[i,}\hlstr{"beta0"}\hlstd{]} \hlopt{+}
-                                \hlstd{psi.coef.post[i,}\hlstr{"beta1"}\hlstd{]}\hlopt{*}\hlstd{pred.data}\hlopt{$}\hlstd{x1)}
+                                \hlstd{psi.coef.post[i,}\hlstr{"beta1"}\hlstd{]}\hlopt{*}\hlstd{pred.data}\hlopt{$}\hlstd{x1s)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -936,11 +1002,11 @@ Major problems if you ignore imperfect detection in this case \\
 
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
-  Prediction line for first posterior sample.
+  Prediction line for first posterior sample
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, psi.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"x1"}\hlstd{,}
+\hlkwd{plot}\hlstd{(pred.data}\hlopt{$}\hlstd{x1s, psi.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"x1s"}\hlstd{,}
      \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
 \end{alltt}
 \end{kframe}
@@ -963,7 +1029,7 @@ Major problems if you ignore imperfect detection in this case \\
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
-    \hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, psi.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+    \hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1s, psi.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -1044,11 +1110,11 @@ Major problems if you ignore imperfect detection in this case \\
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{grouse1, grouse2, grouse3}
-        \item Site covs: \texttt{elevation}
+        \item Site covs: \texttt{elevation, utmE, utmN}
         \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
       \end{itemize}
-    \item Make one prediction graph for each species 
-    \item Create the same graphs as above, but using Bayesian methods
+    \item Make one prediction graph for each species. 
+    \item Create the same graphs as above, but using Bayesian methods.
     \item What differences do you see between likelihood and Bayesian graphs?
     \end{enumerate}
     \vfill
