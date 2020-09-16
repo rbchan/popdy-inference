@@ -8,7 +8,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 5 -- Occupancy models: covariates and prediction }
+\title{Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and prediction }
 \author{Richard Chandler}
 
 
@@ -19,8 +19,8 @@ source("../rnw2pdf.R")
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-occupancyII")
-rnw2pdf("lecture-occupancyII", tangle=TRUE)
+rnw2pdf("lecture-bin-NmixI")
+rnw2pdf("lecture-bin-NmixI", tangle=TRUE)
 @ 
 
 
@@ -48,13 +48,11 @@ knit_theme$set("edit-kwrite")
 
 
 
-
-
 \begin{frame}[plain]
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 5 -- Occupancy models: covariates and prediction} \\
+  {\huge Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and predicting} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -86,49 +84,19 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Overview}
-  We almost always have covariates, which are also called explanatory
-  variables, predictors, independent variables, etc\dots \\
-  \pause
-  \vfill
-  Explaining variation in occupancy and detection probability with
-  covariates is central to reliable prediction and scientific
-  investigation. \\  
-  \pause
-  \vfill
-  In static occupancy models, there are two types of covariates:
-  \begin{enumerate}
-    \item \textcolor{blue}{Site covariates} vary among sites
-      but not among occasions
-    \item \textcolor{Purple}{Observation covariates} may vary among
-      sites and occasions
-  \end{enumerate}
-  \pause
-  \vfill
-  In both cases, covariates can be continuous or categorical. \\
-  \pause
-  \vfill
-  \centering
-  \alert{Observation covariates cannot be used to describe variation
-    in occupancy because occupancy is assumed to be \\ constant over
-    time.} \\ 
 \end{frame}
 
-
-% \begin{frame}
-%   \frametitle{Ignoring detection probability}
-%   Show some examples
-% \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Covariates}
+  \frametitle{Binomial $N$-mixture model}
   \small
-  State model
+  State model (with Poisson assumption)
   \begin{gather*}
-    \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
     \beta_2 {\color{blue} x_{i2}} + \cdots \\
-    z_i \sim \mathrm{Bern}(\psi_i)
+    N_i \sim \mathrm{Pois}(\lambda_i)
   \end{gather*}
   \pause
   \vfill
@@ -136,20 +104,20 @@ knit_theme$set("edit-kwrite")
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
     + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
-    y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+    y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
   \end{gather*}
   \pause
-  %  \vfill
-  %  \small
-  % Definitions \\
-  % $\psi_i$ -- probability that the species occurs at site $i$ \\
-  % $z_i$ -- binary presence/absence variable at site $i$ \\
-  % $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ \\
-  % $y_{ij}$ -- binary detection/non-detection data
   \vfill
-  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
-  \vspace{12pt}
-  $\color{Purple} w$ is an observation covariate
+  \small
+  Definitions \\
+  $\lambda_i$ -- Expected value of abundance at site $i$ \\
+  $N_i$ -- Realized value of abundance at site $i$ \\
+  $p_{ij}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ \\
+  $y_{ij}$ -- Count data
+%  \vfill
+%  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
+%  \vspace{12pt}
+%  $\color{Purple} w$ is an observation covariate
 \end{frame}
 
 
@@ -164,15 +132,44 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
+
+
 \begin{frame}[fragile]
-  \frametitle{Simulation}
+  \frametitle{Simulation -- No covariates}
+  \begin{enumerate}[<+->]
+  \item Abundance
+<<sim-nocov1,size='scriptsize'>>=
+nSites <- 100
+nVisits <- 4
+set.seed(3439) ## Make it reproducible
+lambda1 <- 2.6  ## Expected value of N
+N1 <- rpois(n=nSites, lambda=lambda1)
+@
+  \item Detection probability and data
+<<sim-nocov2,size='scriptsize'>>=
+p1 <- 0.3
+y1 <- matrix(NA, nrow=nSites, ncol=nVisits)
+for(i in 1:nSites) {
+    y1[i,] <- rbinom(nVisits, size=N1[i], prob=p1)
+}
+@
+\end{enumerate}
+Looky
+<<N1y1>>=
+cbind(y1, N1)[1:5,]
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation -- Covariates}
   \small
   Two continuous covariates and one categorical covariate with 2 levels
   \vfill
   \begin{enumerate}[<+->]
   \item Covariates
 <<sim-cov1,size='scriptsize'>>=
-nSites <- 100; nVisits <- 4; set.seed(3439) ## Make it reproducible
 x1 <- rnorm(nSites,0,0.5); x2 <- rnorm(nSites,100,10) ## Continuous covs
 w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
             nrow=nSites, ncol=nVisits)
@@ -181,16 +178,16 @@ wHot <- ifelse(w=="Hot", 1, 0)              ## Dummy variable
   \item Coefficients, $\psi$, and $p$
 <<nsim-cov2,size='scriptsize'>>=
 beta0 <- 1; beta1 <- -1; beta2 <- 0
-psi <- plogis(beta0 + beta1*x1 + beta2*x2)
+lambda2 <- exp(beta0 + beta1*x1 + beta2*x2)
 alpha0 <- 0; alpha1 <- 1; alpha2 <- 0.5
-p <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
+p2 <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
 @   
   \item Simulate occupancy and detection data
 <<sim-cov3,size='scriptsize'>>=
-z <- rbinom(nSites, size=1, psi)            ## pres/absence
-y <- matrix(NA, nrow=nSites, ncol=nVisits)
+N2 <- rpois(nSites, lambda=lambda2)            ## pres/absence
+y2 <- matrix(NA, nrow=nSites, ncol=nVisits)
 for(i in 1:nSites) {
-    y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p[i,])
+    y2[i,] <- rbinom(nVisits, size=N2[i], prob=p2[i,])
 }
 @   
 \end{enumerate}
@@ -272,34 +269,34 @@ summary(umf)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Standardizing}
-  It's almost always a good idea to standardize \alert{continuous} covariates. \\
-  \pause
-  \vfill
-  Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
-  \pause
-%  \vfill
-<<umf-zcov,size='small'>>=
-siteCovs(umf)$x1s <- (x1-mean(x1))/sd(x1)
-siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
-@
-%  \pause
-%  \vfill
-%  If all of your site covariates are continuous, you can use this
-%  shortcut with the \inr{scale} function:
-%<<umf-zcovs>>=
-%siteCovs(umf) <- scale(siteCovs(umf))
-%@
-  \pause
-  \vfill
-  Standardizing makes it easier to find the maximum likelihood
-  estimates (MLEs) and it facilitates comparison of estimates.  \\
-  \pause
-  \vfill
-  We just have to remember to back-transform covariates when graphing
-  predictions.
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Standardizing}
+%   It's almost always a good idea to standardize \alert{continuous} covariates. \\
+%   \pause
+%   \vfill
+%   Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
+%   \pause
+% %  \vfill
+% <<umf-zcov,size='small'>>=
+% siteCovs(umf)$x1s <- (x1-mean(x1))/sd(x1)
+% siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
+% @
+% %  \pause
+% %  \vfill
+% %  If all of your site covariates are continuous, you can use this
+% %  shortcut with the \inr{scale} function:
+% %<<umf-zcovs>>=
+% %siteCovs(umf) <- scale(siteCovs(umf))
+% %@
+%   \pause
+%   \vfill
+%   Standardizing makes it easier to find the maximum likelihood
+%   estimates (MLEs) and it facilitates comparison of estimates.  \\
+%   \pause
+%   \vfill
+%   We just have to remember to back-transform covariates when graphing
+%   predictions.
+% \end{frame}
 
 
 
@@ -308,7 +305,7 @@ siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
   \frametitle{Fit the model}
   \footnotesize
 <<un-fit,size='tiny'>>=
-fm <- occu(~x1s+w ~x1s+x2s, umf)    ## Notice standardized covariates
+fm <- pcount(~x1s+w ~x1s+x2s, umf)    ## Notice standardized covariates
 fm
 @
 \pause
@@ -319,6 +316,19 @@ c(beta0=beta0, beta1=beta1, beta2=beta2)
 c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
 @ 
 \end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Total abundance (in surveyed region)}
+  
+\end{frame}
+
+
+
+
 
 
 
@@ -384,77 +394,6 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-psi1s,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
-x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
-@   
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
-     xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(lower ~ x1s, p.pred, col="grey")
-lines(upper ~ x1s, p.pred, col="grey")
-@   
-\end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
-% ## lines(Predicted ~ x1, p.pred, col="grey")
-% legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
-% @   
-% \end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
-     xlab="x1", xaxt="n")
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(Predicted ~ x1s, p.pred, col="purple")
-legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
-@
-%\pause
-\small
-\centering
-Major problems if you ignore imperfect detection in this case \\
-\end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{R package `unmarked'}
-%   How many sites were occupied? \pause
-%   We can answer this using posterior prediction.
-% <<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
-% nsim <- 1000
-% sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
-% par(mai=c(0.9,0.9,0.1,0.1))
-% plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
-%     ylab="Empirical Bayes posterior probability")
-% abline(v=sum(z), col="red") ## Actual number occupied
-% @   
-% \end{frame}
-
-
-
 
 
 
@@ -472,10 +411,6 @@ Major problems if you ignore imperfect detection in this case \\
         \alpha_2 {\color{Purple} w_{ij}} \\
         y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
       \end{gather*}
-      \pause
-    \item Predict $p$ again by letting (standardized) $x_1$ vary, but
-      this time, predict for the case where $w$=`Cold'.
-    \item Graph $p$ as a function of $x_1$.
   \end{enumerate}
 \end{frame}
 
@@ -489,13 +424,11 @@ Major problems if you ignore imperfect detection in this case \\
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
 <<bugs,size='scriptsize',echo=FALSE>>=
-writeLines(readLines("occupancy-model-covs.jag"))
+# writeLines(readLines("occupancy-model-covs.jag"))
 @ 
 \end{frame}
 
 
-
-%% TODO: Add something here about priors and prior predictive checks
 
 
 
@@ -536,11 +469,11 @@ jags.pars <- c("beta0", "beta1", "beta2",
   \small
 <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
 library(jagsUI)
-jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                parameters.to.save=jags.pars,
-                                model.file="occupancy-model-covs.jag",
-                                n.chains=3, n.adapt=100, n.burnin=0,
-                                n.iter=2000, parallel=TRUE)
+#jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+#                                parameters.to.save=jags.pars,
+#                                model.file="occupancy-model-covs.jag",
+#                                n.chains=3, n.adapt=100, n.burnin=0,
+#                                n.iter=2000, parallel=TRUE)
 @ 
 \end{frame}
 
@@ -549,7 +482,7 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 \begin{frame}[fragile]
   \frametitle{Summarize output}
 <<bugs-sum,size='tiny'>>=
-summary(jags.post.samples)
+#summary(jags.post.samples)
 @ 
 \end{frame}
 
@@ -559,7 +492,7 @@ summary(jags.post.samples)
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
 <<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.samples[,1:3])
+#plot(jags.post.samples[,1:3])
 @ 
 \end{frame}
 
@@ -568,7 +501,7 @@ plot(jags.post.samples[,1:3])
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
 <<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.samples[,c(4:6,8)])
+#plot(jags.post.samples[,c(4:6,8)])
 @ 
 \end{frame}
 
@@ -596,26 +529,26 @@ plot(jags.post.samples[,c(4:6,8)])
   \small
   First, extract the $\psi$ coefficients
 <<psi-coefs,size='scriptsize'>>=
-psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
-head(psi.coef.post, n=4)
+#psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
+#head(psi.coef.post, n=4)
 @
   \pause
   \vfill
   Create prediction matrix, one row for each MCMC iteration.
 %  Columns represent covariate values. 
 <<psi-predmat,size='scriptsize'>>=
-n.iter <- nrow(psi.coef.post)  
-psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
+#n.iter <- nrow(psi.coef.post)  
+#psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
 @   
   \pause
   \vfill
   Predict $\psi$ for each MCMC iteration.
 %  using covariate values from \inr{pred.data}. 
 <<psi-pred-bayes,size='scriptsize'>>=
-for(i in 1:n.iter) {
-    psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
-                                psi.coef.post[i,"beta1"]*pred.data$x1s)
-}
+#for(i in 1:n.iter) {
+#    psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
+#                                psi.coef.post[i,"beta1"]*pred.data$x1s)
+#}
 @ 
 \end{frame}
 
@@ -625,8 +558,8 @@ for(i in 1:n.iter) {
   \frametitle{Bayesian prediction}
   Prediction line for first posterior sample
 <<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+#plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+#     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 @
 \end{frame}
 
@@ -636,11 +569,11 @@ plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
   \frametitle{Bayesian prediction}
   All samples from the posterior predictive distribution
 <<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-for(i in 1:n.iter) {
-    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-}
+#plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+#     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+#for(i in 1:n.iter) {
+#    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
+#}
 @ 
 \end{frame}
 
@@ -652,17 +585,17 @@ for(i in 1:n.iter) {
   \frametitle{Bayesian prediction}
   Now with posterior mean and 95\% CI
 <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-for(i in 1:n.iter) {
-    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-}
-pred.post.mean <- colMeans(psi.post.pred)
-pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
-pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
-lines(pred.data$x1, pred.post.mean, col="blue")
-lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
-lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
+#plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+#     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+#for(i in 1:n.iter) {
+#    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
+#}
+#pred.post.mean <- colMeans(psi.post.pred)
+#pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
+#pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
+#lines(pred.data$x1, pred.post.mean, col="blue")
+#lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
+#lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
 @ 
 \end{frame}
 
@@ -670,34 +603,7 @@ lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
 
 
 \begin{frame}
-  \frametitle{Summary of static occupancy models}
-  \small
-  Assumptions are made explicit by the model description, but it's worth emphasizing that: 
-  \begin{itemize}[<+->]
-    \item<2-> Occupancy is assumed to remain constant at each site during the sampling period
-    \item<3-> The definition of a `site' is critical, but can difficult in
-      some situations, such as in camera studies.
-    \item<4-> Abundance is assumed to be unimportant
-    \item<5-> Observations are assumed to be independent, conditional
-      on latent variables and covariates
-  \end{itemize}
-  \vfill
-  \uncover<6->{  
-    These assumptions can be relaxed if we have enough data. 
-  }
-  \begin{itemize}
-    \item<7-> Dynamic occupancy models
-    \begin{itemize}
-      \item Occupancy evolves as a function of local colonization
-        and extinction
-    \end{itemize}
-    \item<8-> $N$-mixture models
-    \begin{itemize}
-      \item Focus is on local abundance, rather than presence/absence
-    \end{itemize}
-  \end{itemize}
-  \vfill
-  \uncover<9->{We'll talk more about design issues later}
+  \frametitle{Recap}
 \end{frame}
 
 
@@ -717,22 +623,12 @@ lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
+    \item 
       \begin{itemize}
         \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
+        \item 
+        \item 
       \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{grouse1, grouse2, grouse3}
-        \item Site covs: \texttt{elevation, utmE, utmN}
-        \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
-      \end{itemize}
-    \item Make one prediction graph for each species. 
-    \item Create the same graphs as above, but using Bayesian methods.
-    \item What differences do you see between likelihood and Bayesian graphs?
     \end{enumerate}
     \vfill
     Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
