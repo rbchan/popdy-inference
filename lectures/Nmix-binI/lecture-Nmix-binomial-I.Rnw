@@ -8,8 +8,8 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and prediction }
-\author{Richard Chandler}
+%\title{Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and prediction }
+%\author{Richard Chandler}
 
 
 % Load function to compile and open PDF
@@ -19,8 +19,8 @@ source("../rnw2pdf.R")
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-bin-NmixI")
-rnw2pdf("lecture-bin-NmixI", tangle=TRUE)
+rnw2pdf("lecture-Nmix-binomial-I")
+rnw2pdf("lecture-Nmix-binomial-I", tangle=TRUE)
 @ 
 
 
@@ -52,7 +52,7 @@ knit_theme$set("edit-kwrite")
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and predicting} \\
+  {\LARGE Lecture 6 -- Binomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -84,6 +84,14 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Overview}
+  We're often interested in abundance more than occupancy. \\
+  \vfill
+  Even if you're interested in occupancy, you get it for free by modeling abundance. \\
+  \vfill
+  Occupancy isn't useful if all sites are occupied. \\
+  \vfill
+  Binomial $N$-mixture models are useful in this context if we have
+  repeated count data, instead of repeated detection data. 
 \end{frame}
 
 
@@ -113,11 +121,11 @@ knit_theme$set("edit-kwrite")
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
   $p_{ij}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ \\
-  $y_{ij}$ -- Count data
+  $y_{ij}$ -- Count data \\
 %  \vfill
-%  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
+  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \\
 %  \vspace{12pt}
-%  $\color{Purple} w$ is an observation covariate
+  $\color{Purple} w$ -- observation covariate
 \end{frame}
 
 
@@ -136,16 +144,21 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[fragile]
   \frametitle{Simulation -- No covariates}
-  \begin{enumerate}[<+->]
-  \item Abundance
+  \small
+%  \begin{enumerate}[<+->]
+%  \item  
+  Abundance
 <<sim-nocov1,size='scriptsize'>>=
 nSites <- 100
 nVisits <- 4
-set.seed(3439) ## Make it reproducible
+set.seed(3439)  ## Make it reproducible
 lambda1 <- 2.6  ## Expected value of N
 N1 <- rpois(n=nSites, lambda=lambda1)
 @
-  \item Detection probability and data
+% \item
+  \pause
+  \vfill
+  Detection probability and data
 <<sim-nocov2,size='scriptsize'>>=
 p1 <- 0.3
 y1 <- matrix(NA, nrow=nSites, ncol=nVisits)
@@ -153,9 +166,11 @@ for(i in 1:nSites) {
     y1[i,] <- rbinom(nVisits, size=N1[i], prob=p1)
 }
 @
-\end{enumerate}
-Looky
-<<N1y1>>=
+%\end{enumerate}
+  \pause
+  \vfill
+  Data and latent abundance
+<<N1y1,size='scriptsize'>>=
 cbind(y1, N1)[1:5,]
 @ 
 \end{frame}
@@ -165,24 +180,27 @@ cbind(y1, N1)[1:5,]
 \begin{frame}[fragile]
   \frametitle{Simulation -- Covariates}
   \small
-  Two continuous covariates and one categorical covariate with 2 levels
-  \vfill
-  \begin{enumerate}[<+->]
-  \item Covariates
+%  Two continuous covariates and one categorical covariate with 2 levels
+%  \vfill
+%  \begin{enumerate}[<+->]
+%  \item
+  Covariates
 <<sim-cov1,size='scriptsize'>>=
-x1 <- rnorm(nSites,0,0.5); x2 <- rnorm(nSites,100,10) ## Continuous covs
-w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
-            nrow=nSites, ncol=nVisits)
-wHot <- ifelse(w=="Hot", 1, 0)              ## Dummy variable
+x <- factor(sample(c("Hardwood", "Mixed", "Softwood"), nSites, replace=TRUE))
+xMixed <- ifelse(x=="Mixed", 1, 0)        ## Dummy
+xSoftwood <- ifelse(x=="Softwood", 1, 0)  ## Dummy
+w <- matrix(rnorm(nSites*nVisits), nrow=nSites, ncol=nVisits)
 @
-  \item Coefficients, $\psi$, and $p$
+% \item
+  Coefficients, $\lambda$, and $p$
 <<nsim-cov2,size='scriptsize'>>=
-beta0 <- 1; beta1 <- -1; beta2 <- 0
-lambda2 <- exp(beta0 + beta1*x1 + beta2*x2)
-alpha0 <- 0; alpha1 <- 1; alpha2 <- 0.5
-p2 <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
+beta0 <- 0; beta1 <- -1; beta2 <- 1
+lambda2 <- exp(beta0 + beta1*xMixed + beta2*xSoftwood)
+alpha0 <- -2; alpha1 <- 1
+p2 <- plogis(alpha0 + alpha1*w)
 @   
-  \item Simulate occupancy and detection data
+% \item
+  Simulate occupancy and detection data
 <<sim-cov3,size='scriptsize'>>=
 N2 <- rpois(nSites, lambda=lambda2)            ## pres/absence
 y2 <- matrix(NA, nrow=nSites, ncol=nVisits)
@@ -190,7 +208,7 @@ for(i in 1:nSites) {
     y2[i,] <- rbinom(nVisits, size=N2[i], prob=p2[i,])
 }
 @   
-\end{enumerate}
+%\end{enumerate}
 \end{frame}
 
 
@@ -204,7 +222,7 @@ for(i in 1:nSites) {
       Observations
 %      \tiny
 <<sim-nocov-dat,size='scriptsize'>>=
-y[1:20,]
+y2[1:20,]
 @ 
   \end{column}
   \begin{column}{0.6\textwidth}
@@ -214,15 +232,15 @@ y[1:20,]
     \vspace{24pt}
   Detections at each site \\
 <<sim-nocov-ss1,size='scriptsize'>>=
-siteDets <- rowSums(y) # Dets at each site
-table(siteDets)        # Frequency
+maxDets <- apply(y2, 1, max) # Max count at each site
+table(maxDets)              # Frequency
 @
 \pause
 \vfill
 \small
 Proportion of sites known to be occupied \\
 <<sim-nocov-ss2,size='scriptsize'>>=
-naiveOccupancy <- sum(siteDets>0)/nSites
+naiveOccupancy <- sum(maxDets>0)/nSites
 naiveOccupancy 
 @
 <<un,include=FALSE>>=
@@ -253,9 +271,8 @@ library(unmarked)
 \begin{frame}[fragile]
   \frametitle{Prepare data in `unmarked'}
   \small
-Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}: 
 <<un-umf,size='tiny'>>=
-umf <- unmarkedFrameOccu(y=y, siteCovs=data.frame(x1,x2), obsCovs=list(w=w))
+umf <- unmarkedFramePCount(y=y2, siteCovs=data.frame(x), obsCovs=list(w=w))
 @
 \pause
 %\vfill
@@ -269,52 +286,48 @@ summary(umf)
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Standardizing}
-%   It's almost always a good idea to standardize \alert{continuous} covariates. \\
-%   \pause
-%   \vfill
-%   Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
-%   \pause
-% %  \vfill
-% <<umf-zcov,size='small'>>=
-% siteCovs(umf)$x1s <- (x1-mean(x1))/sd(x1)
-% siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
-% @
-% %  \pause
-% %  \vfill
-% %  If all of your site covariates are continuous, you can use this
-% %  shortcut with the \inr{scale} function:
-% %<<umf-zcovs>>=
-% %siteCovs(umf) <- scale(siteCovs(umf))
-% %@
-%   \pause
-%   \vfill
-%   Standardizing makes it easier to find the maximum likelihood
-%   estimates (MLEs) and it facilitates comparison of estimates.  \\
-%   \pause
-%   \vfill
-%   We just have to remember to back-transform covariates when graphing
-%   predictions.
-% \end{frame}
-
-
-
 
 \begin{frame}[fragile]
   \frametitle{Fit the model}
   \footnotesize
+  $K$ should be much greater than the highest possible value of
+  abundance. 
 <<un-fit,size='tiny'>>=
-fm <- pcount(~x1s+w ~x1s+x2s, umf)    ## Notice standardized covariates
+fm <- pcount(~w ~x, umf, K=100)    
 fm
 @
 \pause
 \vfill
 Compare to actual parameter values:
 <<un-compare,size='tiny'>>=
-c(beta0=beta0, beta1=beta1, beta2=beta2)
-c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
+c(beta0=beta0, beta1=beta1, beta2=beta2); c(alpha0=alpha0, alpha1=alpha1)
 @ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Make sure $K$ is high enough}
+  Estimates should not change when you increase $K$.
+<<upK,size='tiny'>>=
+fm.test <- pcount(~w ~x, umf, K=150)    
+round(coef(fm), digits=4)
+round(coef(fm.test), digits=4)
+@
+\pause
+\vfill
+If the estimates do change, increase $K$ until they stabilize. 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Empirical Bayes -- Site-level abundance}
+<<ranef,size='scriptsize',out.width='80%',fig.align='center',fig.width=9>>=
+re <- ranef(fm)
+plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
+@   
 \end{frame}
 
 
@@ -323,59 +336,49 @@ c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
 
 \begin{frame}[fragile]
   \frametitle{Total abundance (in surveyed region)}
-  
+<<Ntotal,size='scriptsize',out.width='60%',fig.align='center'>>=
+N.total.post <- predict(re, func=sum, nsim=1000)
+hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
+@   
 \end{frame}
 
 
 
-
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-  Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
-  vary while holding other two covariates constant. Important that we
-  use the standardized version of the continuous covariates.
-<<preddat,size='small'>>=
-pred.data <- data.frame(x1s=seq(from=-3, to=3, length=50),
-                        x2s=0, w='Hot') 
-@
-\pause
-\vfill
-Get predictions of $\psi$ for each row of prediction data.
-<<predpsi,size='small'>>=
-psi.pred <- predict(fm, newdata=pred.data,
-                    type='state', append=TRUE)
-@
-\pause
-\vfill
-Get predictions of $p$ for each row of prediction data.
-<<predp,size='small'>>=
-p.pred <- predict(fm, newdata=pred.data,
-                  type='det', append=TRUE)
-@
-\end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
   \small
-  View $\psi$ predictions
-<<psi-head,size='footnotesize'>>=
-print(head(psi.pred), digits=2)
+  Create \texttt{data.frame} with prediction covariates. 
+<<preddat,size='footnotesize'>>=
+pred.data <- data.frame(x=c("Hardwood", "Mixed", "Softwood"), w=0) 
 @
 \pause
 \vfill
-  View $p$ predictions
-<<p-head,size='footnotesize'>>=
-print(head(p.pred), digits=2)
+Get predictions of $\lambda$ for each row of prediction data.
+<<predpsi,size='footnotesize'>>=
+lambda.pred <- predict(fm, newdata=pred.data,
+                       type='state', append=TRUE)
+@
+\pause
+\vfill
+  View $\lambda$ predictions
+<<psi-head,size='footnotesize'>>=
+print(head(lambda.pred), digits=2)
 @
 \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+%   \small
+%   View $\lambda$ predictions
+% <<psi-head,size='footnotesize'>>=
+% print(head(lambda.pred), digits=2)
+% @
+% \end{frame}
 
 
 
@@ -385,9 +388,10 @@ print(head(p.pred), digits=2)
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
 <<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Standardized covariate (x1s)", ylim=0:1) 
-lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
+bpx <- barplot(lambda.pred$Predicted, ylab="Expected value of abundance", #col="blue",
+               ylim=c(0,3.5), names=lambda.pred$x, xlab="Forest type"); box()
+arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
+       angle=90, length=0.1)
 @   
 \end{frame}
 
@@ -403,13 +407,13 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
   \begin{enumerate}
     \item Fit this model (to the simulated data):
       \begin{gather*}
-        \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
-        z_i \sim \mathrm{Bern}(\psi_i) \\
+        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
+        N_i \sim \mathrm{Bern}(\lambda_i) \\
 %      \end{gather*}
 %      \begin{gather*}
         \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
         \alpha_2 {\color{Purple} w_{ij}} \\
-        y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+        y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
       \end{gather*}
   \end{enumerate}
 \end{frame}
@@ -437,8 +441,8 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
   Put data in a named list
   \vspace{-12pt}
 <<bugs-data,size='small'>>=
-jags.data <- list(y=y, x1=(x1-mean(x1))/sd(x1),
-                  x2=(x2-mean(x2))/sd(x2), wHot=wHot,
+jags.data <- list(y=y2, x1=x1,
+                  x2=x2, wHot=wHot,
                   nSites=nSites, nOccasions=nVisits)
 @
 \pause
@@ -456,7 +460,7 @@ jags.inits <- function() {
   \vspace{-12pt}
 <<bugs-pars,size='small'>>=
 jags.pars <- c("beta0", "beta1", "beta2",
-               "alpha0", "alpha1", "alpha2", "sitesOccupied")
+               "alpha0", "alpha1", "totalAbundance")
 @ 
 \end{frame}
 
@@ -506,22 +510,6 @@ library(jagsUI)
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Bayesian prediction}
-  Every MCMC iteration represents a sample from the posterior
-  distribution. \\
-  \pause
-  \vfill
-  Each sample of the occupancy and detection coefficients can be used
-  to make a prediction. \\
-  \pause
-  \vfill
-  The collection of predictions can be used to summarize the posterior 
-  predictive distribution. \\
-  \pause
-  \vfill
-  We will look at the distribution of prediction lines. \\  
-\end{frame}
 
 
 \begin{frame}[fragile]
