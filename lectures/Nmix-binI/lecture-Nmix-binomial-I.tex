@@ -244,34 +244,39 @@
 %  \begin{enumerate}[<+->]
 %  \item
   Covariates
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{x} \hlkwb{<-} \hlkwd{factor}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Softwood"}\hlstd{), nSites,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{))}
-\hlstd{xMixed} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(x}\hlopt{==}\hlstr{"Mixed"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}        \hlcom{## Dummy}
-\hlstd{xSoftwood} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(x}\hlopt{==}\hlstr{"Softwood"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}  \hlcom{## Dummy}
-\hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nVisits),} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlstd{forest} \hlkwb{<-} \hlkwd{factor}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Pine"}\hlstd{), nSites,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{))}
+\hlstd{forestMixed} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(forest}\hlopt{==}\hlstr{"Mixed"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}        \hlcom{## Dummy}
+\hlstd{forestPine} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(forest}\hlopt{==}\hlstr{"Pine"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}          \hlcom{## Dummy}
+\hlstd{temp} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nVisits),} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 % \item
+\vfill
   Coefficients, $\lambda$, and $p$
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{beta0} \hlkwb{<-} \hlnum{0}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{1}
-\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{xMixed} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{xSoftwood)}
+\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{forestMixed} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{forestPine)}
 \hlstd{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{2}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}
-\hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{w)}
+\hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{temp)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 % \item
+\vfill
   Simulate occupancy and detection data
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}            \hlcom{## pres/absence}
+\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}         \hlcom{## local abundance }
 \hlstd{y2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
     \hlstd{y2[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=p2[i,])}
@@ -332,11 +337,12 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{maxDets} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)} \hlcom{# Max count at each site}
-\hlkwd{table}\hlstd{(maxDets)}              \hlcom{# Frequency}
+\hlcom{# Max count at each site}
+\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)}
+\hlkwd{table}\hlstd{(maxCounts)}
 \end{alltt}
 \begin{verbatim}
-## maxDets
+## maxCounts
 ##  0  1  2  3 
 ## 55 33  9  3
 \end{verbatim}
@@ -349,7 +355,7 @@ Proportion of sites known to be occupied \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxDets}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
+\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
@@ -386,7 +392,7 @@ Proportion of sites known to be occupied \\
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(x),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{w}\hlstd{=w))}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(forest),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=temp))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -413,13 +419,13 @@ Proportion of sites known to be occupied \\
 ## 332  52  13   3 
 ## 
 ## Site-level covariates:
-##         x     
+##       forest  
 ##  Hardwood:31  
 ##  Mixed   :32  
-##  Softwood:37  
+##  Pine    :37  
 ## 
 ## Observation-level covariates:
-##        w            
+##       temp          
 ##  Min.   :-3.229012  
 ##  1st Qu.:-0.603218  
 ##  Median :-0.019813  
@@ -437,29 +443,30 @@ Proportion of sites known to be occupied \\
 \begin{frame}[fragile]
   \frametitle{Fit the model}
   \footnotesize
-  $K$ should be much greater than the highest possible value of
-  abundance. 
+  \inr{pcount} is similar to \inr{occu}, but there's a new argument
+  (\texttt{K}) that should be an integer much 
+  greater than the highest possible value of local abundance. 
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{w} \hlopt{~}\hlstd{x, umf,} \hlkwc{K}\hlstd{=}\hlnum{100}\hlstd{)}
+\hlstd{fm} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~}\hlstd{forest, umf,} \hlkwc{K}\hlstd{=}\hlnum{100}\hlstd{)}
 \hlstd{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## pcount(formula = ~w ~ x, data = umf, K = 100)
+## pcount(formula = ~temp ~ forest, data = umf, K = 100)
 ## 
 ## Abundance:
 ##             Estimate    SE      z  P(>|z|)
 ## (Intercept)   -0.326 0.366 -0.891 0.372706
-## xMixed        -0.326 0.461 -0.706 0.480137
-## xSoftwood      1.207 0.336  3.595 0.000324
+## forestMixed   -0.326 0.461 -0.706 0.480137
+## forestPine     1.207 0.336  3.595 0.000324
 ## 
 ## Detection:
 ##             Estimate    SE     z  P(>|z|)
 ## (Intercept)    -1.96 0.313 -6.26 3.79e-10
-## w               1.18 0.205  5.73 9.83e-09
+## temp            1.18 0.205  5.73 9.83e-09
 ## 
 ## AIC: 373.6761
 \end{verbatim}
@@ -488,29 +495,43 @@ Compare to actual parameter values:
 
 \begin{frame}[fragile]
   \frametitle{Make sure $K$ is high enough}
+%  \begin{columns}
+%    \begin{column}{0.95\paperwidth}
+
   Estimates should not change when you increase $K$.
+  \vspace{-6pt}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm.test} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{w} \hlopt{~}\hlstd{x, umf,} \hlkwc{K}\hlstd{=}\hlnum{150}\hlstd{)}
 \hlkwd{round}\hlstd{(}\hlkwd{coef}\hlstd{(fm),} \hlkwc{digits}\hlstd{=}\hlnum{4}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##       lam(Int)    lam(xMixed) lam(xSoftwood)         p(Int)           p(w) 
-##        -0.3260        -0.3258         1.2073        -1.9615         1.1760
-\end{verbatim}
-\begin{alltt}
-\hlkwd{round}\hlstd{(}\hlkwd{coef}\hlstd{(fm.test),} \hlkwc{digits}\hlstd{=}\hlnum{4}\hlstd{)}
-\end{alltt}
-\begin{verbatim}
-##       lam(Int)    lam(xMixed) lam(xSoftwood)         p(Int)           p(w) 
-##        -0.3260        -0.3258         1.2073        -1.9615         1.1760
+##         lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) 
+##          -0.3260          -0.3258           1.2073          -1.9615           1.1760
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-If the estimates do change, increase $K$ until they stabilize. 
+  Looks good:
+  \vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.test} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~}\hlstd{forest, umf,} \hlkwc{K}\hlstd{=}\hlnum{150}\hlstd{)}
+\hlkwd{round}\hlstd{(}\hlkwd{coef}\hlstd{(fm.test),} \hlkwc{digits}\hlstd{=}\hlnum{4}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##         lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) 
+##          -0.3260          -0.3258           1.2073          -1.9615           1.1760
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+If the estimates do change, increase $K$ until they stabilize.
+%    \end{column}
+%  \end{columns}
 \end{frame}
 
 
@@ -569,7 +590,8 @@ If the estimates do change, increase $K$ until they stabilize.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Softwood"}\hlstd{),} \hlkwc{w}\hlstd{=}\hlnum{0}\hlstd{)}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{forest}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Pine"}\hlstd{),}
+                        \hlkwc{temp}\hlstd{=}\hlnum{0}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -593,10 +615,10 @@ Get predictions of $\lambda$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(lambda.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted   SE lower upper        x w
-## 1      0.72 0.26  0.35   1.5 Hardwood 0
-## 2      0.52 0.22  0.23   1.2    Mixed 0
-## 3      2.41 0.64  1.44   4.0 Softwood 0
+##   Predicted   SE lower upper   forest temp
+## 1      0.72 0.26  0.35   1.5 Hardwood    0
+## 2      0.52 0.22  0.23   1.2    Mixed    0
+## 3      2.41 0.64  1.44   4.0     Pine    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -624,7 +646,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{bpx} \hlkwb{<-} \hlkwd{barplot}\hlstd{(lambda.pred}\hlopt{$}\hlstd{Predicted,} \hlkwc{ylab}\hlstd{=}\hlstr{"Expected value of abundance"}\hlstd{,} \hlcom{#col="blue",}
-               \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{3.5}\hlstd{),} \hlkwc{names}\hlstd{=lambda.pred}\hlopt{$}\hlstd{x,} \hlkwc{xlab}\hlstd{=}\hlstr{"Forest type"}\hlstd{);} \hlkwd{box}\hlstd{()}
+               \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{3.5}\hlstd{),} \hlkwc{names}\hlstd{=lambda.pred}\hlopt{$}\hlstd{forest,} \hlkwc{xlab}\hlstd{=}\hlstr{"Forest type"}\hlstd{);} \hlkwd{box}\hlstd{()}
 \hlkwd{arrows}\hlstd{(bpx, lambda.pred}\hlopt{$}\hlstd{Predicted, bpx, lambda.pred}\hlopt{$}\hlstd{Predicted}\hlopt{+}\hlstd{lambda.pred}\hlopt{$}\hlstd{SE,}
        \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{0.1}\hlstd{)}
 \end{alltt}
@@ -645,22 +667,20 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \small
-  \begin{enumerate}
-    \item Fit this model (to the simulated data):
-      \begin{gather*}
-        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
-        N_i \sim \mathrm{Bern}(\lambda_i) \\
-%      \end{gather*}
-%      \begin{gather*}
-        \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
-        \alpha_2 {\color{Purple} w_{ij}} \\
-        y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
-      \end{gather*}
-  \end{enumerate}
-\end{frame}
+% \begin{frame}
+%   \frametitle{In-class exercise}
+%   \small
+%   \begin{enumerate}
+%     \item Fit this model (to the simulated data):
+%       \begin{gather*}
+%         \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
+%         N_i \sim \mathrm{Bern}(\lambda_i) \\
+%         \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
+%         \alpha_2 {\color{Purple} w_{ij}} \\
+%         y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
+%       \end{gather*}
+%   \end{enumerate}
+% \end{frame}
 
 
 
@@ -671,7 +691,35 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## model {
+## 
+## # Priors for occupancy coefficients
+## beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+## beta1 ~ dnorm(0, 0.5)
+## beta2 ~ dnorm(0, 0.5)
+## 
+## # Priors for detection coefficients
+## alpha0 ~ dnorm(0, 0.5)  
+## alpha1 ~ dnorm(0, 0.5)
+## 
+## for(i in 1:nSites) {
+##   log(lambda[i]) <- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]
+##   N[i] ~ dpois(lambda[i])         # Latent local abundance
+##   for(j in 1:nOccasions) {
+##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+##     y[i,j] ~ dbin(p[i,j], N[i])   # Data
+##   }
+## }
+## 
+## totalAbundance <- sum(N)
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -685,8 +733,9 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{x1}\hlstd{=x1,}
-                  \hlkwc{x2}\hlstd{=x2,} \hlkwc{wHot}\hlstd{=wHot,}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{temp}\hlstd{=temp,}
+                  \hlkwc{forestMixed}\hlstd{=forestMixed,}
+                  \hlkwc{forestPine}\hlstd{=forestPine,}
                   \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
 \end{alltt}
 \end{kframe}
@@ -699,7 +748,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, nSites))}
+    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{N}\hlstd{=maxCounts)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -729,12 +778,24 @@ Get predictions of $\lambda$ for each row of prediction data.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
-\hlcom{#jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,}
-\hlcom{#                                parameters.to.save=jags.pars,}
-\hlcom{#                                model.file="occupancy-model-covs.jag",}
-\hlcom{#                                n.chains=3, n.adapt=100, n.burnin=0,}
-\hlcom{#                                n.iter=2000, parallel=TRUE)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+## 
+## Parallel processing completed.
+## 
+## MCMC took 0.026 minutes.
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -746,8 +807,38 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#summary(jags.post.samples)}
+\hlkwd{summary}\hlstd{(jags.post.samples)}
 \end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##                    Mean      SD Naive SE Time-series SE
+## alpha0          -1.8616  0.2481 0.003203        0.04997
+## alpha1           1.2205  0.2232 0.002881        0.03982
+## beta0           -0.3948  0.2944 0.003801        0.02864
+## beta1           -0.3543  0.3968 0.005122        0.03468
+## beta2            1.1813  0.3063 0.003954        0.02476
+## deviance       290.0563 15.2478 0.196848        2.11108
+## totalAbundance 121.6455 22.9389 0.296140        4.43671
+## 
+## 2. Quantiles for each variable:
+## 
+##                    2.5%      25%      50%       75%    97.5%
+## alpha0          -2.2896  -2.0223  -1.8690  -1.72943  -1.3283
+## alpha1           0.8375   1.0623   1.2013   1.37039   1.7243
+## beta0           -1.0191  -0.5847  -0.3840  -0.20292   0.1777
+## beta1           -1.1408  -0.6357  -0.3381  -0.07623   0.3893
+## beta2            0.6295   0.9658   1.1736   1.37667   1.8204
+## deviance       260.9550 279.5994 289.9432 300.30607 320.5036
+## totalAbundance  84.0000 106.0000 119.0000 134.00000 177.0000
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -760,9 +851,16 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#plot(jags.post.samples[,1:3])}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{])}
 \end{alltt}
 \end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-1} 
+
+}
+
+
+
 \end{knitrout}
 \end{frame}
 
@@ -773,9 +871,16 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#plot(jags.post.samples[,c(4:6,8)])}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlnum{3}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{7}\hlstd{)])}
 \end{alltt}
 \end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-1} 
+
+}
+
+
+
 \end{knitrout}
 \end{frame}
 
@@ -789,9 +894,16 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])}
-\hlcom{#head(psi.coef.post, n=4)}
+\hlstd{p.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"alpha0"}\hlstd{,}\hlstr{"alpha1"}\hlstd{)])}
+\hlkwd{head}\hlstd{(p.coef.post,} \hlkwc{n}\hlstd{=}\hlnum{4}\hlstd{)}
 \end{alltt}
+\begin{verbatim}
+##         alpha0   alpha1
+## [1,] -1.536070 1.229850
+## [2,] -1.542794 1.238841
+## [3,] -1.537215 1.251539
+## [4,] -1.599808 1.232748
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
   \pause
@@ -801,54 +913,23 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#n.iter <- nrow(psi.coef.post)  }
-\hlcom{#psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))}
+\hlstd{n.iter} \hlkwb{<-} \hlkwd{nrow}\hlstd{(p.coef.post)}
+\hlstd{temp.pred} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{)}
+\hlstd{p.post.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{length}\hlstd{(temp.pred))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
   \pause
   \vfill
-  Predict $\psi$ for each MCMC iteration.
+  Predict $p$ for each MCMC iteration.
 %  using covariate values from \inr{pred.data}. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#for(i in 1:n.iter) \{}
-\hlcom{#    psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +}
-\hlcom{#                                psi.coef.post[i,"beta1"]*pred.data$x1s)}
-\hlcom{#\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Bayesian prediction}
-  Prediction line for first posterior sample
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{#plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",}
-\hlcom{#     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Bayesian prediction}
-  All samples from the posterior predictive distribution
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{#     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))}
-\hlcom{#for(i in 1:n.iter) \{}
-\hlcom{#    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))}
-\hlcom{#\}}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlstd{p.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(p.coef.post[i,}\hlstr{"alpha0"}\hlstd{]} \hlopt{+}
+                              \hlstd{p.coef.post[i,}\hlstr{"alpha1"}\hlstd{]}\hlopt{*}\hlstd{temp.pred)}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -864,17 +945,21 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#for(i in 1:n.iter) \{}
-\hlcom{#    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))}
-\hlcom{#\}}
-\hlcom{#pred.post.mean <- colMeans(psi.post.pred)}
-\hlcom{#pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)}
-\hlcom{#pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)}
-\hlcom{#lines(pred.data$x1, pred.post.mean, col="blue")}
-\hlcom{#lines(pred.data$x1, pred.post.lower, col="blue", lty=2)}
-\hlcom{#lines(pred.data$x1, pred.post.upper, col="blue", lty=2)}
+\hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.post.pred)}
+\hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/psi-pred-post-meanCI-1} 
+
+}
+
+
+
 \end{knitrout}
 \end{frame}
 

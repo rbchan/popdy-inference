@@ -1,0 +1,23 @@
+model {
+
+# Priors for occupancy coefficients
+beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  for(j in 1:nOccasions) {
+    logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+    y[i,j] ~ dbin(p[i,j], N[i])   # Data
+  }
+}
+
+totalAbundance <- sum(N)
+
+}
