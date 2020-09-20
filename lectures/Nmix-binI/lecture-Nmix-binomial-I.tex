@@ -124,10 +124,13 @@
 \begin{frame}
   \frametitle{Overview}
   We're often interested in abundance more than occupancy. \\
+  \pause
   \vfill
   Even if you're interested in occupancy, you get it for free by modeling abundance. \\
+  \pause
   \vfill
   Occupancy isn't useful if all sites are occupied. \\
+  \pause
   \vfill
   Binomial $N$-mixture models are useful in this context if we have
   repeated count data, instead of repeated detection data. 
@@ -143,7 +146,7 @@
   \begin{gather*}
     \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
     \beta_2 {\color{blue} x_{i2}} + \cdots \\
-    N_i \sim \mathrm{Pois}(\lambda_i)
+    N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
   \vfill
@@ -397,10 +400,6 @@ Proportion of sites known to be occupied \\
 \end{kframe}
 \end{knitrout}
 \pause
-%\vfill
-%Reformat $w$ as a factor: %, but it's formatted as a matrix of
-%characters, we have to reformat it:
-%Summary
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -667,25 +666,29 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-% \begin{frame}
-%   \frametitle{In-class exercise}
-%   \small
-%   \begin{enumerate}
-%     \item Fit this model (to the simulated data):
-%       \begin{gather*}
-%         \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
-%         N_i \sim \mathrm{Bern}(\lambda_i) \\
-%         \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
-%         \alpha_2 {\color{Purple} w_{ij}} \\
-%         y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
-%       \end{gather*}
-%   \end{enumerate}
-% \end{frame}
+\begin{frame}
+  \frametitle{In-class exercise}
+  % \small
+  % \begin{enumerate}
+  %   \item Predict
+  %   \end{enumerate}
+  \centering
+  Graph $p$ as a function of temperature. Include 95\% confidence intervals. \\
+\end{frame}
 
 
 
 
-\subsection{Bayesian methods}
+\subsection{Bayesian methods: posterior prediction}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
 
 
 
@@ -697,7 +700,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 ## model {
 ## 
 ## # Priors for occupancy coefficients
-## beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+## beta0 ~ dnorm(0, 0.5)  # variance=1/0.5
 ## beta1 ~ dnorm(0, 0.5)
 ## beta2 ~ dnorm(0, 0.5)
 ## 
@@ -720,6 +723,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
 \end{frame}
 
 
@@ -779,7 +783,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"N"}\hlstd{),} \hlcom{## NOTE "N"!}
                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
@@ -794,7 +798,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.026 minutes.
+## MCMC took 0.028 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -807,7 +811,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.samples)}
+\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars])}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -820,29 +824,45 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##    plus standard error of the mean:
 ## 
 ##                    Mean      SD Naive SE Time-series SE
-## alpha0          -1.8616  0.2481 0.003203        0.04997
-## alpha1           1.2205  0.2232 0.002881        0.03982
 ## beta0           -0.3948  0.2944 0.003801        0.02864
 ## beta1           -0.3543  0.3968 0.005122        0.03468
 ## beta2            1.1813  0.3063 0.003954        0.02476
-## deviance       290.0563 15.2478 0.196848        2.11108
+## alpha0          -1.8616  0.2481 0.003203        0.04997
+## alpha1           1.2205  0.2232 0.002881        0.03982
 ## totalAbundance 121.6455 22.9389 0.296140        4.43671
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##                    2.5%      25%      50%       75%    97.5%
-## alpha0          -2.2896  -2.0223  -1.8690  -1.72943  -1.3283
-## alpha1           0.8375   1.0623   1.2013   1.37039   1.7243
-## beta0           -1.0191  -0.5847  -0.3840  -0.20292   0.1777
-## beta1           -1.1408  -0.6357  -0.3381  -0.07623   0.3893
-## beta2            0.6295   0.9658   1.1736   1.37667   1.8204
-## deviance       260.9550 279.5994 289.9432 300.30607 320.5036
-## totalAbundance  84.0000 106.0000 119.0000 134.00000 177.0000
+##                   2.5%      25%      50%       75%    97.5%
+## beta0          -1.0191  -0.5847  -0.3840  -0.20292   0.1777
+## beta1          -1.1408  -0.6357  -0.3381  -0.07623   0.3893
+## beta2           0.6295   0.9658   1.1736   1.37667   1.8204
+## alpha0         -2.2896  -2.0223  -1.8690  -1.72943  -1.3283
+## alpha1          0.8375   1.0623   1.2013   1.37039   1.7243
+## totalAbundance 84.0000 106.0000 119.0000 134.00000 177.0000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
 
+
+\begin{frame}[fragile]
+  \frametitle{Local abundance}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{paste0}\hlstd{(}\hlstr{"N["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,} \hlstr{"]"}\hlstd{)])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/localN-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
 
 
 
@@ -851,7 +871,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{])}
+\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
 \end{alltt}
 \end{kframe}
 
@@ -871,7 +891,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlnum{3}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{7}\hlstd{)])}
+\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
 \end{alltt}
 \end{kframe}
 
@@ -890,7 +910,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
   \small
-  First, extract the $\psi$ coefficients
+  First, extract the $p$ coefficients
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -941,10 +961,14 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
-  Now with posterior mean and 95\% CI
+%  Now with posterior mean and 95\% CI
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlkwd{plot}\hlstd{(temp.pred, p.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{, n.iter,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)) \{}  \hlcom{## Thin by 10}
+    \hlkwd{lines}\hlstd{(temp.pred, p.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))  \}}
 \hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.post.pred)}
 \hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
 \hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
@@ -954,7 +978,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.8\linewidth]{figure/psi-pred-post-meanCI-1} 
+{\centering \includegraphics[width=0.7\linewidth]{figure/psi-pred-post-meanCI-1} 
 
 }
 
@@ -966,8 +990,216 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
+
+\subsection{Bayesian methods: prior prediction}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+
+
 \begin{frame}
-  \frametitle{Recap}
+  \frametitle{Prior sensitivity}
+  Questions
+  \begin{itemize}
+    \item What are the implied priors on $\lambda$ and $p$?
+    \item What would be the consequence of changing the priors?
+  \end{itemize}
+  \pause
+  \vfill
+  \alert{Prior predictive checks} can help us answer these questions. \\
+  \pause
+  \vfill
+  Prior prediction can be acheived by replacing the data with missing values \\
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prior sampling}
+  Replace data with missing values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data2} \hlkwb{<-} \hlstd{jags.data}
+\hlstd{jags.data2}\hlopt{$}\hlstd{y[]} \hlkwb{<-} \hlnum{NA}      \hlcom{## Replace data with missing values}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Fit model (Really, we're just sampling from the prior)
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.prior.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data2,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                 \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
+                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+## 
+## Parallel processing completed.
+## 
+## MCMC took 0.005 minutes.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prior summary}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.prior.samples)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##                      Mean       SD Naive SE Time-series SE
+## alpha0          -0.014595    1.407  0.01817        0.01817
+## alpha1           0.002061    1.415  0.01827        0.01876
+## beta0            0.011140    1.407  0.01816        0.01845
+## beta1           -0.005991    1.408  0.01818        0.01818
+## beta2            0.032224    1.427  0.01842        0.01874
+## totalAbundance 582.423833 1911.608 24.67876       26.41232
+## 
+## 2. Quantiles for each variable:
+## 
+##                  2.5%     25%        50%      75%    97.5%
+## alpha0         -2.793 -0.9539  -0.017139   0.9193    2.762
+## alpha1         -2.779 -0.9556   0.004390   0.9408    2.782
+## beta0          -2.796 -0.9281   0.011999   0.9457    2.790
+## beta1          -2.745 -0.9542  -0.008274   0.9474    2.770
+## beta2          -2.794 -0.9322   0.050079   0.9664    2.810
+## totalAbundance  6.000 49.0000 145.000000 428.0000 3824.450
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prior prediction}
+  \small
+  Push the priors through the model to predict $p$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p.coef.prior} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.prior.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"alpha0"}\hlstd{,}\hlstr{"alpha1"}\hlstd{)])}
+\hlstd{p.prior.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{length}\hlstd{(temp.pred))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlstd{p.prior.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(p.coef.prior[i,}\hlstr{"alpha0"}\hlstd{]} \hlopt{+}
+                               \hlstd{p.coef.prior[i,}\hlstr{"alpha1"}\hlstd{]}\hlopt{*}\hlstd{temp.pred)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  Compute prior mean and 95\% CI for $p$ predictions
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.prior.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.prior.pred)}
+\hlstd{pred.prior.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.prior.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\hlstd{pred.prior.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.prior.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Show credible regions using shaded polygons. Include a few prior prediction lines.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(temp.pred, p.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"n"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1.3}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+\hlkwd{polygon}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(temp.pred,} \hlkwd{rev}\hlstd{(temp.pred)),}
+        \hlkwc{y}\hlstd{=}\hlkwd{c}\hlstd{(pred.post.lower,} \hlkwd{rev}\hlstd{(pred.post.upper)),}
+        \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.5}\hlstd{),} \hlkwc{border}\hlstd{=}\hlnum{NA}\hlstd{)}                   \hlcom{# Post CI}
+\hlkwd{polygon}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(temp.pred,} \hlkwd{rev}\hlstd{(temp.pred)),}
+        \hlkwc{y}\hlstd{=}\hlkwd{c}\hlstd{(pred.prior.lower,} \hlkwd{rev}\hlstd{(pred.prior.upper)),}
+        \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{),} \hlkwc{border}\hlstd{=}\hlnum{NA}\hlstd{)}                   \hlcom{# Prior CI}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{, n.iter,} \hlkwc{by}\hlstd{=}\hlnum{100}\hlstd{)) \{}  \hlcom{## Thin by 100}
+    \hlkwd{lines}\hlstd{(temp.pred, p.prior.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))  \}} \hlcom{# Prior preds}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(temp.pred, pred.prior.mean,} \hlkwc{col}\hlstd{=}\hlstr{"darkgreen"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{1.3}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Prior mean"}\hlstd{,} \hlstr{"Prior samples"}\hlstd{,} \hlstr{"Posterior mean"}\hlstd{),}
+       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"darkgreen"}\hlstd{,} \hlstr{"grey"}\hlstd{,} \hlstr{"blue"}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Prior and posterior prediction}
+  \vspace{-3pt}
+  \centering
+  \includegraphics[width=0.9\textwidth]{figure/prior-post-pred-2-1}  \\
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Prior predictive recap}
+  If you don't have strong prior knowledge, it's a good idea to use
+  priors that reflect plausible values of $\lambda$ and $p$. \\
+  \pause
+  \vfill
+  We want to allow for the possibility of being ``surprised'' by the
+  data, but we don't want to put most of the prior weight on extreme
+  values. \\
+  \pause
+  \vfill
+  Often, highly diffuse priors on the link scales result in most of the
+  prior weight being on extreme values on the natural scales. \\
+  \pause
+  \vfill
+  Prior predictive checks should be a standard component of Bayesian
+  analysis. \\
 \end{frame}
 
 
@@ -977,7 +1209,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Assignment}
   % \small
   \footnotesize
@@ -987,15 +1219,26 @@ Get predictions of $\lambda$ for each row of prediction data.
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item 
+    \item Using the simulated data, compare the prior and posterior
+      predictive distributions of $\lambda$ for each of the 3 forest
+      types. Write 1-2 sentences summarizing the differences.
+    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
+      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
+      prior and posterior predictions of $p$ as a function of
+      temperature. Make the same graph as we made above. How
+      sensitivie is the posterior to prior?
+    \item Fit a binomial $N$-mixture model to the Canada warbler data
+      using: 
       \begin{itemize}
         \footnotesize
-        \item 
-        \item 
+        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+        \item Site covs: \texttt{Elevation, Wind, Noise}
       \end{itemize}
-    \end{enumerate}
-    \vfill
-    Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+    \item Graph the prediction of $\lambda$ as a function of
+      elevation, along with 95\% CIs.
+  \end{enumerate}
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
 \end{frame}
 
 
