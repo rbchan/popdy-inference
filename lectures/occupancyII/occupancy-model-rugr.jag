@@ -1,0 +1,26 @@
+model {
+
+# Priors for occupancy coefficients
+beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  Elevation[i] ~ dnorm(0,1)
+  utmN[i] ~ dnorm(0,1)
+  logit(psi[i]) <- beta0 + beta1*Elevation[i] + beta2*utmN[i]
+  z[i] ~ dbern(psi[i])            # Latent presence/absence
+  for(j in 1:nOccasions) {
+    Temp[i,j] ~ dnorm(0,1)
+    logit(p[i,j]) <- alpha0 + alpha1*Temp[i,j] 
+    y[i,j] ~ dbern(z[i]*p[i,j])   # Data
+  }
+}
+
+#sitesOccupied <- sum(z)
+
+}
