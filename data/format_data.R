@@ -474,7 +474,7 @@ str(surveys)
 ## surveys.2017.wide <- reshape(surveys.2017, idvar="PointName",
 ##                              timevar="occasion", direction="wide")
 
-str(surveys.2017.wide)
+## str(surveys.2017.wide)
 
 ## Detections
 names(dets.in)
@@ -567,3 +567,25 @@ colnames(cawa.data.2017)[1:4] <- c("cawa1","cawa2","cawa3","cawa4")
 str(cawa.data.2017)
 
 write.csv(cawa.data.2017, file="cawa_data_2017_occu.csv")
+
+
+
+
+
+
+
+
+## Export 2017 CAWA count data
+cawa.counts.2017 <- unclass(det.arr[,,"2017","CAWA"])
+
+
+cawa.counts.2017 <- cbind(cawa.counts.2017,
+                        surveys.2017[,c("SurvDate","SurvTime","Precipitation",
+                                        "Wind","Noise")])
+cawa.counts.2017$Elevation <- sites.in[match(rownames(cawa.counts.2017),
+                                             sites.in$PointName),"Elevation"]
+colnames(cawa.counts.2017)[1:4] <- c("cawa1","cawa2","cawa3","cawa4")
+
+str(cawa.counts.2017)
+
+write.csv(cawa.counts.2017, file="cawa_data_2017_binNmix.csv")
