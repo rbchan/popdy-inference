@@ -586,6 +586,7 @@ If the estimates do change, increase $K$ until they stabilize.
   \frametitle{Prediction in `unmarked'}
   \small
   Create \texttt{data.frame} with prediction covariates. 
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -597,6 +598,7 @@ If the estimates do change, increase $K$ until they stabilize.
 \pause
 \vfill
 Get predictions of $\lambda$ for each row of prediction data.
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -608,6 +610,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \pause
 \vfill
   View $\lambda$ predictions
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -911,6 +914,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \frametitle{Bayesian prediction}
   \small
   First, extract the $p$ coefficients
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -929,6 +933,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \pause
   \vfill
   Create prediction matrix, one row for each MCMC iteration.
+  \vspace{-6pt}
 %  Columns represent covariate values. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -942,6 +947,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \pause
   \vfill
   Predict $p$ for each MCMC iteration.
+  \vspace{-6pt}
 %  using covariate values from \inr{pred.data}. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -1116,7 +1122,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{Prior prediction}
   \small
-  Push the priors through the model to predict $p$
+  Push the prior samples through the model to predict $p$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1185,21 +1191,26 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}
   \frametitle{Prior predictive recap}
-  If you don't have strong prior knowledge, it's a good idea to use
-  priors that reflect plausible values of $\lambda$ and $p$. \\
+  There are two common strategies for specifying priors:
+  \begin{enumerate}
+    \item Use uniform/flat priors to obtain results that will often be
+      similar to likelihood-based methods.
+    \item Use priors that reflect available information.
+  \end{enumerate}
   \pause
   \vfill
-  We want to allow for the possibility of being ``surprised'' by the
-  data, but we don't want to put most of the prior weight on extreme
-  values. \\
+  The second approach can be used even if there isn't much prior
+  information available. Priors can allow for the
+  possibility of being ``surprised'' by the data, but without
+  putting most of the prior weight on extreme values. \\
   \pause
   \vfill
   Often, highly diffuse priors on the link scales result in most of the
   prior weight being on extreme values on the natural scales. \\
   \pause
   \vfill
-  Prior predictive checks should be a standard component of Bayesian
-  analysis. \\
+  Prior predictive checks can be used to assess this possibility, and
+  should be a standard component of Bayesian analysis. \\
 \end{frame}
 
 
@@ -1221,21 +1232,21 @@ Get predictions of $\lambda$ for each row of prediction data.
     \footnotesize
     \item Using the simulated data, compare the prior and posterior
       predictive distributions of $\lambda$ for each of the 3 forest
-      types. Write 1-2 sentences summarizing the differences.
+      types. 
     \item Change the priors for $\alpha_0$ and $\alpha_1$ from
       \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
       prior and posterior predictions of $p$ as a function of
       temperature. Make the same graph as we made above. How
-      sensitivie is the posterior to prior?
+      sensitive is the posterior to the prior?
     \item Fit a binomial $N$-mixture model to the Canada warbler data
-      using: 
+      using `unmarked'. The data include: 
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
         \item Site covs: \texttt{Elevation, Wind, Noise}
       \end{itemize}
-    \item Graph the prediction of $\lambda$ as a function of
-      elevation, along with 95\% CIs.
+    \item Graph the predictions of $\lambda$ over the 
+      elevation range, along with 95\% CIs.
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
