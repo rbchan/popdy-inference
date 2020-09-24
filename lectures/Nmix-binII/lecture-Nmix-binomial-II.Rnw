@@ -44,7 +44,7 @@ knit_theme$set("edit-kwrite")
 %  \maketitle
   \centering
   {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
-    Goodness-of-fit, model selection, spatial prediction} \\  
+    model selection and goodness-of-fit} \\  
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -56,6 +56,166 @@ knit_theme$set("edit-kwrite")
   University of Georgia \\
 \end{frame}
 
+
+
+
+
+\section{Model selection}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Model selection}
+  In scientific contexts, we want models that describe natural
+  processes and allow us to evaluate hypotheses. \\
+  \pause
+  \vfill
+  Models should be predictive, but they shouldn't be crafted with the
+  sole goal of prediction in mind. \\
+  \pause
+  \vfill
+  Scientists don't care about prediction if nothing is learned
+  about the processes that gave rise to the data. \\
+  \pause
+  \vfill
+  With all of that said, predictive performance is often the best way
+  to compare models. \\
+  \pause
+  \vfill
+  Just make sure the models being compared were motivated by clear
+  hypotheses.
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Model selection}
+  The best way to evaluate predictive performance is to compare
+  predictions to new observations. \\
+  \pause
+  \vfill
+  Trouble is, people rarely collect new observations \\
+  \pause
+  \vfill
+  An alternative approach is to use cross-validation:
+  \begin{itemize}
+    \item Split data into K partitions
+    \item Fit model to K-1 sets
+    \item Predict the holdout
+  \end{itemize}
+  \pause
+  \vfill
+  Information criteria like AIC and WAIC yield similar predictive
+  scores, but with less computation.    
+\end{frame}
+
+
+
+\subsection{Likelihood-based methods}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Model selection with AIC}
+  Akaike's `An Information Criterion' approximately leave-one-out
+  cross validation, and it's very easy to calculate:
+  \[
+     AIC = -2\times \mathrm{logLikelihood} + 2\times \mathrm{nParameters}
+  \]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model selection in `unmarked'}
+  \small
+  Import the grouse data
+<<grouse-in,size='small'>>=
+library(unmarked)
+grouse.data <- read.csv("grouse_data_Nmix.csv", row.names=1)
+grouse.umf <- unmarkedFramePCount(
+    y=grouse.data[,paste0("grouse",1:3)],
+    siteCovs=grouse.data[,c("utmE","utmN","elevation")],
+    obsCovs=list(temp=grouse.data[,paste0("Temperature.",1:3)]))
+@
+\pause
+\vfill
+Standardize the covariates (\inr{scale} will only work
+if all the covariates are continuous):
+<<grouse-stand,size='small'>>=
+site.covs.s <- scale(siteCovs(grouse.umf))
+colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
+siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
+obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model selection in `unmarked'}
+  \small
+  Fit some models
+<<grouse-mods,size='small'>>=
+fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
+fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
+fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
+fm4 <- pcount(~1 ~ elevation.s+utmN.s, grouse.umf, K=50)
+fm5 <- pcount(~1 ~ elevation.s, grouse.umf, K=50)
+fm6 <- pcount(~1 ~ 1, grouse.umf, K=50)
+@
+\pause
+\vfill
+Put models in a special type of list
+<<grouse-fitlist>>=
+grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
+                         'lam(elev+utmN)p(temp)'=fm2,
+                         'lam(elev)p(ptemp)'=fm3,
+                         'lam(elev+utmN)p(.)'=fm4,
+                         'lam(elev)p(.)'=fm5,
+                         'lam(.)p(.)'=fm6)
+
+@ 
+\end{frame}
+
+
+
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+%\section{Spatial prediction}
 
 
 
@@ -161,34 +321,13 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Changing the distribution for $N$}
-  \small
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  
 \end{frame}
 
 
-
-
-
-\section{Model selection}
-
-
-
-
-
-
-
-
-
-\section{Spatial prediction}
-
-
-
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
 
 
 

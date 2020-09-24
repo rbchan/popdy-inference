@@ -58,9 +58,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-%\title{Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and prediction }
-%\author{Richard Chandler}
-
 
 % Load function to compile and open PDF
 
@@ -86,7 +83,7 @@
 %  \maketitle
   \centering
   {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
-    Goodness-of-fit, spatial prediction} \\  
+    model selection and goodness-of-fit} \\  
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -98,6 +95,137 @@
   University of Georgia \\
 \end{frame}
 
+
+
+
+
+\section{Model selection}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Model selection}
+  In scientific contexts, we want models that describe natural
+  processes and allow us to evaluate hypotheses. \\
+  \pause
+  \vfill
+  Models should be predictive, but they shouldn't be crafted with the
+  sole goal of prediction in mind. \\
+  \pause
+  \vfill
+  Scientists don't care about prediction if nothing is learned
+  about the processes that gave rise to the data. \\
+  \pause
+  \vfill
+  With all of that said, predictive performance is often the best way
+  to compare models. \\
+  \pause
+  \vfill
+  Just make sure the models being compared were motivated by clear
+  hypotheses.
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Model selection}
+  The best way to evaluate predictive performance is to compare
+  predictions to new observations. \\
+  \pause
+  \vfill
+  Trouble is, people rarely collect new observations \\
+  \pause
+  \vfill
+  An alternative approach is to use cross-validation:
+  \begin{itemize}
+    \item Split data into K partitions
+    \item Fit model to K-1 sets
+    \item Predict the holdout
+  \end{itemize}
+  \pause
+  \vfill
+  Information criteria like AIC and WAIC yield similar predictive
+  scores, but with less computation.    
+\end{frame}
+
+
+
+\subsection{Likelihood-based methods}
+
+
+
+\begin{frame}
+  \frametitle{Model selection with AIC}
+  Akaike's `An Information Criterion' approximately leave-one-out
+  cross validation, and it's very easy to calculate:
+  \[
+     AIC = -2\mathrm{logLikelihood} + 2\mathrm{nParameters}
+  \]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model in `unmarked'}
+  \small
+  Import the grouse data
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(unmarked)}
+\hlstd{grouse.data} \hlkwb{<-} \hlkwd{read.csv}\hlstd{(}\hlstr{"grouse_data_Nmix.csv"}\hlstd{,} \hlkwc{row.names}\hlstd{=}\hlnum{1}\hlstd{)}
+\hlstd{grouse.umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hlstd{(}
+    \hlkwc{y}\hlstd{=grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"grouse"}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)],}
+    \hlkwc{siteCovs}\hlstd{=grouse.data[,}\hlkwd{c}\hlstd{(}\hlstr{"utmE"}\hlstd{,}\hlstr{"utmN"}\hlstd{,}\hlstr{"elevation"}\hlstd{)],}
+    \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"Temperature."}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)]))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Standardize the covariates (this trick with \inr{scale} will only work
+if all the covariates are continuous):
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{site.covs.s} \hlkwb{<-} \hlkwd{scale}\hlstd{(}\hlkwd{siteCovs}\hlstd{(grouse.umf))}
+\hlkwd{colnames}\hlstd{(site.covs.s)} \hlkwb{<-} \hlkwd{paste0}\hlstd{(}\hlkwd{colnames}\hlstd{(site.covs.s),} \hlstr{".s"}\hlstd{)}
+\hlkwd{obsCovs}\hlstd{(grouse.umf)} \hlkwb{<-} \hlkwd{scale}\hlstd{(}\hlkwd{obsCovs}\hlstd{(grouse.umf))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+%\section{Spatial prediction}
 
 
 
@@ -203,15 +331,13 @@
 \end{frame}
 
 
-\section{Spatial prediction}
 
-
-
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  
 \end{frame}
+
+
 
 
 
