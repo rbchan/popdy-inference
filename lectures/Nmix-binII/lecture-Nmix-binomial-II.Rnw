@@ -1,0 +1,628 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+% Load function to compile and open PDF
+<<build-fun,include=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+@
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-Nmix-binomial-II")
+rnw2pdf("lecture-Nmix-binomial-II", tangle=TRUE)
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+##knit_theme$set("navajo-night")
+knit_theme$set("edit-kwrite")
+@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\begin{document}
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
+    Goodness-of-fit, model selection, spatial prediction} \\  
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Goodness-of-fit}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Goodness-of-fit}
+  \small
+  Distributional assumptions determine the expected values
+  \alert{and the expected variance} of the random variables, including
+  the data. \\  
+  \pause
+  \vfill
+  Overdispersion occurs when there is more variance in the data than
+  expected by the model. \\
+  \pause
+  \vfill
+  Goodness-of-fit method assess over and underdispersion. \\
+  \pause
+  \vfill
+  If the model does not fit the data very well because of
+  overdispersion, there are several remedial actions:
+  \begin{itemize}
+  \item<5-> Scientific approach
+    \begin{itemize}
+       \item Figure out why there is unexplained variation
+       \item Perhaps there were unmeasured covariates or you need a
+         better model for describing the processes
+    \end{itemize}
+  \item<6-> Statistical approach
+    \begin{itemize}
+      \item Soak up variation with random effects
+      \item Use a different distribution (we'll start here)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<3->\oldfootnoterule}
+\begin{frame}
+  \frametitle{Changing the distribution for $N$}
+  \small
+  Standard Poisson-binomial $N$-mixture model (without covariates):
+  \begin{gather*}
+%    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+%    \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    N_i \sim \mathrm{Poisson}(\lambda) \\
+%    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+%    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+    y_{ij} \sim \mathrm{Binomial}(N_i, p)
+  \end{gather*}
+  \pause
+%  \vfill
+  We can replace the Poisson distribution with other distributions
+  that allow for greater variance in $N$. \pause Two common examples
+  are the negative 
+  binomial:
+  \begin{equation*}
+    N_i \sim \mathrm{NegBin}(\lambda_i, \kappa)
+  \end{equation*}
+  where $\lambda_i$ is the expected value of $N$ and $\kappa$ is the
+  dispersion parameter\footnote<3->{There are several other
+    parameterizations of the negative binomial}.
+  \pause
+%  \vfill
+  Another option is the zero-inflated Poisson:
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{gather*}
+        N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+        z_i \sim \mathrm{Bern}(\psi) \\
+      \end{gather*}
+    \end{column}
+    \begin{column}{0.1\textwidth}
+%      \centering
+%      Or \\
+      \rule{0.1pt}{24pt} \\
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{gather*}
+        \hspace{-72pt}
+        N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi) \\
+      \end{gather*}
+    \end{column}
+  \end{columns}
+  where $\psi$ is the expected proportion of sites with excess zeros. 
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Changing the distribution for $N$}
+  \small
+\end{frame}
+
+
+
+
+
+\section{Model selection}
+
+
+
+
+
+
+
+
+
+\section{Spatial prediction}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation -- No covariates}
+  \small
+%  \begin{enumerate}[<+->]
+%  \item  
+  Abundance
+<<sim-nocov1,size='scriptsize'>>=
+nSites <- 100
+nVisits <- 4
+set.seed(3439)  ## Make it reproducible
+lambda1 <- 2.6  ## Expected value of N
+N1 <- rpois(n=nSites, lambda=lambda1)
+@
+% \item
+  \pause
+  \vfill
+  Detection probability and data
+<<sim-nocov2,size='scriptsize'>>=
+p1 <- 0.3
+y1 <- matrix(NA, nrow=nSites, ncol=nVisits)
+for(i in 1:nSites) {
+    y1[i,] <- rbinom(nVisits, size=N1[i], prob=p1)
+}
+@
+%\end{enumerate}
+  \pause
+  \vfill
+  Data and latent abundance
+<<N1y1,size='scriptsize'>>=
+cbind(y1, N1)[1:5,]
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation -- Covariates}
+  \small
+%  Two continuous covariates and one categorical covariate with 2 levels
+%  \vfill
+%  \begin{enumerate}[<+->]
+%  \item
+  Covariates
+  \vspace{-6pt}
+<<sim-cov1,size='scriptsize'>>=
+forest <- factor(sample(c("Hardwood", "Mixed", "Pine"), nSites, replace=TRUE))
+forestMixed <- ifelse(forest=="Mixed", 1, 0)        ## Dummy
+forestPine <- ifelse(forest=="Pine", 1, 0)          ## Dummy
+temp <- matrix(rnorm(nSites*nVisits), nrow=nSites, ncol=nVisits)
+@
+% \item
+\vfill
+  Coefficients, $\lambda$, and $p$
+  \vspace{-6pt}
+<<nsim-cov2,size='scriptsize'>>=
+beta0 <- 0; beta1 <- -1; beta2 <- 1
+lambda2 <- exp(beta0 + beta1*forestMixed + beta2*forestPine)
+alpha0 <- -2; alpha1 <- 1
+p2 <- plogis(alpha0 + alpha1*temp)
+@   
+% \item
+\vfill
+  Simulate occupancy and detection data
+  \vspace{-6pt}
+<<sim-cov3,size='scriptsize'>>=
+N2 <- rpois(nSites, lambda=lambda2)         ## local abundance 
+y2 <- matrix(NA, nrow=nSites, ncol=nVisits)
+for(i in 1:nSites) {
+    y2[i,] <- rbinom(nVisits, size=N2[i], prob=p2[i,])
+}
+@   
+%\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+<<sim-nocov-dat,size='scriptsize'>>=
+y2[1:20,]
+@ 
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+  Detections at each site \\
+<<sim-nocov-ss1,size='scriptsize'>>=
+# Max count at each site
+maxCounts <- apply(y2, 1, max) 
+table(maxCounts)              
+@
+\pause
+\vfill
+\small
+Proportion of sites known to be occupied \\
+<<sim-nocov-ss2,size='scriptsize'>>=
+naiveOccupancy <- sum(maxCounts>0)/nSites
+naiveOccupancy 
+@
+<<un,include=FALSE>>=
+library(unmarked)
+@ 
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+<<un-umf,size='tiny'>>=
+umf <- unmarkedFramePCount(y=y2, siteCovs=data.frame(forest), obsCovs=list(temp=temp))
+@
+\pause
+<<wfac,size='tiny'>>=
+summary(umf)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+  \inr{pcount} is similar to \inr{occu}, but there's a new argument
+  (\texttt{K}) that should be an integer much 
+  greater than the highest possible value of local abundance. 
+<<un-fit,size='tiny'>>=
+fm <- pcount(~temp ~forest, umf, K=100)    
+fm
+@
+\pause
+\vfill
+Compare to actual parameter values:
+<<un-compare,size='tiny'>>=
+c(beta0=beta0, beta1=beta1, beta2=beta2); c(alpha0=alpha0, alpha1=alpha1)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Empirical Bayes -- Site-level abundance}
+<<ranef,size='scriptsize',out.width='80%',fig.align='center',fig.width=9>>=
+re <- ranef(fm)
+plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
+@   
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Total abundance (in surveyed region)}
+<<Ntotal,size='scriptsize',out.width='60%',fig.align='center'>>=
+N.total.post <- predict(re, func=sum, nsim=1000)
+hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
+@   
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  \small
+  Create \texttt{data.frame} with prediction covariates. 
+  \vspace{-6pt}
+<<preddat,size='footnotesize'>>=
+pred.data <- data.frame(forest=c("Hardwood", "Mixed", "Pine"),
+                        temp=0) 
+@
+\pause
+\vfill
+Get predictions of $\lambda$ for each row of prediction data.
+  \vspace{-6pt}
+<<predpsi,size='footnotesize'>>=
+lambda.pred <- predict(fm, newdata=pred.data,
+                       type='state', append=TRUE)
+@
+\pause
+\vfill
+  View $\lambda$ predictions
+  \vspace{-6pt}
+<<psi-head,size='footnotesize'>>=
+print(head(lambda.pred), digits=2)
+@
+\end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+%   \small
+%   View $\lambda$ predictions
+% <<psi-head,size='footnotesize'>>=
+% print(head(lambda.pred), digits=2)
+% @
+% \end{frame}
+
+
+
+
+
+
+\subsection{Bayesian methods: posterior prediction}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+<<bugs,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("Nmix-model-covs.jag"))
+@
+<<jagsUI,include=FALSE>>=
+library(jagsUI)
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data,size='small'>>=
+jags.data <- list(y=y2, temp=temp,
+                  forestMixed=forestMixed,
+                  forestPine=forestPine,
+                  nSites=nSites, nOccasions=nVisits)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits,size='small'>>=
+jags.inits <- function() {
+    list(beta0=rnorm(1), alpha0=rnorm(1), N=maxCounts)
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars,size='small'>>=
+jags.pars <- c("beta0", "beta1", "beta2",
+               "alpha0", "alpha1", "totalAbundance")
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
+library(jagsUI)
+jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+                                parameters.to.save=c(jags.pars, "N"), ## NOTE "N"!
+                                model.file="Nmix-model-covs.jag",
+                                n.chains=3, n.adapt=100, n.burnin=0,
+                                n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum,size='tiny'>>=
+summary(jags.post.samples[,jags.pars])
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Local abundance}
+<<localN,out.width='70%',fig.align='center',size='scriptsize'>>=
+plot(jags.post.samples[,paste0("N[", 1:4, "]")])
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.samples[,jags.pars[1:3]])
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.samples[,jags.pars[4:5]])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  \small
+  First, extract the $p$ coefficients
+  \vspace{-6pt}
+<<psi-coefs,size='scriptsize'>>=
+p.coef.post <- as.matrix(jags.post.samples[,c("alpha0","alpha1")])
+head(p.coef.post, n=4)
+@
+  \pause
+  \vfill
+  Create prediction matrix, one row for each MCMC iteration.
+  \vspace{-6pt}
+%  Columns represent covariate values. 
+<<p-predmat,size='scriptsize'>>=
+n.iter <- nrow(p.coef.post)
+temp.pred <- seq(-3, 3, length=50)
+p.post.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
+@   
+  \pause
+  \vfill
+  Predict $p$ for each MCMC iteration.
+  \vspace{-6pt}
+%  using covariate values from \inr{pred.data}. 
+<<psi-pred-bayes,size='scriptsize'>>=
+for(i in 1:n.iter) {
+    p.post.pred[i,] <- plogis(p.coef.post[i,"alpha0"] +
+                              p.coef.post[i,"alpha1"]*temp.pred)
+}
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+%  Now with posterior mean and 95\% CI
+<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='70%',fig.height=5,echo=-(1),dev='png',cache=TRUE,dpi=200>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(temp.pred, p.post.pred[1,], type="l", xlab="Temperature (standardized)",
+     ylab="Detection probability", ylim=c(0, 1), col=gray(0.8))
+for(i in seq(1, n.iter, by=10)) {  ## Thin by 10
+    lines(temp.pred, p.post.pred[i,], col=gray(0.8))  }
+pred.post.mean <- colMeans(p.post.pred)
+pred.post.lower <- apply(p.post.pred, 2, quantile, prob=0.025)
+pred.post.upper <- apply(p.post.pred, 2, quantile, prob=0.975)
+lines(temp.pred, pred.post.mean, col="blue")
+lines(temp.pred, pred.post.lower, col="blue", lty=2)
+lines(temp.pred, pred.post.upper, col="blue", lty=2)
+@ 
+\end{frame}
+
+
+
+
+
+
+\section{Assignment}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Assignment}
+  % \small
+  \footnotesize
+  Create a self-contained R script or Rmarkdown file
+  to do the following:
+  \vfill
+  \begin{enumerate}
+%    \small
+    \footnotesize
+    \item Using the simulated data, compare the prior and posterior
+      predictive distributions of $\lambda$ for each of the 3 forest
+      types. 
+    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
+      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
+      prior and posterior predictions of $p$ as a function of
+      temperature. Make the same graph as we made above. How
+      sensitive is the posterior to the prior?
+    \item Fit a binomial $N$-mixture model to the Canada warbler data
+      using `unmarked'. The data include: 
+      \begin{itemize}
+        \footnotesize
+        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+        \item Site covs: \texttt{Elevation, Wind, Noise}
+      \end{itemize}
+    \item Graph the predictions of $\lambda$ over the 
+      elevation range, along with 95\% CIs.
+  \end{enumerate}
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+

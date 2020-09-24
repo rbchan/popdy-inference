@@ -1,0 +1,943 @@
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+%\title{Lecture 6 -- Binomial $N$-mixture models: simulation, fitting, and prediction }
+%\author{Richard Chandler}
+
+
+% Load function to compile and open PDF
+
+
+% Compile and open PDF
+
+
+
+
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
+    Goodness-of-fit, spatial prediction} \\  
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Goodness-of-fit}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Goodness-of-fit}
+  \small
+  Distributional assumptions determine the expected values
+  \alert{and the expected variance} of the random variables, including
+  the data. \\  
+  \pause
+  \vfill
+  Overdispersion occurs when there is more variance in the data than
+  expected by the model. \\
+  \pause
+  \vfill
+  Goodness-of-fit method assess over and underdispersion. \\
+  \pause
+  \vfill
+  If the model does not fit the data very well because of
+  overdispersion, there are several remedial actions:
+  \begin{itemize}
+  \item<5-> Scientific approach
+    \begin{itemize}
+       \item Figure out why there is unexplained variation
+       \item Perhaps there were unmeasured covariates or you need a
+         better model for describing the processes
+    \end{itemize}
+  \item<6-> Statistical approach
+    \begin{itemize}
+      \item Soak up variation with random effects
+      \item Use a different distribution (we'll start here)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<3->\oldfootnoterule}
+\begin{frame}
+  \frametitle{Changing the distribution for $N$}
+  \small
+  Standard Poisson-binomial $N$-mixture model (without covariates):
+  \begin{gather*}
+%    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+%    \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    N_i \sim \mathrm{Poisson}(\lambda) \\
+%    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+%    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+    y_{ij} \sim \mathrm{Binomial}(N_i, p)
+  \end{gather*}
+  \pause
+%  \vfill
+  We can replace the Poisson distribution with other distributions
+  that allow for greater variance in $N$. \pause Two common examples
+  are the negative 
+  binomial:
+  \begin{equation*}
+    N_i \sim \mathrm{NegBin}(\lambda_i, \kappa)
+  \end{equation*}
+  where $\lambda_i$ is the expected value of $N$ and $\kappa$ is the
+  dispersion parameter\footnote<3->{There are several other
+    parameterizations of the negative binomial}.
+  \pause
+%  \vfill
+  Another option is the zero-inflated Poisson:
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{gather*}
+        N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+        z_i \sim \mathrm{Bern}(\psi) \\
+      \end{gather*}
+    \end{column}
+    \begin{column}{0.1\textwidth}
+%      \centering
+%      Or \\
+      \rule{0.1pt}{24pt} \\
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{gather*}
+        \hspace{-72pt}
+        N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi) \\
+      \end{gather*}
+    \end{column}
+  \end{columns}
+  where $\psi$ is the expected proportion of sites with excess zeros. 
+\end{frame}
+
+
+\section{Spatial prediction}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation -- No covariates}
+  \small
+%  \begin{enumerate}[<+->]
+%  \item  
+  Abundance
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}
+\hlstd{nVisits} \hlkwb{<-} \hlnum{4}
+\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}  \hlcom{## Make it reproducible}
+\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}  \hlcom{## Expected value of N}
+\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+% \item
+  \pause
+  \vfill
+  Detection probability and data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p1} \hlkwb{<-} \hlnum{0.3}
+\hlstd{y1} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y1[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=p1)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+%\end{enumerate}
+  \pause
+  \vfill
+  Data and latent abundance
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{cbind}\hlstd{(y1, N1)[}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##              N1
+## [1,] 2 2 1 0  3
+## [2,] 0 0 0 0  1
+## [3,] 2 1 2 2  6
+## [4,] 0 0 0 0  1
+## [5,] 0 0 0 0  0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation -- Covariates}
+  \small
+%  Two continuous covariates and one categorical covariate with 2 levels
+%  \vfill
+%  \begin{enumerate}[<+->]
+%  \item
+  Covariates
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{forest} \hlkwb{<-} \hlkwd{factor}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Pine"}\hlstd{), nSites,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{))}
+\hlstd{forestMixed} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(forest}\hlopt{==}\hlstr{"Mixed"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}        \hlcom{## Dummy}
+\hlstd{forestPine} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(forest}\hlopt{==}\hlstr{"Pine"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}          \hlcom{## Dummy}
+\hlstd{temp} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nVisits),} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+% \item
+\vfill
+  Coefficients, $\lambda$, and $p$
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0} \hlkwb{<-} \hlnum{0}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{1}
+\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{forestMixed} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{forestPine)}
+\hlstd{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{2}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}
+\hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{temp)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+% \item
+\vfill
+  Simulate occupancy and detection data
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}         \hlcom{## local abundance }
+\hlstd{y2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y2[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=p2[i,])}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+%\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2] [,3] [,4]
+##  [1,]    1    1    0    0
+##  [2,]    0    0    3    2
+##  [3,]    0    1    0    0
+##  [4,]    0    1    0    0
+##  [5,]    0    0    0    0
+##  [6,]    0    0    0    1
+##  [7,]    0    0    0    0
+##  [8,]    0    2    0    0
+##  [9,]    0    1    0    1
+## [10,]    0    1    0    0
+## [11,]    0    0    0    1
+## [12,]    0    0    1    0
+## [13,]    0    0    0    0
+## [14,]    0    0    0    0
+## [15,]    0    0    0    0
+## [16,]    0    0    0    0
+## [17,]    0    0    0    0
+## [18,]    0    0    0    0
+## [19,]    0    0    1    0
+## [20,]    0    0    0    1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+  Detections at each site \\
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Max count at each site}
+\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)}
+\hlkwd{table}\hlstd{(maxCounts)}
+\end{alltt}
+\begin{verbatim}
+## maxCounts
+##  0  1  2  3 
+## 55 33  9  3
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+\small
+Proportion of sites known to be occupied \\
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
+\hlstd{naiveOccupancy}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.45
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(forest),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=temp))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(umf)}
+\end{alltt}
+\begin{verbatim}
+## unmarkedFrame Object
+## 
+## 100 sites
+## Maximum number of observations per site: 4 
+## Mean number of observations per site: 4 
+## Sites with at least one detection: 45 
+## 
+## Tabulation of y observations:
+##   0   1   2   3 
+## 332  52  13   3 
+## 
+## Site-level covariates:
+##       forest  
+##  Hardwood:31  
+##  Mixed   :32  
+##  Pine    :37  
+## 
+## Observation-level covariates:
+##       temp          
+##  Min.   :-3.229012  
+##  1st Qu.:-0.603218  
+##  Median :-0.019813  
+##  Mean   :-0.001029  
+##  3rd Qu.: 0.663820  
+##  Max.   : 3.001200
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+  \inr{pcount} is similar to \inr{occu}, but there's a new argument
+  (\texttt{K}) that should be an integer much 
+  greater than the highest possible value of local abundance. 
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~}\hlstd{forest, umf,} \hlkwc{K}\hlstd{=}\hlnum{100}\hlstd{)}
+\hlstd{fm}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## pcount(formula = ~temp ~ forest, data = umf, K = 100)
+## 
+## Abundance:
+##             Estimate    SE      z  P(>|z|)
+## (Intercept)   -0.326 0.366 -0.891 0.372706
+## forestMixed   -0.326 0.461 -0.706 0.480137
+## forestPine     1.207 0.336  3.595 0.000324
+## 
+## Detection:
+##             Estimate    SE     z  P(>|z|)
+## (Intercept)    -1.96 0.313 -6.26 3.79e-10
+## temp            1.18 0.205  5.73 9.83e-09
+## 
+## AIC: 373.6761
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Compare to actual parameter values:
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1,} \hlkwc{beta2}\hlstd{=beta2);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
+\end{alltt}
+\begin{verbatim}
+## beta0 beta1 beta2 
+##     0    -1     1
+## alpha0 alpha1 
+##     -2      1
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Empirical Bayes -- Site-level abundance}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{re} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
+\hlkwd{plot}\hlstd{(re,} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{3}\hlstd{),} \hlkwc{subset}\hlstd{=site}\hlopt{%in%}\hlnum{1}\hlopt{:}\hlnum{12}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1}\hlstd{,} \hlnum{11}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{5}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/ranef-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Total abundance (in surveyed region)}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{N.total.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=sum,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
+\hlkwd{hist}\hlstd{(N.total.post,} \hlkwc{freq}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"N total"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/Ntotal-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  \small
+  Create \texttt{data.frame} with prediction covariates. 
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{forest}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Pine"}\hlstd{),}
+                        \hlkwc{temp}\hlstd{=}\hlnum{0}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Get predictions of $\lambda$ for each row of prediction data.
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                       \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  View $\lambda$ predictions
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(lambda.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##   Predicted   SE lower upper   forest temp
+## 1      0.72 0.26  0.35   1.5 Hardwood    0
+## 2      0.52 0.22  0.23   1.2    Mixed    0
+## 3      2.41 0.64  1.44   4.0     Pine    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+%   \small
+%   View $\lambda$ predictions
+% <<psi-head,size='footnotesize'>>=
+% print(head(lambda.pred), digits=2)
+% @
+% \end{frame}
+
+
+
+
+
+
+\subsection{Bayesian methods: posterior prediction}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'Nmix-model-covs.jag': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{temp}\hlstd{=temp,}
+                  \hlkwc{forestMixed}\hlstd{=forestMixed,}
+                  \hlkwc{forestPine}\hlstd{=forestPine,}
+                  \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{N}\hlstd{=maxCounts)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,}
+               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"N"}\hlstd{),} \hlcom{## NOTE "N"!}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+\end{verbatim}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}Nmix-model-covs.jag"{}}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Local abundance}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{paste0}\hlstd{(}\hlstr{"N["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,} \hlstr{"]"}\hlstd{)])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  \small
+  First, extract the $p$ coefficients
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"alpha0"}\hlstd{,}\hlstr{"alpha1"}\hlstd{)])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.matrix(jags.post.samples[, c("{}alpha0"{}, "{}alpha1"{})]): object 'jags.post.samples' not found}}\begin{alltt}
+\hlkwd{head}\hlstd{(p.coef.post,} \hlkwc{n}\hlstd{=}\hlnum{4}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'head': object 'p.coef.post' not found}}\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Create prediction matrix, one row for each MCMC iteration.
+  \vspace{-6pt}
+%  Columns represent covariate values. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n.iter} \hlkwb{<-} \hlkwd{nrow}\hlstd{(p.coef.post)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in nrow(p.coef.post): object 'p.coef.post' not found}}\begin{alltt}
+\hlstd{temp.pred} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{)}
+\hlstd{p.post.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{length}\hlstd{(temp.pred))}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matrix(NA, nrow = n.iter, ncol = length(temp.pred)): object 'n.iter' not found}}\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Predict $p$ for each MCMC iteration.
+  \vspace{-6pt}
+%  using covariate values from \inr{pred.data}. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlstd{p.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(p.coef.post[i,}\hlstr{"alpha0"}\hlstd{]} \hlopt{+}
+                              \hlstd{p.coef.post[i,}\hlstr{"alpha1"}\hlstd{]}\hlopt{*}\hlstd{temp.pred)}
+\hlstd{\}}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'n.iter' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+%  Now with posterior mean and 95\% CI
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(temp.pred, p.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'y' in selecting a method for function 'plot': object 'p.post.pred' not found}}\begin{alltt}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{, n.iter,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)) \{}  \hlcom{## Thin by 10}
+    \hlkwd{lines}\hlstd{(temp.pred, p.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))  \}}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in seq(1, n.iter, by = 10): object 'n.iter' not found}}\begin{alltt}
+\hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.post.pred)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is.data.frame(x): object 'p.post.pred' not found}}\begin{alltt}
+\hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in apply(p.post.pred, 2, quantile, prob = 0.025): object 'p.post.pred' not found}}\begin{alltt}
+\hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in apply(p.post.pred, 2, quantile, prob = 0.975): object 'p.post.pred' not found}}\begin{alltt}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'pred.post.mean' not found}}\begin{alltt}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'pred.post.lower' not found}}\begin{alltt}
+\hlkwd{lines}\hlstd{(temp.pred, pred.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'pred.post.upper' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\section{Assignment}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Assignment}
+  % \small
+  \footnotesize
+  Create a self-contained R script or Rmarkdown file
+  to do the following:
+  \vfill
+  \begin{enumerate}
+%    \small
+    \footnotesize
+    \item Using the simulated data, compare the prior and posterior
+      predictive distributions of $\lambda$ for each of the 3 forest
+      types. 
+    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
+      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
+      prior and posterior predictions of $p$ as a function of
+      temperature. Make the same graph as we made above. How
+      sensitive is the posterior to the prior?
+    \item Fit a binomial $N$-mixture model to the Canada warbler data
+      using `unmarked'. The data include: 
+      \begin{itemize}
+        \footnotesize
+        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+        \item Site covs: \texttt{Elevation, Wind, Noise}
+      \end{itemize}
+    \item Graph the predictions of $\lambda$ over the 
+      elevation range, along with 95\% CIs.
+  \end{enumerate}
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+
