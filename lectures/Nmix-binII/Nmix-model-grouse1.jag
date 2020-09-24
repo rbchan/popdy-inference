@@ -1,0 +1,35 @@
+model {
+
+# Priors for occupancy coefficients
+#beta0 ~ dnorm(0, 0.5)  
+lambda.intercept ~ dexp(1)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+beta3 ~ dnorm(0, 0.5)
+
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  elevation[i] ~ dnorm(0, 1)
+  utmN[i] ~ dnorm(0, 1)
+  utmE[i] ~ dnorm(0, 1)
+  log(lambda[i]) <- beta0 + beta1*elevation[i]*modswitch[1] +
+    beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] 
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  for(j in 1:nOccasions) {
+    temp[i,j] ~ dnorm(0,1)
+    logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]*modswitch[4]
+    y[i,j] ~ dbin(p[i,j], N[i])   # Data
+    ld.y[i,j] <- logdensity.bin(y[i,j], p[i,j], N[i])
+  }
+  ld.y.dot[i] <- sum(ld.y[i,])
+  ld.N[i] <- logdensity.pois(N[i], lambda[i])
+  ld.ydot.N[i] <- ld.y.dot[i]+ld.N[i]
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}
