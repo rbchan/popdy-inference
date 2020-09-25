@@ -141,14 +141,23 @@
 
 \begin{frame}
   \frametitle{Model selection}
+  Prediction accuracy increases with model complexity up to a point,
+  until over-fitting kicks in. \\
+  \pause
+  \vfill
+  How do we determine when a model is too simplistic or too complex? \\
+  \pause
+  \vfill
   The best way to evaluate predictive performance is to compare
-  predictions to new observations. \\
+  predictions to new observations, but we rarely have the resources to
+  collect additional data for the sake of prediction. \\
+  % \pause
+  % \vfill
+  % Trouble is, people rarely collect new observations. \\
   \pause
   \vfill
-  Trouble is, people rarely collect new observations. \\
-  \pause
-  \vfill
-  An alternative approach is to use cross-validation:
+  A cheapter (albeit less desirable) alternative is to use
+  cross-validation: 
   \begin{itemize}
     \item Split data into K partitions
     \item Fit model to K-1 partitions
@@ -186,6 +195,9 @@
 
 
 
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<2->\oldfootnoterule}
 \begin{frame}[fragile]
   \frametitle{Model selection in `unmarked'}
   \small
@@ -205,8 +217,7 @@
 \end{knitrout}
 \pause
 \vfill
-Standardize the covariates \\ (NOTE: \inr{scale} will only work
-if all the covariates are continuous):
+Standardize the covariates\footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
   \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -219,6 +230,7 @@ if all the covariates are continuous):
 \end{kframe}
 \end{knitrout}
 \end{frame}
+\egroup
 
 
 
@@ -338,6 +350,9 @@ Put models in a \inr{fitList}
 \end{knitrout}
   \pause
   \vfill
+  We could use the model with the lowest AIC for inference. \\
+  \pause
+  \vfill
   Later in the course, we'll talk about model-averaging predictions
 \end{frame}
 
@@ -371,11 +386,11 @@ Put models in a \inr{fitList}
                   \hlkwc{elevation}\hlstd{=site.covs.s[,}\hlstr{"elevation.s"}\hlstd{],}
                   \hlkwc{utmE}\hlstd{=site.covs.s[,}\hlstr{"utmE.s"}\hlstd{],}
                   \hlkwc{utmN}\hlstd{=site.covs.s[,}\hlstr{"utmN.s"}\hlstd{],}
-                  \hlkwc{temp}\hlstd{=}\hlkwd{as.matrix}\hlstd{(grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"Temperature."}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)]),}
+                  \hlkwc{temp}\hlstd{=}\hlkwd{as.matrix}\hlstd{(grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"Temperature."}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)]),}
                   \hlkwc{nSites}\hlstd{=}\hlkwd{nrow}\hlstd{(grouse.counts),}
                   \hlkwc{nOccasions}\hlstd{=}\hlkwd{ncol}\hlstd{(grouse.counts))}
 \hlstd{jags.data}\hlopt{$}\hlstd{temp} \hlkwb{<-} \hlstd{(jags.data}\hlopt{$}\hlstd{temp}\hlopt{-}\hlkwd{mean}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlopt{/}
-    \hlkwd{sd}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+    \hlkwd{sd}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{# standardize temp}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -462,7 +477,7 @@ Put models in a \inr{fitList}
 
 \begin{frame}[fragile]
   \frametitle{WAIC}
-\begin{knitrout}
+\begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{waic} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{focus}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"y"}\hlstd{,} \hlstr{"yN"}\hlstd{)) \{}
@@ -490,7 +505,7 @@ Put models in a \inr{fitList}
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1,} \hlkwc{focus}\hlstd{=}\hlstr{"yN"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 880.5816
+## [1] 914.3635
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -500,7 +515,7 @@ Put models in a \inr{fitList}
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2,} \hlkwc{focus}\hlstd{=}\hlstr{"yN"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 748.5362
+## [1] 768.326
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -510,7 +525,7 @@ Put models in a \inr{fitList}
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6,} \hlkwc{focus}\hlstd{=}\hlstr{"yN"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 1149.6
+## [1] 1076.055
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -525,8 +540,7 @@ Put models in a \inr{fitList}
 \begin{frame}[plain]
   \frametitle{Outline}
   \Large
-  \only<1>{\tableofcontents}%[hideallsubsections]}
-  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+  \tableofcontents[currentsection]
 \end{frame}
 
 
@@ -616,6 +630,11 @@ Put models in a \inr{fitList}
   \end{columns}
   where $\psi$ is the expected proportion of sites with excess zeros. 
 \end{frame}
+\egroup
+
+
+
+\subsection{Likelihood-based methods}
 
 
 
@@ -655,7 +674,7 @@ Put models in a \inr{fitList}
 
 
 
-\subsection{Bayesian methods: posterior prediction}
+\subsection{Bayesian methods}
 
 
 
