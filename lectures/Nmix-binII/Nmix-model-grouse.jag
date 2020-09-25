@@ -1,14 +1,12 @@
 model {
 
-# Priors for occupancy coefficients
 #beta0 ~ dnorm(0, 0.5)  
-lambda.intercept ~ dexp(1)
+lambda.intercept ~ dunif(0, 5)
 beta0 <- log(lambda.intercept)
 beta1 ~ dnorm(0, 0.5)
 beta2 ~ dnorm(0, 0.5)
 beta3 ~ dnorm(0, 0.5)
 
-# Priors for detection coefficients
 alpha0 ~ dnorm(0, 0.5)  
 alpha1 ~ dnorm(0, 0.5)
 
@@ -26,8 +24,6 @@ for(i in 1:nSites) {
     ld.y[i,j] <- logdensity.bin(y[i,j], p[i,j], N[i])
   }
   ld.y.dot[i] <- sum(ld.y[i,])
-  ld.N[i] <- logdensity.pois(N[i], lambda[i])
-  ld.ydot.N[i] <- ld.y.dot[i]+ld.N[i]
 }
 
 totalAbundance <- sum(N[1:nSites])

@@ -85,11 +85,12 @@ knit_theme$set("edit-kwrite")
   sole goal of prediction in mind. \\
   \pause
   \vfill
-  Scientists typically don't care about prediction if nothing is
-  learned about the processes that gave rise to the data. \\
+  Scientists typically don't care about prediction if the model
+  doesn't help us learn about the processes that gave rise to the
+  data. \\  
   \pause
   \vfill
-  That said, predictive performance is often the best way
+  Nonetheless, predictive performance is often the best way
   to compare models and avoid over-fitting. \\
   \pause
   \vfill
@@ -106,18 +107,19 @@ knit_theme$set("edit-kwrite")
   until over-fitting kicks in. \\
   \pause
   \vfill
-  How do we determine when a model is too simplistic or too complex? \\
+  The best way to determine if a model is too simplistic or too
+  complex is to compare predictions to new observations. \\
   \pause
   \vfill
-  The best way to evaluate predictive performance is to compare
-  predictions to new observations, but we rarely have the resources to
-  collect additional data for the sake of prediction. \\
+  However, we rarely have the resources to
+  collect additional data for the sake of evaluating predictive
+  performance. \\ 
   % \pause
   % \vfill
   % Trouble is, people rarely collect new observations. \\
   \pause
   \vfill
-  A cheapter (albeit less desirable) alternative is to use
+  A cheaper (albeit less desirable) alternative is to use
   cross-validation: 
   \begin{itemize}
     \item Split data into K partitions
@@ -144,15 +146,36 @@ knit_theme$set("edit-kwrite")
 
 
 
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<3->\oldfootnoterule}
 \begin{frame}
   \frametitle{Model selection with AIC}
-  Akaike's `An Information Criterion' approximately leave-one-out
+  \small
+  Akaike's `An Information Criterion' approximates leave-one-out
   cross validation, and it's very easy to calculate:
   \[
-     \mathrm{AIC} = -2\times \mathrm{logLikelihood} + 2\times \mathrm{nParameters}
+%     \mathrm{AIC} = -2\times \mathrm{logLikelihood} + 2\times \mathrm{nParameters}
+     \mathrm{AIC} = -2 \log(L) + 2P 
+   \]
+   where $L$ is the likelihood evaluated at the MLE and $P$ is
+   the number of parameters.
+  \pause
+  \vfill
+  For a binomial $N$-mixture model, the likelihood is computed by
+  marginalizing (summing over all possible values of) $N_i$:
+  \[
+     L = \prod_{i=1}^M \sum_{k=\max(y_i)}^{K\approx \infty}
+     \left\{\prod_{j=1}^J p(y_{ij}|N_i,p)\right\}p(N_i|\lambda)
   \]
+  \pause
+  where $p(y_{ij}|N_i,p)$ is the binomial probability
+  density\footnote<3->{\scriptsize For discrete random variables, the  
+    ``mass'' is often used instead of ``density''.} function 
+  (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
+  local abundance. 
 \end{frame}
-
+\egroup
 
 
 
@@ -193,7 +216,7 @@ obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
   \small
   Fit some models
   \vspace{-6pt}
-<<grouse-mods,size='footnotesize',warning=FALSE,cache=FALSE>>=
+<<grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE>>=
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
@@ -223,7 +246,7 @@ Uh oh, missing values differ among models.
 \begin{frame}[fragile]
   \frametitle{Model selection in `unmarked'}
   \small
-  Replace count data with \inr{NA} when associated covariates are missing:
+  Replace count data with \inr{NA} where associated covariates are missing:
   \vspace{-6pt}
 <<addNA,size='footnotesize'>>=
 na.sites <- apply(is.na(site.covs.s), 1, any)
@@ -235,7 +258,7 @@ grouse.umf@y <- grouse.counts
   \vfill
   Fit the models again
   \vspace{-6pt}
-<<grouse-mods2,size='scriptsize',warning=FALSE,cache=FALSE>>=
+<<grouse-mods2,size='scriptsize',warning=FALSE,cache=TRUE>>=
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
@@ -270,13 +293,42 @@ modSel(grouse.models)
 @
   \pause
   \vfill
-  We could use the model with the lowest AIC for inference. \\
+  We could use the model with the lowest AIC for inference and
+  prediction. \\ 
   \pause
   \vfill
-  Later in the course, we'll talk about model-averaging predictions
+  Or, we could model-average the predictions, which we'll cover later
+  in the course. \\
+  \pause
+  \vfill
+  For now, let's use the top model to predict grouse abundance across
+  N Georgia.
 \end{frame}
 
 
+
+
+\begin{frame}
+  \frametitle{Spatial prediction}
+  When our covariates are available as raster layers, we can paint our
+  predictions across the landscape. \\
+  \pause
+  \vfill
+  This isn't the type of spatial modeling that you would learn about
+  in a spatial statistics class because it doesn't account for spatial
+  autocorrelation, except through the covariates. \\
+  \pause
+  \vfil
+  However, it can be very useful nonetheless for modeling species
+  distributions, and we will cover spatial autocorrelation later. 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Spatial prediction}
+
+\end{frame}
 
 
 
@@ -293,6 +345,11 @@ modSel(grouse.models)
 
 
 
+\begin{frame}
+  \frametitle{WAIC}
+  
+\end{frame}
+
 
 
 \begin{frame}[fragile]
@@ -300,15 +357,16 @@ modSel(grouse.models)
   Put data in a named list
   \vspace{6pt}
 <<bugs-data,size='scriptsize'>>=
-jags.data <- list(y=grouse.counts,
-                  elevation=site.covs.s[,"elevation.s"],
-                  utmE=site.covs.s[,"utmE.s"],
-                  utmN=site.covs.s[,"utmN.s"],
-                  temp=as.matrix(grouse.data[,paste0("Temperature.",1:3)]),
-                  nSites=nrow(grouse.counts),
-                  nOccasions=ncol(grouse.counts))
+jags.data <- list(
+    y=grouse.counts,
+    elevation=site.covs.s[,"elevation.s"],
+    utmE=site.covs.s[,"utmE.s"],
+    utmN=site.covs.s[,"utmN.s"],
+    temp=as.matrix(grouse.data[,paste0("Temperature.",1:3)]),
+    nSites=nrow(grouse.counts),
+    nOccasions=ncol(grouse.counts))
 jags.data$temp <- (jags.data$temp-mean(jags.data$temp, na.rm=TRUE))/
-    sd(jags.data$temp, na.rm=TRUE) # standardize temp
+    sd(jags.data$temp, na.rm=TRUE) # standardize temperature
 @
 \pause
 \vfill
@@ -336,15 +394,44 @@ jags.pars <- c("beta0", "beta1", "beta2", "beta3",
 
 
 \begin{frame}[fragile]
-  \frametitle{MCMC}
+  \frametitle{The BUGS model}
   \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+  Notice \alert{\tt modswitch}, which we can use to include/exclude
+  predictors. 
+  \tiny
+<<bugs,size='tiny',echo=FALSE>>=
+writeLines(readLines("Nmix-model-grouse.jag"))
+@
+<<jagsUI,include=FALSE>>=
+library(jagsUI)
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  Fit Model 1, corresponding to \inr{fm1}. 
+<<bugs-mcmc,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
 library(jagsUI)
 jags.data1 <- jags.data
 jags.data1$modswitch <- c(1,1,1,1) ## Include all covariates
 jm1 <- jags.basic(data=jags.data1, inits=jags.inits,
                   parameters.to.save=jags.pars, 
-                  model.file="Nmix-model-grouse1.jag",
+                  model.file="Nmix-model-grouse.jag",
+                  n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+@
+\pause
+\vfill
+  Fit Model 2
+<<bugs-mcmc2,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
+jags.data2 <- jags.data; jags.data2$modswitch <- c(1,0,1,1) 
+jm2 <- jags.basic(data=jags.data2, inits=jags.inits,
+                  parameters.to.save=jags.pars, 
+                  model.file="Nmix-model-grouse.jag",
                   n.chains=3, n.adapt=100, n.burnin=0,
                   n.iter=2000, parallel=TRUE)
 @ 
@@ -354,18 +441,36 @@ jm1 <- jags.basic(data=jags.data1, inits=jags.inits,
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-  Model 2
-<<bugs-mcmc2,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
-jags.data2 <- jags.data; jags.data2$modswitch <- c(1,0,1,1)
-jm2 <- jags.basic(data=jags.data2, inits=jags.inits, parameters.to.save=jags.pars,
-                  model.file="Nmix-model-grouse1.jag", n.chains=3, n.adapt=100, n.burnin=0,
+  Model 3
+  \vspace{-6pt}
+<<bugs-mcmc3,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+jags.data3 <- jags.data; jags.data3$modswitch <- c(1,0,0,1)
+jm3 <- jags.basic(data=jags.data3, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+@ 
+  Model 4
+  \vspace{-6pt}
+<<bugs-mcmc4,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+jags.data4 <- jags.data; jags.data4$modswitch <- c(1,0,1,0)
+jm4 <- jags.basic(data=jags.data4, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+@ 
+  Model 5
+  \vspace{-6pt}
+<<bugs-mcmc5,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+jags.data5 <- jags.data; jags.data5$modswitch <- c(1,0,0,0)
+jm5 <- jags.basic(data=jags.data5, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
                   n.iter=2000, parallel=TRUE)
 @ 
   Model 6
-<<bugs-mcmc3,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
+  \vspace{-6pt}
+<<bugs-mcmc6,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
 jags.data6 <- jags.data; jags.data6$modswitch <- c(0,0,0,0)
 jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.pars,
-                  model.file="Nmix-model-grouse1.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
                   n.iter=2000, parallel=TRUE)
 @ 
 \end{frame}
@@ -386,12 +491,17 @@ waic <- function(x, focus=c("y", "yN")) {
     return(-2*(lppd-penalty))
 }
 @   
-<<waic-fn,size='small'>>=
+<<waic-fn,size='footnotesize'>>=
 waic <- function(x) {
+    ## Parameter names
     vars <- coda::varnames(x)
+    ## Extract log-density of y at each site for each post sample
     ld.samples <- as.matrix(x[,grep("ld.y.dot", vars)])
+    ## Compute log-pointwise-predictive-density
     lppd <- sum(log(colMeans(exp(ld.samples))))
+    ## Compute penalty
     penalty <- sum(apply(ld.samples, 2, var))
+    ## Return WAIC
     return(-2*(lppd-penalty))
 }
 @   
@@ -415,15 +525,30 @@ waic <- function(x) {
 
 \begin{frame}[fragile]
   \frametitle{WAIC}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
 <<waic1,size='scriptsize'>>=
 (waic1 <- waic(jm1))
 @   
 <<waic2,size='scriptsize'>>=
 (waic2 <- waic(jm2))
 @   
+<<waic3,size='scriptsize'>>=
+(waic3 <- waic(jm3))
+@   
+    \end{column}
+    \begin{column}{0.5\textwidth}
+<<waic4,size='scriptsize'>>=
+(waic4 <- waic(jm4))
+@   
+<<waic5,size='scriptsize'>>=
+(waic5 <- waic(jm5))
+@   
 <<waic6,size='scriptsize'>>=
 (waic6 <- waic(jm6))
-@   
+@
+    \end{column}
+  \end{columns}
 \end{frame}
 
 
@@ -557,8 +682,8 @@ waic <- function(x) {
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-<<parboot>>=
-pb <- parboot(fm1, nsim=200)
+<<parboot,size='small',warning=FALSE,cache=TRUE>>=
+pb <- parboot(fm1, nsim=200, ncores=3)
 plot(pb)
 @   
 \end{frame}
@@ -623,23 +748,15 @@ plot(pb)
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Using the simulated data, compare the prior and posterior
-      predictive distributions of $\lambda$ for each of the 3 forest
-      types. 
-    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
-      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
-      prior and posterior predictions of $p$ as a function of
-      temperature. Make the same graph as we made above. How
-      sensitive is the posterior to the prior?
-    \item Fit a binomial $N$-mixture model to the Canada warbler data
-      using `unmarked'. The data include: 
+    \item a
+    \item b
+    \item c 
       \begin{itemize}
         \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
+        \item i
+        \item ii
       \end{itemize}
-    \item Graph the predictions of $\lambda$ over the 
-      elevation range, along with 95\% CIs.
+    \item d
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
