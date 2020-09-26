@@ -372,6 +372,15 @@ write.csv(grouse.data.occu, file="grouse_data_occu.csv")
 write.csv(grouse.data.out, file="grouse_data_Nmix.csv")
 
 
+writeRaster(x=region.elev, filename="elev_utm16.tiff")
+
+save(ga.nc.sc.tn.utm, file="state_bondaries.gzip")
+
+
+
+    
+save.image("format_grouse_data.RData")
+
 
 
 

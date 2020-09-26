@@ -44,7 +44,7 @@ knit_theme$set("edit-kwrite")
 %  \maketitle
   \centering
   {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
-    model selection and goodness-of-fit} \\  
+    model selection, spatial prediction, and goodness-of-fit} \\  
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -318,18 +318,57 @@ modSel(grouse.models)
   in a spatial statistics class because it doesn't account for spatial
   autocorrelation, except through the covariates. \\
   \pause
-  \vfil
+  \vfill
   However, it can be very useful nonetheless for modeling species
   distributions, and we will cover spatial autocorrelation later. 
 \end{frame}
 
 
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Spatial prediction}
-
+<<elev-sp,fig.width=9.5,out.width='90%',fig.align='center',size='footnotesize'>>=
+library(raster)
+elev <- raster("elev_utm16.tif")
+plot(elev)
+@ 
 \end{frame}
 
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+<<utmN-sp,fig.width=9.5,out.width='90%',fig.align='center',size='footnotesize'>>=
+utmN <- elev
+utmN[] <- yFromCell(elev, cell=1:length(elev))
+plot(utmN)
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+  We have to standardize our rasters \alert{using the same mean and SD
+    as used before}.  
+<<means-sds,size='scriptsize'>>=
+attributes(site.covs.s)[3] ## Means
+attributes(site.covs.s)[4] ## SDs
+@
+\pause
+\vfill
+<<std-rast>>=
+elev.s <- (elev*186.6)+666.1
+utmN.s <- (utmN*18030.2)+3852681.2
+@
+\pause
+\vfill
+Put them together in a `raster stack'
+<<stack>>=
+elev.utm <- stack(elev.s,utmN.s)
+names(elev.utm) <- c("elevation.s", "utmN.s")
+@ 
+\end{frame}
 
 
 
