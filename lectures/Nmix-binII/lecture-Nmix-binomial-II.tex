@@ -209,7 +209,7 @@
   \]
   \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
-  density\footnote<3->{\scriptsize For discrete random variables, the  
+  density\footnote<3->{\scriptsize For discrete random variables, 
     ``mass'' is often used instead of ``density''.} function 
   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
   local abundance. 
@@ -311,7 +311,9 @@ Put models in a special type of list
                          \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
                          \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
 \end{knitrout}
 \pause
 Uh oh, missing values differ among models.
@@ -386,7 +388,9 @@ Put models in a \inr{fitList}
                          \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
                          \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -436,29 +440,30 @@ Put models in a \inr{fitList}
   predictions across the landscape. \\
   \pause
   \vfill
-  This isn't the type of spatial modeling that you would learn about
-  in a spatial statistics class because it doesn't account for spatial
-  autocorrelation, except through the covariates. \\
+  This doesn't account for spatial autocorrelation, except through the
+  covariates, but it can be very useful nonetheless for modeling
+  species distributions. \\
   \pause
   \vfill
-  However, it can be very useful nonetheless for modeling species
-  distributions, and we will cover spatial autocorrelation later. 
+  We will cover spatial autocorrelation later. 
 \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-\begin{knitrout}\footnotesize
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(raster)}
+\hlkwd{library}\hlstd{(raster);} \hlkwd{library}\hlstd{(sf)}
+\hlkwd{load}\hlstd{(}\hlstr{"state_boundaries.gzip"}\hlstd{)}
 \hlstd{elev} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elev_utm16.tif"}\hlstd{)}
-\hlkwd{plot}\hlstd{(elev)}
+\hlkwd{plot}\hlstd{(elev,} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
+\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.9\linewidth]{figure/elev-sp-1} 
+{\centering \includegraphics[width=0.8\linewidth]{figure/elev-sp-1} 
 
 }
 
@@ -472,16 +477,18 @@ Put models in a \inr{fitList}
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-\begin{knitrout}\footnotesize
+%  Extract UTM northing:
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{utmN} \hlkwb{<-} \hlstd{elev}
 \hlstd{utmN[]} \hlkwb{<-} \hlkwd{yFromCell}\hlstd{(elev,} \hlkwc{cell}\hlstd{=}\hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(elev))}
-\hlkwd{plot}\hlstd{(utmN)}
+\hlkwd{plot}\hlstd{(utmN,} \hlkwc{main}\hlstd{=}\hlstr{"UTM northing"}\hlstd{)}
+\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.9\linewidth]{figure/utmN-sp-1} 
+{\centering \includegraphics[width=0.8\linewidth]{figure/utmN-sp-1} 
 
 }
 
@@ -491,19 +498,25 @@ Put models in a \inr{fitList}
 \end{frame}
 
 
+
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-  We have to standardize our rasters \alert{using the same mean and SD as used before}.
+  We have to standardize our rasters \alert{using the same mean and SD
+    as used before}.  
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{attributes}\hlstd{(site.covs.s)[}\hlnum{3}\hlopt{:}\hlnum{4}\hlstd{]}
+\hlkwd{attributes}\hlstd{(site.covs.s)[}\hlnum{3}\hlstd{]} \hlcom{## Means}
 \end{alltt}
 \begin{verbatim}
 ## $`scaled:center`
 ##         utmE         utmN    elevation 
-##  778580.9217 3852681.1770     666.1218 
-## 
+##  778580.9217 3852681.1770     666.1218
+\end{verbatim}
+\begin{alltt}
+\hlkwd{attributes}\hlstd{(site.covs.s)[}\hlnum{4}\hlstd{]} \hlcom{## SDs}
+\end{alltt}
+\begin{verbatim}
 ## $`scaled:scale`
 ##      utmE      utmN elevation 
 ## 36537.870 18030.242   186.605
@@ -512,15 +525,71 @@ Put models in a \inr{fitList}
 \end{knitrout}
 \pause
 \vfill
-\begin{knitrout}
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{elev.s} \hlkwb{<-} \hlstd{(elev}\hlopt{*}\hlnum{186.6}\hlstd{)}\hlopt{+}\hlnum{666.1}
-\hlstd{utmN.s} \hlkwb{<-} \hlstd{(utmN}\hlopt{*}\hlnum{18030.2}\hlstd{)}\hlopt{+}\hlnum{3852681.2}
+\hlstd{elev.s} \hlkwb{<-} \hlstd{(elev}\hlopt{-}\hlnum{666.1}\hlstd{)}\hlopt{/}\hlnum{186.6}
+\hlstd{utmN.s} \hlkwb{<-} \hlstd{(utmN}\hlopt{-}\hlnum{3852681.2}\hlstd{)}\hlopt{/}\hlnum{18030.2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Put them together in a `raster stack'
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{elev.utm} \hlkwb{<-} \hlkwd{stack}\hlstd{(elev.s,utmN.s)}
+\hlkwd{names}\hlstd{(elev.utm)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"elevation.s"}\hlstd{,} \hlstr{"utmN.s"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{grouse.pred.map} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm2,} \hlkwc{newdata}\hlstd{=elev.utm,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)}
+\hlkwd{plot}\hlstd{(grouse.pred.map)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/lam-pred-map-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(grouse.pred.map}\hlopt{$}\hlstd{Predicted,} \hlkwc{main}\hlstd{=}\hlstr{"Grouse distribution"}\hlstd{)}
+\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/Elam-pred-map-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
 
 
 
@@ -982,7 +1051,12 @@ Put models in a \inr{fitList}
 \hlkwd{plot}\hlstd{(pb)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\maxwidth]{figure/parboot-1} 
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/parboot-1} 
+
+}
+
+
 
 \end{knitrout}
 \end{frame}

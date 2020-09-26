@@ -170,7 +170,7 @@ knit_theme$set("edit-kwrite")
   \]
   \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
-  density\footnote<3->{\scriptsize For discrete random variables, the  
+  density\footnote<3->{\scriptsize For discrete random variables, 
     ``mass'' is often used instead of ``density''.} function 
   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
   local abundance. 
@@ -306,6 +306,7 @@ modSel(grouse.models)
 \end{frame}
 
 
+\section{Spatial prediction}
 
 
 \begin{frame}
@@ -314,23 +315,24 @@ modSel(grouse.models)
   predictions across the landscape. \\
   \pause
   \vfill
-  This isn't the type of spatial modeling that you would learn about
-  in a spatial statistics class because it doesn't account for spatial
-  autocorrelation, except through the covariates. \\
+  This doesn't account for spatial autocorrelation, except through the
+  covariates, but it can be very useful nonetheless for modeling
+  species distributions. \\
   \pause
   \vfill
-  However, it can be very useful nonetheless for modeling species
-  distributions, and we will cover spatial autocorrelation later. 
+  We will cover spatial autocorrelation later. 
 \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-<<elev-sp,fig.width=9.5,out.width='90%',fig.align='center',size='footnotesize'>>=
-library(raster)
+<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize'>>=
+library(raster); library(sf)
+load("state_boundaries.gzip")
 elev <- raster("elev_utm16.tif")
-plot(elev)
+plot(elev, main="Elevation")
+plot(ga.nc.sc.tn.utm, add=TRUE)
 @ 
 \end{frame}
 
@@ -339,12 +341,15 @@ plot(elev)
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-<<utmN-sp,fig.width=9.5,out.width='90%',fig.align='center',size='footnotesize'>>=
+%  Extract UTM northing:
+<<utmN-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize'>>=
 utmN <- elev
 utmN[] <- yFromCell(elev, cell=1:length(elev))
-plot(utmN)
+plot(utmN, main="UTM northing")
+plot(ga.nc.sc.tn.utm, add=TRUE)
 @ 
 \end{frame}
+
 
 
 \begin{frame}[fragile]
@@ -357,18 +362,41 @@ attributes(site.covs.s)[4] ## SDs
 @
 \pause
 \vfill
-<<std-rast>>=
-elev.s <- (elev*186.6)+666.1
-utmN.s <- (utmN*18030.2)+3852681.2
+<<std-rast,size='scriptsize'>>=
+elev.s <- (elev-666.1)/186.6        
+utmN.s <- (utmN-3852681.2)/18030.2  
 @
 \pause
 \vfill
 Put them together in a `raster stack'
-<<stack>>=
+<<stack,size='scriptsize'>>=
 elev.utm <- stack(elev.s,utmN.s)
 names(elev.utm) <- c("elevation.s", "utmN.s")
 @ 
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+<<lam-pred-map,size='scriptsize',results='hide',fig.width=10.5,out.width='90%',fig.align='center',cache=TRUE>>=
+grouse.pred.map <- predict(fm2, newdata=elev.utm, type="state")
+plot(grouse.pred.map)
+@
+
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+<<Elam-pred-map,size='scriptsize',results='hide',fig.width=9.7,out.width='90%',fig.align='center'>>=
+plot(grouse.pred.map$Predicted, main="Grouse distribution")
+plot(ga.nc.sc.tn.utm, add=TRUE)
+@
+\end{frame}
+
+
 
 
 
@@ -721,7 +749,7 @@ waic <- function(x) {
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-<<parboot,size='small',warning=FALSE,cache=TRUE>>=
+<<parboot,size='small',warning=FALSE,cache=TRUE,fig.width=9,out.width='80%',fig.align='center'>>=
 pb <- parboot(fm1, nsim=200, ncores=3)
 plot(pb)
 @   
