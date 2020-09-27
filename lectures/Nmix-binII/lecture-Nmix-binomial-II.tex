@@ -54,6 +54,7 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\usepackage{verbatim}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -107,7 +108,7 @@
   \frametitle{Outline}
   \Large
   \only<1>{\tableofcontents}%[hideallsubsections]}
-  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+%  \only<2 | handout:0>{\tableofcontents[currentsection,currentsubsection]}
 \end{frame}
 
 
@@ -185,22 +186,39 @@
 
 
 
-\bgroup
-\let\oldfootnoterule\footnoterule
-\def\footnoterule{\only<3->\oldfootnoterule}
+
+
 \begin{frame}
   \frametitle{Model selection with AIC}
   \small
-  Akaike's `An Information Criterion' approximates leave-one-out
-  cross validation, and it's very easy to calculate:
+  Most information criteria (IC) take on a form like this:
+  \[
+     \mathrm{IC} = \mathrm{fit} + \mathrm{penalty}
+  \]
+  where `fit' describes how well the model fits the data and
+  `penalty' describes model complexity. \\
+  \pause
+  \vfill
+  In the case of Akaike's `An Information Criterion', which
+  approximates leave-one-out cross validation, `fit' is described by
+  the likelihood and the `penalty' is determined by the number of parameters:
   \[
 %     \mathrm{AIC} = -2\times \mathrm{logLikelihood} + 2\times \mathrm{nParameters}
      \mathrm{AIC} = -2 \log(L) + 2P 
    \]
    where $L$ is the likelihood evaluated at the MLE and $P$ is
    the number of parameters.
-  \pause
-  \vfill
+\end{frame}
+
+
+
+
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<2->\oldfootnoterule}
+\begin{frame}
+  \frametitle{Model selection with AIC}
+  \small
   For a binomial $N$-mixture model, the likelihood is computed by
   marginalizing (summing over all possible values of) $N_i$:
   \[
@@ -209,12 +227,14 @@
   \]
   \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
-  density\footnote<3->{\scriptsize For discrete random variables, 
+  density\footnote<2->{\scriptsize For discrete random variables, 
     ``mass'' is often used instead of ``density''.} function 
   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
   local abundance. 
 \end{frame}
 \egroup
+
+
 
 
 
@@ -311,9 +331,7 @@ Put models in a special type of list
                          \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
                          \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 Uh oh, missing values differ among models.
@@ -388,9 +406,7 @@ Put models in a \inr{fitList}
                          \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
                          \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -432,6 +448,7 @@ Put models in a \inr{fitList}
 \end{frame}
 
 
+\subsubsection{Spatial prediction}
 
 
 \begin{frame}
@@ -592,6 +609,38 @@ Put them together in a `raster stack'
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.5\linewidth]{figure/Elam-pred-map2-1} 
+
+}
+
+
+
+\end{knitrout}
+\footnotesize
+This map depicts the expected number of grouse that would occur at a
+survey plot centered on each pixel. \\
+\pause
+\vfill
+To estimate grouse abundance in the entire region, we would need to:
+\begin{enumerate}
+  \footnotesize
+  \item Estimate density by including an \alert{offset} in the model
+    like this:
+%    \colorbox{inlinecolor}{\verb=pcount(~1~elevation.s+utmN.s+offset(log(area)))=}
+    \verb_pcount(~1~elevation.s+utmN.s+offset(log(area)))_
+  \item Predict abundance at each pixel, while accounting for pixel area
+  \item Sum pixel-specific abundance
+\end{enumerate}
+\end{frame}
+
+
+
+
 
 \subsection{Bayesian methods}
 
@@ -607,7 +656,16 @@ Put them together in a `raster stack'
 
 \begin{frame}
   \frametitle{WAIC}
-  
+  Watanabe's widely applicable information criterion (WAIC), is
+  generalization of AIC suitable for Bayesian models. \\
+  \pause
+  \vfill
+  \[
+%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
+%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+  \]
 \end{frame}
 
 

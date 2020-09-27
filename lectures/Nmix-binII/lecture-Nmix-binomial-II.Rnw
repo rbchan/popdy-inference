@@ -4,6 +4,7 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\usepackage{verbatim}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -68,7 +69,7 @@ knit_theme$set("edit-kwrite")
   \frametitle{Outline}
   \Large
   \only<1>{\tableofcontents}%[hideallsubsections]}
-  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+%  \only<2 | handout:0>{\tableofcontents[currentsection,currentsubsection]}
 \end{frame}
 
 
@@ -146,36 +147,59 @@ knit_theme$set("edit-kwrite")
 
 
 
-\bgroup
-\let\oldfootnoterule\footnoterule
-\def\footnoterule{\only<3->\oldfootnoterule}
+
+
 \begin{frame}
   \frametitle{Model selection with AIC}
   \small
-  Akaike's `An Information Criterion' approximates leave-one-out
-  cross validation, and it's very easy to calculate:
+  Most information criteria (IC) take on a form like this:
+  \[
+     \mathrm{IC} = \mathrm{fit} + \mathrm{penalty}
+  \]
+  where `fit' describes how well the model fits the data and
+  `penalty' describes model complexity. \\
+  \pause
+  \vfill
+  In the case of Akaike's `An Information Criterion', which
+  approximates leave-one-out cross validation, `fit' is described by
+  the likelihood and the `penalty' is determined by the number of parameters:
   \[
 %     \mathrm{AIC} = -2\times \mathrm{logLikelihood} + 2\times \mathrm{nParameters}
      \mathrm{AIC} = -2 \log(L) + 2P 
    \]
    where $L$ is the likelihood evaluated at the MLE and $P$ is
-   the number of parameters.
-  \pause
-  \vfill
+   the number of parameters. \\
+   \pause
+   \vfill
+   The lower the AIC, the better the \alert{out-of-sample} predictive
+   performance.
+\end{frame}
+
+
+
+
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<1->\oldfootnoterule}
+\begin{frame}
+  \frametitle{Model selection with AIC}
+%  \small
   For a binomial $N$-mixture model, the likelihood is computed by
   marginalizing (summing over all possible values of) $N_i$:
   \[
      L = \prod_{i=1}^M \sum_{k=\max(y_i)}^{K\approx \infty}
      \left\{\prod_{j=1}^J p(y_{ij}|N_i,p)\right\}p(N_i|\lambda)
   \]
-  \pause
+%  \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
-  density\footnote<3->{\scriptsize For discrete random variables, 
+  density\footnote<1->{\scriptsize For discrete random variables, 
     ``mass'' is often used instead of ``density''.} function 
   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
   local abundance. 
 \end{frame}
 \egroup
+
+
 
 
 
@@ -187,7 +211,7 @@ knit_theme$set("edit-kwrite")
   \small
   Import the grouse data
   \vspace{-6pt}
-<<grouse-in,size='footnotesize'>>=
+<<grouse-in,size='footnotesize',cache=TRUE>>=
 library(unmarked)
 grouse.data <- read.csv("grouse_data_Nmix.csv", row.names=1)
 grouse.umf <- unmarkedFramePCount(
@@ -199,7 +223,7 @@ grouse.umf <- unmarkedFramePCount(
 \vfill
 Standardize the covariates\footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
   \vspace{-6pt}
-<<grouse-stand,size='footnotesize'>>=
+<<grouse-stand,size='footnotesize',cache=TRUE>>=
 site.covs.s <- scale(siteCovs(grouse.umf))
 colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
 siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
@@ -306,7 +330,7 @@ modSel(grouse.models)
 \end{frame}
 
 
-\section{Spatial prediction}
+\subsubsection{Spatial prediction}
 
 
 \begin{frame}
@@ -399,6 +423,32 @@ plot(ga.nc.sc.tn.utm, add=TRUE)
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+<<Elam-pred-map2,size='scriptsize',results='hide',fig.width=9.7,out.width='50%',fig.align='center',echo=FALSE>>=
+plot(grouse.pred.map$Predicted, main="Grouse distribution")
+plot(ga.nc.sc.tn.utm, add=TRUE)
+@
+\footnotesize
+This map depicts the expected number of grouse that would occur at a
+survey plot centered on each pixel. \\
+\pause
+\vfill
+To estimate grouse abundance in the entire region, we would need to:
+\begin{enumerate}
+  \footnotesize
+  \item Estimate density by including an \alert{offset} in the model
+    like this:
+%    \colorbox{inlinecolor}{\verb=pcount(~1~elevation.s+utmN.s+offset(log(area)))=}
+    \verb_pcount(~1~elevation.s+utmN.s+offset(log(area)))_
+  \item Predict abundance at each pixel, while accounting for pixel area
+  \item Sum pixel-specific abundance
+\end{enumerate}
+\end{frame}
+
+
+
+
 
 \subsection{Bayesian methods}
 
@@ -414,7 +464,31 @@ plot(ga.nc.sc.tn.utm, add=TRUE)
 
 \begin{frame}
   \frametitle{WAIC}
-  
+  Watanabe's widely applicable information criterion (WAIC) is a
+  generalization of AIC suitable for Bayesian models. \\
+  \pause
+  \vfill
+  As before, we have 
+  \[
+%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
+%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
+%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = \mathrm{fit} + \mathrm{penalty}
+  \]
+  \pause
+  \vfill
+  The measure of `fit' in this case is the
+  log-pointwise-predictive-density:
+  \[
+     \mathrm{lppd} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s))
+  \]
+  \pause
+  \vfill
+  The penalty is proportional to the posterior variance:
+  \[
+     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
+  \]
 \end{frame}
 
 
