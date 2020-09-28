@@ -4,7 +4,7 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
-\usepackage{verbatim}
+\usepackage{booktabs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -130,7 +130,7 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   Information criteria like AIC and WAIC yield similar predictive
-  rankings, but with less computation.    
+  rankings as cross-validation, but with less computation.    
 \end{frame}
 
 
@@ -488,6 +488,8 @@ To estimate grouse abundance in the entire region, we would need to:
   The penalty is proportional to the posterior variance:
   \[
      \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
+%     \mathrm{penalty} = \sum_{i=1}^M \frac{\left(\sum_s
+%       \log(p(y_i|\theta_s)) - \sum_s \log(p(y_i|\theta_s))/S)\right)^2}{S-1}
   \]
 \end{frame}
 
@@ -556,7 +558,7 @@ library(jagsUI)
   \frametitle{MCMC}
   Fit Model 1, corresponding to \inr{fm1}. 
   \vspace{-6pt}
-<<bugs-mcmc,size='footnotesize',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
 library(jagsUI)
 jags.data1 <- jags.data
 jags.data1$modswitch <- c(1,1,1,1) ## Include all covariates
@@ -570,7 +572,7 @@ jm1 <- jags.basic(data=jags.data1, inits=jags.inits,
 \vfill
   Fit Model 2
   \vspace{-6pt}
-<<bugs-mcmc2,size='footnotesize',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc2,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
 jags.data2 <- jags.data; jags.data2$modswitch <- c(1,0,1,1) 
 jm2 <- jags.basic(data=jags.data2, inits=jags.inits,
                   parameters.to.save=jags.pars, 
@@ -586,7 +588,7 @@ jm2 <- jags.basic(data=jags.data2, inits=jags.inits,
   \small
   Model 3
   \vspace{-6pt}
-<<bugs-mcmc3,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc3,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
 jags.data3 <- jags.data; jags.data3$modswitch <- c(1,0,0,1)
 jm3 <- jags.basic(data=jags.data3, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -594,7 +596,7 @@ jm3 <- jags.basic(data=jags.data3, inits=jags.inits, parameters.to.save=jags.par
 @ 
   Model 4
   \vspace{-6pt}
-<<bugs-mcmc4,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc4,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
 jags.data4 <- jags.data; jags.data4$modswitch <- c(1,0,1,0)
 jm4 <- jags.basic(data=jags.data4, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -602,7 +604,7 @@ jm4 <- jags.basic(data=jags.data4, inits=jags.inits, parameters.to.save=jags.par
 @ 
   Model 5
   \vspace{-6pt}
-<<bugs-mcmc5,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc5,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
 jags.data5 <- jags.data; jags.data5$modswitch <- c(1,0,0,0)
 jm5 <- jags.basic(data=jags.data5, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -610,7 +612,7 @@ jm5 <- jags.basic(data=jags.data5, inits=jags.inits, parameters.to.save=jags.par
 @ 
   Model 6
   \vspace{-6pt}
-<<bugs-mcmc6,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc6,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
 jags.data6 <- jags.data; jags.data6$modswitch <- c(0,0,0,0)
 jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -694,6 +696,7 @@ waic <- function(x) {
     \end{column}
   \end{columns}
   \pause
+  \vfill
   In practice, you would discard burn-in and ensure convergence before
   computing WAIC.
 \end{frame}
@@ -705,12 +708,14 @@ waic <- function(x) {
 \begin{frame}[fragile]
   \frametitle{WAIC}
   Create a WAIC table:
+  \begin{center}
 <<waic-table,size='scriptsize'>>=
 waic.table <- data.frame(WAIC=c(waic1,waic2,waic3,waic4,waic5,waic5))
 waic.table$deltaWAIC <- waic.table$WAIC-min(waic.table$WAIC)
 waic.table <- waic.table[order(waic.table$WAIC),]
-knitr::kable(waic.table)
-@   
+knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
+@
+  \end{center}
 \end{frame}
 
 
@@ -852,11 +857,11 @@ knitr::kable(waic.table)
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-<<parboot,size='footnotesize',warning=FALSE,cache=TRUE,fig.width=9,out.width='70%',fig.align='center'>>=
+<<parboot,size='scriptsize',warning=FALSE,cache=TRUE,fig.width=9,out.width='70%',fig.align='center'>>=
 fitstat <- function(fm) {
-    return(c(SSE=sum(residuals(fm)^2))) ## Sum of squared-residuals
+    return(c(SSE=sum(residuals(fm)^2, na.rm=TRUE))) ## Sum of squared-residuals
 }
-pb <- parboot(fm1, statistic=fitstat, nsim=200, ncores=3); plot(pb)
+pb <- parboot(fm2, statistic=fitstat, nsim=200, ncores=3); plot(pb)
 @   
 \end{frame}
 
@@ -864,13 +869,38 @@ pb <- parboot(fm1, statistic=fitstat, nsim=200, ncores=3); plot(pb)
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-<<parboot2,size='small'>>=
+<<parboot2,size='footnotesize'>>=
 pb
 @
 \pause
 \vfill
 These results suggest that model \inr{fm2} fits the data well.
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  If the model didn't fit the data well, we could try a different
+  distribution for $N_i$ such as the negative binomial:
+<<negbin,size='scriptsize',warning=FALSE>>=
+pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="NB")
+@
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  Or the zero-inflated Poisson:
+<<zip,size='scriptsize',warning=FALSE>>=
+pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP")
+@
+\end{frame}
+
 
 
 
@@ -916,8 +946,40 @@ These results suggest that model \inr{fm2} fits the data well.
 
 \begin{frame}[fragile]
   \frametitle{Bayesian fit assessments}
-  
+  In a Bayesian analysis, we compare the   
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{BUGS model with fit stats}
+<<bugs2,size='tiny',echo=FALSE>>=
+writeLines(readLines("Nmix-model-grouse2.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  Fit Model 1, corresponding to \inr{fm1}. 
+  \vspace{-6pt}
+<<bugs-mcmc,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
+library(jagsUI)
+jm <- jags.basic(data=jags.data, inits=jags.inits,
+                 parameters.to.save=c(jags.pars, "SSE", "SSE.new"), 
+                 model.file="Nmix-model-grouse2.jag",
+                 n.chains=3, n.adapt=100, n.burnin=0,
+                 n.iter=2000, parallel=TRUE)
+plot(as.matrix(jm[,c("SSE", "SSE.new")]))
+abline(a=0, b=1, col="red")
+@
+
+\end{frame}
+
 
 
 

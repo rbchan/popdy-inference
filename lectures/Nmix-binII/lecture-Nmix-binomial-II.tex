@@ -54,7 +54,7 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
-\usepackage{verbatim}
+\usepackage{booktabs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -169,7 +169,7 @@
   \pause
   \vfill
   Information criteria like AIC and WAIC yield similar predictive
-  rankings, but with less computation.    
+  rankings as cross-validation, but with less computation.    
 \end{frame}
 
 
@@ -641,7 +641,9 @@ To estimate grouse abundance in the entire region, we would need to:
   \vfill
   The penalty is proportional to the posterior variance:
   \[
-     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
+%     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
+     \mathrm{penalty} = \sum_{i=1}^M \frac{\left(\sum_s
+       \log(p(y_i|\theta_s)) - \sum_s \log(p(y_i|\theta_s))/S)\right)^2}{S-1}
   \]
 \end{frame}
 
@@ -951,37 +953,48 @@ To estimate grouse abundance in the entire region, we would need to:
     \end{column}
   \end{columns}
   \pause
+  \vfill
+  In practice, you would discard burn-in and ensure convergence before
+  computing WAIC.
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{WAIC}
   Create a WAIC table:
+  \begin{center}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{waic.table} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{WAIC}\hlstd{=}\hlkwd{c}\hlstd{(waic1,waic2,waic3,waic4,waic5,waic5))}
 \hlstd{waic.table}\hlopt{$}\hlstd{deltaWAIC} \hlkwb{<-} \hlstd{waic.table}\hlopt{$}\hlstd{WAIC}\hlopt{-}\hlkwd{min}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC)}
 \hlstd{waic.table} \hlkwb{<-} \hlstd{waic.table[}\hlkwd{order}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC),]}
-\hlkwd{kable}\hlstd{(waic.table)}
+\hlstd{knitr}\hlopt{::}\hlkwd{kable}\hlstd{(waic.table,} \hlkwc{format}\hlstd{=}\hlstr{"latex"}\hlstd{,} \hlkwc{booktabs}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\begin{tabular}{l|r|r}
-\hline
+\begin{tabular}{lrr}
+\toprule
   & WAIC & deltaWAIC\\
-\hline
+\midrule
 3 & 115.4295 & 0.000000\\
-\hline
 1 & 116.6816 & 1.252070\\
-\hline
 2 & 121.2653 & 5.835729\\
-\hline
 4 & 142.9907 & 27.561159\\
-\hline
 5 & 152.1605 & 36.730935\\
-\hline
+\addlinespace
 6 & 152.1605 & 36.730935\\
-\hline
+\bottomrule
 \end{tabular}
 
 
 \end{knitrout}
+  \end{center}
 \end{frame}
+
+
 
 
 
@@ -1009,7 +1022,7 @@ To estimate grouse abundance in the entire region, we would need to:
   expected by the model. \\
   \pause
   \vfill
-  Goodness-of-fit method assess over and underdispersion. \\
+  Goodness-of-fit method assess overdispersion and underdispersion. \\
   \pause
   \vfill
   If the model does not fit the data very well because of
@@ -1105,10 +1118,39 @@ To estimate grouse abundance in the entire region, we would need to:
       statistic to the fit statistic associated with
       the actual data. 
   \end{enumerate}
-  The fit statistic associated with the actual data should be in an
-  extreme quantile of the distribution of the expected values.
+  \pause
+  \vfill
+  The fit statistic associated with the actual data should not be in
+  an extreme quantile of the distribution of the expected values.
+  \pause
+  \vfill
+  In other words, the $p$-value should be $>0.05$ if the model fits
+  the data well.
 \end{frame}
 
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fitstat} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fm}\hlstd{) \{}
+    \hlkwd{return}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{SSE}\hlstd{=}\hlkwd{sum}\hlstd{(}\hlkwd{residuals}\hlstd{(fm)}\hlopt{^}\hlnum{2}\hlstd{,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)))} \hlcom{## Sum of squared-residuals}
+\hlstd{\}}
+\hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/parboot-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
 
 
 
@@ -1117,18 +1159,106 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm1,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
-\hlkwd{plot}\hlstd{(pb)}
+\hlstd{pb}
 \end{alltt}
+\begin{verbatim}
+## 
+## Call: parboot(object = fm2, statistic = fitstat, nsim = 200, ncores = 3)
+## 
+## Parametric Bootstrap Statistics:
+##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
+## SSE 23.2           2.16             5.61        0.328
+## 
+## t_B quantiles:
+##      0% 2.5% 25% 50% 75% 97.5% 100%
+## SSE 6.9   11  17  20  24    33   39
+## 
+## t0 = Original statistic computed from data
+## t_B = Vector of bootstrap samples
+\end{verbatim}
 \end{kframe}
-
-{\centering \includegraphics[width=0.8\linewidth]{figure/parboot-1} 
-
-}
-
-
-
 \end{knitrout}
+\pause
+\vfill
+These results suggest that model \inr{fm2} fits the data well.
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  If the model didn't fit the data well, we could try a different
+  distribution for $N_i$ such as the negative binomial:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"NB"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: 5 sites have been discarded because of missing data.}}\begin{verbatim}
+## 
+## Call:
+## pcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, 
+##     K = 50, mixture = "NB")
+## 
+## Abundance:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -2.735 1.138 -2.40  0.0162
+## elevation.s    0.659 0.283  2.33  0.0199
+## utmN.s         0.876 0.445  1.97  0.0487
+## 
+## Detection:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -2.415 1.234 -1.96  0.0504
+## temp          -0.738 0.366 -2.01  0.0441
+## 
+## Dispersion:
+##  Estimate   SE     z P(>|z|)
+##     -1.23 1.01 -1.22   0.222
+## 
+## AIC: 202.2481
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Or the zero-inflated Poisson:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"ZIP"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: 5 sites have been discarded because of missing data.}}\begin{verbatim}
+## 
+## Call:
+## pcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, 
+##     K = 50, mixture = "ZIP")
+## 
+## Abundance:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -1.549 1.307 -1.19  0.2359
+## elevation.s    0.633 0.275  2.30  0.0213
+## utmN.s         0.875 0.433  2.02  0.0434
+## 
+## Detection:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -2.363 1.172 -2.02  0.0438
+## temp          -0.735 0.365 -2.01  0.0441
+## 
+## Zero-inflation:
+##  Estimate   SE     z P(>|z|)
+##     0.875 0.89 0.983   0.326
+## 
+## AIC: 202.494
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  
 \end{frame}
 
 
@@ -1171,6 +1301,56 @@ To estimate grouse abundance in the entire region, we would need to:
 \end{frame}
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## model {
+## 
+## lambda.intercept ~ dunif(0, 5)
+## beta0 <- log(lambda.intercept)
+## beta1 ~ dnorm(0, 0.5)
+## beta3 ~ dnorm(0, 0.5)
+## 
+## alpha0 ~ dnorm(0, 0.5)  
+## alpha1 ~ dnorm(0, 0.5)
+## 
+## for(i in 1:nSites) {
+##   elevation[i] ~ dnorm(0, 1)
+##   utmN[i] ~ dnorm(0, 1)
+##   utmE[i] ~ dnorm(0, 1)
+##   log(lambda[i]) <- beta0 + beta1*elevation[i] + beta3*utmN[i]
+##   N[i] ~ dpois(lambda[i])         # Latent local abundance
+##   for(j in 1:nOccasions) {
+##     temp[i,j] ~ dnorm(0,1)
+##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+##     y[i,j] ~ dbin(p[i,j], N[i])              # Data
+##     resid[i,j] <- y[i,j]-N[i]*p[i,j]         # Residual
+##     y.new[i,j] ~ dbin(p[i,j], N[i])          # Predicted data
+##     resid.new[i,j] <- y.new[i,j]-N[i]*p[i,j] # Predicted residual
+##   }
+## }
+## SSE <- sum((y[i,j]-resid[i,j])^2)             # Fit stat
+## SSE.new <- sum((y.new[i,j]-resid.new[i,j])^2) # Predicted fit stat
+## 
+## totalAbundance <- sum(N[1:nSites])
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian fit assessments}
+  
+\end{frame}
 
 
 

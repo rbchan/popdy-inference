@@ -1,0 +1,32 @@
+model {
+
+lambda.intercept ~ dunif(0, 5)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+beta3 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  elevation[i] ~ dnorm(0, 1)
+  utmN[i] ~ dnorm(0, 1)
+  utmE[i] ~ dnorm(0, 1)
+  log(lambda[i]) <- beta0 + beta1*elevation[i] + beta3*utmN[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  N.new[i] ~ dpois(lambda[i])     # Predicted local abundance
+  for(j in 1:nOccasions) {
+    temp[i,j] ~ dnorm(0,1)
+    logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+    y[i,j] ~ dbin(p[i,j], N[i])              # Data
+    resid[i,j] <- y[i,j]-N[i]*p[i,j]         # Residual
+    y.new[i,j] ~ dbin(p[i,j], N.new[i])          # Predicted data
+    resid.new[i,j] <- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual
+  }
+}
+SSE <- sum((y-resid)^2)             # Fit stat
+SSE.new <- sum((y.new-resid.new)^2) # Predicted fit stat
+
+totalAbundance <- sum(N[1:nSites])
+
+}
