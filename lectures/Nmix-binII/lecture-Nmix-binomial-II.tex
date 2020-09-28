@@ -163,8 +163,8 @@
   cross-validation: 
   \begin{itemize}
     \item Split data into K partitions
-    \item Fit model to K-1 partitions
-    \item Predict the holdout partition
+    \item Fit model to the `in-sample' K-1 partitions
+    \item Predict the holdout `out-of-sample' partition
   \end{itemize}
   \pause
   \vfill
@@ -207,7 +207,11 @@
      \mathrm{AIC} = -2 \log(L) + 2P 
    \]
    where $L$ is the likelihood evaluated at the MLE and $P$ is
-   the number of parameters.
+   the number of parameters. \\
+   \pause
+   \vfill
+   The lower the AIC, the better the \alert{out-of-sample} predictive
+   performance.
 \end{frame}
 
 
@@ -215,19 +219,19 @@
 
 \bgroup
 \let\oldfootnoterule\footnoterule
-\def\footnoterule{\only<2->\oldfootnoterule}
+\def\footnoterule{\only<1->\oldfootnoterule}
 \begin{frame}
   \frametitle{Model selection with AIC}
-  \small
-  For a binomial $N$-mixture model, the likelihood is computed by
+%  \small
+  For an $N$-mixture model, the `integrated likelihood' is computed by
   marginalizing (summing over all possible values of) $N_i$:
   \[
      L = \prod_{i=1}^M \sum_{k=\max(y_i)}^{K\approx \infty}
      \left\{\prod_{j=1}^J p(y_{ij}|N_i,p)\right\}p(N_i|\lambda)
   \]
-  \pause
+%  \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
-  density\footnote<2->{\scriptsize For discrete random variables, 
+  density\footnote<1->{\scriptsize For discrete random variables, 
     ``mass'' is often used instead of ``density''.} function 
   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
   local abundance. 
@@ -287,35 +291,13 @@ Standardize the covariates\footnote<2->{\inr{scale} will only work if all the co
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm1} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmE.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm2} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm3} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm4} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm5} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm6} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlnum{1}\hlstd{, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -331,7 +313,9 @@ Put models in a special type of list
                          \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
                          \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
 \end{knitrout}
 \pause
 Uh oh, missing values differ among models.
@@ -362,35 +346,13 @@ Uh oh, missing values differ among models.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm1} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmE.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm2} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm3} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm4} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm5} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\begin{alltt}
 \hlstd{fm6} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlnum{1}\hlstd{, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is(data, "{}unmarkedFramePCount"{}): object 'grouse.umf' not found}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -656,15 +618,30 @@ To estimate grouse abundance in the entire region, we would need to:
 
 \begin{frame}
   \frametitle{WAIC}
-  Watanabe's widely applicable information criterion (WAIC), is
-  generalization of AIC suitable for Bayesian models. \\
+  Watanabe's widely applicable information criterion (WAIC) is a
+  generalization of AIC suitable for Bayesian models. %\\
   \pause
-  \vfill
+%  \vfill
+  As before, we have 
   \[
 %    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
 %    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
-    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
-    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = \mathrm{fit} + \mathrm{penalty}
+  \]
+  \pause
+  \vfill
+  The measure of `fit' in this case is the
+  log-pointwise-predictive-density:
+  \[
+     \mathrm{lppd} = \sum_{i=1}^M \log\left(\frac{1}{S} \sum_s p(y_i|\theta_s)\right)
+  \]
+  \pause
+  \vfill
+  The penalty is proportional to the posterior variance:
+  \[
+     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
   \]
 \end{frame}
 
@@ -673,7 +650,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{6pt}
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -776,6 +753,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{frame}[fragile]
   \frametitle{MCMC}
   Fit Model 1, corresponding to \inr{fm1}. 
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -793,6 +771,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \pause
 \vfill
   Fit Model 2
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -903,6 +882,7 @@ To estimate grouse abundance in the entire region, we would need to:
 
 \begin{frame}[fragile]
   \frametitle{WAIC}
+  WAIC for the six models
   \begin{columns}
     \begin{column}{0.5\textwidth}
 \begin{knitrout}\scriptsize
@@ -930,10 +910,11 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{alltt}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
-\begin{verbatim}
-## [1] 138.8705
-\end{verbatim}
-\end{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in is.mcmc(x): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is.mcmc(x): lazy-load database '/home/rchandler/courses/popdy-inference/lectures/Nmix-binII/cache/bugs-mcmc3\_994dbb2156536b8ea8946744b5281791.rdb' is corrupt}}\end{kframe}
 \end{knitrout}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -969,6 +950,37 @@ To estimate grouse abundance in the entire region, we would need to:
 \end{knitrout}
     \end{column}
   \end{columns}
+  \pause
+  Create a WAIC table:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{waic.table} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{WAIC}\hlstd{=}\hlkwd{c}\hlstd{(waic1,waic2,waic3,waic4,waic5,waic5))}
+\hlstd{waic.table}\hlopt{$}\hlstd{deltaWAIC} \hlkwb{<-} \hlstd{waic.table}\hlopt{$}\hlstd{WAIC}\hlopt{-}\hlkwd{min}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC)}
+\hlstd{waic.table} \hlkwb{<-} \hlstd{waic.table[}\hlkwd{order}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC),]}
+\hlkwd{kable}\hlstd{(waic.table)}
+\end{alltt}
+\end{kframe}
+\begin{tabular}{l|r|r}
+\hline
+  & WAIC & deltaWAIC\\
+\hline
+3 & 115.4295 & 0.000000\\
+\hline
+1 & 116.6816 & 1.252070\\
+\hline
+2 & 121.2653 & 5.835729\\
+\hline
+4 & 142.9907 & 27.561159\\
+\hline
+5 & 152.1605 & 36.730935\\
+\hline
+6 & 152.1605 & 36.730935\\
+\hline
+\end{tabular}
+
+
+\end{knitrout}
 \end{frame}
 
 

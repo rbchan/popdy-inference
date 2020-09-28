@@ -124,8 +124,8 @@ knit_theme$set("edit-kwrite")
   cross-validation: 
   \begin{itemize}
     \item Split data into K partitions
-    \item Fit model to K-1 partitions
-    \item Predict the holdout partition
+    \item Fit model to the `in-sample' K-1 partitions
+    \item Predict the holdout `out-of-sample' partition
   \end{itemize}
   \pause
   \vfill
@@ -184,7 +184,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Model selection with AIC}
 %  \small
-  For a binomial $N$-mixture model, the likelihood is computed by
+  For an $N$-mixture model, the `integrated likelihood' is computed by
   marginalizing (summing over all possible values of) $N_i$:
   \[
      L = \prod_{i=1}^M \sum_{k=\max(y_i)}^{K\approx \infty}
@@ -465,9 +465,9 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{frame}
   \frametitle{WAIC}
   Watanabe's widely applicable information criterion (WAIC) is a
-  generalization of AIC suitable for Bayesian models. \\
+  generalization of AIC suitable for Bayesian models. %\\
   \pause
-  \vfill
+%  \vfill
   As before, we have 
   \[
 %    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
@@ -481,7 +481,7 @@ To estimate grouse abundance in the entire region, we would need to:
   The measure of `fit' in this case is the
   log-pointwise-predictive-density:
   \[
-     \mathrm{lppd} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s))
+     \mathrm{lppd} = \sum_{i=1}^M \log\left(\frac{1}{S} \sum_s p(y_i|\theta_s)\right)
   \]
   \pause
   \vfill
@@ -496,7 +496,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{6pt}
+  \vspace{-6pt}
 <<bugs-data,size='scriptsize'>>=
 jags.data <- list(
     y=grouse.counts,
@@ -555,7 +555,8 @@ library(jagsUI)
 \begin{frame}[fragile]
   \frametitle{MCMC}
   Fit Model 1, corresponding to \inr{fm1}. 
-<<bugs-mcmc,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
+  \vspace{-6pt}
+<<bugs-mcmc,size='footnotesize',message=FALSE,cache=FALSE,results='hide'>>=
 library(jagsUI)
 jags.data1 <- jags.data
 jags.data1$modswitch <- c(1,1,1,1) ## Include all covariates
@@ -568,7 +569,8 @@ jm1 <- jags.basic(data=jags.data1, inits=jags.inits,
 \pause
 \vfill
   Fit Model 2
-<<bugs-mcmc2,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
+  \vspace{-6pt}
+<<bugs-mcmc2,size='footnotesize',message=FALSE,cache=FALSE,results='hide'>>=
 jags.data2 <- jags.data; jags.data2$modswitch <- c(1,0,1,1) 
 jm2 <- jags.basic(data=jags.data2, inits=jags.inits,
                   parameters.to.save=jags.pars, 
@@ -584,7 +586,7 @@ jm2 <- jags.basic(data=jags.data2, inits=jags.inits,
   \small
   Model 3
   \vspace{-6pt}
-<<bugs-mcmc3,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+<<bugs-mcmc3,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
 jags.data3 <- jags.data; jags.data3$modswitch <- c(1,0,0,1)
 jm3 <- jags.basic(data=jags.data3, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -592,7 +594,7 @@ jm3 <- jags.basic(data=jags.data3, inits=jags.inits, parameters.to.save=jags.par
 @ 
   Model 4
   \vspace{-6pt}
-<<bugs-mcmc4,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+<<bugs-mcmc4,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
 jags.data4 <- jags.data; jags.data4$modswitch <- c(1,0,1,0)
 jm4 <- jags.basic(data=jags.data4, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -600,7 +602,7 @@ jm4 <- jags.basic(data=jags.data4, inits=jags.inits, parameters.to.save=jags.par
 @ 
   Model 5
   \vspace{-6pt}
-<<bugs-mcmc5,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+<<bugs-mcmc5,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
 jags.data5 <- jags.data; jags.data5$modswitch <- c(1,0,0,0)
 jm5 <- jags.basic(data=jags.data5, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -608,7 +610,7 @@ jm5 <- jags.basic(data=jags.data5, inits=jags.inits, parameters.to.save=jags.par
 @ 
   Model 6
   \vspace{-6pt}
-<<bugs-mcmc6,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+<<bugs-mcmc6,size='tiny',message=FALSE,cache=FALSE,results='hide'>>=
 jags.data6 <- jags.data; jags.data6$modswitch <- c(0,0,0,0)
 jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.pars,
                   model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
@@ -666,6 +668,7 @@ waic <- function(x) {
 
 \begin{frame}[fragile]
   \frametitle{WAIC}
+  WAIC for the six models
   \begin{columns}
     \begin{column}{0.5\textwidth}
 <<waic1,size='scriptsize'>>=
@@ -690,7 +693,27 @@ waic <- function(x) {
 @
     \end{column}
   \end{columns}
+  \pause
+  In practice, you would discard burn-in and ensure convergence before
+  computing WAIC.
 \end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{WAIC}
+  Create a WAIC table:
+<<waic-table,size='scriptsize'>>=
+waic.table <- data.frame(WAIC=c(waic1,waic2,waic3,waic4,waic5,waic5))
+waic.table$deltaWAIC <- waic.table$WAIC-min(waic.table$WAIC)
+waic.table <- waic.table[order(waic.table$WAIC),]
+knitr::kable(waic.table)
+@   
+\end{frame}
+
+
 
 
 
@@ -718,7 +741,7 @@ waic <- function(x) {
   expected by the model. \\
   \pause
   \vfill
-  Goodness-of-fit method assess over and underdispersion. \\
+  Goodness-of-fit method assess overdispersion and underdispersion. \\
   \pause
   \vfill
   If the model does not fit the data very well because of
@@ -814,8 +837,14 @@ waic <- function(x) {
       statistic to the fit statistic associated with
       the actual data. 
   \end{enumerate}
-  The fit statistic associated with the actual data should be in an
-  extreme quantile of the distribution of the expected values.
+  \pause
+  \vfill
+  The fit statistic associated with the actual data should not be in
+  an extreme quantile of the distribution of the expected values.
+  \pause
+  \vfill
+  In other words, the $p$-value should be $>0.05$ if the model fits
+  the data well.
 \end{frame}
 
 
@@ -823,10 +852,24 @@ waic <- function(x) {
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-<<parboot,size='small',warning=FALSE,cache=TRUE,fig.width=9,out.width='80%',fig.align='center'>>=
-pb <- parboot(fm1, nsim=200, ncores=3)
-plot(pb)
+<<parboot,size='footnotesize',warning=FALSE,cache=TRUE,fig.width=9,out.width='70%',fig.align='center'>>=
+fitstat <- function(fm) {
+    return(c(SSE=sum(residuals(fm)^2))) ## Sum of squared-residuals
+}
+pb <- parboot(fm1, statistic=fitstat, nsim=200, ncores=3); plot(pb)
 @   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+<<parboot2,size='small'>>=
+pb
+@
+\pause
+\vfill
+These results suggest that model \inr{fm2} fits the data well.
 \end{frame}
 
 
@@ -869,6 +912,12 @@ plot(pb)
 \end{frame}
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian fit assessments}
+  
+\end{frame}
 
 
 
