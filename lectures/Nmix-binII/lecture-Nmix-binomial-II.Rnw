@@ -5,6 +5,7 @@
 %\usepackage[sans]{../lectures}
 
 \usepackage{booktabs}
+%\usepackage{lipsum}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -33,6 +34,12 @@ knit_theme$set("edit-kwrite")
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
 
+% \newcommand\blfootnote[1]{%
+%   \begingroup
+%   \renewcommand\thefootnote{}\footnote{#1}%
+%   \addtocounter{footnote}{-1}%
+%   \endgroup
+% }
 
 
 \begin{document}
@@ -92,7 +99,7 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   Nonetheless, predictive performance is often the best way
-  to compare models and avoid over-fitting. \\
+  to compare models and avoid underfitting and overfitting. \\
   \pause
   \vfill
   Just make sure the models being compared were motivated by clear
@@ -105,7 +112,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Model selection}
   Prediction accuracy increases with model complexity up to a point,
-  until over-fitting kicks in. \\
+  until overfitting kicks in. \\
   \pause
   \vfill
   The best way to determine if a model is too simplistic or too
@@ -156,7 +163,7 @@ knit_theme$set("edit-kwrite")
   \[
      \mathrm{IC} = \mathrm{fit} + \mathrm{penalty}
   \]
-  where `fit' describes how well the model fits the data and
+  where `fit' describes the \alert{in-sample} predictive accuracy and 
   `penalty' describes model complexity. \\
   \pause
   \vfill
@@ -187,8 +194,8 @@ knit_theme$set("edit-kwrite")
   For an $N$-mixture model, the `integrated likelihood' is computed by
   marginalizing (summing over all possible values of) $N_i$:
   \[
-     L = \prod_{i=1}^M \sum_{k=\max(y_i)}^{K\approx \infty}
-     \left\{\prod_{j=1}^J p(y_{ij}|N_i,p)\right\}p(N_i|\lambda)
+     L = \prod_{i=1}^M \sum_{N^*_i=\max(y_i)}^{K\approx \infty}
+     \left\{\prod_{j=1}^J p(y_{ij}|N^*_i,p)\right\}p(N^*_i|\lambda)
   \]
 %  \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
@@ -351,7 +358,7 @@ modSel(grouse.models)
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize'>>=
+<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide'>>=
 library(raster); library(sf)
 load("state_boundaries.gzip")
 elev <- raster("elev_utm16.tif")
@@ -380,6 +387,7 @@ plot(ga.nc.sc.tn.utm, add=TRUE)
   \frametitle{Spatial prediction}
   We have to standardize our rasters \alert{using the same mean and SD
     as used before}.  
+\vspace{-6pt}
 <<means-sds,size='scriptsize'>>=
 attributes(site.covs.s)[3] ## Means
 attributes(site.covs.s)[4] ## SDs
@@ -393,6 +401,7 @@ utmN.s <- (utmN-3852681.2)/18030.2
 \pause
 \vfill
 Put them together in a `raster stack'
+\vspace{-6pt}
 <<stack,size='scriptsize'>>=
 elev.utm <- stack(elev.s,utmN.s)
 names(elev.utm) <- c("elevation.s", "utmN.s")
@@ -402,11 +411,10 @@ names(elev.utm) <- c("elevation.s", "utmN.s")
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-<<lam-pred-map,size='scriptsize',results='hide',fig.width=10.5,out.width='90%',fig.align='center',cache=TRUE>>=
+<<lam-pred-map,size='scriptsize',results='hide',fig.width=10.5,out.width='85%',fig.align='center',cache=TRUE>>=
 grouse.pred.map <- predict(fm2, newdata=elev.utm, type="state")
 plot(grouse.pred.map)
 @
-
 \end{frame}
 
 
@@ -487,7 +495,7 @@ To estimate grouse abundance in the entire region, we would need to:
   \vfill
   The penalty is proportional to the posterior variance:
   \[
-     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
+     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(\log p(y_i|\theta_s)))
 %     \mathrm{penalty} = \sum_{i=1}^M \frac{\left(\sum_s
 %       \log(p(y_i|\theta_s)) - \sum_s \log(p(y_i|\theta_s))/S)\right)^2}{S-1}
   \]
@@ -621,8 +629,18 @@ jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.par
 \end{frame}
 
 
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<2->\oldfootnoterule}
 \begin{frame}[fragile]
   \frametitle{WAIC}
+  \[
+%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
+%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
+%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = -2(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta)))
+  \]
 <<waic-fn-ld-op,size='small',include=FALSE>>=
 waic <- function(x, focus=c("y", "yN")) {
     vars <- coda::varnames(x)
@@ -649,8 +667,11 @@ waic <- function(x) {
     ## Return WAIC
     return(-2*(lppd-penalty))
 }
-@   
+@
+\let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
+$p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.} 
 \end{frame}
+\egroup
 
 
 % \begin{frame}[fragile]
@@ -708,10 +729,12 @@ waic <- function(x) {
 \begin{frame}[fragile]
   \frametitle{WAIC}
   Create a WAIC table:
+  \vspace{-12pt}
   \begin{center}
 <<waic-table,size='scriptsize'>>=
 waic.table <- data.frame(WAIC=c(waic1,waic2,waic3,waic4,waic5,waic5))
-waic.table$deltaWAIC <- waic.table$WAIC-min(waic.table$WAIC)
+rownames(waic.table) <- paste("Model", 1:6)
+waic.table$delta <- waic.table$WAIC-min(waic.table$WAIC)
 waic.table <- waic.table[order(waic.table$WAIC),]
 knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
 @
@@ -746,7 +769,7 @@ knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
   expected by the model. \\
   \pause
   \vfill
-  Goodness-of-fit method assess overdispersion and underdispersion. \\
+  Goodness-of-fit methods assess overdispersion and underdispersion. \\
   \pause
   \vfill
   If the model does not fit the data very well because of
@@ -830,6 +853,24 @@ knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
 
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  One of the simplest and best ways of assessing goodness-of-fit is to
+  look at the residuals.
+<<resid2,fig.width=9,out.width='60%',fig.align='center'>>=
+plot(fm2)
+@
+\pause
+\vfill
+No sign of obvious outliers or other problems.
+\end{frame}
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
   The parametric bootstrap can be used to assess model fit:
@@ -848,8 +889,8 @@ knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
   an extreme quantile of the distribution of the expected values.
   \pause
   \vfill
-  In other words, the $p$-value should be $>0.05$ if the model fits
-  the data well.
+  Assuming a type I error rate of 0.05, the $p$-value should be
+  $>0.05$ if the model fits the data well, which is the null hypothesis.
 \end{frame}
 
 
@@ -858,8 +899,8 @@ knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
 <<parboot,size='scriptsize',warning=FALSE,cache=TRUE,fig.width=9,out.width='70%',fig.align='center'>>=
-fitstat <- function(fm) {
-    return(c(SSE=sum(residuals(fm)^2, na.rm=TRUE))) ## Sum of squared-residuals
+fitstat <- function(fm) { ## Sum of squared-residuals
+    return(c(SSE=sum(residuals(fm)^2, na.rm=TRUE))) 
 }
 pb <- parboot(fm2, statistic=fitstat, nsim=200, ncores=3); plot(pb)
 @   
@@ -869,10 +910,10 @@ pb <- parboot(fm2, statistic=fitstat, nsim=200, ncores=3); plot(pb)
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-<<parboot2,size='footnotesize'>>=
+<<parboot2,size='scriptsize'>>=
 pb
 @
-\pause
+%\pause
 \vfill
 These results suggest that model \inr{fm2} fits the data well.
 \end{frame}
@@ -885,8 +926,8 @@ These results suggest that model \inr{fm2} fits the data well.
   \small
   If the model didn't fit the data well, we could try a different
   distribution for $N_i$ such as the negative binomial:
-<<negbin,size='scriptsize',warning=FALSE>>=
-pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="NB")
+<<negbin,size='tiny',warning=FALSE,cache=TRUE>>=
+(fm.nb <- pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="NB"))
 @
 \end{frame}
 
@@ -896,8 +937,8 @@ pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="NB")
   \frametitle{Goodness-of-fit in `unmarked'}
   \small
   Or the zero-inflated Poisson:
-<<zip,size='scriptsize',warning=FALSE>>=
-pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP")
+<<zip,size='tiny',warning=FALSE,cache=TRUE>>=
+(fm.zip <- pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP"))
 @
 \end{frame}
 
@@ -946,7 +987,16 @@ pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP")
 
 \begin{frame}[fragile]
   \frametitle{Bayesian fit assessments}
-  In a Bayesian analysis, we compare the   
+  In a Bayesian analysis, we can assess model fit using a
+  \alert{posterior predictive check} (PPC). \\
+  \pause
+  \vfill
+  The PPC compares the posterior distribution of a fit statistic, to
+  the posterior distribution of a fit statistic computed from
+  simulated data. \\ 
+  \pause
+  \vfill
+  The two distributions should look similar if the model fits well. \\
 \end{frame}
 
 
@@ -965,19 +1015,32 @@ writeLines(readLines("Nmix-model-grouse2.jag"))
 
 \begin{frame}[fragile]
   \frametitle{MCMC}
-  Fit Model 1, corresponding to \inr{fm1}. 
+  Fit Model 2, corresponding to \inr{fm2}. 
   \vspace{-6pt}
-<<bugs-mcmc,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
-library(jagsUI)
+<<bugs-mcmc-gof,size='footnotesize',message=FALSE,cache=TRUE,results='hide'>>=
 jm <- jags.basic(data=jags.data, inits=jags.inits,
                  parameters.to.save=c(jags.pars, "SSE", "SSE.new"), 
                  model.file="Nmix-model-grouse2.jag",
                  n.chains=3, n.adapt=100, n.burnin=0,
                  n.iter=2000, parallel=TRUE)
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian goodness-of-fit}
+%  Fit Model 1, corresponding to \inr{fm1}. 
+%  \vspace{-6pt}
+<<bugs-mcmc-gof-plot,size='footnotesize',fig.width=8,fig.align='center',out.width='55%'>>=
 plot(as.matrix(jm[,c("SSE", "SSE.new")]))
 abline(a=0, b=1, col="red")
 @
-
+  \vfill
+  \small
+  The distributions of {\tt SSE} and {\tt SSE.new} are similar,
+  indicating that the model fits the data well.
 \end{frame}
 
 
@@ -1000,15 +1063,22 @@ abline(a=0, b=1, col="red")
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item a
-    \item b
-    \item c 
+    \item Simulate a dataset from the following $N$-mixture model:
       \begin{itemize}
         \footnotesize
-        \item i
-        \item ii
+        \item $N_i \sim \mathrm{ZIPoisson}(\lambda=5, \psi=0.5)$
+        \item $y_{ij} \sim \mathrm{Binomial}(N_i, p=0.3)$
+        \item nSites=200, nOccasions=4
       \end{itemize}
-    \item d
+    \item Fit a \alert{mis-specified model} using `unmarked' and `JAGS' with
+      $N_i \sim \mathrm{Pois}(\lambda)$ instead of
+      $N_i \sim \mathrm{ZIPois}(\lambda, \psi)$.
+    \item Assess goodness-of-fit using the parametric bootstrap and
+      the Bayesian posterior predictive check.
+    \item Fit the \alert{correct model} using `unmarked' and `JAGS'
+      and compare the fit to the mis-specified models.
+    \item Were the fit assessments methods able to identify the
+      mis-specified model?
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 

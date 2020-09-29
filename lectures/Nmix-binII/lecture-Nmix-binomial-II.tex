@@ -55,6 +55,7 @@
 %\usepackage[sans]{../lectures}
 
 \usepackage{booktabs}
+%\usepackage{lipsum}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -73,6 +74,14 @@
 %% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+% \newcommand\blfootnote[1]{%
+%   \begingroup
+%   \renewcommand\thefootnote{}\footnote{#1}%
+%   \addtocounter{footnote}{-1}%
+%   \endgroup
+% }
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -131,7 +140,7 @@
   \pause
   \vfill
   Nonetheless, predictive performance is often the best way
-  to compare models and avoid over-fitting. \\
+  to compare models and avoid underfitting and overfitting. \\
   \pause
   \vfill
   Just make sure the models being compared were motivated by clear
@@ -144,7 +153,7 @@
 \begin{frame}
   \frametitle{Model selection}
   Prediction accuracy increases with model complexity up to a point,
-  until over-fitting kicks in. \\
+  until overfitting kicks in. \\
   \pause
   \vfill
   The best way to determine if a model is too simplistic or too
@@ -195,7 +204,7 @@
   \[
      \mathrm{IC} = \mathrm{fit} + \mathrm{penalty}
   \]
-  where `fit' describes how well the model fits the data and
+  where `fit' describes the \alert{in-sample} predictive accuracy and 
   `penalty' describes model complexity. \\
   \pause
   \vfill
@@ -226,8 +235,8 @@
   For an $N$-mixture model, the `integrated likelihood' is computed by
   marginalizing (summing over all possible values of) $N_i$:
   \[
-     L = \prod_{i=1}^M \sum_{k=\max(y_i)}^{K\approx \infty}
-     \left\{\prod_{j=1}^J p(y_{ij}|N_i,p)\right\}p(N_i|\lambda)
+     L = \prod_{i=1}^M \sum_{N^*_i=\max(y_i)}^{K\approx \infty}
+     \left\{\prod_{j=1}^J p(y_{ij}|N^*_i,p)\right\}p(N^*_i|\lambda)
   \]
 %  \pause
   where $p(y_{ij}|N_i,p)$ is the binomial probability
@@ -482,6 +491,7 @@ Put models in a \inr{fitList}
   \frametitle{Spatial prediction}
   We have to standardize our rasters \alert{using the same mean and SD
     as used before}.  
+\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -515,6 +525,7 @@ Put models in a \inr{fitList}
 \pause
 \vfill
 Put them together in a `raster stack'
+\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -536,14 +547,13 @@ Put them together in a `raster stack'
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.9\linewidth]{figure/lam-pred-map-1} 
+{\centering \includegraphics[width=0.85\linewidth]{figure/lam-pred-map-1} 
 
 }
 
 
 
 \end{knitrout}
-
 \end{frame}
 
 
@@ -641,9 +651,9 @@ To estimate grouse abundance in the entire region, we would need to:
   \vfill
   The penalty is proportional to the posterior variance:
   \[
-%     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(p(y_i|\theta_s)))
-     \mathrm{penalty} = \sum_{i=1}^M \frac{\left(\sum_s
-       \log(p(y_i|\theta_s)) - \sum_s \log(p(y_i|\theta_s))/S)\right)^2}{S-1}
+     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(\log p(y_i|\theta_s)))
+%     \mathrm{penalty} = \sum_{i=1}^M \frac{\left(\sum_s
+%       \log(p(y_i|\theta_s)) - \sum_s \log(p(y_i|\theta_s))/S)\right)^2}{S-1}
   \]
 \end{frame}
 
@@ -843,8 +853,18 @@ To estimate grouse abundance in the entire region, we would need to:
 \end{frame}
 
 
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<2->\oldfootnoterule}
 \begin{frame}[fragile]
   \frametitle{WAIC}
+  \[
+%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
+%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
+%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = -2(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta)))
+  \]
 
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -864,7 +884,10 @@ To estimate grouse abundance in the entire region, we would need to:
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+\let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
+$p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.} 
 \end{frame}
+\egroup
 
 
 % \begin{frame}[fragile]
@@ -893,7 +916,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 116.6816
+## [1] 129.1708
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -903,7 +926,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 121.2653
+## [1] 119.9559
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -912,11 +935,10 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{alltt}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in is.mcmc(x): internal error -3 in R\_decompress1}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is.mcmc(x): lazy-load database '/home/rchandler/courses/popdy-inference/lectures/Nmix-binII/cache/bugs-mcmc3\_994dbb2156536b8ea8946744b5281791.rdb' is corrupt}}\end{kframe}
+\begin{verbatim}
+## [1] 119.1558
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -926,7 +948,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 142.9907
+## [1] 151.6317
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -936,7 +958,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 152.1605
+## [1] 151.6321
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -946,7 +968,7 @@ To estimate grouse abundance in the entire region, we would need to:
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 152.8362
+## [1] 168.6975
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -965,27 +987,29 @@ To estimate grouse abundance in the entire region, we would need to:
 \begin{frame}[fragile]
   \frametitle{WAIC}
   Create a WAIC table:
+  \vspace{-12pt}
   \begin{center}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{waic.table} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{WAIC}\hlstd{=}\hlkwd{c}\hlstd{(waic1,waic2,waic3,waic4,waic5,waic5))}
-\hlstd{waic.table}\hlopt{$}\hlstd{deltaWAIC} \hlkwb{<-} \hlstd{waic.table}\hlopt{$}\hlstd{WAIC}\hlopt{-}\hlkwd{min}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC)}
+\hlkwd{rownames}\hlstd{(waic.table)} \hlkwb{<-} \hlkwd{paste}\hlstd{(}\hlstr{"Model"}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{6}\hlstd{)}
+\hlstd{waic.table}\hlopt{$}\hlstd{delta} \hlkwb{<-} \hlstd{waic.table}\hlopt{$}\hlstd{WAIC}\hlopt{-}\hlkwd{min}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC)}
 \hlstd{waic.table} \hlkwb{<-} \hlstd{waic.table[}\hlkwd{order}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC),]}
-\hlstd{knitr}\hlopt{::}\hlkwd{kable}\hlstd{(waic.table,} \hlkwc{format}\hlstd{=}\hlstr{"latex"}\hlstd{,} \hlkwc{booktabs}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{knitr}\hlopt{::}\hlkwd{kable}\hlstd{(waic.table,} \hlkwc{format}\hlstd{=}\hlstr{"latex"}\hlstd{,} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{booktabs}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \begin{tabular}{lrr}
 \toprule
-  & WAIC & deltaWAIC\\
+  & WAIC & delta\\
 \midrule
-3 & 115.4295 & 0.000000\\
-1 & 116.6816 & 1.252070\\
-2 & 121.2653 & 5.835729\\
-4 & 142.9907 & 27.561159\\
-5 & 152.1605 & 36.730935\\
+Model 3 & 119.16 & 0.00\\
+Model 2 & 119.96 & 0.80\\
+Model 1 & 129.17 & 10.01\\
+Model 4 & 151.63 & 32.48\\
+Model 5 & 151.63 & 32.48\\
 \addlinespace
-6 & 152.1605 & 36.730935\\
+Model 6 & 151.63 & 32.48\\
 \bottomrule
 \end{tabular}
 
@@ -1022,7 +1046,7 @@ To estimate grouse abundance in the entire region, we would need to:
   expected by the model. \\
   \pause
   \vfill
-  Goodness-of-fit method assess overdispersion and underdispersion. \\
+  Goodness-of-fit methods assess overdispersion and underdispersion. \\
   \pause
   \vfill
   If the model does not fit the data very well because of
@@ -1106,6 +1130,35 @@ To estimate grouse abundance in the entire region, we would need to:
 
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  One of the simplest and best ways of assessing goodness-of-fit is to
+  look at the residuals.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(fm2)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/resid2-1} 
+
+}
+
+
+
+\end{knitrout}
+\pause
+\vfill
+No sign of obvious outliers or other problems.
+\end{frame}
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
   The parametric bootstrap can be used to assess model fit:
@@ -1124,8 +1177,8 @@ To estimate grouse abundance in the entire region, we would need to:
   an extreme quantile of the distribution of the expected values.
   \pause
   \vfill
-  In other words, the $p$-value should be $>0.05$ if the model fits
-  the data well.
+  Assuming a type I error rate of 0.05, the $p$-value should be
+  $>0.05$ if the model fits the data well, which is the null hypothesis.
 \end{frame}
 
 
@@ -1133,11 +1186,11 @@ To estimate grouse abundance in the entire region, we would need to:
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-\begin{knitrout}\footnotesize
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fitstat} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fm}\hlstd{) \{}
-    \hlkwd{return}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{SSE}\hlstd{=}\hlkwd{sum}\hlstd{(}\hlkwd{residuals}\hlstd{(fm)}\hlopt{^}\hlnum{2}\hlstd{,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)))} \hlcom{## Sum of squared-residuals}
+\hlstd{fitstat} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fm}\hlstd{) \{} \hlcom{## Sum of squared-residuals}
+    \hlkwd{return}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{SSE}\hlstd{=}\hlkwd{sum}\hlstd{(}\hlkwd{residuals}\hlstd{(fm)}\hlopt{^}\hlnum{2}\hlstd{,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
 \hlstd{\}}
 \hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
 \end{alltt}
@@ -1156,7 +1209,7 @@ To estimate grouse abundance in the entire region, we would need to:
 
 \begin{frame}[fragile]
   \frametitle{Goodness-of-fit in `unmarked'}
-\begin{knitrout}\small
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{pb}
@@ -1167,18 +1220,18 @@ To estimate grouse abundance in the entire region, we would need to:
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           2.16             5.61        0.328
+## SSE 23.2           2.41              5.7        0.294
 ## 
 ## t_B quantiles:
 ##      0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 6.9   11  17  20  24    33   39
+## SSE 6.9   12  17  21  24    33   39
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-\pause
+%\pause
 \vfill
 These results suggest that model \inr{fm2} fits the data well.
 \end{frame}
@@ -1191,14 +1244,12 @@ These results suggest that model \inr{fm2} fits the data well.
   \small
   If the model didn't fit the data well, we could try a different
   distribution for $N_i$ such as the negative binomial:
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"NB"}\hlstd{)}
+\hlstd{(fm.nb} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"NB"}\hlstd{))}
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: 5 sites have been discarded because of missing data.}}\begin{verbatim}
+\begin{verbatim}
 ## 
 ## Call:
 ## pcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, 
@@ -1223,17 +1274,20 @@ These results suggest that model \inr{fm2} fits the data well.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-  \pause
-  \vfill
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
   Or the zero-inflated Poisson:
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"ZIP"}\hlstd{)}
+\hlstd{(fm.zip} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"ZIP"}\hlstd{))}
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: 5 sites have been discarded because of missing data.}}\begin{verbatim}
+\begin{verbatim}
 ## 
 ## Call:
 ## pcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, 
@@ -1258,8 +1312,8 @@ These results suggest that model \inr{fm2} fits the data well.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-  
 \end{frame}
+
 
 
 
@@ -1304,7 +1358,24 @@ These results suggest that model \inr{fm2} fits the data well.
 
 
 \begin{frame}[fragile]
-  \frametitle{The BUGS model}
+  \frametitle{Bayesian fit assessments}
+  In a Bayesian analysis, we can assess model fit using a
+  \alert{posterior predictive check} (PPC). \\
+  \pause
+  \vfill
+  The PPC compares the posterior distribution of a fit statistic, to
+  the posterior distribution of a fit statistic computed from
+  simulated data. \\ 
+  \pause
+  \vfill
+  The two distributions should look similar if the model fits well. \\
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{BUGS model with fit stats}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
@@ -1324,17 +1395,18 @@ These results suggest that model \inr{fm2} fits the data well.
 ##   utmE[i] ~ dnorm(0, 1)
 ##   log(lambda[i]) <- beta0 + beta1*elevation[i] + beta3*utmN[i]
 ##   N[i] ~ dpois(lambda[i])         # Latent local abundance
+##   N.new[i] ~ dpois(lambda[i])     # Predicted local abundance
 ##   for(j in 1:nOccasions) {
 ##     temp[i,j] ~ dnorm(0,1)
 ##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
 ##     y[i,j] ~ dbin(p[i,j], N[i])              # Data
 ##     resid[i,j] <- y[i,j]-N[i]*p[i,j]         # Residual
-##     y.new[i,j] ~ dbin(p[i,j], N[i])          # Predicted data
-##     resid.new[i,j] <- y.new[i,j]-N[i]*p[i,j] # Predicted residual
+##     y.new[i,j] ~ dbin(p[i,j], N.new[i])          # Predicted data
+##     resid.new[i,j] <- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual
 ##   }
 ## }
-## SSE <- sum((y[i,j]-resid[i,j])^2)             # Fit stat
-## SSE.new <- sum((y.new[i,j]-resid.new[i,j])^2) # Predicted fit stat
+## SSE <- sum((y-resid)^2)             # Fit stat
+## SSE.new <- sum((y.new-resid.new)^2) # Predicted fit stat
 ## 
 ## totalAbundance <- sum(N[1:nSites])
 ## 
@@ -1347,10 +1419,52 @@ These results suggest that model \inr{fm2} fits the data well.
 
 
 
+
 \begin{frame}[fragile]
-  \frametitle{Bayesian fit assessments}
-  
+  \frametitle{MCMC}
+  Fit Model 2, corresponding to \inr{fm2}. 
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                 \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"SSE"}\hlstd{,} \hlstr{"SSE.new"}\hlstd{),}
+                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse2.jag"}\hlstd{,}
+                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian goodness-of-fit}
+%  Fit Model 1, corresponding to \inr{fm1}. 
+%  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlkwd{as.matrix}\hlstd{(jm[,}\hlkwd{c}\hlstd{(}\hlstr{"SSE"}\hlstd{,} \hlstr{"SSE.new"}\hlstd{)]))}
+\hlkwd{abline}\hlstd{(}\hlkwc{a}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{b}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.55\linewidth]{figure/bugs-mcmc-gof-plot-1} 
+
+}
+
+
+
+\end{knitrout}
+  \vfill
+  \small
+  The distributions of {\tt SSE} and {\tt SSE.new} are similar,
+  indicating that the model fits the data well.
+\end{frame}
+
 
 
 
@@ -1371,15 +1485,22 @@ These results suggest that model \inr{fm2} fits the data well.
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item a
-    \item b
-    \item c 
+    \item Simulate a dataset from the following $N$-mixture model:
       \begin{itemize}
         \footnotesize
-        \item i
-        \item ii
+        \item $N_i \sim \mathrm{ZIPoisson}(\lambda=5, \psi=0.5)$
+        \item $y_{ij} \sim \mathrm{Binomial}(N_i, p=0.3)$
+        \item nSites=200, nOccasions=4
       \end{itemize}
-    \item d
+    \item Fit a \alert{mis-specified model} using `unmarked' and `JAGS' with
+      $N_i \sim \mathrm{Pois}(\lambda)$ instead of
+      $N_i \sim \mathrm{ZIPois}(\lambda, \psi)$.
+    \item Assess goodness-of-fit using the parametric bootstrap and
+      the Bayesian posterior predictive check.
+    \item Fit the \alert{correct model} using `unmarked' and `JAGS'
+      and compare the fit to the mis-specified models.
+    \item Were the fit assessments methods able to identify the
+      mis-specified model?
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
