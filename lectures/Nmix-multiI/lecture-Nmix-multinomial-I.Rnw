@@ -92,7 +92,7 @@ knit_theme$set("edit-kwrite")
     \item<3-> Removal sampling
     \item<4-> Mark-recapture
     \item<5-> Distance sampling
-    \item<6-> And many others\dots
+    \item<6-> And others that yield multinomial counts\dots
   \end{itemize}
 \end{frame}
 
@@ -118,13 +118,13 @@ knit_theme$set("edit-kwrite")
     \pi(p_{i1}, \dots, p_{iJ}))
   \end{gather*}
   \pause
-  \vfill
+%  \vfill
   \small
   Definitions \\
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
   $p_{ij}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ \\
-  $\pi(p)$ -- A function converting $J$ detection probabilities to
+  $\pi(p)$ -- A function mapping $J$ detection probabilities to
   $K$ multinomial cell probabilities \\
   $y_{ik}$ -- Multinomial count data \\
 %  \vfill
@@ -149,7 +149,8 @@ knit_theme$set("edit-kwrite")
   $K$ classes (also called bins, categories, etc\dots). \\
   \pause
   \vfill
-  Imagine $N=20$ animals could have 3 outcomes with probabilities:
+  Imagine $N=20$ animals studied for 1 year with 3 possible outcomes
+  and associated probabilities: \\
   $\Pr(\mathrm{survived})=0.5$, $\Pr(\mathrm{depredated})=0.3$, $\Pr(\mathrm{starved})=0.2$. \\
   \pause
   \vfill
@@ -162,31 +163,36 @@ drop(rmultinom(n=1, size=N, prob=pi))
 @
   \pause
   \vfill
-  Note that the probabilities must sum to 1. %, $\sum_k \pi_k=1$.
+  \centering
+  Note: the probabilities must sum to 1 and the counts must sum to $N$. \\
 \end{frame}
 
 
 
 \begin{frame}
   \frametitle{Sampling methods}
-  The beauty of the multinomial $N$-mixture model is that it can
-  applied to data from many sampling designs, simply by changing how
-  the $\pi$ probabilities are computed. \\
+  Benefits of the multinomial $N$-mixture model
+  \begin{itemize}
+    \item Can be applied to data from many sampling designs, simply by
+      changing how the $\pi$ probabilities are computed. %\\
+    \item Precision is typically better than binomial $N$-mixture
+      models because there's more information in the data
+  \end{itemize}
   \pause
   \vfill
   Removal sampling %\\
   \[
-    {\pi(p)} = \{p, (1-p)p, (1-p)(1-p)p, \dots, (1-p)^Kp\, (1-p)^K}
+    {\pi(p)} = \{p, (1-p)p, (1-p)(1-p)p, \dots, (1-p)^{K-1}p, (1-p)^K\}
   \]
-  \pause \vfill
-  Double observer (\alert{independent} observers, reconciled afterward)
+  \pause %\vfill
+  Double observer (\alert{independent observers})
   \[
-    {\pi(p)} = \{p_1(1-p_2), p_2(1-p_1), p_1p_2, (1-p_1)(1-p_2)\}
+    {\pi(p)} = \{p_1(1-p_2), (1-p_1)p_2, p_1p_2, (1-p_1)(1-p_2)\}
   \]
-  \pause \vfill
-  Double observer (\alert{dependent} observers)
+  \pause %\vfill
+  Double observer (\alert{dependent observers})
   \[
-    {\pi(p)} = \{p_1, p_2(1-p_1), (1-p_1)(1-p_2)\}
+    {\pi(p)} = \{p_1, (1-p_1)p_2, (1-p_1)(1-p_2)\}
   \]
 \end{frame}
 
@@ -194,89 +200,134 @@ drop(rmultinom(n=1, size=N, prob=pi))
 
 
 
-\section{Simulation}
 
-\subsection{Removal sampling}
+
+
+
+
+
+
+%\section{Simulation}
+
+\section{Removal sampling}
+
+\subsection{Likelihood-based methods}
 
 \begin{frame}
   \frametitle{Outline}
   \Large
-  \tableofcontents[currentsection,currentsubsection]
+%  \tableofcontents[currentsection,currentsubsection]
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Removal sampling}
+  \small
+  Removal sampling is often used in electrofishing studies. \\
+  \pause
+  \vfill
+  A stream section is surveyed $J$ times, fish are removed on each
+  ``pass'', and the rate of removal tells us about capture
+  probability.  
+  \pause
+  \vfill
+  Definitions
+  \begin{itemize}
+    \setlength\itemsep{1pt}
+    \item $y_{ij}$ -- number of individuals removed at site $i$ on pass $j$
+    \item $p$ -- probability of catching an individual on a single pass
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{tabular}{lc}
+    \hline
+    \centering
+    Description                       & Multinomial cell probability \\
+    \hline
+    Pr(first captured on first pass)  & $\pi_1 = p$                  \\
+    Pr(first captured on second pass) & $\pi_2 = (1-p)p$             \\
+    Pr(first captured on third pass)  & $\pi_3 = (1-p)(1-p)p$        \\
+    {\centering $\cdots$}             & $\cdots$                     \\
+    Pr(first captured on pass $J$)    & $\pi_J = (1-p)^{J-1}p$       \\
+    Pr(not captured)                  & $\pi_{J+1} = (1-p)^J$          \\
+    \hline
+  \end{tabular}
 \end{frame}
 
 
 
 
+
+<<include=FALSE,echo=FALSE>>=
+set.seed(34889243)
+@ 
+
 \begin{frame}[fragile]
-  \frametitle{Simulation -- No covariates}
+  \frametitle{Removal sampling, no covariates}
   \small
-%  \begin{enumerate}[<+->]
-%  \item  
   Abundance
-<<sim-nocov1,size='scriptsize'>>=
+<<sim-rem-nocov1,size='scriptsize'>>=
 nSites <- 100
-nVisits <- 4
-set.seed(3439)  ## Make it reproducible
 lambda1 <- 2.6  ## Expected value of N
 N1 <- rpois(n=nSites, lambda=lambda1)
 @
 % \item
   \pause
   \vfill
-  Detection probability and data
+  Capture probability and \alert{all} multinomial counts
 <<sim-nocov2,size='scriptsize'>>=
+nPasses <- 3
+K <- nPasses+1  # multinomial cells
 p1 <- 0.3
-y1 <- matrix(NA, nrow=nSites, ncol=nVisits)
+pi1 <- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)
+y1.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
-    y1[i,] <- rbinom(nVisits, size=N1[i], prob=p1)
-}
+    y1.all[i,] <- rmultinom(n=1, size=N1[i], prob=pi1)    }
 @
 %\end{enumerate}
   \pause
   \vfill
-  Data and latent abundance
+  Discard final column of individuals not detected
 <<N1y1,size='scriptsize'>>=
-cbind(y1, N1)[1:5,]
+y1 <- y1.all[,-K]
+head(y1, n=3)
 @ 
 \end{frame}
 
 
 
 \begin{frame}[fragile]
-  \frametitle{Simulation -- Covariates}
+  \frametitle{Removal model, covariates}
   \small
-%  Two continuous covariates and one categorical covariate with 2 levels
-%  \vfill
-%  \begin{enumerate}[<+->]
-%  \item
   Covariates
   \vspace{-6pt}
 <<sim-cov1,size='scriptsize'>>=
-forest <- factor(sample(c("Hardwood", "Mixed", "Pine"), nSites, replace=TRUE))
-forestMixed <- ifelse(forest=="Mixed", 1, 0)        ## Dummy
-forestPine <- ifelse(forest=="Pine", 1, 0)          ## Dummy
-temp <- matrix(rnorm(nSites*nVisits), nrow=nSites, ncol=nVisits)
+streamDepth <- rnorm(nSites)
 @
 % \item
 \vfill
   Coefficients, $\lambda$, and $p$
   \vspace{-6pt}
 <<nsim-cov2,size='scriptsize'>>=
-beta0 <- 0; beta1 <- -1; beta2 <- 1
-lambda2 <- exp(beta0 + beta1*forestMixed + beta2*forestPine)
-alpha0 <- -2; alpha1 <- 1
-p2 <- plogis(alpha0 + alpha1*temp)
+beta0 <- 1; beta1 <- 0.5
+lambda2 <- exp(beta0 + beta1*streamDepth)
+alpha0 <- 0; alpha1 <- -1
+p2 <- plogis(alpha0 + alpha1*streamDepth)
+pi2 <- t(sapply(p2, function(p) c(p, (1-p)*p, (1-p)^2*p, (1-p)^3)))
 @   
 % \item
 \vfill
-  Simulate occupancy and detection data
+  Simulate abundance and removal data
   \vspace{-6pt}
 <<sim-cov3,size='scriptsize'>>=
 N2 <- rpois(nSites, lambda=lambda2)         ## local abundance 
-y2 <- matrix(NA, nrow=nSites, ncol=nVisits)
+y2.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
-    y2[i,] <- rbinom(nVisits, size=N2[i], prob=p2[i,])
+    y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])
 }
+y2 <- y2.all[,-K]
 @   
 %\end{enumerate}
 \end{frame}
@@ -300,19 +351,22 @@ y2[1:20,]
 %    \scriptsize
     {\centering Summary stats \\}
     \vspace{24pt}
-  Detections at each site \\
+    \small
+    Proportion of sites known to be occupied
+    \vspace{-6pt}
 <<sim-nocov-ss1,size='scriptsize'>>=
 # Max count at each site
 maxCounts <- apply(y2, 1, max) 
-table(maxCounts)              
-@
-\pause
-\vfill
-\small
-Proportion of sites known to be occupied \\
-<<sim-nocov-ss2,size='scriptsize'>>=
 naiveOccupancy <- sum(maxCounts>0)/nSites
 naiveOccupancy 
+@
+  \pause
+  \vfill
+  \small
+  Captures on each pass
+  \vspace{-6pt}
+<<sim-nocov-ss2,size='scriptsize'>>=
+colSums(y2)
 @
 <<un,include=FALSE>>=
 library(unmarked)
@@ -325,30 +379,22 @@ library(unmarked)
 
 
 
-\subsection{Double observer sampling}
-
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
 
 
 
 
-\section{Prediction}
+%\section{Prediction}
 
 
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
 
 
 
-\subsection{Likelihood-based methods}
 
 
 
@@ -356,71 +402,48 @@ library(unmarked)
   \frametitle{Prepare data in `unmarked'}
   \small
 <<un-umf,size='tiny'>>=
-umf <- unmarkedFramePCount(y=y2, siteCovs=data.frame(forest), obsCovs=list(temp=temp))
+umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
 @
 \pause
-<<wfac,size='tiny'>>=
+<<wfac,size='scriptsize'>>=
 summary(umf)
 @ 
 \end{frame}
 
 
+% > fm <- multinomPois(~temp ~forest, umf)    
+
+% error: Mat::operator(): index out of bounds
+% terminate called after throwing an instance of 'std::logic_error'
+%   what():  Mat::operator(): index out of bounds
 
 
 \begin{frame}[fragile]
   \frametitle{Fit the model}
   \footnotesize
-  \inr{pcount} is similar to \inr{occu}, but there's a new argument
-  (\texttt{K}) that should be an integer much 
-  greater than the highest possible value of local abundance. 
+  \inr{multinomPois} has similar arguments as \inr{occu} and
+  \inr{pcount}. 
 <<un-fit,size='tiny'>>=
-fm <- pcount(~temp ~forest, umf, K=100)    
+fm <- multinomPois(~streamDepth ~streamDepth, umf)    
 fm
 @
 \pause
 \vfill
 Compare to actual parameter values:
+\vspace{-6pt}
 <<un-compare,size='tiny'>>=
-c(beta0=beta0, beta1=beta1, beta2=beta2); c(alpha0=alpha0, alpha1=alpha1)
+c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 @ 
 \end{frame}
 
 
-
-
-\begin{frame}[fragile]
-  \frametitle{Make sure $K$ is high enough}
-%  \begin{columns}
-%    \begin{column}{0.95\paperwidth}
-<<width90,include=FALSE>>=
-oo <- options(width=90)
-@ 
-  Estimates should not change when you increase $K$.
-  \vspace{-6pt}
-<<coef,size='tiny'>>=
-round(coef(fm), digits=4)
-@
-\pause
-\vfill
-  Looks good:
-  \vspace{-6pt}
-<<upK,size='tiny'>>=
-fm.test <- pcount(~temp ~forest, umf, K=150)    
-round(coef(fm.test), digits=4)
-@
-\pause
-\vfill
-If the estimates do change, increase $K$ until they stabilize.
-%    \end{column}
-%  \end{columns}
-\end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{\normalsize Empirical Bayes -- Site-level abundance}
-<<ranef,size='scriptsize',out.width='80%',fig.align='center',fig.width=9,eval=FALSE>>=
-re <- ranef(fm)
+<<ranef,size='scriptsize',out.width='80%',fig.align='center',fig.width=9>>=
+re <- ranef(fm, K=15)
 plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 @   
 \end{frame}
@@ -431,7 +454,7 @@ plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 
 \begin{frame}[fragile]
   \frametitle{Total abundance (in surveyed region)}
-<<Ntotal,size='scriptsize',out.width='60%',fig.align='center',eval=FALSE>>=
+<<Ntotal,size='scriptsize',out.width='60%',fig.align='center'>>=
 N.total.post <- predict(re, func=sum, nsim=1000)
 hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
 @   
@@ -448,8 +471,7 @@ hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
   Create \texttt{data.frame} with prediction covariates. 
   \vspace{-6pt}
 <<preddat,size='footnotesize'>>=
-pred.data <- data.frame(forest=c("Hardwood", "Mixed", "Pine"),
-                        temp=0) 
+pred.data <- data.frame(streamDepth=seq(-3, 3, length=20))
 @
 \pause
 \vfill
@@ -470,50 +492,378 @@ print(head(lambda.pred), digits=2)
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-%   \small
-%   View $\lambda$ predictions
-% <<psi-head,size='footnotesize'>>=
-% print(head(lambda.pred), digits=2)
-% @
-% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+<<pred-lam2,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
+     ylim=c(0,40), xlab="Stream depth", type="l")
+lines(lower ~ streamDepth, lambda.pred, col="grey")
+lines(upper ~ streamDepth, lambda.pred, col="grey")
+points(rowSums(y2)~streamDepth)
+lines(lowess(rowSums(y2)~streamDepth), col="blue")
+@   
+\end{frame}
 
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center',eval=FALSE>>=
-% bpx <- barplot(lambda.pred$Predicted, ylab="Expected value of abundance", #col="blue",
-%                ylim=c(0,3.5), names=lambda.pred$forest, xlab="Forest type"); box()
-% arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
-%        angle=90, length=0.1)
-% @   
-% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{In-class exercise}
+  % \small
+  % \begin{enumerate}
+  %   \item Predict
+  %   \end{enumerate}
+  %   \centering
+  \large
+  Using the fitted removal model above:
+  \begin{enumerate}
+    \normalsize
+    \item Predict $p$ when \verb+streamDepth=-1+
+    \item Compute $\pi_1, \pi_2, \pi_3, \pi_4$
+  \end{enumerate}
+\end{frame}
 
 
+\subsection{Bayesian methods}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Bayesian multinomial $N$-mixture models}
+  There are several equivalent formulations that we can
+  exploit to fit the model in JAGS.
+  \begin{itemize}
+    \item Conditional-on-$N$, missing $y_K$
+    \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
+    \item Conditional-on-$N$, sequential binomial
+    \item Marginalized $N$
+  \end{itemize}
+  
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Conditional-on-$N$, missing $y_k$}
+  \small
+  This won't work in JAGS because it doesn't allow missing values in
+  multinomial outcomes.
+<<bugs-removal1,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("removal-mod1.jag"))
+@
+<<jagsUI,include=FALSE>>=
+library(jagsUI)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+<<bugs-removal2,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("removal-mod2.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data2,size='small'>>=
+jags.data.rem2 <- list(y=y2, n=rowSums(y2),
+                       streamDepth=streamDepth,
+                       nSites=nSites, nPasses=nPasses)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits,size='small'>>=
+jags.inits.rem <- function() {
+    list(lambda.intercept=runif(1), alpha0=rnorm(1),
+         N=rowSums(y2)+1)
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars,size='small'>>=
+jags.pars.rem <- c("beta0", "beta1",
+                   "alpha0", "alpha1", "totalAbundance")
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc-rem2,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+library(jagsUI)
+jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
+                             parameters.to.save=jags.pars.rem,
+                             model.file="removal-mod2.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum-rem2,size='tiny'>>=
+summary(jags.post.rem2[,jags.pars.rem])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem2[,jags.pars.rem[1:3]])
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem2[,jags.pars.rem[4:5]])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+<<bugs-removal3,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("removal-mod3.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data3,size='small'>>=
+jags.data.rem3 <- list(y=y2, streamDepth=streamDepth,
+                       nSites=nSites)
+@
+\vfill
+  Do MCMC
+<<bugs-mcmc-rem3,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+jags.post.rem3 <- jags.basic(data=jags.data.rem3, inits=jags.inits.rem,
+                             parameters.to.save=jags.pars.rem,
+                             model.file="removal-mod3.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum-rem3,size='tiny'>>=
+summary(jags.post.rem3[,jags.pars.rem])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem3[,jags.pars.rem[1:3]])
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot2-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem3[,jags.pars.rem[4:5]])
+@ 
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Marginalized $N$}
+<<bugs-removal4,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("removal-mod4.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data4,size='small'>>=
+jags.data.rem4 <- list(y=y2, streamDepth=streamDepth,
+                       nSites=nSites)
+@
+\vfill
+  Do MCMC
+<<bugs-mcmc-rem4,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+jags.post.rem4 <- jags.basic(data=jags.data.rem4, inits=jags.inits.rem,
+                             parameters.to.save=jags.pars.rem,
+                             model.file="removal-mod4.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum-rem4,size='tiny'>>=
+summary(jags.post.rem4[,jags.pars.rem[1:4]])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1-rem4,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem3[,jags.pars.rem[1:4]])
+@ 
+\end{frame}
+
+
+
+
+
+\section{Double observer sampling}
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Double observer sampling (independent)}
+  \small
+  Two observers sample together, working independently. \\
+  \pause
+  \vfill
+  After each survey, they compare notes and figure out which
+  individual were detected by observer A only, B only, or by both. \\
+  \pause
+  \vfill
+  Definitions
+  \begin{itemize}
+    \setlength\itemsep{1pt}
+    \item $y_{i1}$ -- number of individuals detected only by observer A
+    \item $y_{i2}$ -- number of individuals detected only by observer B
+    \item $y_{i3}$ -- number of individuals detected by observers A and B
+    \item $p_1$ -- probability that observer A detects an individual 
+    \item $p_2$ -- probability that observer B detects an individual 
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{tabular}{lc}
+    \hline
+    \centering
+    Description & Multinomial cell probability \\
+    \hline
+    Pr(detected by observer A but not B) & $\pi_1 = p_1(1-p_2)$ \\
+    Pr(detected by observer B but not A) & $\pi_2 = (1-p_1)p_2$ \\
+    Pr(detected by observers A and B) & $\pi_3 = p_1p_2$ \\
+    Pr(not detected) & $\pi_4 = (1-p_1)(1-p_2)$ \\
+    \hline
+  \end{tabular}
+\end{frame}
 
 
 
 
 
 \begin{frame}
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  \centering
-  Graph $p$ as a function of temperature. Include 95\% confidence intervals. \\
+  \frametitle{Double observer sampling (dependent)}
+  \small
+  Two observers sample at the same time, but observer B only records
+  what observer A missed. \\
+  \pause
+  \vfill
+  Often used in aerial waterfowl surveys with two pilots. \\
+  \pause
+  \vfill
+  Definitions
+  \begin{itemize}
+    \setlength\itemsep{1pt}
+    \item $y_{i1}$ -- number of individuals detected by observer A
+    \item $y_{i2}$ -- number of individuals missed by A but
+      detected by B
+    \item $p_1$ -- probability that observer A detects an individual 
+    \item $p_2$ -- probability that observer B detects an individual 
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{tabular}{lc}
+    \hline
+    \centering
+    Description & Multinomial cell probability \\
+    \hline
+    Pr(detected by observer A) & $\pi_1 = p_1$ \\
+    Pr(detected by observer B but not A) & $\pi_2 = (1-p_1)p_2$ \\
+    Pr(not detected) & $\pi_3 = (1-p_1)(1-p_2)$ \\
+    \hline
+  \end{tabular}
 \end{frame}
 
+\subsection{Likelihood-based methods}
 
 
-
-\subsection{Bayesian methods: posterior prediction}
+\subsection{Bayesian methods}
 
 
 
@@ -524,17 +874,6 @@ print(head(lambda.pred), digits=2)
 \end{frame}
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{The BUGS model}
-% <<bugs,size='scriptsize',echo=FALSE>>=
-% writeLines(readLines("Nmix-model-covs.jag"))
-% @
-% <<jagsUI,include=FALSE>>=
-% library(jagsUI)
-% @ 
-% \end{frame}
 
 
 
@@ -682,8 +1021,6 @@ print(head(lambda.pred), digits=2)
 
 
 
-\subsection{Bayesian methods: prior prediction}
-
 
 
 \begin{frame}[plain]
@@ -696,56 +1033,6 @@ print(head(lambda.pred), digits=2)
 
 
 
-
-\begin{frame}
-  \frametitle{Prior sensitivity}
-  Questions
-  \begin{itemize}
-    \item What are the implied priors on $\lambda$ and $p$?
-    \item What would be the consequence of changing the priors?
-  \end{itemize}
-  \pause
-  \vfill
-  \alert{Prior predictive checks} can help us answer these questions. \\
-  \pause
-  \vfill
-  Prior prediction can be acheived by replacing the data with missing values \\
-\end{frame}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prior sampling}
-%   Replace data with missing values
-%   \vspace{-12pt}
-% <<bugs-data2,size='small'>>=
-% jags.data2 <- jags.data
-% jags.data2$y[] <- NA      ## Replace data with missing values
-% @
-%   \pause
-%   \vfill
-%   Fit model (Really, we're just sampling from the prior)
-% <<bugs-mcmc-prior,size='scriptsize',message=FALSE,cache=TRUE>>=
-% jags.prior.samples <- jags.basic(data=jags.data2, inits=jags.inits,
-%                                  parameters.to.save=jags.pars,
-%                                  model.file="Nmix-model-covs.jag",
-%                                  n.chains=3, n.adapt=100, n.burnin=0,
-%                                  n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Prior summary}
-<<summary-prior,size='tiny'>>=
-summary(jags.prior.samples)
-@   
-\end{frame}
 
 
 

@@ -1,0 +1,27 @@
+model {
+
+lambda.intercept ~ dunif(0, 5)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*streamDepth[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
+  pi[i,1] <- p[i]
+  pi[i,2] <- (1-p[i])*p[i]
+  pi[i,3] <- (1-p[i])^2*p[i]
+  pi[i,4] <- (1-p[i])^3
+  y[i,1:4] ~ dmulti(pi[i,1:4], N[i])
+  ## If N~Pois(lam), then the above is equivalent to:
+  # for(j in 1:3) {
+  #   y[i,j] ~ dpois(lambda[i]*pi[i,j])
+  # }
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}

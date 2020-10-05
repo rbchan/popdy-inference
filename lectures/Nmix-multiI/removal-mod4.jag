@@ -1,0 +1,23 @@
+model {
+
+lambda.intercept ~ dunif(0, 5)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*streamDepth[i]
+  logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
+  pi[i,1] <- p[i]
+  pi[i,2] <- (1-p[i])*p[i]
+  pi[i,3] <- (1-p[i])^2*p[i]
+  y[i,1] ~ dpois(lambda[i]*pi[i,1])
+  y[i,2] ~ dpois(lambda[i]*pi[i,2])
+  y[i,3] ~ dpois(lambda[i]*pi[i,3])
+}
+
+# totalAbundance <- sum(N[1:nSites])
+
+}
