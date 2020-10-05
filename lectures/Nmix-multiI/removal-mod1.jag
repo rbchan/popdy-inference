@@ -11,10 +11,10 @@ for(i in 1:nSites) {
   log(lambda[i]) <- beta0 + beta1*streamDepth[i]
   N[i] ~ dpois(lambda[i])         # Latent local abundance
   logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
-  pi[i,1] <- p[i]
-  pi[i,2] <- (1-p[i])*p[i]
-  pi[i,3] <- (1-p[i])^2*p[i]
-  pi[i,4] <- (1-p[i])^3
+  pi[i,1] <- p[i]            ## Pr(first captured in first pass)
+  pi[i,2] <- (1-p[i])*p[i]   ## Pr(first captured in second pass)
+  pi[i,3] <- (1-p[i])^2*p[i] ## Pr(first captured in third pass)
+  pi[i,4] <- (1-p[i])^3      ## Pr(not captured)
   y[i,1:4] ~ dmulti(pi[i,1:4], N[i])
 }
 

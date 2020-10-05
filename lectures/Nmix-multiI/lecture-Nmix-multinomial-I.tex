@@ -204,7 +204,7 @@
 \end{alltt}
 \begin{verbatim}
 ##   survived depredated    starved 
-##         13          7          0
+##         11          8          1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -212,6 +212,14 @@
   \vfill
   \centering
   Note: the probabilities must sum to 1 and the counts must sum to $N$. \\
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Multinomial/Categorical vs Binomial/Bernoulli}
+  \centering
+  \fbox{\includegraphics[width=0.85\textwidth]{figs/fig7-1}} \\
 \end{frame}
 
 
@@ -229,7 +237,7 @@
   \vfill
   Removal sampling %\\
   \[
-    {\pi(p)} = \{p, (1-p)p, (1-p)(1-p)p, \dots, (1-p)^{K-1}p, (1-p)^K\}
+    {\pi(p)} = \{p, (1-p)p, (1-p)^2p, \dots, (1-p)^{K-1}p, (1-p)^K\}
   \]
   \pause %\vfill
   Double observer (\alert{independent observers})
@@ -417,10 +425,11 @@
       \small
       Observations
 %      \tiny
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,]}
+\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3]
@@ -443,7 +452,6 @@
 ## [17,]    0    0    2
 ## [18,]    3    3    0
 ## [19,]    1    0    0
-## [20,]    1    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -481,6 +489,18 @@
 \end{alltt}
 \begin{verbatim}
 ## [1] 117  55  28
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  Naive abundance
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{sum}\hlstd{(y2)}
+\end{alltt}
+\begin{verbatim}
+## [1] 200
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -717,11 +737,11 @@ Get predictions of $\lambda$ for each row of prediction data.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Expected value of abundance"}\hlstd{,}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{40}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Stream depth"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
+     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{30}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Stream depth"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
 \hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \hlkwd{points}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth)}
-\hlkwd{lines}\hlstd{(}\hlkwd{lowess}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(}\hlkwd{lowess}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}  \hlcom{## Loess line for fun (it's way off)}
 \end{alltt}
 \end{kframe}
 
@@ -747,8 +767,8 @@ Get predictions of $\lambda$ for each row of prediction data.
   %   \item Predict
   %   \end{enumerate}
   %   \centering
-  \large
-  Using the fitted removal model above:
+%  \large
+  Do the following using the fitted removal model above:
   \begin{enumerate}
     \normalsize
     \item Predict $p$ when \verb+streamDepth=-1+
@@ -769,10 +789,10 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations that we can
-  exploit to fit the model in JAGS.
+  There are several equivalent formulations of the multinomial that we
+  can exploit to fit the model in JAGS.
   \begin{itemize}
-    \item Conditional-on-$N$, missing $y_K$
+    \item Conditional-on-$N$, missing $y_{iK}$
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
     \item Conditional-on-$N$, sequential binomial
     \item Marginalized $N$
@@ -782,12 +802,25 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
+
 \begin{frame}[fragile]
   \frametitle{Conditional-on-$N$, missing $y_k$}
-  \small
-  This won't work in JAGS because it doesn't allow missing values in
-  multinomial outcomes.
-\begin{knitrout}\scriptsize
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Conditional-on-$N$, missing $y_k$}
+  \footnotesize
+  Under this formulation, we view the final multinomial cell
+  (corresponding to individuals not detected) as missing data. \\
+  \pause
+  Unfortunately, this won't work in JAGS because it doesn't allow
+  missing values in multinomial outcomes.
+  \pause
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## model {
@@ -803,10 +836,10 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##   log(lambda[i]) <- beta0 + beta1*streamDepth[i]
 ##   N[i] ~ dpois(lambda[i])         # Latent local abundance
 ##   logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
-##   pi[i,1] <- p[i]
-##   pi[i,2] <- (1-p[i])*p[i]
-##   pi[i,3] <- (1-p[i])^2*p[i]
-##   pi[i,4] <- (1-p[i])^3
+##   pi[i,1] <- p[i]            ## Pr(first captured in first pass)
+##   pi[i,2] <- (1-p[i])*p[i]   ## Pr(first captured in second pass)
+##   pi[i,3] <- (1-p[i])^2*p[i] ## Pr(first captured in third pass)
+##   pi[i,4] <- (1-p[i])^3      ## Pr(not captured)
 ##   y[i,1:4] ~ dmulti(pi[i,1:4], N[i])
 ## }
 ## 
@@ -817,6 +850,29 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{kframe}
 \end{knitrout}
 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+  Rather than treating the final multinomial cell as missing data:
+  \[
+    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{NA}\} \sim
+    \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
+  \]
+  \pause
+  \vfill
+  We can break the problem down into two steps by conditioning on
+  $n_i$, the number captured:
+  \small
+  \begin{gather*}
+    n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
+    \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
+    \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
+  \end{gather*}
 \end{frame}
 
 
@@ -917,18 +973,6 @@ Get predictions of $\lambda$ for each row of prediction data.
                              \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                              \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.03 minutes.
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -1074,18 +1118,6 @@ Get predictions of $\lambda$ for each row of prediction data.
                              \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                              \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.024 minutes.
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -1238,18 +1270,6 @@ Get predictions of $\lambda$ for each row of prediction data.
                              \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                              \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.028 minutes.
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -1332,7 +1352,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}
   \frametitle{Double observer sampling (independent)}
   \small
-  Two observers sample at the same time, working independently. \\
+  Two observers sample together, working independently. \\
   \pause
   \vfill
   After each survey, they compare notes and figure out which

@@ -169,6 +169,14 @@ drop(rmultinom(n=1, size=N, prob=pi))
 
 
 
+\begin{frame}[fragile]
+  \frametitle{\normalsize Multinomial/Categorical vs Binomial/Bernoulli}
+  \centering
+  \fbox{\includegraphics[width=0.85\textwidth]{figs/fig7-1}} \\
+\end{frame}
+
+
+
 \begin{frame}
   \frametitle{Sampling methods}
   Benefits of the multinomial $N$-mixture model
@@ -182,7 +190,7 @@ drop(rmultinom(n=1, size=N, prob=pi))
   \vfill
   Removal sampling %\\
   \[
-    {\pi(p)} = \{p, (1-p)p, (1-p)(1-p)p, \dots, (1-p)^{K-1}p, (1-p)^K\}
+    {\pi(p)} = \{p, (1-p)p, (1-p)^2p, \dots, (1-p)^{K-1}p, (1-p)^K\}
   \]
   \pause %\vfill
   Double observer (\alert{independent observers})
@@ -342,8 +350,9 @@ y2 <- y2.all[,-K]
       \small
       Observations
 %      \tiny
+  \vspace{-6pt}
 <<sim-nocov-dat,size='scriptsize'>>=
-y2[1:20,]
+y2[1:19,]
 @ 
   \end{column}
   \begin{column}{0.6\textwidth}
@@ -367,6 +376,11 @@ naiveOccupancy
   \vspace{-6pt}
 <<sim-nocov-ss2,size='scriptsize'>>=
 colSums(y2)
+@
+  Naive abundance
+  \vspace{-6pt}
+<<sim-nocov-ss3,size='scriptsize'>>=
+sum(y2)
 @
 <<un,include=FALSE>>=
 library(unmarked)
@@ -496,13 +510,14 @@ print(head(lambda.pred), digits=2)
 
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-<<pred-lam2,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+<<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
-     ylim=c(0,40), xlab="Stream depth", type="l")
+     ylim=c(0,30), xlab="Stream depth", type="l")
 lines(lower ~ streamDepth, lambda.pred, col="grey")
 lines(upper ~ streamDepth, lambda.pred, col="grey")
 points(rowSums(y2)~streamDepth)
-lines(lowess(rowSums(y2)~streamDepth), col="blue")
+lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
 @   
 \end{frame}
 
@@ -519,8 +534,8 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")
   %   \item Predict
   %   \end{enumerate}
   %   \centering
-  \large
-  Using the fitted removal model above:
+%  \large
+  Do the following using the fitted removal model above:
   \begin{enumerate}
     \normalsize
     \item Predict $p$ when \verb+streamDepth=-1+
@@ -541,10 +556,10 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations that we can
-  exploit to fit the model in JAGS.
+  There are several equivalent formulations of the multinomial that we
+  can exploit to fit the model in JAGS.
   \begin{itemize}
-    \item Conditional-on-$N$, missing $y_K$
+    \item Conditional-on-$N$, missing $y_{iK}$
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
     \item Conditional-on-$N$, sequential binomial
     \item Marginalized $N$
@@ -554,17 +569,53 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")
 
 
 
+
 \begin{frame}[fragile]
   \frametitle{Conditional-on-$N$, missing $y_k$}
-  \small
-  This won't work in JAGS because it doesn't allow missing values in
-  multinomial outcomes.
-<<bugs-removal1,size='scriptsize',echo=FALSE>>=
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Conditional-on-$N$, missing $y_k$}
+  \footnotesize
+  Under this formulation, we view the final multinomial cell
+  (corresponding to individuals not detected) as missing data. \\
+  \pause
+  Unfortunately, this won't work in JAGS because it doesn't allow
+  missing values in multinomial outcomes.
+  \pause
+<<bugs-removal1,size='tiny',echo=FALSE>>=
 writeLines(readLines("removal-mod1.jag"))
 @
 <<jagsUI,include=FALSE>>=
 library(jagsUI)
 @ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+  Rather than treating the final multinomial cell as missing data:
+  \[
+    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{NA}\} \sim
+    \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
+  \]
+  \pause
+  \vfill
+  We can break the problem down into two steps by conditioning on
+  $n_i$, the number captured:
+  \small
+  \begin{gather*}
+    n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
+    \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
+    \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
+  \end{gather*}
 \end{frame}
 
 
