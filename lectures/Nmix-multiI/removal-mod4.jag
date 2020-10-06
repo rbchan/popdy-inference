@@ -18,6 +18,7 @@ for(i in 1:nSites) {
   y[i,3] ~ dpois(lambda[i]*pi[i,3])
 }
 
+# Could recover N here using Bayes rule (not shown)
 # totalAbundance <- sum(N[1:nSites])
 
 }

@@ -131,7 +131,7 @@
     \item<3-> Removal sampling
     \item<4-> Mark-recapture
     \item<5-> Distance sampling
-    \item<6-> And others that yield multinomial counts\dots
+    \item<6-> And other methods that yield multinomial counts\dots
   \end{itemize}
 \end{frame}
 
@@ -167,7 +167,7 @@
   $K$ multinomial cell probabilities \\
   $y_{ik}$ -- Multinomial count data \\
 %  \vfill
-  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \\
+  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \hfill %\\
 %  \vspace{12pt}
   $\color{Purple} w$ -- observation covariate
 \end{frame}
@@ -188,8 +188,8 @@
   $K$ classes (also called bins, categories, etc\dots). \\
   \pause
   \vfill
-  Imagine $N=20$ animals studied for 1 year with 3 possible outcomes
-  and associated probabilities: \\
+  Imagine $N=20$ animals are studied for 1 year and there are 3
+  possible ``fates'' with associated probabilities: \\
   $\Pr(\mathrm{survived})=0.5$, $\Pr(\mathrm{depredated})=0.3$, $\Pr(\mathrm{starved})=0.2$. \\
   \pause
   \vfill
@@ -204,12 +204,12 @@
 \end{alltt}
 \begin{verbatim}
 ##   survived depredated    starved 
-##         11          8          1
+##          9          7          4
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
   \pause
-  \vfill
+%  \vfill
   \centering
   Note: the probabilities must sum to 1 and the counts must sum to $N$. \\
 \end{frame}
@@ -333,7 +333,8 @@
 % \item
   \pause
   \vfill
-  Capture probability and \alert{all} multinomial counts
+  Capture probability and multinomial counts%, including individuals
+%  \alert{not} detected
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -408,7 +409,7 @@
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
     \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])}
 \hlstd{\}}
-\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlopt{-}\hlstd{K]}
+\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlopt{-}\hlstd{K]} \hlcom{## Discard final column... individuals not detected}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -492,6 +493,8 @@
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+  \pause
+  \vfill
   Naive abundance
   \vspace{-6pt}
 \begin{knitrout}\scriptsize
@@ -772,7 +775,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \begin{enumerate}
     \normalsize
     \item Predict $p$ when \verb+streamDepth=-1+
-    \item Compute $\pi_1, \pi_2, \pi_3, \pi_4$
+    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
   \end{enumerate}
 \end{frame}
 
@@ -789,8 +792,8 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial that we
-  can exploit to fit the model in JAGS.
+  There are several equivalent formulations of the multinomial, some
+  of which we can exploit to fit the model in JAGS.
   \begin{itemize}
     \item Conditional-on-$N$, missing $y_{iK}$
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
@@ -803,9 +806,9 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Conditional-on-$N$, missing $y_k$}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Conditional-on-$N$, missing $y_k$}
+% \end{frame}
 
 
 
@@ -817,6 +820,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   Under this formulation, we view the final multinomial cell
   (corresponding to individuals not detected) as missing data. \\
   \pause
+  \vfill
   Unfortunately, this won't work in JAGS because it doesn't allow
   missing values in multinomial outcomes.
   \pause
@@ -860,25 +864,29 @@ Get predictions of $\lambda$ for each row of prediction data.
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
   Rather than treating the final multinomial cell as missing data:
   \[
-    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{NA}\} \sim
+    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
     \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
   \]
   \pause
   \vfill
   We can break the problem down into two steps by conditioning on
-  $n_i$, the number captured:
+  $n_i$, the number of individuals captured at site $i$:
   \small
   \begin{gather*}
     n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
     \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
     \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
   \end{gather*}
+  \pause
+  \vfill
+  Note that the modified cell probabilities still sum to 1. 
 \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+\vspace{-3pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
@@ -895,12 +903,12 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##   log(lambda[i]) <- beta0 + beta1*streamDepth[i]
 ##   N[i] ~ dpois(lambda[i])         # Latent local abundance
 ##   logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
-##   pi[i,1] <- p[i]
-##   pi[i,2] <- (1-p[i])*p[i]
-##   pi[i,3] <- (1-p[i])^2*p[i]
+##   pi[i,1] <- p[i]               ## Pr(first captured in first pass)
+##   pi[i,2] <- (1-p[i])*p[i]      ## Pr(first captured in second pass)
+##   pi[i,3] <- (1-p[i])^2*p[i]    ## Pr(first captured in third pass)
 ##   pi[i,4] <- (1-p[i])^3         ## Pr(not captured)
-##   n[i] ~ dbin(1-pi[i,4], N[i])  ## nCaptured
-##   y[i,1:3] ~ dmulti(pi[i,1:3]/sum(pi[i,1:3]), n[i])
+##   n[i] ~ dbin(1-pi[i,4], N[i])  ## nCaptured at site i
+##   y[i,1:3] ~ dmulti(pi[i,1:3]/(1-pi[i,4]), n[i])
 ## }
 ## 
 ## totalAbundance <- sum(N[1:nSites])
@@ -937,7 +945,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlstd{jags.inits.rem} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
     \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{+}\hlnum{1}\hlstd{)}
+         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{+}\hlkwd{rpois}\hlstd{(}\hlkwd{nrow}\hlstd{(y2),} \hlnum{2}\hlstd{))}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -963,24 +971,22 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.rem2} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.rem2,} \hlkwc{inits}\hlstd{=jags.inits.rem,}
-                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,}
-                             \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod2.jag"}\hlstd{,}
-                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                             \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,} \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod2.jag"}\hlstd{,}
+                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-\end{frame}
+%\end{frame}
 
+\pause
 
-
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
+%\begin{frame}[fragile]
+%  \frametitle{Summarize output}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -997,20 +1003,20 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##    plus standard error of the mean:
 ## 
 ##                    Mean       SD Naive SE Time-series SE
-## beta0            0.8647  0.09246 0.001194       0.004077
-## beta1            0.3956  0.12739 0.001645       0.007282
-## alpha0           0.1574  0.20162 0.002603       0.008717
-## alpha1          -0.9861  0.22312 0.002880       0.010963
-## totalAbundance 268.9377 30.61393 0.395224       2.053057
+## beta0            0.8665  0.09612 0.001241       0.004571
+## beta1            0.4072  0.13444 0.001736       0.009476
+## alpha0           0.1665  0.21570 0.002785       0.010526
+## alpha1          -1.0127  0.22852 0.002950       0.013709
+## totalAbundance 271.6515 34.81006 0.449396       2.830841
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##                    2.5%       25%      50%      75%    97.5%
-## beta0            0.6899   0.80196   0.8630   0.9231   1.0471
-## beta1            0.1592   0.30854   0.3877   0.4793   0.6704
-## alpha0          -0.2737   0.03012   0.1623   0.2950   0.5345
-## alpha1          -1.4213  -1.13647  -0.9903  -0.8385  -0.5475
-## totalAbundance 227.0000 248.00000 263.0000 284.0000 345.0000
+##                    2.5%      25%      50%      75%    97.5%
+## beta0            0.6854   0.8017   0.8628   0.9282   1.0668
+## beta1            0.1734   0.3138   0.3982   0.4851   0.7073
+## alpha0          -0.2614   0.0176   0.1777   0.3152   0.5747
+## alpha1          -1.4810  -1.1607  -1.0107  -0.8636  -0.5596
+## totalAbundance 226.0000 248.0000 264.0000 287.0000 360.0250
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1060,6 +1066,25 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
+
+\begin{frame}%[fragile]
+  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+  The multinomial distribution can be represented by a sequence of
+  binomial distributions in which we reduce the number of trails.
+  \pause
+  \vfill
+  \large
+  \begin{gather*}
+    y_{i1} \sim \mathrm{Bin}(N_i, p) \\
+    y_{i2} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}}, p) \\
+    y_{i3} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}-y_{i2}}, p) \\
+  \end{gather*}
+\end{frame}
+
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
 \begin{knitrout}\scriptsize
@@ -1098,7 +1123,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1109,6 +1134,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{knitrout}
 \vfill
   Do MCMC
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1144,20 +1170,20 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##    plus standard error of the mean:
 ## 
 ##                    Mean       SD Naive SE Time-series SE
-## beta0            0.8696  0.09284 0.001199       0.009818
-## beta1            0.4129  0.12969 0.001674       0.019315
-## alpha0           0.1792  0.20587 0.002658       0.032024
-## alpha1          -1.0349  0.22008 0.002841       0.041603
-## totalAbundance 272.2152 32.03041 0.413511       6.413807
+## beta0            0.8509  0.08454 0.001091       0.006119
+## beta1            0.3760  0.10901 0.001407       0.009684
+## alpha0           0.1971  0.18707 0.002415       0.027903
+## alpha1          -0.9562  0.18956 0.002447       0.028028
+## totalAbundance 261.2537 22.28578 0.287708       2.919323
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##                    2.5%       25%      50%      75%    97.5%
-## beta0            0.6927   0.80653   0.8668   0.9311   1.0556
-## beta1            0.1755   0.31992   0.4081   0.5037   0.6708
-## alpha0          -0.2679   0.03903   0.1843   0.3310   0.5563
-## alpha1          -1.4333  -1.20533  -1.0248  -0.8791  -0.6103
-## totalAbundance 227.0000 247.00000 266.0000 292.0000 347.0000
+## beta0            0.6793   0.79296   0.8520   0.9098   1.0116
+## beta1            0.1675   0.30095   0.3756   0.4484   0.5958
+## alpha0          -0.1682   0.06105   0.1910   0.3362   0.5442
+## alpha1          -1.2982  -1.08690  -0.9730  -0.8432  -0.5331
+## totalAbundance 227.0000 245.00000 258.0000 274.0000 312.0000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1210,6 +1236,27 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
+\begin{frame}%[fragile]
+  \frametitle{Marginalized $N$}
+  If
+  \[
+    N \sim \mathrm{Poisson}(\lambda)
+  \]
+  and
+  \[
+    \{y_1, \dots, y_K\}|N \sim \mathrm{Multinomial}(N, \{\pi_1, \dots, \pi_K\})
+  \]
+  \pause
+  \vfill
+  then the marginal distribution of $y$ is
+  \[
+    y_k \sim \mathrm{Poisson}(\lambda \pi_k) 
+  \]
+\end{frame}
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{Marginalized $N$}
 \begin{knitrout}\scriptsize
@@ -1235,6 +1282,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##   y[i,3] ~ dpois(lambda[i]*pi[i,3])
 ## }
 ## 
+## # Could recover N here using Bayes rule (not shown)
 ## # totalAbundance <- sum(N[1:nSites])
 ## 
 ## }
@@ -1250,7 +1298,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1261,6 +1309,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{knitrout}
 \vfill
   Do MCMC
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1296,18 +1345,18 @@ Get predictions of $\lambda$ for each row of prediction data.
 ##    plus standard error of the mean:
 ## 
 ##           Mean      SD Naive SE Time-series SE
-## beta0   0.8683 0.09378 0.001211       0.002587
-## beta1   0.4044 0.13100 0.001691       0.004332
-## alpha0  0.1525 0.21811 0.002816       0.006146
-## alpha1 -0.9959 0.22006 0.002841       0.006726
+## beta0   0.8674 0.09317 0.001203       0.003005
+## beta1   0.4048 0.13034 0.001683       0.004766
+## alpha0  0.1576 0.21039 0.002716       0.006265
+## alpha1 -1.0019 0.21624 0.002792       0.006795
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##           2.5%      25%     50%     75%   97.5%
-## beta0   0.6966  0.80419  0.8639  0.9299  1.0641
-## beta1   0.1690  0.31290  0.3957  0.4846  0.6910
-## alpha0 -0.3079  0.01434  0.1563  0.3025  0.5564
-## alpha1 -1.4316 -1.14021 -0.9992 -0.8514 -0.5545
+## beta0   0.6925  0.80585  0.8644  0.9273  1.0566
+## beta1   0.1764  0.31467  0.3980  0.4843  0.6976
+## alpha0 -0.2739  0.02863  0.1696  0.2993  0.5413
+## alpha1 -1.4254 -1.14946 -1.0055 -0.8532 -0.5802
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1337,6 +1386,129 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Compare convergence}
+%All the results were similar, but let's make sure they converged
+%\begin{columns}
+%  \begin{column}{0.33\paperwidth}
+%  \begin{column}{0.5\textwidth}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{gelman.diag}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Conditional-on-N and n}
+\end{alltt}
+\begin{verbatim}
+## Potential scale reduction factors:
+## 
+##        Point est. Upper C.I.
+## beta0        1.02       1.05
+## beta1        1.04       1.12
+## alpha0       1.03       1.11
+## alpha1       1.02       1.05
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%  \end{column}
+%  \begin{column}{0.33\paperwidth}
+\vspace{-10pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{gelman.diag}\hlstd{(jags.post.rem3[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Sequential binomial}
+\end{alltt}
+\begin{verbatim}
+## Potential scale reduction factors:
+## 
+##        Point est. Upper C.I.
+## beta0        1.01       1.02
+## beta1        1.02       1.03
+## alpha0       1.12       1.32
+## alpha1       1.12       1.38
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%  \end{column}
+%  \begin{column}{0.33\paperwidth}
+\vspace{-10pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{gelman.diag}\hlstd{(jags.post.rem4[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Marginalized N}
+\end{alltt}
+\begin{verbatim}
+## Potential scale reduction factors:
+## 
+##        Point est. Upper C.I.
+## beta0        1.02       1.05
+## beta1        1.02       1.06
+## alpha0       1.02       1.06
+## alpha1       1.01       1.02
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%  \end{column}
+%\end{columns}
+\centering
+\vfill
+You want $\hat{R}<1.1$ for all parameters \\
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Compare effective sample size}
+  Conditional-on-$N$, conditional-on-$n$
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{effectiveSize}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\begin{verbatim}
+##    beta0    beta1   alpha0   alpha1 
+## 483.6140 232.1824 446.2256 293.4178
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  Conditional-on-$N$, sequential binomial
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{effectiveSize}\hlstd{(jags.post.rem3[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\begin{verbatim}
+##     beta0     beta1    alpha0    alpha1 
+## 356.46885 149.20647  52.01098  49.73281
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  Marginalized $N$
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{effectiveSize}\hlstd{(jags.post.rem4[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\begin{verbatim}
+##     beta0     beta1    alpha0    alpha1 
+## 1119.9167  814.6232 1268.7355 1012.7694
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+\centering
+The ``marginalized $N$'' formulation wins both the convergence and
+effective sample size competitions. \\
+\end{frame}
+
+
+
+
+
 
 \section{Double observer sampling}
 
@@ -1352,7 +1524,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}
   \frametitle{Double observer sampling (independent)}
   \small
-  Two observers sample together, working independently. \\
+  Two observers sample the same location at the same time, working independently. \\
   \pause
   \vfill
   After each survey, they compare notes and figure out which
@@ -1361,7 +1533,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \vfill
   Definitions
   \begin{itemize}
-    \setlength\itemsep{1pt}
+    \setlength\itemsep{0.5pt}
     \item $y_{i1}$ -- number of individuals detected only by observer A
     \item $y_{i2}$ -- number of individuals detected only by observer B
     \item $y_{i3}$ -- number of individuals detected by observers A and B
@@ -1420,266 +1592,21 @@ Get predictions of $\lambda$ for each row of prediction data.
   \end{tabular}
 \end{frame}
 
-\subsection{Likelihood-based methods}
+%\subsection{Likelihood-based methods}
 
 
-\subsection{Bayesian methods}
-
-
-
-\begin{frame}[plain]
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
+%\subsection{Bayesian methods}
 
 
 
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data,size='small'>>=
-% jags.data <- list(y=y2, temp=temp,
-%                   forestMixed=forestMixed,
-%                   forestPine=forestPine,
-%                   nSites=nSites, nOccasions=nVisits)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='small'>>=
-% jags.inits <- function() {
-%     list(beta0=rnorm(1), alpha0=rnorm(1), N=maxCounts)
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars <- c("beta0", "beta1", "beta2",
-%                "alpha0", "alpha1", "totalAbundance")
-% @ 
+% \begin{frame}[plain]
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
 % \end{frame}
 
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
-% library(jagsUI)
-% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-%                                 parameters.to.save=c(jags.pars, "N"), ## NOTE "N"!
-%                                 model.file="Nmix-model-covs.jag",
-%                                 n.chains=3, n.adapt=100, n.burnin=0,
-%                                 n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Summarize output}
-% <<bugs-sum,size='tiny'>>=
-% summary(jags.post.samples[,jags.pars])
-% @ 
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Local abundance}
-% <<localN,out.width='70%',fig.align='center',size='scriptsize'>>=
-% plot(jags.post.samples[,paste0("N[", 1:4, "]")])
-% @   
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,jags.pars[1:3]])
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,jags.pars[4:5]])
-% @ 
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   \small
-%   First, extract the $p$ coefficients
-%   \vspace{-6pt}
-% <<psi-coefs,size='scriptsize'>>=
-% p.coef.post <- as.matrix(jags.post.samples[,c("alpha0","alpha1")])
-% head(p.coef.post, n=4)
-% @
-%   \pause
-%   \vfill
-%   Create prediction matrix, one row for each MCMC iteration.
-%   \vspace{-6pt}
-% %  Columns represent covariate values. 
-% <<p-predmat,size='scriptsize'>>=
-% n.iter <- nrow(p.coef.post)
-% temp.pred <- seq(-3, 3, length=50)
-% p.post.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
-% @   
-%   \pause
-%   \vfill
-%   Predict $p$ for each MCMC iteration.
-%   \vspace{-6pt}
-% %  using covariate values from \inr{pred.data}. 
-% <<psi-pred-bayes,size='scriptsize'>>=
-% for(i in 1:n.iter) {
-%     p.post.pred[i,] <- plogis(p.coef.post[i,"alpha0"] +
-%                               p.coef.post[i,"alpha1"]*temp.pred)
-% }
-% @ 
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-% %  Now with posterior mean and 95\% CI
-% <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='70%',fig.height=5,echo=-(1),dev='png',cache=TRUE,dpi=200>>=
-% par(mai=c(0.9,0.9,0.1,0.1))  
-% plot(temp.pred, p.post.pred[1,], type="l", xlab="Temperature (standardized)",
-%      ylab="Detection probability", ylim=c(0, 1), col=gray(0.8))
-% for(i in seq(1, n.iter, by=10)) {  ## Thin by 10
-%     lines(temp.pred, p.post.pred[i,], col=gray(0.8))  }
-% pred.post.mean <- colMeans(p.post.pred)
-% pred.post.lower <- apply(p.post.pred, 2, quantile, prob=0.025)
-% pred.post.upper <- apply(p.post.pred, 2, quantile, prob=0.975)
-% lines(temp.pred, pred.post.mean, col="blue")
-% lines(temp.pred, pred.post.lower, col="blue", lty=2)
-% lines(temp.pred, pred.post.upper, col="blue", lty=2)
-% @ 
-% \end{frame}
-
-
-
-
-
-
-
-\begin{frame}[plain]
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
-
-
-
-
-
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prior prediction}
-%   \small
-%   Push the prior samples through the model to predict $p$
-% <<psi-coefs-prior,size='scriptsize'>>=
-% p.coef.prior <- as.matrix(jags.prior.samples[,c("alpha0","alpha1")])
-% p.prior.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
-% for(i in 1:n.iter) {
-%     p.prior.pred[i,] <- plogis(p.coef.prior[i,"alpha0"] +
-%                                p.coef.prior[i,"alpha1"]*temp.pred)
-% }
-% @ 
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   Compute prior mean and 95\% CI for $p$ predictions
-% <<prior-post-pred-1,size='scriptsize'>>=
-% pred.prior.mean <- colMeans(p.prior.pred)
-% pred.prior.lower <- apply(p.prior.pred, 2, quantile, prob=0.025)
-% pred.prior.upper <- apply(p.prior.pred, 2, quantile, prob=0.975)
-% @
-%   \pause
-%   \vfill
-%   Show credible regions using shaded polygons. Include a few prior prediction lines.
-% <<prior-post-pred-2,size='scriptsize',fig.height=6,dev='png',dpi=200,fig.show='hide'>>=
-% plot(temp.pred, p.post.pred[1,], type="n", xlab="Temperature (standardized)",
-%      ylab="Detection probability", ylim=c(0, 1.3), col=gray(0.8))
-% polygon(x=c(temp.pred, rev(temp.pred)),
-%         y=c(pred.post.lower, rev(pred.post.upper)),
-%         col=rgb(0,0,1,0.5), border=NA)                   # Post CI
-% polygon(x=c(temp.pred, rev(temp.pred)),
-%         y=c(pred.prior.lower, rev(pred.prior.upper)),
-%         col=rgb(0,1,0,0.5), border=NA)                   # Prior CI
-% for(i in seq(1, n.iter, by=100)) {  ## Thin by 100
-%     lines(temp.pred, p.prior.pred[i,], col=gray(0.8))  } # Prior preds
-% lines(temp.pred, pred.post.mean, col="blue", lwd=2)
-% lines(temp.pred, pred.prior.mean, col="darkgreen", lwd=2)
-% legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
-%        col=c("darkgreen", "grey", "blue"), lwd=2)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}
-%   \frametitle{Prior and posterior prediction}
-%   \vspace{-3pt}
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figure/prior-post-pred-2-1}  \\
-% \end{frame}
-
-
-
-% \begin{frame}
-%   \frametitle{Prior predictive recap}
-%   There are two common strategies for specifying priors:
-%   \begin{enumerate}
-%     \item Use uniform/flat priors to obtain results that will often be
-%       similar to likelihood-based methods.
-%     \item Use priors that reflect available information.
-%   \end{enumerate}
-%   \pause
-%   \vfill
-%   The second approach can be used even if there isn't much prior
-%   information available. Priors can allow for the
-%   possibility of being ``surprised'' by the data, but without
-%   putting most of the prior weight on extreme values. \\
-%   \pause
-%   \vfill
-%   Often, highly diffuse priors on the link scales result in most of the
-%   prior weight being on extreme values on the natural scales. \\
-%   \pause
-%   \vfill
-%   Prior predictive checks can be used to assess this possibility, and
-%   should be a standard component of Bayesian analysis. \\
-% \end{frame}
 
 
 
@@ -1698,23 +1625,17 @@ Get predictions of $\lambda$ for each row of prediction data.
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Using the simulated data, compare the prior and posterior
-      predictive distributions of $\lambda$ for each of the 3 forest
-      types. 
-    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
-      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
-      prior and posterior predictions of $p$ as a function of
-      temperature. Make the same graph as we made above. How
-      sensitive is the posterior to the prior?
-    \item Fit a binomial $N$-mixture model to the Canada warbler data
-      using `unmarked'. The data include: 
+    \item Simulate independent double observer data with the following
+      properties:
       \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
+        \item nSites=200
+        \item $\lambda=3$
+        \item $p_1=0.3$ and $p_2=0.5$
       \end{itemize}
-    \item Graph the predictions of $\lambda$ over the 
-      elevation range, along with 95\% CIs.
+    \item Fit the model using `unmarked'\footnote{\scriptsize You will
+        need to create an observation covariate indicating observer A
+        and B} and JAGS
+    \item Use the estimate of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 

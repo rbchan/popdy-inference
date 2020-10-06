@@ -92,7 +92,7 @@ knit_theme$set("edit-kwrite")
     \item<3-> Removal sampling
     \item<4-> Mark-recapture
     \item<5-> Distance sampling
-    \item<6-> And others that yield multinomial counts\dots
+    \item<6-> And other methods that yield multinomial counts\dots
   \end{itemize}
 \end{frame}
 
@@ -128,7 +128,7 @@ knit_theme$set("edit-kwrite")
   $K$ multinomial cell probabilities \\
   $y_{ik}$ -- Multinomial count data \\
 %  \vfill
-  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \\
+  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \hfill %\\
 %  \vspace{12pt}
   $\color{Purple} w$ -- observation covariate
 \end{frame}
@@ -149,8 +149,8 @@ knit_theme$set("edit-kwrite")
   $K$ classes (also called bins, categories, etc\dots). \\
   \pause
   \vfill
-  Imagine $N=20$ animals studied for 1 year with 3 possible outcomes
-  and associated probabilities: \\
+  Imagine $N=20$ animals are studied for 1 year and there are 3
+  possible ``fates'' with associated probabilities: \\
   $\Pr(\mathrm{survived})=0.5$, $\Pr(\mathrm{depredated})=0.3$, $\Pr(\mathrm{starved})=0.2$. \\
   \pause
   \vfill
@@ -162,7 +162,7 @@ pi <- c(survived=0.5, depredated=0.3, starved=0.2)
 drop(rmultinom(n=1, size=N, prob=pi))
 @
   \pause
-  \vfill
+%  \vfill
   \centering
   Note: the probabilities must sum to 1 and the counts must sum to $N$. \\
 \end{frame}
@@ -284,7 +284,8 @@ N1 <- rpois(n=nSites, lambda=lambda1)
 % \item
   \pause
   \vfill
-  Capture probability and \alert{all} multinomial counts
+  Capture probability and multinomial counts%, including individuals
+%  \alert{not} detected
 <<sim-nocov2,size='scriptsize'>>=
 nPasses <- 3
 K <- nPasses+1  # multinomial cells
@@ -335,7 +336,7 @@ y2.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
     y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])
 }
-y2 <- y2.all[,-K]
+y2 <- y2.all[,-K] ## Discard final column... individuals not detected
 @   
 %\end{enumerate}
 \end{frame}
@@ -377,6 +378,8 @@ naiveOccupancy
 <<sim-nocov-ss2,size='scriptsize'>>=
 colSums(y2)
 @
+  \pause
+  \vfill
   Naive abundance
   \vspace{-6pt}
 <<sim-nocov-ss3,size='scriptsize'>>=
@@ -539,7 +542,7 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
   \begin{enumerate}
     \normalsize
     \item Predict $p$ when \verb+streamDepth=-1+
-    \item Compute $\pi_1, \pi_2, \pi_3, \pi_4$
+    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
   \end{enumerate}
 \end{frame}
 
@@ -556,8 +559,8 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial that we
-  can exploit to fit the model in JAGS.
+  There are several equivalent formulations of the multinomial, some
+  of which we can exploit to fit the model in JAGS.
   \begin{itemize}
     \item Conditional-on-$N$, missing $y_{iK}$
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
@@ -570,9 +573,9 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Conditional-on-$N$, missing $y_k$}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Conditional-on-$N$, missing $y_k$}
+% \end{frame}
 
 
 
@@ -584,6 +587,7 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
   Under this formulation, we view the final multinomial cell
   (corresponding to individuals not detected) as missing data. \\
   \pause
+  \vfill
   Unfortunately, this won't work in JAGS because it doesn't allow
   missing values in multinomial outcomes.
   \pause
@@ -603,25 +607,29 @@ library(jagsUI)
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
   Rather than treating the final multinomial cell as missing data:
   \[
-    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{NA}\} \sim
+    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
     \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
   \]
   \pause
   \vfill
   We can break the problem down into two steps by conditioning on
-  $n_i$, the number captured:
+  $n_i$, the number of individuals captured at site $i$:
   \small
   \begin{gather*}
     n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
     \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
     \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
   \end{gather*}
+  \pause
+  \vfill
+  Note that the modified cell probabilities still sum to 1. 
 \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+\vspace{-3pt}
 <<bugs-removal2,size='scriptsize',echo=FALSE>>=
 writeLines(readLines("removal-mod2.jag"))
 @
@@ -647,7 +655,7 @@ jags.data.rem2 <- list(y=y2, n=rowSums(y2),
 <<bugs-inits,size='small'>>=
 jags.inits.rem <- function() {
     list(lambda.intercept=runif(1), alpha0=rnorm(1),
-         N=rowSums(y2)+1)
+         N=rowSums(y2)+rpois(nrow(y2), 2))
 }
 @ 
 \pause
@@ -667,20 +675,18 @@ jags.pars.rem <- c("beta0", "beta1",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc-rem2,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
 library(jagsUI)
 jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
-                             parameters.to.save=jags.pars.rem,
-                             model.file="removal-mod2.jag",
-                             n.chains=3, n.adapt=100, n.burnin=0,
-                             n.iter=2000, parallel=TRUE)
+                             parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
 @ 
-\end{frame}
+%\end{frame}
 
+\pause
 
-
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
+%\begin{frame}[fragile]
+%  \frametitle{Summarize output}
 <<bugs-sum-rem2,size='tiny'>>=
 summary(jags.post.rem2[,jags.pars.rem])
 @ 
@@ -708,6 +714,25 @@ plot(jags.post.rem2[,jags.pars.rem[4:5]])
 
 
 
+
+\begin{frame}%[fragile]
+  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+  The multinomial distribution can be represented by a sequence of
+  binomial distributions in which we reduce the number of trails.
+  \pause
+  \vfill
+  \large
+  \begin{gather*}
+    y_{i1} \sim \mathrm{Bin}(N_i, p) \\
+    y_{i2} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}}, p) \\
+    y_{i3} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}-y_{i2}}, p) \\
+  \end{gather*}
+\end{frame}
+
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
 <<bugs-removal3,size='scriptsize',echo=FALSE>>=
@@ -722,14 +747,15 @@ writeLines(readLines("removal-mod3.jag"))
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 <<bugs-data3,size='small'>>=
 jags.data.rem3 <- list(y=y2, streamDepth=streamDepth,
                        nSites=nSites)
 @
 \vfill
   Do MCMC
-<<bugs-mcmc-rem3,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+  \vspace{-6pt}
+<<bugs-mcmc-rem3,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
 jags.post.rem3 <- jags.basic(data=jags.data.rem3, inits=jags.inits.rem,
                              parameters.to.save=jags.pars.rem,
                              model.file="removal-mod3.jag",
@@ -774,6 +800,27 @@ plot(jags.post.rem3[,jags.pars.rem[4:5]])
 
 
 
+\begin{frame}%[fragile]
+  \frametitle{Marginalized $N$}
+  If
+  \[
+    N \sim \mathrm{Poisson}(\lambda)
+  \]
+  and
+  \[
+    \{y_1, \dots, y_K\}|N \sim \mathrm{Multinomial}(N, \{\pi_1, \dots, \pi_K\})
+  \]
+  \pause
+  \vfill
+  then the marginal distribution of $y$ is
+  \[
+    y_k \sim \mathrm{Poisson}(\lambda \pi_k) 
+  \]
+\end{frame}
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{Marginalized $N$}
 <<bugs-removal4,size='scriptsize',echo=FALSE>>=
@@ -788,14 +835,15 @@ writeLines(readLines("removal-mod4.jag"))
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 <<bugs-data4,size='small'>>=
 jags.data.rem4 <- list(y=y2, streamDepth=streamDepth,
                        nSites=nSites)
 @
 \vfill
   Do MCMC
-<<bugs-mcmc-rem4,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+  \vspace{-6pt}
+<<bugs-mcmc-rem4,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
 jags.post.rem4 <- jags.basic(data=jags.data.rem4, inits=jags.inits.rem,
                              parameters.to.save=jags.pars.rem,
                              model.file="removal-mod4.jag",
@@ -828,6 +876,72 @@ plot(jags.post.rem3[,jags.pars.rem[1:4]])
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Compare convergence}
+%All the results were similar, but let's make sure they converged
+%\begin{columns}
+%  \begin{column}{0.33\paperwidth}
+%  \begin{column}{0.5\textwidth}
+<<gel2,size='tiny',echo=-(1:2)>>=
+#Rhat2 <- gelman.diag(jags.post.rem2)$psrf
+#Rhat2[jags.pars.rem[1:4],1,drop=FALSE]
+gelman.diag(jags.post.rem2[,jags.pars.rem[1:4]], multivar=FALSE) ## Conditional-on-N and n
+@   
+%  \end{column}
+%  \begin{column}{0.33\paperwidth}
+\vspace{-10pt}
+<<gel3,size='tiny',echo=-(1:2)>>=
+#Rhat3 <- gelman.diag(jags.post.rem3)$psrf
+#Rhat3[jags.pars.rem[1:4],1,drop=FALSE]
+gelman.diag(jags.post.rem3[,jags.pars.rem[1:4]], multivar=FALSE) ## Sequential binomial
+@   
+%  \end{column}
+%  \begin{column}{0.33\paperwidth}
+\vspace{-10pt}
+<<gel4,size='tiny',echo=-(1:2)>>=
+#Rhat4 <- gelman.diag(jags.post.rem4)$psrf
+#Rhat4[jags.pars.rem[1:4],1,drop=FALSE]
+gelman.diag(jags.post.rem4[,jags.pars.rem[1:4]], multivar=FALSE) ## Marginalized N
+@   
+%  \end{column}
+%\end{columns}
+\centering
+\vfill
+You want $\hat{R}<1.1$ for all parameters \\
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Compare effective sample size}
+  Conditional-on-$N$, conditional-on-$n$
+  \vspace{-6pt}
+<<ess2,size='scriptsize'>>=
+effectiveSize(jags.post.rem2[,jags.pars.rem[1:4]])
+@   
+  Conditional-on-$N$, sequential binomial
+  \vspace{-6pt}
+<<ess3,size='scriptsize'>>=
+effectiveSize(jags.post.rem3[,jags.pars.rem[1:4]])
+@   
+  Marginalized $N$
+  \vspace{-6pt}
+<<ess4,size='scriptsize'>>=
+effectiveSize(jags.post.rem4[,jags.pars.rem[1:4]])
+@
+\pause
+\vfill
+\centering
+The ``marginalized $N$'' formulation wins both the convergence and
+effective sample size competitions. \\
+\end{frame}
+
+
+
+
+
 
 \section{Double observer sampling}
 
@@ -843,7 +957,7 @@ plot(jags.post.rem3[,jags.pars.rem[1:4]])
 \begin{frame}
   \frametitle{Double observer sampling (independent)}
   \small
-  Two observers sample together, working independently. \\
+  Two observers sample the same location at the same time, working independently. \\
   \pause
   \vfill
   After each survey, they compare notes and figure out which
@@ -852,7 +966,7 @@ plot(jags.post.rem3[,jags.pars.rem[1:4]])
   \vfill
   Definitions
   \begin{itemize}
-    \setlength\itemsep{1pt}
+    \setlength\itemsep{0.5pt}
     \item $y_{i1}$ -- number of individuals detected only by observer A
     \item $y_{i2}$ -- number of individuals detected only by observer B
     \item $y_{i3}$ -- number of individuals detected by observers A and B
@@ -911,266 +1025,21 @@ plot(jags.post.rem3[,jags.pars.rem[1:4]])
   \end{tabular}
 \end{frame}
 
-\subsection{Likelihood-based methods}
+%\subsection{Likelihood-based methods}
 
 
-\subsection{Bayesian methods}
-
-
-
-\begin{frame}[plain]
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
+%\subsection{Bayesian methods}
 
 
 
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data,size='small'>>=
-% jags.data <- list(y=y2, temp=temp,
-%                   forestMixed=forestMixed,
-%                   forestPine=forestPine,
-%                   nSites=nSites, nOccasions=nVisits)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='small'>>=
-% jags.inits <- function() {
-%     list(beta0=rnorm(1), alpha0=rnorm(1), N=maxCounts)
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars <- c("beta0", "beta1", "beta2",
-%                "alpha0", "alpha1", "totalAbundance")
-% @ 
+% \begin{frame}[plain]
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
 % \end{frame}
 
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
-% library(jagsUI)
-% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-%                                 parameters.to.save=c(jags.pars, "N"), ## NOTE "N"!
-%                                 model.file="Nmix-model-covs.jag",
-%                                 n.chains=3, n.adapt=100, n.burnin=0,
-%                                 n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Summarize output}
-% <<bugs-sum,size='tiny'>>=
-% summary(jags.post.samples[,jags.pars])
-% @ 
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Local abundance}
-% <<localN,out.width='70%',fig.align='center',size='scriptsize'>>=
-% plot(jags.post.samples[,paste0("N[", 1:4, "]")])
-% @   
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,jags.pars[1:3]])
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,jags.pars[4:5]])
-% @ 
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   \small
-%   First, extract the $p$ coefficients
-%   \vspace{-6pt}
-% <<psi-coefs,size='scriptsize'>>=
-% p.coef.post <- as.matrix(jags.post.samples[,c("alpha0","alpha1")])
-% head(p.coef.post, n=4)
-% @
-%   \pause
-%   \vfill
-%   Create prediction matrix, one row for each MCMC iteration.
-%   \vspace{-6pt}
-% %  Columns represent covariate values. 
-% <<p-predmat,size='scriptsize'>>=
-% n.iter <- nrow(p.coef.post)
-% temp.pred <- seq(-3, 3, length=50)
-% p.post.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
-% @   
-%   \pause
-%   \vfill
-%   Predict $p$ for each MCMC iteration.
-%   \vspace{-6pt}
-% %  using covariate values from \inr{pred.data}. 
-% <<psi-pred-bayes,size='scriptsize'>>=
-% for(i in 1:n.iter) {
-%     p.post.pred[i,] <- plogis(p.coef.post[i,"alpha0"] +
-%                               p.coef.post[i,"alpha1"]*temp.pred)
-% }
-% @ 
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-% %  Now with posterior mean and 95\% CI
-% <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='70%',fig.height=5,echo=-(1),dev='png',cache=TRUE,dpi=200>>=
-% par(mai=c(0.9,0.9,0.1,0.1))  
-% plot(temp.pred, p.post.pred[1,], type="l", xlab="Temperature (standardized)",
-%      ylab="Detection probability", ylim=c(0, 1), col=gray(0.8))
-% for(i in seq(1, n.iter, by=10)) {  ## Thin by 10
-%     lines(temp.pred, p.post.pred[i,], col=gray(0.8))  }
-% pred.post.mean <- colMeans(p.post.pred)
-% pred.post.lower <- apply(p.post.pred, 2, quantile, prob=0.025)
-% pred.post.upper <- apply(p.post.pred, 2, quantile, prob=0.975)
-% lines(temp.pred, pred.post.mean, col="blue")
-% lines(temp.pred, pred.post.lower, col="blue", lty=2)
-% lines(temp.pred, pred.post.upper, col="blue", lty=2)
-% @ 
-% \end{frame}
-
-
-
-
-
-
-
-\begin{frame}[plain]
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
-
-
-
-
-
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prior prediction}
-%   \small
-%   Push the prior samples through the model to predict $p$
-% <<psi-coefs-prior,size='scriptsize'>>=
-% p.coef.prior <- as.matrix(jags.prior.samples[,c("alpha0","alpha1")])
-% p.prior.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
-% for(i in 1:n.iter) {
-%     p.prior.pred[i,] <- plogis(p.coef.prior[i,"alpha0"] +
-%                                p.coef.prior[i,"alpha1"]*temp.pred)
-% }
-% @ 
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   Compute prior mean and 95\% CI for $p$ predictions
-% <<prior-post-pred-1,size='scriptsize'>>=
-% pred.prior.mean <- colMeans(p.prior.pred)
-% pred.prior.lower <- apply(p.prior.pred, 2, quantile, prob=0.025)
-% pred.prior.upper <- apply(p.prior.pred, 2, quantile, prob=0.975)
-% @
-%   \pause
-%   \vfill
-%   Show credible regions using shaded polygons. Include a few prior prediction lines.
-% <<prior-post-pred-2,size='scriptsize',fig.height=6,dev='png',dpi=200,fig.show='hide'>>=
-% plot(temp.pred, p.post.pred[1,], type="n", xlab="Temperature (standardized)",
-%      ylab="Detection probability", ylim=c(0, 1.3), col=gray(0.8))
-% polygon(x=c(temp.pred, rev(temp.pred)),
-%         y=c(pred.post.lower, rev(pred.post.upper)),
-%         col=rgb(0,0,1,0.5), border=NA)                   # Post CI
-% polygon(x=c(temp.pred, rev(temp.pred)),
-%         y=c(pred.prior.lower, rev(pred.prior.upper)),
-%         col=rgb(0,1,0,0.5), border=NA)                   # Prior CI
-% for(i in seq(1, n.iter, by=100)) {  ## Thin by 100
-%     lines(temp.pred, p.prior.pred[i,], col=gray(0.8))  } # Prior preds
-% lines(temp.pred, pred.post.mean, col="blue", lwd=2)
-% lines(temp.pred, pred.prior.mean, col="darkgreen", lwd=2)
-% legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
-%        col=c("darkgreen", "grey", "blue"), lwd=2)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}
-%   \frametitle{Prior and posterior prediction}
-%   \vspace{-3pt}
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figure/prior-post-pred-2-1}  \\
-% \end{frame}
-
-
-
-% \begin{frame}
-%   \frametitle{Prior predictive recap}
-%   There are two common strategies for specifying priors:
-%   \begin{enumerate}
-%     \item Use uniform/flat priors to obtain results that will often be
-%       similar to likelihood-based methods.
-%     \item Use priors that reflect available information.
-%   \end{enumerate}
-%   \pause
-%   \vfill
-%   The second approach can be used even if there isn't much prior
-%   information available. Priors can allow for the
-%   possibility of being ``surprised'' by the data, but without
-%   putting most of the prior weight on extreme values. \\
-%   \pause
-%   \vfill
-%   Often, highly diffuse priors on the link scales result in most of the
-%   prior weight being on extreme values on the natural scales. \\
-%   \pause
-%   \vfill
-%   Prior predictive checks can be used to assess this possibility, and
-%   should be a standard component of Bayesian analysis. \\
-% \end{frame}
 
 
 
@@ -1189,23 +1058,17 @@ plot(jags.post.rem3[,jags.pars.rem[1:4]])
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Using the simulated data, compare the prior and posterior
-      predictive distributions of $\lambda$ for each of the 3 forest
-      types. 
-    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
-      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
-      prior and posterior predictions of $p$ as a function of
-      temperature. Make the same graph as we made above. How
-      sensitive is the posterior to the prior?
-    \item Fit a binomial $N$-mixture model to the Canada warbler data
-      using `unmarked'. The data include: 
+    \item Simulate independent double observer data with the following
+      properties:
       \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
+        \item nSites=200
+        \item $\lambda=3$
+        \item $p_1=0.3$ and $p_2=0.5$
       \end{itemize}
-    \item Graph the predictions of $\lambda$ over the 
-      elevation range, along with 95\% CIs.
+    \item Fit the model using `unmarked'\footnote{\scriptsize You will
+        need to create an observation covariate indicating observer A
+        and B} and JAGS
+    \item Use the estimate of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
