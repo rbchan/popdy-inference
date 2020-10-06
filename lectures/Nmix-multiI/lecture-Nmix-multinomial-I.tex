@@ -800,7 +800,9 @@ Get predictions of $\lambda$ for each row of prediction data.
     \item Conditional-on-$N$, sequential binomial
     \item Marginalized $N$
   \end{itemize}
-  
+  \pause
+  \vfill
+  These are just fun probability tricks that can help improve MCMC performance. \\
 \end{frame}
 
 
@@ -1388,6 +1390,10 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}[fragile]
   \frametitle{Compare convergence}
+  \small
+\centering
+%\vfill
+You want $\hat{R}<1.1$ for all parameters \\
 %All the results were similar, but let's make sure they converged
 %\begin{columns}
 %  \begin{column}{0.33\paperwidth}
@@ -1395,6 +1401,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlkwd{library}\hlstd{(coda)}
 \hlkwd{gelman.diag}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Conditional-on-N and n}
 \end{alltt}
 \begin{verbatim}
@@ -1410,7 +1417,8 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{knitrout}
 %  \end{column}
 %  \begin{column}{0.33\paperwidth}
-\vspace{-10pt}
+\pause
+\vspace{-8pt}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1429,7 +1437,8 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{knitrout}
 %  \end{column}
 %  \begin{column}{0.33\paperwidth}
-\vspace{-10pt}
+\pause
+\vspace{-8pt}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1448,9 +1457,6 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{knitrout}
 %  \end{column}
 %\end{columns}
-\centering
-\vfill
-You want $\hat{R}<1.1$ for all parameters \\
 \end{frame}
 
 
@@ -1459,6 +1465,7 @@ You want $\hat{R}<1.1$ for all parameters \\
 
 \begin{frame}[fragile]
   \frametitle{Compare effective sample size}
+  \small
   Conditional-on-$N$, conditional-on-$n$
   \vspace{-6pt}
 \begin{knitrout}\scriptsize
@@ -1499,13 +1506,39 @@ You want $\hat{R}<1.1$ for all parameters \\
 \end{kframe}
 \end{knitrout}
 \pause
-\vfill
+%\vfill
 \centering
-The ``marginalized $N$'' formulation wins both the convergence and
-effective sample size competitions. \\
+\small
+The ``marginalized $N$'' formulation wins in terms of both convergence and
+effective sample size\pause\dots but remember: this particular
+marginal model is only valid if $N$ is Poisson. \\ 
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{Closing thoughts on removal models}
+  In addition to site covariates, you could also include observation
+  covariates, but it's hard to think of realistic covariates that
+  would be specific to each pass. \\
+  \pause
+  \vfill
+  Removal model get used in many scenarios other than electrofishing:
+  \begin{itemize}
+    \item<2-> Point count surveys
+    \begin{itemize}
+      \item Observers keep track of individuals during the survey
+      \item Analyze number of new individuals detected during each
+        time interval
+    \end{itemize}
+    \item<3-> Mark-recapture surveys
+      \begin{itemize}
+        \item If behavior responses (trap shyness or trap happiness)
+          are extreme, recaptures can be discarded and removal models
+          can be applied.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
 
 
 
@@ -1566,7 +1599,10 @@ effective sample size competitions. \\
   what observer A missed. \\
   \pause
   \vfill
-  Often used in aerial waterfowl surveys with two pilots. \\
+  Often used in aerial waterfowl surveys. \\
+  \pause
+  \vfill
+  Observers should switch roles to ensure parameter identifiability. \\
   \pause
   \vfill
   Definitions
@@ -1607,6 +1643,29 @@ effective sample size competitions. \\
 
 
 
+\begin{frame}
+  \frametitle{Additional remarks on double observer models}
+  In practice, there are often many observers on a project, even
+  though only two survey at a time. \\
+  \pause
+  \vfill
+  We can deal with this by including ``observer ID'' as an observation
+  covariate. Everything else stays the same. \\
+  \pause
+  \vfill
+  It can be hard to pull of the independent double observer method
+  because observers often influence each other while working. \\
+  \pause
+  \vfill
+  All of these methods require some sort of \alert{short-term}
+  individual identification of animals, even though they aren't being
+  marked.
+  \pause
+  \vfill
+  If short-term individual ID isn't possible, you could fall
+  back on binomial $N$-mixture models.
+\end{frame}
+
 
 
 
@@ -1625,7 +1684,7 @@ effective sample size competitions. \\
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Simulate independent double observer data with the following
+    \item Simulate \alert{independent} double observer data with the following
       properties:
       \begin{itemize}
         \item nSites=200
@@ -1635,7 +1694,9 @@ effective sample size competitions. \\
     \item Fit the model using `unmarked'\footnote{\scriptsize You will
         need to create an observation covariate indicating observer A
         and B} and JAGS
-    \item Use the estimate of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$. 
+    \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
+    \item Repeat steps 1-3 using the \alert{dependent} double observer
+      method. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
