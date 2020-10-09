@@ -1,0 +1,648 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+% Load function to compile and open PDF
+<<build-fun,include=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+@
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-distsamp-HDS")
+rnw2pdf("lecture-distsamp-HDS", tangle=TRUE)
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+##knit_theme$set("navajo-night")
+knit_theme$set("edit-kwrite")
+@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\begin{document}
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\LARGE Lecture 9 -- Hierarchical distance sampling: \\ simulation, fitting, prediction, and random effects} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Overview}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Overview}
+  The objectives are the same as with binomial $N$-mixture models. %\\
+%  \pause
+%  \vfill
+  We want to:
+  \begin{itemize}
+    \item Estimate abundance
+    \item Model spatial variation in abundance/density
+  \end{itemize}
+  \pause
+  \vfill
+  The difference is that, instead of repeated count data at each site,
+  we have data from sampling methods such as:
+  \begin{itemize}
+    \item<2-> Double observer sampling
+    \item<3-> Removal sampling
+    \item<4-> Mark-recapture
+    \item<5-> Distance sampling
+    \item<6-> And other methods that yield multinomial counts\dots
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Multinomial $N$-mixture model}
+  \small
+  State model (with Poisson assumption)
+  \begin{gather*}
+    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+    \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    N_i \sim \mathrm{Poisson}(\lambda_i)
+  \end{gather*}
+  \pause
+  \vfill
+  Observation model
+  \begin{gather*}
+    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+    \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
+    \pi(p_{i1}, \dots, p_{iJ}))
+  \end{gather*}
+  \pause
+%  \vfill
+  \small
+  Definitions \\
+  $\lambda_i$ -- Expected value of abundance at site $i$ \\
+  $N_i$ -- Realized value of abundance at site $i$ \\
+  $p_{ij}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ \\
+  $\pi(p)$ -- A function mapping $J$ detection probabilities to
+  $K$ multinomial cell probabilities \\
+  $y_{ik}$ -- Multinomial count data \\
+%  \vfill
+  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \hfill %\\
+%  \vspace{12pt}
+  $\color{Purple} w$ -- observation covariate
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+%\section{Simulation}
+
+\section{Removal sampling}
+
+\subsection{Likelihood-based methods}
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+%  \tableofcontents[currentsection,currentsubsection]
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Removal sampling}
+  \small
+  Removal sampling is often used in electrofishing studies. \\
+  \pause
+  \vfill
+  A stream section is surveyed $J$ times, fish are removed on each
+  ``pass'', and the rate of removal tells us about capture
+  probability.  
+  \pause
+  \vfill
+  Definitions
+  \begin{itemize}
+    \setlength\itemsep{1pt}
+    \item $y_{ij}$ -- number of individuals removed at site $i$ on pass $j$
+    \item $p$ -- probability of catching an individual on a single pass
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{tabular}{lc}
+    \hline
+    \centering
+    Description                       & Multinomial cell probability \\
+    \hline
+    Pr(first captured on first pass)  & $\pi_1 = p$                  \\
+    Pr(first captured on second pass) & $\pi_2 = (1-p)p$             \\
+    Pr(first captured on third pass)  & $\pi_3 = (1-p)(1-p)p$        \\
+    {\centering $\cdots$}             & $\cdots$                     \\
+    Pr(first captured on pass $J$)    & $\pi_J = (1-p)^{J-1}p$       \\
+    Pr(not captured)                  & $\pi_{J+1} = (1-p)^J$          \\
+    \hline
+  \end{tabular}
+\end{frame}
+
+
+
+
+
+<<include=FALSE,echo=FALSE>>=
+set.seed(34889243)
+@ 
+
+\begin{frame}[fragile]
+  \frametitle{Removal sampling, no covariates}
+  \small
+  Abundance
+<<sim-rem-nocov1,size='scriptsize'>>=
+nSites <- 100
+lambda1 <- 2.6  ## Expected value of N
+N1 <- rpois(n=nSites, lambda=lambda1)
+@
+% \item
+  \pause
+  \vfill
+  Capture probability and multinomial counts%, including individuals
+%  \alert{not} detected
+<<sim-nocov2,size='scriptsize'>>=
+nPasses <- 3
+K <- nPasses+1  # multinomial cells
+p1 <- 0.3
+pi1 <- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)
+y1.all <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+    y1.all[i,] <- rmultinom(n=1, size=N1[i], prob=pi1)    }
+@
+%\end{enumerate}
+  \pause
+  \vfill
+  Discard final column of individuals not detected
+<<N1y1,size='scriptsize'>>=
+y1 <- y1.all[,-K]
+head(y1, n=3)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Removal model, covariates}
+  \small
+  Covariates
+  \vspace{-6pt}
+<<sim-cov1,size='scriptsize'>>=
+streamDepth <- rnorm(nSites)
+@
+% \item
+\vfill
+  Coefficients, $\lambda$, and $p$
+  \vspace{-6pt}
+<<nsim-cov2,size='scriptsize'>>=
+beta0 <- 1; beta1 <- 0.5
+lambda2 <- exp(beta0 + beta1*streamDepth)
+alpha0 <- 0; alpha1 <- -1
+p2 <- plogis(alpha0 + alpha1*streamDepth)
+pi2 <- t(sapply(p2, function(p) c(p, (1-p)*p, (1-p)^2*p, (1-p)^3)))
+@   
+% \item
+\vfill
+  Simulate abundance and removal data
+  \vspace{-6pt}
+<<sim-cov3,size='scriptsize'>>=
+N2 <- rpois(nSites, lambda=lambda2)         ## local abundance 
+y2.all <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+    y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])
+}
+y2 <- y2.all[,-K] ## Discard final column... individuals not detected
+@   
+%\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+  \vspace{-6pt}
+<<sim-nocov-dat,size='scriptsize'>>=
+y2[1:19,]
+@ 
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+    \small
+    Proportion of sites known to be occupied
+    \vspace{-6pt}
+<<sim-nocov-ss1,size='scriptsize'>>=
+# Max count at each site
+maxCounts <- apply(y2, 1, max) 
+naiveOccupancy <- sum(maxCounts>0)/nSites
+naiveOccupancy 
+@
+  \pause
+  \vfill
+  \small
+  Captures on each pass
+  \vspace{-6pt}
+<<sim-nocov-ss2,size='scriptsize'>>=
+colSums(y2)
+@
+  \pause
+  \vfill
+  Naive abundance
+  \vspace{-6pt}
+<<sim-nocov-ss3,size='scriptsize'>>=
+sum(y2)
+@
+<<un,include=FALSE>>=
+library(unmarked)
+@ 
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+
+%\section{Prediction}
+
+
+
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+<<un-umf,size='tiny'>>=
+umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
+@
+\pause
+<<wfac,size='scriptsize'>>=
+summary(umf)
+@ 
+\end{frame}
+
+
+% > fm <- multinomPois(~temp ~forest, umf)    
+
+% error: Mat::operator(): index out of bounds
+% terminate called after throwing an instance of 'std::logic_error'
+%   what():  Mat::operator(): index out of bounds
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+  \inr{multinomPois} has similar arguments as \inr{occu} and
+  \inr{pcount}. 
+<<un-fit,size='tiny'>>=
+fm <- multinomPois(~streamDepth ~streamDepth, umf)    
+fm
+@
+\pause
+\vfill
+Compare to actual parameter values:
+\vspace{-6pt}
+<<un-compare,size='tiny'>>=
+c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+@ 
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  \small
+  Create \texttt{data.frame} with prediction covariates. 
+  \vspace{-6pt}
+<<preddat,size='footnotesize'>>=
+pred.data <- data.frame(streamDepth=seq(-3, 3, length=20))
+@
+\pause
+\vfill
+Get predictions of $\lambda$ for each row of prediction data.
+  \vspace{-6pt}
+<<predpsi,size='footnotesize'>>=
+lambda.pred <- predict(fm, newdata=pred.data,
+                       type='state', append=TRUE)
+@
+\pause
+\vfill
+  View $\lambda$ predictions
+  \vspace{-6pt}
+<<psi-head,size='footnotesize'>>=
+print(head(lambda.pred), digits=2)
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+<<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))
+plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
+     ylim=c(0,30), xlab="Stream depth", type="l")
+lines(lower ~ streamDepth, lambda.pred, col="grey")
+lines(upper ~ streamDepth, lambda.pred, col="grey")
+points(rowSums(y2)~streamDepth)
+lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
+@   
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{In-class exercise}
+  % \small
+  % \begin{enumerate}
+  %   \item Predict
+  %   \end{enumerate}
+  %   \centering
+%  \large
+  Do the following using the fitted removal model above:
+  \begin{enumerate}
+    \normalsize
+    \item Predict $p$ when \verb+streamDepth=-1+
+    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
+  \end{enumerate}
+\end{frame}
+
+
+\subsection{Bayesian methods}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Bayesian multinomial $N$-mixture models}
+  There are several equivalent formulations of the multinomial, some
+  of which we can exploit to fit the model in JAGS.
+  \begin{itemize}
+    \item Conditional-on-$N$, missing $y_{iK}$
+    \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
+    \item Conditional-on-$N$, sequential binomial
+    \item Marginalized $N$
+  \end{itemize}
+  \pause
+  \vfill
+  These are just fun probability tricks that can help improve MCMC performance. \\
+\end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Conditional-on-$N$, missing $y_k$}
+% \end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+  Rather than treating the final multinomial cell as missing data:
+  \[
+    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
+    \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
+  \]
+  \pause
+  \vfill
+  We can break the problem down into two steps by conditioning on
+  $n_i$, the number of individuals captured at site $i$:
+  \small
+  \begin{gather*}
+    n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
+    \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
+    \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
+  \end{gather*}
+  \pause
+  \vfill
+  Note that the modified cell probabilities still sum to 1. 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+\vspace{-3pt}
+<<bugs-removal2,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("removal-mod2.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data2,size='small'>>=
+jags.data.rem2 <- list(y=y2, n=rowSums(y2),
+                       streamDepth=streamDepth,
+                       nSites=nSites, nPasses=nPasses)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits,size='small'>>=
+jags.inits.rem <- function() {
+    list(lambda.intercept=runif(1), alpha0=rnorm(1),
+         N=rowSums(y2)+rpois(nrow(y2), 2))
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars,size='small'>>=
+jags.pars.rem <- c("beta0", "beta1",
+                   "alpha0", "alpha1", "totalAbundance")
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+library(jagsUI)
+jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
+                             parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
+@ 
+%\end{frame}
+
+\pause
+
+%\begin{frame}[fragile]
+%  \frametitle{Summarize output}
+<<bugs-sum-rem2,size='tiny'>>=
+summary(jags.post.rem2[,jags.pars.rem])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem2[,jags.pars.rem[1:3]])
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.rem2[,jags.pars.rem[4:5]])
+@ 
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\section{Assignment}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Assignment}
+  % \small
+  \footnotesize
+  Create a self-contained R script or Rmarkdown file
+  to do the following:
+  \vfill
+  \begin{enumerate}
+%    \small
+    \footnotesize
+    \item Simulate \alert{independent} double observer data with the following
+      properties:
+      \begin{itemize}
+        \item nSites=200
+        \item $\lambda=3$
+        \item $p_1=0.3$ and $p_2=0.5$
+      \end{itemize}
+    \item Fit the model using `unmarked'\footnote{\scriptsize You will
+        need to create an observation covariate indicating observer A
+        and B} and JAGS
+    \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
+    \item Repeat steps 1-3 using the \alert{dependent} double observer
+      method. 
+  \end{enumerate}
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+

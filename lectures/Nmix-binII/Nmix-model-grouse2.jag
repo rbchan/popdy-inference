@@ -24,8 +24,8 @@ for(i in 1:nSites) {
     resid.new[i,j] <- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual
   }
 }
-SSE <- sum((y-resid)^2)             # Fit stat
-SSE.new <- sum((y.new-resid.new)^2) # Predicted fit stat
+SSE <- sum(resid^2)             # Fit stat
+SSE.new <- sum(resid.new^2)     # Predicted fit stat
 
 totalAbundance <- sum(N[1:nSites])
 
