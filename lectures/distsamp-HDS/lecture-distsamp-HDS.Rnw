@@ -22,12 +22,11 @@ rnw2pdf("lecture-distsamp-HDS", tangle=TRUE)
 
 
 <<knitr-theme,include=FALSE,purl=FALSE>>=
-##knit_theme$set("navajo-night")
 knit_theme$set("edit-kwrite")
 @
 
 
-%% New command for inline code that isn't to be evaluated
+% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
@@ -41,11 +40,12 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[plain]
   \LARGE
-%  \maketitle
   \centering
-  {\LARGE Lecture 9 -- Hierarchical distance sampling: \\
-    \Large simulation, fitting, prediction, and random effects} \\
-  {\color{default} \rule{\textwidth}{0.1pt}}
+  {
+    \LARGE Lecture 9 -- Hierarchical distance sampling: \\
+    \Large simulation, fitting, prediction, and random effects \\
+  }
+  {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
   \large
   WILD(FISH) 8390 \\
@@ -79,14 +79,16 @@ knit_theme$set("edit-kwrite")
   Distance sampling is one of the oldest wildlife sampling methods.
   \pause
   \vfill
-  \alert{Conventional} distance sampling focuses estimating the
+  \alert{Conventional} distance sampling focuses on estimating the
   detection function, which describes how the probability of detecting
-  an individual decreases with distance from the observer. \\
+  an individual decreases with distance from the observer. Abundance
+  and density are estimated, but there is no model for
+  spatial variation in abundance/density.
   \pause
   \vfill
-  \alert{Hierarchical} distance sampling does the same, but includes a
-  model for spatial variation in abundance -- it's really just a
-  multinomial $N$-mixture model with a unique function for computing
+  \alert{Hierarchical} distance sampling is similar, but includes a
+  model for spatial variation in abundance/density -- it's really just
+  a multinomial $N$-mixture model with a unique function for computing
   the multinomial cell probabilities.
 \end{frame}
 
@@ -94,23 +96,136 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Conventional distance sampling}
-  The simplest estimator of abundance is
+  The simplest estimator of abundance is 
   \[
-    E(N) = \frac{n}{p}
+    \hat{N} = \frac{n}{\hat{p}}
   \]
-  where $n$ is the number of individuals detected and $p$ is detection
-  probability. \\
+  where $n$ is the number of individuals detected, $p$ is detection
+  probability, and $E(n)=Np$. \\
   \pause
   \vfill
   In distance sampling, detection probability is a \alert{function} of
-  distance, rather than a constant. \\ As a result, we have to replace
+  distance, rather than a constant, such that all individuals have
+  unique detection probabilities. \\
+  \pause
+  \vfill
+  As a result, we have to replace
   $p$ with \alert{average} detection probability:
   \[
-    E(N) = \frac{n}{\bar{p}}
+    \hat{N} = \frac{n}{\hat{\bar{p}}}
   \]
   \pause
   \vfill
   How do we compute average detection probability ($\bar{p}$)?
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Detection functions}
+  Detection probability is treated as a function of distance ($x$). \\
+  \pause
+  \vfill
+  \centering
+  The most common functions are: \\
+  \vspace{6pt}
+  \begin{tabular}{lc}
+%    \centering
+    \hline
+    Detection function & $g(x,\theta)$ \\
+    \hline
+    Half normal & $\exp(-x^2 / (2\sigma^2))$ \\
+    Negative exponential & $\exp(-x/\sigma)$ \\
+    Hazard rate & $1-\exp(-(x/a)^{-b})$ \\
+    \hline
+  \end{tabular}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Half-normal}
+  \footnotesize
+  \[
+    g(x,\sigma) = \exp(-x^2/(2\sigma^2))
+  \]
+  \vspace{-12pt}
+  \centering
+<<hn,size='scriptsize',fig.width=7,fig.height=5,out.width="70%",echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+sigma1 <- 25; sigma2 <- 50
+plot(function(x) exp(-x^2/(2*sigma1^2)), from=0, to=100, 
+     xlab="Distance (x)", ylab="Detection probability (p)")
+plot(function(x) exp(-x^2/(2*sigma2^2)), from=0, to=100, add=TRUE, col=4)
+legend(70, 1, c("sigma=25", "sigma=50"), lty=1, col=c("black","blue"))
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Negative exponential}
+  \footnotesize
+  \[
+    g(x,\sigma) = \exp(-x/\sigma)
+  \]
+  \vspace{-12pt}
+  \centering
+<<nexp,size='scriptsize',fig.width=7,fig.height=5,out.width="70%",echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+sigma1 <- 25; sigma2 <- 50
+plot(function(x) exp(-x/sigma1), from=0, to=100, 
+     xlab="Distance (x)", ylab="Detection probability (p)")
+plot(function(x) exp(-x/sigma2), from=0, to=100, add=TRUE, col=4)
+legend(70, 1, c("sigma=25", "sigma=50"), lty=1, col=c("black","blue"))
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Hazard rate}
+  \footnotesize
+  \[
+    g(x,a,b) = 1-\exp(-(x/a)^{-b})
+  \]
+  \vspace{-12pt}
+  \centering
+<<haz,size='scriptsize',fig.width=7,fig.height=5,out.width="70%",echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+a1 <- 25; a2 <- 50; b1 <- 2; b2 <- 10
+plot(function(x) 1-exp(-(x/a1)^(-b1)), from=0, to=100, 
+     xlab="Distance (x)", ylab="Detection probability (p)", ylim=0:1)
+plot(function(x) 1-exp(-(x/a2)^(-b2)), from=0, to=100, add=TRUE, col=4)
+legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
+@ 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Average detection probability ($\bar{p}$)}
+  Average detection probability is defined as:
+  \[
+     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
+  \]
+  \pause
+  \vfill
+  To compute $\bar{p}$, we have to specify $p(x)$, the
+  distribution of distances (between animals and the transect).
+  \pause
+  \begin{itemize}
+    \item If most animals are close to the transect, $\bar{p}$ would
+      be high
+    \item If most animals are far from the transect, $\bar{p}$ would
+      be low
+  \end{itemize}
+  \pause
+  \vfill
+  The standard assumption (for line transects) is that animals are
+  uniformly distributed with respect to the transect
 \end{frame}
 
 
@@ -119,18 +234,19 @@ knit_theme$set("edit-kwrite")
   \small
   State model (with Poisson assumption)
   \begin{gather*}
-    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
-    \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} w_{i1}} +
+    \beta_2 {\color{blue} w_{i2}} + \cdots \\
     N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
 %  \vfill
   Observation model
   \begin{gather*}
-    \mathrm{logit}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{blue} x_{i3}} + \cdots \\
-    \{y_{i1}, \dots, y_{iJ}\}  \sim \mathrm{Multinomial}(N_i,
-    \pi(g(b_0, b_j, \sigma_i), \dots, g(b_{J-1}, b_{J}, \sigma_i))
+    \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
+    + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
+    \bar{p}_{ij} = \int_{c_j}^{c_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
+    \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
+    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
   \end{gather*}
   \pause
   \vfill
@@ -138,12 +254,12 @@ knit_theme$set("edit-kwrite")
   Definitions \\
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
-  $\sigma_{i}$ -- Scale parameter of detection function $g(d)$ at site $i$ \\
-  $\pi(g(d))$ -- A function computing average detection probability in
+  $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
+  $\pi(g(x))$ -- A function computing average detection probability in
   the $J$ distance bins \\
   $y_{ij}$ -- nAnimals detected in distance bin $j$ \\
 %  \vfill
-  $\color{blue} x_1$, $\color{blue} x_2$, $\color{blue} x_3$ -- site covariates %\hfill %\\
+  $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
 %  \vspace{12pt}
 %  $\color{Purple} w$ -- observation covariate
 \end{frame}
