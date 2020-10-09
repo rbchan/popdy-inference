@@ -82,7 +82,8 @@
   \LARGE
 %  \maketitle
   \centering
-  {\LARGE Lecture 9 -- Hierarchical distance sampling: \\ simulation, fitting, prediction, and random effects} \\
+  {\LARGE Lecture 9 -- Hierarchical distance sampling: \\
+    \Large simulation, fitting, prediction, and random effects} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -113,33 +114,47 @@
 
 
 \begin{frame}
-  \frametitle{Overview}
-  The objectives are the same as with binomial $N$-mixture models. %\\
-%  \pause
-%  \vfill
-  We want to:
-  \begin{itemize}
-    \item Estimate abundance
-    \item Model spatial variation in abundance/density
-  \end{itemize}
+  \frametitle{Distance sampling overview}
+  Distance sampling is one of the oldest wildlife sampling methods.
   \pause
   \vfill
-  The difference is that, instead of repeated count data at each site,
-  we have data from sampling methods such as:
-  \begin{itemize}
-    \item<2-> Double observer sampling
-    \item<3-> Removal sampling
-    \item<4-> Mark-recapture
-    \item<5-> Distance sampling
-    \item<6-> And other methods that yield multinomial counts\dots
-  \end{itemize}
+  \alert{Conventional} distance sampling focuses estimating the
+  detection function, which describes how the probability of detecting
+  an individual decreases with distance from the observer. \\
+  \pause
+  \vfill
+  \alert{Hierarchical} distance sampling does the same, but includes a
+  model for spatial variation in abundance -- it's really just a
+  multinomial $N$-mixture model with a unique function for computing
+  the multinomial cell probabilities.
 \end{frame}
 
 
 
+\begin{frame}
+  \frametitle{Conventional distance sampling}
+  The simplest estimator of abundance is
+  \[
+    E(N) = \frac{n}{p}
+  \]
+  where $n$ is the number of individuals detected and $p$ is detection
+  probability. \\
+  \pause
+  \vfill
+  In distance sampling, detection probability is a \alert{function} of
+  distance, rather than a constant. \\ As a result, we have to replace
+  $p$ with \alert{average} detection probability:
+  \[
+    E(N) = \frac{n}{\bar{p}}
+  \]
+  \pause
+  \vfill
+  How do we compute average detection probability ($\bar{p}$)?
+\end{frame}
+
 
 \begin{frame}
-  \frametitle{Multinomial $N$-mixture model}
+  \frametitle{Hierarchical distance sampling}
   \small
   State model (with Poisson assumption)
   \begin{gather*}
@@ -148,28 +163,28 @@
     N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
-  \vfill
+%  \vfill
   Observation model
   \begin{gather*}
-    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
-    \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
-    \pi(p_{i1}, \dots, p_{iJ}))
+    \mathrm{logit}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+    + \alpha_2 {\color{blue} x_{i3}} + \cdots \\
+    \{y_{i1}, \dots, y_{iJ}\}  \sim \mathrm{Multinomial}(N_i,
+    \pi(g(b_0, b_j, \sigma_i), \dots, g(b_{J-1}, b_{J}, \sigma_i))
   \end{gather*}
   \pause
-%  \vfill
+  \vfill
   \small
   Definitions \\
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
-  $p_{ij}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ \\
-  $\pi(p)$ -- A function mapping $J$ detection probabilities to
-  $K$ multinomial cell probabilities \\
-  $y_{ik}$ -- Multinomial count data \\
+  $\sigma_{i}$ -- Scale parameter of detection function $g(d)$ at site $i$ \\
+  $\pi(g(d))$ -- A function computing average detection probability in
+  the $J$ distance bins \\
+  $y_{ij}$ -- nAnimals detected in distance bin $j$ \\
 %  \vfill
-  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates \hfill %\\
+  $\color{blue} x_1$, $\color{blue} x_2$, $\color{blue} x_3$ -- site covariates %\hfill %\\
 %  \vspace{12pt}
-  $\color{Purple} w$ -- observation covariate
+%  $\color{Purple} w$ -- observation covariate
 \end{frame}
 
 
@@ -185,7 +200,7 @@
 
 %\section{Simulation}
 
-\section{Removal sampling}
+\section{Line transects}
 
 \subsection{Likelihood-based methods}
 
@@ -199,14 +214,9 @@
 
 
 \begin{frame}
-  \frametitle{Removal sampling}
+  \frametitle{Bin-specific $\bar{p}$}
   \small
-  Removal sampling is often used in electrofishing studies. \\
-  \pause
-  \vfill
-  A stream section is surveyed $J$ times, fish are removed on each
-  ``pass'', and the rate of removal tells us about capture
-  probability.  
+  dsf
   \pause
   \vfill
   Definitions
@@ -222,12 +232,9 @@
     \centering
     Description                       & Multinomial cell probability \\
     \hline
-    Pr(first captured on first pass)  & $\pi_1 = p$                  \\
-    Pr(first captured on second pass) & $\pi_2 = (1-p)p$             \\
-    Pr(first captured on third pass)  & $\pi_3 = (1-p)(1-p)p$        \\
+    $\bar{p}$ in first distance bin  & $\pi_1 = \int_0^b g(d)p(d) dd$                  \\
     {\centering $\cdots$}             & $\cdots$                     \\
-    Pr(first captured on pass $J$)    & $\pi_J = (1-p)^{J-1}p$       \\
-    Pr(not captured)                  & $\pi_{J+1} = (1-p)^J$          \\
+    Pr(not detected)                  & $\pi_{J+1} = 1-\sum_1^J \pi_j$          \\
     \hline
   \end{tabular}
 \end{frame}
@@ -790,7 +797,9 @@ Get predictions of $\lambda$ for each row of prediction data.
                              \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,} \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod2.jag"}\hlstd{,}
                              \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}removal-mod2.jag"{}}}\end{kframe}
 \end{knitrout}
 %\end{frame}
 
@@ -805,7 +814,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': incorrect number of dimensions}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.rem2' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -821,7 +830,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': incorrect number of dimensions}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.rem2' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -836,14 +845,18 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': incorrect number of dimensions}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.rem2' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
 
 
 
+\section{Point transects}
 
+
+
+\section{Random effects}
 
 
 
