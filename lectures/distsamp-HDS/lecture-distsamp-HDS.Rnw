@@ -269,9 +269,9 @@ legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
   Half-normal detection function and line-transect sampling.
   \vspace{-12pt}
 <<pbar-hn,size='footnotesize'>>=
-B <- 100                                         ## Transect width
-g <- function(x, sigma=25) exp(-x^2/(2*sigma^2)) ## g(x)
-pdf <- function(x) 1/B                           ## p(x), constant
+B <- 100                                         # Transect width
+g <- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)
+pdf <- function(x) 1/B                           # p(x), constant
 @
 \pause
 \vfill
@@ -300,7 +300,7 @@ transect. \\
 
 \begin{frame}
   \frametitle{In-class exercise}
-  Building off of the previous example\dots
+  Building off the previous example\dots
   \begin{enumerate}
     \item Compute $\bar{p}$ when $\sigma=50, 100, \mathrm{and}\, 200$, instead of
       $\sigma=25$. 
@@ -345,20 +345,22 @@ transect. \\
   \begin{gather*}
     \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
     + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
-    \bar{p}_{ij} = \int_{c_j}^{c_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
+%    \bar{p}_{ij} = \int_{b_j}^{b_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
     \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
-    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
+%    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
+    \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
   \end{gather*}
   \pause
-  \vfill
+%  \vfill
   \small
   Definitions \\
+%  \footnotesize
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
   $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
-  $\pi(g(x))$ -- A function computing average detection probability in
-  the $J$ distance bins \\
-  $y_{ij}$ -- nAnimals detected in distance bin $j$ \\
+%  $\pi(g(x),p(x))$ -- Function computing multinomial cell probs \\
+  $\pi(x,b,\sigma_i)$ -- Function computing multinomial cell probs \\
+  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
 %  \vfill
   $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
 %  \vspace{12pt}
@@ -368,6 +370,38 @@ transect. \\
 
 
 
+\begin{frame}
+  \frametitle{Multinomial cell probabilities}
+  \small
+%  dsf
+%  \pause
+%  \vfill
+  Definitions
+  \begin{itemize}
+  \small
+    \setlength\itemsep{1pt}
+    \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
+    \item $\sigma_i$ -- scale parameter of detection function $g(x)$
+    \item $b_1, \dots, b_J$ -- Distance break points defining $J$ distance intervals
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{columns}
+    \column{0.9\paperwidth}
+    \begin{tabular}{lc}
+      \hline
+      \centering
+      Description                       & Multinomial cell probability \\
+      \hline
+      Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      {\centering $\cdots$}             & $\cdots$                     \\
+      Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+      \hline
+    \end{tabular}
+  \end{columns}
+\end{frame}
 
 
 
@@ -376,11 +410,11 @@ transect. \\
 
 
 
-%\section{Simulation}
+\section{Simulation}
 
-\section{Line transects}
+%\section{Line transects}
 
-\subsection{Likelihood-based methods}
+%\subsection{Likelihood-based methods}
 
 \begin{frame}
   \frametitle{Outline}
@@ -391,31 +425,6 @@ transect. \\
 
 
 
-\begin{frame}
-  \frametitle{Bin-specific $\bar{p}$}
-  \small
-  dsf
-  \pause
-  \vfill
-  Definitions
-  \begin{itemize}
-    \setlength\itemsep{1pt}
-    \item $y_{ij}$ -- number of individuals removed at site $i$ on pass $j$
-    \item $p$ -- probability of catching an individual on a single pass
-  \end{itemize}
-  \pause \vfill
-  \footnotesize
-  \begin{tabular}{lc}
-    \hline
-    \centering
-    Description                       & Multinomial cell probability \\
-    \hline
-    $\bar{p}$ in first distance bin  & $\pi_1 = \int_0^b g(d)p(d) dd$                  \\
-    {\centering $\cdots$}             & $\cdots$                     \\
-    Pr(not detected)                  & $\pi_{J+1} = 1-\sum_1^J \pi_j$          \\
-    \hline
-  \end{tabular}
-\end{frame}
 
 
 
@@ -426,7 +435,7 @@ set.seed(34889243)
 @ 
 
 \begin{frame}[fragile]
-  \frametitle{Removal sampling, no covariates}
+  \frametitle{HDS, no covariates}
   \small
   Abundance
 <<sim-rem-nocov1,size='scriptsize'>>=
@@ -437,13 +446,20 @@ N1 <- rpois(n=nSites, lambda=lambda1)
 % \item
   \pause
   \vfill
-  Capture probability and multinomial counts%, including individuals
+  \alert{Average} detection probability and multinomial counts%, including individuals
 %  \alert{not} detected
 <<sim-nocov2,size='scriptsize'>>=
-nPasses <- 3
-K <- nPasses+1  # multinomial cells
-p1 <- 0.3
-pi1 <- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)
+J <- 5       # distance bins
+K <- J+1     # multinomial cells
+sigma <- 25  # scale parameter
+B <- 100     # transect width
+b <- seq(0, B, length=J+1) # distance break points
+pi1 <- numeric(K) # multinomial cell probs
+for(j in 1:J) {
+    pi1[j] <- integrate(function(x) exp(-x^2/(2*sigma^2)),
+                        lower=b[j], upper=b[j+1])$value / B
+}
+pi1[K] <- 1-sum(pi1[1:J])
 y1.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
     y1.all[i,] <- rmultinom(n=1, size=N1[i], prob=pi1)    }
@@ -568,17 +584,17 @@ library(unmarked)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prepare data in `unmarked'}
-  \small
-<<un-umf,size='tiny'>>=
-umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
-@
-\pause
-<<wfac,size='scriptsize'>>=
-summary(umf)
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Prepare data in `unmarked'}
+%   \small
+% <<un-umf,size='tiny'>>=
+% umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
+% @
+% \pause
+% <<wfac,size='scriptsize'>>=
+% summary(umf)
+% @ 
+% \end{frame}
 
 
 % > fm <- multinomPois(~temp ~forest, umf)    
@@ -588,23 +604,23 @@ summary(umf)
 %   what():  Mat::operator(): index out of bounds
 
 
-\begin{frame}[fragile]
-  \frametitle{Fit the model}
-  \footnotesize
-  \inr{multinomPois} has similar arguments as \inr{occu} and
-  \inr{pcount}. 
-<<un-fit,size='tiny'>>=
-fm <- multinomPois(~streamDepth ~streamDepth, umf)    
-fm
-@
-\pause
-\vfill
-Compare to actual parameter values:
-\vspace{-6pt}
-<<un-compare,size='tiny'>>=
-c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Fit the model}
+%   \footnotesize
+%   \inr{multinomPois} has similar arguments as \inr{occu} and
+%   \inr{pcount}. 
+% <<un-fit,size='tiny'>>=
+% fm <- multinomPois(~streamDepth ~streamDepth, umf)    
+% fm
+% @
+% \pause
+% \vfill
+% Compare to actual parameter values:
+% \vspace{-6pt}
+% <<un-compare,size='tiny'>>=
+% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+% @ 
+% \end{frame}
 
 
 
@@ -642,40 +658,23 @@ print(head(lambda.pred), digits=2)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
-par(mai=c(0.9,0.9,0.1,0.1))
-plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
-     ylim=c(0,30), xlab="Stream depth", type="l")
-lines(lower ~ streamDepth, lambda.pred, col="grey")
-lines(upper ~ streamDepth, lambda.pred, col="grey")
-points(rowSums(y2)~streamDepth)
-lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
-@   
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+% par(mai=c(0.9,0.9,0.1,0.1))
+% plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
+%      ylim=c(0,30), xlab="Stream depth", type="l")
+% lines(lower ~ streamDepth, lambda.pred, col="grey")
+% lines(upper ~ streamDepth, lambda.pred, col="grey")
+% points(rowSums(y2)~streamDepth)
+% lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
+% @   
+% \end{frame}
 
 
 
 
 
-
-
-\begin{frame}[fragile]
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  %   \centering
-%  \large
-  Do the following using the fitted removal model above:
-  \begin{enumerate}
-    \normalsize
-    \item Predict $p$ when \verb+streamDepth=-1+
-    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
-  \end{enumerate}
-\end{frame}
 
 
 \subsection{Bayesian methods}
@@ -688,20 +687,20 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial, some
-  of which we can exploit to fit the model in JAGS.
-  \begin{itemize}
-    \item Conditional-on-$N$, missing $y_{iK}$
-    \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
-    \item Conditional-on-$N$, sequential binomial
-    \item Marginalized $N$
-  \end{itemize}
-  \pause
-  \vfill
-  These are just fun probability tricks that can help improve MCMC performance. \\
-\end{frame}
+% \begin{frame}
+%   \frametitle{Bayesian multinomial $N$-mixture models}
+%   There are several equivalent formulations of the multinomial, some
+%   of which we can exploit to fit the model in JAGS.
+%   \begin{itemize}
+%     \item Conditional-on-$N$, missing $y_{iK}$
+%     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
+%     \item Conditional-on-$N$, sequential binomial
+%     \item Marginalized $N$
+%   \end{itemize}
+%   \pause
+%   \vfill
+%   These are just fun probability tricks that can help improve MCMC performance. \\
+% \end{frame}
 
 
 
@@ -713,119 +712,83 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
 
 
 
-
-\begin{frame}[fragile]
-  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-  Rather than treating the final multinomial cell as missing data:
-  \[
-    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
-    \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
-  \]
-  \pause
-  \vfill
-  We can break the problem down into two steps by conditioning on
-  $n_i$, the number of individuals captured at site $i$:
-  \small
-  \begin{gather*}
-    n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
-    \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
-    \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
-  \end{gather*}
-  \pause
-  \vfill
-  Note that the modified cell probabilities still sum to 1. 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-\vspace{-3pt}
-<<bugs-removal2,size='scriptsize',echo=FALSE>>=
-writeLines(readLines("removal-mod2.jag"))
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+% \vspace{-3pt}
+% <<bugs-removal2,size='scriptsize',echo=FALSE>>=
+% writeLines(readLines("removal-mod2.jag"))
+% @
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-12pt}
-<<bugs-data2,size='small'>>=
-jags.data.rem2 <- list(y=y2, n=rowSums(y2),
-                       streamDepth=streamDepth,
-                       nSites=nSites, nPasses=nPasses)
-@
-\pause
-\vfill
-  Initial values
-  \vspace{-12pt}
-<<bugs-inits,size='small'>>=
-jags.inits.rem <- function() {
-    list(lambda.intercept=runif(1), alpha0=rnorm(1),
-         N=rowSums(y2)+rpois(nrow(y2), 2))
-}
-@ 
-\pause
-\vfill
-  Parameters to monitor
-  \vspace{-12pt}
-<<bugs-pars,size='small'>>=
-jags.pars.rem <- c("beta0", "beta1",
-                   "alpha0", "alpha1", "totalAbundance")
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-12pt}
+% <<bugs-data2,size='small'>>=
+% jags.data.rem2 <- list(y=y2, n=rowSums(y2),
+%                        streamDepth=streamDepth,
+%                        nSites=nSites, nPasses=nPasses)
+% @
+% \pause
+% \vfill
+%   Initial values
+%   \vspace{-12pt}
+% <<bugs-inits,size='small'>>=
+% jags.inits.rem <- function() {
+%     list(lambda.intercept=runif(1), alpha0=rnorm(1),
+%          N=rowSums(y2)+rpois(nrow(y2), 2))
+% }
+% @ 
+% \pause
+% \vfill
+%   Parameters to monitor
+%   \vspace{-12pt}
+% <<bugs-pars,size='small'>>=
+% jags.pars.rem <- c("beta0", "beta1",
+%                    "alpha0", "alpha1", "totalAbundance")
+% @ 
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{MCMC}
-  \small
-<<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
-library(jagsUI)
-jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
-                             parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
-                             n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
-@ 
-%\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{MCMC}
+%   \small
+% <<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+% library(jagsUI)
+% jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
+%                              parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
+% @ 
+% %\end{frame}
 
-\pause
 
-%\begin{frame}[fragile]
-%  \frametitle{Summarize output}
-<<bugs-sum-rem2,size='tiny'>>=
-summary(jags.post.rem2[,jags.pars.rem])
-@ 
-\end{frame}
-
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem2[,jags.pars.rem[1:3]])
+% @ 
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.rem2[,jags.pars.rem[1:3]])
-@ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.rem2[,jags.pars.rem[4:5]])
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem2[,jags.pars.rem[4:5]])
+% @ 
+% \end{frame}
 
 
 
 
-\section{Point transects}
+%\section{Point transects}
 
 
 

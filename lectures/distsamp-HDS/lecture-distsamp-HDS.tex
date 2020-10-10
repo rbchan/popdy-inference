@@ -326,9 +326,9 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{## Transect width}
-\hlstd{g} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{25}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))} \hlcom{## g(x)}
-\hlstd{pdf} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{/}\hlstd{B}                           \hlcom{## p(x), constant}
+\hlstd{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{# Transect width}
+\hlstd{g} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{25}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))} \hlcom{# g(x)}
+\hlstd{pdf} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{/}\hlstd{B}                           \hlcom{# p(x), constant}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -373,7 +373,7 @@ transect. \\
 
 \begin{frame}
   \frametitle{In-class exercise}
-  Building off of the previous example\dots
+  Building off the previous example\dots
   \begin{enumerate}
     \item Compute $\bar{p}$ when $\sigma=50, 100, \mathrm{and}\, 200$, instead of
       $\sigma=25$. 
@@ -385,23 +385,20 @@ transect. \\
 
 
 
-% \begin{frame}
-%   \frametitle{Distance sampling overview}
-%   Distance sampling is one of the oldest wildlife sampling methods.
-%   \pause
-%   \vfill
-%   \alert{Conventional} distance sampling focuses on estimating the
-%   detection function, which describes how the probability of detecting
-%   an individual decreases with distance from the observer. Abundance
-%   and density are estimated, but there is no model for
-%   spatial variation in abundance/density.
-%   \pause
-%   \vfill
-%   \alert{Hierarchical} distance sampling is similar, but includes a
-%   model for spatial variation in abundance/density -- it's really just
-%   a multinomial $N$-mixture model with a unique function for computing
-%   the multinomial cell probabilities.
-% \end{frame}
+\begin{frame}
+  \frametitle{Conventional vs hierarchical distance sampling}
+  \alert{Conventional} distance sampling focuses on estimating the
+  detection function, which describes how the probability of detecting
+  an individual decreases with distance from the observer. Abundance
+  and density are estimated, but there is no model for
+  spatial variation in abundance/density.
+  \pause
+  \vfill
+  \alert{Hierarchical} distance sampling is similar, but includes a
+  model for spatial variation in abundance/density -- it's really just
+  a multinomial $N$-mixture model with a unique function for computing
+  the multinomial cell probabilities.
+\end{frame}
 
 
 
@@ -421,20 +418,22 @@ transect. \\
   \begin{gather*}
     \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
     + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
-    \bar{p}_{ij} = \int_{c_j}^{c_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
+%    \bar{p}_{ij} = \int_{b_j}^{b_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
     \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
-    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
+%    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
+    \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
   \end{gather*}
   \pause
-  \vfill
+%  \vfill
   \small
   Definitions \\
+%  \footnotesize
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
   $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
-  $\pi(g(x))$ -- A function computing average detection probability in
-  the $J$ distance bins \\
-  $y_{ij}$ -- nAnimals detected in distance bin $j$ \\
+%  $\pi(g(x),p(x))$ -- Function computing multinomial cell probs \\
+  $\pi(x,b,\sigma_i)$ -- Function computing multinomial cell probs \\
+  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
 %  \vfill
   $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
 %  \vspace{12pt}
@@ -444,6 +443,38 @@ transect. \\
 
 
 
+\begin{frame}
+  \frametitle{Multinomial cell probabilities}
+  \small
+%  dsf
+%  \pause
+%  \vfill
+  Definitions
+  \begin{itemize}
+  \small
+    \setlength\itemsep{1pt}
+    \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
+    \item $\sigma_i$ -- scale parameter of detection function $g(x)$
+    \item $b_1, \dots, b_J$ -- Distance break points defining $J$ distance intervals
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{columns}
+    \column{0.9\paperwidth}
+    \begin{tabular}{lc}
+      \hline
+      \centering
+      Description                       & Multinomial cell probability \\
+      \hline
+      Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      {\centering $\cdots$}             & $\cdots$                     \\
+      Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+      \hline
+    \end{tabular}
+  \end{columns}
+\end{frame}
 
 
 
@@ -452,11 +483,11 @@ transect. \\
 
 
 
-%\section{Simulation}
+\section{Simulation}
 
-\section{Line transects}
+%\section{Line transects}
 
-\subsection{Likelihood-based methods}
+%\subsection{Likelihood-based methods}
 
 \begin{frame}
   \frametitle{Outline}
@@ -467,31 +498,6 @@ transect. \\
 
 
 
-\begin{frame}
-  \frametitle{Bin-specific $\bar{p}$}
-  \small
-  dsf
-  \pause
-  \vfill
-  Definitions
-  \begin{itemize}
-    \setlength\itemsep{1pt}
-    \item $y_{ij}$ -- number of individuals removed at site $i$ on pass $j$
-    \item $p$ -- probability of catching an individual on a single pass
-  \end{itemize}
-  \pause \vfill
-  \footnotesize
-  \begin{tabular}{lc}
-    \hline
-    \centering
-    Description                       & Multinomial cell probability \\
-    \hline
-    $\bar{p}$ in first distance bin  & $\pi_1 = \int_0^b g(d)p(d) dd$                  \\
-    {\centering $\cdots$}             & $\cdots$                     \\
-    Pr(not detected)                  & $\pi_{J+1} = 1-\sum_1^J \pi_j$          \\
-    \hline
-  \end{tabular}
-\end{frame}
 
 
 
@@ -500,7 +506,7 @@ transect. \\
 
 
 \begin{frame}[fragile]
-  \frametitle{Removal sampling, no covariates}
+  \frametitle{HDS, no covariates}
   \small
   Abundance
 \begin{knitrout}\scriptsize
@@ -515,15 +521,22 @@ transect. \\
 % \item
   \pause
   \vfill
-  Capture probability and multinomial counts%, including individuals
+  \alert{Average} detection probability and multinomial counts%, including individuals
 %  \alert{not} detected
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nPasses} \hlkwb{<-} \hlnum{3}
-\hlstd{K} \hlkwb{<-} \hlstd{nPasses}\hlopt{+}\hlnum{1}  \hlcom{# multinomial cells}
-\hlstd{p1} \hlkwb{<-} \hlnum{0.3}
-\hlstd{pi1} \hlkwb{<-} \hlkwd{c}\hlstd{(p1, (}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{*}\hlstd{p1, (}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{*}\hlstd{p1, (}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{^}\hlnum{3}\hlstd{)}
+\hlstd{J} \hlkwb{<-} \hlnum{5}       \hlcom{# distance bins}
+\hlstd{K} \hlkwb{<-} \hlstd{J}\hlopt{+}\hlnum{1}     \hlcom{# multinomial cells}
+\hlstd{sigma} \hlkwb{<-} \hlnum{25}  \hlcom{# scale parameter}
+\hlstd{B} \hlkwb{<-} \hlnum{100}     \hlcom{# transect width}
+\hlstd{b} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{, B,} \hlkwc{length}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# distance break points}
+\hlstd{pi1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(K)} \hlcom{# multinomial cell probs}
+\hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+    \hlstd{pi1[j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{)),}
+                        \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{B}
+\hlstd{\}}
+\hlstd{pi1[K]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi1[}\hlnum{1}\hlopt{:}\hlstd{J])}
 \hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
     \hlstd{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=pi1)    \}}
@@ -541,10 +554,10 @@ transect. \\
 \hlkwd{head}\hlstd{(y1,} \hlkwc{n}\hlstd{=}\hlnum{3}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##      [,1] [,2] [,3]
-## [1,]    0    0    0
-## [2,]    2    1    2
-## [3,]    2    0    1
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0    0    0    0    0
+## [2,]    2    1    0    0    0
+## [3,]    1    0    0    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -591,6 +604,10 @@ transect. \\
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
     \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])}
 \hlstd{\}}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in y2.all[i, ] <- rmultinom(n = 1, size = N2[i], prob = pi2[i, ]): number of items to replace is not a multiple of replacement length}}\begin{alltt}
 \hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlopt{-}\hlstd{K]} \hlcom{## Discard final column... individuals not detected}
 \end{alltt}
 \end{kframe}
@@ -615,26 +632,26 @@ transect. \\
 \hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##       [,1] [,2] [,3]
-##  [1,]    3    0    0
-##  [2,]    2    0    1
-##  [3,]    2    0    0
-##  [4,]    2    0    0
-##  [5,]    0    0    0
-##  [6,]    2    2    0
-##  [7,]    3    0    0
-##  [8,]    0    1    1
-##  [9,]    0    0    0
-## [10,]    0    1    0
-## [11,]    0    0    0
-## [12,]    2    0    0
-## [13,]    0    2    0
-## [14,]    1    1    0
-## [15,]    2    2    1
-## [16,]    4    0    0
-## [17,]    0    0    2
-## [18,]    3    3    0
-## [19,]    1    0    0
+##       [,1] [,2] [,3] [,4] [,5]
+##  [1,]   NA   NA   NA   NA   NA
+##  [2,]   NA   NA   NA   NA   NA
+##  [3,]   NA   NA   NA   NA   NA
+##  [4,]   NA   NA   NA   NA   NA
+##  [5,]   NA   NA   NA   NA   NA
+##  [6,]   NA   NA   NA   NA   NA
+##  [7,]   NA   NA   NA   NA   NA
+##  [8,]   NA   NA   NA   NA   NA
+##  [9,]   NA   NA   NA   NA   NA
+## [10,]   NA   NA   NA   NA   NA
+## [11,]   NA   NA   NA   NA   NA
+## [12,]   NA   NA   NA   NA   NA
+## [13,]   NA   NA   NA   NA   NA
+## [14,]   NA   NA   NA   NA   NA
+## [15,]   NA   NA   NA   NA   NA
+## [16,]   NA   NA   NA   NA   NA
+## [17,]   NA   NA   NA   NA   NA
+## [18,]   NA   NA   NA   NA   NA
+## [19,]   NA   NA   NA   NA   NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -656,7 +673,7 @@ transect. \\
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.9
+## [1] NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -671,7 +688,7 @@ transect. \\
 \hlkwd{colSums}\hlstd{(y2)}
 \end{alltt}
 \begin{verbatim}
-## [1] 117  55  28
+## [1] NA NA NA NA NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -685,7 +702,7 @@ transect. \\
 \hlkwd{sum}\hlstd{(y2)}
 \end{alltt}
 \begin{verbatim}
-## [1] 200
+## [1] NA
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -717,46 +734,17 @@ transect. \\
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prepare data in `unmarked'}
-  \small
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameMPois}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(streamDepth),} \hlkwc{type}\hlstd{=}\hlstr{"removal"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{summary}\hlstd{(umf)}
-\end{alltt}
-\begin{verbatim}
-## unmarkedFrame Object
-## 
-## 100 sites
-## Maximum number of observations per site: 3 
-## Mean number of observations per site: 3 
-## Sites with at least one detection: 90 
-## 
-## Tabulation of y observations:
-##   0   1   2   3   4 
-## 166  82  39  12   1 
-## 
-## Site-level covariates:
-##   streamDepth      
-##  Min.   :-1.98353  
-##  1st Qu.:-0.48806  
-##  Median : 0.04055  
-##  Mean   : 0.10013  
-##  3rd Qu.: 0.78351  
-##  Max.   : 2.64727
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Prepare data in `unmarked'}
+%   \small
+% <<un-umf,size='tiny'>>=
+% umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
+% @
+% \pause
+% <<wfac,size='scriptsize'>>=
+% summary(umf)
+% @ 
+% \end{frame}
 
 
 % > fm <- multinomPois(~temp ~forest, umf)    
@@ -766,54 +754,23 @@ transect. \\
 %   what():  Mat::operator(): index out of bounds
 
 
-\begin{frame}[fragile]
-  \frametitle{Fit the model}
-  \footnotesize
-  \inr{multinomPois} has similar arguments as \inr{occu} and
-  \inr{pcount}. 
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{multinomPois}\hlstd{(}\hlopt{~}\hlstd{streamDepth} \hlopt{~}\hlstd{streamDepth, umf)}
-\hlstd{fm}
-\end{alltt}
-\begin{verbatim}
-## 
-## Call:
-## multinomPois(formula = ~streamDepth ~ streamDepth, data = umf)
-## 
-## Abundance:
-##             Estimate     SE    z  P(>|z|)
-## (Intercept)    0.853 0.0904 9.43 4.04e-21
-## streamDepth    0.391 0.1269 3.08 2.09e-03
-## 
-## Detection:
-##             Estimate    SE      z  P(>|z|)
-## (Intercept)    0.198 0.205  0.968 3.33e-01
-## streamDepth   -1.002 0.217 -4.623 3.78e-06
-## 
-## AIC: 590.9196
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-Compare to actual parameter values:
-\vspace{-6pt}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
-\end{alltt}
-\begin{verbatim}
-## beta0 beta1 
-##   1.0   0.5
-## alpha0 alpha1 
-##      0     -1
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Fit the model}
+%   \footnotesize
+%   \inr{multinomPois} has similar arguments as \inr{occu} and
+%   \inr{pcount}. 
+% <<un-fit,size='tiny'>>=
+% fm <- multinomPois(~streamDepth ~streamDepth, umf)    
+% fm
+% @
+% \pause
+% \vfill
+% Compare to actual parameter values:
+% \vspace{-6pt}
+% <<un-compare,size='tiny'>>=
+% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+% @ 
+% \end{frame}
 
 
 
@@ -844,7 +801,9 @@ Get predictions of $\lambda$ for each row of prediction data.
 \hlstd{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
                        \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'predict': object 'fm' not found}}\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -855,16 +814,9 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(lambda.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-##   Predicted   SE lower upper streamDepth
-## 1      0.73 0.27  0.36   1.5        -3.0
-## 2      0.82 0.27  0.43   1.6        -2.7
-## 3      0.93 0.27  0.53   1.6        -2.4
-## 4      1.05 0.26  0.64   1.7        -2.1
-## 5      1.19 0.25  0.78   1.8        -1.7
-## 6      1.35 0.24  0.95   1.9        -1.4
-\end{verbatim}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'head': object 'lambda.pred' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -872,50 +824,23 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Expected value of abundance"}\hlstd{,}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{30}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Stream depth"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{points}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth)}
-\hlkwd{lines}\hlstd{(}\hlkwd{lowess}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}  \hlcom{## Loess line for fun (it's way off)}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\linewidth]{figure/pred-lam2-1} 
-
-}
-
-
-
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+% par(mai=c(0.9,0.9,0.1,0.1))
+% plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
+%      ylim=c(0,30), xlab="Stream depth", type="l")
+% lines(lower ~ streamDepth, lambda.pred, col="grey")
+% lines(upper ~ streamDepth, lambda.pred, col="grey")
+% points(rowSums(y2)~streamDepth)
+% lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
+% @   
+% \end{frame}
 
 
 
 
 
-
-
-\begin{frame}[fragile]
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  %   \centering
-%  \large
-  Do the following using the fitted removal model above:
-  \begin{enumerate}
-    \normalsize
-    \item Predict $p$ when \verb+streamDepth=-1+
-    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
-  \end{enumerate}
-\end{frame}
 
 
 \subsection{Bayesian methods}
@@ -928,20 +853,20 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial, some
-  of which we can exploit to fit the model in JAGS.
-  \begin{itemize}
-    \item Conditional-on-$N$, missing $y_{iK}$
-    \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
-    \item Conditional-on-$N$, sequential binomial
-    \item Marginalized $N$
-  \end{itemize}
-  \pause
-  \vfill
-  These are just fun probability tricks that can help improve MCMC performance. \\
-\end{frame}
+% \begin{frame}
+%   \frametitle{Bayesian multinomial $N$-mixture models}
+%   There are several equivalent formulations of the multinomial, some
+%   of which we can exploit to fit the model in JAGS.
+%   \begin{itemize}
+%     \item Conditional-on-$N$, missing $y_{iK}$
+%     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
+%     \item Conditional-on-$N$, sequential binomial
+%     \item Marginalized $N$
+%   \end{itemize}
+%   \pause
+%   \vfill
+%   These are just fun probability tricks that can help improve MCMC performance. \\
+% \end{frame}
 
 
 
@@ -953,194 +878,83 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-
-\begin{frame}[fragile]
-  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-  Rather than treating the final multinomial cell as missing data:
-  \[
-    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
-    \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
-  \]
-  \pause
-  \vfill
-  We can break the problem down into two steps by conditioning on
-  $n_i$, the number of individuals captured at site $i$:
-  \small
-  \begin{gather*}
-    n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
-    \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i,
-    \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
-  \end{gather*}
-  \pause
-  \vfill
-  Note that the modified cell probabilities still sum to 1. 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-\vspace{-3pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'removal-mod2.jag': No such file or directory}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
+% \vspace{-3pt}
+% <<bugs-removal2,size='scriptsize',echo=FALSE>>=
+% writeLines(readLines("removal-mod2.jag"))
+% @
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-12pt}
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.data.rem2} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2),}
-                       \hlkwc{streamDepth}\hlstd{=streamDepth,}
-                       \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nPasses}\hlstd{=nPasses)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Initial values
-  \vspace{-12pt}
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.inits.rem} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{+}\hlkwd{rpois}\hlstd{(}\hlkwd{nrow}\hlstd{(y2),} \hlnum{2}\hlstd{))}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Parameters to monitor
-  \vspace{-12pt}
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.pars.rem} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,}
-                   \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-12pt}
+% <<bugs-data2,size='small'>>=
+% jags.data.rem2 <- list(y=y2, n=rowSums(y2),
+%                        streamDepth=streamDepth,
+%                        nSites=nSites, nPasses=nPasses)
+% @
+% \pause
+% \vfill
+%   Initial values
+%   \vspace{-12pt}
+% <<bugs-inits,size='small'>>=
+% jags.inits.rem <- function() {
+%     list(lambda.intercept=runif(1), alpha0=rnorm(1),
+%          N=rowSums(y2)+rpois(nrow(y2), 2))
+% }
+% @ 
+% \pause
+% \vfill
+%   Parameters to monitor
+%   \vspace{-12pt}
+% <<bugs-pars,size='small'>>=
+% jags.pars.rem <- c("beta0", "beta1",
+%                    "alpha0", "alpha1", "totalAbundance")
+% @ 
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{MCMC}
-  \small
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.rem2} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.rem2,} \hlkwc{inits}\hlstd{=jags.inits.rem,}
-                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,} \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod2.jag"}\hlstd{,}
-                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
+% \begin{frame}[fragile]
+%   \frametitle{MCMC}
+%   \small
+% <<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
+% library(jagsUI)
+% jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
+%                              parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
+% @ 
+% %\end{frame}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}removal-mod2.jag"{}}}\end{kframe}
-\end{knitrout}
-%\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem2[,jags.pars.rem[1:3]])
+% @ 
+% \end{frame}
 
-\pause
 
-%\begin{frame}[fragile]
-%  \frametitle{Summarize output}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.rem2[,jags.pars.rem])}
-\end{alltt}
-\begin{verbatim}
-## 
-## Iterations = 1:2000
-## Thinning interval = 1 
-## Number of chains = 3 
-## Sample size per chain = 2000 
-## 
-## 1. Empirical mean and standard deviation for each variable,
-##    plus standard error of the mean:
-## 
-##                    Mean       SD Naive SE Time-series SE
-## beta0            0.8665  0.09612 0.001241       0.004571
-## beta1            0.4072  0.13444 0.001736       0.009476
-## alpha0           0.1665  0.21570 0.002785       0.010526
-## alpha1          -1.0127  0.22852 0.002950       0.013709
-## totalAbundance 271.6515 34.81006 0.449396       2.830841
-## 
-## 2. Quantiles for each variable:
-## 
-##                    2.5%      25%      50%      75%    97.5%
-## beta0            0.6854   0.8017   0.8628   0.9282   1.0668
-## beta1            0.1734   0.3138   0.3982   0.4851   0.7073
-## alpha0          -0.2614   0.0176   0.1777   0.3152   0.5747
-## alpha1          -1.4810  -1.1607  -1.0107  -0.8636  -0.5596
-## totalAbundance 226.0000 248.0000 264.0000 287.0000 360.0250
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem2[,jags.pars.rem[4:5]])
+% @ 
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-rem2-1} 
-
-}
-
-
-
-\end{knitrout}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-rem2-1} 
-
-}
-
-
-
-\end{knitrout}
-\end{frame}
-
-
-
-
-\section{Point transects}
+%\section{Point transects}
 
 
 
