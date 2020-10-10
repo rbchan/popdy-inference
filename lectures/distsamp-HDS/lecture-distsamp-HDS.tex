@@ -53,7 +53,7 @@
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
-
+%\usepackage{mathrsfs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -116,26 +116,22 @@
 
 \begin{frame}
   \frametitle{Distance sampling overview}
-  Distance sampling is one of the oldest wildlife sampling methods.
+  Distance sampling is one of the oldest wildlife sampling methods. \\
   \pause
   \vfill
-  \alert{Conventional} distance sampling focuses estimating the
-  detection function, which describes how the probability of detecting
-  an individual decreases with distance from the observer. Abundance
-  and density are estimated, but there is no model for
-  spatial variation in abundance/density.
+  It's based on the simple idea that detection probability should
+  decline with distance between an an animal and a transect. \\
   \pause
   \vfill
-  \alert{Hierarchical} distance sampling is similar, but includes a
-  model for spatial variation in abundance/density -- it's really just
-  a multinomial $N$-mixture model with a unique function for computing
-  the multinomial cell probabilities.
+  If we can estimate the function describing how $p$ declines with
+  distance $x$, we can estimate abundance \pause (if certain assumptions
+  hold, as always). \\
 \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Conventional distance sampling}
+  \frametitle{Distance sampling overview}
   The simplest estimator of abundance is 
   \[
     \hat{N} = \frac{n}{\hat{p}}
@@ -163,7 +159,13 @@
 
 \begin{frame}
   \frametitle{Detection functions}
-  Detection probability is treated as a function of distance ($x$). \\
+  To estimate average detection probability ($\bar{p}$), we need:
+  \begin{itemize}
+    \item A detection function $g(x)$ describing how $p$ declines with
+      distance.
+    \item A probability distribution $p(x)$ describing the
+      distances of all animals (detected and not detected). 
+  \end{itemize}
   \pause
   \vfill
   \centering
@@ -172,7 +174,7 @@
   \begin{tabular}{lc}
 %    \centering
     \hline
-    Detection function & $g(x,\theta)$ \\
+    Detection function & $g(x)$ \\
     \hline
     Half normal & $\exp(-x^2 / (2\sigma^2))$ \\
     Negative exponential & $\exp(-x/\sigma)$ \\
@@ -262,26 +264,146 @@
 
 \begin{frame}
   \frametitle{Average detection probability ($\bar{p}$)}
-  Average detection probability is defined as:
+  Regardless of the chosen detection function, average detection
+  probability is defined as: 
   \[
-     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
-  \]
+%     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
+     \bar{p} = \int_{b_1}^{b_2} g(x)p(x) \; \mathrm{d}x
+   \]
+   where $b_1$ and $b_2$ are the limits of the distance interval.
   \pause
   \vfill
-  To compute $\bar{p}$, we have to specify $p(x)$, the
+  All that remains is the specification of $p(x)$, the
   distribution of distances (between animals and the transect).
   \pause
+  \vfill
+  To understand why $p(x)$ is needed, think about it this way:
   \begin{itemize}
     \item If most animals are close to the transect, $\bar{p}$ would
       be high
     \item If most animals are far from the transect, $\bar{p}$ would
       be low
   \end{itemize}
+  % \pause
+  % \vfill
+  % The standard assumption (for line transects) is that animals are
+  % uniformly distributed with respect to the transect
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{What should we use for $p(x)$?}
+  What distribution should we use for the distances between animals
+  and transects?
   \pause
   \vfill
-  The standard assumption (for line transects) is that animals are
-  uniformly distributed with respect to the transect
+  In \alert{line-transect sampling}, it is often assumed that animals
+  are uniformly distributed with respect to the transect.
+  \begin{itemize}
+    \item Consequently, $p(x) = 1/B$ where $B$ is the width of the
+      transect.
+    \item This is guaranteed by random transect placement
+    \item Can also be justified if animals are neither attracted to
+      the transects or avoid them. 
+  \end{itemize}
+  \pause
+  \vfill
+  In \alert{point-transect sampling}, we make the same assumptions,
+  but we recognize that area increases with distance from a point.
+  \begin{itemize}
+    \item Consequently, $p(x) = 2x/B^2$ (see pg. 408 in AHM)
+  \end{itemize}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Computing $\bar{p}$}
+  Half-normal detection function and line-transect sampling.
+  \vspace{-12pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{## Transect width}
+\hlstd{g} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{25}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))} \hlcom{## g(x)}
+\hlstd{pdf} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{/}\hlstd{B}                           \hlcom{## p(x), constant}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Do the integration
+  \vspace{-12pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{gp} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{g}\hlstd{(x)}\hlopt{*}\hlkwd{pdf}\hlstd{(x)}
+\hlstd{(pbar} \hlkwb{<-} \hlkwd{integrate}\hlstd{(gp,} \hlkwc{lower}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{upper}\hlstd{=B)}\hlopt{$}\hlstd{value)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3133087
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Note the equivalence
+  \vspace{-12pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(pbar} \hlkwb{<-} \hlkwd{integrate}\hlstd{(g,} \hlkwc{lower}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{upper}\hlstd{=B)}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{B)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3133087
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+\centering
+There's a 31.3\% chance of detecting an individual within 100 m of the 
+transect. \\
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  Building off of the previous example\dots
+  \begin{enumerate}
+    \item Compute $\bar{p}$ when $\sigma=50, 100, \mathrm{and}\, 200$, instead of
+      $\sigma=25$. 
+    \item Repeat step 1, but for point transect sampling where
+      $p(x)=2x/B^2$, instead of $p(x)=1/B$. 
+  \end{enumerate}
+\end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Distance sampling overview}
+%   Distance sampling is one of the oldest wildlife sampling methods.
+%   \pause
+%   \vfill
+%   \alert{Conventional} distance sampling focuses on estimating the
+%   detection function, which describes how the probability of detecting
+%   an individual decreases with distance from the observer. Abundance
+%   and density are estimated, but there is no model for
+%   spatial variation in abundance/density.
+%   \pause
+%   \vfill
+%   \alert{Hierarchical} distance sampling is similar, but includes a
+%   model for spatial variation in abundance/density -- it's really just
+%   a multinomial $N$-mixture model with a unique function for computing
+%   the multinomial cell probabilities.
+% \end{frame}
+
+
 
 
 \begin{frame}
@@ -929,7 +1051,9 @@ Get predictions of $\lambda$ for each row of prediction data.
                              \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,} \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod2.jag"}\hlstd{,}
                              \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}removal-mod2.jag"{}}}\end{kframe}
 \end{knitrout}
 %\end{frame}
 
@@ -942,9 +1066,33 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{summary}\hlstd{(jags.post.rem2[,jags.pars.rem])}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': incorrect number of dimensions}}\end{kframe}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##                    Mean       SD Naive SE Time-series SE
+## beta0            0.8665  0.09612 0.001241       0.004571
+## beta1            0.4072  0.13444 0.001736       0.009476
+## alpha0           0.1665  0.21570 0.002785       0.010526
+## alpha1          -1.0127  0.22852 0.002950       0.013709
+## totalAbundance 271.6515 34.81006 0.449396       2.830841
+## 
+## 2. Quantiles for each variable:
+## 
+##                    2.5%      25%      50%      75%    97.5%
+## beta0            0.6854   0.8017   0.8628   0.9282   1.0668
+## beta1            0.1734   0.3138   0.3982   0.4851   0.7073
+## alpha0          -0.2614   0.0176   0.1777   0.3152   0.5747
+## alpha1          -1.4810  -1.1607  -1.0107  -0.8636  -0.5596
+## totalAbundance 226.0000 248.0000 264.0000 287.0000 360.0250
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -958,9 +1106,14 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
 \end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-rem2-1} 
+
+}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': incorrect number of dimensions}}\end{kframe}
+
 \end{knitrout}
 \end{frame}
 
@@ -973,9 +1126,14 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
 \end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-rem2-1} 
+
+}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': incorrect number of dimensions}}\end{kframe}
+
 \end{knitrout}
 \end{frame}
 

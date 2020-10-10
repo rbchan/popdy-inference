@@ -3,7 +3,7 @@
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
-
+%\usepackage{mathrsfs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -76,26 +76,22 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Distance sampling overview}
-  Distance sampling is one of the oldest wildlife sampling methods.
+  Distance sampling is one of the oldest wildlife sampling methods. \\
   \pause
   \vfill
-  \alert{Conventional} distance sampling focuses on estimating the
-  detection function, which describes how the probability of detecting
-  an individual decreases with distance from the observer. Abundance
-  and density are estimated, but there is no model for
-  spatial variation in abundance/density.
+  It's based on the simple idea that detection probability should
+  decline with distance between an an animal and a transect. \\
   \pause
   \vfill
-  \alert{Hierarchical} distance sampling is similar, but includes a
-  model for spatial variation in abundance/density -- it's really just
-  a multinomial $N$-mixture model with a unique function for computing
-  the multinomial cell probabilities.
+  If we can estimate the function describing how $p$ declines with
+  distance $x$, we can estimate abundance \pause (if certain assumptions
+  hold, as always). \\
 \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Conventional distance sampling}
+  \frametitle{Distance sampling overview}
   The simplest estimator of abundance is 
   \[
     \hat{N} = \frac{n}{\hat{p}}
@@ -123,7 +119,13 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Detection functions}
-  Detection probability is treated as a function of distance ($x$). \\
+  To estimate average detection probability ($\bar{p}$), we need:
+  \begin{itemize}
+    \item A detection function $g(x)$ describing how $p$ declines with
+      distance.
+    \item A probability distribution $p(x)$ describing the
+      distances of all animals (detected and not detected). 
+  \end{itemize}
   \pause
   \vfill
   \centering
@@ -132,7 +134,7 @@ knit_theme$set("edit-kwrite")
   \begin{tabular}{lc}
 %    \centering
     \hline
-    Detection function & $g(x,\theta)$ \\
+    Detection function & $g(x)$ \\
     \hline
     Half normal & $\exp(-x^2 / (2\sigma^2))$ \\
     Negative exponential & $\exp(-x/\sigma)$ \\
@@ -207,26 +209,125 @@ legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
 
 \begin{frame}
   \frametitle{Average detection probability ($\bar{p}$)}
-  Average detection probability is defined as:
+  Regardless of the chosen detection function, average detection
+  probability is defined as: 
   \[
-     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
-  \]
+%     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
+     \bar{p} = \int_{b_1}^{b_2} g(x)p(x) \; \mathrm{d}x
+   \]
+   where $b_1$ and $b_2$ are the limits of the distance interval.
   \pause
   \vfill
-  To compute $\bar{p}$, we have to specify $p(x)$, the
+  All that remains is the specification of $p(x)$, the
   distribution of distances (between animals and the transect).
   \pause
+  \vfill
+  To understand why $p(x)$ is needed, think about it this way:
   \begin{itemize}
     \item If most animals are close to the transect, $\bar{p}$ would
       be high
     \item If most animals are far from the transect, $\bar{p}$ would
       be low
   \end{itemize}
+  % \pause
+  % \vfill
+  % The standard assumption (for line transects) is that animals are
+  % uniformly distributed with respect to the transect
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{What should we use for $p(x)$?}
+  What distribution should we use for the distances between animals
+  and transects?
   \pause
   \vfill
-  The standard assumption (for line transects) is that animals are
-  uniformly distributed with respect to the transect
+  In \alert{line-transect sampling}, it is often assumed that animals
+  are uniformly distributed with respect to the transect.
+  \begin{itemize}
+    \item Consequently, $p(x) = 1/B$ where $B$ is the width of the
+      transect.
+    \item This is guaranteed by random transect placement
+    \item Can also be justified if animals are neither attracted to
+      the transects or avoid them. 
+  \end{itemize}
+  \pause
+  \vfill
+  In \alert{point-transect sampling}, we make the same assumptions,
+  but we recognize that area increases with distance from a point.
+  \begin{itemize}
+    \item Consequently, $p(x) = 2x/B^2$ (see pg. 408 in AHM)
+  \end{itemize}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Computing $\bar{p}$}
+  Half-normal detection function and line-transect sampling.
+  \vspace{-12pt}
+<<pbar-hn,size='footnotesize'>>=
+B <- 100                                         ## Transect width
+g <- function(x, sigma=25) exp(-x^2/(2*sigma^2)) ## g(x)
+pdf <- function(x) 1/B                           ## p(x), constant
+@
+\pause
+\vfill
+  Do the integration
+  \vspace{-12pt}
+<<pbar-hn-int,size='footnotesize'>>=
+gp <- function(x) g(x)*pdf(x)
+(pbar <- integrate(gp, lower=0, upper=B)$value)
+@ 
+\pause
+\vfill
+  Note the equivalence
+  \vspace{-12pt}
+<<pbar-hn-int2,size='footnotesize'>>=
+(pbar <- integrate(g, lower=0, upper=B)$value / B)
+@
+\pause
+\vfill
+\centering
+There's a 31.3\% chance of detecting an individual within 100 m of the 
+transect. \\
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  Building off of the previous example\dots
+  \begin{enumerate}
+    \item Compute $\bar{p}$ when $\sigma=50, 100, \mathrm{and}\, 200$, instead of
+      $\sigma=25$. 
+    \item Repeat step 1, but for point transect sampling where
+      $p(x)=2x/B^2$, instead of $p(x)=1/B$. 
+  \end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Conventional vs hierarchical distance sampling}
+  \alert{Conventional} distance sampling focuses on estimating the
+  detection function, which describes how the probability of detecting
+  an individual decreases with distance from the observer. Abundance
+  and density are estimated, but there is no model for
+  spatial variation in abundance/density.
+  \pause
+  \vfill
+  \alert{Hierarchical} distance sampling is similar, but includes a
+  model for spatial variation in abundance/density -- it's really just
+  a multinomial $N$-mixture model with a unique function for computing
+  the multinomial cell probabilities.
+\end{frame}
+
+
 
 
 \begin{frame}
