@@ -84,8 +84,8 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   If we can estimate the function describing how $p$ declines with
-  distance $x$, we can estimate abundance \pause (if certain assumptions
-  hold, as always). \\
+  distance $x$, we can estimate abundance\dots \pause if certain
+  assumptions hold, as always. \\
 \end{frame}
 
 
@@ -129,7 +129,7 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   \centering
-  The most common functions are: \\
+  The most common detection functions are: \\
   \vspace{6pt}
   \begin{tabular}{lc}
 %    \centering
@@ -267,7 +267,7 @@ legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
 
 
 \begin{frame}[fragile]
-  \frametitle{Computing $\bar{p}$}
+  \frametitle{Computing $\bar{p}$ for line transects}
   Half-normal detection function and line-transect sampling.
   \vspace{-6pt}
 <<pbar-hn,size='footnotesize'>>=
@@ -299,15 +299,49 @@ gp <- function(x) g(x)*pdf(x)
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Computing $\bar{p}$ for point transects}
+  Half-normal detection function and point-transect sampling.
+  \vspace{-6pt}
+<<pbar-hn-pt,size='footnotesize'>>=
+B <- 100                                         # Transect width
+g <- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)
+pdf <- function(x) 2*x/B^2                       # p(x)
+@
+\pause
+\vfill
+  Do the integration
+  \vspace{-6pt}
+<<pbar-hn-int-pt,size='footnotesize'>>=
+gp <- function(x) g(x)*pdf(x)
+(pbar <- integrate(gp, lower=0, upper=B)$value)
+@ 
+\pause
+\vfill
+  Note the equivalence
+  \vspace{-6pt}
+<<pbar-hn-int2-pt,size='footnotesize'>>=
+sigma <- 25
+(pbar <- (sigma^2*(1-exp(-B^2/(2*sigma^2))) -
+          sigma^2*(1-exp(-0^2/(2*sigma^2)))) * 2*pi/(pi*B^2))
+@
+\pause
+\vfill
+\centering
+12.5\% chance of detecting an individual within 100 m. \\
+\end{frame}
+
+
+
+
 
 \begin{frame}
   \frametitle{In-class exercise}
   Building off the previous example\dots
   \begin{enumerate}
-    \item Compute $\bar{p}$ when $\sigma=50, 100, \mathrm{and}\, 200$, instead of
-      $\sigma=25$. 
-    \item Repeat step 1, but for point transect sampling where
-      $p(x)=2x/B^2$, instead of $p(x)=1/B$. 
+    \item Compute $\bar{p}$ for line-transect sampling when
+      $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
+    \item Repeat step 1, but for point-transect sampling. 
   \end{enumerate}
 \end{frame}
 
@@ -316,17 +350,22 @@ gp <- function(x) g(x)*pdf(x)
 
 \begin{frame}
   \frametitle{Conventional vs hierarchical distance sampling}
-  \alert{Conventional} distance sampling focuses on estimating the
-  detection function, which describes how the probability of detecting
-  an individual decreases with distance from the observer. Abundance
-  and density are estimated, but there is no model for
-  spatial variation in abundance/density.
+  \alert{Conventional} distance sampling
+  \begin{itemize}
+    \item Focus is on estimation of detection function parameters and density.
+    \item No model for spatial variation in density.
+    \item Data are individual-level distances
+  \end{itemize}
   \pause
   \vfill
-  \alert{Hierarchical} distance sampling is similar, but includes a
-  model for spatial variation in abundance/density -- it's really just
-  a multinomial $N$-mixture model with a unique function for computing
-  the multinomial cell probabilities.
+  \alert{Hierarchical} distance sampling
+  \begin{itemize}
+    \item Focus is on estimation of detection function parameters and
+      spatial variation in abundance/density.
+    \item Data are counts of individuals in each distance bin.
+    \item Multinomial $N$-mixture model with a unique function for
+      computing the multinomial cell probabilities 
+  \end{itemize}
 \end{frame}
 
 
@@ -372,13 +411,38 @@ gp <- function(x) g(x)*pdf(x)
 
 
 
+
+
+
+
+
+
+
+%\section{Simulation}
+
+\section{Line transects}
+
+
+
+
+
+
+\subsection{Simulation}
+
 \begin{frame}
-  \frametitle{Multinomial cell probabilities}
+  \frametitle{Outline}
+  \Large
+%  \tableofcontents[currentsection,currentsubsection]
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Multinomial cell probs for line transects}
   \small
-%  Some of the equations must be modified when we're working with distance bins. \\
-%  \pause
-%  \vfill
-  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and multinomial cell probabilities.
+  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and
+  multinomial cell probabilities. 
   \begin{itemize}
   \small
     \setlength\itemsep{1pt}
@@ -393,18 +457,6 @@ gp <- function(x) g(x)*pdf(x)
   \footnotesize
   \begin{columns}
     \column{0.9\paperwidth}
-    % \begin{tabular}{lc}
-    %   \hline
-    %   \centering
-    %   Description                       & Multinomial cell probability \\
-    %   \hline
-    %   Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
-    %   Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
-    %   {\centering $\cdots$}             & $\cdots$                     \\
-    %   Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
-    %   Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
-    %   \hline
-    % \end{tabular}
     \begin{tabular}{lc}
       \hline
       \centering
@@ -419,28 +471,6 @@ gp <- function(x) g(x)*pdf(x)
     \end{tabular}
   \end{columns}
 \end{frame}
-
-
-
-
-
-
-
-
-%\section{Simulation}
-
-\section{Line transects}
-
-\subsection{Simulation}
-
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-%  \tableofcontents[currentsection,currentsubsection]
-  \tableofcontents[currentsection]
-\end{frame}
-
-
 
 
 
@@ -827,9 +857,321 @@ plot(jags.post.line[,jags.pars.line[4:5]])
 
 \subsection{Simulation}
 
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Multinomial cell probs for point transects}
+  \small
+  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and
+  multinomial cell probabilities. 
+  \begin{itemize}
+    \small
+    \setlength\itemsep{1pt}
+    \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
+    \item $\sigma_i$ -- scale parameter of detection function $g(x)$
+    \item $b_1, \dots, b_J$ -- Distance break points defining $J$
+      distance intervals
+    \item $a_1, \dots, a_J$ -- Area of annulus $j$
+    \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
+    \item $p(x|b_j\le x<b_{j+1}) = 2\pi x/a_j$
+    \item $\psi_j=\Pr(b_j\le x<b_{j+1})=a_j/(\pi B^2)$
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{columns}
+    \column{0.9\paperwidth}
+    \begin{tabular}{lc}
+      \hline
+      \centering
+      Description                       & Multinomial cell probability \\
+      \hline
+      Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   \\
+      Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   \\
+      {\centering $\cdots$}             & $\cdots$                     \\
+      Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   \\
+      Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+      \hline
+    \end{tabular}
+  \end{columns}
+\end{frame}
+
+
+
+<<include=FALSE,echo=FALSE>>=
+set.seed(34889243)
+@ 
+
+\begin{frame}[fragile]
+  \frametitle{Point transects, no covariates}
+  \small
+  Abundance
+  \vspace{-6pt}
+<<sim-hds-nocovN3-pt,size='scriptsize'>>=
+nSites <- 100; lambda1 <- 2.6  ## Expected value of N
+N3 <- rpois(n=nSites, lambda=lambda1)
+@
+  \pause
+  \vfill
+  Multinomial cell probabilities
+  \vspace{-6pt}
+<<sim-hds-nocov3-pt,size='scriptsize'>>=
+J <- 5                     # distance bins
+sigma <- 50                # scale parameter
+B <- 100                   # plot radius (B)
+b <- seq(0, B, length=J+1) # distance break points
+area <- pi*b^2             # area of each circle
+psi <- (area[-1]-area[-(J+1)]) / area[J+1]
+pbar3 <- numeric(J)        # average detection probability
+pi3 <- numeric(J+1)        # multinomial cell probs
+for(j in 1:J) {
+    pbar3[j] <- integrate(function(x) exp(-x^2/(2*sigma^2))*x,
+                          lower=b[j], upper=b[j+1])$value *
+                          (2*pi/diff(area)[j])
+    pi3[j] <- pbar3[j]*psi[j] }; pi3[J+1] <- 1-sum(pi3[1:J])
+@
+  \pause
+  \vfill
+  Detections in each distance interval
+  \vspace{-6pt}
+<<sim-hds-y3,size='scriptsize'>>=
+y3.all <- matrix(NA, nrow=nSites, ncol=J+1)
+for(i in 1:nSites) {
+    y3.all[i,] <- rmultinom(n=1, size=N3[i], prob=pi3)    }
+y3 <- y3.all[,1:J]  ## Drop final cell
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Observed distances}
+  \centering
+<<dist-hist3,fig.height=5,out.width="90%",size='scriptsize',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="tan",
+     xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Point transects, covariates}
+  \small
+  Abundance
+  \vspace{-6pt}
+<<sim-hds-covN4-pt,size='scriptsize'>>=
+elevation <- rnorm(nSites)  
+beta0 <- 2; beta1 <- 1
+lambda4 <- exp(beta0 + beta1*elevation)
+N4 <- rpois(n=nSites, lambda=lambda4)
+@
+  \pause
+  \vfill
+  Multinomial cell probabilities
+  \vspace{-6pt}
+<<sim-hds-cov4-pt,size='scriptsize'>>=
+noise <- rnorm(nSites)
+alpha0 <- 3; alpha1 <- -0.5
+sigma4 <- exp(alpha0 + alpha1*noise)
+pi4 <- matrix(NA, nSites, J+1) # multinomial cell probs
+for(i in 1:nSites) {
+  for(j in 1:J) {
+      pi4[i,j] <- integrate(function(x) exp(-x^2/(2*sigma4[i]^2))*x,
+          lower=b[j], upper=b[j+1])$value*(2*pi/diff(area)[j])*psi[j] }
+  pi4[i,J+1] <- 1-sum(pi4[i,1:J]) } 
+@
+  \pause
+  \vfill
+  Detections in each distance interval
+  \vspace{-6pt}
+<<sim-hds-y4-pt,size='scriptsize'>>=
+y4.all <- matrix(NA, nrow=nSites, ncol=J+1)
+for(i in 1:nSites) {
+    y4.all[i,] <- rmultinom(n=1, size=N4[i], prob=pi4[i,])    }
+y4 <- y4.all[,1:J]
+@ 
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+  \vspace{-6pt}
+<<sim-nocov-dat4-pt,size='tiny'>>=
+y4[1:25,]
+@ 
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+    \small
+    Proportion of sites known to be occupied
+    \vspace{-6pt}
+<<sim-nocov-ssO-pt,size='scriptsize'>>=
+# Max count at each site
+maxCounts <- apply(y4, 1, max) 
+naiveOccupancy <- sum(maxCounts>0)/nSites
+naiveOccupancy 
+@
+  \pause
+  \vfill
+  \small
+  Total detections in each distance interval
+  \vspace{-6pt}
+<<sim-nocov-ss4-pt,size='scriptsize'>>=
+colSums(y4)
+@
+  \pause
+  \vfill
+  Naive abundance
+  \vspace{-6pt}
+<<sim-nocov-ss4sum-pt,size='scriptsize'>>=
+sum(y4)
+@
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+
 \subsection{Likelihood}
 
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+  Note the new arguments.
+  \vspace{-6pt}
+<<un-umf-pt,size='tiny'>>=
+umf4 <- unmarkedFrameDS(y=y4, siteCovs=data.frame(elevation,noise), dist.breaks=b,
+                       survey="point", unitsIn="m")
+@
+\pause
+<<wfac-pt,size='tiny'>>=
+summary(umf4)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+<<un-fit-pt,size='tiny'>>=
+fm4 <- distsamp(~noise ~elevation, umf4)    
+fm4
+@
+\pause
+\vfill
+Compare to actual parameter values:
+\vspace{-6pt}
+<<un-compare-pt,size='tiny'>>=
+c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+@ 
+\end{frame}
+
+
+
+
+
 \subsection{Bayes}
+
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
+\vspace{-3pt}
+<<bugs-pt,size='tiny',echo=FALSE>>=
+writeLines(readLines("distsamp-point-mod.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data-pt,size='footnotesize'>>=
+jags.data.pt <- list(y=y4, n=rowSums(y4), area=diff(area),
+                     b=b,           # Distance break points
+                     psi=psi,       # Pr(occuring in bin j)
+                     elevation=elevation, noise=noise,
+                     nSites=nSites, nBins=J)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits-pt,size='footnotesize'>>=
+jags.inits.pt <- function() {
+    list(lambda.intercept=runif(1), alpha0=rnorm(1, 5),
+         N=rowSums(y4)+rpois(nrow(y4), 2))
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars-pt,size='small'>>=
+jags.pars.pt <- c("beta0", "beta1",
+                  "alpha0", "alpha1", "totalAbundance")
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc-pt,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+jags.post.pt <- jags.basic(data=jags.data.pt, inits=jags.inits.pt,
+                           parameters.to.save=jags.pars.pt,
+                           model.file="distsamp-point-mod.jag",
+                           n.chains=3, n.adapt=100, n.burnin=0,
+                           n.iter=2000, parallel=TRUE)
+@ 
+\vfill
+<<jags-sum-pt,size='scriptsize'>>=
+round(summary(jags.post.pt)$quantile, digits=3)
+@ 
+\end{frame}
+
 
 
 
