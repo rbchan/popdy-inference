@@ -83,7 +83,7 @@
   \centering
   {
     \LARGE Lecture 9 -- Hierarchical distance sampling: \\
-    \Large simulation, fitting, prediction, and random effects \\
+    \Large simulation, fitting, and prediction %, and random effects \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -268,9 +268,11 @@
   probability is defined as: 
   \[
 %     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
-     \bar{p} = \int_{b_1}^{b_2} g(x)p(x) \; \mathrm{d}x
+%     \bar{p} = \int_{b_1}^{b_2} g(x)p(x) \; \mathrm{d}x
+     \bar{p} = \int_{0}^{B} g(x)p(x) \; \mathrm{d}x
    \]
-   where $b_1$ and $b_2$ are the limits of the distance interval.
+%   where $b_1$ and $b_2$ are the limits of the distance interval.
+   where $B$ is the width of the transect.
   \pause
   \vfill
   All that remains is the specification of $p(x)$, the
@@ -446,30 +448,45 @@ transect. \\
 \begin{frame}
   \frametitle{Multinomial cell probabilities}
   \small
-%  dsf
+%  Some of the equations must be modified when we're working with distance bins. \\
 %  \pause
 %  \vfill
-  Definitions
+  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and multinomial cell probabilities.
   \begin{itemize}
   \small
     \setlength\itemsep{1pt}
     \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
     \item $\sigma_i$ -- scale parameter of detection function $g(x)$
     \item $b_1, \dots, b_J$ -- Distance break points defining $J$ distance intervals
+    \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
+    \item $p(x|b_j\le x<b_{j+1}) = 1/(b_{j+1}-b_j)$
+    \item $\psi_j=\Pr(b_j\le x<b_{j+1})=(b_{j+1}-b_j)/B$ % -- Pr(occuring in distance bin $j$)
   \end{itemize}
   \pause \vfill
   \footnotesize
   \begin{columns}
     \column{0.9\paperwidth}
+    % \begin{tabular}{lc}
+    %   \hline
+    %   \centering
+    %   Description                       & Multinomial cell probability \\
+    %   \hline
+    %   Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+    %   Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+    %   {\centering $\cdots$}             & $\cdots$                     \\
+    %   Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+    %   Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+    %   \hline
+    % \end{tabular}
     \begin{tabular}{lc}
       \hline
       \centering
       Description                       & Multinomial cell probability \\
       \hline
-      Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
-      Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   \\
+      Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   \\
       {\centering $\cdots$}             & $\cdots$                     \\
-      Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   \\
       Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
       \hline
     \end{tabular}
@@ -506,59 +523,53 @@ transect. \\
 
 
 \begin{frame}[fragile]
-  \frametitle{HDS, no covariates}
+  \frametitle{Line transects, no covariates}
   \small
   Abundance
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}
-\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}  \hlcom{## Expected value of N}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{2.6}  \hlcom{## Expected value of N}
 \hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-% \item
   \pause
   \vfill
-  \alert{Average} detection probability and multinomial counts%, including individuals
-%  \alert{not} detected
+  Multinomial cell probabilities
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlnum{5}       \hlcom{# distance bins}
-\hlstd{K} \hlkwb{<-} \hlstd{J}\hlopt{+}\hlnum{1}     \hlcom{# multinomial cells}
-\hlstd{sigma} \hlkwb{<-} \hlnum{25}  \hlcom{# scale parameter}
-\hlstd{B} \hlkwb{<-} \hlnum{100}     \hlcom{# transect width}
+\hlstd{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
+\hlstd{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
+\hlstd{B} \hlkwb{<-} \hlnum{100}\hlstd{; L} \hlkwb{<-} \hlnum{100}         \hlcom{# transect widths (B) and lengths (L)}
 \hlstd{b} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{, B,} \hlkwc{length}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# distance break points}
-\hlstd{pi1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(K)} \hlcom{# multinomial cell probs}
+\hlstd{psi} \hlkwb{<-} \hlkwd{diff}\hlstd{(b)}\hlopt{/}\hlstd{B}           \hlcom{# Pr(x is in bin j)}
+\hlstd{pbar1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J)}        \hlcom{# average detection probability}
+\hlstd{pi1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)}        \hlcom{# multinomial cell probs}
 \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-    \hlstd{pi1[j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{)),}
-                        \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{B}
+    \hlstd{pbar1[j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{)),}
+                          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlkwd{diff}\hlstd{(b)[j]}
+    \hlstd{pi1[j]} \hlkwb{<-} \hlstd{pbar1[j]}\hlopt{*}\hlstd{psi[j]}
 \hlstd{\}}
-\hlstd{pi1[K]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi1[}\hlnum{1}\hlopt{:}\hlstd{J])}
-\hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=pi1)    \}}
+\hlstd{pi1[J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi1[}\hlnum{1}\hlopt{:}\hlstd{J])}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-%\end{enumerate}
   \pause
   \vfill
-  Discard final column of individuals not detected
+  Detections in each distance interval
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y1} \hlkwb{<-} \hlstd{y1.all[,}\hlopt{-}\hlstd{K]}
-\hlkwd{head}\hlstd{(y1,} \hlkwc{n}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=pi1)    \}}
+\hlstd{y1} \hlkwb{<-} \hlstd{y1.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}  \hlcom{## Drop final cell}
 \end{alltt}
-\begin{verbatim}
-##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    0    0    0    0    0
-## [2,]    2    1    0    0    0
-## [3,]    1    0    0    0    0
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -566,54 +577,74 @@ transect. \\
 
 
 \begin{frame}[fragile]
-  \frametitle{Removal model, covariates}
-  \small
-  Covariates
-  \vspace{-6pt}
+  \frametitle{Observed distances}
+  \centering
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{streamDepth} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlkwd{plot}\hlstd{(b[}\hlopt{-}\hlstd{K]}\hlopt{+}\hlnum{10}\hlstd{,} \hlkwd{colSums}\hlstd{(y1),} \hlkwc{type}\hlstd{=}\hlstr{"h"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{lend}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"tan"}\hlstd{,}
+     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Distance"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detections"}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\end{knitrout}
-% \item
-\vfill
-  Coefficients, $\lambda$, and $p$
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlnum{1}\hlstd{; beta1} \hlkwb{<-} \hlnum{0.5}
-\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{streamDepth)}
-\hlstd{alpha0} \hlkwb{<-} \hlnum{0}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{1}
-\hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{streamDepth)}
-\hlstd{pi2} \hlkwb{<-} \hlkwd{t}\hlstd{(}\hlkwd{sapply}\hlstd{(p2,} \hlkwa{function}\hlstd{(}\hlkwc{p}\hlstd{)} \hlkwd{c}\hlstd{(p, (}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{*}\hlstd{p, (}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlnum{2}\hlopt{*}\hlstd{p, (}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlnum{3}\hlstd{)))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-% \item
-\vfill
-  Simulate abundance and removal data
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}         \hlcom{## local abundance }
-\hlstd{y2.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])}
-\hlstd{\}}
-\end{alltt}
+\includegraphics[width=0.9\linewidth]{figure/dist-hist2-1} 
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in y2.all[i, ] <- rmultinom(n = 1, size = N2[i], prob = pi2[i, ]): number of items to replace is not a multiple of replacement length}}\begin{alltt}
-\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlopt{-}\hlstd{K]} \hlcom{## Discard final column... individuals not detected}
-\end{alltt}
-\end{kframe}
 \end{knitrout}
-%\end{enumerate}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Line transects, covariates}
+  \small
+  Abundance
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
+\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
+\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Multinomial cell probabilities
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{noise} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlstd{alpha0} \hlkwb{<-} \hlnum{3}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
+\hlstd{sigma2} \hlkwb{<-} \hlkwd{exp}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{noise)}
+\hlstd{pi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# multinomial cell probs}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+  \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+      \hlstd{pi2[i,j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma2[i]}\hlopt{^}\hlnum{2}\hlstd{)),}
+          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{(b[j}\hlopt{+}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{b[j])} \hlopt{*} \hlstd{psi[j] \}}
+  \hlstd{pi2[i,J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi2[i,}\hlnum{1}\hlopt{:}\hlstd{J]) \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Detections in each distance interval
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y2.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])    \}}
+\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
 
 
 
@@ -626,32 +657,38 @@ transect. \\
       Observations
 %      \tiny
   \vspace{-6pt}
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hlstd{,]}
+\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{25}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4] [,5]
-##  [1,]   NA   NA   NA   NA   NA
-##  [2,]   NA   NA   NA   NA   NA
-##  [3,]   NA   NA   NA   NA   NA
-##  [4,]   NA   NA   NA   NA   NA
-##  [5,]   NA   NA   NA   NA   NA
-##  [6,]   NA   NA   NA   NA   NA
-##  [7,]   NA   NA   NA   NA   NA
-##  [8,]   NA   NA   NA   NA   NA
-##  [9,]   NA   NA   NA   NA   NA
-## [10,]   NA   NA   NA   NA   NA
-## [11,]   NA   NA   NA   NA   NA
-## [12,]   NA   NA   NA   NA   NA
-## [13,]   NA   NA   NA   NA   NA
-## [14,]   NA   NA   NA   NA   NA
-## [15,]   NA   NA   NA   NA   NA
-## [16,]   NA   NA   NA   NA   NA
-## [17,]   NA   NA   NA   NA   NA
-## [18,]   NA   NA   NA   NA   NA
-## [19,]   NA   NA   NA   NA   NA
+##  [1,]    1    0    0    0    0
+##  [2,]    1    1    0    0    0
+##  [3,]    4    3    0    0    0
+##  [4,]    0    0    0    0    0
+##  [5,]    1    1    0    0    0
+##  [6,]    1    1    0    1    0
+##  [7,]    1    1    0    0    0
+##  [8,]    0    0    0    0    0
+##  [9,]    0    2    0    0    0
+## [10,]    1    2    0    0    0
+## [11,]    0    1    0    0    0
+## [12,]    1    0    0    0    0
+## [13,]    2    1    0    0    0
+## [14,]    2    0    0    0    0
+## [15,]    0    0    1    0    1
+## [16,]    0    0    0    0    0
+## [17,]    2    1    0    0    0
+## [18,]    3    1    0    1    0
+## [19,]    3    0    0    0    0
+## [20,]    1    0    0    0    0
+## [21,]    1    0    0    0    0
+## [22,]    1    0    0    0    0
+## [23,]    1    0    0    0    0
+## [24,]    1    0    0    0    0
+## [25,]    9    4    1    1    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -673,14 +710,14 @@ transect. \\
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] NA
+## [1] 0.77
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
   \pause
   \vfill
   \small
-  Captures on each pass
+  Total detections in each distance interval
   \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -688,7 +725,7 @@ transect. \\
 \hlkwd{colSums}\hlstd{(y2)}
 \end{alltt}
 \begin{verbatim}
-## [1] NA NA NA NA NA
+## [1] 137  78  28  11   1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -702,7 +739,7 @@ transect. \\
 \hlkwd{sum}\hlstd{(y2)}
 \end{alltt}
 \begin{verbatim}
-## [1] NA
+## [1] 255
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -720,31 +757,65 @@ transect. \\
 
 
 %\section{Prediction}
+\section{Likelihood}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
 
 
 
-% \begin{frame}
-%   \frametitle{Outline}
-%   \Large
-%   \tableofcontents[currentsection]
-% \end{frame}
 
 
 
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prepare data in `unmarked'}
-%   \small
-% <<un-umf,size='tiny'>>=
-% umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
-% @
-% \pause
-% <<wfac,size='scriptsize'>>=
-% summary(umf)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+  Note the new arguments. 
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameDS}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation,noise),} \hlkwc{dist.breaks}\hlstd{=b,}
+                       \hlkwc{tlength}\hlstd{=}\hlkwd{rep}\hlstd{(L, nSites),} \hlkwc{survey}\hlstd{=}\hlstr{"line"}\hlstd{,} \hlkwc{unitsIn}\hlstd{=}\hlstr{"m"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(umf)}
+\end{alltt}
+\begin{verbatim}
+## unmarkedFrameDS Object
+## 
+## line-transect survey design
+## Distance class cutpoints (m):  0 20 40 60 80 100 
+## 
+## 100 sites
+## Maximum number of distance classes per site: 5 
+## Mean number of distance classes per site: 5 
+## Sites with at least one detection: 77 
+## 
+## Tabulation of y observations:
+##   0   1   2   3   4   5   6   8   9  12 
+## 368  77  23  16  11   1   1   1   1   1 
+## 
+## Site-level covariates:
+##    elevation            noise         
+##  Min.   :-2.15115   Min.   :-2.10388  
+##  1st Qu.:-0.67921   1st Qu.:-0.62759  
+##  Median :-0.20250   Median :-0.09483  
+##  Mean   :-0.07937   Mean   : 0.04132  
+##  3rd Qu.: 0.60327   3rd Qu.: 0.65752  
+##  Max.   : 2.03949   Max.   : 2.83252
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 % > fm <- multinomPois(~temp ~forest, umf)    
@@ -754,23 +825,52 @@ transect. \\
 %   what():  Mat::operator(): index out of bounds
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Fit the model}
-%   \footnotesize
-%   \inr{multinomPois} has similar arguments as \inr{occu} and
-%   \inr{pcount}. 
-% <<un-fit,size='tiny'>>=
-% fm <- multinomPois(~streamDepth ~streamDepth, umf)    
-% fm
-% @
-% \pause
-% \vfill
-% Compare to actual parameter values:
-% \vspace{-6pt}
-% <<un-compare,size='tiny'>>=
-% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm} \hlkwb{<-} \hlkwd{distsamp}\hlstd{(}\hlopt{~}\hlstd{noise} \hlopt{~}\hlstd{elevation, umf)}
+\hlstd{fm}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## distsamp(formula = ~noise ~ elevation, data = umf)
+## 
+## Density:
+##             Estimate     SE    z  P(>|z|)
+## (Intercept)     1.10 0.0957 11.5 1.93e-30
+## elevation       1.05 0.0754 13.9 7.07e-44
+## 
+## Detection:
+##                  Estimate     SE     z  P(>|z|)
+## sigma(Intercept)    3.137 0.0515 60.90 0.00e+00
+## sigmanoise         -0.369 0.0443 -8.34 7.55e-17
+## 
+## AIC: 576.9817
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Compare to actual parameter values:
+\vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
+\end{alltt}
+\begin{verbatim}
+## beta0 beta1 
+##     2     1
+## alpha0 alpha1 
+##    3.0   -0.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
@@ -787,36 +887,41 @@ transect. \\
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{streamDepth}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{20}\hlstd{))}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{noise}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{20}\hlstd{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-Get predictions of $\lambda$ for each row of prediction data.
+Get predictions of $\sigma$ for each row of prediction data.
   \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
-                       \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{sigma.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                      \hlkwc{type}\hlstd{=}\hlstr{'det'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'predict': object 'fm' not found}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
-  View $\lambda$ predictions
+  View $\sigma$ predictions
   \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(lambda.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(sigma.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'head': object 'lambda.pred' not found}}\end{kframe}
+\begin{verbatim}
+##   Predicted  SE lower upper noise
+## 1        70 9.2    54    90  -3.0
+## 2        62 7.4    49    78  -2.7
+## 3        55 5.9    45    68  -2.4
+## 4        49 4.7    41    59  -2.1
+## 5        44 3.6    37    51  -1.7
+## 6        39 2.8    34    45  -1.4
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -843,7 +948,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\subsection{Bayesian methods}
+\section{Bayes}
 
 
 \begin{frame}
@@ -853,38 +958,48 @@ Get predictions of $\lambda$ for each row of prediction data.
 \end{frame}
 
 
-% \begin{frame}
-%   \frametitle{Bayesian multinomial $N$-mixture models}
-%   There are several equivalent formulations of the multinomial, some
-%   of which we can exploit to fit the model in JAGS.
-%   \begin{itemize}
-%     \item Conditional-on-$N$, missing $y_{iK}$
-%     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
-%     \item Conditional-on-$N$, sequential binomial
-%     \item Marginalized $N$
-%   \end{itemize}
-%   \pause
-%   \vfill
-%   These are just fun probability tricks that can help improve MCMC performance. \\
-% \end{frame}
 
 
 
-
-% \begin{frame}[fragile]
-%   \frametitle{Conditional-on-$N$, missing $y_k$}
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-% \vspace{-3pt}
-% <<bugs-removal2,size='scriptsize',echo=FALSE>>=
-% writeLines(readLines("removal-mod2.jag"))
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
+\vspace{-3pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## model {
+## 
+## lambda.intercept ~ dunif(0, 5)
+## beta0 <- log(lambda.intercept)
+## beta1 ~ dnorm(0, 0.5)
+## 
+## alpha0 ~ dnorm(0, 0.5)  
+## alpha1 ~ dnorm(0, 0.5)
+## 
+## for(i in 1:nSites) {
+##   log(lambda[i]) <- beta0 + beta1*elevation[i]
+##   N[i] ~ dpois(lambda[i])         # Latent local abundance
+##   log(sigma[i]) <- alpha0 + alpha1*noise[i]
+##   for(j in 1:nBins) {
+##     pbar[i,j]
+##     pi[i,j] <- psi[j]*pbar[i,j]
+##   }
+##   pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
+##   n[i] ~ dbin(1-pi[i,nBins+1], N[i])
+##   y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
+##   ## If N~Pois(lam), then the above is equivalent to:
+##   # for(j in 1:nBins) {
+##   #   y[i,j] ~ dpois(lambda[i]*pi[i,j])
+##   # }
+## }
+## 
+## totalAbundance <- sum(N[1:nSites])
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 

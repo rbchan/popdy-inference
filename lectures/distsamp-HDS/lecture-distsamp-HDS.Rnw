@@ -43,7 +43,7 @@ knit_theme$set("edit-kwrite")
   \centering
   {
     \LARGE Lecture 9 -- Hierarchical distance sampling: \\
-    \Large simulation, fitting, prediction, and random effects \\
+    \Large simulation, fitting, and prediction %, and random effects \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -213,9 +213,11 @@ legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
   probability is defined as: 
   \[
 %     \bar{p} = \int g(x)p(x) \; \mathrm{d}x
-     \bar{p} = \int_{b_1}^{b_2} g(x)p(x) \; \mathrm{d}x
+%     \bar{p} = \int_{b_1}^{b_2} g(x)p(x) \; \mathrm{d}x
+     \bar{p} = \int_{0}^{B} g(x)p(x) \; \mathrm{d}x
    \]
-   where $b_1$ and $b_2$ are the limits of the distance interval.
+%   where $b_1$ and $b_2$ are the limits of the distance interval.
+   where $B$ is the width of the transect.
   \pause
   \vfill
   All that remains is the specification of $p(x)$, the
@@ -373,30 +375,45 @@ transect. \\
 \begin{frame}
   \frametitle{Multinomial cell probabilities}
   \small
-%  dsf
+%  Some of the equations must be modified when we're working with distance bins. \\
 %  \pause
 %  \vfill
-  Definitions
+  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and multinomial cell probabilities.
   \begin{itemize}
   \small
     \setlength\itemsep{1pt}
     \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
     \item $\sigma_i$ -- scale parameter of detection function $g(x)$
     \item $b_1, \dots, b_J$ -- Distance break points defining $J$ distance intervals
+    \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
+    \item $p(x|b_j\le x<b_{j+1}) = 1/(b_{j+1}-b_j)$
+    \item $\psi_j=\Pr(b_j\le x<b_{j+1})=(b_{j+1}-b_j)/B$ % -- Pr(occuring in distance bin $j$)
   \end{itemize}
   \pause \vfill
   \footnotesize
   \begin{columns}
     \column{0.9\paperwidth}
+    % \begin{tabular}{lc}
+    %   \hline
+    %   \centering
+    %   Description                       & Multinomial cell probability \\
+    %   \hline
+    %   Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+    %   Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+    %   {\centering $\cdots$}             & $\cdots$                     \\
+    %   Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+    %   Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+    %   \hline
+    % \end{tabular}
     \begin{tabular}{lc}
       \hline
       \centering
       Description                       & Multinomial cell probability \\
       \hline
-      Pr(occurs and detected in first distance bin)  & $\pi_1 = \int_{b_1}^{b_2} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
-      Pr(occurs and detected in second distance bin)  & $\pi_2 = \int_{b_2}^{b_3} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   \\
+      Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   \\
       {\centering $\cdots$}             & $\cdots$                     \\
-      Pr(occurs and detected in last distance bin)  & $\pi_J = \int_{b_{J-1}}^{b_J} g(x,\sigma_i)p(x)\, \mathrm{d}x$   \\
+      Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   \\
       Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
       \hline
     \end{tabular}
@@ -435,80 +452,99 @@ set.seed(34889243)
 @ 
 
 \begin{frame}[fragile]
-  \frametitle{HDS, no covariates}
+  \frametitle{Line transects, no covariates}
   \small
   Abundance
-<<sim-rem-nocov1,size='scriptsize'>>=
-nSites <- 100
-lambda1 <- 2.6  ## Expected value of N
+  \vspace{-6pt}
+<<sim-hds-nocov1,size='scriptsize'>>=
+nSites <- 100; lambda1 <- 2.6  ## Expected value of N
 N1 <- rpois(n=nSites, lambda=lambda1)
 @
-% \item
   \pause
   \vfill
-  \alert{Average} detection probability and multinomial counts%, including individuals
-%  \alert{not} detected
-<<sim-nocov2,size='scriptsize'>>=
-J <- 5       # distance bins
-K <- J+1     # multinomial cells
-sigma <- 25  # scale parameter
-B <- 100     # transect width
+  Multinomial cell probabilities
+  \vspace{-6pt}
+<<sim-hds-nocov2,size='scriptsize'>>=
+J <- 5                     # distance bins
+sigma <- 50                # scale parameter
+B <- 100; L <- 100         # transect widths (B) and lengths (L)
 b <- seq(0, B, length=J+1) # distance break points
-pi1 <- numeric(K) # multinomial cell probs
+psi <- diff(b)/B           # Pr(x is in bin j)
+pbar1 <- numeric(J)        # average detection probability
+pi1 <- numeric(J+1)        # multinomial cell probs
 for(j in 1:J) {
-    pi1[j] <- integrate(function(x) exp(-x^2/(2*sigma^2)),
-                        lower=b[j], upper=b[j+1])$value / B
+    pbar1[j] <- integrate(function(x) exp(-x^2/(2*sigma^2)),
+                          lower=b[j], upper=b[j+1])$value / diff(b)[j]
+    pi1[j] <- pbar1[j]*psi[j]
 }
-pi1[K] <- 1-sum(pi1[1:J])
+pi1[J+1] <- 1-sum(pi1[1:J])
+@
+  \pause
+  \vfill
+  Detections in each distance interval
+  \vspace{-6pt}
+<<sim-hds-y1,size='scriptsize'>>=
 y1.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
     y1.all[i,] <- rmultinom(n=1, size=N1[i], prob=pi1)    }
-@
-%\end{enumerate}
-  \pause
-  \vfill
-  Discard final column of individuals not detected
-<<N1y1,size='scriptsize'>>=
-y1 <- y1.all[,-K]
-head(y1, n=3)
+y1 <- y1.all[,1:J]  ## Drop final cell
 @ 
 \end{frame}
 
 
 
 \begin{frame}[fragile]
-  \frametitle{Removal model, covariates}
-  \small
-  Covariates
-  \vspace{-6pt}
-<<sim-cov1,size='scriptsize'>>=
-streamDepth <- rnorm(nSites)
-@
-% \item
-\vfill
-  Coefficients, $\lambda$, and $p$
-  \vspace{-6pt}
-<<nsim-cov2,size='scriptsize'>>=
-beta0 <- 1; beta1 <- 0.5
-lambda2 <- exp(beta0 + beta1*streamDepth)
-alpha0 <- 0; alpha1 <- -1
-p2 <- plogis(alpha0 + alpha1*streamDepth)
-pi2 <- t(sapply(p2, function(p) c(p, (1-p)*p, (1-p)^2*p, (1-p)^3)))
+  \frametitle{Observed distances}
+  \centering
+<<dist-hist2,fig.height=5,out.width="90%",size='scriptsize',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(b[-K]+10, colSums(y1), type="h", lwd=80, lend=2, col="tan",
+     xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 @   
-% \item
-\vfill
-  Simulate abundance and removal data
-  \vspace{-6pt}
-<<sim-cov3,size='scriptsize'>>=
-N2 <- rpois(nSites, lambda=lambda2)         ## local abundance 
-y2.all <- matrix(NA, nrow=nSites, ncol=K)
-for(i in 1:nSites) {
-    y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])
-}
-y2 <- y2.all[,-K] ## Discard final column... individuals not detected
-@   
-%\end{enumerate}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Line transects, covariates}
+  \small
+  Abundance
+  \vspace{-6pt}
+<<sim-hds-cov1,size='scriptsize'>>=
+elevation <- rnorm(nSites)  
+beta0 <- 2; beta1 <- 1
+lambda2 <- exp(beta0 + beta1*elevation)
+N2 <- rpois(n=nSites, lambda=lambda2)
+@
+  \pause
+  \vfill
+  Multinomial cell probabilities
+  \vspace{-6pt}
+<<sim-hds-cov2,size='scriptsize'>>=
+noise <- rnorm(nSites)
+alpha0 <- 3; alpha1 <- -0.5
+sigma2 <- exp(alpha0 + alpha1*noise)
+pi2 <- matrix(NA, nSites, J+1) # multinomial cell probs
+for(i in 1:nSites) {
+  for(j in 1:J) {
+      pi2[i,j] <- integrate(function(x) exp(-x^2/(2*sigma2[i]^2)),
+          lower=b[j], upper=b[j+1])$value / (b[j+1]-b[j]) * psi[j] }
+  pi2[i,J+1] <- 1-sum(pi2[i,1:J]) } 
+@
+  \pause
+  \vfill
+  Detections in each distance interval
+  \vspace{-6pt}
+<<sim-hds-y2,size='scriptsize'>>=
+y2.all <- matrix(NA, nrow=nSites, ncol=J+1)
+for(i in 1:nSites) {
+    y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])    }
+y2 <- y2.all[,1:J]
+@ 
+\end{frame}
+
+
 
 
 
@@ -521,8 +557,8 @@ y2 <- y2.all[,-K] ## Discard final column... individuals not detected
       Observations
 %      \tiny
   \vspace{-6pt}
-<<sim-nocov-dat,size='scriptsize'>>=
-y2[1:19,]
+<<sim-nocov-dat,size='tiny'>>=
+y2[1:25,]
 @ 
   \end{column}
   \begin{column}{0.6\textwidth}
@@ -542,7 +578,7 @@ naiveOccupancy
   \pause
   \vfill
   \small
-  Captures on each pass
+  Total detections in each distance interval
   \vspace{-6pt}
 <<sim-nocov-ss2,size='scriptsize'>>=
 colSums(y2)
@@ -570,31 +606,34 @@ library(unmarked)
 
 
 %\section{Prediction}
+\section{Likelihood}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
 
 
 
-% \begin{frame}
-%   \frametitle{Outline}
-%   \Large
-%   \tableofcontents[currentsection]
-% \end{frame}
 
 
 
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prepare data in `unmarked'}
-%   \small
-% <<un-umf,size='tiny'>>=
-% umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
-% @
-% \pause
-% <<wfac,size='scriptsize'>>=
-% summary(umf)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+  Note the new arguments.
+  \vspace{-6pt}
+<<un-umf,size='tiny'>>=
+umf <- unmarkedFrameDS(y=y2, siteCovs=data.frame(elevation,noise), dist.breaks=b,
+                       tlength=rep(L, nSites), survey="line", unitsIn="m")
+@
+\pause
+<<wfac,size='tiny'>>=
+summary(umf)
+@ 
+\end{frame}
 
 
 % > fm <- multinomPois(~temp ~forest, umf)    
@@ -604,23 +643,21 @@ library(unmarked)
 %   what():  Mat::operator(): index out of bounds
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Fit the model}
-%   \footnotesize
-%   \inr{multinomPois} has similar arguments as \inr{occu} and
-%   \inr{pcount}. 
-% <<un-fit,size='tiny'>>=
-% fm <- multinomPois(~streamDepth ~streamDepth, umf)    
-% fm
-% @
-% \pause
-% \vfill
-% Compare to actual parameter values:
-% \vspace{-6pt}
-% <<un-compare,size='tiny'>>=
-% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+<<un-fit,size='tiny'>>=
+fm <- distsamp(~noise ~elevation, umf)    
+fm
+@
+\pause
+\vfill
+Compare to actual parameter values:
+\vspace{-6pt}
+<<un-compare,size='tiny'>>=
+c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+@ 
+\end{frame}
 
 
 
@@ -635,22 +672,22 @@ library(unmarked)
   Create \texttt{data.frame} with prediction covariates. 
   \vspace{-6pt}
 <<preddat,size='footnotesize'>>=
-pred.data <- data.frame(streamDepth=seq(-3, 3, length=20))
+pred.data <- data.frame(noise=seq(-3, 3, length=20))
 @
 \pause
 \vfill
-Get predictions of $\lambda$ for each row of prediction data.
+Get predictions of $\sigma$ for each row of prediction data.
   \vspace{-6pt}
 <<predpsi,size='footnotesize'>>=
-lambda.pred <- predict(fm, newdata=pred.data,
-                       type='state', append=TRUE)
+sigma.pred <- predict(fm, newdata=pred.data,
+                      type='det', append=TRUE)
 @
 \pause
 \vfill
-  View $\lambda$ predictions
+  View $\sigma$ predictions
   \vspace{-6pt}
 <<psi-head,size='footnotesize'>>=
-print(head(lambda.pred), digits=2)
+print(head(sigma.pred), digits=2)
 @
 \end{frame}
 
@@ -677,7 +714,7 @@ print(head(lambda.pred), digits=2)
 
 
 
-\subsection{Bayesian methods}
+\section{Bayes}
 
 
 \begin{frame}
@@ -687,38 +724,16 @@ print(head(lambda.pred), digits=2)
 \end{frame}
 
 
-% \begin{frame}
-%   \frametitle{Bayesian multinomial $N$-mixture models}
-%   There are several equivalent formulations of the multinomial, some
-%   of which we can exploit to fit the model in JAGS.
-%   \begin{itemize}
-%     \item Conditional-on-$N$, missing $y_{iK}$
-%     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
-%     \item Conditional-on-$N$, sequential binomial
-%     \item Marginalized $N$
-%   \end{itemize}
-%   \pause
-%   \vfill
-%   These are just fun probability tricks that can help improve MCMC performance. \\
-% \end{frame}
 
 
 
-
-% \begin{frame}[fragile]
-%   \frametitle{Conditional-on-$N$, missing $y_k$}
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-% \vspace{-3pt}
-% <<bugs-removal2,size='scriptsize',echo=FALSE>>=
-% writeLines(readLines("removal-mod2.jag"))
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
+\vspace{-3pt}
+<<bugs-line,size='tiny',echo=FALSE>>=
+writeLines(readLines("distsamp-line-mod.jag"))
+@
+\end{frame}
 
 
 
@@ -792,7 +807,7 @@ print(head(lambda.pred), digits=2)
 
 
 
-\section{Random effects}
+%\section{Random effects}
 
 
 
