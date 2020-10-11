@@ -1,27 +1,28 @@
 model {
 
-lambda.intercept ~ dunif(0, 5)
+lambda.intercept ~ dunif(0, 20)
 beta0 <- log(lambda.intercept)
 beta1 ~ dnorm(0, 0.5)
 
-alpha0 ~ dnorm(0, 0.5)  
+alpha0 ~ dnorm(0, 0.5)
 alpha1 ~ dnorm(0, 0.5)
 
 for(i in 1:nSites) {
   log(lambda[i]) <- beta0 + beta1*elevation[i]
   N[i] ~ dpois(lambda[i])         # Latent local abundance
   log(sigma[i]) <- alpha0 + alpha1*noise[i]
+  tau[i] <- 1/sigma[i]^2
   for(j in 1:nBins) {
-    pbar[i,j]
+    ## Trick to do integration for *line-transects*
+    pbar[i,j] <- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /
+                  dnorm(0, 0, tau[i]) / (b[j+1]-b[j])
     pi[i,j] <- psi[j]*pbar[i,j]
   }
   pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
   n[i] ~ dbin(1-pi[i,nBins+1], N[i])
   y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
   ## If N~Pois(lam), then the above is equivalent to:
-  # for(j in 1:nBins) {
-  #   y[i,j] ~ dpois(lambda[i]*pi[i,j])
-  # }
+  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
 }
 
 totalAbundance <- sum(N[1:nSites])

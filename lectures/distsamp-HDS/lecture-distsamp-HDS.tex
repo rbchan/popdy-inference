@@ -53,7 +53,7 @@
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
-%\usepackage{mathrsfs}
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -324,7 +324,7 @@
 \begin{frame}[fragile]
   \frametitle{Computing $\bar{p}$}
   Half-normal detection function and line-transect sampling.
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -337,7 +337,7 @@
 \pause
 \vfill
   Do the integration
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -352,11 +352,17 @@
 \pause
 \vfill
   Note the equivalence
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{(pbar} \hlkwb{<-} \hlkwd{integrate}\hlstd{(g,} \hlkwc{lower}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{upper}\hlstd{=B)}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{B)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3133087
+\end{verbatim}
+\begin{alltt}
+\hlstd{(pbar} \hlkwb{<-} \hlstd{(}\hlkwd{pnorm}\hlstd{(B,}\hlnum{0}\hlstd{,}\hlnum{25}\hlstd{)} \hlopt{-} \hlkwd{pnorm}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{25}\hlstd{))} \hlopt{/} \hlkwd{dnorm}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{25}\hlstd{)} \hlopt{/} \hlstd{B)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.3133087
@@ -366,8 +372,7 @@
 \pause
 \vfill
 \centering
-There's a 31.3\% chance of detecting an individual within 100 m of the 
-transect. \\
+31.3\% chance of detecting an individual within 100 m. \\
 \end{frame}
 
 
@@ -500,11 +505,11 @@ transect. \\
 
 
 
-\section{Simulation}
+%\section{Simulation}
 
-%\section{Line transects}
+\section{Line transects}
 
-%\subsection{Likelihood-based methods}
+\subsection{Simulation}
 
 \begin{frame}
   \frametitle{Outline}
@@ -565,7 +570,7 @@ transect. \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
+\hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
     \hlstd{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=pi1)    \}}
 \hlstd{y1} \hlkwb{<-} \hlstd{y1.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}  \hlcom{## Drop final cell}
@@ -582,7 +587,7 @@ transect. \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(b[}\hlopt{-}\hlstd{K]}\hlopt{+}\hlnum{10}\hlstd{,} \hlkwd{colSums}\hlstd{(y1),} \hlkwc{type}\hlstd{=}\hlstr{"h"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{lend}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"tan"}\hlstd{,}
+\hlkwd{plot}\hlstd{(b[}\hlopt{-}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)]}\hlopt{+}\hlnum{10}\hlstd{,} \hlkwd{colSums}\hlstd{(y1),} \hlkwc{type}\hlstd{=}\hlstr{"h"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{lend}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"tan"}\hlstd{,}
      \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Distance"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detections"}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -757,7 +762,7 @@ transect. \\
 
 
 %\section{Prediction}
-\section{Likelihood}
+\subsection{Likelihood}
 
 
 \begin{frame}
@@ -774,7 +779,8 @@ transect. \\
 \begin{frame}[fragile]
   \frametitle{Prepare data in `unmarked'}
   \small
-  Note the new arguments. 
+  Note the new arguments.
+  \vspace{-6pt}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -817,12 +823,6 @@ transect. \\
 \end{knitrout}
 \end{frame}
 
-
-% > fm <- multinomPois(~temp ~forest, umf)    
-
-% error: Mat::operator(): index out of bounds
-% terminate called after throwing an instance of 'std::logic_error'
-%   what():  Mat::operator(): index out of bounds
 
 
 \begin{frame}[fragile]
@@ -929,18 +929,51 @@ Get predictions of $\sigma$ for each row of prediction data.
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
-% par(mai=c(0.9,0.9,0.1,0.1))
-% plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
-%      ylim=c(0,30), xlab="Stream depth", type="l")
-% lines(lower ~ streamDepth, lambda.pred, col="grey")
-% lines(upper ~ streamDepth, lambda.pred, col="grey")
-% points(rowSums(y2)~streamDepth)
-% lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
-% @   
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
+     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
+     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
 
 
 
@@ -948,7 +981,7 @@ Get predictions of $\sigma$ for each row of prediction data.
 
 
 
-\section{Bayes}
+\subsection{Bayes}
 
 
 \begin{frame}
@@ -969,28 +1002,29 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{verbatim}
 ## model {
 ## 
-## lambda.intercept ~ dunif(0, 5)
+## lambda.intercept ~ dunif(0, 20)
 ## beta0 <- log(lambda.intercept)
 ## beta1 ~ dnorm(0, 0.5)
 ## 
-## alpha0 ~ dnorm(0, 0.5)  
+## alpha0 ~ dnorm(0, 0.5)
 ## alpha1 ~ dnorm(0, 0.5)
 ## 
 ## for(i in 1:nSites) {
 ##   log(lambda[i]) <- beta0 + beta1*elevation[i]
 ##   N[i] ~ dpois(lambda[i])         # Latent local abundance
 ##   log(sigma[i]) <- alpha0 + alpha1*noise[i]
+##   tau[i] <- 1/sigma[i]^2
 ##   for(j in 1:nBins) {
-##     pbar[i,j]
+##     ## Trick to do integration for *line-transects*
+##     pbar[i,j] <- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /
+##                   dnorm(0, 0, tau[i]) / (b[j+1]-b[j])
 ##     pi[i,j] <- psi[j]*pbar[i,j]
 ##   }
 ##   pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
 ##   n[i] ~ dbin(1-pi[i,nBins+1], N[i])
 ##   y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
 ##   ## If N~Pois(lam), then the above is equivalent to:
-##   # for(j in 1:nBins) {
-##   #   y[i,j] ~ dpois(lambda[i]*pi[i,j])
-##   # }
+##   # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
 ## }
 ## 
 ## totalAbundance <- sum(N[1:nSites])
@@ -1005,76 +1039,146 @@ Get predictions of $\sigma$ for each row of prediction data.
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data2,size='small'>>=
-% jags.data.rem2 <- list(y=y2, n=rowSums(y2),
-%                        streamDepth=streamDepth,
-%                        nSites=nSites, nPasses=nPasses)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='small'>>=
-% jags.inits.rem <- function() {
-%     list(lambda.intercept=runif(1), alpha0=rnorm(1),
-%          N=rowSums(y2)+rpois(nrow(y2), 2))
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars.rem <- c("beta0", "beta1",
-%                    "alpha0", "alpha1", "totalAbundance")
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data.line} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2),}
+                       \hlkwc{b}\hlstd{=b,}           \hlcom{# Distance break points}
+                       \hlkwc{psi}\hlstd{=}\hlkwd{diff}\hlstd{(b)}\hlopt{/}\hlstd{B,} \hlcom{# Pr(occuring in bin j)}
+                       \hlkwc{elevation}\hlstd{=elevation,} \hlkwc{noise}\hlstd{=noise,}
+                       \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nBins}\hlstd{=J)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits.line} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{5}\hlstd{),}
+         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{+}\hlkwd{rpois}\hlstd{(}\hlkwd{nrow}\hlstd{(y2),} \hlnum{2}\hlstd{))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars.line} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,}
+                    \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-% <<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
-% library(jagsUI)
-% jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
-%                              parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
-%                              n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
-% @ 
-% %\end{frame}
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.line} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.line,} \hlkwc{inits}\hlstd{=jags.inits.line,}
+                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.line,}
+                             \hlkwc{model.file}\hlstd{=}\hlstr{"distsamp-line-mod.jag"}\hlstd{,}
+                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                             \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(jags.post.line)}\hlopt{$}\hlstd{quantile,} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##                   2.5%     25%     50%     75%   97.5%
+## alpha0           3.043   3.103   3.138   3.172   3.242
+## alpha1          -0.463  -0.403  -0.373  -0.342  -0.290
+## beta0            1.603   1.731   1.792   1.851   1.963
+## beta1            0.897   0.991   1.037   1.089   1.181
+## deviance       520.673 531.579 537.705 543.925 557.278
+## totalAbundance 718.000 791.000 831.000 868.250 947.000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.rem2[,jags.pars.rem[1:3]])
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.line[,jags.pars.line[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-rem2-1} 
+
+}
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.rem2[,jags.pars.rem[4:5]])
-% @ 
-% \end{frame}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.line[,jags.pars.line[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-rem2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
 
 
 
 
-%\section{Point transects}
+\section{Point transects}
+
+\subsection{Simulation}
+
+\subsection{Likelihood}
+
+\subsection{Bayes}
 
 
 
-\section{Random effects}
+\section{Summary}
 
+
+\begin{frame}
+  \frametitle{Assumptions}
+  
+\end{frame}
 
 
 
