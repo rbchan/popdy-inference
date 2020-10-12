@@ -80,7 +80,7 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   It's based on the simple idea that detection probability should
-  decline with distance between an an animal and a transect. \\
+  decline with distance between an animal and a transect. \\
   \pause
   \vfill
   If we can estimate the function describing how $p$ declines with
@@ -248,8 +248,8 @@ legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
   In \alert{line-transect sampling}, it is often assumed that animals
   are uniformly distributed with respect to the transect.
   \begin{itemize}
-    \item Consequently, $p(x) = 1/B$ where $B$ is the width of the
-      transect.
+    \item Consequently, $p(x) = 1/B$, where $x$ is the
+      \alert{perpendicular} distance between animal and transect
     \item This is guaranteed by random transect placement
     \item Can also be justified if animals are neither attracted to
       the transects or avoid them. 
@@ -260,6 +260,7 @@ legend(70, 1, c("a=25, b=2", "a=50, b=10"), lty=1, col=c("black","blue"))
   but we recognize that area increases with distance from a point.
   \begin{itemize}
     \item Consequently, $p(x) = 2x/B^2$ (see pg. 408 in AHM)
+    \item Here, $x$ is the \alert{radial} distance to an animal
   \end{itemize}
 \end{frame}
 
@@ -341,7 +342,7 @@ sigma <- 25
   \begin{enumerate}
     \item Compute $\bar{p}$ for line-transect sampling when
       $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
-    \item Repeat step 1, but for point-transect sampling. 
+    \item Repeat, but for point-transect sampling. 
   \end{enumerate}
 \end{frame}
 
@@ -349,12 +350,14 @@ sigma <- 25
 
 
 \begin{frame}
-  \frametitle{Conventional vs hierarchical distance sampling}
+  \frametitle{\large Conventional vs hierarchical distance sampling}
   \alert{Conventional} distance sampling
   \begin{itemize}
     \item Focus is on estimation of detection function parameters and density.
     \item No model for spatial variation in density.
     \item Data are individual-level distances
+    \item We'll deal with CDS in more depth as a prelude to
+      spatial-capture recapture
   \end{itemize}
   \pause
   \vfill
@@ -381,31 +384,22 @@ sigma <- 25
     N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
-%  \vfill
   Observation model
   \begin{gather*}
     \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
     + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
-%    \bar{p}_{ij} = \int_{b_j}^{b_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
     \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
-%    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
     \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
   \end{gather*}
   \pause
-%  \vfill
   \small
   Definitions \\
-%  \footnotesize
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
   $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
-%  $\pi(g(x),p(x))$ -- Function computing multinomial cell probs \\
   $\pi(x,b,\sigma_i)$ -- Function computing multinomial cell probs \\
   $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
-%  \vfill
   $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
-%  \vspace{12pt}
-%  $\color{Purple} w$ -- observation covariate
 \end{frame}
 
 
@@ -448,7 +442,7 @@ sigma <- 25
     \setlength\itemsep{1pt}
     \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
     \item $\sigma_i$ -- scale parameter of detection function $g(x)$
-    \item $b_1, \dots, b_J$ -- Distance break points defining $J$ distance intervals
+    \item $b_1, \dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals
     \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
     \item $p(x|b_j\le x<b_{j+1}) = 1/(b_{j+1}-b_j)$
     \item $\psi_j=\Pr(b_j\le x<b_{j+1})=(b_{j+1}-b_j)/B$ % -- Pr(occuring in distance bin $j$)
@@ -636,7 +630,7 @@ library(unmarked)
 
 
 %\section{Prediction}
-\subsection{Likelihood}
+\subsection{Likelihood-based inference}
 
 
 \begin{frame}
@@ -755,8 +749,28 @@ plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+<<pred-sigma2-2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-c(1,5:10)>>=
+par(mai=c(0.9,0.9,0.1,0.1))
+plot(Predicted ~ noise, sigma.pred, ylab="Scale parameter (sigma)",
+     ylim=c(0,100), xlab="Noise level", type="l")
+lines(lower ~ noise, sigma.pred, col="grey")
+lines(upper ~ noise, sigma.pred, col="grey")
+arrows((log(15)-3.137)/-0.369, 15, 1.1, 55, len=0.1, col="blue")
+points((log(15)-3.137)/-0.369, 15, col="red", pch=16, cex=2)
+par( fig=c(0.5,0.95,0.55,0.95), new=TRUE)#, mar=c(0,0,0,0) )
+plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
+     col="red", lwd=2)
+@   
+\end{frame}
 
-\subsection{Bayes}
+
+
+
+
+
+\subsection{Bayesian inference}
 
 
 \begin{frame}
@@ -1056,7 +1070,7 @@ sum(y4)
 
 
 
-\subsection{Likelihood}
+\subsection{Likelihood-based inference}
 
 
 \begin{frame}[fragile]
@@ -1096,7 +1110,7 @@ c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 
 
 
-\subsection{Bayes}
+\subsection{Bayesian inference}
 
 
 
@@ -1159,7 +1173,7 @@ jags.pars.pt <- c("beta0", "beta1",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc-pt,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+<<bugs-mcmc-pt,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
 jags.post.pt <- jags.basic(data=jags.data.pt, inits=jags.inits.pt,
                            parameters.to.save=jags.pars.pt,
                            model.file="distsamp-point-mod.jag",
@@ -1179,8 +1193,20 @@ round(summary(jags.post.pt)$quantile, digits=3)
 
 
 \begin{frame}
-  \frametitle{Assumptions}
-  
+  \frametitle{Distance sampling summary}
+  Assumptions
+  \begin{itemize}
+    \item Animals don't move during the survey
+    \item Animals are uniformly distributed with respect to the
+      transects
+    \item Detection is certain on the transect, ie $p=1$ when $x=0$. 
+    \item Detections are independent
+  \end{itemize}
+  \pause
+  \vfill
+  If these assumptions can be met, it is a powerful method allowing
+  for inference about abundance and density using data from a single
+  visit. \\
 \end{frame}
 
 
@@ -1201,22 +1227,20 @@ round(summary(jags.post.pt)$quantile, digits=3)
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Simulate \alert{independent} double observer data with the following
-      properties:
+    \item 
+
       \begin{itemize}
         \item nSites=200
         \item $\lambda=3$
         \item $p_1=0.3$ and $p_2=0.5$
       \end{itemize}
-    \item Fit the model using `unmarked'\footnote{\scriptsize You will
-        need to create an observation covariate indicating observer A
-        and B} and JAGS
-    \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
-    \item Repeat steps 1-3 using the \alert{dependent} double observer
-      method. 
+    \item 
+    \item 
+    \item 
+
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
 \end{frame}
 
 

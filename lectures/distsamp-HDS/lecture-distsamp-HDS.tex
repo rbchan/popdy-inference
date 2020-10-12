@@ -120,7 +120,7 @@
   \pause
   \vfill
   It's based on the simple idea that detection probability should
-  decline with distance between an an animal and a transect. \\
+  decline with distance between an animal and a transect. \\
   \pause
   \vfill
   If we can estimate the function describing how $p$ declines with
@@ -303,8 +303,8 @@
   In \alert{line-transect sampling}, it is often assumed that animals
   are uniformly distributed with respect to the transect.
   \begin{itemize}
-    \item Consequently, $p(x) = 1/B$ where $B$ is the width of the
-      transect.
+    \item Consequently, $p(x) = 1/B$, where $x$ is the
+      \alert{perpendicular} distance between animal and transect
     \item This is guaranteed by random transect placement
     \item Can also be justified if animals are neither attracted to
       the transects or avoid them. 
@@ -315,6 +315,7 @@
   but we recognize that area increases with distance from a point.
   \begin{itemize}
     \item Consequently, $p(x) = 2x/B^2$ (see pg. 408 in AHM)
+    \item Here, $x$ is the \alert{radial} distance to an animal
   \end{itemize}
 \end{frame}
 
@@ -437,7 +438,7 @@
   \begin{enumerate}
     \item Compute $\bar{p}$ for line-transect sampling when
       $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
-    \item Repeat step 1, but for point-transect sampling. 
+    \item Repeat, but for point-transect sampling. 
   \end{enumerate}
 \end{frame}
 
@@ -445,12 +446,14 @@
 
 
 \begin{frame}
-  \frametitle{Conventional vs hierarchical distance sampling}
+  \frametitle{\large Conventional vs hierarchical distance sampling}
   \alert{Conventional} distance sampling
   \begin{itemize}
     \item Focus is on estimation of detection function parameters and density.
     \item No model for spatial variation in density.
     \item Data are individual-level distances
+    \item We'll deal with CDS in more depth as a prelude to
+      spatial-capture recapture
   \end{itemize}
   \pause
   \vfill
@@ -477,31 +480,22 @@
     N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
-%  \vfill
   Observation model
   \begin{gather*}
     \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
     + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
-%    \bar{p}_{ij} = \int_{b_j}^{b_{j+1}} g(x,\sigma_i)p(x) \; \mathrm{d}x \\
     \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
-%    \pi(\bar{p}_{i1}, \dots, \bar{p}_{iJ}))
     \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
   \end{gather*}
   \pause
-%  \vfill
   \small
   Definitions \\
-%  \footnotesize
   $\lambda_i$ -- Expected value of abundance at site $i$ \\
   $N_i$ -- Realized value of abundance at site $i$ \\
   $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
-%  $\pi(g(x),p(x))$ -- Function computing multinomial cell probs \\
   $\pi(x,b,\sigma_i)$ -- Function computing multinomial cell probs \\
   $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
-%  \vfill
   $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
-%  \vspace{12pt}
-%  $\color{Purple} w$ -- observation covariate
 \end{frame}
 
 
@@ -544,7 +538,7 @@
     \setlength\itemsep{1pt}
     \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
     \item $\sigma_i$ -- scale parameter of detection function $g(x)$
-    \item $b_1, \dots, b_J$ -- Distance break points defining $J$ distance intervals
+    \item $b_1, \dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals
     \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
     \item $p(x|b_j\le x<b_{j+1}) = 1/(b_{j+1}-b_j)$
     \item $\psi_j=\Pr(b_j\le x<b_{j+1})=(b_{j+1}-b_j)/B$ % -- Pr(occuring in distance bin $j$)
@@ -810,7 +804,7 @@
 
 
 %\section{Prediction}
-\subsection{Likelihood}
+\subsection{Likelihood-based inference}
 
 
 \begin{frame}
@@ -1028,8 +1022,33 @@ Get predictions of $\sigma$ for each row of prediction data.
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
+     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
 
-\subsection{Bayes}
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma2-2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\subsection{Bayesian inference}
 
 
 \begin{frame}
@@ -1493,7 +1512,7 @@ Get predictions of $\sigma$ for each row of prediction data.
 
 
 
-\subsection{Likelihood}
+\subsection{Likelihood-based inference}
 
 
 \begin{frame}[fragile]
@@ -1596,7 +1615,7 @@ Compare to actual parameter values:
 
 
 
-\subsection{Bayes}
+\subsection{Bayesian inference}
 
 
 
@@ -1724,12 +1743,12 @@ Compare to actual parameter values:
 \end{alltt}
 \begin{verbatim}
 ##                   2.5%     25%      50%      75%    97.5%
-## alpha0           2.965   3.028    3.065    3.101    3.169
-## alpha1          -0.563  -0.492   -0.457   -0.425   -0.366
-## beta0            1.636   1.843    1.946    2.038    2.235
-## beta1            0.829   0.960    1.031    1.103    1.252
-## deviance       406.460 414.381  418.910  423.628  433.825
-## totalAbundance 831.000 978.000 1062.000 1163.000 1354.025
+## alpha0           2.974   3.036    3.072    3.109    3.185
+## alpha1          -0.573  -0.500   -0.465   -0.432   -0.372
+## beta0            1.603   1.785    1.893    1.988    2.161
+## beta1            0.857   0.983    1.055    1.130    1.269
+## deviance       405.548 413.628  418.172  422.876  432.810
+## totalAbundance 798.000 947.000 1035.000 1123.000 1311.025
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1742,8 +1761,20 @@ Compare to actual parameter values:
 
 
 \begin{frame}
-  \frametitle{Assumptions}
-  
+  \frametitle{Summary}
+  Assumptions
+  \begin{itemize}
+    \item Animals don't move during the survey
+    \item Animals are uniformly distributed with respect to the
+      transects
+    \item Detection is certain on the transect, ie $p=1$ when $x=0$. 
+    \item Detections are independent
+  \end{itemize}
+  \pause
+  \vfill
+  If these assumptions can be met, it is a powerful method allowing
+  for inference about abundance and density using data from a single
+  visit. \\
 \end{frame}
 
 
@@ -1764,22 +1795,20 @@ Compare to actual parameter values:
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Simulate \alert{independent} double observer data with the following
-      properties:
+    \item 
+
       \begin{itemize}
         \item nSites=200
         \item $\lambda=3$
         \item $p_1=0.3$ and $p_2=0.5$
       \end{itemize}
-    \item Fit the model using `unmarked'\footnote{\scriptsize You will
-        need to create an observation covariate indicating observer A
-        and B} and JAGS
-    \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
-    \item Repeat steps 1-3 using the \alert{dependent} double observer
-      method. 
+    \item 
+    \item 
+    \item 
+
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
 \end{frame}
 
 
