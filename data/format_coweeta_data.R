@@ -169,3 +169,47 @@ colnames(cawa.counts.2017)[1:4] <- c("cawa1","cawa2","cawa3","cawa4")
 str(cawa.counts.2017)
 
 write.csv(cawa.counts.2017, file="cawa_data_2017_binNmix.csv")
+
+
+
+
+
+
+
+## Format distance sampling data
+
+library(unmarked)
+
+str(dets)
+
+dets.btbw.2019 <- subset(dets, species=="BTBW" & year=="2019")
+
+ds.btbw <- formatDistData(dets.btbw.2019, distCol="Distance",
+                          transectNameCol="PointName",
+                          dist.breaks=seq(0,100,20))
+
+
+all(rownames(sites) == rownames(ds.btbw)) ## Must be TRUE
+
+surveys.2019 <- surveys[format(surveys$Date, "%Y")=="2019",]
+
+all(rownames(sites) == surveys.2019$PointName) ## Must be TRUE
+
+
+
+dsdat.btbw <- cbind(sites, ds.btbw, surveys.2019)
+dsdat.btbw <- dsdat.btbw[,!(colnames(dsdat.btbw) %in% c("PointName", "Date"))]
+
+str(dsdat.btbw)
+
+
+write.csv(dsdat.btbw, file="btbw_data_distsamp.csv")
+
+
+
+umf <- unmarkedFrameDS(y=data.matrix(dsdat.btbw[,4:8]),
+                       survey="point", dist.breaks=seq(0, 100, 20),
+                       unitsIn="m")
+
+distsamp(~1~1, umf)
+
