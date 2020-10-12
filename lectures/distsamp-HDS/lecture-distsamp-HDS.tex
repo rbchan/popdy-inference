@@ -1743,12 +1743,12 @@ Compare to actual parameter values:
 \end{alltt}
 \begin{verbatim}
 ##                   2.5%     25%      50%      75%    97.5%
-## alpha0           2.974   3.036    3.072    3.109    3.185
-## alpha1          -0.573  -0.500   -0.465   -0.432   -0.372
-## beta0            1.603   1.785    1.893    1.988    2.161
-## beta1            0.857   0.983    1.055    1.130    1.269
-## deviance       405.548 413.628  418.172  422.876  432.810
-## totalAbundance 798.000 947.000 1035.000 1123.000 1311.025
+## alpha0           2.965   3.028    3.065    3.101    3.169
+## alpha1          -0.563  -0.492   -0.457   -0.425   -0.366
+## beta0            1.636   1.843    1.946    2.038    2.235
+## beta1            0.829   0.960    1.031    1.103    1.252
+## deviance       406.460 414.381  418.910  423.628  433.825
+## totalAbundance 831.000 978.000 1062.000 1163.000 1354.025
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1761,7 +1761,7 @@ Compare to actual parameter values:
 
 
 \begin{frame}
-  \frametitle{Summary}
+  \frametitle{Distance sampling summary}
   Assumptions
   \begin{itemize}
     \item Animals don't move during the survey
@@ -1795,17 +1795,28 @@ Compare to actual parameter values:
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item 
-
+    \item Fit a distance sampling model with the following covariates
+      to the black-throated blue warbler data in `unmarked' and 'JAGS': 
       \begin{itemize}
-        \item nSites=200
-        \item $\lambda=3$
-        \item $p_1=0.3$ and $p_2=0.5$
+        \item Density covariates
+          \begin{itemize}
+            \item Elevation
+            \item UTM.N
+            \item UTM.W
+          \end{itemize}
+        \item Detection covariates
+          \begin{itemize}
+            \item Precipitation
+            \item Wind
+            \item Noise
+          \end{itemize}
       \end{itemize}
-    \item 
-    \item 
-    \item 
-
+    \item Using the `unmarked' model, create two graphs of the
+      predictions, one for density and the other for the scale
+      parameter ($\sigma$).
+    \item Compare the `unmarked' model to two other models with the
+      same covariates, but with ``negative exponential'' and ``hazard
+      rate'' detection functions. Which has the lowest AIC? 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 

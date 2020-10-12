@@ -1227,17 +1227,28 @@ round(summary(jags.post.pt)$quantile, digits=3)
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item 
-
+    \item Fit a distance sampling model with the following covariates
+      to the black-throated blue warbler data in `unmarked' and 'JAGS': 
       \begin{itemize}
-        \item nSites=200
-        \item $\lambda=3$
-        \item $p_1=0.3$ and $p_2=0.5$
+        \item Density covariates
+          \begin{itemize}
+            \item Elevation
+            \item UTM.N
+            \item UTM.W
+          \end{itemize}
+        \item Detection covariates
+          \begin{itemize}
+            \item Precipitation
+            \item Wind
+            \item Noise
+          \end{itemize}
       \end{itemize}
-    \item 
-    \item 
-    \item 
-
+    \item Using the `unmarked' model, create two graphs of the
+      predictions, one for density and the other for the scale
+      parameter ($\sigma$).
+    \item Compare the `unmarked' model to two other models with the
+      same covariates, but with ``negative exponential'' and ``hazard
+      rate'' detection functions. Which has the lowest AIC? 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
