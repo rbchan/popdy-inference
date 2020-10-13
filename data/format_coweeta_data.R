@@ -187,7 +187,7 @@ dets.btbw.2019 <- subset(dets, species=="BTBW" & year=="2019")
 ds.btbw <- formatDistData(dets.btbw.2019, distCol="Distance",
                           transectNameCol="PointName",
                           dist.breaks=seq(0,100,20))
-
+colnames(ds.btbw) <- c("btbw0_20", "btbw20_40", "btbw40_60", "btbw60_80", "btbw80_100")
 
 all(rownames(sites) == rownames(ds.btbw)) ## Must be TRUE
 

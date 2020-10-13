@@ -353,8 +353,8 @@ sigma <- 25
   \frametitle{\large Conventional vs hierarchical distance sampling}
   \alert{Conventional} distance sampling
   \begin{itemize}
-    \item Focus is on estimation of detection function parameters and density.
-    \item No model for spatial variation in density.
+    \item Focus is on estimation of detection function parameters and density
+    \item No model for spatial variation in density
     \item Data are individual-level distances
     \item We'll deal with CDS in more depth as a prelude to
       spatial-capture recapture
@@ -364,8 +364,8 @@ sigma <- 25
   \alert{Hierarchical} distance sampling
   \begin{itemize}
     \item Focus is on estimation of detection function parameters and
-      spatial variation in abundance/density.
-    \item Data are counts of individuals in each distance bin.
+      spatial variation in abundance/density
+    \item Data are counts of individuals in each distance bin
     \item Multinomial $N$-mixture model with a unique function for
       computing the multinomial cell probabilities 
   \end{itemize}
@@ -665,7 +665,9 @@ summary(umf)
   \frametitle{Fit the model}
   \footnotesize
 <<un-fit,size='tiny'>>=
-fm <- distsamp(~noise ~elevation, umf)    
+## fm <- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp
+## fm <- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate
+fm <- distsamp(~noise ~elevation, umf, keyfun="halfnorm")   # half-normal
 fm
 @
 \pause
@@ -842,7 +844,7 @@ jags.post.line <- jags.basic(data=jags.data.line, inits=jags.inits.line,
                              n.iter=2000, parallel=TRUE)
 @ 
 \vfill
-<<jags-sum-line,size='scriptsize'>>=
+<<jags-sum-line,size='scriptsize',cache=TRUE>>=
 round(summary(jags.post.line)$quantile, digits=3)
 @ 
 \end{frame}
@@ -850,7 +852,7 @@ round(summary(jags.post.line)$quantile, digits=3)
 
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
-<<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+<<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
 plot(jags.post.line[,jags.pars.line[1:3]])
 @ 
 \end{frame}
@@ -859,7 +861,7 @@ plot(jags.post.line[,jags.pars.line[1:3]])
 
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
-<<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+<<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
 plot(jags.post.line[,jags.pars.line[4:5]])
 @ 
 \end{frame}
@@ -1094,7 +1096,9 @@ summary(umf4)
   \frametitle{Fit the model}
   \footnotesize
 <<un-fit-pt,size='tiny'>>=
-fm4 <- distsamp(~noise ~elevation, umf4)    
+## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="exp")     # negative exp
+## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="hazard")  # hazard rate
+fm4 <- distsamp(~noise ~elevation, umf4, keyfun="halfnorm")   # half-normal
 fm4
 @
 \pause
@@ -1181,7 +1185,7 @@ jags.post.pt <- jags.basic(data=jags.data.pt, inits=jags.inits.pt,
                            n.iter=2000, parallel=TRUE)
 @ 
 \vfill
-<<jags-sum-pt,size='scriptsize'>>=
+<<jags-sum-pt,size='scriptsize',cache=TRUE>>=
 round(summary(jags.post.pt)$quantile, digits=3)
 @ 
 \end{frame}
@@ -1196,17 +1200,19 @@ round(summary(jags.post.pt)$quantile, digits=3)
   \frametitle{Distance sampling summary}
   Assumptions
   \begin{itemize}
+    \small
     \item Animals don't move during the survey
     \item Animals are uniformly distributed with respect to the
       transects
-    \item Detection is certain on the transect, ie $p=1$ when $x=0$. 
+    \item Detection is certain on the transect, i.e. $p=1$ when $x=0$. 
     \item Detections are independent
   \end{itemize}
   \pause
   \vfill
-  If these assumptions can be met, it is a powerful method allowing
-  for inference about abundance and density using data from a single
-  visit. \\
+  \small
+  If these assumptions can be met, distance sampling is a powerful
+  method allowing for inference about abundance and density using data
+  from a single visit. \\
 \end{frame}
 
 
@@ -1221,35 +1227,36 @@ round(summary(jags.post.pt)$quantile, digits=3)
   \frametitle{Assignment}
   % \small
   \footnotesize
-  Create a self-contained R script or Rmarkdown file
-  to do the following:
+  Create a self-contained R script or Rmarkdown file to do the following:
   \vfill
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Fit a distance sampling model with the following covariates
-      to the black-throated blue warbler data in `unmarked' and 'JAGS': 
+    \item Fit a distance sampling model with a half-normal detection
+      function and the following covariates to the black-throated blue
+      warbler data ({\tt btbw\_data\_distsamp.csv}) in `unmarked' and
+      `JAGS':   
       \begin{itemize}
-        \item Density covariates
-          \begin{itemize}
-            \item Elevation
-            \item UTM.N
-            \item UTM.W
-          \end{itemize}
-        \item Detection covariates
-          \begin{itemize}
-            \item Precipitation
-            \item Wind
-            \item Noise
-          \end{itemize}
+        \footnotesize
+        \item Density covariates: {\tt Elevation, UTM.N, UTM.W}
+        \item Detection covariates: {\tt Wind, Noise}
+        \item Response: {\scriptsize \tt btbw0\_20, btbw20\_40, btbw40\_60, btbw60\_80, btbw80\_100}
       \end{itemize}
-    \item Using the `unmarked' model, create two graphs of the
-      predictions, one for density and the other for the scale
+    \item Using the model fitted in `unmarked', create two graphs of
+      the predictions, one for density and the other for the scale
       parameter ($\sigma$).
-    \item Compare the `unmarked' model to two other models with the
-      same covariates, but with ``negative exponential'' and ``hazard
-      rate'' detection functions. Which has the lowest AIC? 
+    \item Compare the half-normal model to two other models with the
+      same covariates, but with negative exponential and hazard
+      rate detection functions. Which has the lowest AIC? 
   \end{enumerate}
+  \pause
+  \vfill
+  Suggestions:
+  \begin{itemize}
+    \item Convert response variables to matrix with \inr{as.matrix}
+    \item Standardize covariates
+  \end{itemize}
+  \pause
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
 \end{frame}
