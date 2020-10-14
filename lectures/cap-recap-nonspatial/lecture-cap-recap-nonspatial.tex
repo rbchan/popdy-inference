@@ -1,0 +1,764 @@
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+% Load function to compile and open PDF
+
+
+% Compile and open PDF
+
+
+
+
+
+
+% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+  \centering
+  {
+    \LARGE Lecture 10 -- Non-spatial mark-recapture: \\
+    \Large simulation, fitting, and prediction \\
+  }
+  {\color{default} \rule{\textwidth}{0.1pt} }
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Overview}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Mark-recapture overview}
+  Until now, we've focused on models for data on aggregated quantities
+  like abundance and occupancy. \\ 
+  \pause
+  \vfill
+  Now we will talk about data on uniquely identifable individuals. \\
+  \pause
+  \vfill
+  This is nice because all individuals are different, and we're often
+  interested in these differences, even when our primary goal is
+  making inferences about population-level parameters like abundance
+  and density. \\
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Mark-recapture overview}
+  The simplest estimator of abundance is 
+  \[
+    \hat{N} = \frac{n}{\hat{p}}
+  \]
+  where $n$ is the number of individuals detected, $p$ is detection
+  probability, and $E(n)=Np$. \\
+  \pause
+  \vfill
+  In distance sampling, detection probability is a \alert{function} of
+  distance, rather than a constant, such that all individuals have
+  unique detection probabilities. \\
+  \pause
+  \vfill
+  As a result, we have to replace
+  $p$ with \alert{average} detection probability:
+  \[
+    \hat{N} = \frac{n}{\hat{\bar{p}}}
+  \]
+  \pause
+  \vfill
+  How do we compute average detection probability ($\bar{p}$)?
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{In-class exercise}
+%   Building off the previous example\dots
+%   \begin{enumerate}
+%     \item Compute $\bar{p}$ for line-transect sampling when
+%       $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
+%     \item Repeat, but for point-transect sampling. 
+%   \end{enumerate}
+% \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Hierarchical distance sampling}
+  \small
+  State model (with Poisson assumption)
+  \begin{gather*}
+    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} w_{i1}} +
+    \beta_2 {\color{blue} w_{i2}} + \cdots \\
+    N_i \sim \mathrm{Poisson}(\lambda_i)
+  \end{gather*}
+  \pause
+  Observation model
+  \begin{gather*}
+    \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
+    + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
+    \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
+    \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
+  \end{gather*}
+  \pause
+  \small
+  Definitions \\
+  $\lambda_i$ -- Expected value of abundance at site $i$ \\
+  $N_i$ -- Realized value of abundance at site $i$ \\
+  $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
+  $\pi(x,b,\sigma_i)$ -- Function computing multinomial cell probs \\
+  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
+  $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+%\section{Simulation}
+
+\section{Model $M_0$}
+
+
+
+
+
+
+\subsection{Simulation}
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+%  \tableofcontents[currentsection,currentsubsection]
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Multinomial cell probs}
+  \small
+  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and
+  multinomial cell probabilities. 
+  \begin{itemize}
+  \small
+    \setlength\itemsep{1pt}
+    \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
+    \item $\sigma_i$ -- scale parameter of detection function $g(x)$
+    \item $b_1, \dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals
+    \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
+    \item $p(x|b_j\le x<b_{j+1}) = 1/(b_{j+1}-b_j)$
+    \item $\psi_j=\Pr(b_j\le x<b_{j+1})=(b_{j+1}-b_j)/B$ % -- Pr(occuring in distance bin $j$)
+  \end{itemize}
+  \pause \vfill
+  \footnotesize
+  \begin{columns}
+    \column{0.9\paperwidth}
+    \begin{tabular}{lc}
+      \hline
+      \centering
+      Description                       & Multinomial cell probability \\
+      \hline
+      Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   \\
+      Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   \\
+      {\centering $\cdots$}             & $\cdots$                     \\
+      Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   \\
+      Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+      \hline
+    \end{tabular}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$}
+  \small
+  Parameters
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{N} \hlkwb{<-} \hlnum{100}
+\hlstd{p} \hlkwb{<-} \hlnum{0.2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{J} \hlkwb{<-} \hlnum{4}  \hlcom{## Occasions}
+\hlstd{y.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{y.all[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
+\hlstd{(n} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured))}
+\end{alltt}
+\begin{verbatim}
+## [1] 54
+\end{verbatim}
+\begin{alltt}
+\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,]}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    0    1    0    0
+## [2,]    1    0    0    0
+## [3,]    0    0    1    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Capture history frequencies}
+  \centering
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{histories} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{)}
+\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(histories))}
+\end{alltt}
+\begin{verbatim}
+## histories
+## 0011 0101 1100 1010 1101 0110 1001 0001 0010 0100 1000 
+##    1    1    1    2    2    4    4    7   10   10   12
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{frequencies} \hlkwb{<-} \hlkwd{table}\hlstd{(}\hlkwd{rowSums}\hlstd{(y))}
+\hlstd{frequencies}
+\end{alltt}
+\begin{verbatim}
+## 
+##  1  2  3 
+## 39 13  2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Line transects, covariates}
+  \small
+  Abundance
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
+\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
+\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Multinomial cell probabilities
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{noise} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlstd{alpha0} \hlkwb{<-} \hlnum{3}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
+\hlstd{sigma2} \hlkwb{<-} \hlkwd{exp}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{noise)}
+\hlstd{pi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# multinomial cell probs}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+  \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+      \hlstd{pi2[i,j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma2[i]}\hlopt{^}\hlnum{2}\hlstd{)),}
+          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{(b[j}\hlopt{+}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{b[j])} \hlopt{*} \hlstd{psi[j] \}}
+  \hlstd{pi2[i,J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi2[i,}\hlnum{1}\hlopt{:}\hlstd{J]) \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Detections in each distance interval
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y2.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])    \}}
+\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+  \vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{25}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2] [,3] [,4]
+##  [1,]    1    0    1    0
+##  [2,]    0    0    0    0
+##  [3,]    2    0    0    0
+##  [4,]    6    2    0    0
+##  [5,]    0    1    0    0
+##  [6,]   18    4    1    0
+##  [7,]    5    3    1    1
+##  [8,]    1    0    0    0
+##  [9,]    0    0    0    0
+## [10,]    3    1    0    0
+## [11,]    4    1    1    0
+## [12,]    0    0    0    0
+## [13,]    3    1    0    0
+## [14,]    1    2    4    1
+## [15,]    1    1    0    0
+## [16,]    2    0    0    0
+## [17,]    0    0    0    0
+## [18,]    0    0    0    0
+## [19,]    2    0    0    0
+## [20,]    0    0    0    0
+## [21,]    1    1    0    0
+## [22,]    0    0    0    0
+## [23,]    4    0    0    0
+## [24,]    1    0    0    0
+## [25,]    0    1    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+    \small
+    Proportion of sites known to be occupied
+    \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# Max count at each site}
+\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)}
+\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
+\hlstd{naiveOccupancy}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.83
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  \small
+  Total detections in each distance interval
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{colSums}\hlstd{(y2)}
+\end{alltt}
+\begin{verbatim}
+## [1] 175  83  25  16
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Naive abundance
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{sum}\hlstd{(y2)}
+\end{alltt}
+\begin{verbatim}
+## [1] 299
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+
+%\section{Prediction}
+\subsection{Likelihood-based inference}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prepare data in `unmarked'}
+%   \small
+%   Note the new arguments.
+%   \vspace{-6pt}
+% <<un-umf,size='tiny'>>=
+% umf <- unmarkedFrameDS(y=y2, siteCovs=data.frame(elevation,noise), dist.breaks=b,
+%                        tlength=rep(L, nSites), survey="line", unitsIn="m")
+% @
+% \pause
+% <<wfac,size='tiny'>>=
+% summary(umf)
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Fit the model}
+%   \footnotesize
+% <<un-fit,size='tiny'>>=
+% ## fm <- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp
+% ## fm <- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate
+% fm <- distsamp(~noise ~elevation, umf, keyfun="halfnorm")   # half-normal
+% fm
+% @
+% \pause
+% \vfill
+% Compare to actual parameter values:
+% \vspace{-6pt}
+% <<un-compare,size='tiny'>>=
+% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+% @ 
+% \end{frame}
+
+
+
+
+
+
+
+\subsection{Bayesian inference}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
+% \vspace{-3pt}
+% <<bugs-line,size='tiny',echo=FALSE>>=
+% writeLines(readLines("distsamp-line-mod.jag"))
+% @
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-12pt}
+% <<bugs-data2,size='footnotesize'>>=
+% jags.data.line <- list(y=y2, n=rowSums(y2),
+%                        b=b,           # Distance break points
+%                        psi=diff(b)/B, # Pr(occuring in bin j)
+%                        elevation=elevation, noise=noise,
+%                        nSites=nSites, nBins=J)
+% @
+% \pause
+% \vfill
+%   Initial values
+%   \vspace{-12pt}
+% <<bugs-inits,size='footnotesize'>>=
+% jags.inits.line <- function() {
+%     list(lambda.intercept=runif(1), alpha0=rnorm(1, 5),
+%          N=rowSums(y2)+rpois(nrow(y2), 2))
+% }
+% @ 
+% \pause
+% \vfill
+%   Parameters to monitor
+%   \vspace{-12pt}
+% <<bugs-pars,size='small'>>=
+% jags.pars.line <- c("beta0", "beta1",
+%                     "alpha0", "alpha1", "totalAbundance")
+% @ 
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{MCMC}
+%   \small
+% <<bugs-mcmc-line,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+% library(jagsUI)
+% jags.post.line <- jags.basic(data=jags.data.line, inits=jags.inits.line,
+%                              parameters.to.save=jags.pars.line,
+%                              model.file="distsamp-line-mod.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0,
+%                              n.iter=2000, parallel=TRUE)
+% @ 
+% \vfill
+% <<jags-sum-line,size='scriptsize',cache=TRUE>>=
+% round(summary(jags.post.line)$quantile, digits=3)
+% @ 
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+% plot(jags.post.line[,jags.pars.line[1:3]])
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+% plot(jags.post.line[,jags.pars.line[4:5]])
+% @ 
+% \end{frame}
+
+
+
+
+
+
+
+
+
+
+\section{Summary}
+
+
+\begin{frame}
+  \frametitle{Distance sampling summary}
+  Assumptions
+  \begin{itemize}
+    \small
+    \item Animals don't move during the survey
+    \item Animals are uniformly distributed with respect to the
+      transects
+    \item Detection is certain on the transect, i.e. $p=1$ when $x=0$. 
+    \item Detections are independent
+  \end{itemize}
+  \pause
+  \vfill
+  \small
+  If these assumptions can be met, distance sampling is a powerful
+  method allowing for inference about abundance and density using data
+  from a single visit. \\
+\end{frame}
+
+
+
+
+\section{Assignment}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Assignment}
+  % \small
+  \footnotesize
+  Create a self-contained R script or Rmarkdown file to do the following:
+  \vfill
+  \begin{enumerate}
+%    \small
+    \footnotesize
+    \item Fit a distance sampling model with a half-normal detection
+      function and the following covariates to the black-throated blue
+      warbler data ({\tt btbw\_data\_distsamp.csv}) in `unmarked' and
+      `JAGS':   
+      \begin{itemize}
+        \footnotesize
+        \item Density covariates: {\tt Elevation, UTM.N, UTM.W}
+        \item Detection covariates: {\tt Wind, Noise}
+        \item Response: {\scriptsize \tt btbw0\_20, btbw20\_40, btbw40\_60, btbw60\_80, btbw80\_100}
+      \end{itemize}
+    \item Using the model fitted in `unmarked', create two graphs of
+      the predictions, one for density and the other for the scale
+      parameter ($\sigma$).
+    \item Compare the half-normal model to two other models with the
+      same covariates, but with negative exponential and hazard
+      rate detection functions. Which has the lowest AIC? 
+  \end{enumerate}
+  \pause
+  \vfill
+  Suggestions:
+  \begin{itemize}
+    \item Convert response variables to matrix with \inr{as.matrix}
+    \item Standardize covariates
+  \end{itemize}
+  \pause
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+
