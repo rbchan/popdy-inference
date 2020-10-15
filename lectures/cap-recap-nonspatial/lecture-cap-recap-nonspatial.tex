@@ -82,7 +82,8 @@
   \LARGE
   \centering
   {
-    \LARGE Lecture 10 -- Non-spatial mark-recapture: \\
+    \LARGE Lecture 10 -- Non-spatial mark-recapture \\ for estimating
+    population size: \\
     \Large simulation, fitting, and prediction \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -141,26 +142,56 @@
   probability, and $E(n)=Np$. \\
   \pause
   \vfill
-  In distance sampling, detection probability is a \alert{function} of
-  distance, rather than a constant, such that all individuals have
-  unique detection probabilities. \\
+  In distance sampling, we modeled detection probability as a
+  function of distance, and, we replaced $p$ with average detection
+  probability. \\ 
   \pause
   \vfill
-  As a result, we have to replace
-  $p$ with \alert{average} detection probability:
-  \[
-    \hat{N} = \frac{n}{\hat{\bar{p}}}
-  \]
-  \pause
-  \vfill
-  How do we compute average detection probability ($\bar{p}$)?
+  For the simplest mark-recapture problems, $p$ is a constant and we
+  estimate it by trapping on multiple occasions and marking all
+  individuals captured.
 \end{frame}
 
 
 
 
 
-
+\begin{frame}
+  \frametitle{Mark-recapture data}
+  \small
+  Mark-recapture data are often called ``capture histories.'' Here's
+  an example with $n=6$ animals captured on $J=3$ occasions. \\
+  \centering
+%  \vfill  
+  \begin{tabular}{lccc}
+    \hline
+    & \multicolumn{3}{c}{Occasion} \\
+    \cline{2-4}
+    Individual & 1 & 2 & 3 \\
+    \hline
+    1 & 0 & 0 & 1 \\
+    2 & 1 & 1 & 1 \\
+    3 & 0 & 1 & 0 \\
+    4 & 0 & 1 & 1 \\
+    5 & 1 & 0 & 0 \\
+    6 & 0 & 0 & 1 \\
+    \hline
+  \end{tabular}
+  \pause
+  \vfill
+  \flushleft
+  How do we estimate $p$ (and $N$) from these data? %\\
+  \pause
+%  \vfill
+  You can get a sense for $p$ (and $N$) by looking at the data.
+  \begin{itemize}
+    \setlength\itemsep{.1pt}
+    \item If $p$ was close to 1, most individuals would be captured
+      on all 3 occasions
+    \item If $p$ was close to 0, few individuals would be captured on
+      more than one occasion
+  \end{itemize}
+\end{frame}
 
 
 
@@ -177,38 +208,40 @@
 
 
 
+
+
 \begin{frame}
-  \frametitle{Hierarchical distance sampling}
-  \small
-  State model (with Poisson assumption)
-  \begin{gather*}
-    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} w_{i1}} +
-    \beta_2 {\color{blue} w_{i2}} + \cdots \\
-    N_i \sim \mathrm{Poisson}(\lambda_i)
-  \end{gather*}
+  \frametitle{Classical approaches}
+  Lincoln-Peterson  \\
   \pause
-  Observation model
-  \begin{gather*}
-    \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
-    + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
-    \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
-    \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
-  \end{gather*}
-  \pause
-  \small
-  Definitions \\
-  $\lambda_i$ -- Expected value of abundance at site $i$ \\
-  $N_i$ -- Realized value of abundance at site $i$ \\
-  $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
-  $\pi(x,b,\sigma_i)$ -- Function computing multinomial cell probs \\
-  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
-  $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
+  \vfill
+  Closed population models \\
 \end{frame}
 
 
 
 
 
+
+\begin{frame}
+  \frametitle{Basic model}
+  \small
+  State model \\
+  {\centering
+    There isn't one! $N$ is often treated as a constant. \\
+  }
+  Observation model
+  \begin{gather*}
+    n \sim \mathrm{Bin}(N, p^*) \\
+    y \sim \mathrm{Multinomial}()
+  \end{gather*}
+  \pause
+  \small
+  Definitions \\
+  $N$ -- Population size \\
+  $n$ -- Number of animals captured \\
+  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
+\end{frame}
 
 
 
@@ -220,11 +253,10 @@
 \section{Model $M_0$}
 
 
-
-
-
-
 \subsection{Simulation}
+
+
+
 
 \begin{frame}
   \frametitle{Outline}
@@ -367,159 +399,6 @@
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Line transects, covariates}
-  \small
-  Abundance
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
-\hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
-\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda2)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Multinomial cell probabilities
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{noise} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
-\hlstd{alpha0} \hlkwb{<-} \hlnum{3}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
-\hlstd{sigma2} \hlkwb{<-} \hlkwd{exp}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{noise)}
-\hlstd{pi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# multinomial cell probs}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-  \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-      \hlstd{pi2[i,j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma2[i]}\hlopt{^}\hlnum{2}\hlstd{)),}
-          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{(b[j}\hlopt{+}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{b[j])} \hlopt{*} \hlstd{psi[j] \}}
-  \hlstd{pi2[i,J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi2[i,}\hlnum{1}\hlopt{:}\hlstd{J]) \}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Detections in each distance interval
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{y2.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])    \}}
-\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Simulated data}
-  \begin{columns}
-    \begin{column}{0.4\textwidth}
-      \small
-      Observations
-%      \tiny
-  \vspace{-6pt}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{25}\hlstd{,]}
-\end{alltt}
-\begin{verbatim}
-##       [,1] [,2] [,3] [,4]
-##  [1,]    1    0    1    0
-##  [2,]    0    0    0    0
-##  [3,]    2    0    0    0
-##  [4,]    6    2    0    0
-##  [5,]    0    1    0    0
-##  [6,]   18    4    1    0
-##  [7,]    5    3    1    1
-##  [8,]    1    0    0    0
-##  [9,]    0    0    0    0
-## [10,]    3    1    0    0
-## [11,]    4    1    1    0
-## [12,]    0    0    0    0
-## [13,]    3    1    0    0
-## [14,]    1    2    4    1
-## [15,]    1    1    0    0
-## [16,]    2    0    0    0
-## [17,]    0    0    0    0
-## [18,]    0    0    0    0
-## [19,]    2    0    0    0
-## [20,]    0    0    0    0
-## [21,]    1    1    0    0
-## [22,]    0    0    0    0
-## [23,]    4    0    0    0
-## [24,]    1    0    0    0
-## [25,]    0    1    0    0
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-  \end{column}
-  \begin{column}{0.6\textwidth}
-    \pause
-%    \scriptsize
-    {\centering Summary stats \\}
-    \vspace{24pt}
-    \small
-    Proportion of sites known to be occupied
-    \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{# Max count at each site}
-\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)}
-\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
-\hlstd{naiveOccupancy}
-\end{alltt}
-\begin{verbatim}
-## [1] 0.83
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  \small
-  Total detections in each distance interval
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{colSums}\hlstd{(y2)}
-\end{alltt}
-\begin{verbatim}
-## [1] 175  83  25  16
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Naive abundance
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{sum}\hlstd{(y2)}
-\end{alltt}
-\begin{verbatim}
-## [1] 299
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-  \end{column}
-  \end{columns}
-\end{frame}
 
 
 
@@ -684,6 +563,31 @@
 
 
 
+\section{Model $M_t$}
+
+
+\subsection{Simulation}
+
+
+
+
+
+
+\section{Model $M_b$}
+
+
+\subsection{Simulation}
+
+
+
+
+
+\section{Model $M_h$}
+
+
+\subsection{Simulation}
+
+
 
 
 
@@ -692,7 +596,7 @@
 
 
 \begin{frame}
-  \frametitle{Distance sampling summary}
+  \frametitle{Mark-recapture summary}
   Assumptions
   \begin{itemize}
     \small
