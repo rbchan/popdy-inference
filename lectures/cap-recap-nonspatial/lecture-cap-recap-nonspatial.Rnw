@@ -85,8 +85,11 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   This is nice because all individuals are different, and we're often
-  interested in these differences, even when our primary goal is
-  making inferences about population-level parameters like abundance
+  interested in these differences\dots \\
+  \pause
+  \vfill
+  \dots even when our primary goal is
+  inference on population-level parameters like abundance
   and density. \\
 \end{frame}
 
@@ -108,8 +111,8 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   For the simplest mark-recapture problems, $p$ is a constant and we
-  estimate it by trapping on multiple occasions and marking all
-  individuals captured.
+  estimate it by trapping on multiple occasions and marking and
+  recapturing as we go.  
 \end{frame}
 
 
@@ -190,6 +193,8 @@ knit_theme$set("edit-kwrite")
   {\centering
     There isn't one! $N$ is often treated as a constant. \\
   }
+  \pause
+  \vfill
   Observation model
   \begin{gather*}
     n \sim \mathrm{Bin}(N, p^*) \\
@@ -204,6 +209,17 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{Estimation options}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Software options}
+  
+\end{frame}
 
 
 
@@ -313,25 +329,56 @@ frequencies
 
 
 
-<<eval=FALSE,include=FALSE,echo=FALSE>>=
+\section{Joint likelihood}
+
+
+\begin{frame}[fragile]
+  \frametitle{Joint likelihood}
+  The joint likelihood is
+  \begin{multline*}
+    L(N,p; y,n) = \\
+    \prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}
+    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+  \end{multline*}
+  \pause
+  \vfill
+<<nll-M0,echo=TRUE,size='scriptsize'>>=
 nll.M0 <- function(pars, y) {
-    n <- nrow(y)
+    n <- nrow(y);       J <- ncol(y)
     N <- exp(pars[1])
     n0 <- N-n
     if(n0<0) return(NA)
     p <- plogis(pars[2])
     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
-    J <- ncol(y)
     p0 <- (1-p)^J
     ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*sum(log(p0))
     nll <- -(ld.y1+ld.n0)
     return(nll)
 }
+@
+\end{frame}
 
-fm.M0 <- optim(c(4,0), nll.M0, y=y, hessian=TRUE)
-c(exp(fm.M0$par[1]), plogis(fm.M0$par[2]))
+
+
+\begin{frame}[fragile]
+  \frametitle{Joint likelihood}
+Minimized the negative log-likelihood
+\pause
+\vfill
+<<opt-nll-M0, size='scriptsize'>>=
+fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
+fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
+                        SE=sqrt(diag(solve(fm.M0$hessian))))
+fm.M0.est
+@
+\pause
+\vfill
+Back-transform the estimates
+<<opt-nll-M0-back, size='scriptsize'>>=
+c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
 @ 
 
+\end{frame}
 
 
 
@@ -352,8 +399,11 @@ c(p=plogis(fm.M0.cn$par[1]))
 
 
 
+\section{Data augmentation}
+
+
 %\section{Prediction}
-\subsection{Likelihood-based inference}
+%\subsection{Likelihood-based inference}
 
 
 \begin{frame}
@@ -362,6 +412,11 @@ c(p=plogis(fm.M0.cn$par[1]))
   \tableofcontents[currentsection]
 \end{frame}
 
+
+\subsection{Likelihood-based data augmentation}
+
+
+\subsection{Bayesian data augmentation}
 
 
 
@@ -408,7 +463,7 @@ c(p=plogis(fm.M0.cn$par[1]))
 
 
 
-\subsection{Bayesian inference}
+%\subsection{Bayesian inference}
 
 
 \begin{frame}
@@ -507,36 +562,24 @@ c(p=plogis(fm.M0.cn$par[1]))
 
 
 
-\section{Model $M_t$}
+\section{Models $M_t$, $M_b$, $M_h$}
 
 
 \subsection{Simulation}
 
 
+\subsection{Joint Likelihood}
+
+\subsection{Likelihood-based data augmentation}
 
 
-
-
-\section{Model $M_b$}
-
-
-\subsection{Simulation}
-
-
-
-
-
-\section{Model $M_h$}
-
-
-\subsection{Simulation}
+\subsection{Bayesian data augmentation}
 
 
 
 
 
-
-\section{Summary}
+%\section{Summary}
 
 
 \begin{frame}

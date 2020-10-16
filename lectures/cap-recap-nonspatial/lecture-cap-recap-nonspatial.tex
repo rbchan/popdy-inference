@@ -125,8 +125,11 @@
   \pause
   \vfill
   This is nice because all individuals are different, and we're often
-  interested in these differences, even when our primary goal is
-  making inferences about population-level parameters like abundance
+  interested in these differences\dots \\
+  \pause
+  \vfill
+  \dots even when our primary goal is
+  inference on population-level parameters like abundance
   and density. \\
 \end{frame}
 
@@ -148,8 +151,8 @@
   \pause
   \vfill
   For the simplest mark-recapture problems, $p$ is a constant and we
-  estimate it by trapping on multiple occasions and marking all
-  individuals captured.
+  estimate it by trapping on multiple occasions and marking and
+  recapturing as we go.  
 \end{frame}
 
 
@@ -245,6 +248,17 @@
 
 
 
+\begin{frame}
+  \frametitle{Estimation options}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Software options}
+  
+\end{frame}
+
 
 
 
@@ -276,11 +290,6 @@
   \small
     \setlength\itemsep{1pt}
     \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
-    \item $\sigma_i$ -- scale parameter of detection function $g(x)$
-    \item $b_1, \dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals
-    \item $\bar{p}_j = \int_{b_j}^{b_{j+1}} g(x,\sigma)p(x|b_j\le x<b_{j+1})\, \mathrm{d}x$
-    \item $p(x|b_j\le x<b_{j+1}) = 1/(b_{j+1}-b_j)$
-    \item $\psi_j=\Pr(b_j\le x<b_{j+1})=(b_{j+1}-b_j)/B$ % -- Pr(occuring in distance bin $j$)
   \end{itemize}
   \pause \vfill
   \footnotesize
@@ -289,13 +298,12 @@
     \begin{tabular}{lc}
       \hline
       \centering
-      Description                       & Multinomial cell probability \\
+      Capture history                 & Multinomial cell probability \\
       \hline
-      Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   \\
-      Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   \\
-      {\centering $\cdots$}             & $\cdots$                     \\
-      Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   \\
-      Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
+      100  & $p_1(1-p)(1-p)$   \\
+        & $\pi_2 = \psi_2\bar{p}_2$   \\
+      111  & $\pi_J = \psi_J\bar{p}_J$   \\
+      000                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
       \hline
     \end{tabular}
   \end{columns}
@@ -398,6 +406,77 @@
 
 
 
+\section{Joint likelihood}
+
+
+\begin{frame}[fragile]
+  \frametitle{Joint likelihood}
+  The joint likelihood is
+  \begin{multline*}
+    L(N,p; y,n) = \\
+    \prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}
+    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+  \end{multline*}
+  \pause
+  \vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nll.M0} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{pars}\hlstd{,} \hlkwc{y}\hlstd{) \{}
+    \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y);       J} \hlkwb{<-} \hlkwd{ncol}\hlstd{(y)}
+    \hlstd{N} \hlkwb{<-} \hlkwd{exp}\hlstd{(pars[}\hlnum{1}\hlstd{])}
+    \hlstd{n0} \hlkwb{<-} \hlstd{N}\hlopt{-}\hlstd{n}
+    \hlkwa{if}\hlstd{(n0}\hlopt{<}\hlnum{0}\hlstd{)} \hlkwd{return}\hlstd{(}\hlnum{NA}\hlstd{)}
+    \hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(pars[}\hlnum{2}\hlstd{])}
+    \hlstd{ld.y1} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{dbinom}\hlstd{(y,} \hlnum{1}\hlstd{, p,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{))}
+    \hlstd{p0} \hlkwb{<-} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlstd{J}
+    \hlstd{ld.n0} \hlkwb{<-} \hlkwd{lgamma}\hlstd{(N}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{-}\hlkwd{lgamma}\hlstd{(n0}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{+}\hlstd{n0}\hlopt{*}\hlkwd{sum}\hlstd{(}\hlkwd{log}\hlstd{(p0))}
+    \hlstd{nll} \hlkwb{<-} \hlopt{-}\hlstd{(ld.y1}\hlopt{+}\hlstd{ld.n0)}
+    \hlkwd{return}\hlstd{(nll)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Joint likelihood}
+Minimized the negative log-likelihood
+\pause
+\vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.M0} \hlkwb{<-} \hlkwd{optim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{log.N}\hlstd{=}\hlnum{4}\hlstd{,}\hlkwc{logit.p}\hlstd{=}\hlnum{0}\hlstd{), nll.M0,} \hlkwc{y}\hlstd{=y,} \hlkwc{hessian}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{fm.M0.est} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{c}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{], fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]),}
+                        \hlkwc{SE}\hlstd{=}\hlkwd{sqrt}\hlstd{(}\hlkwd{diag}\hlstd{(}\hlkwd{solve}\hlstd{(fm.M0}\hlopt{$}\hlstd{hessian))))}
+\hlstd{fm.M0.est}
+\end{alltt}
+\begin{verbatim}
+##          Estimate        SE
+## log.N    4.570652 0.1730285
+## logit.p -1.491271 0.2493760
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Back-transform the estimates
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{N.hat}\hlstd{=}\hlkwd{exp}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{]),} \hlkwc{p.hat}\hlstd{=}\hlkwd{plogis}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]))}
+\end{alltt}
+\begin{verbatim}
+##   N.hat.log.N p.hat.logit.p 
+##     96.607092      0.183731
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
 
 
 
@@ -406,10 +485,11 @@
 
 
 
+\section{Data augmentation}
 
 
 %\section{Prediction}
-\subsection{Likelihood-based inference}
+%\subsection{Likelihood-based inference}
 
 
 \begin{frame}
@@ -418,6 +498,11 @@
   \tableofcontents[currentsection]
 \end{frame}
 
+
+\subsection{Likelihood-based data augmentation}
+
+
+\subsection{Bayesian data augmentation}
 
 
 
@@ -464,7 +549,7 @@
 
 
 
-\subsection{Bayesian inference}
+%\subsection{Bayesian inference}
 
 
 \begin{frame}
@@ -563,36 +648,24 @@
 
 
 
-\section{Model $M_t$}
+\section{Models $M_t$, $M_b$, $M_h$}
 
 
 \subsection{Simulation}
 
 
+\subsection{Joint Likelihood}
+
+\subsection{Likelihood-based data augmentation}
 
 
-
-
-\section{Model $M_b$}
-
-
-\subsection{Simulation}
-
-
-
-
-
-\section{Model $M_h$}
-
-
-\subsection{Simulation}
+\subsection{Bayesian data augmentation}
 
 
 
 
 
-
-\section{Summary}
+%\section{Summary}
 
 
 \begin{frame}
