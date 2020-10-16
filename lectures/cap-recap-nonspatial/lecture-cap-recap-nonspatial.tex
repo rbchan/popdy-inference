@@ -227,30 +227,97 @@
 
 
 \begin{frame}
-  \frametitle{Basic model}
+  \frametitle{Conditional-on-$n$ formulaion}
   \small
   State model \\
+  \vspace{6pt}
   {\centering
-    There isn't one! $N$ is often treated as a constant. \\
+    There isn't one! $N$ is often treated as a constant, although we
+    sometimes put a Poisson or binomial prior on it.  \\
   }
-  Observation model
+  \pause
+  \vfill
+  Observation model (for model $M_0$)
   \begin{gather*}
-    n \sim \mathrm{Bin}(N, p^*) \\
-    y \sim \mathrm{Multinomial}()
+    n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right) \\
+    y_i \sim \mathrm{Multinomial}(1, \pi_1, \dots, \pi_J)
   \end{gather*}
   \pause
+%  \vfill
   \small
   Definitions \\
   $N$ -- Population size \\
   $n$ -- Number of animals captured \\
-  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
+%  $p^*$ -- probability of being captured at least once
+  $y_{ij}$ -- encounter histories \\
+  $y_i$ -- number of times individual $i$ was encounter out of $J$
+  occasions \\
+  $\pi_j$ -- Probability of being captured $j$ times
 \end{frame}
 
 
 
 \begin{frame}
+  \frametitle{Conditional-on-$n$, multinomial cell probs}
+  \footnotesize
+  If $p$ doesn't vary over time, we can model $y_i=\sum_{j=1}^J y_{ij}$,
+  the number of times individual $i$ was detected; $i=1,\dots,n$.  \\
+  \pause %\vfill
+  \scriptsize
+  \centering
+  \vspace{6pt}
+  \begin{tabular}{ll}
+    \hline
+    Detections ($y_i$) & Multinomial cell probability                       \\
+    \hline
+%      0               & $\pi_0 = (1-p)^J$                                  \\
+      1                & $\pi_1 = Jp^{1}(1-p)^{J-1}/(1-\pi_0)$ \\
+      2                & $\pi_2 = {J\choose 2}p^{2}(1-p)^{J-2}/(1-\pi_0)$ \\
+      $\cdots$         & $\cdots$                                           \\
+      J                & $\pi_J = p^{J}/(1-\pi_0)$            \\
+      \hline
+  \end{tabular}
+  \\ where $\pi_0=(1-p)^J$. 
+  \pause \vfill
+  \footnotesize
+  \flushleft
+  The more general formulation is in terms of the encounter histories,
+  but there are many ($2^J-1$) of them. Here's an example with $J=3$.         \\
+%  \begin{columns}
+%    \column{0.9\paperwidth}
+  \scriptsize
+  \vspace{6pt}
+  \centering
+    \begin{tabular}{ll}
+      \hline
+      Capture history  & Multinomial cell probability                       \\
+      \hline
+%      000             & $\pi_0 = \prod_j 1-p_j/(1-\pi_0)$                  \\
+      100              & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$                \\
+      010              & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$                \\
+      001              & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$                \\
+      110              & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$                    \\
+      101              & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$                    \\
+      011              & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$                    \\
+      111              & $\pi_7 = p_1p_2p_3/(1-\pi_0)$                      \\
+      \hline
+    \end{tabular}
+%  \end{columns}
+  \\ where $\pi_0=\prod_{j=1}^J 1-p_j$. 
+\end{frame}
+
+
+
+
+\begin{frame}
   \frametitle{Estimation options}
-  
+  Joint likelihood \\
+  Condional likelihood \\
+  Data augmentation \\
+  \begin{itemize}
+    \item Likelihood-based
+    \item Bayesian
+  \end{itemize}
 \end{frame}
 
 
@@ -279,35 +346,6 @@
   \tableofcontents[currentsection]
 \end{frame}
 
-
-
-\begin{frame}
-  \frametitle{Multinomial cell probs}
-  \small
-  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and
-  multinomial cell probabilities. 
-  \begin{itemize}
-  \small
-    \setlength\itemsep{1pt}
-    \item $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
-  \end{itemize}
-  \pause \vfill
-  \footnotesize
-  \begin{columns}
-    \column{0.9\paperwidth}
-    \begin{tabular}{lc}
-      \hline
-      \centering
-      Capture history                 & Multinomial cell probability \\
-      \hline
-      100  & $p_1(1-p)(1-p)$   \\
-        & $\pi_2 = \psi_2\bar{p}_2$   \\
-      111  & $\pi_J = \psi_J\bar{p}_J$   \\
-      000                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          \\
-      \hline
-    \end{tabular}
-  \end{columns}
-\end{frame}
 
 
 
