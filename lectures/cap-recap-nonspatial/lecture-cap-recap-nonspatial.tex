@@ -61,7 +61,6 @@
 
 % Load function to compile and open PDF
 
-
 % Compile and open PDF
 
 
@@ -323,7 +322,37 @@
 
 \begin{frame}
   \frametitle{Software options}
-  
+  \small
+  Program MARK
+  \begin{itemize}
+    \item Has the most model types
+    \item Written for Windows, but can be executed on other platforms  
+  \end{itemize}
+  R package `RMark'
+  \begin{itemize}
+    \item Depends on MARK. Includes most of MARK's model types. 
+  \end{itemize}
+  R package `marked'
+  \begin{itemize}
+    \item Includes CJS and JS models
+  \end{itemize}
+  R package `mra'
+  \begin{itemize}
+    \item Includes closed-population, CJS, and JS models
+  \end{itemize}
+  R package Rcapture
+  \begin{itemize}
+    \item Includes closed-population
+  \end{itemize}
+  R package `unmarked'
+  \begin{itemize}
+    \item Allows for likelihood-based data augmentation approach to
+      closed population models via the \inr{occu} function.  
+  \end{itemize}
+  R package `secr'
+  \begin{itemize}
+    \item 
+  \end{itemize}
 \end{frame}
 
 
@@ -444,15 +473,16 @@
 
 
 
-\section{Joint likelihood}
+\section{Likelihood}
 
 
+%% p(y,n|N,p)
 \begin{frame}[fragile]
-  \frametitle{Joint likelihood}
+  \frametitle{Joint likelihood for $M_0$}
   The joint likelihood is
   \begin{multline*}
     L(N,p; y,n) = \\
-    \prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}
+    \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
   \end{multline*}
   \pause
@@ -468,7 +498,7 @@
     \hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(pars[}\hlnum{2}\hlstd{])}
     \hlstd{ld.y1} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{dbinom}\hlstd{(y,} \hlnum{1}\hlstd{, p,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{))}
     \hlstd{p0} \hlkwb{<-} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlstd{J}
-    \hlstd{ld.n0} \hlkwb{<-} \hlkwd{lgamma}\hlstd{(N}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{-}\hlkwd{lgamma}\hlstd{(n0}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{+}\hlstd{n0}\hlopt{*}\hlkwd{sum}\hlstd{(}\hlkwd{log}\hlstd{(p0))}
+    \hlstd{ld.n0} \hlkwb{<-} \hlkwd{lgamma}\hlstd{(N}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{-}\hlkwd{lgamma}\hlstd{(n0}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{+}\hlstd{n0}\hlopt{*}\hlkwd{log}\hlstd{(p0)}
     \hlstd{nll} \hlkwb{<-} \hlopt{-}\hlstd{(ld.y1}\hlopt{+}\hlstd{ld.n0)}
     \hlkwd{return}\hlstd{(nll)}
 \hlstd{\}}
@@ -480,10 +510,8 @@
 
 
 \begin{frame}[fragile]
-  \frametitle{Joint likelihood}
+  \frametitle{Maximize joint likelihood for $M_0$}
 Minimized the negative log-likelihood
-\pause
-\vfill
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -513,8 +541,145 @@ Back-transform the estimates
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-
 \end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `Rcapture'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## install.packages("Rcapture")}
+\hlkwd{library}\hlstd{(Rcapture)}
+\hlkwd{closedp}\hlstd{(y)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Number of captured units: 54 
+## 
+## Abundance estimations and model fits:
+##               abundance stderr deviance df    AIC    BIC    infoFit
+## M0                 98.4   17.1   11.968 13 50.185 54.163         OK
+## Mt                 98.0   17.0   10.687 10 54.904 64.849         OK
+## Mh Chao (LB)       98.4   17.1   11.968 13 50.185 54.163         OK
+## Mh Poisson2        93.5   27.3   11.923 12 52.141 58.108         OK
+## Mh Darroch         91.9   41.2   11.943 12 52.160 58.127 warning #1
+## Mh Gamma3.5        90.3   54.7   11.948 12 52.166 58.133 warning #1
+## Mth Chao (LB)      98.0   17.0   10.687 10 54.904 64.849         OK
+## Mth Poisson2       93.3   27.1   10.646  9 56.863 68.797         OK
+## Mth Darroch        91.9   41.2   10.664  9 56.882 68.816 warning #1
+## Mth Gamma3.5       90.5   54.9   10.670  9 56.887 68.821 warning #1
+## Mb                 71.4   12.8   10.285 12 50.502 56.469         OK
+## Mbh                70.1   17.8   10.273 11 52.490 60.446         OK
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `mra'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## install.packages("mra")}
+\hlkwd{library}\hlstd{(mra)}
+\hlkwd{F.huggins.estim}\hlstd{(}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{histories}\hlstd{=y)}
+\end{alltt}
+\begin{verbatim}
+## Call:
+## F.huggins.estim(capture = ~1, histories = y)
+## 
+##  Capture and Recapture model:
+##  Variable     Est       SE     
+##  (Intercept)  -1.51415  0.24955 
+## 
+## Population Size Estimate (se): 98.4333 (17.1333)
+## 95% confidence interval for population size: 75.42 to 146.18
+## Individuals observed: 54
+## Effective sample size: 216
+## 
+## Message =  SUCCESS: Convergence criterion met
+## Number of estimable coefficients (estimated) =  1
+## Log likelihood =  -118.034116447541
+## Deviance =  236.068232895082
+## AIC =  238.068232895082
+## AICc =  238.086924483867
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `RMark'}
+  \small
+  Fit model and set capture probability equal to recapture probability
+  ($p=c$) using the \inr{share=TRUE} argument.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## install.packages("RMark")}
+\hlkwd{library}\hlstd{(RMark)}
+\hlstd{y.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
+\hlstd{mark1} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=y.ch,} \hlkwc{model}\hlstd{=}\hlstr{"Closed"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+              \hlkwc{model.parameters}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{p}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,}\hlkwc{share}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mark1}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
+\end{alltt}
+\begin{verbatim}
+##               estimate         se        lcl        ucl fixed note
+## p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
+## f0 g1 a0 t1 42.6208590 16.7216950 20.3019960 89.4758140
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimate of $N$ 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mark1}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{derived}
+\end{alltt}
+\begin{verbatim}
+## $`N Population Size`
+##   estimate    lcl      ucl
+## 1 96.62086 74.302 143.4758
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+%% p(y|n,p)p(n|N,p)
+
+
+
+
+%% p(y|n,p)
+
+
+
 
 
 

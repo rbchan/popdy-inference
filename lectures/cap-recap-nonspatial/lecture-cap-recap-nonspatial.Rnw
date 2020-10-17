@@ -13,7 +13,6 @@
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
 @
-
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
 rnw2pdf("lecture-cap-recap-nonspatial")
@@ -283,7 +282,37 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Software options}
-  
+  \small
+  Program MARK
+  \begin{itemize}
+    \item Has the most model types
+    \item Written for Windows, but can be executed on other platforms  
+  \end{itemize}
+  R package `RMark'
+  \begin{itemize}
+    \item Depends on MARK. Includes most of MARK's model types. 
+  \end{itemize}
+  R package `marked'
+  \begin{itemize}
+    \item Includes CJS and JS models
+  \end{itemize}
+  R package `mra'
+  \begin{itemize}
+    \item Includes closed-population, CJS, and JS models
+  \end{itemize}
+  R package Rcapture
+  \begin{itemize}
+    \item Includes closed-population
+  \end{itemize}
+  R package `unmarked'
+  \begin{itemize}
+    \item Allows for likelihood-based data augmentation approach to
+      closed population models via the \inr{occu} function.  
+  \end{itemize}
+  R package `secr'
+  \begin{itemize}
+    \item 
+  \end{itemize}
 \end{frame}
 
 
@@ -365,15 +394,16 @@ frequencies
 
 
 
-\section{Joint likelihood}
+\section{Likelihood}
 
 
+%% p(y,n|N,p)
 \begin{frame}[fragile]
-  \frametitle{Joint likelihood}
+  \frametitle{Joint likelihood for $M_0$}
   The joint likelihood is
   \begin{multline*}
     L(N,p; y,n) = \\
-    \prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}
+    \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
   \end{multline*}
   \pause
@@ -387,7 +417,7 @@ nll.M0 <- function(pars, y) {
     p <- plogis(pars[2])
     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
     p0 <- (1-p)^J
-    ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*sum(log(p0))
+    ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
     nll <- -(ld.y1+ld.n0)
     return(nll)
 }
@@ -397,10 +427,8 @@ nll.M0 <- function(pars, y) {
 
 
 \begin{frame}[fragile]
-  \frametitle{Joint likelihood}
+  \frametitle{Maximize joint likelihood for $M_0$}
 Minimized the negative log-likelihood
-\pause
-\vfill
 <<opt-nll-M0, size='scriptsize'>>=
 fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
 fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
@@ -413,11 +441,91 @@ Back-transform the estimates
 <<opt-nll-M0-back, size='scriptsize'>>=
 c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
 @ 
-
 \end{frame}
 
 
 
+
+\begin{frame}[fragile]
+  \frametitle{R package `Rcapture'}
+<<Rcapture,size='scriptsize'>>=
+## install.packages("Rcapture")
+library(Rcapture)
+closedp(y)
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `mra'}
+<<mra,size='scriptsize'>>=
+## install.packages("mra")
+library(mra)
+F.huggins.estim(~1, histories=y)
+@   
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `RMark'}
+  \small
+  Fit model and set capture probability equal to recapture probability
+  ($p=c$) using the \inr{share=TRUE} argument.
+<<RMark,size='scriptsize',warning=FALSE,results='hide'>>=
+## install.packages("RMark") ## Must install MARK TOO!!
+library(RMark)
+y.ch <- data.frame(ch=apply(y, 1, paste, collapse=""))
+mark1 <- mark(data=y.ch, model="Closed", silent=TRUE,
+              model.parameters=list(p=list(formula=~1,share=TRUE)))
+@
+\pause
+\vfill
+Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
+<<RMark-pn0,size='scriptsize'>>=
+mark1$results$real      
+@   
+\pause
+\vfill
+Estimate of $N$ 
+<<RMark-N,size='scriptsize'>>=
+mark1$results$derived   
+@   
+\end{frame}
+
+
+
+
+
+
+%% p(y|n,p)p(n|N,p)
+<<eval=FALSE,include=FALSE,echo=FALSE>>=
+nll.M0.2 <- function(pars, y) {
+    n <- nrow(y);       J <- ncol(y)
+    N <- exp(pars[1])
+    n0 <- N-n
+    if(n0<0) return(NA)
+    p <- plogis(pars[2])
+    J <- ncol(y)
+    p.star <- 1-(1-p)^J
+    ydot <- rowSums(y)
+    lcd.y <- sum(dbinom(ydot, J, p, log=TRUE)-log(p.star))
+    ld.n <- lchoose(N, n)+n*log(p.star)+n0*log(1-p.star)
+    nll <- -(lcd.y+ld.n)
+    return(nll)
+}
+
+fm.M0.2 <- optim(c(5,0), nll.M0.2, y=y, hessian=TRUE)
+c(N=exp(fm.M0.2$par[1]), p=plogis(fm.M0.2$par[2]))
+@ 
+
+
+
+%% p(y|n,p)
 <<eval=FALSE,include=FALSE,echo=FALSE>>=
 nll.M0.cn <- function(pars, y) {
     p <- plogis(pars[1])
@@ -431,6 +539,12 @@ nll.M0.cn <- function(pars, y) {
 fm.M0.cn <- optim(0, nll.M0.cn, y=y, hessian=TRUE, method="Brent", lower=-10, upper=10)
 c(p=plogis(fm.M0.cn$par[1]))
 @ 
+
+
+
+
+
+
 
 
 
