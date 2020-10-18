@@ -148,11 +148,14 @@ knit_theme$set("edit-kwrite")
   You can get a sense for $p$ (and $N$) by looking at the data.
   \begin{itemize}
     \setlength\itemsep{.1pt}
-    \item If $p$ was close to 1, most individuals would be captured
+    \item If $p\approx 1$, most individuals would be captured
       on all 3 occasions
-    \item If $p$ was close to 0, few individuals would be captured on
-      more than one occasion
+    \item If $p\approx 0$, few individuals would be captured on
+      more than once
   \end{itemize}
+  \pause
+  \vfill
+  Knowing $p$ helps us determine how many individuals we missed  
 \end{frame}
 
 
@@ -175,9 +178,23 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Classical approaches}
   Lincoln-Peterson  \\
+  \begin{itemize}
+    \item Just $J=2$ occasions
+    \item Data are:
+      \begin{itemize}
+        \item $n_1$ -- number of individuals captured on first occasion
+        \item $n_2$ -- number of individuals captured on second occasion
+        \item $m_2$ -- number of recaptures
+      \end{itemize}
+    \item Estimator is $\hat{N} = n_1n_2/m_2$  
+  \end{itemize}
   \pause
   \vfill
   Closed population models \\
+  \begin{itemize}
+    \item Usually better to have $J>2$ occasions
+    \item Allows for assessment of behavioral effect, individual heterogeneity, etc\dots
+  \end{itemize}
 \end{frame}
 
 
@@ -186,7 +203,7 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{Conditional-on-$n$ formulaion}
+  \frametitle{\large Closed population model ($N$ known hypothetically) }
   \small
   State model \\
   \vspace{6pt}
@@ -196,88 +213,218 @@ knit_theme$set("edit-kwrite")
   }
   \pause
   \vfill
-  Observation model (for model $M_0$)
-  \begin{gather*}
-    n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right) \\
-    y_i \sim \mathrm{Multinomial}(1, \pi_1, \dots, \pi_J)
-  \end{gather*}
+  Observation model (supposing $N$ was known)
+  \begin{equation*}
+    y_{ij} \sim \mathrm{Bernoulli}(p) \;\; \mathrm{for}\, i=1,\dots,N 
+  \end{equation*}
   \pause
 %  \vfill
   \small
   Definitions \\
   $N$ -- Population size \\
-  $n$ -- Number of animals captured \\
+  \hangindent=0.8cm $y_{ij}$ -- encounter histories, indicating if
+  individual $i$ was captured on occasion $j$ \\  
+  $p$ -- Capture probability
+  \pause
+  \vfill
+  The problem with this formulation is that we don't observe the ``all
+  zero'' encounter histories (and thus we don't know $N$). 
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Closed population estimation options}
+  Condional likelihood \\
+  \begin{itemize}
+    \item Estimate $p$, and then compute $\hat{N}=n/\hat{p}$
+  \end{itemize}
+  \pause
+  \vfill
+  Joint likelihood \\
+  \begin{itemize}
+    \item Estimate $N$ and $p$ jointly
+    \item Joint likelihood can be written as
+      \begin{itemize}
+      \item $L(N,p;y,n) = p(y|n,p)p(n|N,p)$ or
+      \item $L(N,p;y,n) = p(y,n|N,p)$
+      \end{itemize}
+  \end{itemize}
+  \pause \vfill
+  Data augmentation \\
+  \begin{itemize}
+    \item Tack on many ``all zero'' encounter histories and estimate
+      how many of them actually occurred
+    \item Likelihood-based
+    \item Bayesian
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Joint likelihood, conditional-on-$n$}
+  \small
+  % State model                                                                   \\
+  % \vspace{6pt}
+  % {\centering
+  %   There isn't one! $N$ is often treated as a constant, although we
+  %   sometimes put a Poisson or binomial prior on it.                            \\
+  % }
+  % \pause
+  % \vfill
+  Another way of writing the observation model is to condition on the
+  number of individuals captured, and then use a
+  categorical distribution for the number of times individual $i$
+  was detected. 
+  \begin{gather*}
+    n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                               \\
+    \tilde{y}_i \sim \mathrm{Categorical}(\pi_1, \dots, \pi_K) \;\;
+    \mathrm{for}\, i=1,\dots,n 
+  \end{gather*}
+  \pause
+%  \vfill
+%  \scriptsize
+  \centering
+  \vspace{6pt}
+  \begin{tabular}{ll}
+    \hline
+    Detections ($\tilde{y}_i$) & Multinomial cell probability                     \\
+    \hline
+%      0                       & $\pi_0 = (1-p)^J$                                \\
+      1                        & $\pi_1 = Jp^{1}(1-p)^{J-1}/(1-\pi_0)$            \\
+      2                        & $\pi_2 = {J\choose 2}p^{2}(1-p)^{J-2}/(1-\pi_0)$ \\
+      $\cdots$                 & $\cdots$                                         \\
+      J                        & $\pi_J = p^{J}/(1-\pi_0)$                        \\
+      \hline
+  \end{tabular}
+  \flushleft
+  \vspace{-6pt}
+  where $\pi_0=(1-p)^J$ \\ 
+  % \small
+  \pause
+  \vfill
+  Definitions \\
+  \scriptsize
+  $N$ -- Population size                                                          \\
+  $n$ -- Number of animals captured                                               \\
 %  $p^*$ -- probability of being captured at least once
-  $y_{ij}$ -- encounter histories \\
-  $y_i$ -- number of times individual $i$ was encounter out of $J$
-  occasions \\
-  $\pi_j$ -- Probability of being captured $j$ times
+%  $y_{ij}$ -- encounter histories                                                \\
+  $\tilde{y}_i=\sum_{j=1}^J y_{ij}$ -- number of times individual $i$ was encounter out of $J$
+  occasions                                                                       \\
+  $\pi_j$ -- Probability of capturing an individual $k$ times \\
+  \pause
+  \vfill
+  This only works if $p$ doesn't change over time. 
 \end{frame}
 
 
 
 \begin{frame}
-  \frametitle{Conditional-on-$n$, multinomial cell probs}
+  \frametitle{Joint likelihood, conditional-on-$n$}
+%  \frametitle{Conditional-on-$n$, multinomial cell probs}
   \footnotesize
-  If $p$ doesn't vary over time, we can model $y_i=\sum_{j=1}^J y_{ij}$,
-  the number of times individual $i$ was detected; $i=1,\dots,n$.  \\
-  \pause %\vfill
-  \scriptsize
-  \centering
-  \vspace{6pt}
-  \begin{tabular}{ll}
-    \hline
-    Detections ($y_i$) & Multinomial cell probability                       \\
-    \hline
-%      0               & $\pi_0 = (1-p)^J$                                  \\
-      1                & $\pi_1 = Jp^{1}(1-p)^{J-1}/(1-\pi_0)$ \\
-      2                & $\pi_2 = {J\choose 2}p^{2}(1-p)^{J-2}/(1-\pi_0)$ \\
-      $\cdots$         & $\cdots$                                           \\
-      J                & $\pi_J = p^{J}/(1-\pi_0)$            \\
-      \hline
-  \end{tabular}
-  \\ where $\pi_0=(1-p)^J$. 
-  \pause \vfill
-  \footnotesize
-  \flushleft
   The more general formulation is in terms of the encounter histories,
-  but there are many ($2^J-1$) of them. Here's an example with $J=3$.         \\
+  but there are many ($2^J-1$) of them.                                  \\
+  \begin{gather*}
+    n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
+    k_i \sim \mathrm{Categorical}(\pi_1, \dots, \pi_K) \;\;
+    \mathrm{for}\, i=1,\dots,n                                           \\
+    y_i = h_{k_i}
+  \end{gather*}
+  \pause \vfill
+  Here's an example with $J=3$.                                          \\
 %  \begin{columns}
 %    \column{0.9\paperwidth}
   \scriptsize
   \vspace{6pt}
   \centering
-    \begin{tabular}{ll}
+    \begin{tabular}{lll}
       \hline
-      Capture history  & Multinomial cell probability                       \\
+      $k$  & Capture history ($h$) & Multinomial cell probability        \\
       \hline
-%      000             & $\pi_0 = \prod_j 1-p_j/(1-\pi_0)$                  \\
-      100              & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$                \\
-      010              & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$                \\
-      001              & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$                \\
-      110              & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$                    \\
-      101              & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$                    \\
-      011              & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$                    \\
-      111              & $\pi_7 = p_1p_2p_3/(1-\pi_0)$                      \\
+%      000 & $\pi_0 = \prod_j 1-p_j/(1-\pi_0)$                           \\
+      1    & 100                   & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$ \\
+      2    & 010                   & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$ \\
+      3    & 001                   & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$ \\
+      4    & 110                   & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$     \\
+      5    & 101                   & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$     \\
+      6    & 011                   & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$     \\
+      7    & 111                   & $\pi_7 = p_1p_2p_3/(1-\pi_0)$       \\
       \hline
     \end{tabular}
-%  \end{columns}
-  \\ where $\pi_0=\prod_{j=1}^J 1-p_j$. 
+    % \end{columns}
+    \flushleft
+  where $\pi_0=\prod_{j=1}^J 1-p_j$.                                     \\
 \end{frame}
 
 
 
 
 \begin{frame}
-  \frametitle{Estimation options}
-  Joint likelihood \\
-  Condional likelihood \\
-  Data augmentation \\
-  \begin{itemize}
-    \item Likelihood-based
-    \item Bayesian
-  \end{itemize}
+  \frametitle{Joint likelihood}
+  % \footnotesize
+  \small
+  Rather than condition on $n$, we can maximize the ``unconditional''
+  likelihood that includes the ``all zero'' encounter history,
+  weighted $n_0=N-n$ times. 
+  % \vfill
+  % \centering
+    % \begin{tabular}{ll}
+    %   \hline
+    %   Capture history ($h$) & Multinomial cell probability \\
+    %   \hline
+    %   000                   & $\pi_0 = \prod_j 1-p_j$      \\
+    %   100                   & $\pi_1=p_1(1-p_2)(1-p_3)$    \\
+    %   010                   & $\pi_2=(1-p_1)p_2(1-p_3)$    \\
+    %   001                   & $\pi_3=(1-p_1)(1-p_2)p_3$    \\
+    %   110                   & $\pi_4=p_1p_2(1-p_3)$        \\
+    %   101                   & $\pi_5=p_1(1-p_2)p_3$        \\
+    %   011                   & $\pi_6=(1-p_1)p_2p_3$        \\
+    %   111                   & $\pi_7 = p_1p_2p_3$          \\
+    %   \hline
+    % \end{tabular}
+  \pause
+  \vfill
+  \flushleft
+  Likelihood function for this formulation
+  \begin{equation*}
+%  \begin{multline*}
+%    L(N,p; y,n) =                                          \\
+    L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
+%    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+    \frac{N!}{(N-n)!}  \left(\pi_0\right)^{N-n}
+%  \end{multline*}
+  \end{equation*}
 \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Model variations}
+  Aside from of the approach to estimation, the key consideration
+  concerns the sources of variation in capture probability ($p$). \\
+  \pause
+  \vfill
+  Otis et al. (1978, Wildlife Monographs) identified several model variations
+  \begin{itemize}
+    \small
+    \item $M_0$ -- $p$ is constant
+    \item $M_t$ -- unique $p$ for each capture occasion
+    \item $M_b$ -- behavioral response with $p$ different than
+      recapture probability $c$
+    \item $M_h$ -- individual heterogeneity in $p$
+  \end{itemize}
+  \pause \vfill
+  These can be combined, but beware of identifiability issues. See
+  Otis et al. (1978) for details. 
+\end{frame}
+
+
 
 
 \begin{frame}
@@ -285,45 +432,54 @@ knit_theme$set("edit-kwrite")
   \small
   Program MARK
   \begin{itemize}
+  \footnotesize
     \item Has the most model types
     \item Written for Windows, but can be executed on other platforms  
   \end{itemize}
   R package `RMark'
   \begin{itemize}
-    \item Depends on MARK. Includes most of MARK's model types. 
+  \footnotesize
+    \item Function \inr{mark} runs MARK from R.
   \end{itemize}
   R package `marked'
   \begin{itemize}
+  \footnotesize
     \item Includes CJS and JS models
   \end{itemize}
   R package `mra'
   \begin{itemize}
+  \footnotesize
     \item Includes closed-population, CJS, and JS models
   \end{itemize}
   R package Rcapture
   \begin{itemize}
+  \footnotesize
     \item Includes closed-population
   \end{itemize}
   R package `unmarked'
   \begin{itemize}
-    \item Allows for likelihood-based data augmentation approach to
-      closed population models via the \inr{occu} function.  
+  \footnotesize
+    \item Likelihood-based data augmentation with \inr{occu}
   \end{itemize}
   R package `secr'
   \begin{itemize}
-    \item 
+  \footnotesize
+    \item Designed for spatially explicit models, but see \inr{closedN}
   \end{itemize}
 \end{frame}
 
 
 
 
-%\section{Simulation}
+\section{Simulation}
 
-\section{Model $M_0$}
+%\section{Model $M_0$}
 
 
-\subsection{Simulation}
+%\subsection{Simulation}
+
+
+\subsection{Model $M_0$}
 
 
 
@@ -358,7 +514,7 @@ p <- 0.2
   \vfill
   All capture histories (for captured and uncaptured individuals)
   \vspace{-6pt}
-<<sim-N0-ch,size='scriptsize'>>=
+<<sim-M0-ch,size='scriptsize'>>=
 J <- 4  ## Occasions
 y.all <- matrix(NA, N, J)
 for(i in 1:N) {
@@ -369,7 +525,7 @@ for(i in 1:N) {
   \vfill
   Observed capture histories (data)
   \vspace{-6pt}
-<<sim-hds-y1,size='scriptsize'>>=
+<<sim-M0-y1,size='scriptsize'>>=
 captured <- rowSums(y.all)>0
 (n <- sum(captured))
 y <- y.all[captured,]
@@ -380,21 +536,143 @@ y[1:3,]
 
 
 \begin{frame}[fragile]
-  \frametitle{Capture history frequencies}
-  \centering
+  \frametitle{Summary stats}
+  Capture history frequencies
 <<M0-hist,size='scriptsize'>>=
 histories <- apply(y, 1, paste, collapse="")
 sort(table(histories))
-@   
+@
+\pause
+\vfill
+  Detection frequencies
 <<M0-freq,size='scriptsize'>>=
-frequencies <- table(rowSums(y))
+y.tilde <- rowSums(y)
+frequencies <- table(y.tilde)
 frequencies
 @   
 \end{frame}
 
 
 
-\section{Likelihood}
+\subsection{Model $M_t$}
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_t$ -- Temporal variation}
+  Capture probability for each occasion
+<<sim-Mt-pars,size='scriptsize'>>=
+p.t <- c(0.3, 0.5, 0.2, 0.4)
+@
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+<<sim-Mt-ch,size='scriptsize'>>=
+y.all.Mt <- matrix(NA, N, J)
+for(i in 1:N) {
+    y.all.Mt[i,] <- rbinom(J, 1, p.t) }
+@
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+<<sim-Mt-y1,size='scriptsize'>>=
+captured.Mt <- rowSums(y.all.Mt)>0
+n.Mt <- sum(captured.Mt)
+y.Mt <- y.all.Mt[captured.Mt,]
+y.Mt[1:3,]
+colSums(y.Mt)
+@ 
+\end{frame}
+
+
+
+\subsection{Model $M_b$}
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_b$ -- Behavioral response}
+  Capture probability for each occasion
+<<sim-Mb-pars,size='scriptsize'>>=
+p.b <- 0.3
+c <- 0.5  ## Trap happy
+@
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+<<sim-Mb-ch,size='scriptsize'>>=
+y.all.Mb <- matrix(NA, N, J)
+prevcap <- matrix(FALSE, N, J)
+for(i in 1:N) {
+    y.all.Mb[i,1] <- rbinom(1, 1, p.b)
+    for(j in 2:J) {
+        prevcap[i,j] <- any(y.all.Mb[i,1:(j-1)]>0)
+        prob <- ifelse(prevcap[i,j], c, p.b)
+        y.all.Mb[i,j] <- rbinom(1, 1, prob)
+    }
+}
+@
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+<<sim-Mb-y1,size='scriptsize'>>=
+captured.Mb <- rowSums(y.all.Mb)>0
+n.Mb <- sum(captured.Mb)
+y.Mb <- y.all.Mb[captured.Mb,]
+## prevcap[1:3,]
+@ 
+\end{frame}
+
+
+
+\subsection{Model $M_h$}
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- Individual heterogeneity}
+  There are many flavors of $M_h$. Some use finite mixture
+  models. Here we have logit-normal distribution for $p$. 
+<<sim-Mh-pars,size='scriptsize'>>=
+logit.p.bar <- -1  ## Mean p on logit scale
+logit.p.var <- 1   ## SD of p on logit scale
+p.h <- plogis(rnorm(N, logit.p.bar, logit.p.var))
+@
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+<<sim-Mh-ch,size='scriptsize'>>=
+y.all.Mh <- matrix(NA, N, J)
+for(i in 1:N) {
+    y.all.Mh[i,] <- rbinom(J, 1, p.h[i])
+}
+@
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+<<sim-Mh-y1,size='scriptsize'>>=
+captured.Mh <- rowSums(y.all.Mh)>0
+n.Mh <- sum(captured.Mh)
+y.Mh <- y.all.Mh[captured.Mh,]
+#y.Mh[1:3,]
+@ 
+\end{frame}
+
+
+
+
+
+\section{Joint likelihood}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
 
 
 %% p(y,n|N,p)
@@ -440,63 +718,14 @@ fm.M0.est
 Back-transform the estimates
 <<opt-nll-M0-back, size='scriptsize'>>=
 c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
-@ 
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `Rcapture'}
-<<Rcapture,size='scriptsize'>>=
-## install.packages("Rcapture")
-library(Rcapture)
-closedp(y)
-@   
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `mra'}
-<<mra,size='scriptsize'>>=
-## install.packages("mra")
-library(mra)
-F.huggins.estim(~1, histories=y)
-@   
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `RMark'}
-  \small
-  Fit model and set capture probability equal to recapture probability
-  ($p=c$) using the \inr{share=TRUE} argument.
-<<RMark,size='scriptsize',warning=FALSE,results='hide'>>=
-## install.packages("RMark") ## Must install MARK TOO!!
-library(RMark)
-y.ch <- data.frame(ch=apply(y, 1, paste, collapse=""))
-mark1 <- mark(data=y.ch, model="Closed", silent=TRUE,
-              model.parameters=list(p=list(formula=~1,share=TRUE)))
 @
 \pause
 \vfill
-Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
-<<RMark-pn0,size='scriptsize'>>=
-mark1$results$real      
-@   
-\pause
-\vfill
-Estimate of $N$ 
-<<RMark-N,size='scriptsize'>>=
-mark1$results$derived   
-@   
+Compare to data-generating values
+<<dg,size='scriptsize'>>=
+c(N=N, p=p)
+@ 
 \end{frame}
-
 
 
 
@@ -543,6 +772,125 @@ c(p=plogis(fm.M0.cn$par[1]))
 
 
 
+\begin{frame}[fragile]
+  \frametitle{R package `Rcapture'}
+<<Rcapture,size='scriptsize'>>=
+## install.packages("Rcapture")
+library(Rcapture)
+closedp(y)
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `mra'}
+<<mra,size='scriptsize'>>=
+## install.packages("mra")
+library(mra)
+F.huggins.estim(~1, histories=y)
+@   
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{R package `RMark'}
+  Before you can use `RMark', you have to install MARK.  \\
+  \vfill
+  The main MARK page is here: \\
+  \url{http://www.phidot.org/software/mark/index.html}  \\
+  \vfill
+  Instructions for Linux and Mac users: \\
+  \url{http://www.phidot.org/software/mark/rmark/linux/}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `RMark' -- Model $M_0$}
+  \small
+  Fit model and set capture probability equal to recapture probability
+  ($p=c$) using the \inr{share=TRUE} argument.
+<<RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE>>=
+## install.packages("RMark") ## Must install MARK TOO!!
+library(RMark)
+y.ch <- data.frame(ch=apply(y, 1, paste, collapse=""))
+mark.M0 <- mark(data=y.ch, model="Closed", silent=TRUE,
+                model.parameters=list(p=list(formula=~1,share=TRUE)))
+@
+\pause
+\vfill
+Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
+<<RMark-pn0,size='scriptsize'>>=
+mark.M0$results$real      
+@   
+\pause
+\vfill
+Estimate of $N$ 
+<<RMark-N,size='scriptsize'>>=
+mark.M0$results$derived   
+@   
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `RMark' -- Model $M_t$}
+<<RMark-Mt,size='scriptsize',warning=FALSE,results='hide',cache=TRUE>>=
+yt.ch <- data.frame(ch=apply(y.Mt, 1, paste, collapse=""))
+mark.Mt <- mark(data=yt.ch, model="Closed", silent=TRUE,
+                model.parameters=list(p=list(formula=~time,share=TRUE)))
+@
+\pause
+\vfill
+Estimates of $p_j$ and $n_0$ (called $f_0$ in MARK)
+<<RMark-pn0-Mt,size='scriptsize'>>=
+mark.Mt$results$real      
+@   
+\pause
+\vfill
+Estimate of $N$ 
+<<RMark-N-Mt,size='scriptsize'>>=
+mark.Mt$results$derived   
+@   
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `RMark' -- Model $M_b$}
+<<RMark-Mb,size='scriptsize',warning=FALSE,results='hide',cache=TRUE>>=
+yb.ch <- data.frame(ch=apply(y.Mb, 1, paste, collapse=""))
+mark.Mb <- mark(data=yb.ch, model="Closed", silent=TRUE) ## Default model
+@
+\pause
+\vfill
+Estimates of $p$, $c$, and $n_0$ (called $f_0$ in MARK)
+<<RMark-pn0-Mb,size='scriptsize'>>=
+mark.Mb$results$real      
+@   
+\pause
+\vfill
+Estimate of $N$ 
+<<RMark-N-Mb,size='scriptsize'>>=
+mark.Mb$results$derived   
+@   
+\end{frame}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -563,7 +911,169 @@ c(p=plogis(fm.M0.cn$par[1]))
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{Data augmentation}
+  Data augmentation is strange \\
+  \pause
+  \vfill
+  We add ``all zero'' capture histories to our data, then we try to
+  estimate how many of them are real. \\ 
+  \pause
+  \vfill
+  The total number of observed and agumented encounter histories is
+  $M$. \\
+  \pause
+  \vfill
+  We define the model in terms of a binary indicator variable $z_i$,
+  such that $N=\sum_{i=1}^M z_i$. \\
+  \pause
+  \vfill
+  We know $z_i=1$ for the $n$ captured individuals. \\
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Data augmentation model}
+  The model is:
+  \begin{gather*}
+    z_i \sim \mathrm{Bern}(\psi) \\
+    y_{ij} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    N=\sum_{i=1}^M z_i
+  \end{gather*}
+  \pause \vfill
+  % A uniform prior on $\psi$ results in a discrete uniform prior on
+  % $N$. We can change the prior for $N$ by changing the prior on
+  % $\psi$, recognizing that $E(N)=M\psi$.
+  Note that this looks exactly like an occupancy model. \\
+  \pause \vfill
+  But why do this?
+  \begin{itemize}
+    \item DA works for \alert{all} varieties of mark-recapture model
+    \item It make it easy to incorporate
+      individual-covariates\dots\pause including distance and
+      location!   
+  \end{itemize}
+\end{frame}
+
+
+
+
 \subsection{Likelihood-based data augmentation}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood-based data augmentation}
+  \small
+  Normally, DA is used with Bayesian inference, but since it's exactly
+  the same model as a single-season occupancy model, we can also fit
+  it in `unmarked'.
+  \pause
+  \vfill
+  First, let's augment the data simulated under model $M_b$, with
+  $M=200$. 
+<<aug-y,size='scriptsize'>>=
+M <- 200
+y.aug <- matrix(0, M, J)
+y.aug[1:nrow(y.Mb),] <- y.Mb
+@
+\pause
+\vfill
+We also need to augment the \inr{prevcap} object.
+<<un-prevcap,size='scriptsize'>>=
+prevcap.aug <- matrix(FALSE, M, J)
+prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
+prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
+@
+And we need a covariate indicating time (occasion)
+<<un-occ,size='scriptsize'>>=
+occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ with `unmarked'}
+  \small
+  Create the unmarked frame
+<<un-umf,results='hide',size='scriptsize',warning=FALSE>>=
+library(unmarked)
+umf <- unmarkedFrameOccu(y=y.aug,
+                         obsCovs=list(prevcap=prevcap.aug,
+                                      occasion=occasion.aug))
+@   
+  Fit the model  
+<<un-M0,size='scriptsize'>>=
+fm.M0 <- occu(~1~1, umf)
+fm.M0
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_t$ with `unmarked'}
+<<un-Mt,size='scriptsize'>>=
+fm.Mt <- occu(~occasion~1, umf)
+fm.Mt
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_b$ with `unmarked'}
+<<un-Mb,size='scriptsize'>>=
+fm.Mb <- occu(~prevcap~1, umf)
+fm.Mb
+@   
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{But how do we compute $N$?}
+  First we compute Empirical Bayes posterior probability that each
+  individual was ``real''. 
+<<un-re,size='small'>>=
+re.M0 <- ranef(fm.M0)
+re.Mt <- ranef(fm.Mt)
+re.Mb <- ranef(fm.Mb)
+@
+\pause
+\vfill
+Then we predict $N$, which can be thought of as the number of real
+individuals in the set of $M$ guys.
+<<un-N,size='small'>>=
+N.post.M0 <- predict(re.M0, func=sum, nsim=1000)
+N.post.Mt <- predict(re.Mt, func=sum, nsim=1000)
+N.post.Mb <- predict(re.Mb, func=sum, nsim=1000)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Empirical Bayes posteriors of $N$}
+<<un-N-post, size='tiny',fig.height=3,out.width="100%",fig.show='hide', echo=-1>>=
+par(mfrow=c(1,3), mai=c(0.7,0.7,0.6,0.1))
+plot(table(N.post.M0), xlab="N", ylab="Posterior probability", main="M0",
+     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
+plot(table(N.post.Mt), xlab="N", ylab="Posterior probability", main="Mt",
+     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
+plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
+     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
+@
+  \begin{columns}
+    \begin{column}{\paperwidth}
+      \includegraphics[width=\paperwidth]{figure/un-N-post-1}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
 
 
 \subsection{Bayesian data augmentation}
@@ -712,18 +1222,18 @@ c(p=plogis(fm.M0.cn$par[1]))
 
 
 
-\section{Models $M_t$, $M_b$, $M_h$}
+% \section{Models $M_t$, $M_b$, $M_h$}
 
 
-\subsection{Simulation}
+% \subsection{Simulation}
 
 
-\subsection{Joint Likelihood}
+% \subsection{Joint Likelihood}
 
-\subsection{Likelihood-based data augmentation}
+% \subsection{Likelihood-based data augmentation}
 
 
-\subsection{Bayesian data augmentation}
+% \subsection{Bayesian data augmentation}
 
 
 
