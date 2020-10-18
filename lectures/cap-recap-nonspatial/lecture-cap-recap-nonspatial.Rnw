@@ -973,7 +973,8 @@ mark.Mb$results$derived
   \pause
   \vfill
   First, let's augment the data simulated under model $M_b$, with
-  $M=200$. 
+  $M=200$.
+\vspace{-6pt}
 <<aug-y,size='scriptsize'>>=
 M <- 200
 y.aug <- matrix(0, M, J)
@@ -982,12 +983,14 @@ y.aug[1:nrow(y.Mb),] <- y.Mb
 \pause
 \vfill
 We also need to augment the \inr{prevcap} object.
+\vspace{-6pt}
 <<un-prevcap,size='scriptsize'>>=
 prevcap.aug <- matrix(FALSE, M, J)
 prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
 prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
 @
 And we need a covariate indicating time (occasion)
+\vspace{-6pt}
 <<un-occ,size='scriptsize'>>=
 occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
 @ 
@@ -1044,7 +1047,7 @@ re.Mb <- ranef(fm.Mb)
 \pause
 \vfill
 Then we predict $N$, which can be thought of as the number of real
-individuals in the set of $M$ guys.
+individuals in the set of $M$ pseudo-individuals.
 <<un-N,size='small'>>=
 N.post.M0 <- predict(re.M0, func=sum, nsim=1000)
 N.post.Mt <- predict(re.Mt, func=sum, nsim=1000)
@@ -1078,51 +1081,6 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
 
 \subsection{Bayesian data augmentation}
 
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prepare data in `unmarked'}
-%   \small
-%   Note the new arguments.
-%   \vspace{-6pt}
-% <<un-umf,size='tiny'>>=
-% umf <- unmarkedFrameDS(y=y2, siteCovs=data.frame(elevation,noise), dist.breaks=b,
-%                        tlength=rep(L, nSites), survey="line", unitsIn="m")
-% @
-% \pause
-% <<wfac,size='tiny'>>=
-% summary(umf)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Fit the model}
-%   \footnotesize
-% <<un-fit,size='tiny'>>=
-% ## fm <- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp
-% ## fm <- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate
-% fm <- distsamp(~noise ~elevation, umf, keyfun="halfnorm")   # half-normal
-% fm
-% @
-% \pause
-% \vfill
-% Compare to actual parameter values:
-% \vspace{-6pt}
-% <<un-compare,size='tiny'>>=
-% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-% @ 
-% \end{frame}
-
-
-
-
-
-
-
 %\subsection{Bayesian inference}
 
 
@@ -1134,50 +1092,117 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
 
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
-% \vspace{-3pt}
-% <<bugs-line,size='tiny',echo=FALSE>>=
-% writeLines(readLines("distsamp-line-mod.jag"))
-% @
-% \end{frame}
+\begin{frame}
+  \frametitle{Bayesian data augmentation}
+  
+\end{frame}
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- data augmentation}
+\vspace{-3pt}
+<<bugs-M0-aug,size='small'>>=
+writeLines(readLines("M0-aug.jag"))
+@
+\end{frame}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data2,size='footnotesize'>>=
-% jags.data.line <- list(y=y2, n=rowSums(y2),
-%                        b=b,           # Distance break points
-%                        psi=diff(b)/B, # Pr(occuring in bin j)
-%                        elevation=elevation, noise=noise,
-%                        nSites=nSites, nBins=J)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='footnotesize'>>=
-% jags.inits.line <- function() {
-%     list(lambda.intercept=runif(1), alpha0=rnorm(1, 5),
-%          N=rowSums(y2)+rpois(nrow(y2), 2))
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars.line <- c("beta0", "beta1",
-%                     "alpha0", "alpha1", "totalAbundance")
-% @ 
-% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- data augmentation}
+  Data
+<<jd-M0-aug,size='scriptsize'>>=
+y.aug <- matrix(0, M, J)
+y.aug[1:n,] <- y
+jags.data.M0 <- list(y=y.aug, M=M, J=J)
+@
+\pause
+\vfill
+  Inits and parameters
+<<ji-M0-aug,size='scriptsize'>>=
+ji.M0 <- function() list(z=rep(1,M), psi=runif(1), p=runif(1))
+jp.M0 <- c("p", "psi", "N")
+@
+\pause
+\vfill
+MCMC
+<<mcmc-M0-aug,size='scriptsize',results='hide'>>=
+library(jagsUI)
+jags.post.M0 <- jags.basic(data=jags.data.M0, inits=ji.M0,
+                           parameters.to.save=jp.M0,
+                           model.file="M0-aug.jag",
+                           n.chains=3, n.adapt=100, n.burnin=0,
+                           n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<plot-mcmc-M0,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+plot(jags.post.M0[,jp.M0])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- without data augmentation}
+\vspace{-3pt}
+<<bugs-M0,size='footnotesize'>>=
+writeLines(readLines("M0.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- without data augmentation}
+  Data
+<<jd-M0-noaug,size='scriptsize'>>=
+n0max <- 1000  
+jags.data.M0.noaug <- list(y=y.aug, n=n, J=J,
+                           n0probs=rep(1/n0max, n0max), zero=0)
+@
+\pause
+\vfill
+  Inits and parameters
+<<ji-M0-noaug,size='scriptsize'>>=
+ji.M0.noaug <- function() list(n0=rpois(1, 5), p=runif(1, 0, 0.1))
+jp.M0.noaug <- c("p", "N")
+@
+\pause
+\vfill
+MCMC
+<<mcmc-M0-noaug,size='scriptsize',results='hide'>>=
+jags.post.M0.noaug <- jags.basic(data=jags.data.M0.noaug, inits=ji.M0.noaug,
+                                 parameters.to.save=jp.M0.noaug,
+                                 model.file="M0.jag",
+                                 n.chains=3, n.adapt=100, n.burnin=0,
+                                 n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<plot-mcmc-M0-noaug,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+plot(jags.post.M0.noaug[,jp.M0.noaug])
+@ 
+\end{frame}
+
+
+
 
 
 

@@ -1215,7 +1215,8 @@ Estimate of $N$
   \pause
   \vfill
   First, let's augment the data simulated under model $M_b$, with
-  $M=200$. 
+  $M=200$.
+\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1228,6 +1229,7 @@ Estimate of $N$
 \pause
 \vfill
 We also need to augment the \inr{prevcap} object.
+\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1238,6 +1240,7 @@ We also need to augment the \inr{prevcap} object.
 \end{kframe}
 \end{knitrout}
 And we need a covariate indicating time (occasion)
+\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1367,7 +1370,7 @@ And we need a covariate indicating time (occasion)
 \pause
 \vfill
 Then we predict $N$, which can be thought of as the number of real
-individuals in the set of $M$ guys.
+individuals in the set of $M$ pseudo-individuals.
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1408,51 +1411,6 @@ individuals in the set of $M$ guys.
 
 \subsection{Bayesian data augmentation}
 
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prepare data in `unmarked'}
-%   \small
-%   Note the new arguments.
-%   \vspace{-6pt}
-% <<un-umf,size='tiny'>>=
-% umf <- unmarkedFrameDS(y=y2, siteCovs=data.frame(elevation,noise), dist.breaks=b,
-%                        tlength=rep(L, nSites), survey="line", unitsIn="m")
-% @
-% \pause
-% <<wfac,size='tiny'>>=
-% summary(umf)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Fit the model}
-%   \footnotesize
-% <<un-fit,size='tiny'>>=
-% ## fm <- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp
-% ## fm <- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate
-% fm <- distsamp(~noise ~elevation, umf, keyfun="halfnorm")   # half-normal
-% fm
-% @
-% \pause
-% \vfill
-% Compare to actual parameter values:
-% \vspace{-6pt}
-% <<un-compare,size='tiny'>>=
-% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-% @ 
-% \end{frame}
-
-
-
-
-
-
-
 %\subsection{Bayesian inference}
 
 
@@ -1464,50 +1422,206 @@ individuals in the set of $M$ guys.
 
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
-% \vspace{-3pt}
-% <<bugs-line,size='tiny',echo=FALSE>>=
-% writeLines(readLines("distsamp-line-mod.jag"))
-% @
-% \end{frame}
+\begin{frame}
+  \frametitle{Bayesian data augmentation}
+  
+\end{frame}
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- data augmentation}
+\vspace{-3pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"M0-aug.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## 
+## psi ~ dunif(0,1)
+## p ~ dunif(0,1)
+## 
+## for(i in 1:M) {
+##   z[i] ~ dbern(psi)
+##   for(j in 1:J) {
+##     y[i,j] ~ dbern(z[i]*p)
+##   }
+## }
+## 
+## N <- sum(z)
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data2,size='footnotesize'>>=
-% jags.data.line <- list(y=y2, n=rowSums(y2),
-%                        b=b,           # Distance break points
-%                        psi=diff(b)/B, # Pr(occuring in bin j)
-%                        elevation=elevation, noise=noise,
-%                        nSites=nSites, nBins=J)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='footnotesize'>>=
-% jags.inits.line <- function() {
-%     list(lambda.intercept=runif(1), alpha0=rnorm(1, 5),
-%          N=rowSums(y2)+rpois(nrow(y2), 2))
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars.line <- c("beta0", "beta1",
-%                     "alpha0", "alpha1", "totalAbundance")
-% @ 
-% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- data augmentation}
+  Data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.aug} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{0}\hlstd{, M, J)}
+\hlstd{y.aug[}\hlnum{1}\hlopt{:}\hlstd{n,]} \hlkwb{<-} \hlstd{y}
+\hlstd{jags.data.M0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Inits and parameters
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.M0} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
+\hlstd{jp.M0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"psi"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+MCMC
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.M0} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.M0,} \hlkwc{inits}\hlstd{=ji.M0,}
+                           \hlkwc{parameters.to.save}\hlstd{=jp.M0,}
+                           \hlkwc{model.file}\hlstd{=}\hlstr{"M0-aug.jag"}\hlstd{,}
+                           \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                           \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.M0[,jp.M0])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-M0-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- without data augmentation}
+\vspace{-3pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"M0.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## 
+## n0 ~ dcat(n0probs)     ## Discrete uniform on "guys missed"
+## N <- n+n0           
+## p ~ dunif(0,1)
+## p0 <- (1-p)^J          ## Pr(not captured)
+## 
+## loglike.n <- loggam(N+1)-loggam(N-n+1)+n0*log(p0)
+## zero ~ dpois(-loglike.n+1000)  ## So-called zeros trick
+## 
+## for(i in 1:n) {        ## n not M
+##   for(j in 1:J) {
+##     y[i,j] ~ dbern(p)
+##   }
+## }
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_0$ -- without data augmentation}
+  Data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n0max} \hlkwb{<-} \hlnum{1000}
+\hlstd{jags.data.M0.noaug} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{n}\hlstd{=n,} \hlkwc{J}\hlstd{=J,} \hlkwc{n0probs}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlopt{/}\hlstd{n0max, n0max),} \hlkwc{zero}\hlstd{=}\hlnum{0}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Inits and parameters
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.M0.noaug} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{n0}\hlstd{=}\hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{5}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0}\hlstd{,} \hlnum{0.1}\hlstd{))}
+\hlstd{jp.M0.noaug} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+MCMC
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.M0.noaug} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.M0.noaug,} \hlkwc{inits}\hlstd{=ji.M0.noaug,}
+                                 \hlkwc{parameters.to.save}\hlstd{=jp.M0.noaug,}
+                                 \hlkwc{model.file}\hlstd{=}\hlstr{"M0.jag"}\hlstd{,}
+                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.M0.noaug[,jp.M0.noaug])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-M0-noaug-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
 
 
 
