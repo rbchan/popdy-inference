@@ -59,10 +59,19 @@
 
 
 
+
+% R packages
+% Need MARK too. Linux instructions:
+% http://www.phidot.org/software/mark/rmark/linux/
+
+
+
+
+
 % Load function to compile and open PDF
 
-% Compile and open PDF
 
+% Compile and open PDF
 
 
 
@@ -120,7 +129,7 @@
   like abundance and occupancy. \\ 
   \pause
   \vfill
-  Now we will talk about data on uniquely identifable individuals. \\
+  Now we will talk about data on uniquely identifiable individuals. \\
   \pause
   \vfill
   This is nice because all individuals are different, and we're often
@@ -145,7 +154,7 @@
   \pause
   \vfill
   In distance sampling, we modeled detection probability as a
-  function of distance, and, we replaced $p$ with average detection
+  function of distance, and we replaced $p$ with average detection
   probability. \\ 
   \pause
   \vfill
@@ -189,13 +198,13 @@
   \begin{itemize}
     \setlength\itemsep{.1pt}
     \item If $p\approx 1$, most individuals would be captured
-      on all 3 occasions
+      on all 3 occasions, and few would go undetected
     \item If $p\approx 0$, few individuals would be captured 
-      more than once
+      more than once, and many would go undetected
   \end{itemize}
-  \pause
-  \vfill
-  Knowing $p$ helps us determine how many individuals we missed  
+%  \pause
+%  \vfill
+%  Knowing $p$ helps us determine how many individuals we missed  
 \end{frame}
 
 
@@ -277,7 +286,7 @@
 
 \begin{frame}
   \frametitle{Closed population estimation options}
-  Condional likelihood \\
+  Conditional likelihood \\
   \begin{itemize}
     \item Estimate $p$, and then compute $\hat{N}=n/\hat{p}$
   \end{itemize}
@@ -451,7 +460,10 @@
   \end{itemize}
   \pause \vfill
   These can be combined, but beware of identifiability issues. See
-  Otis et al. (1978) for details. 
+  Otis et al. (1978) for details.  \\
+  \pause \vfill
+  Later we'll talk about another important class of models, the
+  ``individual covariate'' models.  
 \end{frame}
 
 
@@ -793,7 +805,7 @@
 %% p(y,n|N,p)
 \begin{frame}[fragile]
   \frametitle{Joint likelihood for $M_0$}
-  The joint likelihood is
+  The joint likelihood has a multinomial form:
   \begin{multline*}
     L(N,p; y,n) = \\
     \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
@@ -804,7 +816,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nll.M0} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{pars}\hlstd{,} \hlkwc{y}\hlstd{) \{}
+\hlstd{nll.M0} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{pars}\hlstd{,} \hlkwc{y}\hlstd{) \{}           \hlcom{## Negative log-likelihood}
     \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y);       J} \hlkwb{<-} \hlkwd{ncol}\hlstd{(y)}
     \hlstd{N} \hlkwb{<-} \hlkwd{exp}\hlstd{(pars[}\hlnum{1}\hlstd{])}
     \hlstd{n0} \hlkwb{<-} \hlstd{N}\hlopt{-}\hlstd{n}
@@ -996,7 +1008,7 @@ Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
 \begin{verbatim}
 ##               estimate         se        lcl        ucl fixed note
 ## p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
-## f0 g1 a0 t1 42.6208570 16.7216940 20.3019950 89.4758090
+## f0 g1 a0 t1 42.6208600 16.7216940 20.3019980 89.4758120
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1042,11 +1054,11 @@ Estimates of $p_j$ and $n_0$ (called $f_0$ in MARK)
 \end{alltt}
 \begin{verbatim}
 ##               estimate        se       lcl        ucl fixed note
-## p g1 t1      0.2740198 0.0473865 0.1913595  0.3757930           
-## p g1 t2      0.5186803 0.0592722 0.4035760  0.6318355           
-## p g1 t3      0.2153013 0.0428689 0.1429995  0.3108976           
-## p g1 t4      0.3718840 0.0532543 0.2746824  0.4806868           
-## f0 g1 a0 t1 17.1823890 6.4441810 8.4388330 34.9852260
+## p g1 t1      0.2740198 0.0473865 0.1913594  0.3757930           
+## p g1 t2      0.5186804 0.0592722 0.4035760  0.6318356           
+## p g1 t3      0.2153013 0.0428690 0.1429996  0.3108977           
+## p g1 t4      0.3718841 0.0532543 0.2746824  0.4806869           
+## f0 g1 a0 t1 17.1823860 6.4441804 8.4388314 34.9852230
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1091,9 +1103,9 @@ Estimates of $p$, $c$, and $n_0$ (called $f_0$ in MARK)
 \end{alltt}
 \begin{verbatim}
 ##               estimate         se       lcl         ucl fixed note
-## p g1 t1      0.2459651  0.0827673 0.1197362   0.4389149           
+## p g1 t1      0.2459652  0.0827673 0.1197363   0.4389148           
 ## c g1 t2      0.4031008  0.0431879 0.3220497   0.4898126           
-## f0 g1 a0 t1 33.4146970 23.1166160 9.8085759 113.8332400
+## f0 g1 a0 t1 33.4146830 23.1165960 9.8085762 113.8331400
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1108,7 +1120,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate      lcl      ucl
-## 1 104.4147 80.80858 184.8332
+## 1 104.4147 80.80858 184.8331
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1163,6 +1175,39 @@ Estimate of $N$
   We know $z_i=1$ for the $n$ captured individuals. \\
 \end{frame}
 
+
+
+\begin{frame}
+  \frametitle{Data augmentation}
+  \footnotesize
+  We can think of the problem like this: \\
+  \centering
+  \begin{tabular}{lcccc}
+    \hline
+               & \multicolumn{3}{c}{Occasion} \\
+    \cline{2-4}
+    Individual & 1     & 2     & 3     & z    \\
+    \hline
+    1          & 0     & 0     & 1     & 1    \\
+    2          & 1     & 1     & 1     & 1            \\
+    3          & 0     & 1     & 0     & 1            \\
+    4          & 0     & 1     & 1     & 1            \\
+    5          & 1     & 0     & 0     & 1            \\
+    \dots      & \dots & \dots & \dots      & 1        \\
+    $n$        & 0     & 0     & 1     & 1            \\
+    \hline
+    $n+1$      & 0     & 0     & 0     & ?            \\
+    $n+2$      & 0     & 0     & 0     & ?            \\
+    \dots      & \dots & \dots & \dots     & ?        \\
+    $N$        & 0     & 0     & 0     & ?            \\
+    \hline
+    $N+1$      & 0     & 0     & 0     & ?            \\
+    $N+2$      & 0     & 0     & 0     & ?            \\
+    \dots      & \dots & \dots & \dots     & ?        \\
+    $M$      & 0     & 0     & 0     & ?            \\
+    \hline
+  \end{tabular}
+\end{frame}
 
 
 
@@ -1413,6 +1458,7 @@ individuals in the set of $M$ pseudo-individuals.
 
 \begin{frame}
   \frametitle{Bayesian data augmentation}
+  The model is the same, but we need priors on $\psi$ and $p$. 
   \begin{gather*}
     z_i \sim \mathrm{Bern}(\psi) \\
     y_{ij} \sim \mathrm{Bern}(z_ip) \\
@@ -1734,9 +1780,13 @@ MCMC
   \pause \vfill
   Individual heterogeneity models pose estimation problems. \\
   \pause \vfill
-  With spatial capture-recapture (SCR) models we will account for
-  variation in $p$ arising from the distance between animals and
-  traps. 
+  A solution is to use individual covariates to explain the variation,
+  rather than random effects. \pause But what covariates are
+  important? \\
+  \pause \vfill
+  With spatial capture-recapture (SCR) models we will use
+  \alert{distance between animals and traps} as a covariate, and we'll
+  put use a spatial point process model for animal locations. 
 \end{frame}
 
 
@@ -1760,8 +1810,9 @@ MCMC
     \item Fit model $M_h$ in JAGS to the data simulated above
       \begin{itemize}
 %        \footnotesize
-        \item This model assumes that $\mathrm{logit}(p_i)$ follows a
-          normal distribution. 
+        \item Use the flavor of $M_h$ that assumes $\mathrm{logit}(p_i)$ follows a
+          normal distribution: $\mathrm{logit}(p_i) \sim
+          \mathrm{Normal}(\bar{p}, \sigma^2_p)$.  
       \end{itemize}
     \item Use prior predictive checks to find reasonable priors for
       {\tt logit.p.mean} and {\tt logit.p.var}
