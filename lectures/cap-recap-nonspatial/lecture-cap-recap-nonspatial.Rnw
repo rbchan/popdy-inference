@@ -150,7 +150,7 @@ knit_theme$set("edit-kwrite")
     \setlength\itemsep{.1pt}
     \item If $p\approx 1$, most individuals would be captured
       on all 3 occasions
-    \item If $p\approx 0$, few individuals would be captured on
+    \item If $p\approx 0$, few individuals would be captured 
       more than once
   \end{itemize}
   \pause
@@ -179,7 +179,7 @@ knit_theme$set("edit-kwrite")
   \frametitle{Classical approaches}
   Lincoln-Peterson  \\
   \begin{itemize}
-    \item Just $J=2$ occasions
+    \item $J=2$ occasions
     \item Data are:
       \begin{itemize}
         \item $n_1$ -- number of individuals captured on first occasion
@@ -257,8 +257,7 @@ knit_theme$set("edit-kwrite")
   \begin{itemize}
     \item Tack on many ``all zero'' encounter histories and estimate
       how many of them actually occurred
-    \item Likelihood-based
-    \item Bayesian
+    \item Usually, but not necessarily, used in Bayesian inference
   \end{itemize}
 \end{frame}
 
@@ -269,14 +268,6 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Joint likelihood, conditional-on-$n$}
   \small
-  % State model                                                                   \\
-  % \vspace{6pt}
-  % {\centering
-  %   There isn't one! $N$ is often treated as a constant, although we
-  %   sometimes put a Poisson or binomial prior on it.                            \\
-  % }
-  % \pause
-  % \vfill
   Another way of writing the observation model is to condition on the
   number of individuals captured, and then use a
   categorical distribution for the number of times individual $i$
@@ -287,8 +278,6 @@ knit_theme$set("edit-kwrite")
     \mathrm{for}\, i=1,\dots,n 
   \end{gather*}
   \pause
-%  \vfill
-%  \scriptsize
   \centering
   \vspace{6pt}
   \begin{tabular}{ll}
@@ -304,7 +293,7 @@ knit_theme$set("edit-kwrite")
   \end{tabular}
   \flushleft
   \vspace{-6pt}
-  where $\pi_0=(1-p)^J$ \\ 
+  where $\pi_0=(1-p)^J$. Probs are zero-truncated binomials. \\ 
   % \small
   \pause
   \vfill
@@ -319,7 +308,8 @@ knit_theme$set("edit-kwrite")
   $\pi_j$ -- Probability of capturing an individual $k$ times \\
   \pause
   \vfill
-  This only works if $p$ doesn't change over time. 
+  \centering
+  This only works if $p$ doesn't change over time. \\
 \end{frame}
 
 
@@ -406,7 +396,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Model variations}
-  Aside from of the approach to estimation, the key consideration
+  Aside from the approach to estimation, the key consideration
   concerns the sources of variation in capture probability ($p$). \\
   \pause
   \vfill
@@ -415,7 +405,7 @@ knit_theme$set("edit-kwrite")
     \small
     \item $M_0$ -- $p$ is constant
     \item $M_t$ -- unique $p$ for each capture occasion
-    \item $M_b$ -- behavioral response with $p$ different than
+    \item \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
       recapture probability $c$
     \item $M_h$ -- individual heterogeneity in $p$
   \end{itemize}
@@ -451,7 +441,7 @@ knit_theme$set("edit-kwrite")
   \footnotesize
     \item Includes closed-population, CJS, and JS models
   \end{itemize}
-  R package Rcapture
+  R package `Rcapture'
   \begin{itemize}
   \footnotesize
     \item Includes closed-population
@@ -547,8 +537,7 @@ sort(table(histories))
   Detection frequencies
 <<M0-freq,size='scriptsize'>>=
 y.tilde <- rowSums(y)
-frequencies <- table(y.tilde)
-frequencies
+sort(table(y.tilde))
 @   
 \end{frame}
 
@@ -812,7 +801,7 @@ F.huggins.estim(~1, histories=y)
   \frametitle{R package `RMark' -- Model $M_0$}
   \small
   Fit model and set capture probability equal to recapture probability
-  ($p=c$) using the \inr{share=TRUE} argument.
+  ($p=c$) using the \inr{share} argument.
 <<RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE>>=
 ## install.packages("RMark") ## Must install MARK TOO!!
 library(RMark)
@@ -914,7 +903,7 @@ mark.Mb$results$derived
 
 \begin{frame}
   \frametitle{Data augmentation}
-  Data augmentation is strange \\
+  Data augmentation is strange. \\
   \pause
   \vfill
   We add ``all zero'' capture histories to our data, then we try to
@@ -949,10 +938,10 @@ mark.Mb$results$derived
   % $\psi$, recognizing that $E(N)=M\psi$.
   Note that this looks exactly like an occupancy model. \\
   \pause \vfill
-  But why do this?
+  But why do bother with augmentation?
   \begin{itemize}
-    \item DA works for \alert{all} varieties of mark-recapture model
-    \item It make it easy to incorporate
+    \item DA works for \alert{all} varieties of mark-recapture models
+    \item Make it easy to incorporate
       individual-covariates\dots\pause including distance and
       location!   
   \end{itemize}
@@ -1036,10 +1025,10 @@ fm.Mb
 
 
 \begin{frame}[fragile]
-  \frametitle{But how do we compute $N$?}
-  First we compute Empirical Bayes posterior probability that each
+  \frametitle{But how do we estimate $N$?}
+  First compute Empirical Bayes posterior probability that each
   individual was ``real''. 
-<<un-re,size='small'>>=
+<<un-re,size='footnotesize'>>=
 re.M0 <- ranef(fm.M0)
 re.Mt <- ranef(fm.Mt)
 re.Mb <- ranef(fm.Mb)
@@ -1048,7 +1037,7 @@ re.Mb <- ranef(fm.Mb)
 \vfill
 Then we predict $N$, which can be thought of as the number of real
 individuals in the set of $M$ pseudo-individuals.
-<<un-N,size='small'>>=
+<<un-N,size='footnotesize'>>=
 N.post.M0 <- predict(re.M0, func=sum, nsim=1000)
 N.post.Mt <- predict(re.Mt, func=sum, nsim=1000)
 N.post.Mb <- predict(re.Mb, func=sum, nsim=1000)
@@ -1060,7 +1049,7 @@ N.post.Mb <- predict(re.Mb, func=sum, nsim=1000)
 \begin{frame}[fragile]
   \frametitle{Empirical Bayes posteriors of $N$}
 <<un-N-post, size='tiny',fig.height=3,out.width="100%",fig.show='hide', echo=-1>>=
-par(mfrow=c(1,3), mai=c(0.7,0.7,0.6,0.1))
+par(mfrow=c(1,3), mai=c(0.6,0.6,0.5,0.1))
 plot(table(N.post.M0), xlab="N", ylab="Posterior probability", main="M0",
      xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
 plot(table(N.post.Mt), xlab="N", ylab="Posterior probability", main="Mt",
@@ -1069,8 +1058,8 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
      xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
 @
   \begin{columns}
-    \begin{column}{\paperwidth}
-      \includegraphics[width=\paperwidth]{figure/un-N-post-1}
+    \begin{column}{0.95\paperwidth}
+      \includegraphics[width=\textwidth]{figure/un-N-post-1}
     \end{column}
   \end{columns}
 \end{frame}
@@ -1094,7 +1083,18 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
 
 \begin{frame}
   \frametitle{Bayesian data augmentation}
-  
+  \begin{gather*}
+    z_i \sim \mathrm{Bern}(\psi) \\
+    y_{ij} \sim \mathrm{Bern}(z_ip) \\
+    N = \sum_{i=1}^M z_i
+  \end{gather*}
+  \vfill
+  A uniform prior on $\psi$ results in a discrete uniform prior on
+  $N$. We can change the prior for $N$ by changing the prior on  
+  $\psi$, recognizing:
+  \[
+    E(N)=M\psi
+  \]
 \end{frame}
 
 
@@ -1152,6 +1152,7 @@ plot(jags.post.M0[,jp.M0])
 
 \begin{frame}[fragile]
   \frametitle{Model $M_0$ -- without data augmentation}
+  Here's why practitioners like data augmentation 
 \vspace{-3pt}
 <<bugs-M0,size='footnotesize'>>=
 writeLines(readLines("M0.jag"))
@@ -1166,8 +1167,9 @@ writeLines(readLines("M0.jag"))
   \frametitle{Model $M_0$ -- without data augmentation}
   Data
 <<jd-M0-noaug,size='scriptsize'>>=
-n0max <- 1000  
+n0max <- 1000  ## Upper limit of prior on n0
 jags.data.M0.noaug <- list(y=y.aug, n=n, J=J,
+                           ## Prior probs for n0
                            n0probs=rep(1/n0max, n0max), zero=0)
 @
 \pause
@@ -1181,15 +1183,14 @@ jp.M0.noaug <- c("p", "N")
 \vfill
 MCMC
 <<mcmc-M0-noaug,size='scriptsize',results='hide'>>=
-jags.post.M0.noaug <- jags.basic(data=jags.data.M0.noaug, inits=ji.M0.noaug,
+jags.post.M0.noaug <- jags.basic(data=jags.data.M0.noaug,
+                                 inits=ji.M0.noaug,
                                  parameters.to.save=jp.M0.noaug,
                                  model.file="M0.jag",
                                  n.chains=3, n.adapt=100, n.burnin=0,
                                  n.iter=2000, parallel=TRUE)
 @ 
 \end{frame}
-
-
 
 
 
@@ -1208,57 +1209,54 @@ plot(jags.post.M0.noaug[,jp.M0.noaug])
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-% <<bugs-mcmc-line,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
-% library(jagsUI)
-% jags.post.line <- jags.basic(data=jags.data.line, inits=jags.inits.line,
-%                              parameters.to.save=jags.pars.line,
-%                              model.file="distsamp-line-mod.jag",
-%                              n.chains=3, n.adapt=100, n.burnin=0,
-%                              n.iter=2000, parallel=TRUE)
-% @ 
-% \vfill
-% <<jags-sum-line,size='scriptsize',cache=TRUE>>=
-% round(summary(jags.post.line)$quantile, digits=3)
-% @ 
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot1-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
-% plot(jags.post.line[,jags.pars.line[1:3]])
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
-% plot(jags.post.line[,jags.pars.line[4:5]])
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Model $M_t$ -- data augmentation}
+\vspace{-3pt}
+<<bugs-Mt-aug,size='small'>>=
+writeLines(readLines("Mt-aug.jag"))
+@
+\end{frame}
 
 
 
 
 
 
-% \section{Models $M_t$, $M_b$, $M_h$}
+\begin{frame}[fragile]
+  \frametitle{Model $M_t$ -- data augmentation}
+  Data, inits, parameters to monitor
+<<ji-Mt-aug,size='scriptsize'>>=
+jags.data.Mt <- jags.data.M0
+ji.Mt <- function() list(z=rep(1,M), psi=runif(1), p=runif(4))
+jp.Mt <- c("p", "psi", "N")
+@
+\pause
+\vfill
+MCMC
+<<mcmc-Mt-aug,size='scriptsize',results='hide'>>=
+jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
+                           parameters.to.save=jp.Mt,
+                           model.file="Mt-aug.jag",
+                           n.chains=3, n.adapt=100, n.burnin=0,
+                           n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
 
 
-% \subsection{Simulation}
 
 
-% \subsection{Joint Likelihood}
-
-% \subsection{Likelihood-based data augmentation}
 
 
-% \subsection{Bayesian data augmentation}
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<plot-mcmc-Mt1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+plot(jags.post.Mt[,paste0("p[", 1:4, "]")])
+@ 
+\end{frame}
+
+
+
+
 
 
 
@@ -1269,21 +1267,14 @@ plot(jags.post.M0.noaug[,jp.M0.noaug])
 
 \begin{frame}
   \frametitle{Mark-recapture summary}
-  Assumptions
-  \begin{itemize}
-    \small
-    \item Animals don't move during the survey
-    \item Animals are uniformly distributed with respect to the
-      transects
-    \item Detection is certain on the transect, i.e. $p=1$ when $x=0$. 
-    \item Detections are independent
-  \end{itemize}
-  \pause
-  \vfill
-  \small
-  If these assumptions can be met, distance sampling is a powerful
-  method allowing for inference about abundance and density using data
-  from a single visit. \\
+  We assume that variation in $p$ arises from changes over time,
+  behavioral effects, or random individual heterogeneity. \\
+  \pause \vfill
+  Individual heterogeneity models pose estimation problems. \\
+  \pause \vfill
+  With spatial capture-recapture (SCR) models we will account for
+  variation in $p$ arising from the distance between animals and
+  traps. 
 \end{frame}
 
 
@@ -1297,37 +1288,25 @@ plot(jags.post.M0.noaug[,jp.M0.noaug])
 \begin{frame}[fragile]
   \frametitle{Assignment}
   % \small
-  \footnotesize
-  Create a self-contained R script or Rmarkdown file to do the following:
+  % \footnotesize
+  Create a self-contained R script or Rmarkdown file to do the
+  following: 
   \vfill
   \begin{enumerate}
 %    \small
-    \footnotesize
-    \item Fit a distance sampling model with a half-normal detection
-      function and the following covariates to the black-throated blue
-      warbler data ({\tt btbw\_data\_distsamp.csv}) in `unmarked' and
-      `JAGS':   
+%    \footnotesize
+    \item Fit model $M_h$ in JAGS to the data simulated above
       \begin{itemize}
-        \footnotesize
-        \item Density covariates: {\tt Elevation, UTM.N, UTM.W}
-        \item Detection covariates: {\tt Wind, Noise}
-        \item Response: {\scriptsize \tt btbw0\_20, btbw20\_40, btbw40\_60, btbw60\_80, btbw80\_100}
+%        \footnotesize
+        \item This model assumes that $\mathrm{logit}(p_i)$ follows a
+          normal distribution. 
       \end{itemize}
-    \item Using the model fitted in `unmarked', create two graphs of
-      the predictions, one for density and the other for the scale
-      parameter ($\sigma$).
-    \item Compare the half-normal model to two other models with the
-      same covariates, but with negative exponential and hazard
-      rate detection functions. Which has the lowest AIC? 
+    \item Use prior predictive checks to find reasonable priors for
+      {\tt logit.p.mean} and {\tt logit.p.var}
+    \item Present summary stats for prior and posterior distributions
+      of {\tt logit.p.mean} and {\tt logit.p.var}, as well as for
+      $N$. 
   \end{enumerate}
-  \pause
-  \vfill
-  Suggestions:
-  \begin{itemize}
-    \item Convert response variables to matrix with \inr{as.matrix}
-    \item Standardize covariates
-  \end{itemize}
-  \pause
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
 \end{frame}
