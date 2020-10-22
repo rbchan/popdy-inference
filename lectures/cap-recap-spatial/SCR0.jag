@@ -1,0 +1,15 @@
+model {
+
+psi ~ dunif(0,1)
+p ~ dunif(0,1)
+
+for(i in 1:M) {
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p)
+  }
+}
+
+N <- sum(z)
+
+}
