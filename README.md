@@ -14,13 +14,13 @@ Class meetings will consist of a mixture of lectures and computer exercises.
 Students will analyze their own data, write up their results, and present their findings at the end of the semester. Two rounds of peer review will be involved. Weekly computer problems will also be assigned. 
 
 ## Building the PDF slides
-Lecture slides created using [LaTeX](https://www.latex-project.org/), [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)), and [knitr](https://yihui.org/knitr/). To build the PDFs, open [R]((https://www.r-project.org/) and navigate to a lecture directory, such as `lectures/Nmix-binII` and issue the following commands:
+Lecture slides created using [LaTeX](https://www.latex-project.org/), [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)), and [knitr](https://yihui.org/knitr/). To build the PDFs, open [R](https://www.r-project.org/) and navigate to a lecture directory, such as `lectures/Nmix-binII` and issue the following commands:
 
 ```
 library(knitr)
 knit("lecture-Nmix-binomial-II.Rnw")
 ```
-This will produce a standard Beamer `.tex` file that you can compile as you would any other Latex file. 
+This will produce a [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)) `.tex` file that you can compile as you would any other [LaTeX](https://www.latex-project.org/) file. 
 
 
 ## History
