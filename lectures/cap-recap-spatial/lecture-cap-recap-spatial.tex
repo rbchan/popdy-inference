@@ -1,4 +1,54 @@
-\documentclass[color=usenames,dvipsnames]{beamer}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
@@ -11,28 +61,18 @@
 
 
 % Load function to compile and open PDF
-<<build-fun,include=FALSE,purl=FALSE>>=
-source("../rnw2pdf.R")
-@
+
 
 % Compile and open PDF
-<<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-cap-recap-spatial")
-rnw2pdf("lecture-cap-recap-spatial", tangle=TRUE)
-@ 
 
 
-<<knitr-theme,include=FALSE,purl=FALSE>>=
-knit_theme$set("edit-kwrite")
-@
+
+
 
 % New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
-
-
-
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 
@@ -377,40 +417,61 @@ knit_theme$set("edit-kwrite")
 
 
 
-<<include=FALSE,echo=FALSE>>=
-set.seed(34889243)
-@ 
+
 
 \begin{frame}[fragile]
   \frametitle{Model $M_0$}
   \small
   Parameters
   \vspace{-6pt}
-<<sim-M0-pars,size='scriptsize'>>=
-N <- 100
-p <- 0.2
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{N} \hlkwb{<-} \hlnum{100}
+\hlstd{p} \hlkwb{<-} \hlnum{0.2}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   \pause
   \vfill
   All capture histories (for captured and uncaptured individuals)
   \vspace{-6pt}
-<<sim-M0-ch,size='scriptsize'>>=
-J <- 4  ## Occasions
-y.all <- matrix(NA, N, J)
-for(i in 1:N) {
-    y.all[i,] <- rbinom(J, 1, p)
-}
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{J} \hlkwb{<-} \hlnum{4}  \hlcom{## Occasions}
+\hlstd{y.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{y.all[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   \pause
   \vfill
   Observed capture histories (data)
   \vspace{-6pt}
-<<sim-M0-y1,size='scriptsize'>>=
-captured <- rowSums(y.all)>0
-(n <- sum(captured))
-y <- y.all[captured,]
-y[1:3,]
-@ 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
+\hlstd{(n} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured))}
+\end{alltt}
+\begin{verbatim}
+## [1] 54
+\end{verbatim}
+\begin{alltt}
+\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,]}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    0    1    0    0
+## [2,]    1    0    0    0
+## [3,]    0    0    1    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -418,17 +479,35 @@ y[1:3,]
 \begin{frame}[fragile]
   \frametitle{Summary stats}
   Capture history frequencies
-<<M0-hist,size='scriptsize'>>=
-histories <- apply(y, 1, paste, collapse="")
-sort(table(histories))
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{histories} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{)}
+\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(histories))}
+\end{alltt}
+\begin{verbatim}
+## histories
+## 0011 0101 1100 1010 1101 0110 1001 0001 0010 0100 1000 
+##    1    1    1    2    2    4    4    7   10   10   12
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \pause
 \vfill
   Detection frequencies
-<<M0-freq,size='scriptsize'>>=
-y.tilde <- rowSums(y)
-sort(table(y.tilde))
-@   
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
+\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(y.tilde))}
+\end{alltt}
+\begin{verbatim}
+## y.tilde
+##  3  2  1 
+##  2 13 39
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -439,29 +518,52 @@ sort(table(y.tilde))
 \begin{frame}[fragile]
   \frametitle{Model $M_t$ -- Temporal variation}
   Capture probability for each occasion
-<<sim-Mt-pars,size='scriptsize'>>=
-p.t <- c(0.3, 0.5, 0.2, 0.4)
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p.t} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.3}\hlstd{,} \hlnum{0.5}\hlstd{,} \hlnum{0.2}\hlstd{,} \hlnum{0.4}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   \pause
   \vfill
   All capture histories (for captured and uncaptured individuals)
   \vspace{-6pt}
-<<sim-Mt-ch,size='scriptsize'>>=
-y.all.Mt <- matrix(NA, N, J)
-for(i in 1:N) {
-    y.all.Mt[i,] <- rbinom(J, 1, p.t) }
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.all.Mt} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{y.all.Mt[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.t) \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   \pause
   \vfill
   Observed capture histories (data)
   \vspace{-6pt}
-<<sim-Mt-y1,size='scriptsize'>>=
-captured.Mt <- rowSums(y.all.Mt)>0
-n.Mt <- sum(captured.Mt)
-y.Mt <- y.all.Mt[captured.Mt,]
-y.Mt[1:3,]
-colSums(y.Mt)
-@ 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured.Mt} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mt)}\hlopt{>}\hlnum{0}
+\hlstd{n.Mt} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mt)}
+\hlstd{y.Mt} \hlkwb{<-} \hlstd{y.all.Mt[captured.Mt,]}
+\hlstd{y.Mt[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    0    1    0
+## [2,]    1    1    1    0
+## [3,]    1    0    0    0
+\end{verbatim}
+\begin{alltt}
+\hlkwd{colSums}\hlstd{(y.Mt)}
+\end{alltt}
+\begin{verbatim}
+## [1] 28 53 22 38
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -471,39 +573,97 @@ colSums(y.Mt)
 \begin{frame}[fragile]
   \frametitle{Model $M_b$ -- Behavioral response}
   Capture probability for each occasion
-<<sim-Mb-pars,size='scriptsize'>>=
-p.b <- 0.3
-c <- 0.5  ## Trap happy
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p.b} \hlkwb{<-} \hlnum{0.3}
+\hlstd{c} \hlkwb{<-} \hlnum{0.5}  \hlcom{## Trap happy}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   \pause
   \vfill
   All capture histories (for captured and uncaptured individuals)
   \vspace{-6pt}
-<<sim-Mb-ch,size='scriptsize'>>=
-y.all.Mb <- matrix(NA, N, J)
-prevcap <- matrix(FALSE, N, J)
-for(i in 1:N) {
-    y.all.Mb[i,1] <- rbinom(1, 1, p.b)
-    for(j in 2:J) {
-        prevcap[i,j] <- any(y.all.Mb[i,1:(j-1)]>0)
-        prob <- ifelse(prevcap[i,j], c, p.b)
-        y.all.Mb[i,j] <- rbinom(1, 1, prob)
-    }
-}
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.all.Mb} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlstd{prevcap} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{FALSE}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{y.all.Mb[i,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, p.b)}
+    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{J) \{}
+        \hlstd{prevcap[i,j]} \hlkwb{<-} \hlkwd{any}\hlstd{(y.all.Mb[i,}\hlnum{1}\hlopt{:}\hlstd{(j}\hlopt{-}\hlnum{1}\hlstd{)]}\hlopt{>}\hlnum{0}\hlstd{)}
+        \hlstd{prob} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(prevcap[i,j], c, p.b)}
+        \hlstd{y.all.Mb[i,j]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, prob)}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   \pause
   \vfill
   Observed capture histories (data)
   \vspace{-6pt}
-<<sim-Mb-y1,size='scriptsize'>>=
-captured.Mb <- rowSums(y.all.Mb)>0
-n.Mb <- sum(captured.Mb)
-y.Mb <- y.all.Mb[captured.Mb,]
-## prevcap[1:3,]
-@ 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured.Mb} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mb)}\hlopt{>}\hlnum{0}
+\hlstd{n.Mb} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mb)}
+\hlstd{y.Mb} \hlkwb{<-} \hlstd{y.all.Mb[captured.Mb,]}
+\hlcom{## prevcap[1:3,]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
+
+\subsection{Model $M_h$}
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- Individual heterogeneity}
+  There are many flavors of $M_h$. Some use finite mixture
+  models. Here we have logit-normal distribution for $p$. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{logit.p.bar} \hlkwb{<-} \hlopt{-}\hlnum{1}  \hlcom{## Mean p on logit scale}
+\hlstd{logit.p.var} \hlkwb{<-} \hlnum{1}   \hlcom{## SD of p on logit scale}
+\hlstd{p.h} \hlkwb{<-} \hlkwd{plogis}\hlstd{(}\hlkwd{rnorm}\hlstd{(N, logit.p.bar, logit.p.var))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.all.Mh} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{y.all.Mh[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.h[i])}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured.Mh} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mh)}\hlopt{>}\hlnum{0}
+\hlstd{n.Mh} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mh)}
+\hlstd{y.Mh} \hlkwb{<-} \hlstd{y.all.Mh[captured.Mh,]}
+\hlcom{#y.Mh[1:3,]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
@@ -531,20 +691,24 @@ y.Mb <- y.all.Mb[captured.Mb,]
   \end{multline*}
   \pause
   \vfill
-<<nll-M0,echo=TRUE,size='scriptsize'>>=
-nll.M0 <- function(pars, y) {           ## Negative log-likelihood
-    n <- nrow(y);       J <- ncol(y)
-    N <- exp(pars[1])
-    n0 <- N-n
-    if(n0<0) return(NA)
-    p <- plogis(pars[2])
-    ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
-    p0 <- (1-p)^J
-    ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
-    nll <- -(ld.y1+ld.n0)
-    return(nll)
-}
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nll.M0} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{pars}\hlstd{,} \hlkwc{y}\hlstd{) \{}           \hlcom{## Negative log-likelihood}
+    \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y);       J} \hlkwb{<-} \hlkwd{ncol}\hlstd{(y)}
+    \hlstd{N} \hlkwb{<-} \hlkwd{exp}\hlstd{(pars[}\hlnum{1}\hlstd{])}
+    \hlstd{n0} \hlkwb{<-} \hlstd{N}\hlopt{-}\hlstd{n}
+    \hlkwa{if}\hlstd{(n0}\hlopt{<}\hlnum{0}\hlstd{)} \hlkwd{return}\hlstd{(}\hlnum{NA}\hlstd{)}
+    \hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(pars[}\hlnum{2}\hlstd{])}
+    \hlstd{ld.y1} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{dbinom}\hlstd{(y,} \hlnum{1}\hlstd{, p,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{))}
+    \hlstd{p0} \hlkwb{<-} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlstd{J}
+    \hlstd{ld.n0} \hlkwb{<-} \hlkwd{lgamma}\hlstd{(N}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{-}\hlkwd{lgamma}\hlstd{(n0}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{+}\hlstd{n0}\hlopt{*}\hlkwd{log}\hlstd{(p0)}
+    \hlstd{nll} \hlkwb{<-} \hlopt{-}\hlstd{(ld.y1}\hlopt{+}\hlstd{ld.n0)}
+    \hlkwd{return}\hlstd{(nll)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -552,24 +716,49 @@ nll.M0 <- function(pars, y) {           ## Negative log-likelihood
 \begin{frame}[fragile]
   \frametitle{Maximize joint likelihood for $M_0$}
 Minimized the negative log-likelihood
-<<opt-nll-M0, size='scriptsize'>>=
-fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
-fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
-                        SE=sqrt(diag(solve(fm.M0$hessian))))
-fm.M0.est
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.M0} \hlkwb{<-} \hlkwd{optim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{log.N}\hlstd{=}\hlnum{4}\hlstd{,}\hlkwc{logit.p}\hlstd{=}\hlnum{0}\hlstd{), nll.M0,} \hlkwc{y}\hlstd{=y,} \hlkwc{hessian}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{fm.M0.est} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{c}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{], fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]),}
+                        \hlkwc{SE}\hlstd{=}\hlkwd{sqrt}\hlstd{(}\hlkwd{diag}\hlstd{(}\hlkwd{solve}\hlstd{(fm.M0}\hlopt{$}\hlstd{hessian))))}
+\hlstd{fm.M0.est}
+\end{alltt}
+\begin{verbatim}
+##          Estimate        SE
+## log.N    4.570652 0.1730285
+## logit.p -1.491271 0.2493760
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \pause
 \vfill
 Back-transform the estimates
-<<opt-nll-M0-back, size='scriptsize'>>=
-c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
-@
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{N.hat}\hlstd{=}\hlkwd{exp}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{]),} \hlkwc{p.hat}\hlstd{=}\hlkwd{plogis}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]))}
+\end{alltt}
+\begin{verbatim}
+##   N.hat.log.N p.hat.logit.p 
+##     96.607092      0.183731
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \pause
 \vfill
 Compare to data-generating values
-<<dg,size='scriptsize'>>=
-c(N=N, p=p)
-@ 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{N}\hlstd{=N,} \hlkwc{p}\hlstd{=p)}
+\end{alltt}
+\begin{verbatim}
+##     N     p 
+## 100.0   0.2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
