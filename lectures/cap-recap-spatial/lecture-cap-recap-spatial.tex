@@ -72,6 +72,19 @@
 % New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\newcommand{\bxt}{${\bm x}_j$}
+\newcommand{\bx}{{\bm x}}
+\newcommand{\bxj}{{\bm x}_j}
+\newcommand{\bst}{${\bm s}_i$}
+\newcommand{\bs}{{\bm s}}
+\newcommand{\bsi}{{\bm s}_i}
+\newcommand{\ed}{\|\bx - \bs\|}
+\newcommand{\cs}{\mathcal{S} }
+\newcommand{\dsixj}{\|\bsi - \bxj\|}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -123,49 +136,59 @@
     \item Improved inference
     \begin{itemize}
       \item<1-> Non-spatial models can't properly account for sources
-        of variation in $p$ that can induce bias in $N$ estimators.
+        of variation in $p$ that can cause bias.
         \begin{itemize}
           \item<1-> Distance to traps
           \item<1-> Trap-specific covariates
         \end{itemize}
-      \item<2-> Ability to estimate \alert{density}, not just $N$ in an
-        unknown region. 
+      \item<2-> SCR makes it possible to estimate \alert{density}, not
+        just $N$ in an unknown region. 
     \end{itemize}
     \pause
     \vfill
   \item<3-> Improved science
   \begin{itemize}
-    \item<3-> We can ask new questions
+    \item<3-> We can ask new questions, such as:
       \begin{itemize}
         \item<3-> What influences spatial variation in density?
         \item<4-> How do survival and recruitment vary in space and time?
         \item<5-> How does movement influence density and detectability?
       \end{itemize}
+    \item<6-> Rather than think of SCR as a new estimation tool, you
+      can think of it as an indivdual-based framework for inference on
+      spatial population dynamics.
     \end{itemize}
   \end{enumerate}
+  % \vfill
+  % \centering
+  % \footnotesize
+  % \uncover<6->{
+  % Rather than think of SCR as a new estimation tool, you can think of
+  % it as an indivdual-based framework for inference on spatial
+  % population dynamics. \\}
 \end{frame}
 
 
 
-\begin{frame}
-  \frametitle{Mark-recapture overview}
-  The simplest estimator of abundance is 
-  \[
-    \hat{N} = \frac{n}{\hat{p}}
-  \]
-  where $n$ is the number of individuals detected, $p$ is detection
-  probability, and $E(n)=Np$. \\
-  \pause
-  \vfill
-  In distance sampling, we modeled detection probability as a
-  function of distance, and we replaced $p$ with average detection
-  probability. \\ 
-  \pause
-  \vfill
-  Spatial capture recapture can be thought of in a similar way, but we 
-  average detection probability over the spatial distribution of
-  individuals, not just over distance. 
-\end{frame}
+% \begin{frame}
+%   \frametitle{Comparison to mark-recapture}
+%   The simplest estimator of abundance is 
+%   \[
+%     \hat{N} = \frac{n}{\hat{p}}
+%   \]
+%   where $n$ is the number of individuals detected, $p$ is detection
+%   probability, and $E(n)=Np$. \\
+%   \pause
+%   \vfill
+%   In distance sampling, we modeled detection probability as a
+%   function of distance, and we replaced $p$ with average detection
+%   probability. \\ 
+%   \pause
+%   \vfill
+%   Spatial capture recapture can be thought of in a similar way, but we 
+%   average detection probability over the spatial distribution of
+%   individuals, not just over distance. 
+% \end{frame}
 
 
 
@@ -231,33 +254,42 @@
 
 \begin{frame}
   \frametitle{\large Closed population model ($N$ known hypothetically) }
-  \small
-  State model (a spatial point process model) \\
+  \footnotesize
+  State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(s) = \beta_0 + \beta_1 w_1(s) \dots \\
-    \Lambda = \int_{\mathcal{S}} \lambda(s) \; \mathrm{d}s \\
+    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) \dots \\
+    \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
-    s_i \sim \lambda(s)/\Lambda \;\; \mathrm{for}\, i=1,\dots,N 
+    \bsi \sim \lambda(\bs)/\Lambda \;\; \mathrm{for}\, i=1,\dots,N 
   \end{gather*}
   \pause
-  \vfill
+%  \vfill
   Observation model (supposing $N$ was known)
   \begin{gather*}
-    p_{ij} = g_0\exp(\|s_i - x_j\|/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    p_{ij} = g_0\exp(\|\bsi - \bxj\|/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
   \end{gather*}
   \pause
 %  \vfill
-  \small
+%  \footnotesize
+  \scriptsize
   Definitions \\
-  $N$ -- Population size \\
-  \hangindent=0.8cm $y_{ij}$ -- encounter histories, indicating if
-  individual $i$ was captured on occasion $j$ \\  
-  $p$ -- Capture probability
-  \pause
-  \vfill
-  The problem with this formulation is that we don't observe the ``all
-  zero'' encounter histories (and thus we don't know $N$). 
+  \hangindent=0.9cm $\lambda(\bs)$ -- The ``intensity function'' %or ``density surface''
+  describing the density of individuals at location $\bs$ \\ 
+  $\Lambda$ -- Expected number of individuals \\
+  $N$ -- Realized number of individuals (ie, population size) \\
+  $\bsi$ -- Location of the $i$th activity center \\
+  $\bxj$ -- Location of trap $j$ \\
+  $\dsixj$ -- Euclidean distance between $\bsi$ and $\bxj$ \\
+  $g_0$ -- Capture probability when distance between activity centers
+  and traps is 0 \\
+  $\sigma$ -- Scale parameter of encounter function \\
+  $p_{ij}$ -- Capture probability \\
+  $y_{ijk}$ -- Spatial capture histories \\
+  % \pause
+  % \vfill
+  % The problem with this formulation is that we don't observe the ``all
+  % zero'' encounter histories (and thus we don't know $N$). 
 \end{frame}
 
 
@@ -265,143 +297,135 @@
 
 
 \begin{frame}
-  \frametitle{Closed population estimation options}
-  Conditional likelihood \\
+  \frametitle{Spatial point processes}
+  {\centering \large
+    The state model of SCR is a spatial (or spatio-temporal) point process \\}
+  \vfill
+  \pause
+  There are many varieties of spatial point processes \\
   \begin{itemize}
-    \item Estimate $\tilde{p}$\footnote{$\tilde{p}$ depends on $\lambda(s), g_0,
-        \sigma, \mathcal{S}, x$}, and then compute $\hat{N}=n/\hat{\tilde{p}}$
+    \item (In)homogeneous binomial point process
+    \item (In)homogeneous Poisson point process
+    \item Cox process
+    \item Gibbs process
+    \item Markov point process
+    \item Among others
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Spatial point processes}
+%  \large
+  All share a few properties \\
+  \begin{itemize}%[<+->]
+    \item<1-> The data are a collection of points called a ``point pattern''
+    \item<2-> Points are in an area called the state-space
+      ($\mathcal{S}$), or observation window, which is usually two
+      dimensional  
+    \item<3-> An intensity function ($\lambda(\bs)$) describes spatial
+      variation in the density of points
+    \item<4-> The area under this function is the expected number of
+      points (a.k.a, $N$) in the region:
+  \end{itemize}
+  \vfill
+%  \Large
+  \uncover<5->{
+\[
+  E(N) = \Lambda = \int_{\mathcal{S}} \lambda(\bs) \;\mathrm{d}\bs
+\]
+}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Poisson point process}
+  Propoerties
+  \begin{itemize}
+    \item If density is constant throughout the state-space:
+      $\lambda(\bs) = \lambda$, the process is said to be
+      ``homogeneous''
+    \item Otherwise, the process is ``inhomogeneous''
+    \item The number of points in any region of the state-space is
+      Poisson distributed
+    \item Points are independent of one another (no attraction or
+      repulsion) 
   \end{itemize}
   \pause
   \vfill
-  Joint likelihood \\
-  \begin{itemize}
-    \item Estimate $N$ and $\tilde{p}$ jointly
-    \item Joint likelihood can be written as
-      \begin{itemize}
-      \item $L(N,g_0,\sigma;y,n) = p(y|n,p)p(n|N,p)$ or
-      \item $L(N,g_0,\sigma;y,n) = p(y,n|N,p)$
-      \end{itemize}
-  \end{itemize}
+%   \centering {\bf Note:} For more complicated models, it's easier to
+%   work in discrete space than continuous space. Plus, spatial
+%   covariates always come to us in the form of raster. \\
+  An inhomogeneous point process allows for spatial variation
+  in density, which can be modeled using \alert{spatial covariates},
+  such as raster layers. \\
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Observation model(s)}
+  The SCR model assumes that capture probability decreases with
+  distance between activity centers and traps. \\
+  \pause
+  \vfill
+  We can use encounter rate functions similar to those from distance 
+  sampling for this purpse. \\
+  \pause
+  \vfill
+  The most common encounter rate function that we'll consider is based
+  on the Gaussian distribution:
+  \begin{gather*}
+    p_{ij} = g_0\exp(-\dsixj/(2\sigma^2)) \\
+    y_{ijk} \sim \mathrm{Bernoulli}(p_{ij}) 
+  \end{gather*}
+  \pause
+%  \vfill
+  However, there are many options and we aren't restricted to the
+  Bernoulli observation model. 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Observation models}
+%  \begin{itemize}
+%  \item
+  Observation models are not the same as encounter rate functions. \\
   \pause \vfill
-  Data augmentation \\
-  \begin{itemize}
-    \item Tack on many ``all zero'' encounter histories and estimate
-      how many of them actually occurred
-    \item Usually, but not necessarily, used in Bayesian inference
-  \end{itemize}
-\end{frame}
-
-
-
-
-
-
-
-
-
-\begin{frame}
-  \frametitle{Joint likelihood}
-  % \footnotesize
-  \small
-  The joint likelihood looks similar to the nonspatial likelihood,
-  except that we have a third dimension for $y$ and we have to
-  integrate out the latent activity center $s_i$. 
-  \pause
-  \vfill
-  \flushleft
-  \begin{equation*}
-%  \begin{multline*}
-%    L(N,p; y,n) =                                          \\
-    L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J \prod_{k=1}^K p_{ij}^{y_{ijj}}(1-p_{ij})^{1-y_{ijk}}\right\}
-%    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-    \frac{N!}{(N-n)!}  \left(q^*\right)^{N-n}
-%  \end{multline*}
-  \end{equation*}
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{Model variations}
-  Aside from the approach to estimation, the key consideration
-  concerns the sources of variation in capture probability ($p$). \\
-  \pause
-  \vfill
-  Otis et al. (1978, Wildlife Monographs) identified several model variations
-  \begin{itemize}
-    \small
-    \item $M_0$ -- $p$ is constant
-    \item $M_t$ -- unique $p$ for each capture occasion
-    \item \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
-      recapture probability $c$
-    \item $M_h$ -- individual heterogeneity in $p$
-  \end{itemize}
+  % \item
+  Observation models are chosen with respect to the sampling
+      method (mist-net, camera trap, hair snare, etc\dots) \\
+%  \end{itemize}
   \pause \vfill
-  These can be combined, but beware of identifiability issues. See
-  Otis et al. (1978) for details.  \\
-  \pause \vfill
-  Later we'll talk about another important class of models, the
-  ``individual covariate'' models.  
+  % \begin{center}
+  \centering
+    \begin{tabular}{lll}
+      \hline
+      Model       & Detector/Trap     & Examples           \\
+      \hline
+      Bernoulli   & Proximity    & Hair-snares        \\
+      Poisson     & Count        & Camera trap        \\
+      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
+      ---          & Single-catch & Sherman trap       \\
+      \hline
+    \end{tabular}
+    % \end{center}
+    \pause \vfill
+There are other observation models for data from area searches,
+transects, or acoustic detectors recording signal strength.
 \end{frame}
 
-
-
-
-\begin{frame}
-  \frametitle{Software options}
-  \small
-  Program DENSITY
-  \begin{itemize}
-  \footnotesize
-    \item Has the most model types
-    \item Written for Windows, but can be executed on other platforms  
-  \end{itemize}
-  R package `oSCR'
-  \begin{itemize}
-  \footnotesize
-    \item Function \inr{mark} runs MARK from R.
-  \end{itemize}
-  R package `marked'
-  \begin{itemize}
-  \footnotesize
-    \item Includes CJS and JS models
-  \end{itemize}
-  R package `mra'
-  \begin{itemize}
-  \footnotesize
-    \item Includes closed-population, CJS, and JS models
-  \end{itemize}
-  R package `Rcapture'
-  \begin{itemize}
-  \footnotesize
-    \item Includes closed-population
-  \end{itemize}
-  R package `unmarked'
-  \begin{itemize}
-  \footnotesize
-    \item Likelihood-based data augmentation with \inr{occu}
-  \end{itemize}
-  R package `secr'
-  \begin{itemize}
-  \footnotesize
-    \item Designed for spatially explicit models, but see \inr{closedN}
-  \end{itemize}
-\end{frame}
 
 
 
 
 \section{Simulation}
-
-%\section{Model $M_0$}
-
-
-%\subsection{Simulation}
-
-
-\subsection{Model $M_0$}
-
-
 
 
 \begin{frame}
@@ -414,253 +438,375 @@
 
 
 
+% \begin{frame}[fragile]
+%   \frametitle{Homogeneous binomial point process}
+% <<bpp1,size='footnotesize',out.width="50%",fig.align="center">>=
+% N <- 25
+% s <- cbind(runif(N, 0, 1), runif(N, 0, 1))
+% plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
+%      xlim=c(0,1), ylim=c(0,1), cex.lab=1.5, asp=1)
+% @
+% \end{frame}
+
 
 
 
 
 
 \begin{frame}[fragile]
-  \frametitle{Model $M_0$}
-  \small
-  Parameters
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
+  \frametitle{Homogeneous Poisson point process}
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N} \hlkwb{<-} \hlnum{100}
-\hlstd{p} \hlkwb{<-} \hlnum{0.2}
+\hlstd{lambda1} \hlkwb{<-} \hlnum{25}\hlstd{; A} \hlkwb{<-} \hlnum{1}     \hlcom{## lambda1=density, A=area}
+\hlstd{N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, lambda1}\hlopt{*}\hlstd{A)}
+\hlstd{s} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(N,} \hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwd{runif}\hlstd{(N,} \hlnum{0}\hlstd{,} \hlnum{1}\hlstd{))}
+\hlkwd{plot}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Easting"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Northing"}\hlstd{,}
+     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{cex.lab}\hlstd{=}\hlnum{1.5}\hlstd{,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  All capture histories (for captured and uncaptured individuals)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlnum{4}  \hlcom{## Occasions}
-\hlstd{y.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Observed capture histories (data)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
-\hlstd{(n} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured))}
-\end{alltt}
-\begin{verbatim}
-## [1] 54
-\end{verbatim}
-\begin{alltt}
-\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,]}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
-\end{alltt}
-\begin{verbatim}
-##      [,1] [,2] [,3] [,4]
-## [1,]    0    1    0    0
-## [2,]    1    0    0    0
-## [3,]    0    0    1    0
-\end{verbatim}
-\end{kframe}
+
+{\centering \includegraphics[width=0.5\linewidth]{figure/ppp1-1} 
+
+}
+
+
+
 \end{knitrout}
 \end{frame}
 
 
 
+
+
+
+
+
+
+
+
+
 \begin{frame}[fragile]
-  \frametitle{Summary stats}
-  Capture history frequencies
-\begin{knitrout}\scriptsize
+  \frametitle{Inhomogeneous Poisson point process}
+  First, let's import a raster layer
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{histories} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(histories))}
+\hlkwd{library}\hlstd{(raster)}
+\hlstd{elevation} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elevation.tif"}\hlstd{)}
+\hlkwd{plot}\hlstd{(elevation,} \hlkwc{col}\hlstd{=}\hlkwd{topo.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/ippp1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Closed population estimation options}
+%   Conditional likelihood \\
+%   \begin{itemize}
+%     \item Estimate $\tilde{p}$\footnote{$\tilde{p}$ depends on $\lambda(s), g_0,
+%         \sigma, \mathcal{S}, x$}, and then compute $\hat{N}=n/\hat{\tilde{p}}$
+%   \end{itemize}
+%   \pause
+%   \vfill
+%   Joint likelihood \\
+%   \begin{itemize}
+%     \item Estimate $N$ and $\tilde{p}$ jointly
+%     \item Joint likelihood can be written as
+%       \begin{itemize}
+%       \item $L(N,g_0,\sigma;y,n) = p(y|n,p)p(n|N,p)$ or
+%       \item $L(N,g_0,\sigma;y,n) = p(y,n|N,p)$
+%       \end{itemize}
+%   \end{itemize}
+%   \pause \vfill
+%   Data augmentation \\
+%   \begin{itemize}
+%     \item Tack on many ``all zero'' encounter histories and estimate
+%       how many of them actually occurred
+%     \item Usually, but not necessarily, used in Bayesian inference
+%   \end{itemize}
+% \end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Inhomogeneous Poisson point process}
+  \small
+  Second, let's pick some coefficients and create a density surface
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
+\hlstd{beta1} \hlkwb{<-} \hlnum{0.01} \hlcom{#0.005}
+\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)} \hlcom{# Intensity function}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Density surface"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/ippp2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Inhomogeneous Poisson point process}
+  \small
+  Third, simulate $N$
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hlstd{(}\hlnum{538}\hlstd{)}
+\hlstd{ds} \hlkwb{<-} \hlnum{1}                            \hlcom{## Pixel area is 1 ha}
+\hlstd{lambda.values} \hlkwb{<-} \hlkwd{values}\hlstd{(lambda)}    \hlcom{## Convert raster to vector}
+\hlstd{Lambda} \hlkwb{<-} \hlkwd{sum}\hlstd{(lambda.values}\hlopt{*}\hlstd{ds)}    \hlcom{## E(N)}
+\hlstd{(N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, Lambda))}            \hlcom{## Realized N}
 \end{alltt}
 \begin{verbatim}
-## histories
-## 0011 0101 1100 1010 1101 0110 1001 0001 0010 0100 1000 
-##    1    1    1    2    2    4    4    7   10   10   12
+## [1] 98
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-  Detection frequencies
-\begin{knitrout}\scriptsize
+Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we will pick
+pixels proportional to density. Then we'll jitter each point
+inside its pixel. 
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
-\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(y.tilde))}
+\hlstd{n.pixels} \hlkwb{<-} \hlkwd{length}\hlstd{(lambda)}
+\hlstd{jitter} \hlkwb{<-} \hlnum{0.005}                    \hlcom{## Half width of pixel }
+\hlstd{s.pixels} \hlkwb{<-} \hlkwd{sample}\hlstd{(n.pixels,} \hlkwc{size}\hlstd{=N,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+                   \hlkwc{prob}\hlstd{=lambda.values}\hlopt{/}\hlstd{Lambda)}
+\hlstd{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(elevation,} \hlkwc{xy}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{s} \hlkwb{<-} \hlstd{elevation.xyz[s.pixels,}\hlkwd{c}\hlstd{(}\hlstr{"x"}\hlstd{,}\hlstr{"y"}\hlstd{)]} \hlopt{+}
+    \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(N,} \hlopt{-}\hlstd{jitter, jitter),}\hlkwd{runif}\hlstd{(N,} \hlopt{-}\hlstd{jitter, jitter))}
 \end{alltt}
-\begin{verbatim}
-## y.tilde
-##  3  2  1 
-##  2 13 39
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
 
 
 
-\subsection{Model $M_t$}
+
+
 
 
 \begin{frame}[fragile]
-  \frametitle{Model $M_t$ -- Temporal variation}
-  Capture probability for each occasion
+  \frametitle{Inhomogeneous Poisson point process}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p.t} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.3}\hlstd{,} \hlnum{0.5}\hlstd{,} \hlnum{0.2}\hlstd{,} \hlnum{0.4}\hlstd{)}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
+     \hlkwc{main}\hlstd{=}\hlstr{"Density surface with activity centers"}\hlstd{)}
+\hlkwd{points}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  All capture histories (for captured and uncaptured individuals)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{y.all.Mt} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mt[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.t) \}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Observed capture histories (data)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{captured.Mt} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mt)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mt} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mt)}
-\hlstd{y.Mt} \hlkwb{<-} \hlstd{y.all.Mt[captured.Mt,]}
-\hlstd{y.Mt[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
-\end{alltt}
-\begin{verbatim}
-##      [,1] [,2] [,3] [,4]
-## [1,]    1    0    1    0
-## [2,]    1    1    1    0
-## [3,]    1    0    0    0
-\end{verbatim}
-\begin{alltt}
-\hlkwd{colSums}\hlstd{(y.Mt)}
-\end{alltt}
-\begin{verbatim}
-## [1] 28 53 22 38
-\end{verbatim}
-\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/ippp5-1} 
+
+}
+
+
+
 \end{knitrout}
 \end{frame}
 
 
 
-\subsection{Model $M_b$}
+
+
 
 \begin{frame}[fragile]
-  \frametitle{Model $M_b$ -- Behavioral response}
-  Capture probability for each occasion
+  \frametitle{Traps}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p.b} \hlkwb{<-} \hlnum{0.3}
-\hlstd{c} \hlkwb{<-} \hlnum{0.5}  \hlcom{## Trap happy}
+\hlstd{x} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{each}\hlstd{=}\hlnum{8}\hlstd{),}
+           \hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{times}\hlstd{=}\hlnum{8}\hlstd{))}  \hlcom{## Trap locations}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
+     \hlkwc{main}\hlstd{=}\hlstr{"Density surface with activity centers and traps"}\hlstd{)}
+\hlkwd{points}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}              \hlcom{## Trap locations}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/traps1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Distance between traps and activity centers}
+  Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
+  and traps ($\bx_1, \dots, \bx_J$).
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}                 \hlcom{## nTraps}
+\hlstd{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+} \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-  \pause
-  \vfill
-  All capture histories (for captured and uncaptured individuals)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
+\pause
+\vfill
+  Look at distances between first 4 individuals and first 5 traps.
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.all.Mb} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlstd{prevcap} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{FALSE}\hlstd{, N, J)}
+\hlstd{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##           [,1]      [,2]      [,3]      [,4]      [,5]
+## [1,] 0.1218625 0.1175070 0.1810119 0.2678109 0.3614970
+## [2,] 0.9587743 0.8922040 0.8323508 0.7807610 0.7391668
+## [3,] 0.7162980 0.6912027 0.6800289 0.6834600 0.7012815
+## [4,] 0.6222620 0.5569781 0.5032288 0.4650310 0.4463949
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Capture probability}
+  Compute capture probability
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{g0} \hlkwb{<-} \hlnum{0.2}
+\hlstd{sigma} \hlkwb{<-} \hlnum{0.05}
+\hlstd{p} \hlkwb{<-} \hlstd{g0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Look at capture probs for first 4 individuals and first 5 traps.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##          [,1]     [,2]     [,3]     [,4]     [,5]
+## [1,] 1.03e-02 1.26e-02 2.85e-04 1.18e-07 8.92e-13
+## [2,] 2.86e-81 1.44e-70 1.33e-61 2.25e-54 6.98e-49
+## [3,] 5.44e-46 6.36e-43 1.36e-41 5.34e-42 3.84e-44
+## [4,] 4.66e-35 2.27e-28 2.02e-23 3.29e-20 9.84e-19
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Capture histories}
+  Simulate capture histories for all $N$ individuals
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
+\hlstd{y.all} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(N, J, K))}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mb[i,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, p.b)}
-    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{J) \{}
-        \hlstd{prevcap[i,j]} \hlkwb{<-} \hlkwd{any}\hlstd{(y.all.Mb[i,}\hlnum{1}\hlopt{:}\hlstd{(j}\hlopt{-}\hlnum{1}\hlstd{)]}\hlopt{>}\hlnum{0}\hlstd{)}
-        \hlstd{prob} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(prevcap[i,j], c, p.b)}
-        \hlstd{y.all.Mb[i,j]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, prob)}
+    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+        \hlstd{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=p[i,j])}
     \hlstd{\}}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-  \pause
-  \vfill
-  Observed capture histories (data)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
+\pause
+\vfill
+  Discard individuals not captured
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured.Mb} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mb)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mb} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mb)}
-\hlstd{y.Mb} \hlkwb{<-} \hlstd{y.all.Mb[captured.Mb,]}
-\hlcom{## prevcap[1:3,]}
+\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
+\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,,]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+\pause
+\vfill
+  Look at capture histories for first 2 individuals and first 5 traps
+  on first occasion.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{1}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0    0    0    0    0
+## [2,]    0    0    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
 \end{frame}
 
 
 
-\subsection{Model $M_h$}
+
 
 
 \begin{frame}[fragile]
-  \frametitle{Model $M_h$ -- Individual heterogeneity}
-  There are many flavors of $M_h$. Some use finite mixture
-  models. Here we have logit-normal distribution for $p$. 
+  \frametitle{Summary stats}
+  Capture frequencies
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{logit.p.bar} \hlkwb{<-} \hlopt{-}\hlnum{1}  \hlcom{## Mean p on logit scale}
-\hlstd{logit.p.var} \hlkwb{<-} \hlnum{1}   \hlcom{## SD of p on logit scale}
-\hlstd{p.h} \hlkwb{<-} \hlkwd{plogis}\hlstd{(}\hlkwd{rnorm}\hlstd{(N, logit.p.bar, logit.p.var))}
+\hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
+\hlkwd{table}\hlstd{(y.tilde)}
 \end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  All capture histories (for captured and uncaptured individuals)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{y.all.Mh} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mh[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.h[i])}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Observed capture histories (data)
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{captured.Mh} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mh)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mh} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mh)}
-\hlstd{y.Mh} \hlkwb{<-} \hlstd{y.all.Mh[captured.Mh,]}
-\hlcom{#y.Mh[1:3,]}
-\end{alltt}
+\begin{verbatim}
+## y.tilde
+##  1  2  3  4  5 
+## 24 22  5  6  2
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -669,7 +815,129 @@
 
 
 
-\section{Joint likelihood}
+
+
+% \begin{frame}
+%   \frametitle{Joint likelihood}
+%   % \footnotesize
+%   \small
+%   The joint likelihood looks similar to the nonspatial likelihood,
+%   except that we have a third dimension for $y$ and we have to
+%   integrate out the latent activity center $s_i$. 
+%   \pause
+%   \vfill
+%   \flushleft
+%   \begin{equation*}
+% %  \begin{multline*}
+% %    L(N,p; y,n) =                                          \\
+%     L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J \prod_{k=1}^K p_{ij}^{y_{ijj}}(1-p_{ij})^{1-y_{ijk}}\right\}
+% %    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%     \frac{N!}{(N-n)!}  \left(q^*\right)^{N-n}
+% %  \end{multline*}
+%   \end{equation*}
+% \end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Model variations}
+%   Aside from the approach to estimation, the key consideration
+%   concerns the sources of variation in capture probability ($p$). \\
+%   \pause
+%   \vfill
+%   Otis et al. (1978, Wildlife Monographs) identified several model variations
+%   \begin{itemize}
+%     \small
+%     \item $M_0$ -- $p$ is constant
+%     \item $M_t$ -- unique $p$ for each capture occasion
+%     \item \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
+%       recapture probability $c$
+%     \item $M_h$ -- individual heterogeneity in $p$
+%   \end{itemize}
+%   \pause \vfill
+%   These can be combined, but beware of identifiability issues. See
+%   Otis et al. (1978) for details.  \\
+%   \pause \vfill
+%   Later we'll talk about another important class of models, the
+%   ``individual covariate'' models.  
+% \end{frame}
+
+
+
+
+
+
+%\section{Model $M_0$}
+
+
+%\subsection{Simulation}
+
+
+%\subsection{Model $M_0$}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Summary stats}
+%   Capture history frequencies
+% <<M0-hist,size='scriptsize'>>=
+% histories <- apply(y, 1, paste, collapse="")
+% sort(table(histories))
+% @
+% \pause
+% \vfill
+%   Detection frequencies
+% <<M0-freq,size='scriptsize'>>=
+% y.tilde <- rowSums(y)
+% sort(table(y.tilde))
+% @   
+% \end{frame}
+
+
+
+%\subsection{Model $M_t$}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- Temporal variation}
+%   Capture probability for each occasion
+% <<sim-Mt-pars,size='scriptsize'>>=
+% p.t <- c(0.3, 0.5, 0.2, 0.4)
+% @
+%   \pause
+%   \vfill
+%   All capture histories (for captured and uncaptured individuals)
+%   \vspace{-6pt}
+% <<sim-Mt-ch,size='scriptsize'>>=
+% y.all.Mt <- matrix(NA, N, J)
+% for(i in 1:N) {
+%     y.all.Mt[i,] <- rbinom(J, 1, p.t) }
+% @
+%   \pause
+%   \vfill
+%   Observed capture histories (data)
+%   \vspace{-6pt}
+% <<sim-Mt-y1,size='scriptsize'>>=
+% captured.Mt <- rowSums(y.all.Mt)>0
+% n.Mt <- sum(captured.Mt)
+% y.Mt <- y.all.Mt[captured.Mt,]
+% y.Mt[1:3,]
+% colSums(y.Mt)
+% @ 
+% \end{frame}
+
+
+
+
+
+
+
+
+
+\section{Likelihood}
 
 
 
@@ -680,86 +948,81 @@
 \end{frame}
 
 
-%% p(y,n|N,p)
-\begin{frame}[fragile]
-  \frametitle{Joint likelihood for $M_0$}
-  The joint likelihood has a multinomial form:
-  \begin{multline*}
-    L(N,p; y,n) = \\
-    \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
-    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-  \end{multline*}
-  \pause
-  \vfill
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{nll.M0} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{pars}\hlstd{,} \hlkwc{y}\hlstd{) \{}           \hlcom{## Negative log-likelihood}
-    \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y);       J} \hlkwb{<-} \hlkwd{ncol}\hlstd{(y)}
-    \hlstd{N} \hlkwb{<-} \hlkwd{exp}\hlstd{(pars[}\hlnum{1}\hlstd{])}
-    \hlstd{n0} \hlkwb{<-} \hlstd{N}\hlopt{-}\hlstd{n}
-    \hlkwa{if}\hlstd{(n0}\hlopt{<}\hlnum{0}\hlstd{)} \hlkwd{return}\hlstd{(}\hlnum{NA}\hlstd{)}
-    \hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(pars[}\hlnum{2}\hlstd{])}
-    \hlstd{ld.y1} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{dbinom}\hlstd{(y,} \hlnum{1}\hlstd{, p,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{))}
-    \hlstd{p0} \hlkwb{<-} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlstd{J}
-    \hlstd{ld.n0} \hlkwb{<-} \hlkwd{lgamma}\hlstd{(N}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{-}\hlkwd{lgamma}\hlstd{(n0}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{+}\hlstd{n0}\hlopt{*}\hlkwd{log}\hlstd{(p0)}
-    \hlstd{nll} \hlkwb{<-} \hlopt{-}\hlstd{(ld.y1}\hlopt{+}\hlstd{ld.n0)}
-    \hlkwd{return}\hlstd{(nll)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+
+
+\begin{frame}
+  \frametitle{Software options}
+  \small
+  Program DENSITY
+  \begin{itemize}
+  \footnotesize
+    \item Windows program with GUI
+  \end{itemize}
+  R package `secr'
+  \begin{itemize}
+  \footnotesize
+    \item The oldest R package with the most options
+  \end{itemize}
+  R package `oSCR'
+  \begin{itemize}
+  \footnotesize
+    \item A newer R package with similar functionality
+  \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Maximize joint likelihood for $M_0$}
-Minimized the negative log-likelihood
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fm.M0} \hlkwb{<-} \hlkwd{optim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{log.N}\hlstd{=}\hlnum{4}\hlstd{,}\hlkwc{logit.p}\hlstd{=}\hlnum{0}\hlstd{), nll.M0,} \hlkwc{y}\hlstd{=y,} \hlkwc{hessian}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlstd{fm.M0.est} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{c}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{], fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]),}
-                        \hlkwc{SE}\hlstd{=}\hlkwd{sqrt}\hlstd{(}\hlkwd{diag}\hlstd{(}\hlkwd{solve}\hlstd{(fm.M0}\hlopt{$}\hlstd{hessian))))}
-\hlstd{fm.M0.est}
-\end{alltt}
-\begin{verbatim}
-##          Estimate        SE
-## log.N    4.570652 0.1730285
-## logit.p -1.491271 0.2493760
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-Back-transform the estimates
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{N.hat}\hlstd{=}\hlkwd{exp}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{]),} \hlkwc{p.hat}\hlstd{=}\hlkwd{plogis}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]))}
-\end{alltt}
-\begin{verbatim}
-##   N.hat.log.N p.hat.logit.p 
-##     96.607092      0.183731
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-Compare to data-generating values
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{N}\hlstd{=N,} \hlkwc{p}\hlstd{=p)}
-\end{alltt}
-\begin{verbatim}
-##     N     p 
-## 100.0   0.2
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% %% p(y,n|N,p)
+% \begin{frame}[fragile]
+%   \frametitle{Joint likelihood for $M_0$}
+%   The joint likelihood has a multinomial form:
+%   \begin{multline*}
+%     L(N,p; y,n) = \\
+%     \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
+%     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%   \end{multline*}
+%   \pause
+%   \vfill
+% <<nll-M0,echo=TRUE,size='scriptsize'>>=
+% nll.M0 <- function(pars, y) {           ## Negative log-likelihood
+%     n <- nrow(y);       J <- ncol(y)
+%     N <- exp(pars[1])
+%     n0 <- N-n
+%     if(n0<0) return(NA)
+%     p <- plogis(pars[2])
+%     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
+%     p0 <- (1-p)^J
+%     ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
+%     nll <- -(ld.y1+ld.n0)
+%     return(nll)
+% }
+% @
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Maximize joint likelihood for $M_0$}
+% Minimized the negative log-likelihood
+% <<opt-nll-M0, size='scriptsize'>>=
+% fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
+% fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
+%                         SE=sqrt(diag(solve(fm.M0$hessian))))
+% fm.M0.est
+% @
+% \pause
+% \vfill
+% Back-transform the estimates
+% <<opt-nll-M0-back, size='scriptsize'>>=
+% c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
+% @
+% \pause
+% \vfill
+% Compare to data-generating values
+% <<dg,size='scriptsize'>>=
+% c(N=N, p=p)
+% @ 
+% \end{frame}
 
 
 
