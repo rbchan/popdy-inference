@@ -122,7 +122,7 @@ knit_theme$set("edit-kwrite")
   % \footnotesize
   % \uncover<6->{
   % Rather than think of SCR as a new estimation tool, you can think of
-  % it as an indivdual-based framework for inference on spatial
+  % it as an individual-based framework for inference on spatial
   % population dynamics. \\}
 \end{frame}
 
@@ -481,7 +481,7 @@ writeRaster(elevation.r, filename="elevation.tif", overwrite=TRUE)
 \begin{frame}[fragile]
   \frametitle{Inhomogeneous Poisson point process}
   First, let's import a raster layer
-<<ippp1,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center">>=
+<<ippp1,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center",results="hide">>=
 library(raster)
 elevation <- raster("elevation.tif")
 plot(elevation, col=topo.colors(100), main="Elevation")
@@ -688,13 +688,13 @@ y[1:2,1:5,1]
   \frametitle{Summary stats}
   \small
   Individuals captured
-<<n,size='small'>>=
+<<n,size='footnotesize'>>=
 (n <- nrow(y))
 @
 \pause \vfill
   Capture frequencies
   \vspace{-6pt}  
-<<cap-freq,size='small'>>=
+<<cap-freq,size='footnotesize'>>=
 y.tilde <- rowSums(y)
 table(y.tilde)
 @
@@ -702,7 +702,7 @@ table(y.tilde)
 \vfill
 Spatial recaptures
   \vspace{-6pt}  
-<<sp-cap-freq,size='small'>>=
+<<sp-cap-freq,size='footnotesize'>>=
 y.nok <- apply(y, c(1, 2), sum)
 y.nojk <- apply(y.nok>0, 1, sum)
 table(y.nojk)
@@ -953,7 +953,7 @@ points(x, pch=3)              ## Trap locations
 % \end{frame}
 
 
-<<write,include=FALSE>>=
+<<write,include=FALSE,results="hide">>=
 ch.out <- data.frame(session=1,
                      individual=rep(slice.index(y, 1), y),
                      occasion=rep(slice.index(y, 3), y),
@@ -963,6 +963,7 @@ write.table(ch.out, file="encounter_data_file.csv",
 traps.out <- data.frame(trap=1:nrow(x), x*1000)
 write.table(traps.out, file="trap_data_file.csv",
             row.names=FALSE, col.names=FALSE, sep=",")
+library(secr)
 @ 
 
 
@@ -1159,6 +1160,10 @@ writeLines(readLines("SCR0.jag"))
 \end{frame}
 
 
+<<rjags,include=FALSE,results="hide">>=
+library(rjags)
+@ 
+
 
 \begin{frame}[fragile]
   \frametitle{Model SCR$_0$ -- data augmentation}
@@ -1181,13 +1186,13 @@ ji.SCR0 <- function() {
          s=cbind(runif(M), runif(M)),
          g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
 jp.SCR0 <- c("g0", "sigma", "EN", "N")
+library(jagsUI)
 @
 \pause
 \vfill
 MCMC
   \vspace{-6pt}
 <<mcmc-M0-aug,size='scriptsize',results='hide',cache=TRUE>>=
-library(jagsUI)
 jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
                              parameters.to.save=jp.SCR0,
                              model.file="SCR0.jag",
@@ -1216,8 +1221,116 @@ plot(jags.post.SCR0[,jp.SCR0])
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{How do we speed up Bayesian inference?}
+  \begin{itemize}
+    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
+      non-spatial lecture.
+      \begin{itemize}
+        \item This can work well, but not when there are other
+          individual-level covariates.
+      \end{itemize}
+    \item Treat $z_i=1$ as data for first $n$ individuals.
+    \item If there are no occasion-specific covariates, collapse data
+      and use binomial instead of Bernoulli distribution.
+    \item Use a single zero for each augmented individual, instead of
+      an array of zeros. Then compute probability of detecting an
+      individual at least once.
+  \end{itemize}
+\end{frame}
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+\vspace{-3pt}
+<<bugs-SC0-faster,size='tiny'>>=
+writeLines(readLines("SCR0-faster.jag"))
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- faster}
+  Data
+  \vspace{-6pt}
+<<jd-SCR0-aug-faster,size='scriptsize'>>=
+y.tilde <- apply(y, c(1,2), sum)
+n <- nrow(y)
+jags.data.SCR0.faster <- list(y.tilde=y.tilde, n=n, M=M, J=J,
+                              z=c(rep(1, n), rep(NA, M-n)),
+                              K=K, zero=rep(0, M), x=x,
+                              xlim=c(0,1), ylim=c(0,1))
+@
+\pause
+\vfill
+  Inits and parameters (same as before)
+\pause
+\vfill
+<<ji-M0-aug-faster,size='scriptsize'>>=
+ji.SCR0.faster <- function() {
+    list(z=c(rep(NA, n), rep(0,M-n)), psi=runif(1),
+         s=cbind(runif(M), runif(M)),
+         g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
+@
+MCMC
+  \vspace{-6pt}
+<<mcmc-M0-aug-faster,size='scriptsize',results='hide',cache=TRUE>>=
+jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
+                                    inits=ji.SCR0.faster,
+                                    parameters.to.save=jp.SCR0,
+                                    model.file="SCR0-faster.jag",
+                                    n.chains=3, n.adapt=100, n.burnin=0,
+                                    n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior summaries}
+<<summary-mcmc-SCR0-faster,size='tiny'>>=
+summary(jags.post.SCR0.faster)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<plot-mcmc-SCR0-faster,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.SCR0.faster[,jp.SCR0])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{SCR study design}
+  SCR uses model-based, rather than design-based,
+  inference (see Ch. 10). \\ 
+  \pause
+  \vfill
+  Random placement of traps is not required, but it's a good idea
+  randomly sample locations along the environmental gradients you're
+  interested in. \\
+  \pause \vfill
+  The other two key design considerations are:
+  \begin{enumerate}
+    \item<3-> Capture as many individuals as you can (i.e., maximize $n$)
+    \item<4-> Obtain as many {\it spatial} recaptures as possible
+  \end{enumerate}
+  \vfill
+  \uncover<5->{
+    There is a tradeoff between these two objectives. Simulation is
+    often the best option for finding the right balance.
+  }
+\end{frame}
 
 %\section{Summary}
 

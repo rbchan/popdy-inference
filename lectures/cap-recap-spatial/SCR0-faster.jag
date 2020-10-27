@@ -10,10 +10,16 @@ for(i in 1:M) {
   for(j in 1:J) {
     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
-    for(k in 1:K) {
-      y[i,j,k] ~ dbern(z[i]*p[i,j])
-    }
   }
+}
+for(i in 1:n) {  ## Model for observed capture histories
+  for(j in 1:J) {
+    y.tilde[i,j] ~ dbinom(p[i,j], K)
+  }
+}
+for(i in (n+1):M) { ## Model for augmented guys
+  PrMoreThanOneDet[i] <- 1-prod(1-p[i,])^K
+  zero[i] ~ dbern(PrMoreThanOneDet[i]*z[i])
 }
 
 EN <- M*psi

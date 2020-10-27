@@ -164,7 +164,7 @@
   % \footnotesize
   % \uncover<6->{
   % Rather than think of SCR as a new estimation tool, you can think of
-  % it as an indivdual-based framework for inference on spatial
+  % it as an individual-based framework for inference on spatial
   % population dynamics. \\}
 \end{frame}
 
@@ -796,8 +796,9 @@ inside its pixel.
 
 \begin{frame}[fragile]
   \frametitle{Summary stats}
+  \small
   Individuals captured
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{(n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y))}
@@ -810,7 +811,7 @@ inside its pixel.
 \pause \vfill
   Capture frequencies
   \vspace{-6pt}  
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
@@ -827,7 +828,7 @@ inside its pixel.
 \vfill
 Spatial recaptures
   \vspace{-6pt}  
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{y.nok} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{), sum)}
@@ -1249,11 +1250,11 @@ Estimates on original scale
 \hlkwd{coef}\hlstd{(fm.Mb)}
 \end{alltt}
 \begin{verbatim}
-##                  beta    SE.beta        lcl        ucl
-## D        -0.001839514 0.14379951 -0.2836814  0.2800024
-## g0       -0.866944349 0.27632610 -1.4085336 -0.3253551
-## g0.bTRUE -0.681065203 0.24693321 -1.1650454 -0.1970850
-## sigma     3.907216454 0.07596882  3.7583203  4.0561126
+##                 beta    SE.beta        lcl        ucl
+## D         0.01559591 0.19060698 -0.3579869  0.3891787
+## g0       -1.28559967 0.41829717 -2.1054471 -0.4657523
+## g0.bTRUE  0.09666728 0.41987118 -0.7262651  0.9195997
+## sigma     3.90626997 0.07626587  3.7567916  4.0557483
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1267,9 +1268,9 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##        link   estimate SE.estimate        lcl        ucl
-## D       log  0.9981622  0.14428046  0.7530065  1.3231329
-## g0    logit  0.2958905  0.05756959  0.1964655  0.4193712
-## sigma   log 49.7602491  3.78568817 42.8763461 57.7493796
+## D       log  1.0157182  0.19537481  0.6990822  1.4757683
+## g0    logit  0.2165985  0.07097817  0.1085685  0.3856221
+## sigma   log 49.7131739  3.79693852 42.8108511 57.7283468
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1313,9 +1314,9 @@ Estimates on original scale
 \hlkwd{region.N}\hlstd{(fm.Mb)}
 \end{alltt}
 \begin{verbatim}
-##     estimate SE.estimate     lcl      ucl  n
-## E.N 97.76921    14.13216 73.7564 129.5998 59
-## R.N 90.94367    10.09696 76.4466 117.4869 59
+##     estimate SE.estimate      lcl      ucl  n
+## E.N 99.48880    19.13681 68.47456 144.5504 59
+## R.N 99.48884    16.33183 77.91667 145.6614 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1404,10 +1405,10 @@ Estimates on original scale
 \hlkwd{AIC}\hlstd{(fm.M0, fm.Mt, fm.Mb)}
 \end{alltt}
 \begin{verbatim}
-##                  model   detectfn npar    logLik     AIC    AICc  dAICc AICcwt
-## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -326.4200 660.840 661.581  0.000 0.9392
-## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -330.3091 666.618 667.055  5.474 0.0608
-## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -329.9340 673.868 676.064 14.483 0.0000
+##                  model   detectfn npar    logLik     AIC    AICc dAICc AICcwt
+## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -330.3091 666.618 667.055 0.000 0.7486
+## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -330.2817 668.563 669.304 2.249 0.2431
+## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -329.9340 673.868 676.064 9.009 0.0083
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1468,7 +1469,6 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ## model {
-## 
 ## psi ~ dunif(0, 1)
 ## g0 ~ dunif(0, 1)
 ## sigma ~ dunif(0, 0.5)
@@ -1488,12 +1488,13 @@ Estimates on original scale
 ## 
 ## EN <- M*psi
 ## N <- sum(z)
-## 
 ## }
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
+
+
 
 
 
@@ -1524,6 +1525,7 @@ Estimates on original scale
          \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
          \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
 \hlstd{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hlkwd{library}\hlstd{(jagsUI)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1534,7 +1536,6 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.SCR0} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR0,} \hlkwc{inits}\hlstd{=ji.SCR0,}
                              \hlkwc{parameters.to.save}\hlstd{=jp.SCR0,}
                              \hlkwc{model.file}\hlstd{=}\hlstr{"SCR0.jag"}\hlstd{,}
@@ -1565,21 +1566,21 @@ MCMC
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##              Mean        SD  Naive SE Time-series SE
-## EN       101.5401 12.019026 0.1551650      0.4848972
-## N        101.9200 10.691242 0.1380233      0.4593306
-## deviance 808.8003 27.447573 0.3543466      1.0065790
-## g0         0.5974  0.111498 0.0014394      0.0052409
-## sigma      0.1765  0.007142 0.0000922      0.0003545
+##               Mean        SD  Naive SE Time-series SE
+## EN        99.02350 11.490544 0.1483423      0.4546191
+## N         99.46800 10.031338 0.1295040      0.4220134
+## deviance 793.70016 29.383841 0.3793438      1.2202419
+## g0         0.24050  0.040737 0.0005259      0.0018846
+## sigma      0.04956  0.003354 0.0000433      0.0001558
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##              2.5%      25%      50%      75%    97.5%
-## EN        79.7402  93.0933 100.9644 109.2912 127.2967
-## N         84.0000  94.0000 101.0000 108.0000 126.0000
-## deviance 759.7466 789.7505 806.9651 826.3336 866.7389
-## g0         0.4008   0.5209   0.5890   0.6658   0.8421
-## sigma      0.1634   0.1716   0.1762   0.1811   0.1917
+##               2.5%       25%      50%       75%     97.5%
+## EN        78.04421  90.96091  98.4428 106.44376 122.92015
+## N         83.00000  92.00000  99.0000 106.00000 121.00000
+## deviance 741.21016 772.85026 792.4470 813.05636 855.56840
+## g0         0.16455   0.21194   0.2391   0.26713   0.32417
+## sigma      0.04349   0.04716   0.0494   0.05169   0.05671
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1606,8 +1607,202 @@ MCMC
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{How do we speed up Bayesian inference?}
+  \begin{itemize}
+    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
+      non-spatial lecture.
+      \begin{itemize}
+        \item This can work well, but not when there are other
+          individual-level covariates.
+      \end{itemize}
+    \item Treat $z_i=1$ as data for first $n$ individuals.
+    \item If there are no occasion-specific covariates, collapse data
+      and use binomial instead of Bernoulli distribution.
+    \item Use a single zero for each augmented individual, instead of
+      an array of zeros. Then compute probability of detecting an
+      individual at least once.
+  \end{itemize}
+\end{frame}
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+\vspace{-3pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0-faster.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## psi ~ dunif(0, 1)
+## g0 ~ dunif(0, 1)
+## sigma ~ dunif(0, 0.5)
+## 
+## for(i in 1:M) {
+##   s[i,1] ~ dunif(xlim[1], xlim[2])
+##   s[i,2] ~ dunif(ylim[1], ylim[2])
+##   z[i] ~ dbern(psi)
+##   for(j in 1:J) {
+##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
+##   }
+## }
+## for(i in 1:n) {  ## Model for observed capture histories
+##   for(j in 1:J) {
+##     y.tilde[i,j] ~ dbinom(p[i,j], K)
+##   }
+## }
+## for(i in (n+1):M) { ## Model for augmented guys
+##   PrMoreThanOneDet[i] <- 1-prod(1-p[i,])^K
+##   zero[i] ~ dbern(PrMoreThanOneDet[i]*z[i])
+## }
+## 
+## EN <- M*psi
+## N <- sum(z)
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- faster}
+  Data
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.tilde} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), sum)}
+\hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)}
+\hlstd{jags.data.SCR0.faster} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,}
+                              \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
+                              \hlkwc{K}\hlstd{=K,} \hlkwc{zero}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,}
+                              \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Inits and parameters (same as before)
+\pause
+\vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.SCR0.faster} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
+         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+MCMC
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.SCR0.faster} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR0.faster,}
+                                    \hlkwc{inits}\hlstd{=ji.SCR0.faster,}
+                                    \hlkwc{parameters.to.save}\hlstd{=jp.SCR0,}
+                                    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR0-faster.jag"}\hlstd{,}
+                                    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                    \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior summaries}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.SCR0.faster)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##               Mean        SD  Naive SE Time-series SE
+## EN        98.00326 11.040638 1.425e-01      0.4079510
+## N         98.42683  9.631378 1.243e-01      0.3684158
+## deviance 520.76092 25.430234 3.283e-01      0.9887463
+## g0         0.23958  0.039458 5.094e-04      0.0017107
+## sigma      0.04975  0.003275 4.227e-05      0.0001427
+## 
+## 2. Quantiles for each variable:
+## 
+##               2.5%       25%      50%       75%     97.5%
+## EN        77.00001  90.53685  97.4968 105.29392 120.71776
+## N         82.00000  92.00000  98.0000 105.00000 119.00000
+## deviance 473.26223 502.97915 520.0376 537.43704 572.82357
+## g0         0.17076   0.21131   0.2366   0.26443   0.32633
+## sigma      0.04386   0.04748   0.0496   0.05188   0.05645
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.SCR0.faster[,jp.SCR0])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-SCR0-faster-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{SCR study design}
+  SCR uses model-based, rather than design-based,
+  inference (see Ch. 10). \\ 
+  \pause
+  \vfill
+  Random placement of traps is not required, but it's a good idea
+  randomly sample locations along the environmental gradients you're
+  interested in. \\
+  \pause \vfill
+  The other two key design considerations are:
+  \begin{enumerate}
+    \item<3-> Capture as many individuals as you can (i.e., maximize $n$)
+    \item<4-> Obtain as many {\it spatial} recaptures as possible
+  \end{enumerate}
+  \vfill
+  \uncover<5->{
+    There is a tradeoff between these two objectives. Simulation is
+    often the best option for finding the right balance.
+  }
+\end{frame}
 
 %\section{Summary}
 
