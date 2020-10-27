@@ -130,7 +130,7 @@
 
 \begin{frame}
   \frametitle{SCR overview}
-  {\centering There are two motivations for SCR \\}
+  {\centering Two motivations for SCR \\}
   \vfill
   \begin{enumerate}
     \item Improved inference
@@ -155,7 +155,7 @@
         \item<5-> How does movement influence density and detectability?
       \end{itemize}
     \item<6-> Rather than think of SCR as a new estimation tool, you
-      can think of it as an indivdual-based framework for inference on
+      can think of it as an individual-based framework for inference on
       spatial population dynamics.
     \end{itemize}
   \end{enumerate}
@@ -204,7 +204,7 @@
   indicates if individual $i=1,\dots,n$, was captured in trap
   $j=1,\dots,J$ on occasion $k=1,\dots,K$. \\
   \pause \vfill
-  Here an example of a ``flatted array'' with $n=4$ animals captured
+  Here's an example of a ``flattened array'' with $n=4$ animals captured  
   at $J=3$ traps on $K=2$ occasions. \\
   \centering
   \vfill  
@@ -257,10 +257,10 @@
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) \dots \\
+    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
-    \bsi \sim \lambda(\bs)/\Lambda \;\; \mathrm{for}\, i=1,\dots,N 
+    \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
   \end{gather*}
   \pause
 %  \vfill
@@ -375,7 +375,7 @@
   \pause
   \vfill
   We can use encounter rate functions similar to those from distance 
-  sampling for this purpse. \\
+  sampling for this purpose. \\
   \pause
   \vfill
   The most common encounter rate function that we'll consider is based
@@ -589,7 +589,7 @@ transects, or acoustic detectors recording signal strength.
 \end{knitrout}
 \pause
 \vfill
-Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we will pick
+Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we'll pick
 pixels proportional to density. Then we'll jitter each point
 inside its pixel. 
   \vspace{-6pt}
@@ -771,7 +771,7 @@ inside its pixel.
 \end{knitrout}
 \pause
 \vfill
-  Look at capture histories for first 2 individuals and first 5 traps
+  Capture histories for first 2 individuals and first 5 traps
   on first occasion.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -796,7 +796,8 @@ inside its pixel.
 \begin{frame}[fragile]
   \frametitle{Summary stats}
   Capture frequencies
-\begin{knitrout}\scriptsize
+  \vspace{-6pt}  
+\begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
@@ -806,6 +807,24 @@ inside its pixel.
 ## y.tilde
 ##  1  2  3  4  5 
 ## 24 22  5  6  2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Spatial recaptures
+  \vspace{-6pt}  
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.nok} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{), sum)}
+\hlstd{y.nojk} \hlkwb{<-} \hlkwd{apply}\hlstd{(y.nok}\hlopt{>}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{, sum)}
+\hlkwd{table}\hlstd{(y.nojk)}
+\end{alltt}
+\begin{verbatim}
+## y.nojk
+##  1  2  3 
+## 35 15  9
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -952,20 +971,22 @@ inside its pixel.
 
 \begin{frame}
   \frametitle{Software options}
-  \small
+%  \small
   Program DENSITY
   \begin{itemize}
-  \footnotesize
+%  \footnotesize
     \item Windows program with GUI
   \end{itemize}
+  \vfill
   R package `secr'
   \begin{itemize}
-  \footnotesize
+%  \footnotesize
     \item The oldest R package with the most options
   \end{itemize}
+  \vfill
   R package `oSCR'
   \begin{itemize}
-  \footnotesize
+%  \footnotesize
     \item A newer R package with similar functionality
   \end{itemize}
 \end{frame}
@@ -1025,6 +1046,286 @@ inside its pixel.
 % \end{frame}
 
 
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Import data from two text files
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(secr)}
+\hlstd{sch} \hlkwb{<-} \hlkwd{read.capthist}\hlstd{(}\hlkwc{captfile}\hlstd{=}\hlstr{"encounter_data_file.csv"}\hlstd{,}
+                     \hlkwc{trapfile}\hlstd{=}\hlstr{"trap_data_file.csv"}\hlstd{,}
+                     \hlkwc{detector}\hlstd{=}\hlstr{"multi"}\hlstd{,} \hlkwc{fmt}\hlstd{=}\hlstr{"trapID"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# No errors found :-)}}\begin{alltt}
+\hlkwd{summary}\hlstd{(sch)}
+\end{alltt}
+\begin{verbatim}
+## Object class       capthist 
+## Detector type      multi 
+## Detector number    64 
+## Average spacing    100 m 
+## x-range            150 850 m 
+## y-range            150 850 m 
+## 
+## Counts by occasion 
+##                    1  2  3  4  5 Total
+## n                 20 23 22 19 20   104
+## u                 20 15 13  4  7    59
+## f                 26 23  8  2  0    59
+## M(t+1)            20 35 48 52 59    59
+## losses             0  0  0  0  0     0
+## detections        20 23 22 19 20   104
+## detectors visited 15 20 17 18 17    87
+## detectors used    64 64 64 64 64   320
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_0$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{)}
+\hlkwd{coef}\hlstd{(fm.M0)}
+\end{alltt}
+\begin{verbatim}
+##              beta    SE.beta        lcl        ucl
+## D     -0.01162548 0.14297005 -0.2918416  0.2685907
+## g0    -1.20686796 0.23519620 -1.6678440 -0.7458919
+## sigma  3.90580945 0.07612483  3.7566075  4.0550114
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates on original scale
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm.M0)}
+\end{alltt}
+\begin{verbatim}
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.9884418  0.14204281  0.7468868  1.3081196
+## g0    logit  0.2302557  0.04168571  0.1587118  0.3217171
+## sigma   log 49.6902853  3.78815135 42.8029711 57.6858192
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
+$\sigma$.   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_t$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.Mt} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlstd{t,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{coef}\hlstd{(fm.Mt)}
+\end{alltt}
+\begin{verbatim}
+##              beta    SE.beta        lcl        ucl
+## D     -0.01257499 0.14291865 -0.2926904  0.2675404
+## g0    -1.25610254 0.33755875 -1.9177055 -0.5944995
+## g0.t2  0.19994362 0.37786653 -0.5406612  0.9405484
+## g0.t3  0.13938072 0.37961812 -0.6046571  0.8834186
+## g0.t4 -0.08008000 0.38608665 -0.8367959  0.6766359
+## g0.t5 -0.01268276 0.38325431 -0.7638474  0.7384819
+## sigma  3.90555770 0.07613275  3.7563403  4.0547751
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates on original scale
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm.Mt)}
+\end{alltt}
+\begin{verbatim}
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.9875037  0.14185646  0.7462532  1.3067464
+## g0    logit  0.2216455  0.05823523  0.1281176  0.3556031
+## sigma   log 49.6777774  3.78759287 42.7915328 57.6721937
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_b$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.Mb} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlstd{b,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{coef}\hlstd{(fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##                  beta    SE.beta        lcl        ucl
+## D        -0.001839514 0.14379951 -0.2836814  0.2800024
+## g0       -0.866944349 0.27632610 -1.4085336 -0.3253551
+## g0.bTRUE -0.681065203 0.24693321 -1.1650454 -0.1970850
+## sigma     3.907216454 0.07596882  3.7583203  4.0561126
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates on original scale
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.9981622  0.14428046  0.7530065  1.3231329
+## g0    logit  0.2958905  0.05756959  0.1964655  0.4193712
+## sigma   log 49.7602491  3.78568817 42.8763461 57.7493796
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  What about $N$? \pause \inr{E.N} is the expected value of
+  $N$. \inr{R.N} is the realized value of $N$. 
+  \vfill
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{region.N}\hlstd{(fm.M0)}
+\end{alltt}
+\begin{verbatim}
+##     estimate SE.estimate      lcl      ucl  n
+## E.N 96.81711    13.91298 73.15698 128.1293 59
+## R.N 96.81716     9.83636 81.90352 121.4418 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{region.N}\hlstd{(fm.Mt)}
+\end{alltt}
+\begin{verbatim}
+##     estimate SE.estimate      lcl      ucl  n
+## E.N 96.72522   13.894729 73.09491 127.9948 59
+## R.N 96.72527    9.815207 81.84476 121.2986 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{region.N}\hlstd{(fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##     estimate SE.estimate     lcl      ucl  n
+## E.N 97.76921    14.13216 73.7564 129.5998 59
+## R.N 90.94367    10.09696 76.4466 117.4869 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%\pause
+%\vfill
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  \small
+  Was \inr{buffer} big enough?
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{100}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link estimate SE.estimate       lcl      ucl
+## D  log 1.014208   0.1443613 0.7683777 1.338687
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.9884415   0.1420427 0.7468867 1.308119
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{200}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.9872495   0.1420249 0.7457621 1.306934
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{250}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link  estimate SE.estimate       lcl     ucl
+## D  log 0.9872298   0.1420268 0.7457403 1.30692
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{300}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link estimate SE.estimate       lcl     ucl
+## D  log  0.98723    0.142027 0.7457403 1.30692
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 

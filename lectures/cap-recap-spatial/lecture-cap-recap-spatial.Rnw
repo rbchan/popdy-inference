@@ -88,7 +88,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{SCR overview}
-  {\centering There are two motivations for SCR \\}
+  {\centering Two motivations for SCR \\}
   \vfill
   \begin{enumerate}
     \item Improved inference
@@ -113,7 +113,7 @@ knit_theme$set("edit-kwrite")
         \item<5-> How does movement influence density and detectability?
       \end{itemize}
     \item<6-> Rather than think of SCR as a new estimation tool, you
-      can think of it as an indivdual-based framework for inference on
+      can think of it as an individual-based framework for inference on
       spatial population dynamics.
     \end{itemize}
   \end{enumerate}
@@ -162,7 +162,7 @@ knit_theme$set("edit-kwrite")
   indicates if individual $i=1,\dots,n$, was captured in trap
   $j=1,\dots,J$ on occasion $k=1,\dots,K$. \\
   \pause \vfill
-  Here an example of a ``flatted array'' with $n=4$ animals captured
+  Here's an example of a ``flattened array'' with $n=4$ animals captured  
   at $J=3$ traps on $K=2$ occasions. \\
   \centering
   \vfill  
@@ -215,10 +215,10 @@ knit_theme$set("edit-kwrite")
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) \dots \\
+    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
-    \bsi \sim \lambda(\bs)/\Lambda \;\; \mathrm{for}\, i=1,\dots,N 
+    \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
   \end{gather*}
   \pause
 %  \vfill
@@ -333,7 +333,7 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   We can use encounter rate functions similar to those from distance 
-  sampling for this purpse. \\
+  sampling for this purpose. \\
   \pause
   \vfill
   The most common encounter rate function that we'll consider is based
@@ -552,7 +552,7 @@ Lambda <- sum(lambda.values*ds)    ## E(N)
 @
 \pause
 \vfill
-Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we will pick
+Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we'll pick
 pixels proportional to density. Then we'll jitter each point
 inside its pixel. 
   \vspace{-6pt}
@@ -686,10 +686,20 @@ y[1:2,1:5,1]
 \begin{frame}[fragile]
   \frametitle{Summary stats}
   Capture frequencies
-<<M0-freq,size='scriptsize'>>=
+  \vspace{-6pt}  
+<<cap-freq,size='small'>>=
 y.tilde <- rowSums(y)
 table(y.tilde)
-@   
+@
+\pause
+\vfill
+Spatial recaptures
+  \vspace{-6pt}  
+<<sp-cap-freq,size='small'>>=
+y.nok <- apply(y, c(1, 2), sum)
+y.nojk <- apply(y.nok>0, 1, sum)
+table(y.nojk)
+@ 
 \end{frame}
 
 
@@ -833,20 +843,22 @@ table(y.tilde)
 
 \begin{frame}
   \frametitle{Software options}
-  \small
+%  \small
   Program DENSITY
   \begin{itemize}
-  \footnotesize
+%  \footnotesize
     \item Windows program with GUI
   \end{itemize}
+  \vfill
   R package `secr'
   \begin{itemize}
-  \footnotesize
+%  \footnotesize
     \item The oldest R package with the most options
   \end{itemize}
+  \vfill
   R package `oSCR'
   \begin{itemize}
-  \footnotesize
+%  \footnotesize
     \item A newer R package with similar functionality
   \end{itemize}
 \end{frame}
@@ -906,6 +918,137 @@ table(y.tilde)
 % \end{frame}
 
 
+<<write,include=FALSE>>=
+ch.out <- data.frame(session=1,
+                     individual=rep(slice.index(y, 1), y),
+                     occasion=rep(slice.index(y, 3), y),
+                     trap=rep(slice.index(y, 2), y))
+write.table(ch.out, file="encounter_data_file.csv",
+            row.names=FALSE, col.names=FALSE, sep=",")
+traps.out <- data.frame(trap=1:nrow(x), x*1000)
+write.table(traps.out, file="trap_data_file.csv",
+            row.names=FALSE, col.names=FALSE, sep=",")
+@ 
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Import data from two text files
+<<secr-in,warning=FALSE,size='tiny'>>=
+library(secr)  
+sch <- read.capthist(captfile="encounter_data_file.csv",
+                     trapfile="trap_data_file.csv",
+                     detector="multi", fmt="trapID")
+summary(sch)
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_0$
+<<secr-M0,size='scriptsize',cache=TRUE>>=
+fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
+                  buffer=150, trace=FALSE)
+coef(fm.M0)
+@
+\pause
+\vfill
+Estimates on original scale
+<<secr-M0-real,size='scriptsize'>>=
+predict(fm.M0)
+@
+\inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
+$\sigma$.   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_t$
+<<secr-Mt,size='scriptsize',cache=TRUE>>=
+fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
+                  buffer=150, trace=FALSE, ncores=3)
+coef(fm.Mt)
+@   
+\pause
+\vfill
+Estimates on original scale
+<<secr-Mt-real,size='scriptsize'>>=
+predict(fm.Mt)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_b$
+<<secr-Mb,size='scriptsize',cache=TRUE>>=
+fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
+                  buffer=150, trace=FALSE, ncores=3)
+coef(fm.Mb)
+@   
+\pause
+\vfill
+Estimates on original scale
+<<secr-Mb-real,size='scriptsize'>>=
+predict(fm.Mb)
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  What about $N$? \pause \inr{E.N} is the expected value of
+  $N$. \inr{R.N} is the realized value of $N$. 
+  \vfill
+<<regionN-M0,size='footnotesize'>>=
+region.N(fm.M0)
+@
+  \pause
+<<regionN-Mt,size='footnotesize'>>=
+region.N(fm.Mt)
+@
+  \pause
+<<regionN-Mb,size='footnotesize'>>=
+region.N(fm.Mb)
+@
+%\pause
+%\vfill
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  \small
+  Was \inr{buffer} big enough?
+<<buffer1,size='scriptsize',warning=FALSE>>=
+predict(update(fm.M0, buffer=100))[1,]
+@
+\pause
+\vspace{-12pt}
+<<buffer2,size='scriptsize',warning=FALSE>>=
+predict(update(fm.M0, buffer=150))[1,]
+@   
+\pause
+\vspace{-12pt}
+<<buffer3,size='scriptsize',warning=FALSE>>=
+predict(update(fm.M0, buffer=200))[1,]
+@   
+\pause
+\vspace{-12pt}
+<<buffer4,size='scriptsize',warning=FALSE>>=
+predict(update(fm.M0, buffer=250))[1,]
+@   
+\pause
+\vspace{-12pt}
+<<buffer5,size='scriptsize',warning=FALSE>>=
+predict(update(fm.M0, buffer=300))[1,]
+@   
+\end{frame}
 
 
 
