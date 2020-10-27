@@ -302,7 +302,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Poisson point process}
-  Propoerties
+  Properties
   \begin{itemize}
     \item If density is constant throughout the state-space:
       $\lambda(\bs) = \lambda$, the process is said to be
@@ -683,8 +683,15 @@ y[1:2,1:5,1]
 
 
 
+
 \begin{frame}[fragile]
   \frametitle{Summary stats}
+  \small
+  Individuals captured
+<<n,size='small'>>=
+(n <- nrow(y))
+@
+\pause \vfill
   Capture frequencies
   \vspace{-6pt}  
 <<cap-freq,size='small'>>=
@@ -702,6 +709,34 @@ table(y.nojk)
 @ 
 \end{frame}
 
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spider plot}
+<<spider,size='scriptsize',fig.width=7.15,fig.show='hide'>>=
+plot(lambda, col=terrain.colors(100),
+     main="Density surface, activity centers, traps, and capture locs")
+s.cap <- s[captured,]
+for(i in 1:n) {
+    traps.i <- which(rowSums(y[i,,])>0)
+    for(j in 1:length(traps.i)) {
+        segments(s.cap[i,1], s.cap[i,2],
+                 x[traps.i[j],1], x[traps.i[j],2], col=gray(0.9))
+    }
+}
+points(s[captured,], pch=16, col="blue") ## Activity center locations
+points(s[!captured,], pch=1, col="blue") ## Activity center locations
+points(x, pch=3)              ## Trap locations
+@   
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Spider plot}
+  \centering
+  \includegraphics[width=0.85\textwidth]{figure/spider-1} \\
+\end{frame}
 
 
 
@@ -947,6 +982,16 @@ summary(sch)
 
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
+<<secr-plot,out.width="70%",fig.align="center">>=
+plot(sch)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_0$
 <<secr-M0,size='scriptsize',cache=TRUE>>=
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
@@ -1025,31 +1070,40 @@ region.N(fm.Mb)
   \frametitle{R package `secr'}
   \small
   Was \inr{buffer} big enough?
-<<buffer1,size='scriptsize',warning=FALSE>>=
+<<buffer1,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=100))[1,]
 @
 \pause
 \vspace{-12pt}
-<<buffer2,size='scriptsize',warning=FALSE>>=
+<<buffer2,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=150))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer3,size='scriptsize',warning=FALSE>>=
+<<buffer3,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=200))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer4,size='scriptsize',warning=FALSE>>=
+<<buffer4,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=250))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer5,size='scriptsize',warning=FALSE>>=
+<<buffer5,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=300))[1,]
 @   
 \end{frame}
 
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  AIC
+<<aic,size='tiny'>>=
+AIC(fm.M0, fm.Mt, fm.Mb)
+@   
+\end{frame}
 
 
 \section{Data augmentation}
@@ -1067,52 +1121,28 @@ predict(update(fm.M0, buffer=300))[1,]
 
 
 
-\begin{frame}
-  \frametitle{Data augmentation}
-  Data augmentation is strange. \\
-  \pause
-  \vfill
-  We add ``all zero'' capture histories to our data, then we try to
-  estimate how many of them are real. \\ 
-  \pause
-  \vfill
-  The total number of observed and agumented encounter histories is
-  $M$. \\
-  \pause
-  \vfill
-  We define the model in terms of a binary indicator variable $z_i$,
-  such that $N=\sum_{i=1}^M z_i$. \\
-  \pause
-  \vfill
-  We know $z_i=1$ for the $n$ captured individuals. \\
-\end{frame}
-
-
-
-
 
 
 \begin{frame}
   \frametitle{Data augmentation model}
-  The model is:
+  The DA version of a basic SCR model is:
   \begin{gather*}
+    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    y_{ij} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    p_{ij} = g_0\exp(-\|\bsi-\bxj\|/(2\sigma^2)) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
-  \pause \vfill
   % A uniform prior on $\psi$ results in a discrete uniform prior on
   % $N$. We can change the prior for $N$ by changing the prior on
   % $\psi$, recognizing that $E(N)=M\psi$.
-  Note that this looks exactly like an occupancy model. \\
-  \pause \vfill
-  But why bother with augmentation?
-  \begin{itemize}
-    \item DA works for \alert{all} varieties of mark-recapture models
-    \item Make it easy to incorporate
-      individual-covariates\dots\pause including distance and
-      location!   
-  \end{itemize}
+  % But why bother with augmentation?
+  % \begin{itemize}
+  %   \item DA works for \alert{all} varieties of mark-recapture models
+  %   \item Make it easy to incorporate
+  %     individual-covariates\dots\pause including distance and
+  %     location!   
+  % \end{itemize}
 \end{frame}
 
 
@@ -1120,183 +1150,70 @@ predict(update(fm.M0, buffer=300))[1,]
 
 
 
-\begin{frame}
-  \frametitle{Bayesian data augmentation}
-  The model is the same, but we need priors on $\psi$ and $p$. 
-  \begin{gather*}
-    z_i \sim \mathrm{Bern}(\psi) \\
-    y_{ij} \sim \mathrm{Bern}(z_ip) \\
-    N = \sum_{i=1}^M z_i
-  \end{gather*}
-  \vfill
-  A uniform prior on $\psi$ results in a discrete uniform prior on
-  $N$. We can change the prior for $N$ by changing the prior on  
-  $\psi$, recognizing:
-  \[
-    E(N)=M\psi
-  \]
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+\vspace{-3pt}
+<<bugs-SC0,size='scriptsize'>>=
+writeLines(readLines("SCR0.jag"))
+@
 \end{frame}
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_0$ -- data augmentation}
-% \vspace{-3pt}
-% <<bugs-M0-aug,size='small'>>=
-% writeLines(readLines("M0-aug.jag"))
-% @
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_0$ -- data augmentation}
-%   Data
-% <<jd-M0-aug,size='scriptsize'>>=
-% y.aug <- matrix(0, M, J)
-% y.aug[1:n,] <- y
-% jags.data.M0 <- list(y=y.aug, M=M, J=J)
-% @
-% \pause
-% \vfill
-%   Inits and parameters
-% <<ji-M0-aug,size='scriptsize'>>=
-% ji.M0 <- function() list(z=rep(1,M), psi=runif(1), p=runif(1))
-% jp.M0 <- c("p", "psi", "N")
-% @
-% \pause
-% \vfill
-% MCMC
-% <<mcmc-M0-aug,size='scriptsize',results='hide'>>=
-% library(jagsUI)
-% jags.post.M0 <- jags.basic(data=jags.data.M0, inits=ji.M0,
-%                            parameters.to.save=jp.M0,
-%                            model.file="M0-aug.jag",
-%                            n.chains=3, n.adapt=100, n.burnin=0,
-%                            n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<plot-mcmc-M0,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
-% plot(jags.post.M0[,jp.M0])
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+  Data
+  \vspace{-6pt}
+<<jd-SCR0-aug,size='scriptsize'>>=
+M <- 150
+y.aug <- array(0, c(M, J, K))
+y.aug[1:nrow(y),,] <- y
+jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
+                       x=x, xlim=c(0,1), ylim=c(0,1))
+@
+\pause
+\vfill
+  Inits and parameters
+  \vspace{-6pt}
+<<ji-M0-aug,size='scriptsize'>>=
+ji.SCR0 <- function() {
+    list(z=rep(1,M), psi=runif(1),
+         s=cbind(runif(M), runif(M)),
+         g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
+jp.SCR0 <- c("g0", "sigma", "EN", "N")
+@
+\pause
+\vfill
+MCMC
+  \vspace{-6pt}
+<<mcmc-M0-aug,size='scriptsize',results='hide',cache=TRUE>>=
+library(jagsUI)
+jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
+                             parameters.to.save=jp.SCR0,
+                             model.file="SCR0.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_0$ -- without data augmentation}
-%   Here's why practitioners like data augmentation 
-% \vspace{-3pt}
-% <<bugs-M0,size='footnotesize'>>=
-% writeLines(readLines("M0.jag"))
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Posterior summaries}
+<<summary-mcmc-SCR0,size='tiny'>>=
+summary(jags.post.SCR0)
+@ 
+\end{frame}
 
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_0$ -- without data augmentation}
-%   Data
-% <<jd-M0-noaug,size='scriptsize'>>=
-% n0max <- 1000  ## Upper limit of prior on n0
-% jags.data.M0.noaug <- list(y=y.aug, n=n, J=J,
-%                            ## Prior probs for n0
-%                            n0probs=rep(1/n0max, n0max), zero=0)
-% @
-% \pause
-% \vfill
-%   Inits and parameters
-% <<ji-M0-noaug,size='scriptsize'>>=
-% ji.M0.noaug <- function() list(n0=rpois(1, 5), p=runif(1, 0, 0.1))
-% jp.M0.noaug <- c("p", "N")
-% @
-% \pause
-% \vfill
-% MCMC
-% <<mcmc-M0-noaug,size='scriptsize',results='hide'>>=
-% jags.post.M0.noaug <- jags.basic(data=jags.data.M0.noaug,
-%                                  inits=ji.M0.noaug,
-%                                  parameters.to.save=jp.M0.noaug,
-%                                  model.file="M0.jag",
-%                                  n.chains=3, n.adapt=100, n.burnin=0,
-%                                  n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<plot-mcmc-M0-noaug,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
-% plot(jags.post.M0.noaug[,jp.M0.noaug])
-% @ 
-% \end{frame}
-
-
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_t$ -- data augmentation}
-% \vspace{-3pt}
-% <<bugs-Mt-aug,size='small'>>=
-% writeLines(readLines("Mt-aug.jag"))
-% @
-% \end{frame}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_t$ -- data augmentation}
-%   Data, inits, parameters to monitor
-% <<ji-Mt-aug,size='scriptsize'>>=
-% jags.data.Mt <- jags.data.M0
-% ji.Mt <- function() list(z=rep(1,M), psi=runif(1), p=runif(4))
-% jp.Mt <- c("p", "psi", "N")
-% @
-% \pause
-% \vfill
-% MCMC
-% <<mcmc-Mt-aug,size='scriptsize',results='hide'>>=
-% jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
-%                            parameters.to.save=jp.Mt,
-%                            model.file="Mt-aug.jag",
-%                            n.chains=3, n.adapt=100, n.burnin=0,
-%                            n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<plot-mcmc-Mt1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
-% plot(jags.post.Mt[,paste0("p[", 1:4, "]")])
-% @ 
-% \end{frame}
-
-
-
-
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<plot-mcmc-SCR0,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.SCR0[,jp.SCR0])
+@ 
+\end{frame}
 
 
 
@@ -1307,18 +1224,14 @@ predict(update(fm.M0, buffer=300))[1,]
 
 \begin{frame}
   \frametitle{SCR summary}
-  We assume that variation in $p$ arises from changes over time,
-  behavioral effects, or random individual heterogeneity. \\
+  We assume that variation in $p$ arises from distance between animals
+  and traps. \\
   \pause \vfill
-  Individual heterogeneity models pose estimation problems. \\
+  We can estimate abundance and model distribution (i.e., spatial
+  variation in density) \\
   \pause \vfill
-  A solution is to use individual covariates to explain the variation,
-  rather than random effects. \pause But what covariates are
-  important? \\
-  \pause \vfill
-  With spatial capture-recapture (SCR) models we will use
-  \alert{distance between animals and traps} as a covariate, and we'll
-  put use a spatial point process model for animal locations. 
+  Next time, we'll see how to do that using secr and JAGS, and we'll
+  make a bunch of maps. \\
 \end{frame}
 
 
@@ -1331,26 +1244,15 @@ predict(update(fm.M0, buffer=300))[1,]
 
 \begin{frame}[fragile]
   \frametitle{Assignment}
-  % \small
-  % \footnotesize
   Create a self-contained R script or Rmarkdown file to do the
   following: 
   \vfill
   \begin{enumerate}
-%    \small
-%    \footnotesize
-    \item Fit model $M_h$ in JAGS to the data simulated above
-      \begin{itemize}
-%        \footnotesize
-        \item Use the flavor of $M_h$ that assumes $\mathrm{logit}(p_i)$ follows a
-          normal distribution: $\mathrm{logit}(p_i) \sim
-          \mathrm{Normal}(\bar{p}, \sigma^2_p)$.  
-      \end{itemize}
-    \item Use prior predictive checks to find reasonable priors for
-      {\tt logit.p.mean} and {\tt logit.p.var}
-    \item Present summary stats for prior and posterior distributions
-      of {\tt logit.p.mean} and {\tt logit.p.var}, as well as for
-      $N$. 
+    \item Fit a ``local behavioral response'' model,
+      rather than a ``global behavioral response'' model in secr.
+    \item Fit a model in JAGS where $g_0$ varies among
+      occasions. Compare estimates of $E(N)$ and $N$ to the estimates
+      from secr for the same model (which we fit earlier).
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
