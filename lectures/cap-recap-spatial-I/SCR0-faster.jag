@@ -18,8 +18,8 @@ for(i in 1:n) {  ## Model for observed capture histories
   }
 }
 for(i in (n+1):M) { ## Model for augmented guys
-  PrMoreThanOneDet[i] <- 1-prod(1-p[i,])^K
-  zero[i] ~ dbern(PrMoreThanOneDet[i]*z[i])
+  PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+  zero[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
 }
 
 EN <- M*psi

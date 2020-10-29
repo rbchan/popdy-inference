@@ -224,7 +224,7 @@ knit_theme$set("edit-kwrite")
 %  \vfill
   Observation model (supposing $N$ was known)
   \begin{gather*}
-    p_{ij} = g_0\exp(\|\bsi - \bxj\|/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
   \end{gather*}
   \pause
@@ -974,7 +974,7 @@ library(secr)
 library(secr)  
 sch <- read.capthist(captfile="encounter_data_file.csv",
                      trapfile="trap_data_file.csv",
-                     detector="multi", fmt="trapID")
+                     detector="proximity", fmt="trapID")
 summary(sch)
 @   
 \end{frame}
@@ -1130,7 +1130,7 @@ AIC(fm.M0, fm.Mt, fm.Mb)
   \begin{gather*}
     \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp(-\|\bsi-\bxj\|/(2\sigma^2)) \\
+    p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
     y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
