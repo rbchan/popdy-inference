@@ -53,7 +53,7 @@ knit_theme$set("edit-kwrite")
   {
     \LARGE Lecture 12 -- Spatial capture-recapture \\
     for closed populations: \\
-    \Large Part II: mapping density surfaces and other posteriors \\
+    \Large Part II: mapping density surfaces \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -84,6 +84,18 @@ knit_theme$set("edit-kwrite")
 
 
 
+
+\begin{frame}
+  \frametitle{SCR overview}
+  Last time, we focused on simulation and basic model fitting. \\
+  \pause \vfill
+  This time, we're going to talk about estimating and mapping density surfaces. \\
+%  \pause \vfill
+%  And you'll learn how to create maps of 
+\end{frame}
+
+
+
 \begin{frame}
   \frametitle{SCR overview}
   {\centering Two motivations for SCR \\}
@@ -97,26 +109,25 @@ knit_theme$set("edit-kwrite")
           \item<1-> Distance to traps
           \item<1-> Trap-specific covariates
         \end{itemize}
-      \item<2-> SCR makes it possible to estimate \alert{density}, not
+      \item<1-> SCR makes it possible to estimate \alert{density}, not
         just $N$ in an unknown region. 
     \end{itemize}
-    \pause
+%    \pause
     \vfill
-  \item<3-> Improved science
+  \item<1-> Improved science
   \begin{itemize}
-    \item<3-> We can ask new questions, such as:
+    \item<1-> We can ask new questions, such as:
       \begin{itemize}
-        \item<3-> What influences spatial variation in density?
-        \item<4-> How do survival and recruitment vary in space and time?
-        \item<5-> How does movement influence density and detectability?
+        \item<1-> What influences spatial variation in density?
+        \item<1-> How do survival and recruitment vary in space and time?
+        \item<1-> How does movement influence density and detectability?
       \end{itemize}
-    \item<6-> Rather than think of SCR as a new estimation tool, you
+    \item<1-> Rather than think of SCR as a new estimation tool, you
       can think of it as an individual-based framework for inference on
       spatial population dynamics.
     \end{itemize}
   \end{enumerate}
 \end{frame}
-
 
 
 
@@ -145,14 +156,14 @@ knit_theme$set("edit-kwrite")
     N \sim \mathrm{Pois}(\Lambda) \\
     \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
   \end{gather*}
-  \pause
+%  \pause
 %  \vfill
   Observation model (supposing $N$ was known)
   \begin{gather*}
     p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
   \end{gather*}
-  \pause
+%  \pause
 %  \vfill
 %  \footnotesize
   \scriptsize
@@ -365,16 +376,6 @@ y[1:2,1:5,1]
 
 
 
-
-
-
-
-
-
-
-
-
-
 \section{Likelihood}
 
 
@@ -385,30 +386,6 @@ y[1:2,1:5,1]
   \tableofcontents[currentsection]
 \end{frame}
 
-
-
-
-\begin{frame}
-  \frametitle{Software options}
-%  \small
-  Program DENSITY
-  \begin{itemize}
-%  \footnotesize
-    \item Windows program with GUI
-  \end{itemize}
-  \vfill
-  R package `secr'
-  \begin{itemize}
-%  \footnotesize
-    \item The oldest R package with the most options
-  \end{itemize}
-  \vfill
-  R package `oSCR'
-  \begin{itemize}
-%  \footnotesize
-    \item A newer R package with similar functionality
-  \end{itemize}
-\end{frame}
 
 
 
@@ -430,33 +407,44 @@ library(secr)
 
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
-  Import data from two text files
-<<secr-in,warning=FALSE,size='tiny'>>=
+  \footnotesize
+  Import data from two text files.
+  <<secr-in,warning=FALSE,size='scriptsize',results='hide',message=FALSE>>=
 library(secr)  
 sch <- read.capthist(captfile="encounter_data_file.csv",
                      trapfile="trap_data_file.csv",
                      detector="proximity", fmt="trapID")
-library(sp)
+@
+  \pause
+  Create the ``habitat mask'', which defines the state-space and the
+  spatial covariates. First, prepare the elevation covariate. 
+<<format-elevation,size='scriptsize'>>=
 elevation.xyz <- as.data.frame(elevation, xy=TRUE)
 elevation.xyz.m <- elevation.xyz
-elevation.xyz.m$x <- elevation.xyz$x*1000
+elevation.xyz.m$x <- elevation.xyz$x*1000  ## Convert units to meters
 elevation.xyz.m$y <- elevation.xyz$y*1000
-elevation.xyz.m$elevation <- scale(elevation.xyz$elevation)
+elevation.xyz.m$elevation <- scale(elevation.xyz$elevation) ## Standardize
 elevation.m <- rasterFromXYZ(elevation.xyz.m)
+@
+  \pause
+  Now create the mask.
+<<make-mask,size='scriptsize'>>=
+library(sp)
 elev.sp <- as(elevation.m, "SpatialGridDataFrame")
 trp <- traps(sch)
-mask <- make.mask(trp, buffer=150)
+mask <- make.mask(trp, buffer=150, spacing=15)
 mask <- addCovariates(mask, spatialdata=elev.sp)
 @   
 \end{frame}
 
 
-
 \begin{frame}[fragile]
-  \frametitle{R package `secr'}
-<<secr-plot,out.width="70%",fig.align="center">>=
-plot(sch)
-@ 
+  \frametitle{Habitat mask}
+<<plot-mask,fig.height=5,out.width="95%",fig.align='center',echo=-1,size='scriptsize'>>=
+par(mai=c(0.1, 0.1, 0.1, 0.1))
+plot(mask, covariate="elevation")
+plot(trp, add=TRUE)
+@   
 \end{frame}
 
 
@@ -464,32 +452,59 @@ plot(sch)
 
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
-  Fit the SCR equivalent of Model $M_0$
-<<secr-M0,size='scriptsize',cache=TRUE>>=
+  Model density as a function of elevation. 
+<<secr-elev,size='scriptsize',cache=TRUE>>=
 fm.elev <- secr.fit(sch, model=list(D=~elevation, g0=~1, sigma=~1),
-                    mask=mask, trace=FALSE)
+                    mask=mask, trace=FALSE) ## Don't use 'buffer'
 coef(fm.elev)
 @
 \pause
 \vfill
-Estimates on original scale
+Estimates on original scale (at average covariate values).
 <<secr-M0-real,size='scriptsize'>>=
 predict(fm.elev)
-dsurf <- predictDsurface(fm.elev)
-dsurf.r <- raster(dsurf, covariate="D.0")
 @
-\inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
-$\sigma$.   
 \end{frame}
 
 
 
 \begin{frame}[fragile]
+  \frametitle{Estimated density surface}
+<<secr-dsurf,size='scriptsize',fig.height=6.8,echo=-1,size='scriptsize',fig.show='hide'>>=
+#par(mai=c(0.6,0.6,0.1,0.8))
+dsurf <- predictDsurface(fm.elev)
+dsurf.r <- raster(dsurf, covariate="D.0")
+plot(dsurf.r, col=terrain.colors(100), main="Estimated density surface")
+@
+\centering
+\includegraphics[width=0.49\textwidth]{figure/secr-dsurf-1}
+\includegraphics[width=0.49\textwidth]{figure/ippp2-1} \\
+\pause \vfill
+The units differ because we transformed to meters. \\
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Estimated activity center locations}
+<<fxi,eval=FALSE,size='scriptsize'>>=
+plot(trp)
+fxi.contour(fm.elev)#, X=mask[,c("x","y")], p=c(0.95, 0.99))
+fxi.contour(fm0)#,i=2,add=TRUE,plotmode=FALSE,drawlabels = FALSE, X=mask[,c("x","y")])
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
   \frametitle{R package `secr'}
-  What about $N$? \pause \inr{E.N} is the expected value of
+  We can still estimate $N$ as before. \\
+  \vfill
+  \inr{E.N} is the expected value of
   $N$. \inr{R.N} is the realized value of $N$. 
   \vfill
-<<regionN-M0,size='footnotesize'>>=
+<<regionN-M0,size='small'>>=
 region.N(fm.elev)
 @
 \end{frame}
@@ -516,9 +531,11 @@ region.N(fm.elev)
 
 \begin{frame}
   \frametitle{Data augmentation model}
-  The DA version of a basic SCR model is:
+  The DA version of a SCR model with an inhomogeneous point process
+  can be written like this:
   \begin{gather*}
-    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
+    \lambda(\bs) = \exp(\beta_0 + \beta_1 \mathrm{ELEV}(\bs)) \\
+    \bsi \propto (\lambda(\bs)) \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
     y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
@@ -538,14 +555,33 @@ region.N(fm.elev)
 
 
 
+\begin{frame}
+  \frametitle{Inhomogeneous point process in JAGS}
+  We need to do the following to make this work:
+  \begin{enumerate}
+    \item Provide the spatial covariate as a vector
+    \item Loop over all pixels to compute the density at each pixel
+    \item Retain the uniform prior on the activity centers, but add a
+      second probability component to force them to be distributed
+      according to the density surface.
+      \begin{enumerate}
+        \item This requires that we create a ``lookup'' table to map
+          points in space to pixel IDs
+        \item Then we use the ``zero's trick'' to implement the
+          non-standard probability distribution
+      \end{enumerate}
+    \item Define $\psi=E(N)/M$
+  \end{enumerate}
+\end{frame}
+
 
 
 
 \begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- data augmentation}
+  \frametitle{SCR with inhomogeneous PP and data augmentation}
 \vspace{-3pt}
-<<bugs-SC0,size='scriptsize'>>=
-writeLines(readLines("SCR0.jag"))
+<<bugs-SCR-elev,size='scriptsize'>>=
+writeLines(readLines("SCR-elev.jag"))
 @
 \end{frame}
 
@@ -555,126 +591,60 @@ library(rjags)
 @ 
 
 
+
 \begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- data augmentation}
+  \frametitle{SCR with IPP}
+  Create the lookup table
+<<lookup,size='scriptsize'>>=
+G <- nrow(elevation.xyz)    ## nPixels  
+lookup <- matrix(1:G, nrow=nrow(elevation), ncol=ncol(elevation))
+delta <- res(elevation)[1]  ## resolution
+@   
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{SCR with IPP}
   Data
   \vspace{-6pt}
-<<jd-SCR0-aug,size='scriptsize'>>=
-M <- 150
-y.aug <- array(0, c(M, J, K))
-y.aug[1:nrow(y),,] <- y
-jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
-                       x=x, xlim=c(0,1), ylim=c(0,1))
-@
-\pause
-\vfill
-  Inits and parameters
-  \vspace{-6pt}
-<<ji-M0-aug,size='scriptsize'>>=
-ji.SCR0 <- function() {
-    list(z=rep(1,M), psi=runif(1),
-         s=cbind(runif(M), runif(M)),
-         g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
-jp.SCR0 <- c("g0", "sigma", "EN", "N")
-library(jagsUI)
-@
-\pause
-\vfill
-MCMC
-  \vspace{-6pt}
-<<mcmc-M0-aug,size='scriptsize',results='hide',cache=TRUE>>=
-jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
-                             parameters.to.save=jp.SCR0,
-                             model.file="SCR0.jag",
-                             n.chains=3, n.adapt=100, n.burnin=0,
-                             n.iter=2000, parallel=TRUE)
-@ 
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Posterior summaries}
-<<summary-mcmc-SCR0,size='tiny'>>=
-summary(jags.post.SCR0)
-@ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<plot-mcmc-SCR0,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.SCR0[,jp.SCR0])
-@ 
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{How do we speed up Bayesian inference?}
-  \begin{itemize}
-    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
-      non-spatial lecture.
-      \begin{itemize}
-        \item This can work well, but not when there are other
-          individual-level covariates.
-      \end{itemize}
-    \item Treat $z_i=1$ as data for first $n$ individuals.
-    \item If there are no occasion-specific covariates, collapse data
-      and use binomial instead of Bernoulli distribution.
-    \item Use a single zero for each augmented individual, instead of
-      an array of zeros. Then compute probability of detecting an
-      individual at least once.
-  \end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- data augmentation}
-\vspace{-3pt}
-<<bugs-SC0-faster,size='tiny'>>=
-writeLines(readLines("SCR0-faster.jag"))
-@
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- faster}
-  Data
-  \vspace{-6pt}
-<<jd-SCR0-aug-faster,size='scriptsize'>>=
+<<jd-SCR-elev-faster,size='scriptsize'>>=
+M <- 150  
 y.tilde <- apply(y, c(1,2), sum)
 n <- nrow(y)
-jags.data.SCR0.faster <- list(y.tilde=y.tilde, n=n, M=M, J=J,
-                              z=c(rep(1, n), rep(NA, M-n)),
-                              K=K, zero=rep(0, M), x=x,
-                              xlim=c(0,1), ylim=c(0,1))
+jags.data.SCR.elev <- list(y.tilde=y.tilde, n=n, M=M, J=J,
+                           G=G, delta=delta, lookup=lookup,
+                           pixelArea=delta^2*1e4, ## Convert to hectares
+                           elevation=elevation.xyz$elevation,
+                           z=c(rep(1, n), rep(NA, M-n)),
+                           zeros=rep(0, M),
+                           K=K, zero.cap=rep(0, M), x=x,
+                           xlim=c(0,1), ylim=c(0,1))
 @
 \pause
 \vfill
   Inits and parameters (same as before)
+<<jp-SCR-elev>>=
+jp.SCR.elev <- c("beta0", "beta1", "g0", "sigma", "EN", "N")
+@ 
 \pause
 \vfill
 <<ji-M0-aug-faster,size='scriptsize'>>=
-ji.SCR0.faster <- function() {
-    list(z=c(rep(NA, n), rep(0,M-n)), psi=runif(1),
+ji.SCR.elev <- function() {
+    list(z=c(rep(NA, n), rep(0,M-n)), #psi=runif(1),
+#         beta0=runif(1, -20, -15),
+         beta1=0.01,
          s=cbind(runif(M), runif(M)),
          g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
 @
 MCMC
   \vspace{-6pt}
-<<mcmc-M0-aug-faster,size='scriptsize',results='hide',cache=TRUE>>=
-jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
-                                    inits=ji.SCR0.faster,
-                                    parameters.to.save=jp.SCR0,
-                                    model.file="SCR0-faster.jag",
-                                    n.chains=3, n.adapt=100, n.burnin=0,
-                                    n.iter=2000, parallel=TRUE)
+<<mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE>>=
+jags.post.SCR.elev <- jags.basic(data=jags.data.SCR.elev,
+                                 inits=ji.SCR.elev,
+                                 parameters.to.save=jp.SCR.elev,
+                                 model.file="SCR-elev.jag",
+                                 n.chains=3, n.adapt=100, 
+                                 n.iter=1000, parallel=TRUE)
 @ 
 \end{frame}
 
@@ -684,7 +654,7 @@ jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
 \begin{frame}[fragile]
   \frametitle{Posterior summaries}
 <<summary-mcmc-SCR0-faster,size='tiny'>>=
-summary(jags.post.SCR0.faster)
+summary(jags.post.SCR.elev)
 @ 
 \end{frame}
 
@@ -692,8 +662,31 @@ summary(jags.post.SCR0.faster)
 
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
-<<plot-mcmc-SCR0-faster,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.SCR0.faster[,jp.SCR0])
+<<plot-mcmc-SCR-elev1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.SCR.elev[,jp.SCR.elev[1:3]])
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<plot-mcmc-SCR-elev2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.SCR.elev[,jp.SCR.elev[4:6]])
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile
+  \frametitle{Density surfaces in JAGS}
+  We need to monitor $z$ and $\bsi$.
+<<mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE>>=
+jags.post.SCR.elev.sz <- jags.basic(data=jags.data.SCR.elev,
+                                 inits=ji.SCR.elev,
+                                 parameters.to.save=c(jp.SCR.elev,"s","z"),
+                                 model.file="SCR-elev.jag",
+                                 n.chains=3, n.adapt=100, 
+                                 n.iter=1000, parallel=TRUE)
 @ 
 \end{frame}
 
@@ -701,40 +694,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
 
 
 \begin{frame}
-  \frametitle{SCR study design}
-  SCR uses model-based, rather than design-based,
-  inference (see Ch. 10). \\ 
-  \pause
-  \vfill
-  Random placement of traps is not required, but it's a good idea
-  randomly sample locations along the environmental gradients you're
-  interested in. \\
-  \pause \vfill
-  The other two key design considerations are:
-  \begin{enumerate}
-    \item<3-> Capture as many individuals as you can (i.e., maximize $n$)
-    \item<4-> Obtain as many {\it spatial} recaptures as possible
-  \end{enumerate}
-  \vfill
-  \uncover<5->{
-    There is a tradeoff between these two objectives. Simulation is
-    often the best option for finding the right balance.
-  }
-\end{frame}
-
-%\section{Summary}
-
-
-\begin{frame}
-  \frametitle{SCR summary}
-  We assume that variation in $p$ arises from distance between animals
-  and traps. \\
-  \pause \vfill
-  We can estimate abundance and model distribution (i.e., spatial
-  variation in density) \\
-  \pause \vfill
-  Next time, we'll see how to do that using secr and JAGS, and we'll
-  make a bunch of maps. \\
+  \frametitle{Summary}
 \end{frame}
 
 
