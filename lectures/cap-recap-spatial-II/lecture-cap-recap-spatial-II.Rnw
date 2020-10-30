@@ -9,7 +9,6 @@
 
 
 
-
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -17,10 +16,9 @@ source("../rnw2pdf.R")
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-cap-recap-spatial")
-rnw2pdf("lecture-cap-recap-spatial", tangle=TRUE)
+rnw2pdf("lecture-cap-recap-spatial-II")
+rnw2pdf("lecture-cap-recap-spatial-II", tangle=TRUE)
 @ 
-
 
 <<knitr-theme,include=FALSE,purl=FALSE>>=
 knit_theme$set("edit-kwrite")
@@ -171,47 +169,9 @@ knit_theme$set("edit-kwrite")
   $\sigma$ -- Scale parameter of encounter function \\
   $p_{ij}$ -- Capture probability \\
   $y_{ijk}$ -- Spatial capture histories \\
-  % \pause
-  % \vfill
-  % The problem with this formulation is that we don't observe the ``all
-  % zero'' encounter histories (and thus we don't know $N$). 
 \end{frame}
 
 
-
-
-
-
-
-
-\begin{frame}
-  \frametitle{Observation models}
-%  \begin{itemize}
-%  \item
-  Observation models are not the same as encounter rate functions. \\
-  \pause \vfill
-  % \item
-  Observation models are chosen with respect to the sampling
-      method (mist-net, camera trap, hair snare, etc\dots) \\
-%  \end{itemize}
-  \pause \vfill
-  % \begin{center}
-  \centering
-    \begin{tabular}{lll}
-      \hline
-      Model       & Detector/Trap     & Examples           \\
-      \hline
-      Bernoulli   & Proximity    & Hair-snares        \\
-      Poisson     & Count        & Camera trap        \\
-      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
-      ---          & Single-catch & Sherman trap       \\
-      \hline
-    \end{tabular}
-    % \end{center}
-    \pause \vfill
-There are other observation models for data from area searches,
-transects, or acoustic detectors recording signal strength.
-\end{frame}
 
 
 
@@ -230,86 +190,6 @@ transects, or acoustic detectors recording signal strength.
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Homogeneous binomial point process}
-% <<bpp1,size='footnotesize',out.width="50%",fig.align="center">>=
-% N <- 25
-% s <- cbind(runif(N, 0, 1), runif(N, 0, 1))
-% plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
-%      xlim=c(0,1), ylim=c(0,1), cex.lab=1.5, asp=1)
-% @
-% \end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Homogeneous Poisson point process}
-<<ppp1,size='footnotesize',out.width="50%",fig.align="center">>=
-lambda1 <- 25; A <- 1     ## lambda1=density, A=area
-N <- rpois(1, lambda1*A)  
-s <- cbind(runif(N, 0, 1), runif(N, 0, 1))
-plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
-     xlim=c(0,1), ylim=c(0,1), cex.lab=1.5, asp=1)
-@
-\end{frame}
-
-
-
-<<include=FALSE,eval=FALSE>>=
-## Simulate covariate from normal distribution with exponential covariance
-delta <- 0.01
-grid0 <- seq(0+delta/2, 1-delta/2, delta)
-grid <- cbind(rep(grid0, each=length(grid0)),
-              rep(grid0, times=length(grid0)))
-dist.grid <- as.matrix(dist(grid))
-V <- exp(-dist.grid*10)
-set.seed(4984)
-w <- t(chol(V)) %*% rnorm(nrow(V))
-
-elevation <- 1000 + w*100
-
-library(raster)
-elevation.r <- rasterFromXYZ(cbind(grid[,1], grid[,2], elevation))
-plot(elevation.r)
-writeRaster(elevation.r, filename="elevation.tif", overwrite=TRUE)
-
-
-
-## library(lattice)
-
-## levelplot(w ~ grid[,1]+grid[,2], aspect="iso", at=seq(min(w), max(w), len=100))
-
-## lambda <- exp(-7 + 1.5*w)
-## (Lambda <- sum(lambda*delta^2*1e4))
-## (N <- rpois(1, Lambda))
-
-## levelplot(lambda ~ grid[,1]+grid[,2], aspect="iso",
-##           at=seq(min(lambda), max(lambda), len=100),
-##           col.regions=topo.colors(100))
-
-## pi <- lambda/sum(lambda)
-
-## s <- grid[sample(nrow(grid), size=N, replace=TRUE, prob=pi),]
-
-## levelplot(lambda ~ grid[,1]+grid[,2], aspect="iso",
-##           panel=function(...) {
-##               panel.levelplot(...)
-##               lpoints(s, pch=16, col="blue")
-##           }, 
-##           at=seq(min(lambda), max(lambda), len=100),
-##           col.regions=terrain.colors(100))
-
-
-@ 
-
-
-
-
-
-
 
 
 \begin{frame}[fragile]
@@ -321,38 +201,6 @@ elevation <- raster("elevation.tif")
 plot(elevation, col=topo.colors(100), main="Elevation")
 @
 \end{frame}
-
-
-
-
-% \begin{frame}
-%   \frametitle{Closed population estimation options}
-%   Conditional likelihood \\
-%   \begin{itemize}
-%     \item Estimate $\tilde{p}$\footnote{$\tilde{p}$ depends on $\lambda(s), g_0,
-%         \sigma, \mathcal{S}, x$}, and then compute $\hat{N}=n/\hat{\tilde{p}}$
-%   \end{itemize}
-%   \pause
-%   \vfill
-%   Joint likelihood \\
-%   \begin{itemize}
-%     \item Estimate $N$ and $\tilde{p}$ jointly
-%     \item Joint likelihood can be written as
-%       \begin{itemize}
-%       \item $L(N,g_0,\sigma;y,n) = p(y|n,p)p(n|N,p)$ or
-%       \item $L(N,g_0,\sigma;y,n) = p(y,n|N,p)$
-%       \end{itemize}
-%   \end{itemize}
-%   \pause \vfill
-%   Data augmentation \\
-%   \begin{itemize}
-%     \item Tack on many ``all zero'' encounter histories and estimate
-%       how many of them actually occurred
-%     \item Usually, but not necessarily, used in Bayesian inference
-%   \end{itemize}
-% \end{frame}
-
-
 
 
 
@@ -509,7 +357,6 @@ y <- y.all[captured,,]
 <<y3,size='footnotesize'>>=
 y[1:2,1:5,1]
 @
-
 \end{frame}
 
 
@@ -518,176 +365,7 @@ y[1:2,1:5,1]
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Summary stats}
-  \small
-  Individuals captured
-<<n,size='footnotesize'>>=
-(n <- nrow(y))
-@
-\pause \vfill
-  Capture frequencies
-  \vspace{-6pt}  
-<<cap-freq,size='footnotesize'>>=
-y.tilde <- rowSums(y)
-table(y.tilde)
-@
-\pause
-\vfill
-Spatial recaptures
-  \vspace{-6pt}  
-<<sp-cap-freq,size='footnotesize'>>=
-y.nok <- apply(y, c(1, 2), sum)
-y.nojk <- apply(y.nok>0, 1, sum)
-table(y.nojk)
-@ 
-\end{frame}
 
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Spider plot}
-<<spider,size='scriptsize',fig.width=7.15,fig.show='hide'>>=
-plot(lambda, col=terrain.colors(100),
-     main="Density surface, activity centers, traps, and capture locs")
-s.cap <- s[captured,]
-for(i in 1:n) {
-    traps.i <- which(rowSums(y[i,,])>0)
-    for(j in 1:length(traps.i)) {
-        segments(s.cap[i,1], s.cap[i,2],
-                 x[traps.i[j],1], x[traps.i[j],2], col=gray(0.9))
-    }
-}
-points(s[captured,], pch=16, col="blue") ## Activity center locations
-points(s[!captured,], pch=1, col="blue") ## Activity center locations
-points(x, pch=3)              ## Trap locations
-@   
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Spider plot}
-  \centering
-  \includegraphics[width=0.85\textwidth]{figure/spider-1} \\
-\end{frame}
-
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Joint likelihood}
-%   % \footnotesize
-%   \small
-%   The joint likelihood looks similar to the nonspatial likelihood,
-%   except that we have a third dimension for $y$ and we have to
-%   integrate out the latent activity center $s_i$. 
-%   \pause
-%   \vfill
-%   \flushleft
-%   \begin{equation*}
-% %  \begin{multline*}
-% %    L(N,p; y,n) =                                          \\
-%     L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J \prod_{k=1}^K p_{ij}^{y_{ijj}}(1-p_{ij})^{1-y_{ijk}}\right\}
-% %    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-%     \frac{N!}{(N-n)!}  \left(q^*\right)^{N-n}
-% %  \end{multline*}
-%   \end{equation*}
-% \end{frame}
-
-
-
-% \begin{frame}
-%   \frametitle{Model variations}
-%   Aside from the approach to estimation, the key consideration
-%   concerns the sources of variation in capture probability ($p$). \\
-%   \pause
-%   \vfill
-%   Otis et al. (1978, Wildlife Monographs) identified several model variations
-%   \begin{itemize}
-%     \small
-%     \item $M_0$ -- $p$ is constant
-%     \item $M_t$ -- unique $p$ for each capture occasion
-%     \item \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
-%       recapture probability $c$
-%     \item $M_h$ -- individual heterogeneity in $p$
-%   \end{itemize}
-%   \pause \vfill
-%   These can be combined, but beware of identifiability issues. See
-%   Otis et al. (1978) for details.  \\
-%   \pause \vfill
-%   Later we'll talk about another important class of models, the
-%   ``individual covariate'' models.  
-% \end{frame}
-
-
-
-
-
-
-%\section{Model $M_0$}
-
-
-%\subsection{Simulation}
-
-
-%\subsection{Model $M_0$}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Summary stats}
-%   Capture history frequencies
-% <<M0-hist,size='scriptsize'>>=
-% histories <- apply(y, 1, paste, collapse="")
-% sort(table(histories))
-% @
-% \pause
-% \vfill
-%   Detection frequencies
-% <<M0-freq,size='scriptsize'>>=
-% y.tilde <- rowSums(y)
-% sort(table(y.tilde))
-% @   
-% \end{frame}
-
-
-
-%\subsection{Model $M_t$}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Model $M_t$ -- Temporal variation}
-%   Capture probability for each occasion
-% <<sim-Mt-pars,size='scriptsize'>>=
-% p.t <- c(0.3, 0.5, 0.2, 0.4)
-% @
-%   \pause
-%   \vfill
-%   All capture histories (for captured and uncaptured individuals)
-%   \vspace{-6pt}
-% <<sim-Mt-ch,size='scriptsize'>>=
-% y.all.Mt <- matrix(NA, N, J)
-% for(i in 1:N) {
-%     y.all.Mt[i,] <- rbinom(J, 1, p.t) }
-% @
-%   \pause
-%   \vfill
-%   Observed capture histories (data)
-%   \vspace{-6pt}
-% <<sim-Mt-y1,size='scriptsize'>>=
-% captured.Mt <- rowSums(y.all.Mt)>0
-% n.Mt <- sum(captured.Mt)
-% y.Mt <- y.all.Mt[captured.Mt,]
-% y.Mt[1:3,]
-% colSums(y.Mt)
-% @ 
-% \end{frame}
 
 
 
@@ -734,57 +412,6 @@ points(x, pch=3)              ## Trap locations
 
 
 
-% %% p(y,n|N,p)
-% \begin{frame}[fragile]
-%   \frametitle{Joint likelihood for $M_0$}
-%   The joint likelihood has a multinomial form:
-%   \begin{multline*}
-%     L(N,p; y,n) = \\
-%     \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
-%     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-%   \end{multline*}
-%   \pause
-%   \vfill
-% <<nll-M0,echo=TRUE,size='scriptsize'>>=
-% nll.M0 <- function(pars, y) {           ## Negative log-likelihood
-%     n <- nrow(y);       J <- ncol(y)
-%     N <- exp(pars[1])
-%     n0 <- N-n
-%     if(n0<0) return(NA)
-%     p <- plogis(pars[2])
-%     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
-%     p0 <- (1-p)^J
-%     ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
-%     nll <- -(ld.y1+ld.n0)
-%     return(nll)
-% }
-% @
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Maximize joint likelihood for $M_0$}
-% Minimized the negative log-likelihood
-% <<opt-nll-M0, size='scriptsize'>>=
-% fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
-% fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
-%                         SE=sqrt(diag(solve(fm.M0$hessian))))
-% fm.M0.est
-% @
-% \pause
-% \vfill
-% Back-transform the estimates
-% <<opt-nll-M0-back, size='scriptsize'>>=
-% c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
-% @
-% \pause
-% \vfill
-% Compare to data-generating values
-% <<dg,size='scriptsize'>>=
-% c(N=N, p=p)
-% @ 
-% \end{frame}
 
 
 <<write,include=FALSE,results="hide">>=
@@ -808,8 +435,18 @@ library(secr)
 library(secr)  
 sch <- read.capthist(captfile="encounter_data_file.csv",
                      trapfile="trap_data_file.csv",
-                     detector="multi", fmt="trapID")
-summary(sch)
+                     detector="proximity", fmt="trapID")
+library(sp)
+elevation.xyz <- as.data.frame(elevation, xy=TRUE)
+elevation.xyz.m <- elevation.xyz
+elevation.xyz.m$x <- elevation.xyz$x*1000
+elevation.xyz.m$y <- elevation.xyz$y*1000
+elevation.xyz.m$elevation <- scale(elevation.xyz$elevation)
+elevation.m <- rasterFromXYZ(elevation.xyz.m)
+elev.sp <- as(elevation.m, "SpatialGridDataFrame")
+trp <- traps(sch)
+mask <- make.mask(trp, buffer=150)
+mask <- addCovariates(mask, spatialdata=elev.sp)
 @   
 \end{frame}
 
@@ -829,15 +466,17 @@ plot(sch)
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_0$
 <<secr-M0,size='scriptsize',cache=TRUE>>=
-fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
-                  buffer=150, trace=FALSE)
-coef(fm.M0)
+fm.elev <- secr.fit(sch, model=list(D=~elevation, g0=~1, sigma=~1),
+                    mask=mask, trace=FALSE)
+coef(fm.elev)
 @
 \pause
 \vfill
 Estimates on original scale
 <<secr-M0-real,size='scriptsize'>>=
-predict(fm.M0)
+predict(fm.elev)
+dsurf <- predictDsurface(fm.elev)
+dsurf.r <- raster(dsurf, covariate="D.0")
 @
 \inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
 $\sigma$.   
@@ -847,98 +486,15 @@ $\sigma$.
 
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
-  Fit the SCR equivalent of Model $M_t$
-<<secr-Mt,size='scriptsize',cache=TRUE>>=
-fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
-                  buffer=150, trace=FALSE, ncores=3)
-coef(fm.Mt)
-@   
-\pause
-\vfill
-Estimates on original scale
-<<secr-Mt-real,size='scriptsize'>>=
-predict(fm.Mt)
-@ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `secr'}
-  Fit the SCR equivalent of Model $M_b$
-<<secr-Mb,size='scriptsize',cache=TRUE>>=
-fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
-                  buffer=150, trace=FALSE, ncores=3)
-coef(fm.Mb)
-@   
-\pause
-\vfill
-Estimates on original scale
-<<secr-Mb-real,size='scriptsize'>>=
-predict(fm.Mb)
-@ 
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `secr'}
   What about $N$? \pause \inr{E.N} is the expected value of
   $N$. \inr{R.N} is the realized value of $N$. 
   \vfill
 <<regionN-M0,size='footnotesize'>>=
-region.N(fm.M0)
+region.N(fm.elev)
 @
-  \pause
-<<regionN-Mt,size='footnotesize'>>=
-region.N(fm.Mt)
-@
-  \pause
-<<regionN-Mb,size='footnotesize'>>=
-region.N(fm.Mb)
-@
-%\pause
-%\vfill
 \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{R package `secr'}
-  \small
-  Was \inr{buffer} big enough?
-<<buffer1,size='scriptsize',warning=FALSE,cache=TRUE>>=
-predict(update(fm.M0, buffer=100))[1,]
-@
-\pause
-\vspace{-12pt}
-<<buffer2,size='scriptsize',warning=FALSE,cache=TRUE>>=
-predict(update(fm.M0, buffer=150))[1,]
-@   
-\pause
-\vspace{-12pt}
-<<buffer3,size='scriptsize',warning=FALSE,cache=TRUE>>=
-predict(update(fm.M0, buffer=200))[1,]
-@   
-\pause
-\vspace{-12pt}
-<<buffer4,size='scriptsize',warning=FALSE,cache=TRUE>>=
-predict(update(fm.M0, buffer=250))[1,]
-@   
-\pause
-\vspace{-12pt}
-<<buffer5,size='scriptsize',warning=FALSE,cache=TRUE>>=
-predict(update(fm.M0, buffer=300))[1,]
-@   
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `secr'}
-  AIC
-<<aic,size='tiny'>>=
-AIC(fm.M0, fm.Mt, fm.Mb)
-@   
-\end{frame}
 
 
 \section{Data augmentation}

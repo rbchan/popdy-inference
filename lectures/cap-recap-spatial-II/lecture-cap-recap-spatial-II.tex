@@ -1,0 +1,1650 @@
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+% Load function to compile and open PDF
+
+
+% Compile and open PDF
+
+
+
+
+
+% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+\newcommand{\bxt}{${\bm x}_j$}
+\newcommand{\bx}{{\bm x}}
+\newcommand{\bxj}{{\bm x}_j}
+\newcommand{\bst}{${\bm s}_i$}
+\newcommand{\bs}{{\bm s}}
+\newcommand{\bsi}{{\bm s}_i}
+\newcommand{\ed}{\|\bx - \bs\|}
+\newcommand{\cs}{\mathcal{S} }
+\newcommand{\dsixj}{\|\bsi - \bxj\|}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+  \centering
+  {
+    \LARGE Lecture 12 -- Spatial capture-recapture \\
+    for closed populations: \\
+    \Large Part II: mapping density surfaces and other posteriors \\
+  }
+  {\color{default} \rule{\textwidth}{0.1pt} }
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Overview}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{SCR overview}
+  {\centering Two motivations for SCR \\}
+  \vfill
+  \begin{enumerate}
+    \item Improved inference
+    \begin{itemize}
+      \item<1-> Non-spatial models can't properly account for sources
+        of variation in $p$ that can cause bias.
+        \begin{itemize}
+          \item<1-> Distance to traps
+          \item<1-> Trap-specific covariates
+        \end{itemize}
+      \item<2-> SCR makes it possible to estimate \alert{density}, not
+        just $N$ in an unknown region. 
+    \end{itemize}
+    \pause
+    \vfill
+  \item<3-> Improved science
+  \begin{itemize}
+    \item<3-> We can ask new questions, such as:
+      \begin{itemize}
+        \item<3-> What influences spatial variation in density?
+        \item<4-> How do survival and recruitment vary in space and time?
+        \item<5-> How does movement influence density and detectability?
+      \end{itemize}
+    \item<6-> Rather than think of SCR as a new estimation tool, you
+      can think of it as an individual-based framework for inference on
+      spatial population dynamics.
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{In-class exercise}
+%   Building off the previous example\dots
+%   \begin{enumerate}
+%     \item Compute $\bar{p}$ for line-transect sampling when
+%       $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
+%     \item Repeat, but for point-transect sampling. 
+%   \end{enumerate}
+% \end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{\large Closed population model ($N$ known hypothetically) }
+  \footnotesize
+  State model (a spatial point process model) %\\
+  \begin{gather*}
+    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots \\
+    \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
+    N \sim \mathrm{Pois}(\Lambda) \\
+    \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
+  \end{gather*}
+  \pause
+%  \vfill
+  Observation model (supposing $N$ was known)
+  \begin{gather*}
+    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
+  \end{gather*}
+  \pause
+%  \vfill
+%  \footnotesize
+  \scriptsize
+  Definitions \\
+  \hangindent=0.9cm $\lambda(\bs)$ -- The ``intensity function'' %or ``density surface''
+  describing the density of individuals at location $\bs$ \\ 
+  $\Lambda$ -- Expected number of individuals \\
+  $N$ -- Realized number of individuals (ie, population size) \\
+  $\bsi$ -- Location of the $i$th activity center \\
+  $\bxj$ -- Location of trap $j$ \\
+  $\dsixj$ -- Euclidean distance between $\bsi$ and $\bxj$ \\
+  $g_0$ -- Capture probability when distance between activity centers
+  and traps is 0 \\
+  $\sigma$ -- Scale parameter of encounter function \\
+  $p_{ij}$ -- Capture probability \\
+  $y_{ijk}$ -- Spatial capture histories \\
+  % \pause
+  % \vfill
+  % The problem with this formulation is that we don't observe the ``all
+  % zero'' encounter histories (and thus we don't know $N$). 
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Observation models}
+%  \begin{itemize}
+%  \item
+  Observation models are not the same as encounter rate functions. \\
+  \pause \vfill
+  % \item
+  Observation models are chosen with respect to the sampling
+      method (mist-net, camera trap, hair snare, etc\dots) \\
+%  \end{itemize}
+  \pause \vfill
+  % \begin{center}
+  \centering
+    \begin{tabular}{lll}
+      \hline
+      Model       & Detector/Trap     & Examples           \\
+      \hline
+      Bernoulli   & Proximity    & Hair-snares        \\
+      Poisson     & Count        & Camera trap        \\
+      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
+      ---          & Single-catch & Sherman trap       \\
+      \hline
+    \end{tabular}
+    % \end{center}
+    \pause \vfill
+There are other observation models for data from area searches,
+transects, or acoustic detectors recording signal strength.
+\end{frame}
+
+
+
+
+
+\section{Simulation}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+%  \tableofcontents[currentsection,currentsubsection]
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Homogeneous binomial point process}
+% <<bpp1,size='footnotesize',out.width="50%",fig.align="center">>=
+% N <- 25
+% s <- cbind(runif(N, 0, 1), runif(N, 0, 1))
+% plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
+%      xlim=c(0,1), ylim=c(0,1), cex.lab=1.5, asp=1)
+% @
+% \end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Homogeneous Poisson point process}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{lambda1} \hlkwb{<-} \hlnum{25}\hlstd{; A} \hlkwb{<-} \hlnum{1}     \hlcom{## lambda1=density, A=area}
+\hlstd{N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, lambda1}\hlopt{*}\hlstd{A)}
+\hlstd{s} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(N,} \hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwd{runif}\hlstd{(N,} \hlnum{0}\hlstd{,} \hlnum{1}\hlstd{))}
+\hlkwd{plot}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Easting"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Northing"}\hlstd{,}
+     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{cex.lab}\hlstd{=}\hlnum{1.5}\hlstd{,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.5\linewidth]{figure/ppp1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Inhomogeneous Poisson point process}
+  First, let's import a raster layer
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(raster)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: sp}}\begin{alltt}
+\hlstd{elevation} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elevation.tif"}\hlstd{)}
+\hlkwd{plot}\hlstd{(elevation,} \hlkwc{col}\hlstd{=}\hlkwd{topo.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/ippp1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Closed population estimation options}
+%   Conditional likelihood \\
+%   \begin{itemize}
+%     \item Estimate $\tilde{p}$\footnote{$\tilde{p}$ depends on $\lambda(s), g_0,
+%         \sigma, \mathcal{S}, x$}, and then compute $\hat{N}=n/\hat{\tilde{p}}$
+%   \end{itemize}
+%   \pause
+%   \vfill
+%   Joint likelihood \\
+%   \begin{itemize}
+%     \item Estimate $N$ and $\tilde{p}$ jointly
+%     \item Joint likelihood can be written as
+%       \begin{itemize}
+%       \item $L(N,g_0,\sigma;y,n) = p(y|n,p)p(n|N,p)$ or
+%       \item $L(N,g_0,\sigma;y,n) = p(y,n|N,p)$
+%       \end{itemize}
+%   \end{itemize}
+%   \pause \vfill
+%   Data augmentation \\
+%   \begin{itemize}
+%     \item Tack on many ``all zero'' encounter histories and estimate
+%       how many of them actually occurred
+%     \item Usually, but not necessarily, used in Bayesian inference
+%   \end{itemize}
+% \end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Inhomogeneous Poisson point process}
+  \small
+  Second, let's pick some coefficients and create a density surface
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
+\hlstd{beta1} \hlkwb{<-} \hlnum{0.01} \hlcom{#0.005}
+\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)} \hlcom{# Intensity function}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Density surface"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/ippp2-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Inhomogeneous Poisson point process}
+  \small
+  Third, simulate $N$
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{set.seed}\hlstd{(}\hlnum{538}\hlstd{)}
+\hlstd{ds} \hlkwb{<-} \hlnum{1}                            \hlcom{## Pixel area is 1 ha}
+\hlstd{lambda.values} \hlkwb{<-} \hlkwd{values}\hlstd{(lambda)}    \hlcom{## Convert raster to vector}
+\hlstd{Lambda} \hlkwb{<-} \hlkwd{sum}\hlstd{(lambda.values}\hlopt{*}\hlstd{ds)}    \hlcom{## E(N)}
+\hlstd{(N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, Lambda))}            \hlcom{## Realized N}
+\end{alltt}
+\begin{verbatim}
+## [1] 98
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we'll pick
+pixels proportional to density. Then we'll jitter each point
+inside its pixel. 
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n.pixels} \hlkwb{<-} \hlkwd{length}\hlstd{(lambda)}
+\hlstd{jitter} \hlkwb{<-} \hlnum{0.005}                    \hlcom{## Half width of pixel }
+\hlstd{s.pixels} \hlkwb{<-} \hlkwd{sample}\hlstd{(n.pixels,} \hlkwc{size}\hlstd{=N,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+                   \hlkwc{prob}\hlstd{=lambda.values}\hlopt{/}\hlstd{Lambda)}
+\hlstd{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(elevation,} \hlkwc{xy}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{s} \hlkwb{<-} \hlstd{elevation.xyz[s.pixels,}\hlkwd{c}\hlstd{(}\hlstr{"x"}\hlstd{,}\hlstr{"y"}\hlstd{)]} \hlopt{+}
+    \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(N,} \hlopt{-}\hlstd{jitter, jitter),}\hlkwd{runif}\hlstd{(N,} \hlopt{-}\hlstd{jitter, jitter))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Inhomogeneous Poisson point process}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
+     \hlkwc{main}\hlstd{=}\hlstr{"Density surface with activity centers"}\hlstd{)}
+\hlkwd{points}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/ippp5-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traps}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{x} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{each}\hlstd{=}\hlnum{8}\hlstd{),}
+           \hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{times}\hlstd{=}\hlnum{8}\hlstd{))}  \hlcom{## Trap locations}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
+     \hlkwc{main}\hlstd{=}\hlstr{"Density surface with activity centers and traps"}\hlstd{)}
+\hlkwd{points}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}              \hlcom{## Trap locations}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/traps1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Distance between traps and activity centers}
+  Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
+  and traps ($\bx_1, \dots, \bx_J$).
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}                 \hlcom{## nTraps}
+\hlstd{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+} \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Look at distances between first 4 individuals and first 5 traps.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##           [,1]      [,2]      [,3]      [,4]      [,5]
+## [1,] 0.1218625 0.1175070 0.1810119 0.2678109 0.3614970
+## [2,] 0.9587743 0.8922040 0.8323508 0.7807610 0.7391668
+## [3,] 0.7162980 0.6912027 0.6800289 0.6834600 0.7012815
+## [4,] 0.6222620 0.5569781 0.5032288 0.4650310 0.4463949
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Capture probability}
+  Compute capture probability
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{g0} \hlkwb{<-} \hlnum{0.2}
+\hlstd{sigma} \hlkwb{<-} \hlnum{0.05}
+\hlstd{p} \hlkwb{<-} \hlstd{g0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Look at capture probs for first 4 individuals and first 5 traps.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##          [,1]     [,2]     [,3]     [,4]     [,5]
+## [1,] 1.03e-02 1.26e-02 2.85e-04 1.18e-07 8.92e-13
+## [2,] 2.86e-81 1.44e-70 1.33e-61 2.25e-54 6.98e-49
+## [3,] 5.44e-46 6.36e-43 1.36e-41 5.34e-42 3.84e-44
+## [4,] 4.66e-35 2.27e-28 2.02e-23 3.29e-20 9.84e-19
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Capture histories}
+  Simulate capture histories for all $N$ individuals
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
+\hlstd{y.all} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(N, J, K))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+        \hlstd{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=p[i,j])}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Discard individuals not captured
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
+\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,,]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Capture histories for first 2 individuals and first 5 traps
+  on first occasion.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{1}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0    0    0    0    0
+## [2,]    0    0    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summary stats}
+  \small
+  Individuals captured
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y))}
+\end{alltt}
+\begin{verbatim}
+## [1] 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause \vfill
+  Capture frequencies
+  \vspace{-6pt}  
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
+\hlkwd{table}\hlstd{(y.tilde)}
+\end{alltt}
+\begin{verbatim}
+## y.tilde
+##  1  2  3  4  5 
+## 24 22  5  6  2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Spatial recaptures
+  \vspace{-6pt}  
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.nok} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{), sum)}
+\hlstd{y.nojk} \hlkwb{<-} \hlkwd{apply}\hlstd{(y.nok}\hlopt{>}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{, sum)}
+\hlkwd{table}\hlstd{(y.nojk)}
+\end{alltt}
+\begin{verbatim}
+## y.nojk
+##  1  2  3 
+## 35 15  9
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spider plot}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
+     \hlkwc{main}\hlstd{=}\hlstr{"Density surface, activity centers, traps, and capture locs"}\hlstd{)}
+\hlstd{s.cap} \hlkwb{<-} \hlstd{s[captured,]}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{traps.i} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{rowSums}\hlstd{(y[i,,])}\hlopt{>}\hlnum{0}\hlstd{)}
+    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(traps.i)) \{}
+        \hlkwd{segments}\hlstd{(s.cap[i,}\hlnum{1}\hlstd{], s.cap[i,}\hlnum{2}\hlstd{],}
+                 \hlstd{x[traps.i[j],}\hlnum{1}\hlstd{], x[traps.i[j],}\hlnum{2}\hlstd{],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.9}\hlstd{))}
+    \hlstd{\}}
+\hlstd{\}}
+\hlkwd{points}\hlstd{(s[captured,],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hlstd{(s[}\hlopt{!}\hlstd{captured,],} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}              \hlcom{## Trap locations}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Spider plot}
+  \centering
+  \includegraphics[width=0.85\textwidth]{figure/spider-1} \\
+\end{frame}
+
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Joint likelihood}
+%   % \footnotesize
+%   \small
+%   The joint likelihood looks similar to the nonspatial likelihood,
+%   except that we have a third dimension for $y$ and we have to
+%   integrate out the latent activity center $s_i$. 
+%   \pause
+%   \vfill
+%   \flushleft
+%   \begin{equation*}
+% %  \begin{multline*}
+% %    L(N,p; y,n) =                                          \\
+%     L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J \prod_{k=1}^K p_{ij}^{y_{ijj}}(1-p_{ij})^{1-y_{ijk}}\right\}
+% %    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%     \frac{N!}{(N-n)!}  \left(q^*\right)^{N-n}
+% %  \end{multline*}
+%   \end{equation*}
+% \end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Model variations}
+%   Aside from the approach to estimation, the key consideration
+%   concerns the sources of variation in capture probability ($p$). \\
+%   \pause
+%   \vfill
+%   Otis et al. (1978, Wildlife Monographs) identified several model variations
+%   \begin{itemize}
+%     \small
+%     \item $M_0$ -- $p$ is constant
+%     \item $M_t$ -- unique $p$ for each capture occasion
+%     \item \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
+%       recapture probability $c$
+%     \item $M_h$ -- individual heterogeneity in $p$
+%   \end{itemize}
+%   \pause \vfill
+%   These can be combined, but beware of identifiability issues. See
+%   Otis et al. (1978) for details.  \\
+%   \pause \vfill
+%   Later we'll talk about another important class of models, the
+%   ``individual covariate'' models.  
+% \end{frame}
+
+
+
+
+
+
+%\section{Model $M_0$}
+
+
+%\subsection{Simulation}
+
+
+%\subsection{Model $M_0$}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Summary stats}
+%   Capture history frequencies
+% <<M0-hist,size='scriptsize'>>=
+% histories <- apply(y, 1, paste, collapse="")
+% sort(table(histories))
+% @
+% \pause
+% \vfill
+%   Detection frequencies
+% <<M0-freq,size='scriptsize'>>=
+% y.tilde <- rowSums(y)
+% sort(table(y.tilde))
+% @   
+% \end{frame}
+
+
+
+%\subsection{Model $M_t$}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- Temporal variation}
+%   Capture probability for each occasion
+% <<sim-Mt-pars,size='scriptsize'>>=
+% p.t <- c(0.3, 0.5, 0.2, 0.4)
+% @
+%   \pause
+%   \vfill
+%   All capture histories (for captured and uncaptured individuals)
+%   \vspace{-6pt}
+% <<sim-Mt-ch,size='scriptsize'>>=
+% y.all.Mt <- matrix(NA, N, J)
+% for(i in 1:N) {
+%     y.all.Mt[i,] <- rbinom(J, 1, p.t) }
+% @
+%   \pause
+%   \vfill
+%   Observed capture histories (data)
+%   \vspace{-6pt}
+% <<sim-Mt-y1,size='scriptsize'>>=
+% captured.Mt <- rowSums(y.all.Mt)>0
+% n.Mt <- sum(captured.Mt)
+% y.Mt <- y.all.Mt[captured.Mt,]
+% y.Mt[1:3,]
+% colSums(y.Mt)
+% @ 
+% \end{frame}
+
+
+
+
+
+
+
+
+
+\section{Likelihood}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Software options}
+%  \small
+  Program DENSITY
+  \begin{itemize}
+%  \footnotesize
+    \item Windows program with GUI
+  \end{itemize}
+  \vfill
+  R package `secr'
+  \begin{itemize}
+%  \footnotesize
+    \item The oldest R package with the most options
+  \end{itemize}
+  \vfill
+  R package `oSCR'
+  \begin{itemize}
+%  \footnotesize
+    \item A newer R package with similar functionality
+  \end{itemize}
+\end{frame}
+
+
+
+% %% p(y,n|N,p)
+% \begin{frame}[fragile]
+%   \frametitle{Joint likelihood for $M_0$}
+%   The joint likelihood has a multinomial form:
+%   \begin{multline*}
+%     L(N,p; y,n) = \\
+%     \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
+%     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%   \end{multline*}
+%   \pause
+%   \vfill
+% <<nll-M0,echo=TRUE,size='scriptsize'>>=
+% nll.M0 <- function(pars, y) {           ## Negative log-likelihood
+%     n <- nrow(y);       J <- ncol(y)
+%     N <- exp(pars[1])
+%     n0 <- N-n
+%     if(n0<0) return(NA)
+%     p <- plogis(pars[2])
+%     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
+%     p0 <- (1-p)^J
+%     ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
+%     nll <- -(ld.y1+ld.n0)
+%     return(nll)
+% }
+% @
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Maximize joint likelihood for $M_0$}
+% Minimized the negative log-likelihood
+% <<opt-nll-M0, size='scriptsize'>>=
+% fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
+% fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
+%                         SE=sqrt(diag(solve(fm.M0$hessian))))
+% fm.M0.est
+% @
+% \pause
+% \vfill
+% Back-transform the estimates
+% <<opt-nll-M0-back, size='scriptsize'>>=
+% c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
+% @
+% \pause
+% \vfill
+% Compare to data-generating values
+% <<dg,size='scriptsize'>>=
+% c(N=N, p=p)
+% @ 
+% \end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Import data from two text files
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(secr)}
+\hlstd{sch} \hlkwb{<-} \hlkwd{read.capthist}\hlstd{(}\hlkwc{captfile}\hlstd{=}\hlstr{"encounter_data_file.csv"}\hlstd{,}
+                     \hlkwc{trapfile}\hlstd{=}\hlstr{"trap_data_file.csv"}\hlstd{,}
+                     \hlkwc{detector}\hlstd{=}\hlstr{"multi"}\hlstd{,} \hlkwc{fmt}\hlstd{=}\hlstr{"trapID"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# No errors found :-)}}\begin{alltt}
+\hlkwd{summary}\hlstd{(sch)}
+\end{alltt}
+\begin{verbatim}
+## Object class       capthist 
+## Detector type      multi 
+## Detector number    64 
+## Average spacing    100 m 
+## x-range            150 850 m 
+## y-range            150 850 m 
+## 
+## Counts by occasion 
+##                    1  2  3  4  5 Total
+## n                 20 23 22 19 20   104
+## u                 20 15 13  4  7    59
+## f                 26 23  8  2  0    59
+## M(t+1)            20 35 48 52 59    59
+## losses             0  0  0  0  0     0
+## detections        20 23 22 19 20   104
+## detectors visited 15 20 17 18 17    87
+## detectors used    64 64 64 64 64   320
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(sch)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/secr-plot-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_0$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{)}
+\hlkwd{coef}\hlstd{(fm.M0)}
+\end{alltt}
+\begin{verbatim}
+##              beta    SE.beta        lcl        ucl
+## D     -0.01162548 0.14297005 -0.2918416  0.2685907
+## g0    -1.20686796 0.23519620 -1.6678440 -0.7458919
+## sigma  3.90580945 0.07612483  3.7566075  4.0550114
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates on original scale
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm.M0)}
+\end{alltt}
+\begin{verbatim}
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.9884418  0.14204281  0.7468868  1.3081196
+## g0    logit  0.2302557  0.04168571  0.1587118  0.3217171
+## sigma   log 49.6902853  3.78815135 42.8029711 57.6858192
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
+$\sigma$.   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_t$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.Mt} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlstd{t,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{coef}\hlstd{(fm.Mt)}
+\end{alltt}
+\begin{verbatim}
+##              beta    SE.beta        lcl        ucl
+## D     -0.01257499 0.14291865 -0.2926904  0.2675404
+## g0    -1.25610254 0.33755875 -1.9177055 -0.5944995
+## g0.t2  0.19994362 0.37786653 -0.5406612  0.9405484
+## g0.t3  0.13938072 0.37961812 -0.6046571  0.8834186
+## g0.t4 -0.08008000 0.38608665 -0.8367959  0.6766359
+## g0.t5 -0.01268276 0.38325431 -0.7638474  0.7384819
+## sigma  3.90555770 0.07613275  3.7563403  4.0547751
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates on original scale
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm.Mt)}
+\end{alltt}
+\begin{verbatim}
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.9875037  0.14185646  0.7462532  1.3067464
+## g0    logit  0.2216455  0.05823523  0.1281176  0.3556031
+## sigma   log 49.6777774  3.78759287 42.7915328 57.6721937
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  Fit the SCR equivalent of Model $M_b$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm.Mb} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlstd{b,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{coef}\hlstd{(fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##                  beta    SE.beta        lcl        ucl
+## D        -0.001839514 0.14379951 -0.2836814  0.2800024
+## g0       -0.866944349 0.27632610 -1.4085336 -0.3253551
+## g0.bTRUE -0.681065203 0.24693321 -1.1650454 -0.1970850
+## sigma     3.907216454 0.07596882  3.7583203  4.0561126
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates on original scale
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.9981622  0.14428046  0.7530065  1.3231329
+## g0    logit  0.2958905  0.05756959  0.1964655  0.4193712
+## sigma   log 49.7602491  3.78568817 42.8763461 57.7493796
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  What about $N$? \pause \inr{E.N} is the expected value of
+  $N$. \inr{R.N} is the realized value of $N$. 
+  \vfill
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{region.N}\hlstd{(fm.M0)}
+\end{alltt}
+\begin{verbatim}
+##     estimate SE.estimate      lcl      ucl  n
+## E.N 96.81711    13.91298 73.15698 128.1293 59
+## R.N 96.81716     9.83636 81.90352 121.4418 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{region.N}\hlstd{(fm.Mt)}
+\end{alltt}
+\begin{verbatim}
+##     estimate SE.estimate      lcl      ucl  n
+## E.N 96.72522   13.894729 73.09491 127.9948 59
+## R.N 96.72527    9.815207 81.84476 121.2986 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{region.N}\hlstd{(fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##     estimate SE.estimate     lcl      ucl  n
+## E.N 97.76921    14.13216 73.7564 129.5998 59
+## R.N 90.94367    10.09696 76.4466 117.4869 59
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%\pause
+%\vfill
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  \small
+  Was \inr{buffer} big enough?
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{100}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link estimate SE.estimate       lcl      ucl
+## D  log 1.014208   0.1443613 0.7683777 1.338687
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.9884415   0.1420427 0.7468867 1.308119
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{200}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.9872495   0.1420249 0.7457621 1.306934
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{250}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link  estimate SE.estimate       lcl     ucl
+## D  log 0.9872298   0.1420268 0.7457403 1.30692
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{300}\hlstd{))[}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##   link estimate SE.estimate       lcl     ucl
+## D  log  0.98723    0.142027 0.7457403 1.30692
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{R package `secr'}
+  AIC
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{AIC}\hlstd{(fm.M0, fm.Mt, fm.Mb)}
+\end{alltt}
+\begin{verbatim}
+##                  model   detectfn npar    logLik     AIC    AICc  dAICc AICcwt
+## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -326.4200 660.840 661.581  0.000 0.9392
+## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -330.3091 666.618 667.055  5.474 0.0608
+## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -329.9340 673.868 676.064 14.483 0.0000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\section{Data augmentation}
+
+
+%\section{Prediction}
+%\subsection{Likelihood-based inference}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Data augmentation model}
+  The DA version of a basic SCR model is:
+  \begin{gather*}
+    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
+    z_i \sim \mathrm{Bern}(\psi) \\
+    p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    N=\sum_{i=1}^M z_i
+  \end{gather*}
+  % A uniform prior on $\psi$ results in a discrete uniform prior on
+  % $N$. We can change the prior for $N$ by changing the prior on
+  % $\psi$, recognizing that $E(N)=M\psi$.
+  % But why bother with augmentation?
+  % \begin{itemize}
+  %   \item DA works for \alert{all} varieties of mark-recapture models
+  %   \item Make it easy to incorporate
+  %     individual-covariates\dots\pause including distance and
+  %     location!   
+  % \end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+\vspace{-3pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0.jag"}\hlstd{))}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'SCR0.jag': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+  Data
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{M} \hlkwb{<-} \hlnum{150}
+\hlstd{y.aug} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwd{c}\hlstd{(M, J, K))}
+\hlstd{y.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y),,]} \hlkwb{<-} \hlstd{y}
+\hlstd{jags.data.SCR0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,}
+                       \hlkwc{x}\hlstd{=x,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Inits and parameters
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.SCR0} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
+         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
+\hlstd{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hlkwd{library}\hlstd{(jagsUI)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: lattice}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'jagsUI'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:coda':\\\#\# \\\#\#\ \ \ \  traceplot}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:utils':\\\#\# \\\#\#\ \ \ \  View}}\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+MCMC
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.SCR0} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR0,} \hlkwc{inits}\hlstd{=ji.SCR0,}
+                             \hlkwc{parameters.to.save}\hlstd{=jp.SCR0,}
+                             \hlkwc{model.file}\hlstd{=}\hlstr{"SCR0.jag"}\hlstd{,}
+                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                             \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}SCR0.jag"{}}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior summaries}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.SCR0)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.SCR0' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.SCR0[,jp.SCR0])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.SCR0' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{How do we speed up Bayesian inference?}
+  \begin{itemize}
+    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
+      non-spatial lecture.
+      \begin{itemize}
+        \item This can work well, but not when there are other
+          individual-level covariates.
+      \end{itemize}
+    \item Treat $z_i=1$ as data for first $n$ individuals.
+    \item If there are no occasion-specific covariates, collapse data
+      and use binomial instead of Bernoulli distribution.
+    \item Use a single zero for each augmented individual, instead of
+      an array of zeros. Then compute probability of detecting an
+      individual at least once.
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- data augmentation}
+\vspace{-3pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0-faster.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## psi ~ dunif(0, 1)
+## g0 ~ dunif(0, 1)
+## sigma ~ dunif(0, 0.5)
+## 
+## for(i in 1:M) {
+##   s[i,1] ~ dunif(xlim[1], xlim[2])
+##   s[i,2] ~ dunif(ylim[1], ylim[2])
+##   z[i] ~ dbern(psi)
+##   for(j in 1:J) {
+##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
+##   }
+## }
+## for(i in 1:n) {  ## Model for observed capture histories
+##   for(j in 1:J) {
+##     y.tilde[i,j] ~ dbinom(p[i,j], K)
+##   }
+## }
+## for(i in (n+1):M) { ## Model for augmented guys
+##   PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+##   zero[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
+## }
+## 
+## EN <- M*psi
+## N <- sum(z)
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model SCR$_0$ -- faster}
+  Data
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.tilde} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), sum)}
+\hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)}
+\hlstd{jags.data.SCR0.faster} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,}
+                              \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
+                              \hlkwc{K}\hlstd{=K,} \hlkwc{zero}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,}
+                              \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Inits and parameters (same as before)
+\pause
+\vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.SCR0.faster} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
+         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+MCMC
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.SCR0.faster} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR0.faster,}
+                                    \hlkwc{inits}\hlstd{=ji.SCR0.faster,}
+                                    \hlkwc{parameters.to.save}\hlstd{=jp.SCR0,}
+                                    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR0-faster.jag"}\hlstd{,}
+                                    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                    \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior summaries}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.SCR0.faster)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##               Mean        SD  Naive SE Time-series SE
+## EN        98.00326 11.040638 1.425e-01      0.4079510
+## N         98.42683  9.631378 1.243e-01      0.3684158
+## deviance 520.76092 25.430234 3.283e-01      0.9887463
+## g0         0.23958  0.039458 5.094e-04      0.0017107
+## sigma      0.04975  0.003275 4.227e-05      0.0001427
+## 
+## 2. Quantiles for each variable:
+## 
+##               2.5%       25%      50%       75%     97.5%
+## EN        77.00001  90.53685  97.4968 105.29392 120.71776
+## N         82.00000  92.00000  98.0000 105.00000 119.00000
+## deviance 473.26223 502.97915 520.0376 537.43704 572.82357
+## g0         0.17076   0.21131   0.2366   0.26443   0.32633
+## sigma      0.04386   0.04748   0.0496   0.05188   0.05645
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.SCR0.faster[,jp.SCR0])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-SCR0-faster-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{SCR study design}
+  SCR uses model-based, rather than design-based,
+  inference (see Ch. 10). \\ 
+  \pause
+  \vfill
+  Random placement of traps is not required, but it's a good idea
+  randomly sample locations along the environmental gradients you're
+  interested in. \\
+  \pause \vfill
+  The other two key design considerations are:
+  \begin{enumerate}
+    \item<3-> Capture as many individuals as you can (i.e., maximize $n$)
+    \item<4-> Obtain as many {\it spatial} recaptures as possible
+  \end{enumerate}
+  \vfill
+  \uncover<5->{
+    There is a tradeoff between these two objectives. Simulation is
+    often the best option for finding the right balance.
+  }
+\end{frame}
+
+%\section{Summary}
+
+
+\begin{frame}
+  \frametitle{SCR summary}
+  We assume that variation in $p$ arises from distance between animals
+  and traps. \\
+  \pause \vfill
+  We can estimate abundance and model distribution (i.e., spatial
+  variation in density) \\
+  \pause \vfill
+  Next time, we'll see how to do that using secr and JAGS, and we'll
+  make a bunch of maps. \\
+\end{frame}
+
+
+
+
+\section{Assignment}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Assignment}
+  Create a self-contained R script or Rmarkdown file to do the
+  following: 
+  \vfill
+  \begin{enumerate}
+    \item Fit a ``local behavioral response'' model,
+      rather than a ``global behavioral response'' model in secr.
+    \item Fit a model in JAGS where $g_0$ varies among
+      occasions. Compare estimates of $E(N)$ and $N$ to the estimates
+      from secr for the same model (which we fit earlier).
+  \end{enumerate}
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+
