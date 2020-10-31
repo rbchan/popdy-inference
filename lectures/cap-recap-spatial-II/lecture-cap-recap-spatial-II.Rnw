@@ -489,10 +489,11 @@ The units differ because we transformed to meters. \\
 
 \begin{frame}[fragile]
   \frametitle{Estimated activity center locations}
+  Can't get this to work.
 <<fxi,eval=FALSE,size='scriptsize'>>=
 plot(trp)
-fxi.contour(fm.elev)#, X=mask[,c("x","y")], p=c(0.95, 0.99))
-fxi.contour(fm0)#,i=2,add=TRUE,plotmode=FALSE,drawlabels = FALSE, X=mask[,c("x","y")])
+#fxi.secr(fm.elev, X=mask[,c("x","y")])
+#fxi.contour(fm0)#,i=2,add=TRUE,plotmode=FALSE,drawlabels = FALSE, X=mask[,c("x","y")])
 @   
 \end{frame}
 
@@ -710,8 +711,7 @@ lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
 <<lambda-post,size='scriptsize',fig.height=5,fig.show="hide">>=
 library(latticeExtra)
 panel1 <- levelplot(lambda.post.lower ~ x+y, elevation.xyz, aspect="iso",
-                    colorkey=list(space="bottom"), xlab="", ylab="")#,
-##                    at=seq(0.000, 0.17, length=100))
+                    colorkey=list(space="bottom"), xlab="", ylab="")
 panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso")
 panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso")
 panels <- c(panel1, panel2, panel3)
@@ -753,12 +753,36 @@ jags.post.SCR.elev.sz <- jags.basic(
 s1.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("s[", 1:M, ",1]")])
 s2.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("s[", 1:M, ",2]")])
 z.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("z[", 1:M, "]")])
+@
+Chop activity centers into discrete intervals, then tabulate.
+<<cut-s,size='scriptsize'>>=
+lambda.r.post <- array(NA, c(sqrt(n.pixels), sqrt(n.pixels), n.samples))
+for(i in 1:n.samples) {
+    si1.post.d <- cut(s1.post[i,z.post[i,]==1], breaks=seq(0, 1, delta))
+    si2.post.d <- cut(s2.post[i,z.post[i,]==1], breaks=seq(0, 1, delta))
+    pixel.counts <- table(si2.post.d, si1.post.d)
+    lambda.r.post[,,i] <- pixel.counts[sqrt(n.pixels):1,]
+}
 @ 
 \end{frame}
 
 
+
 \begin{frame}[fragile]
-  \frametitle{Posterior distribution for $\bsi$}
+  \frametitle{Realized density surface}
+<<lambda-r,size='scriptsize',fig.height=3.1>>=
+lambda.r.mean <- raster(t(apply(lambda.r.post, c(1,2), mean)))
+lambda.e.mean <- raster(matrix(lambda.post.mean, sqrt(n.pixels)))
+lambda.re <- stack(lambda.r.mean, lambda.e.mean)
+names(lambda.re) <- c("Realized", "Expected")
+plot(lambda.re)
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution of $\bsi$}
   \small
   Posterior distribution of $\bs_1$. 
 <<si-post,size='scriptsize',echo=-1,fig.show='hide'>>=
@@ -776,7 +800,7 @@ points(x[y.tilde[1,]>0,,drop=FALSE], pch=3, col="red", lwd=2, cex=2)
 
 
 \begin{frame}[fragile]
-  \frametitle{Posterior distribution for $\bsi$}
+  \frametitle{Posterior distribution of $\bsi$}
   \small
   Posterior distribution of $\bs_i$
 <<si-post-i,size='scriptsize',echo=FALSE,fig.show='hide'>>=
@@ -803,16 +827,16 @@ for(i in 2:n) {
 
 
 \begin{frame}[fragile]
-  \frametitle{Posterior distribution for $\bsi$}
+  \frametitle{Posterior distribution of $\bsi$}
   \small
   Posterior distribution of $\bs_{n+1}$. 
 <<si-post-y0,size='scriptsize',echo=-1,fig.show='hide'>>=
 par(mai=c(0.0,0.0,0.0,0.0))
 plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
 points(s1.post[z.post[,150]==1,150],
-       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.5))
+       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))
 @
-\vspace{-1.1cm}
+%\vspace{-1.1cm}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/si-post-y0-1} \\
 \end{frame}
