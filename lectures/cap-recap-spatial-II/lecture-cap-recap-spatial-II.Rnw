@@ -4,6 +4,8 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\usepackage{pgffor}% http://ctan.org/pkg/pgffor
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -677,18 +679,144 @@ plot(jags.post.SCR.elev[,jp.SCR.elev[4:6]])
 \end{frame}
 
 
-\begin{frame}[fragile
-  \frametitle{Density surfaces in JAGS}
+
+
+\begin{frame}[fragile]
+  \frametitle{Predicted density surface in JAGS}
+  Extract posterior samples of $\beta_0$ and $\beta_1$. 
+<<extract-beta,size='scriptsize'>>=
+beta.post <- as.matrix(jags.post.SCR.elev[,c("beta0","beta1")])
+n.samples <- nrow(beta.post)
+@
+  Compute density surface for every MCMC sample
+<<lambda-samples,size='scriptsize'>>=
+lambda.post <- matrix(NA, n.pixels, n.samples)
+for(i in 1:n.samples) {
+    lambda.post[,i] <- exp(
+        beta.post[i,"beta0"] +
+        beta.post[i,"beta1"]*elevation.xyz$elevation)
+}
+lambda.post.mean <- rowMeans(lambda.post)
+lambda.post.lower <- apply(lambda.post, 1, quantile, prob=0.025)
+lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Predicted density surface}
+<<lambda-post,size='scriptsize',fig.height=5,fig.show="hide">>=
+library(latticeExtra)
+panel1 <- levelplot(lambda.post.lower ~ x+y, elevation.xyz, aspect="iso",
+                    colorkey=list(space="bottom"), xlab="", ylab="")#,
+##                    at=seq(0.000, 0.17, length=100))
+panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso")
+panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso")
+panels <- c(panel1, panel2, panel3)
+panels <- update(
+    panels, scales=list(draw=FALSE), layout=c(3,1),
+    xlab="", ylab="",
+    par.settings=ggplot2like(), #theEconomist.theme(), 
+    strip=strip.custom(
+        factor.levels=c("Lower CI","Posterior mean","Upper CI")))
+plot(panels)
+@   
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Predicted density surface}
+  Posterior mean and 95\% CI \\
+  \includegraphics[width=\textwidth]{figure/lambda-post-1}  
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Realized density surface}
   We need to monitor $z$ and $\bsi$.
-<<mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE>>=
-jags.post.SCR.elev.sz <- jags.basic(data=jags.data.SCR.elev,
-                                 inits=ji.SCR.elev,
-                                 parameters.to.save=c(jp.SCR.elev,"s","z"),
-                                 model.file="SCR-elev.jag",
-                                 n.chains=3, n.adapt=100, 
-                                 n.iter=1000, parallel=TRUE)
+<<mcmc-SCR-elev-sz,size='scriptsize',results='hide',cache=TRUE>>=
+jags.post.SCR.elev.sz <- jags.basic(
+    data=jags.data.SCR.elev, inits=ji.SCR.elev,
+    parameters.to.save=c(jp.SCR.elev,"s","z"),
+    model.file="SCR-elev.jag",
+    n.chains=3, n.adapt=100, n.iter=1000, parallel=TRUE)
+@
+\pause \vfill
+  Extract posterior samples of $z$ and $\bsi$. 
+<<extract-sz,size='scriptsize'>>=
+s1.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("s[", 1:M, ",1]")])
+s2.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("s[", 1:M, ",2]")])
+z.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("z[", 1:M, "]")])
 @ 
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution for $\bsi$}
+  \small
+  Posterior distribution of $\bs_1$. 
+<<si-post,size='scriptsize',echo=-1,fig.show='hide'>>=
+par(mai=c(0.0,0.0,0.0,0.0))
+plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
+points(s1.post[,1], s2.post[,1], pch=16, col=rgb(0,0,1,0.1))
+contour(MASS::kde2d(s1.post[,1], s2.post[,1]), add=TRUE)
+points(x[y.tilde[1,]>0,,drop=FALSE], pch=3, col="red", lwd=2, cex=2)
+@
+\vspace{-1.1cm}
+\centering
+\includegraphics[width=0.75\textwidth]{figure/si-post-1} \\
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution for $\bsi$}
+  \small
+  Posterior distribution of $\bs_i$
+<<si-post-i,size='scriptsize',echo=FALSE,fig.show='hide'>>=
+for(i in 2:n) {
+    par(mai=c(0.0,0.0,0.0,0.0))
+    plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
+    points(s1.post[,i], s2.post[,i], pch=16, col=rgb(0,0,1,0.1))
+    contour(MASS::kde2d(s1.post[,i], s2.post[,i]), add=TRUE)
+    points(x[y.tilde[i,]>0,,drop=FALSE], pch=3, col="red", lwd=2, cex=2)
+}
+@
+%\vfill
+\vspace{-0.5cm}
+\centering
+\only<1>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-2} \\}
+%\only<2>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-3} \\}
+% \only<3>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-4} \\}
+\foreach \n in {3,...,58} {%
+  \only<\n>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-\n}\\}
+}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution for $\bsi$}
+  \small
+  Posterior distribution of $\bs_{n+1}$. 
+<<si-post-y0,size='scriptsize',echo=-1,fig.show='hide'>>=
+par(mai=c(0.0,0.0,0.0,0.0))
+plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
+points(s1.post[z.post[,150]==1,150],
+       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.5))
+@
+\vspace{-1.1cm}
+\centering
+\includegraphics[width=0.5\textwidth]{figure/si-post-y0-1} \\
+\end{frame}
+
 
 
 

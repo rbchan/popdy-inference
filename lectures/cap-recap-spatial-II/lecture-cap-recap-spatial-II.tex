@@ -54,6 +54,8 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\usepackage{pgffor}% http://ctan.org/pkg/pgffor
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -645,7 +647,7 @@ Estimates on original scale (at average covariate values).
 
 
 \begin{frame}[fragile]
-  \frametitle{Predicted density surface}
+  \frametitle{Estimated density surface}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -662,6 +664,20 @@ Estimates on original scale (at average covariate values).
 The units differ because we transformed to meters. \\
 \end{frame}
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Estimated activity center locations}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(trp)}
+\hlkwd{fxi.contour}\hlstd{(fm.elev)}\hlcom{#, X=mask[,c("x","y")], p=c(0.95, 0.99))}
+\hlkwd{fxi.contour}\hlstd{(fm0)}\hlcom{#,i=2,add=TRUE,plotmode=FALSE,drawlabels = FALSE, X=mask[,c("x","y")])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
@@ -709,9 +725,11 @@ The units differ because we transformed to meters. \\
 
 \begin{frame}
   \frametitle{Data augmentation model}
-  The DA version of a basic SCR model is:
+  The DA version of a SCR model with an inhomogeneous point process
+  can be written like this:
   \begin{gather*}
-    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
+    \lambda(\bs) = \exp(\beta_0 + \beta_1 \mathrm{ELEV}(\bs)) \\
+    \bsi \propto (\lambda(\bs)) \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
     y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
@@ -731,161 +749,62 @@ The units differ because we transformed to meters. \\
 
 
 
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- data augmentation}
-\vspace{-3pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0.jag"}\hlstd{))}
-\end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'SCR0.jag': No such file or directory}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- data augmentation}
-  Data
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{M} \hlkwb{<-} \hlnum{150}
-\hlstd{y.aug} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwd{c}\hlstd{(M, J, K))}
-\hlstd{y.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y),,]} \hlkwb{<-} \hlstd{y}
-\hlstd{jags.data.SCR0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,}
-                       \hlkwc{x}\hlstd{=x,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Inits and parameters
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{ji.SCR0} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
-         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
-\hlstd{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
-\hlkwd{library}\hlstd{(jagsUI)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-MCMC
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.post.SCR0} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR0,} \hlkwc{inits}\hlstd{=ji.SCR0,}
-                             \hlkwc{parameters.to.save}\hlstd{=jp.SCR0,}
-                             \hlkwc{model.file}\hlstd{=}\hlstr{"SCR0.jag"}\hlstd{,}
-                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                             \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}SCR0.jag"{}}}\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Posterior summaries}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.SCR0)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.SCR0' not found}}\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.SCR0[,jp.SCR0])}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.SCR0' not found}}\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
 \begin{frame}
-  \frametitle{How do we speed up Bayesian inference?}
-  \begin{itemize}
-    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
-      non-spatial lecture.
-      \begin{itemize}
-        \item This can work well, but not when there are other
-          individual-level covariates.
-      \end{itemize}
-    \item Treat $z_i=1$ as data for first $n$ individuals.
-    \item If there are no occasion-specific covariates, collapse data
-      and use binomial instead of Bernoulli distribution.
-    \item Use a single zero for each augmented individual, instead of
-      an array of zeros. Then compute probability of detecting an
-      individual at least once.
-  \end{itemize}
+  \frametitle{Inhomogeneous point process in JAGS}
+  We need to do the following to make this work:
+  \begin{enumerate}
+    \item Provide the spatial covariate as a vector
+    \item Loop over all pixels to compute the density at each pixel
+    \item Retain the uniform prior on the activity centers, but add a
+      second probability component to force them to be distributed
+      according to the density surface.
+      \begin{enumerate}
+        \item This requires that we create a ``lookup'' table to map
+          points in space to pixel IDs
+        \item Then we use the ``zero's trick'' to implement the
+          non-standard probability distribution
+      \end{enumerate}
+    \item Define $\psi=E(N)/M$
+  \end{enumerate}
 \end{frame}
 
 
 
 
 \begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- data augmentation}
+  \frametitle{SCR with inhomogeneous PP and data augmentation}
 \vspace{-3pt}
-\begin{knitrout}\tiny
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0-faster.jag"}\hlstd{))}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
 ## model {
 ## 
-## #psi ~ dunif(0, 1)
-## beta0 ~ dnorm(0, 0.1)
+## psi ~ dunif(0, 1)  ## Can't put prior on psi *and* beta0
+## #lambda.intercept ~ dexp(1)
+## #beta0 ~ dnorm(0, 0.1)
+## #beta0 <- log(lambda.intercept)
+## beta0 <- log(M*psi/Lambda) ## Algebra
 ## beta1 ~ dnorm(0, 0.1)
 ## g0 ~ dunif(0, 1)
 ## sigma ~ dunif(0, 0.5)
 ## 
 ## for(g in 1:G) { ## Loop over pixels
-##   lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
-##   pi[g] <- lambda[g]/EN
+## #  lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
+##   lambda[g] <- exp(beta1*elevation[g])*pixelArea
+##   pi[g] <- lambda[g]/Lambda
 ## }
-## EN <- sum(lambda)
+## Lambda <- sum(lambda)
 ## 
 ## for(i in 1:M) {
-##   s[i,1] ~ dunif(xlim[1], xlim[2])
+##   s[i,1] ~ dunif(xlim[1], xlim[2]) 
 ##   s[i,2] ~ dunif(ylim[1], ylim[2])
-##   pixel[i] <- lookup[]
-##   logProb[i] <- pi[pixel[i]]
-##   zeros[i] ~ dpois(-logProb[i])
+##   pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
+##                      round((s[i,1]-xlim[1])/delta+0.5)]  ## column
+##   logProb[i] <- log(pi[pixel[i]])
+##   zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
 ##   z[i] ~ dbern(psi)
 ##   for(j in 1:J) {
 ##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
@@ -899,10 +818,12 @@ MCMC
 ## }
 ## for(i in (n+1):M) { ## Model for augmented guys
 ##   PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
-##   zero[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
+##   zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
 ## }
 ## 
-## ## EN <- M*psi
+## #EN <- sum(lambda) ## Expected value of N
+## #psi <- EN/M
+## EN <- M*psi
 ## N <- sum(z)
 ## }
 \end{verbatim}
@@ -913,32 +834,63 @@ MCMC
 
 
 
+
+
 \begin{frame}[fragile]
-  \frametitle{Model SCR$_0$ -- faster}
+  \frametitle{SCR with IPP}
+  Create the lookup table
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{G} \hlkwb{<-} \hlkwd{nrow}\hlstd{(elevation.xyz)}    \hlcom{## nPixels  }
+\hlstd{lookup} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{G,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(elevation),} \hlkwc{ncol}\hlstd{=}\hlkwd{ncol}\hlstd{(elevation))}
+\hlstd{delta} \hlkwb{<-} \hlkwd{res}\hlstd{(elevation)[}\hlnum{1}\hlstd{]}  \hlcom{## resolution}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{SCR with IPP}
   Data
   \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlstd{M} \hlkwb{<-} \hlnum{150}
 \hlstd{y.tilde} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), sum)}
 \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)}
-\hlstd{jags.data.SCR0.faster} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,}
-                              \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
-                              \hlkwc{K}\hlstd{=K,} \hlkwc{zero}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,}
-                              \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\hlstd{jags.data.SCR.elev} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,}
+                           \hlkwc{G}\hlstd{=G,} \hlkwc{delta}\hlstd{=delta,} \hlkwc{lookup}\hlstd{=lookup,}
+                           \hlkwc{pixelArea}\hlstd{=delta}\hlopt{^}\hlnum{2}\hlopt{*}\hlnum{1e4}\hlstd{,} \hlcom{## Convert to hectares}
+                           \hlkwc{elevation}\hlstd{=elevation.xyz}\hlopt{$}\hlstd{elevation,}
+                           \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
+                           \hlkwc{zeros}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),}
+                           \hlkwc{K}\hlstd{=K,} \hlkwc{zero.cap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,}
+                           \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
   Inits and parameters (same as before)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jp.SCR.elev} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \pause
 \vfill
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.SCR0.faster} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+\hlstd{ji.SCR.elev} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),} \hlcom{#psi=runif(1),}
+\hlcom{#         beta0=runif(1, -20, -15),}
+         \hlkwc{beta1}\hlstd{=}\hlnum{0.01}\hlstd{,}
          \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
          \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
 \end{alltt}
@@ -949,12 +901,12 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.SCR0.faster} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR0.faster,}
-                                    \hlkwc{inits}\hlstd{=ji.SCR0.faster,}
-                                    \hlkwc{parameters.to.save}\hlstd{=jp.SCR0,}
-                                    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR0-faster.jag"}\hlstd{,}
-                                    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                    \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR.elev,}
+                                 \hlkwc{inits}\hlstd{=ji.SCR.elev,}
+                                 \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,}
+                                 \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev.jag"}\hlstd{,}
+                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,}
+                                 \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -968,33 +920,37 @@ MCMC
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.SCR0.faster)}
+\hlkwd{summary}\hlstd{(jags.post.SCR.elev)}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 1:1000
 ## Thinning interval = 1 
 ## Number of chains = 3 
-## Sample size per chain = 2000 
+## Sample size per chain = 1000 
 ## 
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##               Mean        SD  Naive SE Time-series SE
-## EN        98.00326 11.040638 1.425e-01      0.4079510
-## N         98.42683  9.631378 1.243e-01      0.3684158
-## deviance 520.76092 25.430234 3.283e-01      0.9887463
-## g0         0.23958  0.039458 5.094e-04      0.0017107
-## sigma      0.04975  0.003275 4.227e-05      0.0001427
+##                Mean        SD  Naive SE Time-series SE
+## EN        9.263e+01 10.713990 1.956e-01      0.5705006
+## N         9.275e+01  9.129784 1.667e-01      0.5036545
+## beta0    -1.072e+01  2.054192 3.750e-02      0.1473479
+## beta1     5.759e-03  0.001890 3.451e-05      0.0001343
+## deviance  3.239e+03 34.348548 6.271e-01      2.0159064
+## g0        2.358e-01  0.039095 7.138e-04      0.0023399
+## sigma     5.007e-02  0.003272 5.974e-05      0.0002151
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##               2.5%       25%      50%       75%     97.5%
-## EN        77.00001  90.53685  97.4968 105.29392 120.71776
-## N         82.00000  92.00000  98.0000 105.00000 119.00000
-## deviance 473.26223 502.97915 520.0376 537.43704 572.82357
-## g0         0.17076   0.21131   0.2366   0.26443   0.32633
-## sigma      0.04386   0.04748   0.0496   0.05188   0.05645
+##                2.5%        25%        50%        75%      97.5%
+## EN         72.47013  8.545e+01  9.223e+01  9.946e+01  114.70352
+## N          77.00000  8.600e+01  9.200e+01  9.800e+01  113.00000
+## beta0     -14.65194 -1.214e+01 -1.076e+01 -9.297e+00   -6.56462
+## beta1       0.00187  4.468e-03  5.791e-03  7.065e-03    0.00934
+## deviance 3170.31484  3.216e+03  3.239e+03  3.261e+03 3306.13326
+## g0          0.16737  2.082e-01  2.328e-01  2.608e-01    0.32239
+## sigma       0.04399  4.775e-02  5.007e-02  5.224e-02    0.05658
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1007,11 +963,31 @@ MCMC
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.SCR0.faster[,jp.SCR0])}
+\hlkwd{plot}\hlstd{(jags.post.SCR.elev[,jp.SCR.elev[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-SCR0-faster-1} 
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-SCR-elev1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.SCR.elev[,jp.SCR.elev[}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{]])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-SCR-elev2-1} 
 
 }
 
@@ -1023,41 +999,166 @@ MCMC
 
 
 
-\begin{frame}
-  \frametitle{SCR study design}
-  SCR uses model-based, rather than design-based,
-  inference (see Ch. 10). \\ 
-  \pause
-  \vfill
-  Random placement of traps is not required, but it's a good idea
-  randomly sample locations along the environmental gradients you're
-  interested in. \\
-  \pause \vfill
-  The other two key design considerations are:
-  \begin{enumerate}
-    \item<3-> Capture as many individuals as you can (i.e., maximize $n$)
-    \item<4-> Obtain as many {\it spatial} recaptures as possible
-  \end{enumerate}
-  \vfill
-  \uncover<5->{
-    There is a tradeoff between these two objectives. Simulation is
-    often the best option for finding the right balance.
-  }
+\begin{frame}[fragile]
+  \frametitle{Predicted density surface in JAGS}
+  Extract posterior samples of $\beta_0$ and $\beta_1$. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev[,}\hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,}\hlstr{"beta1"}\hlstd{)])}
+\hlstd{n.samples} \hlkwb{<-} \hlkwd{nrow}\hlstd{(beta.post)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  Compute density surface for every MCMC sample
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{lambda.post} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n.pixels, n.samples)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.samples) \{}
+    \hlstd{lambda.post[,i]} \hlkwb{<-} \hlkwd{exp}\hlstd{(}
+        \hlstd{beta.post[i,}\hlstr{"beta0"}\hlstd{]} \hlopt{+}
+        \hlstd{beta.post[i,}\hlstr{"beta1"}\hlstd{]}\hlopt{*}\hlstd{elevation.xyz}\hlopt{$}\hlstd{elevation)}
+\hlstd{\}}
+\hlstd{lambda.post.mean} \hlkwb{<-} \hlkwd{rowMeans}\hlstd{(lambda.post)}
+\hlstd{lambda.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(lambda.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\hlstd{lambda.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(lambda.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
-%\section{Summary}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Predicted density surface}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(latticeExtra)}
+\hlstd{panel1} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.lower} \hlopt{~} \hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{,}
+                    \hlkwc{colorkey}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"bottom"}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}\hlcom{#,}
+\hlcom{##                    at=seq(0.000, 0.17, length=100))}
+\hlstd{panel2} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.mean} \hlopt{~}\hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{)}
+\hlstd{panel3} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.upper} \hlopt{~}\hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{)}
+\hlstd{panels} \hlkwb{<-} \hlkwd{c}\hlstd{(panel1, panel2, panel3)}
+\hlstd{panels} \hlkwb{<-} \hlkwd{update}\hlstd{(}
+    \hlstd{panels,} \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{draw}\hlstd{=}\hlnum{FALSE}\hlstd{),} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{3}\hlstd{,}\hlnum{1}\hlstd{),}
+    \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{,}
+    \hlkwc{par.settings}\hlstd{=}\hlkwd{ggplot2like}\hlstd{(),} \hlcom{#theEconomist.theme(), }
+    \hlkwc{strip}\hlstd{=}\hlkwd{strip.custom}\hlstd{(}
+        \hlkwc{factor.levels}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Lower CI"}\hlstd{,}\hlstr{"Posterior mean"}\hlstd{,}\hlstr{"Upper CI"}\hlstd{)))}
+\hlkwd{plot}\hlstd{(panels)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
 
 
 \begin{frame}
-  \frametitle{SCR summary}
-  We assume that variation in $p$ arises from distance between animals
-  and traps. \\
-  \pause \vfill
-  We can estimate abundance and model distribution (i.e., spatial
-  variation in density) \\
-  \pause \vfill
-  Next time, we'll see how to do that using secr and JAGS, and we'll
-  make a bunch of maps. \\
+  \frametitle{Predicted density surface}
+  Posterior mean and 95\% CI \\
+  \includegraphics[width=\textwidth]{figure/lambda-post-1}  
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Realized density surface}
+  We need to monitor $z$ and $\bsi$.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.SCR.elev.sz} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
+    \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
+    \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jp.SCR.elev,}\hlstr{"s"}\hlstd{,}\hlstr{"z"}\hlstd{),}
+    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev.jag"}\hlstd{,}
+    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause \vfill
+  Extract posterior samples of $z$ and $\bsi$. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{s1.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hlstd{(}\hlstr{"s["}\hlstd{,} \hlnum{1}\hlopt{:}\hlstd{M,} \hlstr{",1]"}\hlstd{)])}
+\hlstd{s2.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hlstd{(}\hlstr{"s["}\hlstd{,} \hlnum{1}\hlopt{:}\hlstd{M,} \hlstr{",2]"}\hlstd{)])}
+\hlstd{z.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hlstd{(}\hlstr{"z["}\hlstd{,} \hlnum{1}\hlopt{:}\hlstd{M,} \hlstr{"]"}\hlstd{)])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution for $\bsi$}
+  \small
+  Posterior distribution of $\bs_1$. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{)}
+\hlkwd{points}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.1}\hlstd{))}
+\hlkwd{contour}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{]),} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{points}\hlstd{(x[y.tilde[}\hlnum{1}\hlstd{,]}\hlopt{>}\hlnum{0}\hlstd{,,}\hlkwc{drop}\hlstd{=}\hlnum{FALSE}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\vspace{-1.1cm}
+\centering
+\includegraphics[width=0.75\textwidth]{figure/si-post-1} \\
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution for $\bsi$}
+  \small
+  Posterior distribution of $\bs_i$
+
+%\vfill
+\vspace{-0.5cm}
+\centering
+\only<1>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-2} \\}
+%\only<2>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-3} \\}
+% \only<3>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-4} \\}
+\foreach \n in {3,...,58} {%
+  \only<\n>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-\n}\\}
+}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distribution for $\bsi$}
+  \small
+  Posterior distribution of $\bs_{n+1}$. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{)}
+\hlkwd{points}\hlstd{(s1.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],}
+       \hlstd{s2.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.5}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\vspace{-1.1cm}
+\centering
+\includegraphics[width=0.65\textwidth]{figure/si-post-y0-1} \\
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Summary}
 \end{frame}
 
 
