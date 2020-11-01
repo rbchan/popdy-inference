@@ -82,15 +82,16 @@ colnames(nets.2020.secr) <- c("x","y")
 rownames(nets.2020.secr) <- nets.2020.out$net
 
 
+nets.2020.traps <- read.traps(data=nets.2020.secr, detector="proximity")
 
 ch <- make.capthist(captures=btbw.2020.out,
-                    traps=read.traps(data=nets.2020.secr),
+                    traps=nets.2020.traps,
                     fmt="trapID")
 
 summary(ch)
 
 
-secr.fit(ch, model=list(D=~1, g0=~1, sigma=~1), buffer=25000,
+secr.fit(ch, model=list(D=~1, g0=~1, sigma=~1), buffer=1500,
          start=c(-1, -4, 4), trace=FALSE)
 
 
