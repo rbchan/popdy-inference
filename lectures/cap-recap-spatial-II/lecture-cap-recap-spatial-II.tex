@@ -96,8 +96,8 @@
   \centering
   {
     \LARGE Lecture 12 -- Spatial capture-recapture \\
-    for closed populations: \\
-    \Large Part II: mapping density surfaces \\
+    for closed populations: Part II \\
+    \Large Mapping density surfaces and activity centers \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -129,49 +129,49 @@
 
 
 
-\begin{frame}
-  \frametitle{SCR overview}
-  Last time, we focused on simulation and basic model fitting. \\
-  \pause \vfill
-  This time, we're going to talk about estimating and mapping density surfaces. \\
-%  \pause \vfill
-%  And you'll learn how to create maps of 
-\end{frame}
+% \begin{frame}
+%   \frametitle{SCR overview}
+%   Last time, we focused on simulation and basic model fitting. \\
+%   \pause \vfill
+%   This time, we're going to talk about estimating and mapping density surfaces. \\
+% %  \pause \vfill
+% %  And you'll learn how to create maps of 
+% \end{frame}
 
 
 
-\begin{frame}
-  \frametitle{SCR overview}
-  {\centering Two motivations for SCR \\}
-  \vfill
-  \begin{enumerate}
-    \item Improved inference
-    \begin{itemize}
-      \item<1-> Non-spatial models can't properly account for sources
-        of variation in $p$ that can cause bias.
-        \begin{itemize}
-          \item<1-> Distance to traps
-          \item<1-> Trap-specific covariates
-        \end{itemize}
-      \item<1-> SCR makes it possible to estimate \alert{density}, not
-        just $N$ in an unknown region. 
-    \end{itemize}
-%    \pause
-    \vfill
-  \item<1-> Improved science
-  \begin{itemize}
-    \item<1-> We can ask new questions, such as:
-      \begin{itemize}
-        \item<1-> What influences spatial variation in density?
-        \item<1-> How do survival and recruitment vary in space and time?
-        \item<1-> How does movement influence density and detectability?
-      \end{itemize}
-    \item<1-> Rather than think of SCR as a new estimation tool, you
-      can think of it as an individual-based framework for inference on
-      spatial population dynamics.
-    \end{itemize}
-  \end{enumerate}
-\end{frame}
+% \begin{frame}
+%   \frametitle{SCR overview}
+%   {\centering Two motivations for SCR \\}
+%   \vfill
+%   \begin{enumerate}
+%     \item Improved inference
+%     \begin{itemize}
+%       \item<1-> Non-spatial models can't properly account for sources
+%         of variation in $p$ that can cause bias.
+%         \begin{itemize}
+%           \item<1-> Distance to traps
+%           \item<1-> Trap-specific covariates
+%         \end{itemize}
+%       \item<1-> SCR makes it possible to estimate \alert{density}, not
+%         just $N$ in an unknown region. 
+%     \end{itemize}
+% %    \pause
+%     \vfill
+%   \item<1-> Improved science
+%   \begin{itemize}
+%     \item<1-> We can ask new questions, such as:
+%       \begin{itemize}
+%         \item<1-> What influences spatial variation in density?
+%         \item<1-> How do survival and recruitment vary in space and time?
+%         \item<1-> How does movement influence density and detectability?
+%       \end{itemize}
+%     \item<1-> Rather than think of SCR as a new estimation tool, you
+%       can think of it as an individual-based framework for inference on
+%       spatial population dynamics.
+%     \end{itemize}
+%   \end{enumerate}
+% \end{frame}
 
 
 
@@ -230,6 +230,36 @@
 
 
 
+\begin{frame}
+  \frametitle{Density surfaces}
+  \large
+  We can use a fitted model to make maps of the following: 
+  \begin{enumerate}
+    \item<1-> Expected density surface%, $\lambda(\bs)$
+    \begin{itemize}
+      \item This is an estimate of $\lambda(\bs)$.
+      \item It's the expected value of density at  each location.
+      \item It's good for describing and predicting density at a
+        different point in time, assuming the processes controlling
+        density don't change.
+    \end{itemize}
+    \item<2-> Realized density surface%,
+%      $\sum_i \bsi \in \mathcal{B} \subset \mathcal{S}$
+      \begin{itemize}
+        \item This is an estimate of the number of activity centers
+          per unit area \alert{during the sampling period}.
+        \item It's an estimate of the realized point pattern.
+        \item It will be equivalent to the expected density surface
+          far from the traps. 
+      \end{itemize}
+    \item<3-> Activity center locations%, $\bsi$
+      \begin{itemize}
+        \item The posterior distribution of each activity center.
+        \item This is not a home range map.
+      \end{itemize}
+  \end{enumerate}
+\end{frame}
+
 
 
 \section{Simulation}
@@ -275,13 +305,13 @@
   \frametitle{Inhomogeneous Poisson point process}
   \small
   Second, let's pick some coefficients and create a density surface
-\begin{knitrout}\footnotesize
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
 \hlstd{beta1} \hlkwb{<-} \hlnum{0.01} \hlcom{#0.005}
 \hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)} \hlcom{# Intensity function}
-\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Density surface"}\hlstd{)}
+\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Density surface"}\hlstd{,} \hlkwc{zlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.18}\hlstd{))}
 \end{alltt}
 \end{kframe}
 
@@ -395,126 +425,79 @@ inside its pixel.
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Distance between traps and activity centers}
-  Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
-  and traps ($\bx_1, \dots, \bx_J$).
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}                 \hlcom{## nTraps}
-\hlstd{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+} \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Look at distances between first 4 individuals and first 5 traps.
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
-\end{alltt}
-\begin{verbatim}
-##           [,1]      [,2]      [,3]      [,4]      [,5]
-## [1,] 0.1218625 0.1175070 0.1810119 0.2678109 0.3614970
-## [2,] 0.9587743 0.8922040 0.8323508 0.7807610 0.7391668
-## [3,] 0.7162980 0.6912027 0.6800289 0.6834600 0.7012815
-## [4,] 0.6222620 0.5569781 0.5032288 0.4650310 0.4463949
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+% \begin{frame}[fragile]
+%   \frametitle{Distance between traps and activity centers}
+%   Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
+%   and traps ($\bx_1, \dots, \bx_J$).
+% <<dist1,size='footnotesize'>>=
+% J <- nrow(x)                 ## nTraps
+% dist.sx <- matrix(NA, N, J)  
+% for(i in 1:N) {
+%     dist.sx[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
+% }
+% @
+% \pause
+% \vfill
+%   Look at distances between first 4 individuals and first 5 traps.
+% <<dist2,size='footnotesize'>>=
+% dist.sx[1:4,1:5]
+% @
 
-\end{frame}
+% \end{frame}
 
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Capture probability}
-  Compute capture probability
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{g0} \hlkwb{<-} \hlnum{0.2}
-\hlstd{sigma} \hlkwb{<-} \hlnum{0.05}
-\hlstd{p} \hlkwb{<-} \hlstd{g0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Look at capture probs for first 4 individuals and first 5 traps.
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{print}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
-\end{alltt}
-\begin{verbatim}
-##          [,1]     [,2]     [,3]     [,4]     [,5]
-## [1,] 1.03e-02 1.26e-02 2.85e-04 1.18e-07 8.92e-13
-## [2,] 2.86e-81 1.44e-70 1.33e-61 2.25e-54 6.98e-49
-## [3,] 5.44e-46 6.36e-43 1.36e-41 5.34e-42 3.84e-44
-## [4,] 4.66e-35 2.27e-28 2.02e-23 3.29e-20 9.84e-19
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+% \begin{frame}[fragile]
+%   \frametitle{Capture probability}
+%   Compute capture probability
+% <<p1,size='footnotesize'>>=
+% g0 <- 0.2
+% sigma <- 0.05
+% p <- g0*exp(-dist.sx^2/(2*sigma^2))
+% @
+% \pause
+% \vfill
+%   Look at capture probs for first 4 individuals and first 5 traps.
+% <<p2,size='footnotesize'>>=
+% print(p[1:4,1:5], digits=3)
+% @
 
-\end{frame}
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Capture histories}
-  Simulate capture histories for all $N$ individuals
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
-\hlstd{y.all} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(N, J, K))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-        \hlstd{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=p[i,j])}
-    \hlstd{\}}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Discard individuals not captured
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
-\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,,]}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Capture histories for first 2 individuals and first 5 traps
-  on first occasion.
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{1}\hlstd{]}
-\end{alltt}
-\begin{verbatim}
-##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    0    0    0    0    0
-## [2,]    0    0    0    0    0
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Capture histories}
+%   Simulate capture histories for all $N$ individuals
+% <<y1,size='footnotesize'>>=
+% K <- 5                          # nOccasions
+% y.all <- array(NA, c(N, J, K))
+% for(i in 1:N) {
+%     for(j in 1:J) {
+%         y.all[i,j,] <- rbinom(K, 1, prob=p[i,j])
+%     }
+% }
+% @
+% \pause
+% \vfill
+%   Discard individuals not captured
+% <<y2,size='footnotesize'>>=
+% captured <- rowSums(y.all)>0
+% y <- y.all[captured,,]
+% @
+% \pause
+% \vfill
+%   Capture histories for first 2 individuals and first 5 traps
+%   on first occasion.
+% <<y3,size='footnotesize'>>=
+% y[1:2,1:5,1]
+% @
+% \end{frame}
 
 
 
@@ -561,6 +544,7 @@ inside its pixel.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(elevation,} \hlkwc{xy}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{elevation.xyz}\hlopt{$}\hlstd{y} \hlkwb{<-} \hlkwd{round}\hlstd{(elevation.xyz}\hlopt{$}\hlstd{y,} \hlnum{3}\hlstd{)} \hlcom{## Fix numerical fuzz}
 \hlstd{elevation.xyz.m} \hlkwb{<-} \hlstd{elevation.xyz}
 \hlstd{elevation.xyz.m}\hlopt{$}\hlstd{x} \hlkwb{<-} \hlstd{elevation.xyz}\hlopt{$}\hlstd{x}\hlopt{*}\hlnum{1000}  \hlcom{## Convert units to meters}
 \hlstd{elevation.xyz.m}\hlopt{$}\hlstd{y} \hlkwb{<-} \hlstd{elevation.xyz}\hlopt{$}\hlstd{y}\hlopt{*}\hlnum{1000}
@@ -577,7 +561,7 @@ inside its pixel.
 \hlkwd{library}\hlstd{(sp)}
 \hlstd{elev.sp} \hlkwb{<-} \hlkwd{as}\hlstd{(elevation.m,} \hlstr{"SpatialGridDataFrame"}\hlstd{)}
 \hlstd{trp} \hlkwb{<-} \hlkwd{traps}\hlstd{(sch)}
-\hlstd{mask} \hlkwb{<-} \hlkwd{make.mask}\hlstd{(trp,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{spacing}\hlstd{=}\hlnum{15}\hlstd{)}
+\hlstd{mask} \hlkwb{<-} \hlkwd{make.mask}\hlstd{(trp,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{spacing}\hlstd{=}\hlnum{10}\hlstd{)}
 \hlstd{mask} \hlkwb{<-} \hlkwd{addCovariates}\hlstd{(mask,} \hlkwc{spatialdata}\hlstd{=elev.sp)}
 \end{alltt}
 \end{kframe}
@@ -614,15 +598,15 @@ inside its pixel.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm.elev} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlstd{elevation,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
-                    \hlkwc{mask}\hlstd{=mask,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Don't use 'buffer'}
+                    \hlkwc{mask}\hlstd{=mask,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{)}  \hlcom{## Don't use 'buffer'}
 \hlkwd{coef}\hlstd{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
-##                   beta    SE.beta        lcl         ucl
-## D           -0.5498612 0.23019036 -1.0010260 -0.09869634
-## D.elevation  0.9301088 0.18698334  0.5636282  1.29658945
-## g0          -1.1809462 0.21373511 -1.5998593 -0.76203311
-## sigma        3.9099026 0.06563899  3.7812525  4.03855261
+##                   beta    SE.beta        lcl        ucl
+## D           -0.5600270 0.23323665 -1.0171624 -0.1028915
+## D.elevation  0.9419099 0.18885698  0.5717571  1.3120628
+## g0          -1.1779407 0.21368690 -1.5967593 -0.7591221
+## sigma        3.9089793 0.06556921  3.7804660  4.0374926
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -635,10 +619,10 @@ Estimates on original scale (at average covariate values).
 \hlkwd{predict}\hlstd{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate        lcl       ucl
-## D       log  1.4125652  0.19635565  1.0770892  1.852530
-## g0    logit  0.2348821  0.03841087  0.1680013  0.318205
-## sigma   log 49.8940897  3.27852830 43.8709558 56.744152
+##        link   estimate SE.estimate       lcl        ucl
+## D       log  1.4142517  0.19670669  1.078203  1.8550375
+## g0    logit  0.2354227  0.03846339  0.168435  0.3188369
+## sigma   log 49.8480463  3.27201314 43.836466 56.6840344
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -653,28 +637,30 @@ Estimates on original scale (at average covariate values).
 \begin{alltt}
 \hlstd{dsurf} \hlkwb{<-} \hlkwd{predictDsurface}\hlstd{(fm.elev)}
 \hlstd{dsurf.r} \hlkwb{<-} \hlkwd{raster}\hlstd{(dsurf,} \hlkwc{covariate}\hlstd{=}\hlstr{"D.0"}\hlstd{)}
-\hlkwd{plot}\hlstd{(dsurf.r,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Estimated density surface"}\hlstd{)}
+\hlstd{pix.area} \hlkwb{<-} \hlstd{(delta}\hlopt{*}\hlnum{1000}\hlstd{)}\hlopt{^}\hlnum{2}
+\hlkwd{plot}\hlstd{(dsurf.r}\hlopt{/}\hlstd{pix.area,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{zlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.18}\hlstd{),}
+     \hlkwc{main}\hlstd{=}\hlstr{"Estimated density surface"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \centering
 \includegraphics[width=0.49\textwidth]{figure/secr-dsurf-1}
 \includegraphics[width=0.49\textwidth]{figure/ippp2-1} \\
-\pause \vfill
-The units differ because we transformed to meters. \\
+%\pause \vfill
+%The units differ because we transformed to meters. \\
 \end{frame}
 
 
 
 \begin{frame}[fragile]
-  \frametitle{Estimated activity center locations}
-  Can't get this to work.
+  \frametitle{Estimated activity centers}
+  Can't get this to work???? Should create contour map for the
+  Empirical Bayes posterior distribution of the activity center for
+  individual 1. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(trp)}
-\hlcom{#fxi.secr(fm.elev, X=mask[,c("x","y")])}
-\hlcom{#fxi.contour(fm0)#,i=2,add=TRUE,plotmode=FALSE,drawlabels = FALSE, X=mask[,c("x","y")])}
+\hlkwd{fxi.contour}\hlstd{(fm.elev,} \hlkwc{i}\hlstd{=}\hlnum{1}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -697,8 +683,8 @@ The units differ because we transformed to meters. \\
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 88.05875   12.336690 67.00411 115.7294 59
-## R.N 94.33840    8.008443 81.79063 113.7945 59
+## E.N 87.35371   12.228406 66.48163 114.7786 59
+## R.N 93.53557    7.885442 81.20125 112.7225 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -707,11 +693,9 @@ The units differ because we transformed to meters. \\
 
 
 
-\section{Data augmentation}
+\section{Bayes}
 
 
-%\section{Prediction}
-%\subsection{Likelihood-based inference}
 
 
 \begin{frame}
@@ -726,79 +710,47 @@ The units differ because we transformed to meters. \\
 
 \begin{frame}
   \frametitle{Data augmentation model}
-  The DA version of a SCR model with an inhomogeneous point process
-  can be written like this:
+  DA version of SCR model with inhomogeneous point process \\
+  \centering
+  Version 1 \\
   \begin{gather*}
     \lambda(\bs) = \exp(\beta_0 + \beta_1 \mathrm{ELEV}(\bs)) \\
-    \bsi \propto (\lambda(\bs)) \\
+    \bsi \propto \lambda(\bs) \\
+    \Lambda = E(N) = \int_{\mathcal{S}} \lambda(\bs)\; \mathrm{d}\bs \\
+    \psi = \Lambda/M \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
     y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
-  % A uniform prior on $\psi$ results in a discrete uniform prior on
-  % $N$. We can change the prior for $N$ by changing the prior on
-  % $\psi$, recognizing that $E(N)=M\psi$.
-  % But why bother with augmentation?
-  % \begin{itemize}
-  %   \item DA works for \alert{all} varieties of mark-recapture models
-  %   \item Make it easy to incorporate
-  %     individual-covariates\dots\pause including distance and
-  %     location!   
-  % \end{itemize}
+  \pause \vfill
+  This version is relatively slow and doesn't mix that well. \\
 \end{frame}
 
-
-
-\begin{frame}
-  \frametitle{Inhomogeneous point process in JAGS}
-  We need to do the following to make this work:
-  \begin{enumerate}
-    \item Provide the spatial covariate as a vector
-    \item Loop over all pixels to compute the density at each pixel
-    \item Retain the uniform prior on the activity centers, but add a
-      second probability component to force them to be distributed
-      according to the density surface.
-      \begin{enumerate}
-        \item This requires that we create a ``lookup'' table to map
-          points in space to pixel IDs
-        \item Then we use the ``zero's trick'' to implement the
-          non-standard probability distribution
-      \end{enumerate}
-    \item Define $\psi=E(N)/M$
-  \end{enumerate}
-\end{frame}
 
 
 
 
 \begin{frame}[fragile]
-  \frametitle{SCR with inhomogeneous PP and data augmentation}
-\vspace{-3pt}
-\begin{knitrout}\scriptsize
+  \frametitle{SCR with IPP -- version 1}
+  \vspace{-3pt}
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev.jag"}\hlstd{))}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev-v1.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
 ## model {
-## 
-## psi ~ dunif(0, 1)  ## Can't put prior on psi *and* beta0
-## #lambda.intercept ~ dexp(1)
-## #beta0 ~ dnorm(0, 0.1)
-## #beta0 <- log(lambda.intercept)
-## beta0 <- log(M*psi/Lambda) ## Algebra
+## beta0 ~ dnorm(0, 0.1)
 ## beta1 ~ dnorm(0, 0.1)
 ## g0 ~ dunif(0, 1)
 ## sigma ~ dunif(0, 0.5)
-## 
 ## for(g in 1:G) { ## Loop over pixels
-## #  lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
-##   lambda[g] <- exp(beta1*elevation[g])*pixelArea
-##   pi[g] <- lambda[g]/Lambda
-## }
+##   lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
+##   pi[g] <- lambda[g]/Lambda }
 ## Lambda <- sum(lambda)
-## 
+## EN <- sum(lambda) ## Expected value of N
+## psi <- EN/M
 ## for(i in 1:M) {
 ##   s[i,1] ~ dunif(xlim[1], xlim[2]) 
 ##   s[i,2] ~ dunif(ylim[1], ylim[2])
@@ -809,28 +761,136 @@ The units differ because we transformed to meters. \\
 ##   z[i] ~ dbern(psi)
 ##   for(j in 1:J) {
 ##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
-##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
-##   }
-## }
+##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2)) } }
 ## for(i in 1:n) {  ## Model for observed capture histories
 ##   for(j in 1:J) {
-##     y.tilde[i,j] ~ dbinom(p[i,j], K)
-##   }
-## }
+##     y.tilde[i,j] ~ dbinom(p[i,j], K) } }
 ## for(i in (n+1):M) { ## Model for augmented guys
 ##   PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
-##   zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
-## }
-## 
-## #EN <- sum(lambda) ## Expected value of N
-## #psi <- EN/M
-## EN <- M*psi
+##   zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i]) }
 ## N <- sum(z)
 ## }
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Data augmentation model}
+  DA version of SCR model with inhomogeneous point process \\
+  \centering
+  Version 2 \\
+  \begin{gather*}
+    \tilde{\lambda}(\bs) = \exp(\beta_1 \mathrm{ELEV}(\bs)) \\
+    \bsi \propto \tilde{\lambda}(\bs) \\
+%    \Lambda = E(N) = \int_{\mathcal{S}} \lambda(\bs)\; \mathrm{d}\bs \\
+%    \psi \sim \mathrm{Unif}(0,1) \\
+    z_i \sim \mathrm{Bern}(\psi) \\
+    p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    N=\sum_{i=1}^M z_i
+  \end{gather*}
+%  \pause \vfill
+  This version is faster and mixes better. \\
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{SCR with IPP -- version 2}
+\vspace{-3pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev-v2.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## psi ~ dunif(0, 1)  ## Can't put prior on psi *and* beta0
+## beta0 <- log(M*psi/Lambda) ## Algebra
+## beta1 ~ dnorm(0, 0.1)
+## g0 ~ dunif(0, 1)
+## sigma ~ dunif(0, 0.5)
+## for(g in 1:G) { ## Loop over pixels
+##   lambda[g] <- exp(beta1*elevation[g])*pixelArea
+##   pi[g] <- lambda[g]/Lambda }
+## Lambda <- sum(lambda)
+## EN <- M*psi
+## for(i in 1:M) {
+##   s[i,1] ~ dunif(xlim[1], xlim[2]) 
+##   s[i,2] ~ dunif(ylim[1], ylim[2])
+##   pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
+##                      round((s[i,1]-xlim[1])/delta+0.5)]  ## column
+##   logProb[i] <- log(pi[pixel[i]])
+##   zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
+##   z[i] ~ dbern(psi)
+##   for(j in 1:J) {
+##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))  } }
+## for(i in 1:n) {  ## Model for observed capture histories
+##   for(j in 1:J) {
+##     y.tilde[i,j] ~ dbinom(p[i,j], K) } }
+## for(i in (n+1):M) { ## Model for augmented guys
+##   PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+##   zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i])  }
+## N <- sum(z)
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{SCR with IPP -- version 3}
+  There's another version where we treat space as discrete, rather
+  than continuous. \\
+  \pause \vfill
+  Under this formulation, activity centers are snapped to pixel
+  centers, and a categorical prior is used instead of a continuous
+  distribution. \\
+  \pause \vfill
+  This version is similar to what is used in likelihood-based
+  methods. \\
+  \pause \vfill
+  It works fine, but it's slow in JAGS and it adds an extra level of
+  approximation. \\
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Inhomogeneous point process in JAGS}
+  We need to do the following to use version 2:
+  \begin{enumerate}
+    \item Provide the spatial covariate as a vector
+    \item Loop over all pixels to compute the {\it conditional}-on-$N$
+      density surface. 
+    \item Retain the uniform prior on the activity centers, but add a
+      second probability component to force them to be distributed
+      according to the density surface.
+      \begin{enumerate}
+        \item This requires that we create a ``lookup'' table to map
+          points in space to pixel IDs
+        \item Then we use the ``zero's trick'' to implement the
+          non-standard probability distribution
+      \end{enumerate}
+    \item Put a uniform prior on $\psi$.
+  \end{enumerate}
+  \pause
+  \vfill
+  If we were using version 1, we would define $\psi=E(N)/M$ and we'd
+  include $\beta_0$ in the intensity function.
+\end{frame}
+
+
 
 
 
@@ -844,12 +904,26 @@ The units differ because we transformed to meters. \\
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{G} \hlkwb{<-} \hlkwd{nrow}\hlstd{(elevation.xyz)}    \hlcom{## nPixels  }
-\hlstd{lookup} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{G,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(elevation),} \hlkwc{ncol}\hlstd{=}\hlkwd{ncol}\hlstd{(elevation))}
+\hlstd{lookup} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{G,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(elevation),} \hlkwc{ncol}\hlstd{=}\hlkwd{ncol}\hlstd{(elevation),}
+                 \hlkwc{byrow}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{## To be consistent with raster package}
 \hlstd{delta} \hlkwb{<-} \hlkwd{res}\hlstd{(elevation)[}\hlnum{1}\hlstd{]}  \hlcom{## resolution}
+\hlkwd{image}\hlstd{(}\hlkwd{seq}\hlstd{(delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlnum{1}\hlopt{-}\hlstd{delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{100}\hlstd{),}
+      \hlkwd{seq}\hlstd{(delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlnum{1}\hlopt{-}\hlstd{delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{100}\hlstd{), lookup,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,}
+      \hlkwc{xlab}\hlstd{=}\hlstr{"x"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"y"}\hlstd{,} \hlkwc{frame}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{"Pixel ID"}\hlstd{)}
+\hlkwd{text}\hlstd{(elevation.xyz}\hlopt{$}\hlstd{x[}\hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{, G,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)],}
+     \hlstd{elevation.xyz}\hlopt{$}\hlstd{y[}\hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{, G,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)],} \hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{, G,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{),} \hlkwc{cex}\hlstd{=}\hlnum{0.4}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \end{frame}
+
+
+\begin{frame}
+  \frametitle{Lookup table}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figure/lookup-1}   \\
+\end{frame}
+
 
 
 \begin{frame}[fragile]
@@ -862,37 +936,24 @@ The units differ because we transformed to meters. \\
 \hlstd{M} \hlkwb{<-} \hlnum{150}
 \hlstd{y.tilde} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), sum)}
 \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)}
-\hlstd{jags.data.SCR.elev} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,}
-                           \hlkwc{G}\hlstd{=G,} \hlkwc{delta}\hlstd{=delta,} \hlkwc{lookup}\hlstd{=lookup,}
-                           \hlkwc{pixelArea}\hlstd{=delta}\hlopt{^}\hlnum{2}\hlopt{*}\hlnum{1e4}\hlstd{,} \hlcom{## Convert to hectares}
-                           \hlkwc{elevation}\hlstd{=elevation.xyz}\hlopt{$}\hlstd{elevation,}
-                           \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
-                           \hlkwc{zeros}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),}
-                           \hlkwc{K}\hlstd{=K,} \hlkwc{zero.cap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,}
-                           \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\hlstd{jags.data.SCR.elev} \hlkwb{<-} \hlkwd{list}\hlstd{(}
+    \hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,} \hlkwc{G}\hlstd{=G,} \hlkwc{delta}\hlstd{=delta,}
+    \hlkwc{lookup}\hlstd{=lookup,} \hlkwc{pixelArea}\hlstd{=delta}\hlopt{^}\hlnum{2}\hlopt{*}\hlnum{1e4}\hlstd{,} \hlcom{## Convert to hectares}
+    \hlkwc{elevation}\hlstd{=elevation.xyz}\hlopt{$}\hlstd{elevation,} \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
+    \hlkwc{zeros}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{K}\hlstd{=K,} \hlkwc{zero.cap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-  Inits and parameters (same as before)
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jp.SCR.elev} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
+  Inits and parameters
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlstd{jp.SCR.elev} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
 \hlstd{ji.SCR.elev} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),} \hlcom{#psi=runif(1),}
-\hlcom{#         beta0=runif(1, -20, -15),}
-         \hlkwc{beta1}\hlstd{=}\hlnum{0.01}\hlstd{,}
-         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
+    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),}\hlcom{#psi=runif(1),beta0=runif(1,-20,-15),}
+         \hlkwc{beta1}\hlstd{=}\hlnum{0.01}\hlstd{,} \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
          \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
 \end{alltt}
 \end{kframe}
@@ -902,12 +963,10 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.SCR.elev,}
-                                 \hlkwc{inits}\hlstd{=ji.SCR.elev,}
-                                 \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,}
-                                 \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev.jag"}\hlstd{,}
-                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,}
-                                 \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
+    \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
+    \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,} \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
+    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -934,24 +993,24 @@ MCMC
 ##    plus standard error of the mean:
 ## 
 ##                Mean        SD  Naive SE Time-series SE
-## EN        9.263e+01 10.713990 1.956e-01      0.5705006
-## N         9.275e+01  9.129784 1.667e-01      0.5036545
-## beta0    -1.072e+01  2.054192 3.750e-02      0.1473479
-## beta1     5.759e-03  0.001890 3.451e-05      0.0001343
-## deviance  3.239e+03 34.348548 6.271e-01      2.0159064
-## g0        2.358e-01  0.039095 7.138e-04      0.0023399
-## sigma     5.007e-02  0.003272 5.974e-05      0.0002151
+## EN         87.01079  9.808043 1.791e-01      0.4493685
+## N          87.22433  7.880400 1.439e-01      0.3574045
+## beta0     -14.61980  2.059545 3.760e-02      0.1586006
+## beta1       0.00928  0.001833 3.346e-05      0.0001392
+## deviance 3168.16302 44.263561 8.081e-01      3.1643839
+## g0          0.23861  0.036864 6.730e-04      0.0017826
+## sigma       0.05016  0.003292 6.009e-05      0.0001893
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##                2.5%        25%        50%        75%      97.5%
-## EN         72.47013  8.545e+01  9.223e+01  9.946e+01  114.70352
-## N          77.00000  8.600e+01  9.200e+01  9.800e+01  113.00000
-## beta0     -14.65194 -1.214e+01 -1.076e+01 -9.297e+00   -6.56462
-## beta1       0.00187  4.468e-03  5.791e-03  7.065e-03    0.00934
-## deviance 3170.31484  3.216e+03  3.239e+03  3.261e+03 3306.13326
-## g0          0.16737  2.082e-01  2.328e-01  2.608e-01    0.32239
-## sigma       0.04399  4.775e-02  5.007e-02  5.224e-02    0.05658
+## EN        6.858e+01  8.041e+01  8.670e+01   93.29148  107.18148
+## N         7.400e+01  8.200e+01  8.700e+01   92.00000  104.00000
+## beta0    -1.877e+01 -1.600e+01 -1.463e+01  -13.21068  -10.75426
+## beta1     5.776e-03  8.034e-03  9.294e-03    0.01051    0.01293
+## deviance  3.078e+03  3.139e+03  3.169e+03 3198.84040 3251.56170
+## g0        1.711e-01  2.123e-01  2.370e-01    0.26269    0.31526
+## sigma     4.448e-02  4.776e-02  4.991e-02    0.05231    0.05719
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1034,6 +1093,8 @@ MCMC
 
 \begin{frame}[fragile]
   \frametitle{Predicted density surface}
+  Make multi-panel figure showing posterior mean density surface,
+  along with 95\% CI.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1076,7 +1137,7 @@ MCMC
 \hlstd{jags.post.SCR.elev.sz} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
     \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
     \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jp.SCR.elev,}\hlstr{"s"}\hlstd{,}\hlstr{"z"}\hlstd{),}
-    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev.jag"}\hlstd{,}
+    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
     \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -1092,6 +1153,7 @@ MCMC
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+\pause \vfill
 Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -1112,11 +1174,13 @@ Chop activity centers into discrete intervals, then tabulate.
 
 \begin{frame}[fragile]
   \frametitle{Realized density surface}
+%  \begin{columns}
+%  \wide    
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{lambda.r.mean} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlkwd{t}\hlstd{(}\hlkwd{apply}\hlstd{(lambda.r.post,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), mean)))}
-\hlstd{lambda.e.mean} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlkwd{matrix}\hlstd{(lambda.post.mean,} \hlkwd{sqrt}\hlstd{(n.pixels)))}
+\hlstd{lambda.e.mean} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlkwd{matrix}\hlstd{(lambda.post.mean,} \hlkwd{sqrt}\hlstd{(n.pixels),} \hlkwc{byrow}\hlstd{=}\hlnum{TRUE}\hlstd{))}
 \hlstd{lambda.re} \hlkwb{<-} \hlkwd{stack}\hlstd{(lambda.r.mean, lambda.e.mean)}
 \hlkwd{names}\hlstd{(lambda.re)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"Realized"}\hlstd{,} \hlstr{"Expected"}\hlstd{)}
 \hlkwd{plot}\hlstd{(lambda.re)}
@@ -1125,6 +1189,7 @@ Chop activity centers into discrete intervals, then tabulate.
 \includegraphics[width=\maxwidth]{figure/lambda-r-1} 
 
 \end{knitrout}
+%  \end{columns}
 \end{frame}
 
 
@@ -1158,10 +1223,10 @@ Chop activity centers into discrete intervals, then tabulate.
 %\vfill
 \vspace{-0.5cm}
 \centering
-\only<1>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-2} \\}
+%\only<1>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-2} \\}
 %\only<2>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-3} \\}
 % \only<3>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-4} \\}
-\foreach \n in {3,...,58} {%
+\foreach \n in {1,...,59} {%
   \only<\n>{\includegraphics[width=0.85\textwidth]{figure/si-post-i-\n}\\}
 }
 \end{frame}
