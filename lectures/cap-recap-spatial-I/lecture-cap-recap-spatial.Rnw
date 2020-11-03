@@ -215,7 +215,7 @@ knit_theme$set("edit-kwrite")
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots \\
+    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots) \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
     \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
