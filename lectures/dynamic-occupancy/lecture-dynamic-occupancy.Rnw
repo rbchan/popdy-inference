@@ -16,7 +16,7 @@ source("../rnw2pdf.R")
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-dynamic-occupancy")
+rnw2pdf("lecture-dynamic-occupancy") 
 rnw2pdf("lecture-dynamic-occupancy", tangle=TRUE)
 @ 
 
@@ -152,7 +152,7 @@ knit_theme$set("edit-kwrite")
   \end{gather*}
   \pause
 %  \vfill
-  Subsequent occupancy state (for $k=2,\dots,K$)
+  Occupancy state dynamics
   \begin{gather*}
     \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  z_{i,k-1}\gamma \\
     z_{i,k} \sim \mathrm{Bern}(\psi_{i,k})
@@ -175,7 +175,7 @@ knit_theme$set("edit-kwrite")
   $\gamma$ -- local colonization probability \\
   $p$ -- probability of detecting the species if it's present \\
   $y_{i,j,k}$ -- detection data at site $i$ on secondary period $j$, primary period $k$ \\
-  \pause \vfill
+  % \pause \vfill
   % $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
   % \vspace{12pt}
   % $\color{Purple} w$ is an observation covariate
@@ -187,8 +187,10 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
-\section{Simulation}
+%\section{Simulation}
 
+
+\section{No covariates}
 
 
 \begin{frame}
@@ -199,33 +201,38 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}[fragile]
-  \frametitle{Simulation}
+  \frametitle{Simulation without covariates}
   \small
-  Two continuous covariates and one categorical covariate with 2 levels
+%  No covariates
   \vfill
   \begin{enumerate}[<+->]
-  \item Covariates
-<<sim-cov1,size='scriptsize'>>=
-nSites <- 100; nVisits <- 4; set.seed(3439) ## Make it reproducible
-x1 <- rnorm(nSites,0,0.5); x2 <- rnorm(nSites,100,10) ## Continuous covs
-w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
-            nrow=nSites, ncol=nVisits)
-wHot <- ifelse(w=="Hot", 1, 0)              ## Dummy variable
+    \small
+  \item Initial occupancy
+<<sim-init,size='scriptsize',echo=-1>>=
+set.seed(54098)
+nSites <- 100
+nPrimary <- 10
+z <- psi <- matrix(NA, nSites, nPrimary)
+psi[,1] <- 0.5  ## Initial occupancy prob
+z[,1] <- rbinom(n=nSites, size=1, prob=psi[,1])
 @
-  \item Coefficients, $\psi$, and $p$
-<<nsim-cov2,size='scriptsize'>>=
-beta0 <- 1; beta1 <- -1; beta2 <- 0
-psi <- plogis(beta0 + beta1*x1 + beta2*x2)
-alpha0 <- 0; alpha1 <- 1; alpha2 <- 0.5
-p <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
+  \item Occupancy dynamics
+<<nsim-dy,size='scriptsize'>>=
+epsilon <- 0.3 ## Local extinction prob
+gamma <- 0.2   ## Local colonization prob
+for(k in 2:nPrimary) {
+    psi[,k] <- z[,k-1]*(1-epsilon) + (1-z[,k-1])*gamma
+    z[,k] <- rbinom(n=nSites, size=1, prob=psi[,k])    }
 @   
-  \item Simulate occupancy and detection data
+  \item Data
 <<sim-cov3,size='scriptsize'>>=
-z <- rbinom(nSites, size=1, psi)            ## pres/absence
-y <- matrix(NA, nrow=nSites, ncol=nVisits)
+nSecondary <- 3    
+p <- 0.2
+y <- array(NA, c(nSites, nSecondary, nPrimary))
 for(i in 1:nSites) {
-    y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p[i,])
-}
+    for(k in 1:nPrimary) {
+        y[i,,k] <- rbinom(nSecondary, size=1, prob=z[i,k]*p)
+    } }
 @   
 \end{enumerate}
 \end{frame}
@@ -241,7 +248,7 @@ for(i in 1:nSites) {
       Observations
 %      \tiny
 <<sim-nocov-dat,size='scriptsize'>>=
-y[1:20,]
+y[1:15,,1]
 @ 
   \end{column}
   \begin{column}{0.6\textwidth}
@@ -257,10 +264,10 @@ table(siteDets)        # Frequency
 \pause
 \vfill
 \small
-Proportion of sites known to be occupied \\
+Detections each year \\
 <<sim-nocov-ss2,size='scriptsize'>>=
-naiveOccupancy <- sum(siteDets>0)/nSites
-naiveOccupancy 
+yearDets <- apply(y, 3, sum)
+yearDets
 @
 <<un,include=FALSE>>=
 library(unmarked)
@@ -268,10 +275,6 @@ library(unmarked)
   \end{column}
   \end{columns}
 \end{frame}
-
-
-
-\section{Prediction}
 
 
 
@@ -283,56 +286,23 @@ library(unmarked)
 
 
 
-\subsection{Likelihood-based methods}
+\subsection{Likelihood}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Prepare data in `unmarked'}
   \small
-Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}: 
-<<un-umf,size='tiny'>>=
-umf <- unmarkedFrameOccu(y=y, siteCovs=data.frame(x1,x2), obsCovs=list(w=w))
+Notice the new argument \inr{numPrimary}:
+<<un-umf,size='scriptsize'>>=
+y.wide <- matrix(y, nrow=nrow(y)) ## Format as nSites x (nSec*nPrimary)
+umf <- unmarkedMultFrame(y=y.wide, numPrimary=nPrimary)
 @
 \pause
-%\vfill
-%Reformat $w$ as a factor: %, but it's formatted as a matrix of
-%characters, we have to reformat it:
-%Summary
-<<wfac,size='tiny'>>=
+
+<<wfac,size='scriptsize'>>=
 summary(umf)
 @ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Standardizing}
-  It's almost always a good idea to standardize \alert{continuous} covariates. \\
-  \pause
-  \vfill
-  Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
-  \pause
-%  \vfill
-<<umf-zcov,size='small'>>=
-siteCovs(umf)$x1s <- (x1-mean(x1))/sd(x1)
-siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
-@
-%  \pause
-%  \vfill
-%  If all of your site covariates are continuous, you can use this
-%  shortcut with the \inr{scale} function:
-%<<umf-zcovs>>=
-%siteCovs(umf) <- scale(siteCovs(umf))
-%@
-  \pause
-  \vfill
-  Standardizing makes it easier to find the maximum likelihood
-  estimates (MLEs) and it facilitates comparison of estimates.  \\
-  \pause
-  \vfill
-  We just have to remember to back-transform covariates when graphing
-  predictions.
 \end{frame}
 
 
@@ -341,107 +311,147 @@ siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
 \begin{frame}[fragile]
   \frametitle{Fit the model}
   \footnotesize
+  Notice the 4 distinct formulas
 <<un-fit,size='tiny'>>=
-fm <- occu(~x1s+w ~x1s+x2s, umf)    ## Notice standardized covariates
+fm <- colext(~1,~1,~1,~1, umf)    
 fm
 @
-\pause
-\vfill
-Compare to actual parameter values:
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Compare estimate to actual}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+%    \footnotesize
+    Estimates
 <<un-compare,size='tiny'>>=
-c(beta0=beta0, beta1=beta1, beta2=beta2)
-c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
-@ 
+## backTransform(fm, type="psi")
+coef(backTransform(fm, type="psi"))
+coef(backTransform(fm, type="col"))
+coef(backTransform(fm, type="ext"))
+coef(backTransform(fm, type="det"))
+@
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      Actual:
+<<un-actual,size='tiny'>>=
+#c(initial=psi[1,1], col=gamma, ext=epsilon, det=p)
+psi[1,1]
+gamma
+epsilon
+p
+@
+    \end{column}
+    \end{columns}
 \end{frame}
 
 
 
 
-
-
 \begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-  Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
-  vary while holding other two covariates constant. Important that we
-  use the standardized version of the continuous covariates.
-<<preddat,size='small'>>=
-pred.data <- data.frame(x1s=seq(from=-3, to=3, length=50),
-                        x2s=0, w='Hot') 
-@
-\pause
-\vfill
-Get predictions of $\psi$ for each row of prediction data.
-<<predpsi,size='small'>>=
-psi.pred <- predict(fm, newdata=pred.data,
-                    type='state', append=TRUE)
-@
-\pause
-\vfill
-Get predictions of $p$ for each row of prediction data.
-<<predp,size='small'>>=
-p.pred <- predict(fm, newdata=pred.data,
-                  type='det', append=TRUE)
-@
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-  \small
-  View $\psi$ predictions
-<<psi-head,size='footnotesize'>>=
-print(head(psi.pred), digits=2)
-@
-\pause
-\vfill
-  View $p$ predictions
-<<p-head,size='footnotesize'>>=
-print(head(p.pred), digits=2)
-@
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Standardized covariate (x1s)", ylim=0:1) 
-lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
+  \frametitle{Sites occupied}
+<<re,size='scriptsize',fig.height=5,out.width='65%',fig.align='center',echo=-1>>=
+par(mai=c(0.9, 0.9, 0.1, 0.1))  
+re <- ranef(fm)
+occupied.post <- predict(re, func=colSums, nsim=1000)
+plot(1:nPrimary, rowMeans(occupied.post), type="b",
+     xlab="Time", ylab="Sites occupied", ylim=c(0, 100))
+segments(1:nPrimary, apply(occupied.post, 1, quantile, prob=0.025),
+         1:nPrimary, apply(occupied.post, 1, quantile, prob=0.975))
 @   
 \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-psi1s,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
-x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
-@   
-\end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+%   Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
+%   vary while holding other two covariates constant. Important that we
+%   use the standardized version of the continuous covariates.
+% <<preddat,size='small'>>=
+% pred.data <- data.frame(x1s=seq(from=-3, to=3, length=50),
+%                         x2s=0, w='Hot') 
+% @
+% \pause
+% \vfill
+% Get predictions of $\psi$ for each row of prediction data.
+% <<predpsi,size='small'>>=
+% psi.pred <- predict(fm, newdata=pred.data,
+%                     type='state', append=TRUE)
+% @
+% \pause
+% \vfill
+% Get predictions of $p$ for each row of prediction data.
+% <<predp,size='small'>>=
+% p.pred <- predict(fm, newdata=pred.data,
+%                   type='det', append=TRUE)
+% @
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+%   \small
+%   View $\psi$ predictions
+% <<psi-head,size='footnotesize'>>=
+% print(head(psi.pred), digits=2)
+% @
+% \pause
+% \vfill
+%   View $p$ predictions
+% <<p-head,size='footnotesize'>>=
+% print(head(p.pred), digits=2)
+% @
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
-     xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(lower ~ x1s, p.pred, col="grey")
-lines(upper ~ x1s, p.pred, col="grey")
-@   
-\end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
+%      xlab="Standardized covariate (x1s)", ylim=0:1) 
+% lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
+% @   
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-psi1s,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
+%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
+% x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
+% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
+% lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
+% @   
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+% plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
+%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
+% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
+% lines(lower ~ x1s, p.pred, col="grey")
+% lines(upper ~ x1s, p.pred, col="grey")
+% @   
+% \end{frame}
 
 
 % \begin{frame}[fragile]
@@ -454,64 +464,23 @@ lines(upper ~ x1s, p.pred, col="grey")
 % \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
-     xlab="x1", xaxt="n")
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(Predicted ~ x1s, p.pred, col="purple")
-legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
-@
-%\pause
-\small
-\centering
-Major problems if you ignore imperfect detection in this case \\
-\end{frame}
-
-
-
-
-
 % \begin{frame}[fragile]
-%   \frametitle{R package `unmarked'}
-%   How many sites were occupied? \pause
-%   We can answer this using posterior prediction.
-% <<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
-% nsim <- 1000
-% sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
-% par(mai=c(0.9,0.9,0.1,0.1))
-% plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
-%     ylab="Empirical Bayes posterior probability")
-% abline(v=sum(z), col="red") ## Actual number occupied
-% @   
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
+% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
+%      xlab="x1", xaxt="n")
+% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
+% lines(Predicted ~ x1s, p.pred, col="purple")
+% legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
+% @
+% %\pause
+% \small
+% \centering
+% Major problems if you ignore imperfect detection in this case \\
 % \end{frame}
 
 
 
-
-
-
-\begin{frame}
-  \frametitle{In-class exercise}
-  \small
-  \begin{enumerate}
-    \item Fit this model (to the simulated data):
-      \begin{gather*}
-        \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
-        z_i \sim \mathrm{Bern}(\psi_i) \\
-%      \end{gather*}
-%      \begin{gather*}
-        \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
-        \alpha_2 {\color{Purple} w_{ij}} \\
-        y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
-      \end{gather*}
-      \pause
-    \item Predict $p$ again by letting (standardized) $x_1$ vary, but
-      this time, predict for the case where $w$=`Cold'.
-    \item Graph $p$ as a function of $x_1$.
-  \end{enumerate}
-\end{frame}
 
 
 
@@ -533,172 +502,172 @@ writeLines(readLines("occupancy-model-covs.jag"))
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-12pt}
-<<bugs-data,size='small'>>=
-jags.data <- list(y=y, x1=(x1-mean(x1))/sd(x1),
-                  x2=(x2-mean(x2))/sd(x2), wHot=wHot,
-                  nSites=nSites, nOccasions=nVisits)
-@
-\pause
-\vfill
-  Initial values
-  \vspace{-12pt}
-<<bugs-inits,size='small'>>=
-jags.inits <- function() {
-    list(beta0=rnorm(1), alpha0=rnorm(1), z=rep(1, nSites))
-}
-@ 
-\pause
-\vfill
-  Parameters to monitor
-  \vspace{-12pt}
-<<bugs-pars,size='small'>>=
-jags.pars <- c("beta0", "beta1", "beta2",
-               "alpha0", "alpha1", "alpha2", "sitesOccupied")
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-12pt}
+% <<bugs-data,size='small'>>=
+% jags.data <- list(y=y, x1=(x1-mean(x1))/sd(x1),
+%                   x2=(x2-mean(x2))/sd(x2), wHot=wHot,
+%                   nSites=nSites, nOccasions=nVisits)
+% @
+% \pause
+% \vfill
+%   Initial values
+%   \vspace{-12pt}
+% <<bugs-inits,size='small'>>=
+% jags.inits <- function() {
+%     list(beta0=rnorm(1), alpha0=rnorm(1), z=rep(1, nSites))
+% }
+% @ 
+% \pause
+% \vfill
+%   Parameters to monitor
+%   \vspace{-12pt}
+% <<bugs-pars,size='small'>>=
+% jags.pars <- c("beta0", "beta1", "beta2",
+%                "alpha0", "alpha1", "alpha2", "sitesOccupied")
+% @ 
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{MCMC}
-  \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
-library(jagsUI)
-jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                parameters.to.save=jags.pars,
-                                model.file="occupancy-model-covs.jag",
-                                n.chains=3, n.adapt=100, n.burnin=0,
-                                n.iter=2000, parallel=TRUE)
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{MCMC}
+%   \small
+% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
+% library(jagsUI)
+% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+%                                 parameters.to.save=jags.pars,
+%                                 model.file="occupancy-model-covs.jag",
+%                                 n.chains=3, n.adapt=100, n.burnin=0,
+%                                 n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
-<<bugs-sum,size='tiny'>>=
-summary(jags.post.samples)
-@ 
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.samples[,1:3])
-@ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.samples[,c(4:6,8)])
-@ 
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Bayesian prediction}
-  Every MCMC iteration represents a sample from the posterior
-  distribution. \\
-  \pause
-  \vfill
-  Each sample of the occupancy and detection coefficients can be used
-  to make a prediction. \\
-  \pause
-  \vfill
-  The collection of predictions can be used to summarize the posterior 
-  predictive distribution. \\
-  \pause
-  \vfill
-  We will look at the distribution of prediction lines. \\  
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Bayesian prediction}
-  \small
-  First, extract the $\psi$ coefficients
-<<psi-coefs,size='scriptsize'>>=
-psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
-head(psi.coef.post, n=4)
-@
-  \pause
-  \vfill
-  Create prediction matrix, one row for each MCMC iteration.
-%  Columns represent covariate values. 
-<<psi-predmat,size='scriptsize'>>=
-n.iter <- nrow(psi.coef.post)  
-psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
-@   
-  \pause
-  \vfill
-  Predict $\psi$ for each MCMC iteration.
-%  using covariate values from \inr{pred.data}. 
-<<psi-pred-bayes,size='scriptsize'>>=
-for(i in 1:n.iter) {
-    psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
-                                psi.coef.post[i,"beta1"]*pred.data$x1s)
-}
-@ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Bayesian prediction}
-  Prediction line for first posterior sample
-<<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-@
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Bayesian prediction}
-  All samples from the posterior predictive distribution
-<<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-for(i in 1:n.iter) {
-    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-}
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Summarize output}
+% <<bugs-sum,size='tiny'>>=
+% summary(jags.post.samples)
+% @ 
+% \end{frame}
 
 
 
 
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.samples[,1:3])
+% @ 
+% \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Bayesian prediction}
-  Now with posterior mean and 95\% CI
-<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-     ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-for(i in 1:n.iter) {
-    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-}
-pred.post.mean <- colMeans(psi.post.pred)
-pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
-pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
-lines(pred.data$x1, pred.post.mean, col="blue")
-lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
-lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
-@ 
-\end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.samples[,c(4:6,8)])
+% @ 
+% \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Bayesian prediction}
+%   Every MCMC iteration represents a sample from the posterior
+%   distribution. \\
+%   \pause
+%   \vfill
+%   Each sample of the occupancy and detection coefficients can be used
+%   to make a prediction. \\
+%   \pause
+%   \vfill
+%   The collection of predictions can be used to summarize the posterior 
+%   predictive distribution. \\
+%   \pause
+%   \vfill
+%   We will look at the distribution of prediction lines. \\  
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Bayesian prediction}
+%   \small
+%   First, extract the $\psi$ coefficients
+% <<psi-coefs,size='scriptsize'>>=
+% psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
+% head(psi.coef.post, n=4)
+% @
+%   \pause
+%   \vfill
+%   Create prediction matrix, one row for each MCMC iteration.
+% %  Columns represent covariate values. 
+% <<psi-predmat,size='scriptsize'>>=
+% n.iter <- nrow(psi.coef.post)  
+% psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
+% @   
+%   \pause
+%   \vfill
+%   Predict $\psi$ for each MCMC iteration.
+% %  using covariate values from \inr{pred.data}. 
+% <<psi-pred-bayes,size='scriptsize'>>=
+% for(i in 1:n.iter) {
+%     psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
+%                                 psi.coef.post[i,"beta1"]*pred.data$x1s)
+% }
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Bayesian prediction}
+%   Prediction line for first posterior sample
+% <<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
+% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+% @
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Bayesian prediction}
+%   All samples from the posterior predictive distribution
+% <<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
+% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+% for(i in 1:n.iter) {
+%     lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
+% }
+% @ 
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Bayesian prediction}
+%   Now with posterior mean and 95\% CI
+% <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
+% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
+% for(i in 1:n.iter) {
+%     lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
+% }
+% pred.post.mean <- colMeans(psi.post.pred)
+% pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
+% pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
+% lines(pred.data$x1, pred.post.mean, col="blue")
+% lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
+% lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
+% @ 
+% \end{frame}
 
 
 
