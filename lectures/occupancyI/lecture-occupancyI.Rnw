@@ -31,11 +31,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-%<<knitr-setup,include=FALSE,purl=FALSE>>=
-%##opts_chunk$set(comment=NA)
-%@
-
-
 %% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}

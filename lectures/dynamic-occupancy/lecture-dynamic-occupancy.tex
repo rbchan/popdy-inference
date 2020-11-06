@@ -1,0 +1,1116 @@
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+% Load function to compile and open PDF
+
+
+% Compile and open PDF
+
+
+
+
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+
+
+
+\begin{frame}[plain]
+  \LARGE
+%  \maketitle
+  \centering
+  {\huge Lecture 13 -- Dynamic occupancy models} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+
+
+\section{Overview}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Overview}
+  So far, we've focused exclusively on spatial variation in occupancy
+  and abundance. \\  
+  \pause
+  \vfill
+  But historically, population dynamics was entirely focused on
+  temporal variation. \\
+  \pause
+  \vfill
+  Metapopulation models played a big role in emphasizing both spatial
+  and temporal dynamics. \\
+  % \begin{enumerate}
+  %   \item \textcolor{blue}{Site covariates} vary among sites
+  %     but not among occasions
+  %   \item \textcolor{Purple}{Observation covariates} may vary among
+  %     sites and occasions
+  % \end{enumerate}
+  \pause
+  \vfill
+  Dynamic occupancy models allow for inference on spatio-temporal
+  occupancy resulting from local colonization and extinction
+  processes. \\
+  % \pause
+  % \vfill
+  % \centering
+  % \alert{Observation covariates cannot be used to describe variation
+  %   in occupancy because occupancy is assumed to be \\ constant over
+  %   time.} \\ 
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Ignoring detection probability}
+%   Show some examples
+% \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Dynamic occupancy model}
+  \small
+  Initial occupancy state (same as single-season occupancy model)
+  \begin{gather*}
+ %   \mathrm{logit}(\psi_{i,1}) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+ %   \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    z_{i,1} \sim \mathrm{Bern}(\psi_{i,1})
+  \end{gather*}
+  \pause
+%  \vfill
+  Subsequent occupancy state (for $k=2,\dots,K$)
+  \begin{gather*}
+    \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  z_{i,k-1}\gamma \\
+    z_{i,k} \sim \mathrm{Bern}(\psi_{i,k})
+  \end{gather*}
+  \pause
+%  \vfill
+  Observation model
+  \begin{gather*}
+%    \mathrm{logit}(p_{i,j,k}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+%    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+    y_{i,j,k} \sim \mathrm{Bern}(z_{i,k}\times p)
+  \end{gather*}
+  \pause
+%   \vfill
+  \footnotesize
+  Definitions \\
+  $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ \\
+  $z_{i,k}$ -- binary presence/absence variable \\
+  $\varepsilon$ -- local extinction probability \\
+  $\gamma$ -- local colonization probability \\
+  $p$ -- probability of detecting the species if it's present \\
+  $y_{i,j,k}$ -- detection data at site $i$ on secondary period $j$, primary period $k$ \\
+  \pause \vfill
+  % $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
+  % \vspace{12pt}
+  % $\color{Purple} w$ is an observation covariate
+  \pause \vfill
+  \centering
+  \small
+  You can model $\psi_1$, $\varepsilon$, $\gamma$, and $p$ as
+  functions of covariates \\
+\end{frame}
+
+
+\section{Simulation}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation}
+  \small
+  Two continuous covariates and one categorical covariate with 2 levels
+  \vfill
+  \begin{enumerate}[<+->]
+  \item Covariates
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; nVisits} \hlkwb{<-} \hlnum{4}\hlstd{;} \hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)} \hlcom{## Make it reproducible}
+\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{); x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,}\hlnum{100}\hlstd{,}\hlnum{10}\hlstd{)} \hlcom{## Continuous covs}
+\hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Cold"}\hlstd{,} \hlstr{"Hot"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
+            \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlstd{wHot} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Hot"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}              \hlcom{## Dummy variable}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \item Coefficients, $\psi$, and $p$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0} \hlkwb{<-} \hlnum{1}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{0}
+\hlstd{psi} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{x2)}
+\hlstd{alpha0} \hlkwb{<-} \hlnum{0}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}\hlstd{; alpha2} \hlkwb{<-} \hlnum{0.5}
+\hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{alpha2}\hlopt{*}\hlstd{wHot)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \item Simulate occupancy and detection data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)}            \hlcom{## pres/absence}
+\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i]}\hlopt{*}\hlstd{p[i,])}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated data}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \small
+      Observations
+%      \tiny
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2] [,3] [,4]
+##  [1,]    1    1    1    1
+##  [2,]    1    1    1    1
+##  [3,]    0    0    0    0
+##  [4,]    1    1    0    1
+##  [5,]    0    0    0    0
+##  [6,]    0    1    0    0
+##  [7,]    0    0    0    0
+##  [8,]    0    0    0    0
+##  [9,]    1    0    0    0
+## [10,]    1    1    1    1
+## [11,]    1    1    0    1
+## [12,]    0    1    0    0
+## [13,]    1    1    1    1
+## [14,]    0    1    1    1
+## [15,]    0    0    0    0
+## [16,]    1    0    1    1
+## [17,]    0    1    1    0
+## [18,]    0    1    0    1
+## [19,]    0    1    1    0
+## [20,]    0    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \pause
+%    \scriptsize
+    {\centering Summary stats \\}
+    \vspace{24pt}
+  Detections at each site \\
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)} \hlcom{# Dets at each site}
+\hlkwd{table}\hlstd{(siteDets)}        \hlcom{# Frequency}
+\end{alltt}
+\begin{verbatim}
+## siteDets
+##  0  1  2  3  4 
+## 30 12 17 26 15
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+\small
+Proportion of sites known to be occupied \\
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(siteDets}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
+\hlstd{naiveOccupancy}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.7
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+  \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\section{Prediction}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\subsection{Likelihood-based methods}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}: 
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(x1,x2),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{w}\hlstd{=w))}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: obsCovs contains characters. Converting them to factors.}}\end{kframe}
+\end{knitrout}
+\pause
+%\vfill
+%Reformat $w$ as a factor: %, but it's formatted as a matrix of
+%characters, we have to reformat it:
+%Summary
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(umf)}
+\end{alltt}
+\begin{verbatim}
+## unmarkedFrame Object
+## 
+## 100 sites
+## Maximum number of observations per site: 4 
+## Mean number of observations per site: 4 
+## Sites with at least one detection: 70 
+## 
+## Tabulation of y observations:
+##   0   1 
+## 216 184 
+## 
+## Site-level covariates:
+##        x1                 x2        
+##  Min.   :-0.98075   Min.   : 64.05  
+##  1st Qu.:-0.38819   1st Qu.: 91.10  
+##  Median :-0.05609   Median : 97.47  
+##  Mean   :-0.02434   Mean   : 98.88  
+##  3rd Qu.: 0.29402   3rd Qu.:107.18  
+##  Max.   : 1.64324   Max.   :127.15  
+## 
+## Observation-level covariates:
+##     w      
+##  Cold:208  
+##  Hot :192
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Standardizing}
+  It's almost always a good idea to standardize \alert{continuous} covariates. \\
+  \pause
+  \vfill
+  Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
+  \pause
+%  \vfill
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x1s} \hlkwb{<-} \hlstd{(x1}\hlopt{-}\hlkwd{mean}\hlstd{(x1))}\hlopt{/}\hlkwd{sd}\hlstd{(x1)}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x2s} \hlkwb{<-} \hlstd{(x2}\hlopt{-}\hlkwd{mean}\hlstd{(x2))}\hlopt{/}\hlkwd{sd}\hlstd{(x2)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+%  \pause
+%  \vfill
+%  If all of your site covariates are continuous, you can use this
+%  shortcut with the \inr{scale} function:
+%<<umf-zcovs>>=
+%siteCovs(umf) <- scale(siteCovs(umf))
+%@
+  \pause
+  \vfill
+  Standardizing makes it easier to find the maximum likelihood
+  estimates (MLEs) and it facilitates comparison of estimates.  \\
+  \pause
+  \vfill
+  We just have to remember to back-transform covariates when graphing
+  predictions.
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlstd{x1s}\hlopt{+}\hlstd{w} \hlopt{~}\hlstd{x1s}\hlopt{+}\hlstd{x2s, umf)}    \hlcom{## Notice standardized covariates}
+\hlstd{fm}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## occu(formula = ~x1s + w ~ x1s + x2s, data = umf)
+## 
+## Occupancy:
+##             Estimate    SE      z  P(>|z|)
+## (Intercept)    1.139 0.292  3.898 9.68e-05
+## x1s           -0.748 0.312 -2.401 1.63e-02
+## x2s           -0.147 0.262 -0.561 5.75e-01
+## 
+## Detection:
+##             Estimate    SE    z  P(>|z|)
+## (Intercept)    0.482 0.187 2.57 1.01e-02
+## x1s            0.862 0.170 5.06 4.23e-07
+## wHot           0.584 0.265 2.20 2.76e-02
+## 
+## AIC: 455.6924
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Compare to actual parameter values:
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1,} \hlkwc{beta2}\hlstd{=beta2)}
+\end{alltt}
+\begin{verbatim}
+## beta0 beta1 beta2 
+##     1    -1     0
+\end{verbatim}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1,} \hlkwc{alpha2}\hlstd{=alpha2)}
+\end{alltt}
+\begin{verbatim}
+## alpha0 alpha1 alpha2 
+##    0.0    1.0    0.5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
+  vary while holding other two covariates constant. Important that we
+  use the standardized version of the continuous covariates.
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1s}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
+                        \hlkwc{x2s}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Hot'}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Get predictions of $\psi$ for each row of prediction data.
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{psi.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                    \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Get predictions of $p$ for each row of prediction data.
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                  \hlkwc{type}\hlstd{=}\hlstr{'det'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  \small
+  View $\psi$ predictions
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(psi.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##   Predicted    SE lower upper  x1s x2s   w
+## 1      0.97 0.035  0.77  1.00 -3.0   0 Hot
+## 2      0.96 0.037  0.77  1.00 -2.9   0 Hot
+## 3      0.96 0.039  0.76  0.99 -2.8   0 Hot
+## 4      0.96 0.041  0.76  0.99 -2.6   0 Hot
+## 5      0.95 0.043  0.76  0.99 -2.5   0 Hot
+## 6      0.95 0.045  0.75  0.99 -2.4   0 Hot
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  View $p$ predictions
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(p.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##   Predicted    SE lower upper  x1s x2s   w
+## 1      0.18 0.073 0.076  0.37 -3.0   0 Hot
+## 2      0.20 0.075 0.087  0.38 -2.9   0 Hot
+## 3      0.21 0.077 0.099  0.40 -2.8   0 Hot
+## 4      0.23 0.078 0.112  0.42 -2.6   0 Hot
+## 5      0.25 0.079 0.127  0.43 -2.5   0 Hot
+## 6      0.27 0.080 0.144  0.45 -2.4   0 Hot
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized covariate (x1s)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-psi1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)} \hlcom{## Suppress x-axis}
+\hlstd{x1s.ticks} \hlkwb{<-} \hlopt{-}\hlnum{3}\hlopt{:}\hlnum{3}  \hlcom{## These are where tick marks for x1s would be}
+\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-psi1s-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-p1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
+% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
+% ## lines(Predicted ~ x1, p.pred, col="grey")
+% legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
+% @   
+% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"x1"}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
+\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"purple"}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"purple"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/pred-plot2-1} 
+
+}
+
+
+
+\end{knitrout}
+%\pause
+\small
+\centering
+Major problems if you ignore imperfect detection in this case \\
+\end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{R package `unmarked'}
+%   How many sites were occupied? \pause
+%   We can answer this using posterior prediction.
+% <<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
+% nsim <- 1000
+% sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
+% par(mai=c(0.9,0.9,0.1,0.1))
+% plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
+%     ylab="Empirical Bayes posterior probability")
+% abline(v=sum(z), col="red") ## Actual number occupied
+% @   
+% \end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \small
+  \begin{enumerate}
+    \item Fit this model (to the simulated data):
+      \begin{gather*}
+        \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \\
+        z_i \sim \mathrm{Bern}(\psi_i) \\
+%      \end{gather*}
+%      \begin{gather*}
+        \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
+        \alpha_2 {\color{Purple} w_{ij}} \\
+        y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+      \end{gather*}
+      \pause
+    \item Predict $p$ again by letting (standardized) $x_1$ vary, but
+      this time, predict for the case where $w$=`Cold'.
+    \item Graph $p$ as a function of $x_1$.
+  \end{enumerate}
+\end{frame}
+
+
+
+
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'occupancy-model-covs.jag': No such file or directory}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+%% TODO: Add something here about priors and prior predictive checks
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=(x1}\hlopt{-}\hlkwd{mean}\hlstd{(x1))}\hlopt{/}\hlkwd{sd}\hlstd{(x1),}
+                  \hlkwc{x2}\hlstd{=(x2}\hlopt{-}\hlkwd{mean}\hlstd{(x2))}\hlopt{/}\hlkwd{sd}\hlstd{(x2),} \hlkwc{wHot}\hlstd{=wHot,}
+                  \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, nSites))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,}
+               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"alpha2"}\hlstd{,} \hlstr{"sitesOccupied"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model-covs.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+\end{verbatim}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in checkForRemoteErrors(val): 3 nodes produced errors; first error: Cannot open model file "{}occupancy-model-covs.jag"{}}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.samples)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{,}\hlnum{8}\hlstd{)])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Bayesian prediction}
+  Every MCMC iteration represents a sample from the posterior
+  distribution. \\
+  \pause
+  \vfill
+  Each sample of the occupancy and detection coefficients can be used
+  to make a prediction. \\
+  \pause
+  \vfill
+  The collection of predictions can be used to summarize the posterior 
+  predictive distribution. \\
+  \pause
+  \vfill
+  We will look at the distribution of prediction lines. \\  
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  \small
+  First, extract the $\psi$ coefficients
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{psi.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,}\hlstr{"beta1"}\hlstd{,}\hlstr{"beta2"}\hlstd{)])}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.matrix(jags.post.samples[, c("{}beta0"{}, "{}beta1"{}, "{}beta2"{})]): object 'jags.post.samples' not found}}\begin{alltt}
+\hlkwd{head}\hlstd{(psi.coef.post,} \hlkwc{n}\hlstd{=}\hlnum{4}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'head': object 'psi.coef.post' not found}}\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Create prediction matrix, one row for each MCMC iteration.
+%  Columns represent covariate values. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n.iter} \hlkwb{<-} \hlkwd{nrow}\hlstd{(psi.coef.post)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in nrow(psi.coef.post): object 'psi.coef.post' not found}}\begin{alltt}
+\hlstd{psi.post.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{nrow}\hlstd{(pred.data))}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in matrix(NA, nrow = n.iter, ncol = nrow(pred.data)): object 'n.iter' not found}}\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Predict $\psi$ for each MCMC iteration.
+%  using covariate values from \inr{pred.data}. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlstd{psi.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(psi.coef.post[i,}\hlstr{"beta0"}\hlstd{]} \hlopt{+}
+                                \hlstd{psi.coef.post[i,}\hlstr{"beta1"}\hlstd{]}\hlopt{*}\hlstd{pred.data}\hlopt{$}\hlstd{x1s)}
+\hlstd{\}}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'n.iter' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  Prediction line for first posterior sample
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(pred.data}\hlopt{$}\hlstd{x1s, psi.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"x1s"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'y' in selecting a method for function 'plot': object 'psi.post.pred' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  All samples from the posterior predictive distribution
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'y' in selecting a method for function 'plot': object 'psi.post.pred' not found}}\begin{alltt}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1s, psi.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+\hlstd{\}}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'n.iter' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian prediction}
+  Now with posterior mean and 95\% CI
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'y' in selecting a method for function 'plot': object 'psi.post.pred' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'n.iter' not found}}\begin{alltt}
+\hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(psi.post.pred)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is.data.frame(x): object 'psi.post.pred' not found}}\begin{alltt}
+\hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(psi.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in apply(psi.post.pred, 2, quantile, prob = 0.025): object 'psi.post.pred' not found}}\begin{alltt}
+\hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(psi.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in apply(psi.post.pred, 2, quantile, prob = 0.975): object 'psi.post.pred' not found}}\begin{alltt}
+\hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'pred.post.mean' not found}}\begin{alltt}
+\hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, pred.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'pred.post.lower' not found}}\begin{alltt}
+\hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, pred.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'pred.post.upper' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Summary of static occupancy models}
+  \small
+  Assumptions are made explicit by the model description, but it's worth emphasizing that: 
+  \begin{itemize}[<+->]
+    \item<2-> Occupancy is assumed to remain constant at each site during the sampling period
+    \item<3-> The definition of a `site' is critical, but can difficult in
+      some situations, such as in camera studies.
+    \item<4-> Abundance is assumed to be unimportant
+    \item<5-> Observations are assumed to be independent, conditional
+      on latent variables and covariates
+  \end{itemize}
+  \vfill
+  \uncover<6->{  
+    These assumptions can be relaxed if we have enough data. 
+  }
+  \begin{itemize}
+    \item<7-> Dynamic occupancy models
+    \begin{itemize}
+      \item Occupancy evolves as a function of local colonization
+        and extinction
+    \end{itemize}
+    \item<8-> $N$-mixture models
+    \begin{itemize}
+      \item Focus is on local abundance, rather than presence/absence
+    \end{itemize}
+  \end{itemize}
+  \vfill
+  \uncover<9->{We'll talk more about design issues later}
+\end{frame}
+
+
+
+\section{Assignment}
+
+
+
+
+\begin{frame}
+  \frametitle{Assignment}
+  % \small
+  \footnotesize
+  Create a self-contained R script or Rmarkdown file
+  to do the following:
+  \vfill
+  \begin{enumerate}
+%    \small
+    \footnotesize
+    \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
+      \begin{itemize}
+        \footnotesize
+        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+        \item Site covs: \texttt{Elevation, Wind, Noise}
+      \end{itemize}
+    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
+      \begin{itemize}
+        \footnotesize
+        \item Response: \texttt{grouse1, grouse2, grouse3}
+        \item Site covs: \texttt{elevation, utmE, utmN}
+        \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
+      \end{itemize}
+    \item Make one prediction graph for each species. 
+    \item Create the same graphs as above, but using Bayesian methods.
+    \item What differences do you see between likelihood and Bayesian graphs?
+    \end{enumerate}
+    \vfill
+    Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+\end{frame}
+
+
+
+
+
+\end{document}
+
