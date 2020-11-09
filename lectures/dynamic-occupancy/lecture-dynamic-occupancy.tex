@@ -84,7 +84,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 13 -- Dynamic occupancy models} \\
+  {\huge Lecture 13 \\ Dynamic occupancy models} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -183,7 +183,7 @@
 \begin{frame}
   \frametitle{Dynamic occupancy model}
   \small
-  Initial occupancy state (same as static occupancy model)
+  Initial occupancy state (same as static model), for $k=1$.
   \begin{gather*}
  %   \mathrm{logit}(\psi_{i,1}) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
  %   \beta_2 {\color{blue} x_{i2}} + \cdots \\
@@ -191,9 +191,9 @@
   \end{gather*}
   \pause
 %  \vfill
-  Occupancy state dynamics
+  Occupancy state dynamics, for $k=2, \dots, K$.
   \begin{gather*}
-    \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  z_{i,k-1}\gamma \\
+    \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  (1-z_{i,k-1})\gamma \\
     z_{i,k} \sim \mathrm{Bern}(\psi_{i,k})
   \end{gather*}
   \pause
@@ -206,7 +206,7 @@
   \end{gather*}
   \pause
 %   \vfill
-  Definitions \\
+%  Definitions \\
   \footnotesize
   $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ \\
   $z_{i,k}$ -- binary presence/absence variable \\
@@ -229,7 +229,7 @@
 %\section{Simulation}
 
 
-\section{No covariates}
+\section{Without covariates}
 
 
 \begin{frame}
@@ -300,30 +300,25 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,,}\hlnum{1}\hlstd{]}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{15}\hlstd{,,}\hlnum{1}\hlstd{]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3]
 ##  [1,]    0    0    0
-##  [2,]    0    1    0
-##  [3,]    0    1    0
-##  [4,]    0    0    0
-##  [5,]    0    0    0
+##  [2,]    0    0    0
+##  [3,]    0    0    0
+##  [4,]    1    0    0
+##  [5,]    0    1    0
 ##  [6,]    0    0    0
-##  [7,]    0    0    0
-##  [8,]    0    0    1
+##  [7,]    0    1    0
+##  [8,]    0    0    0
 ##  [9,]    0    0    0
 ## [10,]    0    0    0
-## [11,]    0    0    0
+## [11,]    0    0    1
 ## [12,]    0    0    0
-## [13,]    0    1    0
+## [13,]    0    0    0
 ## [14,]    0    0    0
-## [15,]    0    0    1
-## [16,]    0    0    1
-## [17,]    1    0    0
-## [18,]    0    0    0
-## [19,]    0    0    0
-## [20,]    0    0    0
+## [15,]    0    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -342,8 +337,8 @@
 \end{alltt}
 \begin{verbatim}
 ## siteDets
-##  0  1  2  3  4  5  6  7  8 
-## 18 18 17 22 12  7  3  2  1
+##  0  1  2  3  4  5  6  7  9 
+## 17 20 20 17 13  4  5  3  1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -358,7 +353,7 @@ Detections each year \\
 \hlstd{yearDets}
 \end{alltt}
 \begin{verbatim}
-##  [1] 45 27 19 24 19 27 22 16 20 22
+##  [1] 27 30 31 28 22 15 22 27 20 21
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -388,7 +383,7 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y))} \hlcom{## Format as nSites x (nSec*nPrimary)}
+\hlstd{y.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y))} \hlcom{## Format as nSites by (nSec*nPrimary)}
 \hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary)}
 \end{alltt}
 \end{kframe}
@@ -408,11 +403,11 @@ Notice the new argument \inr{numPrimary}:
 ## Mean number of observations per site: 30 
 ## Number of primary survey periods: 10 
 ## Number of secondary survey periods: 3 
-## Sites with at least one detection: 82 
+## Sites with at least one detection: 83 
 ## 
 ## Tabulation of y observations:
 ##    0    1 
-## 2759  241
+## 2757  243
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -424,6 +419,7 @@ Notice the new argument \inr{numPrimary}:
 \begin{frame}[fragile]
   \frametitle{Fit the model}
   \footnotesize
+  Notice the 4 distinct formulas
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -437,22 +433,22 @@ Notice the new argument \inr{numPrimary}:
 ##     pformula = ~1, data = umf)
 ## 
 ## Initial:
-##  Estimate    SE    z P(>|z|)
-##     0.881 0.442 1.99  0.0463
+##  Estimate    SE      z P(>|z|)
+##    -0.113 0.367 -0.309   0.758
 ## 
 ## Colonization:
-##  Estimate    SE    z P(>|z|)
-##     -1.72 0.226 -7.6 2.9e-14
+##  Estimate  SE     z P(>|z|)
+##     -1.33 0.2 -6.66 2.7e-11
 ## 
 ## Extinction:
 ##  Estimate    SE     z P(>|z|)
-##     -0.87 0.277 -3.14 0.00171
+##    -0.642 0.315 -2.04  0.0417
 ## 
 ## Detection:
-##  Estimate   SE     z  P(>|z|)
-##     -1.44 0.13 -11.1 1.79e-28
+##  Estimate    SE     z  P(>|z|)
+##     -1.36 0.146 -9.33 1.03e-20
 ## 
-## AIC: 1600.617
+## AIC: 1626.916
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -473,35 +469,35 @@ Notice the new argument \inr{numPrimary}:
 \hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"psi"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.7071061
+## [1] 0.4717304
 \end{verbatim}
 \begin{alltt}
 \hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"col"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.152297
+## [1] 0.209229
 \end{verbatim}
 \begin{alltt}
 \hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"ext"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.2952968
+## [1] 0.3447256
 \end{verbatim}
 \begin{alltt}
 \hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"det"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.1915204
+## [1] 0.204274
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
     \end{column}
     \begin{column}{0.5\textwidth}
-      Actual:
+      Actual
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#c(initial=psi[1,1], col=gamma, ext=epsilon, det=p)}
+\hlcom{#c(initial=psi[1,1],col=gamma,ext=epsilon,det=p)}
 \hlstd{psi[}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{]}
 \end{alltt}
 \begin{verbatim}
@@ -542,13 +538,13 @@ Notice the new argument \inr{numPrimary}:
 \hlstd{re} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
 \hlstd{occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=colSums,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
 \hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{rowMeans}\hlstd{(occupied.post),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{100}\hlstd{))}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{))}
 \hlkwd{segments}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{apply}\hlstd{(occupied.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{),}
          \hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{apply}\hlstd{(occupied.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{))}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.65\linewidth]{figure/re-1} 
+{\centering \includegraphics[width=0.7\linewidth]{figure/re-1} 
 
 }
 
@@ -556,6 +552,364 @@ Notice the new argument \inr{numPrimary}:
 
 \end{knitrout}
 \end{frame}
+
+
+
+
+
+
+
+
+
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## model {
+## 
+## psi1 ~ dunif(0, 1)     ## initial occupancy
+## epsilon ~ dunif(0, 1)  ## local extinction
+## gamma ~ dunif(0, 1)    ## local colonization
+## p ~ dunif(0, 1)        ## detection prob
+## 
+## for(i in 1:nSites) {
+##   psi[i,1] <- psi1
+##   z[i,1] ~ dbern(psi[i,1])
+##   for(k in 2:K) {
+##     psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma
+##     z[i,k] ~ dbern(psi[i,k])
+##   }
+##   for(k in 1:K) {
+##     for(j in 1:J) {
+##       y[i,j,k] ~ dbern(z[i,k]*p)
+##   } } }
+## 
+## for(k in 1:K) {
+##   N[k] <- sum(z[,k]) ## Sites occupied
+## }
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,}
+                  \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{psi1}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{epsilon}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{gamma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{z}\hlstd{=}\hlkwd{matrix}\hlstd{(}\hlnum{1}\hlstd{, nSites, nPrimary))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"psi1"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,} \hlstr{"gamma"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##           Mean      SD  Naive SE Time-series SE
+## psi1    0.4837 0.08828 0.0011397       0.003077
+## epsilon 0.3526 0.06522 0.0008420       0.004007
+## gamma   0.2158 0.03444 0.0004446       0.001586
+## p       0.2041 0.02326 0.0003003       0.001325
+## 
+## 2. Quantiles for each variable:
+## 
+##           2.5%    25%    50%    75%  97.5%
+## psi1    0.3216 0.4204 0.4808 0.5419 0.6648
+## epsilon 0.2310 0.3062 0.3518 0.3977 0.4836
+## gamma   0.1550 0.1922 0.2143 0.2372 0.2893
+## p       0.1617 0.1877 0.2030 0.2196 0.2515
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{With covariates}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation with covariates}
+  \small
+%  No covariates
+  \vfill
+  \begin{enumerate}[<+->]
+    \small
+  \item Initial occupancy
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0.psi} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta1.psi} \hlkwb{<-} \hlnum{1}
+\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlstd{z2} \hlkwb{<-} \hlstd{psi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, nPrimary)}
+\hlstd{psi2[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0.psi} \hlopt{+} \hlstd{beta1.psi}\hlopt{*}\hlstd{elevation)}
+\hlstd{z2[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,}\hlnum{1}\hlstd{])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \item Occupancy dynamics
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{epsilon2} \hlkwb{<-} \hlnum{0.3} \hlcom{## Local extinction prob}
+\hlstd{temperature} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nPrimary)}\hlopt{*}\hlstd{elevation,} \hlkwc{nrow}\hlstd{=nSites)}
+\hlstd{beta0.gamma} \hlkwb{<-} \hlnum{1}\hlstd{; beta1.gamma} \hlkwb{<-} \hlopt{-}\hlnum{1}
+\hlstd{gamma2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0.gamma} \hlopt{+} \hlstd{beta1.gamma}\hlopt{*}\hlstd{temperature)}
+\hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{nPrimary) \{}
+    \hlstd{psi2[,k]} \hlkwb{<-} \hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{epsilon2)} \hlopt{+} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{])}\hlopt{*}\hlstd{gamma2[,k]}
+    \hlstd{z2[,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,k])    \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \item Data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{p2} \hlkwb{<-} \hlnum{0.2}
+\hlstd{y2} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(nSites, nSecondary, nPrimary))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nPrimary) \{}
+        \hlstd{y2[i,,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSecondary,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z2[i,k]}\hlopt{*}\hlstd{p2)}
+    \hlstd{\} \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{enumerate}
+\end{frame}
+
+
+
+
+
+
+\subsection{Likelihood}
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+Notice the new argument \inr{numPrimary}:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y2.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y2,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y2))} \hlcom{## Format as nSites by (nSec*nPrimary)}
+\hlstd{umf2} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y2.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary,}
+                          \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation))}\hlcom{##,}
+\hlcom{##                          obsCovs=list(temp=temperature[,-nPrimary]))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(umf2)}
+\end{alltt}
+\begin{verbatim}
+## unmarkedFrame Object
+## 
+## 100 sites
+## Maximum number of observations per site: 30 
+## Mean number of observations per site: 30 
+## Number of primary survey periods: 10 
+## Number of secondary survey periods: 3 
+## Sites with at least one detection: 100 
+## 
+## Tabulation of y observations:
+##    0    1 
+## 2607  393 
+## 
+## Site-level covariates:
+##    elevation        
+##  Min.   :-2.319348  
+##  1st Qu.:-0.749513  
+##  Median :-0.044719  
+##  Mean   : 0.006181  
+##  3rd Qu.: 0.530127  
+##  Max.   : 2.514419
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+  Notice the 4 distinct formulas
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm2} \hlkwb{<-} \hlkwd{colext}\hlstd{(}\hlopt{~}\hlstd{elevation,}\hlopt{~}\hlstd{elevation,}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{, umf)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in cbind(X.gam, X.eps): number of rows of matrices must match (see arg 2)}}\begin{alltt}
+\hlstd{fm2}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## colext(psiformula = ~elevation, gammaformula = ~1, epsilonformula = ~1, 
+##     pformula = ~1, data = umf)
+## 
+## Initial:
+##             Estimate    SE      z P(>|z|)
+## (Intercept)   -0.209 0.396 -0.528  0.5976
+## elevation      0.782 0.365  2.139  0.0324
+## 
+## Colonization:
+##  Estimate    SE     z  P(>|z|)
+##     -1.31 0.195 -6.71 1.88e-11
+## 
+## Extinction:
+##  Estimate    SE     z P(>|z|)
+##    -0.597 0.312 -1.91  0.0559
+## 
+## Detection:
+##  Estimate    SE     z  P(>|z|)
+##     -1.34 0.145 -9.26 1.97e-20
+## 
+## AIC: 1622.762
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
 
 
 
@@ -687,192 +1041,177 @@ Notice the new argument \inr{numPrimary}:
   \frametitle{The BUGS model}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'occupancy-model-covs.jag': No such file or directory}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
+\begin{verbatim}
+## model {
+## 
+## psi1 ~ dunif(0, 1)     ## initial occupancy
+## epsilon ~ dunif(0, 1)  ## local extinction
+## gamma ~ dunif(0, 1)    ## local colonization
+## p ~ dunif(0, 1)        ## detection prob
+## 
+## for(i in 1:nSites) {
+##   psi[i,1] <- psi1
+##   z[i,1] ~ dbern(psi[i,1])
+##   for(k in 2:K) {
+##     psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma
+##     z[i,k] ~ dbern(psi[i,k])
+##   }
+##   for(k in 1:K) {
+##     for(j in 1:J) {
+##       y[i,j,k] ~ dbern(z[i,k]*p)
+##   } } }
+## 
+## for(k in 1:K) {
+##   N[k] <- sum(z[,k]) ## Sites occupied
+## }
+## 
+## }
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
 
 
-%% TODO: Add something here about priors and prior predictive checks
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data,size='small'>>=
-% jags.data <- list(y=y, x1=(x1-mean(x1))/sd(x1),
-%                   x2=(x2-mean(x2))/sd(x2), wHot=wHot,
-%                   nSites=nSites, nOccasions=nVisits)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='small'>>=
-% jags.inits <- function() {
-%     list(beta0=rnorm(1), alpha0=rnorm(1), z=rep(1, nSites))
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars <- c("beta0", "beta1", "beta2",
-%                "alpha0", "alpha1", "alpha2", "sitesOccupied")
-% @ 
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
-% library(jagsUI)
-% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-%                                 parameters.to.save=jags.pars,
-%                                 model.file="occupancy-model-covs.jag",
-%                                 n.chains=3, n.adapt=100, n.burnin=0,
-%                                 n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Summarize output}
-% <<bugs-sum,size='tiny'>>=
-% summary(jags.post.samples)
-% @ 
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,1:3])
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,c(4:6,8)])
-% @ 
-% \end{frame}
-
-
-% \begin{frame}
-%   \frametitle{Bayesian prediction}
-%   Every MCMC iteration represents a sample from the posterior
-%   distribution. \\
-%   \pause
-%   \vfill
-%   Each sample of the occupancy and detection coefficients can be used
-%   to make a prediction. \\
-%   \pause
-%   \vfill
-%   The collection of predictions can be used to summarize the posterior 
-%   predictive distribution. \\
-%   \pause
-%   \vfill
-%   We will look at the distribution of prediction lines. \\  
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   \small
-%   First, extract the $\psi$ coefficients
-% <<psi-coefs,size='scriptsize'>>=
-% psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
-% head(psi.coef.post, n=4)
-% @
-%   \pause
-%   \vfill
-%   Create prediction matrix, one row for each MCMC iteration.
-% %  Columns represent covariate values. 
-% <<psi-predmat,size='scriptsize'>>=
-% n.iter <- nrow(psi.coef.post)  
-% psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
-% @   
-%   \pause
-%   \vfill
-%   Predict $\psi$ for each MCMC iteration.
-% %  using covariate values from \inr{pred.data}. 
-% <<psi-pred-bayes,size='scriptsize'>>=
-% for(i in 1:n.iter) {
-%     psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
-%                                 psi.coef.post[i,"beta1"]*pred.data$x1s)
-% }
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   Prediction line for first posterior sample
-% <<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
-% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-% @
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   All samples from the posterior predictive distribution
-% <<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
-% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-% for(i in 1:n.iter) {
-%     lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-% }
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,}
+                  \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{psi1}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{epsilon}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{gamma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{z}\hlstd{=}\hlkwd{matrix}\hlstd{(}\hlnum{1}\hlstd{, nSites, nPrimary))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"psi1"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,} \hlstr{"gamma"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   Now with posterior mean and 95\% CI
-% <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
-% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-% for(i in 1:n.iter) {
-%     lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-% }
-% pred.post.mean <- colMeans(psi.post.pred)
-% pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
-% pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
-% lines(pred.data$x1, pred.post.mean, col="blue")
-% lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
-% lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##           Mean      SD  Naive SE Time-series SE
+## psi1    0.4878 0.09238 0.0011926       0.003710
+## epsilon 0.3425 0.06788 0.0008764       0.004487
+## gamma   0.2153 0.03497 0.0004515       0.001588
+## p       0.2014 0.02312 0.0002984       0.001375
+## 
+## 2. Quantiles for each variable:
+## 
+##           2.5%    25%    50%    75%  97.5%
+## psi1    0.3234 0.4224 0.4835 0.5469 0.6843
+## epsilon 0.2179 0.2947 0.3385 0.3895 0.4813
+## gamma   0.1534 0.1912 0.2132 0.2377 0.2921
+## p       0.1595 0.1851 0.2000 0.2164 0.2489
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-cov-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 \begin{frame}
-  \frametitle{Summary of static occupancy models}
+  \frametitle{Summary of dynamic occupancy models}
   \small
   Assumptions are made explicit by the model description, but it's worth emphasizing that: 
   \begin{itemize}[<+->]

@@ -45,7 +45,7 @@ knit_theme$set("edit-kwrite")
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 13 -- Dynamic occupancy models} \\
+  {\huge Lecture 13 \\ Dynamic occupancy models} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -144,7 +144,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Dynamic occupancy model}
   \small
-  Initial occupancy state (same as static occupancy model)
+  Initial occupancy state (same as static model), for $k=1$.
   \begin{gather*}
  %   \mathrm{logit}(\psi_{i,1}) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
  %   \beta_2 {\color{blue} x_{i2}} + \cdots \\
@@ -152,9 +152,9 @@ knit_theme$set("edit-kwrite")
   \end{gather*}
   \pause
 %  \vfill
-  Occupancy state dynamics
+  Occupancy state dynamics, for $k=2, \dots, K$.
   \begin{gather*}
-    \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  z_{i,k-1}\gamma \\
+    \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  (1-z_{i,k-1})\gamma \\
     z_{i,k} \sim \mathrm{Bern}(\psi_{i,k})
   \end{gather*}
   \pause
@@ -167,7 +167,7 @@ knit_theme$set("edit-kwrite")
   \end{gather*}
   \pause
 %   \vfill
-  Definitions \\
+%  Definitions \\
   \footnotesize
   $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ \\
   $z_{i,k}$ -- binary presence/absence variable \\
@@ -190,7 +190,7 @@ knit_theme$set("edit-kwrite")
 %\section{Simulation}
 
 
-\section{No covariates}
+\section{Without covariates}
 
 
 \begin{frame}
@@ -209,7 +209,7 @@ knit_theme$set("edit-kwrite")
     \small
   \item Initial occupancy
 <<sim-init,size='scriptsize',echo=-1>>=
-set.seed(54098)
+set.seed(54598)
 nSites <- 100
 nPrimary <- 10
 z <- psi <- matrix(NA, nSites, nPrimary)
@@ -295,7 +295,7 @@ library(unmarked)
   \small
 Notice the new argument \inr{numPrimary}:
 <<un-umf,size='scriptsize'>>=
-y.wide <- matrix(y, nrow=nrow(y)) ## Format as nSites x (nSec*nPrimary)
+y.wide <- matrix(y, nrow=nrow(y)) ## Format as nSites by (nSec*nPrimary)
 umf <- unmarkedMultFrame(y=y.wide, numPrimary=nPrimary)
 @
 \pause
@@ -335,9 +335,9 @@ coef(backTransform(fm, type="det"))
 @
     \end{column}
     \begin{column}{0.5\textwidth}
-      Actual:
+      Actual
 <<un-actual,size='tiny'>>=
-#c(initial=psi[1,1], col=gamma, ext=epsilon, det=p)
+#c(initial=psi[1,1],col=gamma,ext=epsilon,det=p)
 psi[1,1]
 gamma
 epsilon
@@ -352,16 +352,217 @@ p
 
 \begin{frame}[fragile]
   \frametitle{Sites occupied}
-<<re,size='scriptsize',fig.height=5,out.width='65%',fig.align='center',echo=-1>>=
+<<re,size='scriptsize',fig.height=5,out.width='70%',fig.align='center',echo=-1>>=
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 re <- ranef(fm)
 occupied.post <- predict(re, func=colSums, nsim=1000)
 plot(1:nPrimary, rowMeans(occupied.post), type="b",
-     xlab="Time", ylab="Sites occupied", ylim=c(0, 100))
+     xlab="Time", ylab="Sites occupied", ylim=c(0, 70))
 segments(1:nPrimary, apply(occupied.post, 1, quantile, prob=0.025),
          1:nPrimary, apply(occupied.post, 1, quantile, prob=0.975))
 @   
 \end{frame}
+
+
+
+
+
+
+
+
+
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+<<bugs,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("dynocc-model.jag"))
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data,size='small'>>=
+jags.data <- list(y=y, nSites=nSites,
+                  J=nSecondary, K=nPrimary)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits,size='small'>>=
+jags.inits <- function() {
+    list(psi1=runif(1), epsilon=runif(1),
+         gamma=runif(1), p=runif(1),
+         z=matrix(1, nSites, nPrimary))
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars,size='small'>>=
+jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+library(jagsUI)
+jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+                                parameters.to.save=jags.pars,
+                                model.file="dynocc-model.jag",
+                                n.chains=3, n.adapt=100, n.burnin=0,
+                                n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum,size='tiny'>>=
+summary(jags.post.samples[,jags.pars[1:4]])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.samples[,jags.pars[1:4]])
+@ 
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{With covariates}
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulation with covariates}
+  \small
+%  No covariates
+  \vfill
+  \begin{enumerate}[<+->]
+    \small
+  \item Initial occupancy
+<<sim-init-cov,size='tiny',echo=-1>>=
+set.seed(54598)
+beta0.psi <- -1; beta1.psi <- 1
+elevation <- rnorm(nSites)
+z2 <- psi2 <- matrix(NA, nSites, nPrimary)
+psi2[,1] <- plogis(beta0.psi + beta1.psi*elevation)
+z2[,1] <- rbinom(n=nSites, size=1, prob=psi2[,1])
+@
+  \item Occupancy dynamics
+<<nsim-dy-cov,size='scriptsize'>>=
+epsilon2 <- 0.3 ## Local extinction prob
+temperature <- matrix(rnorm(nSites*nPrimary)*elevation, nrow=nSites)    
+beta0.gamma <- 1; beta1.gamma <- -1
+gamma2 <- plogis(beta0.gamma + beta1.gamma*temperature)
+for(k in 2:nPrimary) {
+    psi2[,k] <- z2[,k-1]*(1-epsilon2) + (1-z2[,k-1])*gamma2[,k]
+    z2[,k] <- rbinom(n=nSites, size=1, prob=psi2[,k])    }
+@   
+  \item Data
+<<sim-cov3-cov,size='scriptsize'>>=
+p2 <- 0.2
+y2 <- array(NA, c(nSites, nSecondary, nPrimary))
+for(i in 1:nSites) {
+    for(k in 1:nPrimary) {
+        y2[i,,k] <- rbinom(nSecondary, size=1, prob=z2[i,k]*p2)
+    } }
+@   
+\end{enumerate}
+\end{frame}
+
+
+
+
+
+
+\subsection{Likelihood}
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Prepare data in `unmarked'}
+  \small
+Notice the new argument \inr{numPrimary}:
+<<un-umf-cov,size='scriptsize'>>=
+y2.wide <- matrix(y2, nrow=nrow(y2)) ## Format as nSites by (nSec*nPrimary)
+umf2 <- unmarkedMultFrame(y=y2.wide, numPrimary=nPrimary,
+                          siteCovs=data.frame(elevation),
+                          yearlySiteCovs=list(temp=temperature))
+@
+\pause
+
+<<wfac-cov,size='scriptsize'>>=
+summary(umf2)
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model}
+  \footnotesize
+  Notice the 4 distinct formulas
+<<un-fit-cov,size='tiny'>>=
+fm2 <- colext(~elevation,~temp,~1,~1, umf)    
+fm2
+@
+\end{frame}
+
+
+
+
 
 
 
@@ -491,189 +692,97 @@ segments(1:nPrimary, apply(occupied.post, 1, quantile, prob=0.025),
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs,size='scriptsize',echo=FALSE>>=
-writeLines(readLines("occupancy-model-covs.jag"))
+<<bugs-cov,size='scriptsize',echo=FALSE>>=
+writeLines(readLines("dynocc-model.jag"))
 @ 
 \end{frame}
 
 
 
-%% TODO: Add something here about priors and prior predictive checks
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Data, inits, and parameters}
-%   Put data in a named list
-%   \vspace{-12pt}
-% <<bugs-data,size='small'>>=
-% jags.data <- list(y=y, x1=(x1-mean(x1))/sd(x1),
-%                   x2=(x2-mean(x2))/sd(x2), wHot=wHot,
-%                   nSites=nSites, nOccasions=nVisits)
-% @
-% \pause
-% \vfill
-%   Initial values
-%   \vspace{-12pt}
-% <<bugs-inits,size='small'>>=
-% jags.inits <- function() {
-%     list(beta0=rnorm(1), alpha0=rnorm(1), z=rep(1, nSites))
-% }
-% @ 
-% \pause
-% \vfill
-%   Parameters to monitor
-%   \vspace{-12pt}
-% <<bugs-pars,size='small'>>=
-% jags.pars <- c("beta0", "beta1", "beta2",
-%                "alpha0", "alpha1", "alpha2", "sitesOccupied")
-% @ 
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{MCMC}
-%   \small
-% <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
-% library(jagsUI)
-% jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-%                                 parameters.to.save=jags.pars,
-%                                 model.file="occupancy-model-covs.jag",
-%                                 n.chains=3, n.adapt=100, n.burnin=0,
-%                                 n.iter=2000, parallel=TRUE)
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Summarize output}
-% <<bugs-sum,size='tiny'>>=
-% summary(jags.post.samples)
-% @ 
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,1:3])
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Traceplots and density plots}
-% <<bugs-plot2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-% plot(jags.post.samples[,c(4:6,8)])
-% @ 
-% \end{frame}
-
-
-% \begin{frame}
-%   \frametitle{Bayesian prediction}
-%   Every MCMC iteration represents a sample from the posterior
-%   distribution. \\
-%   \pause
-%   \vfill
-%   Each sample of the occupancy and detection coefficients can be used
-%   to make a prediction. \\
-%   \pause
-%   \vfill
-%   The collection of predictions can be used to summarize the posterior 
-%   predictive distribution. \\
-%   \pause
-%   \vfill
-%   We will look at the distribution of prediction lines. \\  
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   \small
-%   First, extract the $\psi$ coefficients
-% <<psi-coefs,size='scriptsize'>>=
-% psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
-% head(psi.coef.post, n=4)
-% @
-%   \pause
-%   \vfill
-%   Create prediction matrix, one row for each MCMC iteration.
-% %  Columns represent covariate values. 
-% <<psi-predmat,size='scriptsize'>>=
-% n.iter <- nrow(psi.coef.post)  
-% psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
-% @   
-%   \pause
-%   \vfill
-%   Predict $\psi$ for each MCMC iteration.
-% %  using covariate values from \inr{pred.data}. 
-% <<psi-pred-bayes,size='scriptsize'>>=
-% for(i in 1:n.iter) {
-%     psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
-%                                 psi.coef.post[i,"beta1"]*pred.data$x1s)
-% }
-% @ 
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   Prediction line for first posterior sample
-% <<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
-% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-% @
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   All samples from the posterior predictive distribution
-% <<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
-% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-% for(i in 1:n.iter) {
-%     lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-% }
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data-cov,size='small'>>=
+jags.data <- list(y=y, nSites=nSites,
+                  J=nSecondary, K=nPrimary)
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits-cov,size='small'>>=
+jags.inits <- function() {
+    list(psi1=runif(1), epsilon=runif(1),
+         gamma=runif(1), p=runif(1),
+         z=matrix(1, nSites, nPrimary))
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars-cov,size='small'>>=
+jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
+@ 
+\end{frame}
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Bayesian prediction}
-%   Now with posterior mean and 95\% CI
-% <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
-% plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
-%      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
-% for(i in 1:n.iter) {
-%     lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
-% }
-% pred.post.mean <- colMeans(psi.post.pred)
-% pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
-% pred.post.upper <- apply(psi.post.pred, 2, quantile, prob=0.975)
-% lines(pred.data$x1, pred.post.mean, col="blue")
-% lines(pred.data$x1, pred.post.lower, col="blue", lty=2)
-% lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc-cov,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+library(jagsUI)
+jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+                                parameters.to.save=jags.pars,
+                                model.file="dynocc-model.jag",
+                                n.chains=3, n.adapt=100, n.burnin=0,
+                                n.iter=2000, parallel=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Summarize output}
+<<bugs-sum-cov,size='tiny'>>=
+summary(jags.post.samples[,jags.pars[1:4]])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot1-cov,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.samples[,jags.pars[1:4]])
+@ 
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 \begin{frame}
-  \frametitle{Summary of static occupancy models}
+  \frametitle{Summary of dynamic occupancy models}
   \small
   Assumptions are made explicit by the model description, but it's worth emphasizing that: 
   \begin{itemize}[<+->]
