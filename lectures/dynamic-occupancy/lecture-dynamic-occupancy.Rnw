@@ -81,8 +81,8 @@ knit_theme$set("edit-kwrite")
   and abundance. \\  
   \pause
   \vfill
-  But historically, population dynamics was entirely focused on
-  temporal variation. \\
+  But historically, the study of population dynamics was entirely
+  focused on temporal variation. \\
   \pause
   \vfill
   Metapopulation models played a big role in emphasizing both spatial
@@ -116,6 +116,8 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Static (single-season) occupancy model}
+  {\centering \color{blue} Refresher \\}
+  \vfill
   \small
   The model for the state process is the same as logistic regression:
   \begin{gather*}
@@ -278,11 +280,11 @@ library(unmarked)
 
 
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
 
 
 
@@ -295,7 +297,8 @@ library(unmarked)
   \small
 Notice the new argument \inr{numPrimary}:
 <<un-umf,size='scriptsize'>>=
-y.wide <- matrix(y, nrow=nrow(y)) ## Format as nSites by (nSec*nPrimary)
+## Format as nSites by (nSec*nPrimary) matrix
+y.wide <- matrix(y, nrow=nrow(y)) 
 umf <- unmarkedMultFrame(y=y.wide, numPrimary=nPrimary)
 @
 \pause
@@ -352,14 +355,16 @@ p
 
 \begin{frame}[fragile]
   \frametitle{Sites occupied}
-<<re,size='scriptsize',fig.height=5,out.width='70%',fig.align='center',echo=-1>>=
+<<re,size='scriptsize',fig.height=5,out.width='65%',fig.align='center',echo=-1>>=
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 re <- ranef(fm)
 occupied.post <- predict(re, func=colSums, nsim=1000)
-plot(1:nPrimary, rowMeans(occupied.post), type="b",
+plot(1:nPrimary, rowMeans(occupied.post), type="b", pch=16,
      xlab="Time", ylab="Sites occupied", ylim=c(0, 70))
+lines(1:nPrimary, colSums(z), type="b", col=4)
 segments(1:nPrimary, apply(occupied.post, 1, quantile, prob=0.025),
          1:nPrimary, apply(occupied.post, 1, quantile, prob=0.975))
+legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
 @   
 \end{frame}
 
@@ -474,6 +479,35 @@ plot(jags.post.samples[,jags.pars[1:4]])
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Dynamic occupancy models with covariates}
+  There are three types of covariates that could be included:
+  \begin{enumerate}
+    \item Site covariates
+      \begin{itemize}
+        \item These vary among sites, but not among occasions
+        \item Can be used to model $\psi_1$, $\varepsilon$, $\gamma$,
+          and $p$
+        \item Called \inr{siteCovs} in `unmarked'      
+      \end{itemize}
+    \item<2-> Primary sampling period covariates
+      \begin{itemize}
+        \item These vary among sites and among, but not within,
+          primary periods 
+        \item Can be used to model $\varepsilon$, $\gamma$, and $p$
+        \item Called \inr{yearlySiteCovs} in `unmarked'
+      \end{itemize}
+    \item<3-> Secondary sampling period covariates
+      \begin{itemize}
+        \item These vary among sites and among and within
+          primary periods 
+        \item Can be used to model $p$
+        \item Called \inr{obsCovs} in `unmarked'
+      \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+
 \begin{frame}[fragile]
   \frametitle{Simulation with covariates}
   \small
@@ -485,23 +519,25 @@ plot(jags.post.samples[,jags.pars[1:4]])
 <<sim-init-cov,size='tiny',echo=-1>>=
 set.seed(54598)
 beta0.psi <- -1; beta1.psi <- 1
-elevation <- rnorm(nSites)
+elevation <- rnorm(nSites) ## site covariate
 z2 <- psi2 <- matrix(NA, nSites, nPrimary)
 psi2[,1] <- plogis(beta0.psi + beta1.psi*elevation)
 z2[,1] <- rbinom(n=nSites, size=1, prob=psi2[,1])
 @
   \item Occupancy dynamics
-<<nsim-dy-cov,size='scriptsize'>>=
+<<nsim-dy-cov,size='tiny'>>=
 epsilon2 <- 0.3 ## Local extinction prob
-temperature <- matrix(rnorm(nSites*nPrimary)*elevation, nrow=nSites)    
-beta0.gamma <- 1; beta1.gamma <- -1
+temperature <- matrix(rnorm(nSites*nPrimary)*elevation, ## Primary period covariate
+                      nrow=nSites) 
+beta0.gamma <- -2; beta1.gamma <- -1
 gamma2 <- plogis(beta0.gamma + beta1.gamma*temperature)
 for(k in 2:nPrimary) {
-    psi2[,k] <- z2[,k-1]*(1-epsilon2) + (1-z2[,k-1])*gamma2[,k]
-    z2[,k] <- rbinom(n=nSites, size=1, prob=psi2[,k])    }
+    psi2[,k] <- z2[,k-1]*(1-epsilon2) + (1-z2[,k-1])*gamma2[,k-1]
+    z2[,k] <- rbinom(n=nSites, size=1, prob=psi2[,k])
+}
 @   
   \item Data
-<<sim-cov3-cov,size='scriptsize'>>=
+<<sim-cov3-cov,size='tiny'>>=
 p2 <- 0.2
 y2 <- array(NA, c(nSites, nSecondary, nPrimary))
 for(i in 1:nSites) {
@@ -532,17 +568,16 @@ for(i in 1:nSites) {
 
 \begin{frame}[fragile]
   \frametitle{Prepare data in `unmarked'}
-  \small
-Notice the new argument \inr{numPrimary}:
-<<un-umf-cov,size='scriptsize'>>=
-y2.wide <- matrix(y2, nrow=nrow(y2)) ## Format as nSites by (nSec*nPrimary)
-umf2 <- unmarkedMultFrame(y=y2.wide, numPrimary=nPrimary,
-                          siteCovs=data.frame(elevation),
+  \footnotesize
+Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
+<<un-umf-cov,size='tiny'>>=
+y2.wide <- matrix(y2, nrow=nrow(y2)) ## nSites by (nSec*nPrimary) matrix
+umf2 <- unmarkedMultFrame(y=y2.wide, numPrimary=nPrimary, siteCovs=data.frame(elevation),
                           yearlySiteCovs=list(temp=temperature))
 @
 \pause
 
-<<wfac-cov,size='scriptsize'>>=
+<<wfac-cov,size='tiny'>>=
 summary(umf2)
 @ 
 \end{frame}
@@ -555,7 +590,7 @@ summary(umf2)
   \footnotesize
   Notice the 4 distinct formulas
 <<un-fit-cov,size='tiny'>>=
-fm2 <- colext(~elevation,~temp,~1,~1, umf)    
+fm2 <- colext(~elevation,~temp,~1,~1, umf2)    
 fm2
 @
 \end{frame}
@@ -570,115 +605,38 @@ fm2
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-%   Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
-%   vary while holding other two covariates constant. Important that we
-%   use the standardized version of the continuous covariates.
-% <<preddat,size='small'>>=
-% pred.data <- data.frame(x1s=seq(from=-3, to=3, length=50),
-%                         x2s=0, w='Hot') 
-% @
-% \pause
-% \vfill
-% Get predictions of $\psi$ for each row of prediction data.
-% <<predpsi,size='small'>>=
-% psi.pred <- predict(fm, newdata=pred.data,
-%                     type='state', append=TRUE)
-% @
-% \pause
-% \vfill
-% Get predictions of $p$ for each row of prediction data.
-% <<predp,size='small'>>=
-% p.pred <- predict(fm, newdata=pred.data,
-%                   type='det', append=TRUE)
-% @
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-%   \small
-%   View $\psi$ predictions
-% <<psi-head,size='footnotesize'>>=
-% print(head(psi.pred), digits=2)
-% @
-% \pause
-% \vfill
-%   View $p$ predictions
-% <<p-head,size='footnotesize'>>=
-% print(head(p.pred), digits=2)
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  Create \texttt{data.frame} with prediction covariates. 
+<<preddat,size='footnotesize'>>=
+pred.data <- data.frame(temp=seq(from=-5, to=4, length=50))
+@
+\pause
+\vfill
+Get predictions of $\gamma$ for each row of prediction data.
+<<pred-gamma,size='footnotesize'>>=
+gamma.pred <- predict(fm2, newdata=pred.data,
+                      type='col', append=TRUE)
+@
+\end{frame}
 
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-%      xlab="Standardized covariate (x1s)", ylim=0:1) 
-% lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
-% @   
-% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+<<pred-gamma1,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+plot(Predicted ~ temp, gamma.pred, type="l", ylab="Occurrence probability", col="blue",
+     xlab="Standardized temperature", ylim=0:1) 
+lines(lower ~ temp, gamma.pred, col="grey")
+lines(upper ~ temp, gamma.pred, col="grey")
+@   
+\end{frame}
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-psi1s,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
-% x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
-% @   
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
-%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(lower ~ x1s, p.pred, col="grey")
-% lines(upper ~ x1s, p.pred, col="grey")
-% @   
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
-% ## lines(Predicted ~ x1, p.pred, col="grey")
-% legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
-% @   
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
-% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
-%      xlab="x1", xaxt="n")
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(Predicted ~ x1s, p.pred, col="purple")
-% legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
-% @
-% %\pause
-% \small
-% \centering
-% Major problems if you ignore imperfect detection in this case \\
-% \end{frame}
 
 
 
@@ -690,10 +648,19 @@ fm2
 
 
 
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs-cov,size='scriptsize',echo=FALSE>>=
-writeLines(readLines("dynocc-model.jag"))
+<<bugs-cov,size='tiny',echo=FALSE>>=
+writeLines(readLines("dynocc-model-covars.jag"))
 @ 
 \end{frame}
 
@@ -704,18 +671,18 @@ writeLines(readLines("dynocc-model.jag"))
   \frametitle{Data, inits, and parameters}
   Put data in a named list
   \vspace{-12pt}
-<<bugs-data-cov,size='small'>>=
-jags.data <- list(y=y, nSites=nSites,
-                  J=nSecondary, K=nPrimary)
+<<bugs-data-cov,size='scriptsize'>>=
+jags.data.covs <- list(y=y, nSites=nSites, elevation=elevation,
+                       temp=temperature, J=nSecondary, K=nPrimary)
 @
 \pause
 \vfill
   Initial values
   \vspace{-12pt}
-<<bugs-inits-cov,size='small'>>=
-jags.inits <- function() {
-    list(psi1=runif(1), epsilon=runif(1),
-         gamma=runif(1), p=runif(1),
+<<bugs-inits-cov,size='scriptsize'>>=
+jags.inits.covs <- function() {
+    list(beta0.psi=rnorm(1), beta1.psi=rnorm(1), epsilon=runif(1),
+         beta0.gamma=rnorm(1), beta1.gamma=rnorm(1), p=runif(1),
          z=matrix(1, nSites, nPrimary))
 }
 @ 
@@ -723,8 +690,9 @@ jags.inits <- function() {
 \vfill
   Parameters to monitor
   \vspace{-12pt}
-<<bugs-pars-cov,size='small'>>=
-jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
+<<bugs-pars-cov,size='scriptsize'>>=
+jags.pars.covs <- c("beta0.psi", "beta1.psi", "epsilon",
+                    "beta0.gamma", "beta1.gamma", "p", "N")
 @ 
 \end{frame}
 
@@ -737,11 +705,11 @@ jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
   \small
 <<bugs-mcmc-cov,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
 library(jagsUI)
-jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                parameters.to.save=jags.pars,
-                                model.file="dynocc-model.jag",
-                                n.chains=3, n.adapt=100, n.burnin=0,
-                                n.iter=2000, parallel=TRUE)
+jags.post.samples.covs <- jags.basic(
+    data=jags.data.covs, inits=jags.inits.covs,
+    parameters.to.save=jags.pars.covs,
+    model.file="dynocc-model-covars.jag",
+    n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
 @ 
 \end{frame}
 
@@ -750,7 +718,7 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 \begin{frame}[fragile]
   \frametitle{Summarize output}
 <<bugs-sum-cov,size='tiny'>>=
-summary(jags.post.samples[,jags.pars[1:4]])
+summary(jags.post.samples.covs[,jags.pars.covs[1:6]])
 @ 
 \end{frame}
 
@@ -760,7 +728,17 @@ summary(jags.post.samples[,jags.pars[1:4]])
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
 <<bugs-plot1-cov,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.samples[,jags.pars[1:4]])
+plot(jags.post.samples.covs[,jags.pars.covs[1:3]])
+@ 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+<<bugs-plot2-cov,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+plot(jags.post.samples.covs[,jags.pars.covs[4:6]])
 @ 
 \end{frame}
 
@@ -812,43 +790,6 @@ plot(jags.post.samples[,jags.pars[1:4]])
   \uncover<9->{We'll talk more about design issues later}
 \end{frame}
 
-
-
-\section{Assignment}
-
-
-
-
-\begin{frame}
-  \frametitle{Assignment}
-  % \small
-  \footnotesize
-  Create a self-contained R script or Rmarkdown file
-  to do the following:
-  \vfill
-  \begin{enumerate}
-%    \small
-    \footnotesize
-    \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
-      \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{grouse1, grouse2, grouse3}
-        \item Site covs: \texttt{elevation, utmE, utmN}
-        \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
-      \end{itemize}
-    \item Make one prediction graph for each species. 
-    \item Create the same graphs as above, but using Bayesian methods.
-    \item What differences do you see between likelihood and Bayesian graphs?
-    \end{enumerate}
-    \vfill
-    Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
-\end{frame}
 
 
 

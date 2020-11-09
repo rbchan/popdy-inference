@@ -120,8 +120,8 @@
   and abundance. \\  
   \pause
   \vfill
-  But historically, population dynamics was entirely focused on
-  temporal variation. \\
+  But historically, the study of population dynamics was entirely
+  focused on temporal variation. \\
   \pause
   \vfill
   Metapopulation models played a big role in emphasizing both spatial
@@ -155,6 +155,8 @@
 
 \begin{frame}
   \frametitle{Static (single-season) occupancy model}
+  {\centering \color{blue} Refresher \\}
+  \vfill
   \small
   The model for the state process is the same as logistic regression:
   \begin{gather*}
@@ -364,11 +366,11 @@ Detections each year \\
 
 
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
 
 
 
@@ -383,7 +385,8 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y))} \hlcom{## Format as nSites by (nSec*nPrimary)}
+\hlcom{## Format as nSites by (nSec*nPrimary) matrix}
+\hlstd{y.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y))}
 \hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary)}
 \end{alltt}
 \end{kframe}
@@ -537,14 +540,16 @@ Notice the new argument \inr{numPrimary}:
 \begin{alltt}
 \hlstd{re} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
 \hlstd{occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=colSums,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{rowMeans}\hlstd{(occupied.post),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,}
+\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{rowMeans}\hlstd{(occupied.post),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,}
      \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{))}
+\hlkwd{lines}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{colSums}\hlstd{(z),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
 \hlkwd{segments}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{apply}\hlstd{(occupied.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{),}
          \hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{apply}\hlstd{(occupied.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{))}
+\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{70}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{16}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.7\linewidth]{figure/re-1} 
+{\centering \includegraphics[width=0.65\linewidth]{figure/re-1} 
 
 }
 
@@ -746,6 +751,35 @@ Notice the new argument \inr{numPrimary}:
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Dynamic occupancy models with covariates}
+  There are three types of covariates that could be included:
+  \begin{enumerate}
+    \item Site covariates
+      \begin{itemize}
+        \item These vary among sites, but not among occasions
+        \item Can be used to model $\psi_1$, $\varepsilon$, $\gamma$,
+          and $p$
+        \item Called \inr{siteCovs} in `unmarked'      
+      \end{itemize}
+    \item<2-> Primary sampling period covariates
+      \begin{itemize}
+        \item These vary among sites and among, but not within,
+          primary periods 
+        \item Can be used to model $\varepsilon$, $\gamma$, and $p$
+        \item Called \inr{yearlySiteCovs} in `unmarked'
+      \end{itemize}
+    \item<3-> Secondary sampling period covariates
+      \begin{itemize}
+        \item These vary among sites and among and within
+          primary periods 
+        \item Can be used to model $p$
+        \item Called \inr{obsCovs} in `unmarked'
+      \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+
 \begin{frame}[fragile]
   \frametitle{Simulation with covariates}
   \small
@@ -758,7 +792,7 @@ Notice the new argument \inr{numPrimary}:
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{beta0.psi} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta1.psi} \hlkwb{<-} \hlnum{1}
-\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)} \hlcom{## site covariate}
 \hlstd{z2} \hlkwb{<-} \hlstd{psi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, nPrimary)}
 \hlstd{psi2[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0.psi} \hlopt{+} \hlstd{beta1.psi}\hlopt{*}\hlstd{elevation)}
 \hlstd{z2[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,}\hlnum{1}\hlstd{])}
@@ -766,21 +800,23 @@ Notice the new argument \inr{numPrimary}:
 \end{kframe}
 \end{knitrout}
   \item Occupancy dynamics
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{epsilon2} \hlkwb{<-} \hlnum{0.3} \hlcom{## Local extinction prob}
-\hlstd{temperature} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nPrimary)}\hlopt{*}\hlstd{elevation,} \hlkwc{nrow}\hlstd{=nSites)}
-\hlstd{beta0.gamma} \hlkwb{<-} \hlnum{1}\hlstd{; beta1.gamma} \hlkwb{<-} \hlopt{-}\hlnum{1}
+\hlstd{temperature} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nPrimary)}\hlopt{*}\hlstd{elevation,} \hlcom{## Primary period covariate}
+                      \hlkwc{nrow}\hlstd{=nSites)}
+\hlstd{beta0.gamma} \hlkwb{<-} \hlopt{-}\hlnum{2}\hlstd{; beta1.gamma} \hlkwb{<-} \hlopt{-}\hlnum{1}
 \hlstd{gamma2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0.gamma} \hlopt{+} \hlstd{beta1.gamma}\hlopt{*}\hlstd{temperature)}
 \hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{nPrimary) \{}
-    \hlstd{psi2[,k]} \hlkwb{<-} \hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{epsilon2)} \hlopt{+} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{])}\hlopt{*}\hlstd{gamma2[,k]}
-    \hlstd{z2[,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,k])    \}}
+    \hlstd{psi2[,k]} \hlkwb{<-} \hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{epsilon2)} \hlopt{+} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{])}\hlopt{*}\hlstd{gamma2[,k}\hlopt{-}\hlnum{1}\hlstd{]}
+    \hlstd{z2[,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,k])}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
   \item Data
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{p2} \hlkwb{<-} \hlnum{0.2}
@@ -815,21 +851,20 @@ Notice the new argument \inr{numPrimary}:
 
 \begin{frame}[fragile]
   \frametitle{Prepare data in `unmarked'}
-  \small
-Notice the new argument \inr{numPrimary}:
-\begin{knitrout}\scriptsize
+  \footnotesize
+Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y2,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y2))} \hlcom{## Format as nSites by (nSec*nPrimary)}
-\hlstd{umf2} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y2.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary,}
-                          \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation))}\hlcom{##,}
-\hlcom{##                          obsCovs=list(temp=temperature[,-nPrimary]))}
+\hlstd{y2.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y2,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y2))} \hlcom{## nSites by (nSec*nPrimary) matrix}
+\hlstd{umf2} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y2.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation),}
+                          \hlkwc{yearlySiteCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=temperature))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{summary}\hlstd{(umf2)}
@@ -842,11 +877,11 @@ Notice the new argument \inr{numPrimary}:
 ## Mean number of observations per site: 30 
 ## Number of primary survey periods: 10 
 ## Number of secondary survey periods: 3 
-## Sites with at least one detection: 100 
+## Sites with at least one detection: 69 
 ## 
 ## Tabulation of y observations:
 ##    0    1 
-## 2607  393 
+## 2795  205 
 ## 
 ## Site-level covariates:
 ##    elevation        
@@ -855,7 +890,16 @@ Notice the new argument \inr{numPrimary}:
 ##  Median :-0.044719  
 ##  Mean   : 0.006181  
 ##  3rd Qu.: 0.530127  
-##  Max.   : 2.514419
+##  Max.   : 2.514419  
+## 
+## Yearly-site-level covariates:
+##       temp         
+##  Min.   :-5.00979  
+##  1st Qu.:-0.33210  
+##  Median : 0.01029  
+##  Mean   : 0.01607  
+##  3rd Qu.: 0.42411  
+##  Max.   : 4.06408
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -871,37 +915,34 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm2} \hlkwb{<-} \hlkwd{colext}\hlstd{(}\hlopt{~}\hlstd{elevation,}\hlopt{~}\hlstd{elevation,}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{, umf)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in cbind(X.gam, X.eps): number of rows of matrices must match (see arg 2)}}\begin{alltt}
+\hlstd{fm2} \hlkwb{<-} \hlkwd{colext}\hlstd{(}\hlopt{~}\hlstd{elevation,}\hlopt{~}\hlstd{temp,}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{, umf2)}
 \hlstd{fm2}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## colext(psiformula = ~elevation, gammaformula = ~1, epsilonformula = ~1, 
-##     pformula = ~1, data = umf)
+## colext(psiformula = ~elevation, gammaformula = ~temp, epsilonformula = ~1, 
+##     pformula = ~1, data = umf2)
 ## 
 ## Initial:
-##             Estimate    SE      z P(>|z|)
-## (Intercept)   -0.209 0.396 -0.528  0.5976
-## elevation      0.782 0.365  2.139  0.0324
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -0.915 0.404 -2.26  0.0235
+## elevation      1.009 0.415  2.43  0.0151
 ## 
 ## Colonization:
-##  Estimate    SE     z  P(>|z|)
-##     -1.31 0.195 -6.71 1.88e-11
+##             Estimate    SE     z  P(>|z|)
+## (Intercept)    -2.13 0.260 -8.20 2.48e-16
+## temp           -1.28 0.319 -4.03 5.68e-05
 ## 
 ## Extinction:
-##  Estimate    SE     z P(>|z|)
-##    -0.597 0.312 -1.91  0.0559
+##  Estimate   SE  z  P(>|z|)
+##     -1.04 0.26 -4 6.23e-05
 ## 
 ## Detection:
 ##  Estimate    SE     z  P(>|z|)
-##     -1.34 0.145 -9.26 1.97e-20
+##     -1.43 0.129 -11.1 1.22e-28
 ## 
-## AIC: 1622.762
+## AIC: 1385.925
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -917,115 +958,57 @@ Notice the new argument \inr{numPrimary}:
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-%   Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
-%   vary while holding other two covariates constant. Important that we
-%   use the standardized version of the continuous covariates.
-% <<preddat,size='small'>>=
-% pred.data <- data.frame(x1s=seq(from=-3, to=3, length=50),
-%                         x2s=0, w='Hot') 
-% @
-% \pause
-% \vfill
-% Get predictions of $\psi$ for each row of prediction data.
-% <<predpsi,size='small'>>=
-% psi.pred <- predict(fm, newdata=pred.data,
-%                     type='state', append=TRUE)
-% @
-% \pause
-% \vfill
-% Get predictions of $p$ for each row of prediction data.
-% <<predp,size='small'>>=
-% p.pred <- predict(fm, newdata=pred.data,
-%                   type='det', append=TRUE)
-% @
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-%   \small
-%   View $\psi$ predictions
-% <<psi-head,size='footnotesize'>>=
-% print(head(psi.pred), digits=2)
-% @
-% \pause
-% \vfill
-%   View $p$ predictions
-% <<p-head,size='footnotesize'>>=
-% print(head(p.pred), digits=2)
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+  Create \texttt{data.frame} with prediction covariates. 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{temp}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{5}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{4}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Get predictions of $\gamma$ for each row of prediction data.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{gamma.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm2,} \hlkwc{newdata}\hlstd{=pred.data,}
+                      \hlkwc{type}\hlstd{=}\hlstr{'col'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-%      xlab="Standardized covariate (x1s)", ylim=0:1) 
-% lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
-% @   
-% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized temperature"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-gamma1-1} 
+
+}
 
 
 
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-psi1s,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
-% x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
-% @   
-% \end{frame}
+\end{knitrout}
+\end{frame}
 
 
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
-%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(lower ~ x1s, p.pred, col="grey")
-% lines(upper ~ x1s, p.pred, col="grey")
-% @   
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
-% ## lines(Predicted ~ x1, p.pred, col="grey")
-% legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
-% @   
-% \end{frame}
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Prediction in `unmarked'}
-% <<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
-% plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
-%      xlab="x1", xaxt="n")
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(Predicted ~ x1s, p.pred, col="purple")
-% legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
-% @
-% %\pause
-% \small
-% \centering
-% Major problems if you ignore imperfect detection in this case \\
-% \end{frame}
 
 
 
@@ -1037,6 +1020,15 @@ Notice the new argument \inr{numPrimary}:
 
 
 
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
 \begin{knitrout}\scriptsize
@@ -1044,16 +1036,19 @@ Notice the new argument \inr{numPrimary}:
 \begin{verbatim}
 ## model {
 ## 
-## psi1 ~ dunif(0, 1)     ## initial occupancy
-## epsilon ~ dunif(0, 1)  ## local extinction
-## gamma ~ dunif(0, 1)    ## local colonization
+## beta0.psi ~ dnorm(0, 0.5)   ## Intercept of initial occupancy
+## beta1.psi ~ dnorm(0, 0.5)   ## Effect of elevation
+## epsilon ~ dunif(0, 1)       ## Local extinction
+## beta0.gamma ~ dnorm(0, 0.5) ## Intercept of colonization
+## beta1.gamma ~ dnorm(0, 0.5) ## Effect of temperature
 ## p ~ dunif(0, 1)        ## detection prob
 ## 
 ## for(i in 1:nSites) {
-##   psi[i,1] <- psi1
+##   logit(psi[i,1]) <- beta0.psi + beta1.psi*elevation[i]
 ##   z[i,1] ~ dbern(psi[i,1])
 ##   for(k in 2:K) {
-##     psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma
+##     logit(gamma[i,k-1]) <- beta0.gamma + beta1.gamma*temp[i,k-1]
+##     psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma[i,k-1]
 ##     z[i,k] ~ dbern(psi[i,k])
 ##   }
 ##   for(k in 1:K) {
@@ -1081,8 +1076,8 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,}
-                  \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
+\hlstd{jags.data.covs} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{elevation}\hlstd{=elevation,}
+                       \hlkwc{temp}\hlstd{=temperature,} \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1093,9 +1088,9 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{psi1}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{epsilon}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{gamma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+\hlstd{jags.inits.covs} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{beta0.psi}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1.psi}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{epsilon}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{beta0.gamma}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1.gamma}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
          \hlkwc{z}\hlstd{=}\hlkwd{matrix}\hlstd{(}\hlnum{1}\hlstd{, nSites, nPrimary))}
 \hlstd{\}}
 \end{alltt}
@@ -1108,7 +1103,8 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"psi1"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,} \hlstr{"gamma"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hlstd{jags.pars.covs} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0.psi"}\hlstd{,} \hlstr{"beta1.psi"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,}
+                    \hlstr{"beta0.gamma"}\hlstd{,} \hlstr{"beta1.gamma"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1125,11 +1121,9 @@ Notice the new argument \inr{numPrimary}:
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                                \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model.jag"}\hlstd{,}
-                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.covs,} \hlkwc{inits}\hlstd{=jags.inits.covs,}
+    \hlkwc{parameters.to.save}\hlstd{=jags.pars.covs,} \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model-covars.jag"}\hlstd{,}
+    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1142,7 +1136,7 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\hlkwd{summary}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{6}\hlstd{]])}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1154,19 +1148,23 @@ Notice the new argument \inr{numPrimary}:
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##           Mean      SD  Naive SE Time-series SE
-## psi1    0.4878 0.09238 0.0011926       0.003710
-## epsilon 0.3425 0.06788 0.0008764       0.004487
-## gamma   0.2153 0.03497 0.0004515       0.001588
-## p       0.2014 0.02312 0.0002984       0.001375
+##                Mean      SD Naive SE Time-series SE
+## beta0.psi   -0.1101 0.41428 0.005348       0.017290
+## beta1.psi    0.8803 0.39563 0.005108       0.013891
+## epsilon      0.3636 0.06313 0.000815       0.003769
+## beta0.gamma -1.3015 0.20297 0.002620       0.008971
+## beta1.gamma  0.3050 0.24641 0.003181       0.011832
+## p            0.2057 0.02138 0.000276       0.001143
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##           2.5%    25%    50%    75%  97.5%
-## psi1    0.3234 0.4224 0.4835 0.5469 0.6843
-## epsilon 0.2179 0.2947 0.3385 0.3895 0.4813
-## gamma   0.1534 0.1912 0.2132 0.2377 0.2921
-## p       0.1595 0.1851 0.2000 0.2164 0.2489
+##                2.5%     25%     50%     75%   97.5%
+## beta0.psi   -0.8676 -0.3868 -0.1336  0.1392  0.7775
+## beta1.psi    0.1923  0.6026  0.8490  1.1202  1.7425
+## epsilon      0.2404  0.3201  0.3634  0.4060  0.4884
+## beta0.gamma -1.6973 -1.4338 -1.3005 -1.1640 -0.9038
+## beta1.gamma -0.1501  0.1459  0.2907  0.4518  0.8411
+## p            0.1662  0.1908  0.2047  0.2201  0.2492
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1180,11 +1178,32 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\hlkwd{plot}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
 \end{alltt}
 \end{kframe}
 
 {\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-cov-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Traceplots and density plots}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{]])}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-cov-1} 
 
 }
 
@@ -1241,43 +1260,6 @@ Notice the new argument \inr{numPrimary}:
   \uncover<9->{We'll talk more about design issues later}
 \end{frame}
 
-
-
-\section{Assignment}
-
-
-
-
-\begin{frame}
-  \frametitle{Assignment}
-  % \small
-  \footnotesize
-  Create a self-contained R script or Rmarkdown file
-  to do the following:
-  \vfill
-  \begin{enumerate}
-%    \small
-    \footnotesize
-    \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
-      \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{grouse1, grouse2, grouse3}
-        \item Site covs: \texttt{elevation, utmE, utmN}
-        \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
-      \end{itemize}
-    \item Make one prediction graph for each species. 
-    \item Create the same graphs as above, but using Bayesian methods.
-    \item What differences do you see between likelihood and Bayesian graphs?
-    \end{enumerate}
-    \vfill
-    Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
-\end{frame}
 
 
 
