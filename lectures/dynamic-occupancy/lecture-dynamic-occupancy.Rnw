@@ -168,6 +168,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Colonization and extinction dynamics}
+  \small
   After the initial time period, the probability that a site is
   occupied depends on the previous state and the two probabilities:
   \pause
@@ -175,8 +176,12 @@ knit_theme$set("edit-kwrite")
     \item<2-> Local colonization: $\gamma=\Pr(z_{i,k}=1|z_{i,k-1}=0)$
     \item<3-> Local extinction: $\varepsilon=\Pr(z_{i,k}=0|z_{i,k-1}=1)$
   \end{enumerate}
+  {\centering
+    \uncover<4->{\includegraphics[width=0.3\textwidth]{figure/royle_dorazio_9-1} \\
+    \scriptsize From Royle and Dorazio (2008)}  \\
+  }
   \vfill
-  \uncover<4->{These probabilities can depend on spatio-temporal
+  \uncover<5->{These probabilities can depend on spatio-temporal
     covariates and random effects. In spatially-explicit models, they
     depend on the states and distances to neighboring sites.}
 \end{frame}
