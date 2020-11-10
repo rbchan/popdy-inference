@@ -87,30 +87,14 @@ knit_theme$set("edit-kwrite")
   \vfill
   Metapopulation models played a big role in emphasizing both spatial
   and temporal dynamics. \\
-  % \begin{enumerate}
-  %   \item \textcolor{blue}{Site covariates} vary among sites
-  %     but not among occasions
-  %   \item \textcolor{Purple}{Observation covariates} may vary among
-  %     sites and occasions
-  % \end{enumerate}
   \pause
   \vfill
   Dynamic occupancy models allow for inference on spatio-temporal
   occupancy resulting from local colonization and extinction
   processes. \\
-  % \pause
-  % \vfill
-  % \centering
-  % \alert{Observation covariates cannot be used to describe variation
-  %   in occupancy because occupancy is assumed to be \\ constant over
-  %   time.} \\ 
 \end{frame}
 
 
-% \begin{frame}
-%   \frametitle{Ignoring detection probability}
-%   Show some examples
-% \end{frame}
 
 
 
@@ -132,8 +116,6 @@ knit_theme$set("edit-kwrite")
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
-%  \vfill
-%  \small
   Definitions \\
   $\psi_i$ -- probability that the species occurs at site $i$ \\
   $z_i$ -- binary presence/absence variable at site $i$ \\
@@ -148,8 +130,6 @@ knit_theme$set("edit-kwrite")
   \small
   Initial occupancy state (same as static model), for $k=1$.
   \begin{gather*}
- %   \mathrm{logit}(\psi_{i,1}) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
- %   \beta_2 {\color{blue} x_{i2}} + \cdots \\
     z_{i,1} \sim \mathrm{Bern}(\psi_{i,1})
   \end{gather*}
   \pause
@@ -163,12 +143,9 @@ knit_theme$set("edit-kwrite")
 %  \vfill
   Observation model
   \begin{gather*}
-%    \mathrm{logit}(p_{i,j,k}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-%    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
     y_{i,j,k} \sim \mathrm{Bern}(z_{i,k}\times p)
   \end{gather*}
   \pause
-%   \vfill
 %  Definitions \\
   \footnotesize
   $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ \\
@@ -177,10 +154,6 @@ knit_theme$set("edit-kwrite")
   $\gamma$ -- local colonization probability \\
   $p$ -- probability of detecting the species if it's present \\
   $y_{i,j,k}$ -- detection data at site $i$ on secondary period $j$, primary period $k$ \\
-  % \pause \vfill
-  % $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
-  % \vspace{12pt}
-  % $\color{Purple} w$ is an observation covariate
   \pause \vfill
   \centering
   \small
@@ -190,6 +163,23 @@ knit_theme$set("edit-kwrite")
 
 
 %\section{Simulation}
+
+
+
+\begin{frame}
+  \frametitle{Colonization and extinction dynamics}
+  After the initial time period, the probability that a site is
+  occupied depends on the previous state and the two probabilities:
+  \pause
+  \begin{enumerate}
+    \item<2-> Local colonization: $\gamma=\Pr(z_{i,k}=1|z_{i,k-1}=0)$
+    \item<3-> Local extinction: $\varepsilon=\Pr(z_{i,k}=0|z_{i,k-1}=1)$
+  \end{enumerate}
+  \vfill
+  \uncover<4->{These probabilities can depend on spatio-temporal
+    covariates and random effects. In spatially-explicit models, they
+    depend on the states and distances to neighboring sites.}
+\end{frame}
 
 
 \section{Without covariates}
@@ -419,7 +409,10 @@ jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
 \end{frame}
 
 
-
+<<jagsUI,include=FALSE,results='hide'>>=
+library(jagsUI)
+library(coda)
+@ 
 
 
 \begin{frame}[fragile]
@@ -517,7 +510,7 @@ plot(jags.post.samples[,jags.pars[1:4]])
     \small
   \item Initial occupancy
 <<sim-init-cov,size='tiny',echo=-1>>=
-set.seed(54598)
+set.seed(5098)
 beta0.psi <- -1; beta1.psi <- 1
 elevation <- rnorm(nSites) ## site covariate
 z2 <- psi2 <- matrix(NA, nSites, nPrimary)
@@ -555,11 +548,11 @@ for(i in 1:nSites) {
 
 \subsection{Likelihood}
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
 
 
 
@@ -630,9 +623,9 @@ gamma.pred <- predict(fm2, newdata=pred.data,
   \frametitle{Prediction in `unmarked'}
 <<pred-gamma1,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
 plot(Predicted ~ temp, gamma.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Standardized temperature", ylim=0:1) 
-lines(lower ~ temp, gamma.pred, col="grey")
-lines(upper ~ temp, gamma.pred, col="grey")
+     xlab="Standardized temperature", ylim=0:1, lwd=3) 
+lines(lower ~ temp, gamma.pred, col="blue")
+lines(upper ~ temp, gamma.pred, col="blue")
 @   
 \end{frame}
 
@@ -672,7 +665,7 @@ writeLines(readLines("dynocc-model-covars.jag"))
   Put data in a named list
   \vspace{-12pt}
 <<bugs-data-cov,size='scriptsize'>>=
-jags.data.covs <- list(y=y, nSites=nSites, elevation=elevation,
+jags.data.covs <- list(y=y2, nSites=nSites, elevation=elevation,
                        temp=temperature, J=nSecondary, K=nPrimary)
 @
 \pause
@@ -745,13 +738,73 @@ plot(jags.post.samples.covs[,jags.pars.covs[4:6]])
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Sites occupied}
+  Extract posterior samples of $N_t$ and compute summary stats.
+<<N-post-covs,size='small'>>=
+library(coda)
+N.names <- grep("N\\[", varnames(jags.post.samples.covs)  )
+N.post <- as.matrix(jags.post.samples.covs[,N.names])
+N.post.mean <- colMeans(N.post)
+N.post.lower <- apply(N.post, 2, quantile, prob=0.025)
+N.post.upper <- apply(N.post, 2, quantile, prob=0.975)
+@   
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Sites occupied}
+<<N-post-covs-plot,size='scriptsize',fig.height=5,out.width="75%",fig.align="center",echo=-1>>=
+par(mai=c(0.9, 0.9, 0.1, 0.1))  
+plot(1:nPrimary, N.post.mean, type="b", ylim=c(0, 70), pch=16,
+     xlab="Time", ylab="Sites occupied")
+segments(1:nPrimary, N.post.lower, 1:nPrimary, N.post.upper)
+lines(1:nPrimary, colSums(z2), type="b", col=4)
+legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
+@   
+\end{frame}
 
 
 
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Temperature and colonization}
+  Extract posterior samples of colonization coefficients, and then
+  predict $\gamma$ for each posterior draw.
+<<beta-post,size='footnotesize'>>=
+beta.post <- as.matrix(jags.post.samples.covs[,c(
+    "beta0.gamma","beta1.gamma")])
+temperature.seq <- seq(-5, 5, length=50)
+n.samples <- nrow(beta.post)
+gamma.post <- matrix(NA, n.samples, length(temperature.seq))
+for(i in 1:n.samples) {
+    gamma.post[i,] <- plogis(beta.post[i,1] +
+                             beta.post[i,2]*temperature.seq)
+}
+gamma.post.mean <- colMeans(gamma.post)
+gamma.post.lower <- apply(gamma.post, 2, quantile, prob=0.025)
+gamma.post.upper <- apply(gamma.post, 2, quantile, prob=0.975)
+@   
+\end{frame}
 
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Temperature and colonization}
+<<gamma-post-covs-plot,size='scriptsize',fig.height=5,out.width="75%",fig.align="center",echo=-1>>=
+par(mai=c(0.9, 0.9, 0.1, 0.1))  
+matplot(temperature.seq, t(gamma.post[seq(1,n.samples,10),]), type="l",
+        xlab="Temperature (standardized)", ylab="Colonization prob", col=gray(0.9))
+lines(temperature.seq, gamma.post.mean, lwd=3, col="blue")
+lines(temperature.seq, gamma.post.lower, col="blue")
+lines(temperature.seq, gamma.post.upper, col="blue")
+@   
+\end{frame}
 
 
 
@@ -760,34 +813,17 @@ plot(jags.post.samples.covs[,jags.pars.covs[4:6]])
 
 
 \begin{frame}
-  \frametitle{Summary of dynamic occupancy models}
-  \small
-  Assumptions are made explicit by the model description, but it's worth emphasizing that: 
-  \begin{itemize}[<+->]
-    \item<2-> Occupancy is assumed to remain constant at each site during the sampling period
-    \item<3-> The definition of a `site' is critical, but can difficult in
-      some situations, such as in camera studies.
-    \item<4-> Abundance is assumed to be unimportant
-    \item<5-> Observations are assumed to be independent, conditional
-      on latent variables and covariates
-  \end{itemize}
+  \frametitle{Concluding thoughts}
+  Although we didn't demonstrate, these models are great for creating
+  dynamic species distribution maps. \\
+  \pause
   \vfill
-  \uncover<6->{  
-    These assumptions can be relaxed if we have enough data. 
-  }
-  \begin{itemize}
-    \item<7-> Dynamic occupancy models
-    \begin{itemize}
-      \item Occupancy evolves as a function of local colonization
-        and extinction
-    \end{itemize}
-    \item<8-> $N$-mixture models
-    \begin{itemize}
-      \item Focus is on local abundance, rather than presence/absence
-    \end{itemize}
-  \end{itemize}
+  The spatially-explicit versions are also great for modeling
+  metapopulation dynamics and viability. \\
+  \pause
   \vfill
-  \uncover<9->{We'll talk more about design issues later}
+  Most of the assumptions that we covered for the static models apply,
+  except that we've relaxed the closure assumption.
 \end{frame}
 
 

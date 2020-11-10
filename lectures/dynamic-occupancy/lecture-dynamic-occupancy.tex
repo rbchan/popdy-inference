@@ -126,30 +126,14 @@
   \vfill
   Metapopulation models played a big role in emphasizing both spatial
   and temporal dynamics. \\
-  % \begin{enumerate}
-  %   \item \textcolor{blue}{Site covariates} vary among sites
-  %     but not among occasions
-  %   \item \textcolor{Purple}{Observation covariates} may vary among
-  %     sites and occasions
-  % \end{enumerate}
   \pause
   \vfill
   Dynamic occupancy models allow for inference on spatio-temporal
   occupancy resulting from local colonization and extinction
   processes. \\
-  % \pause
-  % \vfill
-  % \centering
-  % \alert{Observation covariates cannot be used to describe variation
-  %   in occupancy because occupancy is assumed to be \\ constant over
-  %   time.} \\ 
 \end{frame}
 
 
-% \begin{frame}
-%   \frametitle{Ignoring detection probability}
-%   Show some examples
-% \end{frame}
 
 
 
@@ -171,8 +155,6 @@
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
-%  \vfill
-%  \small
   Definitions \\
   $\psi_i$ -- probability that the species occurs at site $i$ \\
   $z_i$ -- binary presence/absence variable at site $i$ \\
@@ -187,8 +169,6 @@
   \small
   Initial occupancy state (same as static model), for $k=1$.
   \begin{gather*}
- %   \mathrm{logit}(\psi_{i,1}) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
- %   \beta_2 {\color{blue} x_{i2}} + \cdots \\
     z_{i,1} \sim \mathrm{Bern}(\psi_{i,1})
   \end{gather*}
   \pause
@@ -202,12 +182,9 @@
 %  \vfill
   Observation model
   \begin{gather*}
-%    \mathrm{logit}(p_{i,j,k}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-%    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
     y_{i,j,k} \sim \mathrm{Bern}(z_{i,k}\times p)
   \end{gather*}
   \pause
-%   \vfill
 %  Definitions \\
   \footnotesize
   $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ \\
@@ -216,10 +193,6 @@
   $\gamma$ -- local colonization probability \\
   $p$ -- probability of detecting the species if it's present \\
   $y_{i,j,k}$ -- detection data at site $i$ on secondary period $j$, primary period $k$ \\
-  % \pause \vfill
-  % $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
-  % \vspace{12pt}
-  % $\color{Purple} w$ is an observation covariate
   \pause \vfill
   \centering
   \small
@@ -229,6 +202,23 @@
 
 
 %\section{Simulation}
+
+
+
+\begin{frame}
+  \frametitle{Colonization and extinction dynamics}
+  After the initial time period, the probability that a site is
+  occupied depends on the previous state and the two probabilities:
+  \pause
+  \begin{enumerate}
+    \item<2-> Local colonization: $\gamma=\Pr(z_{i,k}=1|z_{i,k-1}=0)$
+    \item<3-> Local extinction: $\varepsilon=\Pr(z_{i,k}=0|z_{i,k-1}=1)$
+  \end{enumerate}
+  \vfill
+  \uncover<4->{These probabilities can depend on spatio-temporal
+    covariates and random effects. In spatially-explicit models, they
+    depend on the states and distances to neighboring sites.}
+\end{frame}
 
 
 \section{Without covariates}
@@ -838,11 +828,11 @@ Notice the new argument \inr{numPrimary}:
 
 \subsection{Likelihood}
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection]
+% \end{frame}
 
 
 
@@ -877,29 +867,29 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 ## Mean number of observations per site: 30 
 ## Number of primary survey periods: 10 
 ## Number of secondary survey periods: 3 
-## Sites with at least one detection: 69 
+## Sites with at least one detection: 70 
 ## 
 ## Tabulation of y observations:
 ##    0    1 
-## 2795  205 
+## 2798  202 
 ## 
 ## Site-level covariates:
-##    elevation        
-##  Min.   :-2.319348  
-##  1st Qu.:-0.749513  
-##  Median :-0.044719  
-##  Mean   : 0.006181  
-##  3rd Qu.: 0.530127  
-##  Max.   : 2.514419  
+##    elevation      
+##  Min.   :-2.8755  
+##  1st Qu.:-0.7162  
+##  Median :-0.1279  
+##  Mean   :-0.1097  
+##  3rd Qu.: 0.5059  
+##  Max.   : 2.1723  
 ## 
 ## Yearly-site-level covariates:
-##       temp         
-##  Min.   :-5.00979  
-##  1st Qu.:-0.33210  
-##  Median : 0.01029  
-##  Mean   : 0.01607  
-##  3rd Qu.: 0.42411  
-##  Max.   : 4.06408
+##       temp          
+##  Min.   :-5.260423  
+##  1st Qu.:-0.335854  
+##  Median :-0.004001  
+##  Mean   :-0.015024  
+##  3rd Qu.: 0.314745  
+##  Max.   : 7.827805
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -925,24 +915,24 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 ##     pformula = ~1, data = umf2)
 ## 
 ## Initial:
-##             Estimate    SE     z P(>|z|)
-## (Intercept)   -0.915 0.404 -2.26  0.0235
-## elevation      1.009 0.415  2.43  0.0151
+##             Estimate    SE     z  P(>|z|)
+## (Intercept)    -1.99 0.449 -4.43 9.27e-06
+## elevation       1.04 0.500  2.09 3.70e-02
 ## 
 ## Colonization:
-##             Estimate    SE     z  P(>|z|)
-## (Intercept)    -2.13 0.260 -8.20 2.48e-16
-## temp           -1.28 0.319 -4.03 5.68e-05
+##             Estimate    SE      z  P(>|z|)
+## (Intercept)    -1.90 0.185 -10.24 1.34e-24
+## temp           -0.72 0.209  -3.44 5.88e-04
 ## 
 ## Extinction:
-##  Estimate   SE  z  P(>|z|)
-##     -1.04 0.26 -4 6.23e-05
+##  Estimate    SE     z P(>|z|)
+##    -0.977 0.314 -3.11 0.00188
 ## 
 ## Detection:
 ##  Estimate    SE     z  P(>|z|)
-##     -1.43 0.129 -11.1 1.22e-28
+##     -1.25 0.139 -9.02 1.81e-19
 ## 
-## AIC: 1385.925
+## AIC: 1351.403
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -993,9 +983,9 @@ Get predictions of $\gamma$ for each row of prediction data.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized temperature"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized temperature"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -1031,7 +1021,7 @@ Get predictions of $\gamma$ for each row of prediction data.
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 ## model {
@@ -1073,10 +1063,10 @@ Get predictions of $\gamma$ for each row of prediction data.
   \frametitle{Data, inits, and parameters}
   Put data in a named list
   \vspace{-12pt}
-\begin{knitrout}\small
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.covs} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{elevation}\hlstd{=elevation,}
+\hlstd{jags.data.covs} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{elevation}\hlstd{=elevation,}
                        \hlkwc{temp}\hlstd{=temperature,} \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
 \end{alltt}
 \end{kframe}
@@ -1085,7 +1075,7 @@ Get predictions of $\gamma$ for each row of prediction data.
 \vfill
   Initial values
   \vspace{-12pt}
-\begin{knitrout}\small
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{jags.inits.covs} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
@@ -1100,7 +1090,7 @@ Get predictions of $\gamma$ for each row of prediction data.
 \vfill
   Parameters to monitor
   \vspace{-12pt}
-\begin{knitrout}\small
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{jags.pars.covs} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0.psi"}\hlstd{,} \hlstr{"beta1.psi"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,}
@@ -1121,8 +1111,10 @@ Get predictions of $\gamma$ for each row of prediction data.
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.covs,} \hlkwc{inits}\hlstd{=jags.inits.covs,}
-    \hlkwc{parameters.to.save}\hlstd{=jags.pars.covs,} \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model-covars.jag"}\hlstd{,}
+\hlstd{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
+    \hlkwc{data}\hlstd{=jags.data.covs,} \hlkwc{inits}\hlstd{=jags.inits.covs,}
+    \hlkwc{parameters.to.save}\hlstd{=jags.pars.covs,}
+    \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model-covars.jag"}\hlstd{,}
     \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -1138,35 +1130,11 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{summary}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{6}\hlstd{]])}
 \end{alltt}
-\begin{verbatim}
-## 
-## Iterations = 1:2000
-## Thinning interval = 1 
-## Number of chains = 3 
-## Sample size per chain = 2000 
-## 
-## 1. Empirical mean and standard deviation for each variable,
-##    plus standard error of the mean:
-## 
-##                Mean      SD Naive SE Time-series SE
-## beta0.psi   -0.1101 0.41428 0.005348       0.017290
-## beta1.psi    0.8803 0.39563 0.005108       0.013891
-## epsilon      0.3636 0.06313 0.000815       0.003769
-## beta0.gamma -1.3015 0.20297 0.002620       0.008971
-## beta1.gamma  0.3050 0.24641 0.003181       0.011832
-## p            0.2057 0.02138 0.000276       0.001143
-## 
-## 2. Quantiles for each variable:
-## 
-##                2.5%     25%     50%     75%   97.5%
-## beta0.psi   -0.8676 -0.3868 -0.1336  0.1392  0.7775
-## beta1.psi    0.1923  0.6026  0.8490  1.1202  1.7425
-## epsilon      0.2404  0.3201  0.3634  0.4060  0.4884
-## beta0.gamma -1.6973 -1.4338 -1.3005 -1.1640 -0.9038
-## beta1.gamma -0.1501  0.1459  0.2907  0.4518  0.8411
-## p            0.1662  0.1908  0.2047  0.2201  0.2492
-\end{verbatim}
-\end{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in summary(jags.post.samples.covs[, jags.pars.covs[1:6]]): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': lazy-load database '/home/rchandler/courses/popdy-inference/lectures/dynamic-occupancy/cache/bugs-mcmc-cov\_9e0ce9f958a1d5578d01f61ddc0ca7b6.rdb' is corrupt}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -1180,14 +1148,13 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
 \end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-cov-1} 
-
-}
 
 
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in plot(jags.post.samples.covs[, jags.pars.covs[1:3]]): restarting interrupted promise evaluation}}
 
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in plot(jags.post.samples.covs[, jags.pars.covs[1:3]]): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': lazy-load database '/home/rchandler/courses/popdy-inference/lectures/dynamic-occupancy/cache/bugs-mcmc-cov\_9e0ce9f958a1d5578d01f61ddc0ca7b6.rdb' is corrupt}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -1201,9 +1168,131 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{]])}
 \end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in plot(jags.post.samples.covs[, jags.pars.covs[4:6]]): restarting interrupted promise evaluation}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in plot(jags.post.samples.covs[, jags.pars.covs[4:6]]): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': lazy-load database '/home/rchandler/courses/popdy-inference/lectures/dynamic-occupancy/cache/bugs-mcmc-cov\_9e0ce9f958a1d5578d01f61ddc0ca7b6.rdb' is corrupt}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Sites occupied}
+  Extract posterior samples of $N_t$ and compute summary stats.
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(coda)}
+\hlstd{N.names} \hlkwb{<-} \hlkwd{grep}\hlstd{(}\hlstr{"N\textbackslash{}\textbackslash{}["}\hlstd{,} \hlkwd{varnames}\hlstd{(jags.post.samples.covs)  )}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in is.mcmc(x): restarting interrupted promise evaluation}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in is.mcmc(x): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in is.mcmc(x): lazy-load database '/home/rchandler/courses/popdy-inference/lectures/dynamic-occupancy/cache/bugs-mcmc-cov\_9e0ce9f958a1d5578d01f61ddc0ca7b6.rdb' is corrupt}}\begin{alltt}
+\hlstd{N.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.covs[,N.names])}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in as.matrix(jags.post.samples.covs[, N.names]): restarting interrupted promise evaluation}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in as.matrix(jags.post.samples.covs[, N.names]): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.matrix(jags.post.samples.covs[, N.names]): lazy-load database '/home/rchandler/courses/popdy-inference/lectures/dynamic-occupancy/cache/bugs-mcmc-cov\_9e0ce9f958a1d5578d01f61ddc0ca7b6.rdb' is corrupt}}\begin{alltt}
+\hlstd{N.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(N.post)}
+\hlstd{N.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(N.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\hlstd{N.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(N.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Sites occupied}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary, N.post.mean,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{)}
+\hlkwd{segments}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary, N.post.lower,} \hlnum{1}\hlopt{:}\hlstd{nPrimary, N.post.upper)}
+\hlkwd{lines}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{colSums}\hlstd{(z2),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{70}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{16}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{)}
+\end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-cov-1} 
+{\centering \includegraphics[width=0.75\linewidth]{figure/N-post-covs-plot-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Temperature and colonization}
+  Extract posterior samples of colonization coefficients, and then
+  predict $\gamma$ for each posterior draw.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.covs[,}\hlkwd{c}\hlstd{(}
+    \hlstr{"beta0.gamma"}\hlstd{,}\hlstr{"beta1.gamma"}\hlstd{)])}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in as.matrix(jags.post.samples.covs[, c("{}beta0.gamma"{}, "{}beta1.gamma"{})]): restarting interrupted promise evaluation}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in as.matrix(jags.post.samples.covs[, c("{}beta0.gamma"{}, "{}beta1.gamma"{})]): internal error -3 in R\_decompress1}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in as.matrix(jags.post.samples.covs[, c("{}beta0.gamma"{}, "{}beta1.gamma"{})]): lazy-load database '/home/rchandler/courses/popdy-inference/lectures/dynamic-occupancy/cache/bugs-mcmc-cov\_9e0ce9f958a1d5578d01f61ddc0ca7b6.rdb' is corrupt}}\begin{alltt}
+\hlstd{temperature.seq} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{5}\hlstd{,} \hlnum{5}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{)}
+\hlstd{n.samples} \hlkwb{<-} \hlkwd{nrow}\hlstd{(beta.post)}
+\hlstd{gamma.post} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n.samples,} \hlkwd{length}\hlstd{(temperature.seq))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.samples) \{}
+    \hlstd{gamma.post[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta.post[i,}\hlnum{1}\hlstd{]} \hlopt{+}
+                             \hlstd{beta.post[i,}\hlnum{2}\hlstd{]}\hlopt{*}\hlstd{temperature.seq)}
+\hlstd{\}}
+\hlstd{gamma.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(gamma.post)}
+\hlstd{gamma.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(gamma.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\hlstd{gamma.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(gamma.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Temperature and colonization}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{matplot}\hlstd{(temperature.seq,} \hlkwd{t}\hlstd{(gamma.post[}\hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{,n.samples,}\hlnum{10}\hlstd{),]),} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,}
+        \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Colonization prob"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.9}\hlstd{))}
+\hlkwd{lines}\hlstd{(temperature.seq, gamma.post.mean,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(temperature.seq, gamma.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(temperature.seq, gamma.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.75\linewidth]{figure/gamma-post-covs-plot-1} 
 
 }
 
@@ -1218,46 +1307,18 @@ Get predictions of $\gamma$ for each row of prediction data.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 \begin{frame}
-  \frametitle{Summary of dynamic occupancy models}
-  \small
-  Assumptions are made explicit by the model description, but it's worth emphasizing that: 
-  \begin{itemize}[<+->]
-    \item<2-> Occupancy is assumed to remain constant at each site during the sampling period
-    \item<3-> The definition of a `site' is critical, but can difficult in
-      some situations, such as in camera studies.
-    \item<4-> Abundance is assumed to be unimportant
-    \item<5-> Observations are assumed to be independent, conditional
-      on latent variables and covariates
-  \end{itemize}
+  \frametitle{Concluding thoughts}
+  Although we didn't demonstrate, these models are great for creating
+  dynamic species distribution maps. \\
+  \pause
   \vfill
-  \uncover<6->{  
-    These assumptions can be relaxed if we have enough data. 
-  }
-  \begin{itemize}
-    \item<7-> Dynamic occupancy models
-    \begin{itemize}
-      \item Occupancy evolves as a function of local colonization
-        and extinction
-    \end{itemize}
-    \item<8-> $N$-mixture models
-    \begin{itemize}
-      \item Focus is on local abundance, rather than presence/absence
-    \end{itemize}
-  \end{itemize}
+  The spatially-explicit versions are also great for modeling
+  metapopulation dynamics and viability. \\
+  \pause
   \vfill
-  \uncover<9->{We'll talk more about design issues later}
+  Most of the assumptions that we covered for the static models apply,
+  except that we've relaxed the closure assumption.
 \end{frame}
 
 
