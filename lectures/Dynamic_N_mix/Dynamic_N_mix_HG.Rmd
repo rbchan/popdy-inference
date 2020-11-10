@@ -1,0 +1,282 @@
+---
+title: "Lecture  13 - Dynamic N-mixture models"
+author: "Heather Gaya"
+date: "November 12, 2020"
+output: beamer_presentation
+header-includes: \AtBeginSection[]{\begin{frame}\tableofcontents[currentsection]\end{frame}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(unmarked)
+library(coda)
+library(jagsUI)
+library(knitr)
+```
+# Models
+## Overview
+
+  We've previously seen N-mixture models across only one year or season 
+  \pause
+  \vfill
+  But often we want to know how populations change over time. 
+  \pause
+  \vfill
+  Dynamic $N$-mixture models are useful if we have repeated count data without uniquely marked individuals. 
+  \pause
+  \vfill
+ Dynamic models are also very flexible. We can consider how detection parameters change between years, add temporal autocorrelation, account for spatial variation in density, and/or account for treatment effects.   
+
+## Dynamic N-Mixtures 
+State model (with Poisson assumption)
+  \begin{gather*}
+    \mathrm{log}(\lambda_{it}) = \beta_0 + \beta_1 {\color{blue} x_{it1}} +
+    \beta_2 {\color{blue} x_{it2}} + \cdots \\
+    N_{it} \sim \mathrm{Poisson}(\lambda_{it})
+  \end{gather*}
+  \pause
+  Observation model
+  \begin{gather*}
+    \mathrm{logit}(p_{ijt}) = \alpha_0 + \alpha_1 {\color{blue} w_{it1}}
+    + \alpha_2 {\color{purple} w_{ijt2}} + \cdots \\
+    y_{ijt} \sim \mathrm{Binomial}(N_{it}, p_{ijt})
+  \end{gather*}
+  \pause
+  \small
+  $\lambda_{it}$ -- Expected value of abundance at site $i$ in year $t$
+  
+  $N_{it}$ -- Realized value of abundance at site $i$ in year $t$
+  
+  $p_{ijt}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ in year $t$
+  
+  $y_{ijt}$ -- Count data
+  
+  $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates 
+  
+  $\color{purple} w_1$ and $\color{purple} w_2$ -- observation covariates
+
+
+## Temporal Autocorrelation
+The previous model allows for independence between years.
+
+\pause
+\vfill
+
+But we might expect that abundance at year $t$ is related to abundance at year $t-1$.
+
+\pause
+\vfill
+Dail and Madsen (2011) suggested an expansion to the $N$-mixture framework that allows us to consider populations from this B.I.D.E model perspective.
+
+## Temporal Autocorrelation (Cont')
+\small
+Year $k = 1$:
+\begin{gather*}
+    \mathrm{log}(\lambda_{i1}) = \beta_0 + \beta_1 {\color{blue} x_{i1}} \cdots \\
+    N_{i1} \sim \mathrm{Poisson}(\lambda_{i1})
+  \end{gather*}
+  \pause
+  \small
+Years $k > 1$:
+  \begin{gather*}
+    S_{it} \sim \mathrm{Binomial}(N_{i(t-1)}, \phi_{it}) \\
+    G_{it} \sim \mathrm{Poisson}(N_{i(t-1)}*\gamma_{it}) \\
+    N_{it} = S_{it} + G_{it}
+  \end{gather*}
+  \small
+  \pause
+$\lambda_{it}$ -- Expected value of abundance at site $i$ in year 1
+
+$N_{it}$ -- Realized value of abundance at site $i$ in year $t$
+
+$\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates
+
+$\phi_{it}$ -- Apparent survival at site $i$ from year $t-1$ to $t$
+
+$\gamma_{it}$ -- Apparent recuritment at site $i$ from year $t-1$ to $t$
+
+$S_{it}$ -- Realized number of individuals that survived/didn't emmigrate
+
+$G_{it}$ -- Realized number of new individuals
+
+# Simulation
+
+## Simulate Site-Specific Abundance
+Simulate some data
+```{r Simulate Dynamic,eval= TRUE, echo = TRUE}
+set.seed(100)
+n.sites <- 50
+n.years <- 5
+elevation <- scale(runif(n.sites,800,1200))
+precip <- array(runif(n.sites*n.years, 0,2), 
+              dim = c(n.sites, n.years))
+```
+
+## Simulate Site-Specific Parameters
+Simulate initial N, $\phi$ and $\gamma$
+```{r, eval  = TRUE, echo = TRUE}
+psi0 <- 2.5
+psi1 <- -.25
+phi0 <-2
+phi1 <- -1
+gamma0 <- -1.8
+gamma1 <- 1
+phi <- plogis(phi0 + phi1*precip)
+gamma <- exp(gamma0 + gamma1*as.numeric(elevation))
+```
+
+## Simulate Abundance
+```{r, echo = TRUE}
+N <- S <- G <- array(NA, dim = c(n.sites, n.years))
+lambda <- array(NA, dim = n.sites)
+for (i in 1:n.sites){
+    lambda[i] <- exp(psi0 + psi1*elevation[i])
+    N[i,1] <- rpois(1, lambda[i])
+ for (t in 2:n.years){
+   S[i,t] <- rbinom(1, N[i,t-1], phi[i,t])
+   G[i,t] <- rpois(1, N[i,t-1]*gamma[i])
+   N[i,t] <- S[i,t] + G[i,t]
+ }
+}
+```
+\pause
+```{r, echo = T, include=T}
+N[1:3,]
+```
+
+## Simulate Detection
+```{r, echo = T}
+n.visit <- 4
+p <- rnorm(n.years, mean = .5, .1)
+y1 <- array(NA, dim = c(n.sites, n.visit, n.years))
+for (i in 1:n.sites){
+  for (t in 1:n.years){
+    y1[i,,t] <- rbinom(n.visit, size = N[i,t], 
+                       prob = p[t])
+  }
+}
+```
+
+# Unmarked 
+
+## Setup in Unmarked
+Unmarked wants the observation data in a M x (J*T) matrix
+```{r unmarked, echo = T}
+y_matrix <- cbind(y1[,,1], y1[,,2], y1[,,3], 
+                  y1[,,4], y1[,,5])
+precip <- data.frame(precip)
+#names(precip) <- c("p1", "p2", "p3", "p4", "p5")
+umf <- unmarkedFramePCO(y = y_matrix, 
+        siteCovs = data.frame(elevation),
+        yearlySiteCovs = precip,
+        numPrimary = 1)
+```
+\pause
+For some reason this will not run ? Hmm.
+```{r, echo = T, eval = F}
+m1 <- pcountOpen(~elevation, ~elevation, 
+                 ~1, ~1, umf, K=100, 
+                 mixture = "P",
+                 dynamics = "autoreg")
+```
+Order of equations is lambda, gamma, apparent survival, detection
+
+## Unmarked Output
+
+If I ever get this to run there will be some output. ugh.
+
+# JAGS
+
+## Code
+\tiny
+```{r, eval = F, include = T, echo = T}
+model {
+for (i in 1:n.sites) {
+  log(gamma[i]) <- gamma0 + gamma1*elevation[i]
+  log(lambda[i]) <- psi0 + psi1*elevation[i]
+  
+  N[i,1] ~dpois(lambda[i]) 
+  
+  for (t in 2:n.years){
+    logit(phi[i,t]) <- phi0 + phi1*precip[i,t]
+    S[i,t] ~ dbin(phi[i,t], N[i,t-1])
+    G[i,t] ~ dpois(N[i,t-1]*gamma[i])
+             
+    N[i,t] <- S[i,t] + G[i,t]
+  } #end t
+  for (t in 1:n.years){
+  for (j in 1:n.visit){
+    y1[i,j,t] ~ dbin(p[t], N[i,t])
+    } #end j
+  
+  p[t] ~ dunif(0,1)
+  }#end t again
+  } #end i
+  gamma0 ~ dunif(-5,5)
+  gamma1 ~ dunif(-5,5)
+  psi0 ~ dunif(-5,5)
+  psi1 ~ dunif(-5,5)
+  phi0 ~ dunif(-5,5)
+  phi1 ~ dunif(-5,5)
+}
+```
+
+## Send to JAGS
+\small
+```{r, eval = T, echo = T, include = T}
+jd <- list(n.sites =n.sites, n.visit = n.visit,
+           n.years = n.years, y1 = y1,
+           elevation = as.numeric(elevation),
+           precip = precip)
+params = c("p", "psi0", "psi1", 
+           "phi0", "phi1", 
+           "gamma0", "gamma1")
+ji <- function() {
+  list(psi0 = runif(1,1.5,2.5),psi1 = runif(1, -.5,0), 
+    phi0 = runif(1,1.5,2.5), phi1 = runif(1,-1.5,-.5),
+    gamma0 = runif(1,-2,-1.5), gamma1 = runif(1,.5,1.5), 
+    p = rnorm(n.years, mean = .5, .1))}
+```
+```{r, eval =T, include = F}
+ji <- function(){list(psi0 = psi0, psi1 = psi1, phi0 = phi0, phi1=phi1, gamma0=gamma0, gamma1 = gamma1,N = cbind(N[,1], matrix(NA, nrow = n.sites, ncol = n.years -1)), p=p, S = S, G= G)}
+#You wouldn't have this info in real life to use as initials 
+#But made it faster to find good inits for example
+```
+\pause
+```{r, eval = T, echo = T,results = 'hide'}
+jags.post <- jags.basic(data=jd, inits = ji,
+                   parameters.to.save=params,
+                   model.file="dynamic_n.txt",
+                   n.chains=3, n.adapt=100, n.burnin=2000,
+                   n.iter=3000, parallel=TRUE)
+```
+
+## JAGS Output 
+\small
+```{r, echo = T}
+kable(summary(jags.post)$quantiles[-1,], 
+      digits = 2,align = "c")
+```
+
+## Trace Plot
+```{r}
+plot(jags.post[,c("psi0","psi1", "phi0"),])
+```
+Need to run for longer
+
+## Compare with Truth
+Pretty close to the simulated values
+```{r, echo =F}
+true <- c(gamma0, gamma1, p, phi0, phi1, psi0, psi1)
+est <- summary(jags.post)$quantiles[-1,3]
+outs <- data.frame(Simulated = true, JAGS = est)
+kable(outs, digits = 2, align = "c")
+```
+
+# Assignment 
+
+## Assignment 
+
+Idk if there's any assignment
+
+
