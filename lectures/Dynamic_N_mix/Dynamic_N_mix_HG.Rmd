@@ -168,14 +168,14 @@ precip <- data.frame(precip)
 #names(precip) <- c("p1", "p2", "p3", "p4", "p5")
 umf <- unmarkedFramePCO(y = y_matrix, 
         siteCovs = data.frame(elevation),
-        yearlySiteCovs = precip,
-        numPrimary = 1)
+        yearlySiteCovs = list(precip=precip),
+        numPrimary = 5)
 ```
 \pause
 For some reason this will not run ? Hmm.
 ```{r, echo = T, eval = F}
 m1 <- pcountOpen(~elevation, ~elevation, 
-                 ~1, ~1, umf, K=100, 
+                 ~1, ~1, umf, K=50, 
                  mixture = "P",
                  dynamics = "autoreg")
 ```
