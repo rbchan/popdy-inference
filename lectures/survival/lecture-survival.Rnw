@@ -1,0 +1,723 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+
+% Load function to compile and open PDF
+<<build-fun,include=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+@
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE>>=
+rnw2pdf("lecture-CJS") 
+rnw2pdf("lecture-CJS", tangle=TRUE)
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+##knit_theme$set("navajo-night")
+knit_theme$set("edit-kwrite")
+@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+
+\newcommand{\bxt}{${\bm x}_j$}
+\newcommand{\bx}{{\bm x}}
+\newcommand{\bxj}{{\bm x}_j}
+\newcommand{\bst}{${\bm s}_i$}
+\newcommand{\bs}{{\bm s}}
+\newcommand{\bsi}{{\bm s}_i}
+\newcommand{\ed}{\|\bx - \bs\|}
+\newcommand{\cs}{\mathcal{S} }
+
+
+\begin{document}
+
+
+
+
+
+\begin{frame}[plain]
+  \begin{center}
+    \LARGE {\bf \color{RoyalBlue}{Open Populations and the \\
+      Spatial Cormack-Jolly-Seber Model}} \par
+    \vspace{0.8cm}
+%    \color{Gray}{
+%    \Large {Spatial Capture-Recapture Workshop} \\ % \par
+%    \large Athens, GA -- March 2015 \\
+    \large WILD 8327 -- Spatial Capture-Recapture \par
+    \vspace{0.2cm}
+    March 23, 2016
+%  \includegraphics[width=0.3\textwidth]{figs/scrbook} \\
+%    }
+  \end{center}
+\end{frame}
+
+
+
+
+%\section{Intro}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+%  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+
+\section{Intro}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Open populations}
+  {\bf \large Overview}
+  \begin{itemize}[<+->]
+%    \item All populations are open
+%    \item We are interested in changes in $N$ over time
+    \item Population closure is an assumption we make to estimate
+      density in short time periods
+    \item If we want to study the processes governing spatial and
+      temporal variation in density, we need to move beyond closed
+      population models
+    \item Open population SCR models allow us to model spatial and
+      temporal variation in survival, recruitment, and movement
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Types of ``openness''}
+%  \begin{block}{\bf Geographic closure}
+  {\bf Geographic closure}
+    \begin{itemize}
+      \item Animals cannot enter or leave the study area
+%      \item Reasonable over short time periods
+      \item But what is the study area in non-spatial settings?
+      \item What is a non-spatial setting?
+    \end{itemize}
+%  \end{block}
+  \pause
+  \vfill
+%  \begin{block}{\bf Demographic closure}
+  {\bf Demographic closure}
+    \begin{itemize}
+      \item No births or deaths
+      \item Reasonable over short time periods
+      \item But temporal dynamics are often of chief interest
+    \end{itemize}
+%  \end{block}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Two varieties of open models}
+%  \begin{block}{\bf Cormack-Jolly-Seber Model}
+  {\bf Cormack-Jolly-Seber Model}
+    \begin{itemize}[<+->]
+      \item Primarily used to estimate survival
+      \item When permanent emigration is possible, estimate is of
+        ``apparent survival'' ($\phi$)
+%      \item Apparent survival is defined as the probability of
+%        surviving and not leaving the study area permanently
+      \item CJS models are not used to estimate abundance or recruitment
+    \end{itemize}
+%  \end{block}
+  \pause
+%  \begin{block}{\bf Jolly-Seber model}
+  {\bf Jolly-Seber model}
+    \begin{itemize}
+      \item Traditionally used to estimate abundance, (apparent) survival, and recruitment
+%      \item Spatial JS models also allow for estimation of movement
+    \end{itemize}
+%  \end{block}
+    \pause
+    \vfill
+    \centering \bf Both classes of models can be made spatially
+    explicit to study movement, among other things \par
+\end{frame}
+
+
+
+
+
+
+\section{Non-spatial CJS}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Non-spatial CJS model}
+  {\bf \large Notes}
+  \begin{itemize}[<+->]
+    \item Typical scenario involves ``releasing'' indviduals and recapturing them over time
+    \item We don't model initial capture process
+    \item Instead, we ``condition on initial capture''
+    \item As an example, imagine releasing a bunch of tagged animals
+      in a translocation study
+    \item Because we aren't estimating $N$, no data augmentation required
+    \item It is possible to estimate parameters using 1 sampling occasion per season
+    \item Robust design provides more information about $p$
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Non-spatial CJS model}
+  {\bf State model}
+  \[
+    z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1} \times \phi)
+  \]
+  \vfill
+  {\bf Observation model}
+  \[
+    y_{i,t} \sim \mbox{Bernoulli}(z_{i,t} \times p)
+  \]
+  \pause
+  \vfill
+  \small
+  {\bf where} \\
+  \begin{itemize}
+    \item $z_{i,t}$ is ``alive state'' of individual $i$ at time $t$
+    \item $\phi$ is ``apparent survival''. Probability of being alive and not permanently emigrating.
+    \item $y_{i,t}=1$ if individual was encountered. $y_{i,t}=0$ otherwise.
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating CJS data without robust design}
+  {\bf Parameters and data dimensions}
+  \small
+<<sim-norobust>>=
+T <- 10    # years/primary periods
+K <- 1     # only 1 secondary sampling occasion
+n <- 25
+phi <- 0.7
+p <- 0.4
+z <- matrix(NA, n, T)
+y <- matrix(NA, n, T)
+first <- rpois(n, 1)+1 ## random release dates
+@
+\pause
+\vfill
+{\bf Generate $z$ and $y$}
+<<sim-norbust2>>=
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
+        y[i,t] <- rbinom(1, 1, z[i,t]*p)
+    }
+}
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated CJS data}
+  \begin{columns}
+    \tiny
+    \begin{column}{0.5\textwidth}
+<<z>>=
+z[,1:7]
+@
+    \end{column}
+    \begin{column}{0.5\textwidth}
+<<y>>=
+y[,1:7]
+@
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Non-spatial CJS model in JAGS}
+  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-nonspatial.jag}}}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+%  \footnotesize
+  {\bf Initial values for $z$ matrix}
+  \scriptsize
+<<zi>>=
+zi <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi[i,(first[i]+1):T] <- 1
+    }
+ji1 <- function() list(phi=runif(1), p=runif(1), z=zi)
+@
+\pause
+\vfill
+  {\bf \normalsize Fit the model}
+<<jc1,eval=FALSE,results='hide'>>=
+jd1 <- list(y=y, n=n, first=first, T=T)
+jp1 <- c("phi", "p")
+library(rjags)
+jm1 <- jags.model("CJS-nonspatial.jag", jd1, ji1, n.chains=1, n.adapt=1000)
+jc1 <- coda.samples(jm1, jp1, 2000)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+<<jc1-plot>>=
+plot(jc1)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+\section{Spatial CJS}
+
+
+\begin{frame}
+  \frametitle{Spatial CJS}
+  {\bf \large Why spatial?}
+  \begin{itemize}
+    \item Comes with all the benefits of other SCR models
+    \item Allows us to model movement between primary periods, making
+      it possible to separate survival from permanent emigration
+    \item Movement itself may be of interest, such as in studies of
+      dispersal
+  \end{itemize}
+  \pause
+  \vfill
+  {\centering \bf We begin by ignoring movement, but we use the robust design (could have been done earlier) \par}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating spatial CJS data with robust design}
+%  \tiny %\small
+  \scriptsize %\footnotesize
+  \begin{columns}
+%      \column{\dimexpr\paperwidth-10pt}
+    \begin{column}{0.5\dimexpr\paperwidth-10pt}
+  {\bf Parameters and data dimensions}
+<<sim2>>=
+T <- 10    # years/primary occasions
+K <- 3     # secondary occasions
+n <- 25
+phi <- 0.7
+p0 <- 0.4
+sigma <- 0.1
+@
+\pause
+{\bf Traps, activity centers, and \\ detection probability}
+<<X>>=
+co <- seq(0.25, 0.75, length=5)
+X <- cbind(rep(co, each=5),
+           rep(co, times=5))
+J <- nrow(X)
+xlim <- ylim <- c(0,1)
+s <- cbind(runif(n, xlim[1], xlim[2]),
+           runif(n, ylim[1], ylim[2]))
+d <- p <- matrix(NA, n, J)
+for(i in 1:n) {
+    d[i,] <- sqrt((s[i,1]-X[,1])^2 +
+                  (s[i,2]-X[,2])^2)
+    p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
+}
+@
+    \end{column}
+\pause
+%\vfill
+\begin{column}{0.5\dimexpr\paperwidth-10pt}
+\scriptsize %\tiny
+{\bf Generate $z$ and $y$}
+<<z2>>=
+z <- matrix(NA, n, T)
+## 4D array!!!
+y <- array(NA, c(n, J, K, T))
+## random release dates
+first <- rpois(n, 1)+1
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1,
+                         z[i,t-1]*phi)
+        for(j in 1:J) {
+            y[i,j,1:K,t] <- rbinom(K, 1,
+                          z[i,t]* p[i,j])
+        }
+    }
+}
+@
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial CJS model in JAGS}
+  \vspace{-5mm}
+  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+%  \footnotesize
+  {\bf Initial values for $z$ matrix}
+  \scriptsize
+<<ji2>>=
+zi <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi[i,(first[i]+1):T] <- 1
+    }
+ji2 <- function() list(phi=runif(1), z=zi)
+@
+\pause
+\vfill
+  {\bf \normalsize Fit the model}
+<<jc2,eval=FALSE,results='hide'>>=
+jd2 <- list(y=y, n=n, first=first, X=X,
+            J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+jp2 <- c("phi", "p0", "sigma")
+jm2 <- jags.model("CJS-spatial.jag", jd2, ji2, n.chains=1, n.adapt=1000)
+jc2 <- coda.samples(jm2, jp2, 1000)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+<<jc2-plot>>=
+plot(jc2)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Spatial CJS with movement}
+
+
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Modeling dispersal among years}
+  {\bf What if activity centers move between years?}
+  \begin{itemize}
+    \item Could affect estimates of detection parameters
+    \item More importantly, might provide opportunity to study dispersal
+  \end{itemize}
+  \pause
+  \vfill
+  {\bf Potential movement models}
+  \begin{itemize}
+    \item Random walk: ${\bm s}(t) \sim \mbox{Normal}({\bm s}(t-1), \rho^2)$
+    \item Meta activity center: ${\bm s}(t) \sim \mbox{Normal}({\bm q}(t), \tau^2)$
+    \item Extensions can be made to allow for resource selection, landscape resistance, etc\dots
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating spatial CJS data with dispersal}
+  \begin{columns}
+    \tiny %\scriptsize
+    \begin{column}{0.5\dimexpr\paperwidth-10pt}
+%  \tiny %\small
+  {\bf Parameters and data dimensions}
+<<move>>=
+## same as before
+T <- 10; K <- 3; n <- 25
+phi <- 0.7; p0 <- 0.4; sigma <- 0.1
+## dispersal parameter (of random walk model)
+rho <- 0.05
+@
+\pause
+{\bf Activity centers follow a random walk}
+<<s>>=
+## state-space should be bigger??
+xlim <- ylim <- c(0, 1)
+first <- rpois(n, 1)+1
+s <- array(NA, c(n, 2, T))
+for(i in 1:n) {
+    s[i,,first[i]] <- cbind(runif(1, xlim[1],
+                                  xlim[2]),
+                            runif(1, ylim[1],
+                                  ylim[2]))
+    for(t in (first[i]+1):T) {
+        s[i,1,t] <- rnorm(1, s[i,1,t-1], rho)
+        s[i,2,t] <- rnorm(1, s[i,2,t-1], rho)
+    }
+}
+d <- p <- array(NA, c(n, J, T))
+for(i in 1:n) {
+    for(t in 1:T) {
+        d[i,,t] <- sqrt((s[i,1,t]-X[,1])^2 +
+                        (s[i,2,t]-X[,2])^2)
+        p[i,,t] <- p0*exp(-d[i,,t]^2 /
+                          (2*sigma^2))
+    }
+}
+@
+    \end{column}
+\pause
+%\vfill
+    \begin{column}{0.5\dimexpr\paperwidth-10pt}
+{\bf Generate $z$ and $y$}
+<<z3>>=
+z <- matrix(NA, n, T)
+y <- array(NA, c(n, J, K, T)) # 4D array!!!
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
+        for(j in 1:J) {
+            y[i,j,1:K,t] <- rbinom(K, 1,
+                                   z[i,t]*p[i,j,t])
+        }
+    }
+}
+@
+\end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Movement of activity center 1}
+  \scriptsize
+<<s1>>=
+plot(t(s[1,,]), pch=16, type="o", xlab="Easting", ylab="Northing",
+     xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial CJS model with dispersal in JAGS}
+  \vspace{-5mm}
+  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial-move.jag}}}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+%  \footnotesize
+  {\bf Initial values for $z$ matrix}
+  \scriptsize
+<<ji3>>=
+zi <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi[i,(first[i]+1):T] <- 1
+    }
+ji3 <- function() list(phi=runif(1), z=zi)
+@
+\pause
+\vfill
+  {\bf \normalsize Fit the model}
+<<jc3,eval=FALSE,results='hide'>>=
+jd3 <- list(y=y, n=n, first=first, X=X,
+            J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+jp3 <- c("phi", "p0", "sigma", "rho")
+jm3 <- jags.model("CJS-spatial-move.jag", jd3, ji3, n.chains=1, n.adapt=1000)
+jc3 <- coda.samples(jm3, jp3, 3000)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+<<jc3-plot>>=
+plot(jc3)
+@
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Summary}
+  \large
+  {\bf Key points}
+  \begin{itemize}[<+->]
+    \item The term ``open populations'' doesn't fully cover the range
+      of potential SCR models
+    \item We can model geographic and/or demographic dynamics
+    \item Spatial CJS models allow for inference about survival,
+      movement, and capture probability
+    \item We could have considered many other movement models
+    \item But you might as well estimate abundance and recruitment if
+      you have robust design data
+    \item This can be done using Jolly-Seber models
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Assignment}
+  {\bf \large For next week}
+  \begin{enumerate}[\bf (1)]
+    \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
+    \item Work on analysis of your own data
+    \item Prepare a 2-min presentation on your planned analysis.
+    \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
+      font, including:
+      \begin{itemize}
+        \item Introduction
+        \item Methods (including model description)
+        \item Results (with figures)
+        \item Discussion
+      \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+
+\end{document}
+
+
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+model {
+
+phi ~ dunif(0,1)
+p0 ~ dunif(0,1)
+sigma ~ dunif(0, 2)
+
+for(i in 1:n) {
+  s[i,1] ~ dunif(xlim[1], xlim[2]) # static activity centers
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  for(j in 1:J) {
+    d[i,j] <- sqrt((s[i,1] - X[j,1])^2 + (s[i,2] - X[j,2])^2)
+    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))
+    }
+  z[i,first[i]] <- 1
+  for(t in (first[i]+1):T) {
+    z[i,t] ~ dbern(z[i,t-1]*phi)
+    for(j in 1:J) {
+      for(k in 1:K) {
+        y[i,j,k,t] ~ dbern(z[i,t]*p[i,j])
+        }
+      }
+    }
+  }
+
+}
