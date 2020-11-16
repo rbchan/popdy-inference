@@ -4,7 +4,7 @@ phi ~ dunif(0,1)
 p ~ dunif(0,1)
 
 for(i in 1:n) {
-  z[i,first[i]] <- 1             ## Known alive at time of "release"
+  z[i,first[i]] <- 1             ## Known alive at time of release
   for(t in (first[i]+1):T) {
     z[i,t] ~ dbern(z[i,t-1]*phi) ## Survives with probability phi
     y[i,t] ~ dbern(z[i,t]*p)     ## Detected with probability p

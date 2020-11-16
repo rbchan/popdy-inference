@@ -1,0 +1,1056 @@
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+
+
+% Compile and open PDF
+
+
+
+
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+
+
+\newcommand{\bxt}{${\bm x}_j$}
+\newcommand{\bx}{{\bm x}}
+\newcommand{\bxj}{{\bm x}_j}
+\newcommand{\bst}{${\bm s}_i$}
+\newcommand{\bs}{{\bm s}}
+\newcommand{\bsi}{{\bm s}_i}
+\newcommand{\ed}{\|\bx - \bs\|}
+\newcommand{\cs}{\mathcal{S} }
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+
+
+\begin{frame}[plain]
+  \centering
+  \LARGE
+  Lecture 15: Open Populations and the \\
+  Spatial Cormack-Jolly-Seber Model \\
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+%\section{Intro}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+%  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+
+\section{Intro}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Open populations}
+  {%\bf \large
+    Overview}
+  \begin{itemize}[<+->]
+    \normalsize
+%    \item All populations are open
+%    \item We are interested in changes in $N$ over time
+    \item Population closure is an assumption we make to estimate
+      density in short time periods
+    \item If we want to study the processes governing spatial and
+      temporal variation in density, we need to move beyond closed
+      population models
+    \item Open population SCR models allow us to model spatial and
+      temporal variation in survival, recruitment, and movement
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Types of ``openness''}
+%  \begin{block}{\bf Geographic closure}
+  {%\bf
+    Geographic closure}
+    \begin{itemize}
+      \item Animals cannot enter or leave the study area
+%      \item Reasonable over short time periods
+      \item But what is the study area in non-spatial settings?
+      \item What is a non-spatial setting?
+    \end{itemize}
+%  \end{block}
+  \pause
+  \vfill
+%  \begin{block}{\bf Demographic closure}
+  {%\bf
+    Demographic closure}
+    \begin{itemize}
+      \item No births or deaths
+      \item Reasonable over short time periods
+      \item But temporal dynamics are often of chief interest
+    \end{itemize}
+%  \end{block}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Two varieties of open models}
+  {%\bf
+    Cormack-Jolly-Seber Model}
+    \begin{itemize}%[<+->]
+      \item<1-> Primarily used to estimate survival
+      \item<2-> When permanent emigration is possible, estimate is of
+        ``apparent survival'' ($\phi$)
+      \item<3-> Apparent survival is the probability of
+        surviving and not leaving the study area permanently
+      \item<4-> CJS models are not used to estimate abundance or recruitment
+    \end{itemize}
+\pause
+\vfill
+  {%\bf
+    \uncover<5->{Jolly-Seber model}}
+    \begin{itemize}
+      \item<6-> Traditionally used to estimate abundance, (apparent) survival, and recruitment
+%      \item Spatial JS models also allow for estimation of movement
+    \end{itemize}
+    \pause
+    \vfill
+    \centering %\bf
+    \uncover<7->{
+    Both classes of models can be made spatially
+    explicit to study movement, among other things \\
+    }
+\end{frame}
+
+
+
+
+
+
+\section{Non-spatial CJS}
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Non-spatial CJS model}
+  {%\bf \large
+    Notes}
+  \begin{itemize}[<+->]
+    \item Typical scenario involves ``releasing'' indviduals and recapturing them over time
+    \item We don't model initial capture process
+    \item Instead, we ``condition on initial capture''
+    \item As an example, imagine releasing a bunch of tagged animals
+      in a translocation study
+    \item Because we aren't estimating $N$, no data augmentation required
+    \item It is possible to estimate parameters using 1 sampling occasion per season
+    \item Robust design provides more information about $p$
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Non-spatial CJS model}
+  {%\bf
+    State model}
+  \[
+    z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1} \times \phi)
+  \]
+  \vfill
+  {%\bf
+    Observation model}
+  \[
+    y_{i,t} \sim \mbox{Bernoulli}(z_{i,t} \times p)
+  \]
+  \pause
+  \vfill
+  \small
+  {%\bf
+    where} \\
+  \begin{itemize}
+    \item $z_{i,t}$ is ``alive state'' of individual $i$ at time $t$
+    \item $\phi$ is ``apparent survival''. Probability of being alive and not permanently emigrating.
+    \item $y_{i,t}=1$ if individual was encountered. $y_{i,t}=0$ otherwise.
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating CJS data without robust design}
+  {%\bf
+    Parameters and dimensions}
+  %\small
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{T} \hlkwb{<-} \hlnum{10}               \hlcom{## primary periods (eg, years)}
+\hlstd{K} \hlkwb{<-} \hlnum{1}                \hlcom{## only 1 secondary sampling occasion}
+\hlstd{n} \hlkwb{<-} \hlnum{25}
+\hlstd{phi} \hlkwb{<-} \hlnum{0.7}
+\hlstd{p} \hlkwb{<-} \hlnum{0.4}
+\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1} \hlcom{## random release dates}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+{%\bf
+  Generate $z$ and $y$}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{z[i,first[i]]} \hlkwb{<-} \hlnum{1}  \hlcom{## Known alive at release}
+    \hlstd{y[i,first[i]]} \hlkwb{<-} \hlnum{1}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T) \{}
+        \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, z[i,t}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{phi)} \hlcom{## Alive/dead state}
+        \hlstd{y[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, z[i,t]}\hlopt{*}\hlstd{p)}     \hlcom{## Data}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated CJS data}
+  \begin{columns}
+    \tiny
+    \begin{column}{0.5\textwidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{z[,}\hlnum{1}\hlopt{:}\hlnum{7}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+##  [1,]    1    0    0    0    0    0    0
+##  [2,]   NA    1    1    1    1    0    0
+##  [3,]   NA    1    1    0    0    0    0
+##  [4,]    1    0    0    0    0    0    0
+##  [5,]    1    1    1    0    0    0    0
+##  [6,]   NA    1    1    1    1    0    0
+##  [7,]   NA   NA    1    0    0    0    0
+##  [8,]   NA   NA   NA    1    1    1    1
+##  [9,]    1    1    0    0    0    0    0
+## [10,]    1    0    0    0    0    0    0
+## [11,]    1    1    1    1    0    0    0
+## [12,]    1    0    0    0    0    0    0
+## [13,]   NA   NA    1    0    0    0    0
+## [14,]    1    0    0    0    0    0    0
+## [15,]   NA    1    1    1    1    0    0
+## [16,]    1    1    1    1    1    0    0
+## [17,]    1    0    0    0    0    0    0
+## [18,]    1    1    1    0    0    0    0
+## [19,]    1    0    0    0    0    0    0
+## [20,]   NA    1    1    0    0    0    0
+## [21,]   NA   NA    1    1    0    0    0
+## [22,]   NA    1    1    1    0    0    0
+## [23,]   NA    1    0    0    0    0    0
+## [24,]    1    0    0    0    0    0    0
+## [25,]   NA    1    1    1    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y[,}\hlnum{1}\hlopt{:}\hlnum{7}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+##  [1,]    1    0    0    0    0    0    0
+##  [2,]   NA    1    0    0    1    0    0
+##  [3,]   NA    1    0    0    0    0    0
+##  [4,]    1    0    0    0    0    0    0
+##  [5,]    1    0    1    0    0    0    0
+##  [6,]   NA    1    0    0    1    0    0
+##  [7,]   NA   NA    1    0    0    0    0
+##  [8,]   NA   NA   NA    1    0    0    1
+##  [9,]    1    0    0    0    0    0    0
+## [10,]    1    0    0    0    0    0    0
+## [11,]    1    1    0    0    0    0    0
+## [12,]    1    0    0    0    0    0    0
+## [13,]   NA   NA    1    0    0    0    0
+## [14,]    1    0    0    0    0    0    0
+## [15,]   NA    1    0    0    0    0    0
+## [16,]    1    0    1    0    1    0    0
+## [17,]    1    0    0    0    0    0    0
+## [18,]    1    1    0    0    0    0    0
+## [19,]    1    0    0    0    0    0    0
+## [20,]   NA    1    0    0    0    0    0
+## [21,]   NA   NA    1    1    0    0    0
+## [22,]   NA    1    1    1    0    0    0
+## [23,]   NA    1    0    0    0    0    0
+## [24,]    1    0    0    0    0    0    0
+## [25,]   NA    1    1    1    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\subsection{Likelihood}
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+  \small
+  We can fit CJS models in R with the `RMark' or `marked'
+  packages. We'll use `marked', which requires the capture histories
+  to be formatted as a character vector named \inr{ch}. 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(marked)}
+\hlstd{y.marked} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(}\hlkwd{is.na}\hlstd{(y),} \hlnum{0}\hlstd{, y)}
+\hlstd{cap.histories} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}
+    \hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y.marked,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
+\hlkwd{head}\hlstd{(cap.histories,} \hlkwc{n}\hlstd{=}\hlnum{3}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##           ch
+## 1 1000000000
+## 2 0100100000
+## 3 0100000000
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  You can use the formulas to add covariates.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm0} \hlkwb{<-} \hlkwd{crm}\hlstd{(}\hlkwc{data}\hlstd{=cap.histories,} \hlkwc{model}\hlstd{=}\hlstr{"CJS"}\hlstd{,} \hlkwc{hessian}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+           \hlkwc{model.parameters}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{Phi}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                                 \hlkwc{p}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{)))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+  Estimates of apparent survival and capture probability.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hlstd{(fm0)}
+\end{alltt}
+\begin{verbatim}
+## $Phi
+##   occ estimate         se       lcl       ucl
+## 1   4 0.617999 0.08624809 0.4415182 0.7680138
+## 
+## $p
+##   occ  estimate        se       lcl       ucl
+## 1   5 0.3242274 0.1095067 0.1526448 0.5609906
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\subsection{Bayesian}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Non-spatial CJS model in JAGS}
+%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-nonspatial.jag}}}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"CJS-nonspatial.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## model {
+## 
+## phi ~ dunif(0,1)
+## p ~ dunif(0,1)
+## 
+## for(i in 1:n) {
+##   z[i,first[i]] <- 1             ## Known alive at time of release
+##   for(t in (first[i]+1):T) {
+##     z[i,t] ~ dbern(z[i,t-1]*phi) ## Survives with probability phi
+##     y[i,t] ~ dbern(z[i,t]*p)     ## Detected with probability p
+##     }
+##   }
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+  Data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data.nonsp} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{T}\hlstd{=T)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Initial values for $z$ matrix
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{zi.nonsp} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{zi.nonsp[i,(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T]} \hlkwb{<-} \hlnum{1}
+    \hlstd{\}}
+\hlstd{jags.inits.nonsp} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=zi.nonsp)}
+\hlstd{jags.pars.nonsp} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"p"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  {%\bf \normalsize
+    Fit the model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples.nonsp} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.nonsp,}
+                                      \hlkwc{inits}\hlstd{=jags.inits.nonsp,}
+                                      \hlkwc{parameters.to.save}\hlstd{=jags.pars.nonsp,}
+                                      \hlkwc{model.file}\hlstd{=}\hlstr{"CJS-nonspatial.jag"}\hlstd{,}
+                                      \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                      \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples.nonsp)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.65\linewidth]{figure/jc1-plot-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+\section{Spatial CJS}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Spatial CJS}
+  {%\bf \large
+    Why spatial?}
+  \begin{itemize}
+    \item Comes with all the benefits of other SCR models
+    \item Allows us to model movement between primary periods, making
+      it possible to separate survival from permanent emigration
+    \item Movement itself may be of interest, such as in studies of
+      dispersal
+  \end{itemize}
+  \pause
+  \vfill
+  {\centering %\bf
+    We begin by ignoring movement, but we use the robust design \\ }
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating spatial CJS data with robust design}
+  \scriptsize %\footnotesize
+  \begin{columns}
+%      \column{\dimexpr\paperwidth-10pt}
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+      {%\bf
+        Parameters and data dimensions}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{T} \hlkwb{<-} \hlnum{10}       \hlcom{# primary occasions}
+\hlstd{K} \hlkwb{<-} \hlnum{3}        \hlcom{# secondary occasions}
+\hlstd{n} \hlkwb{<-} \hlnum{25}       \hlcom{# nIndividuals}
+\hlstd{phi} \hlkwb{<-} \hlnum{0.7}
+\hlstd{p0} \hlkwb{<-} \hlnum{0.4}     \hlcom{# baseline capture prob}
+\hlstd{sigma} \hlkwb{<-} \hlnum{0.1}  \hlcom{# scale parameter}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+{%\bf
+  Traps, activity centers, and \\ detection probability}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{co} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0.25}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{5}\hlstd{)}
+\hlstd{x} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{rep}\hlstd{(co,} \hlkwc{each}\hlstd{=}\hlnum{5}\hlstd{),}
+           \hlkwd{rep}\hlstd{(co,} \hlkwc{times}\hlstd{=}\hlnum{5}\hlstd{))}
+\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}
+\hlstd{xlim} \hlkwb{<-} \hlstd{ylim} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{)}
+\hlstd{s} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(n, xlim[}\hlnum{1}\hlstd{], xlim[}\hlnum{2}\hlstd{]),}
+           \hlkwd{runif}\hlstd{(n, ylim[}\hlnum{1}\hlstd{], ylim[}\hlnum{2}\hlstd{]))}
+\hlstd{d} \hlkwb{<-} \hlstd{p} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{d[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+}
+                  \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
+    \hlstd{p[i,]} \hlkwb{<-} \hlstd{p0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{d[i,]}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+    \end{column}
+\pause
+%\vfill
+\begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+\scriptsize %\tiny
+{%\bf
+  Generate $z$ and $y$}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlstd{y} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(n, J, K, T))} \hlcom{## 4D array}
+\hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1} \hlcom{## random release dates}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{z[i,first[i]]} \hlkwb{<-} \hlnum{1}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T) \{}
+        \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{,}
+                         \hlstd{z[i,t}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{phi)}
+        \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+            \hlstd{y[i,j,}\hlnum{1}\hlopt{:}\hlstd{K,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,}
+                          \hlstd{z[i,t]}\hlopt{*} \hlstd{p[i,j])}
+        \hlstd{\}}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial CJS model in JAGS}
+  \vspace{-5mm}
+  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+%  \footnotesize
+  {\bf Initial values for $z$ matrix}
+  \scriptsize
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{zi} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{zi[i,(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T]} \hlkwb{<-} \hlnum{1}
+    \hlstd{\}}
+\hlstd{ji2} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=zi)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  {\bf \normalsize Fit the model}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jd2} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{X}\hlstd{=X,}
+            \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,} \hlkwc{T}\hlstd{=T,} \hlkwc{xlim}\hlstd{=xlim,} \hlkwc{ylim}\hlstd{=ylim)}
+\hlstd{jp2} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{)}
+\hlstd{jm2} \hlkwb{<-} \hlkwd{jags.model}\hlstd{(}\hlstr{"CJS-spatial.jag"}\hlstd{, jd2, ji2,} \hlkwc{n.chains}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{1000}\hlstd{)}
+\hlstd{jc2} \hlkwb{<-} \hlkwd{coda.samples}\hlstd{(jm2, jp2,} \hlnum{1000}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jc2)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in plot(jc2): object 'jc2' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Spatial CJS with movement}
+
+
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Modeling dispersal among years}
+  {\bf What if activity centers move between years?}
+  \begin{itemize}
+    \item Could affect estimates of detection parameters
+    \item More importantly, might provide opportunity to study dispersal
+  \end{itemize}
+  \pause
+  \vfill
+  {\bf Potential movement models}
+  \begin{itemize}
+    \item Random walk: ${\bm s}(t) \sim \mbox{Normal}({\bm s}(t-1), \rho^2)$
+    \item Meta activity center: ${\bm s}(t) \sim \mbox{Normal}({\bm q}(t), \tau^2)$
+    \item Extensions can be made to allow for resource selection, landscape resistance, etc\dots
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating spatial CJS data with dispersal}
+  \begin{columns}
+    \tiny %\scriptsize
+    \begin{column}{0.5\dimexpr\paperwidth-10pt}
+%  \tiny %\small
+  {\bf Parameters and data dimensions}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## same as before}
+\hlstd{T} \hlkwb{<-} \hlnum{10}\hlstd{; K} \hlkwb{<-} \hlnum{3}\hlstd{; n} \hlkwb{<-} \hlnum{25}
+\hlstd{phi} \hlkwb{<-} \hlnum{0.7}\hlstd{; p0} \hlkwb{<-} \hlnum{0.4}\hlstd{; sigma} \hlkwb{<-} \hlnum{0.1}
+\hlcom{## dispersal parameter (of random walk model)}
+\hlstd{rho} \hlkwb{<-} \hlnum{0.05}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+{\bf Activity centers follow a random walk}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## state-space should be bigger??}
+\hlstd{xlim} \hlkwb{<-} \hlstd{ylim} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{)}
+\hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1}
+\hlstd{s} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(n,} \hlnum{2}\hlstd{, T))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{s[i,,first[i]]} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{, xlim[}\hlnum{1}\hlstd{],}
+                                  \hlstd{xlim[}\hlnum{2}\hlstd{]),}
+                            \hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{, ylim[}\hlnum{1}\hlstd{],}
+                                  \hlstd{ylim[}\hlnum{2}\hlstd{]))}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T) \{}
+        \hlstd{s[i,}\hlnum{1}\hlstd{,t]} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{, s[i,}\hlnum{1}\hlstd{,t}\hlopt{-}\hlnum{1}\hlstd{], rho)}
+        \hlstd{s[i,}\hlnum{2}\hlstd{,t]} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{, s[i,}\hlnum{2}\hlstd{,t}\hlopt{-}\hlnum{1}\hlstd{], rho)}
+    \hlstd{\}}
+\hlstd{\}}
+\hlstd{d} \hlkwb{<-} \hlstd{p} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(n, J, T))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{T) \{}
+        \hlstd{d[i,,t]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{,t]}\hlopt{-}\hlstd{X[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+}
+                        \hlstd{(s[i,}\hlnum{2}\hlstd{,t]}\hlopt{-}\hlstd{X[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
+        \hlstd{p[i,,t]} \hlkwb{<-} \hlstd{p0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{d[i,,t]}\hlopt{^}\hlnum{2} \hlopt{/}
+                          \hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+    \end{column}
+\pause
+%\vfill
+    \begin{column}{0.5\dimexpr\paperwidth-10pt}
+{\bf Generate $z$ and $y$}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlstd{y} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(n, J, K, T))} \hlcom{# 4D array!!!}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{z[i,first[i]]} \hlkwb{<-} \hlnum{1}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T) \{}
+        \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, z[i,t}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{phi)}
+        \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+            \hlstd{y[i,j,}\hlnum{1}\hlopt{:}\hlstd{K,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,}
+                                   \hlstd{z[i,t]}\hlopt{*}\hlstd{p[i,j,t])}
+        \hlstd{\}}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Movement of activity center 1}
+  \scriptsize
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlkwd{t}\hlstd{(s[}\hlnum{1}\hlstd{,,]),} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"o"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Easting"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Northing"}\hlstd{,}
+     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/s1-1} 
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial CJS model with dispersal in JAGS}
+  \vspace{-5mm}
+  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial-move.jag}}}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+%  \footnotesize
+  {\bf Initial values for $z$ matrix}
+  \scriptsize
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{zi} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
+    \hlstd{zi[i,(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T]} \hlkwb{<-} \hlnum{1}
+    \hlstd{\}}
+\hlstd{ji3} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=zi)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  {\bf \normalsize Fit the model}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jd3} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{X}\hlstd{=X,}
+            \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,} \hlkwc{T}\hlstd{=T,} \hlkwc{xlim}\hlstd{=xlim,} \hlkwc{ylim}\hlstd{=ylim)}
+\hlstd{jp3} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"rho"}\hlstd{)}
+\hlstd{jm3} \hlkwb{<-} \hlkwd{jags.model}\hlstd{(}\hlstr{"CJS-spatial-move.jag"}\hlstd{, jd3, ji3,} \hlkwc{n.chains}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{1000}\hlstd{)}
+\hlstd{jc3} \hlkwb{<-} \hlkwd{coda.samples}\hlstd{(jm3, jp3,} \hlnum{3000}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jc3)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in plot(jc3): object 'jc3' not found}}\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Summary}
+  \large
+  {\bf Key points}
+  \begin{itemize}[<+->]
+    \item The term ``open populations'' doesn't fully cover the range
+      of potential SCR models
+    \item We can model geographic and/or demographic dynamics
+    \item Spatial CJS models allow for inference about survival,
+      movement, and capture probability
+    \item We could have considered many other movement models
+    \item But you might as well estimate abundance and recruitment if
+      you have robust design data
+    \item This can be done using Jolly-Seber models
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Assignment}
+  {\bf \large For next week}
+  \begin{enumerate}[\bf (1)]
+    \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
+    \item Work on analysis of your own data
+    \item Prepare a 2-min presentation on your planned analysis.
+    \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
+      font, including:
+      \begin{itemize}
+        \item Introduction
+        \item Methods (including model description)
+        \item Results (with figures)
+        \item Discussion
+      \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+
+\end{document}
+
+
+
+
+
+
+
+

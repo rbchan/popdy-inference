@@ -10,15 +10,11 @@
 
 
 
-% Load function to compile and open PDF
-<<build-fun,include=FALSE,purl=FALSE>>=
-source("../rnw2pdf.R")
-@
-
 % Compile and open PDF
-<<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-CJS") 
-rnw2pdf("lecture-CJS", tangle=TRUE)
+<<buildit,include=FALSE,eval=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+rnw2pdf("lecture-survival") 
+rnw2pdf("lecture-survival", tangle=TRUE)
 @ 
 
 
@@ -53,19 +49,17 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}[plain]
-  \begin{center}
-    \LARGE {\bf \color{RoyalBlue}{Open Populations and the \\
-      Spatial Cormack-Jolly-Seber Model}} \par
-    \vspace{0.8cm}
-%    \color{Gray}{
-%    \Large {Spatial Capture-Recapture Workshop} \\ % \par
-%    \large Athens, GA -- March 2015 \\
-    \large WILD 8327 -- Spatial Capture-Recapture \par
-    \vspace{0.2cm}
-    March 23, 2016
-%  \includegraphics[width=0.3\textwidth]{figs/scrbook} \\
-%    }
-  \end{center}
+  \centering
+  \LARGE
+  Lecture 15: Open Populations and the \\
+  Spatial Cormack-Jolly-Seber Model \\
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  Richard Chandler \\
+  University of Georgia \\
 \end{frame}
 
 
@@ -93,8 +87,10 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Open populations}
-  {\bf \large Overview}
+  {%\bf \large
+    Overview}
   \begin{itemize}[<+->]
+    \normalsize
 %    \item All populations are open
 %    \item We are interested in changes in $N$ over time
     \item Population closure is an assumption we make to estimate
@@ -112,7 +108,8 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Types of ``openness''}
 %  \begin{block}{\bf Geographic closure}
-  {\bf Geographic closure}
+  {%\bf
+    Geographic closure}
     \begin{itemize}
       \item Animals cannot enter or leave the study area
 %      \item Reasonable over short time periods
@@ -123,7 +120,8 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
 %  \begin{block}{\bf Demographic closure}
-  {\bf Demographic closure}
+  {%\bf
+    Demographic closure}
     \begin{itemize}
       \item No births or deaths
       \item Reasonable over short time periods
@@ -140,29 +138,31 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Two varieties of open models}
-%  \begin{block}{\bf Cormack-Jolly-Seber Model}
-  {\bf Cormack-Jolly-Seber Model}
-    \begin{itemize}[<+->]
-      \item Primarily used to estimate survival
-      \item When permanent emigration is possible, estimate is of
+  {%\bf
+    Cormack-Jolly-Seber Model}
+    \begin{itemize}%[<+->]
+      \item<1-> Primarily used to estimate survival
+      \item<2-> When permanent emigration is possible, estimate is of
         ``apparent survival'' ($\phi$)
-%      \item Apparent survival is defined as the probability of
-%        surviving and not leaving the study area permanently
-      \item CJS models are not used to estimate abundance or recruitment
+      \item<3-> Apparent survival is the probability of
+        surviving and not leaving the study area permanently
+      \item<4-> CJS models are not used to estimate abundance or recruitment
     \end{itemize}
-%  \end{block}
-  \pause
-%  \begin{block}{\bf Jolly-Seber model}
-  {\bf Jolly-Seber model}
+\pause
+\vfill
+  {%\bf
+    \uncover<5->{Jolly-Seber model}}
     \begin{itemize}
-      \item Traditionally used to estimate abundance, (apparent) survival, and recruitment
+      \item<6-> Traditionally used to estimate abundance, (apparent) survival, and recruitment
 %      \item Spatial JS models also allow for estimation of movement
     \end{itemize}
-%  \end{block}
     \pause
     \vfill
-    \centering \bf Both classes of models can be made spatially
-    explicit to study movement, among other things \par
+    \centering %\bf
+    \uncover<7->{
+    Both classes of models can be made spatially
+    explicit to study movement, among other things \\
+    }
 \end{frame}
 
 
@@ -180,7 +180,8 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Non-spatial CJS model}
-  {\bf \large Notes}
+  {%\bf \large
+    Notes}
   \begin{itemize}[<+->]
     \item Typical scenario involves ``releasing'' indviduals and recapturing them over time
     \item We don't model initial capture process
@@ -198,19 +199,22 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Non-spatial CJS model}
-  {\bf State model}
+  {%\bf
+    State model}
   \[
     z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1} \times \phi)
   \]
   \vfill
-  {\bf Observation model}
+  {%\bf
+    Observation model}
   \[
     y_{i,t} \sim \mbox{Bernoulli}(z_{i,t} \times p)
   \]
   \pause
   \vfill
   \small
-  {\bf where} \\
+  {%\bf
+    where} \\
   \begin{itemize}
     \item $z_{i,t}$ is ``alive state'' of individual $i$ at time $t$
     \item $\phi$ is ``apparent survival''. Probability of being alive and not permanently emigrating.
@@ -228,11 +232,13 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[fragile]
   \frametitle{Simulating CJS data without robust design}
-  {\bf Parameters and data dimensions}
-  \small
-<<sim-norobust>>=
-T <- 10    # years/primary periods
-K <- 1     # only 1 secondary sampling occasion
+  {%\bf
+    Parameters and dimensions}
+  %\small
+<<sim-norobust,size='footnotesize',echo=-1>>=
+set.seed(34918)  
+T <- 10               ## primary periods (eg, years)
+K <- 1                ## only 1 secondary sampling occasion
 n <- 25
 phi <- 0.7
 p <- 0.4
@@ -242,13 +248,15 @@ first <- rpois(n, 1)+1 ## random release dates
 @
 \pause
 \vfill
-{\bf Generate $z$ and $y$}
-<<sim-norbust2>>=
+{%\bf
+  Generate $z$ and $y$}
+<<sim-norbust2,size='footnotesize'>>=
 for(i in 1:n) {
-    z[i,first[i]] <- 1
+    z[i,first[i]] <- 1  ## Known alive at release
+    y[i,first[i]] <- 1
     for(t in (first[i]+1):T) {
-        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
-        y[i,t] <- rbinom(1, 1, z[i,t]*p)
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi) ## Alive/dead state
+        y[i,t] <- rbinom(1, 1, z[i,t]*p)     ## Data
     }
 }
 @
@@ -276,11 +284,44 @@ y[,1:7]
 
 
 
+\subsection{Likelihood}
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+<<install-marked,include=FALSE>>=
+if(!require(marked)) install.packages("marked")
+library(marked)
+@ 
 
 
 \begin{frame}[fragile]
-  \frametitle{Non-spatial CJS model in JAGS}
-  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-nonspatial.jag}}}
+  \frametitle{Likelihood analysis}
+  \small
+  We can fit CJS models in R with the `RMark' or `marked'
+  packages. We'll use `marked', which requires the capture histories
+  to be formatted as a character vector named \inr{ch}. 
+<<marked-data,size='footnotesize'>>=
+library(marked)
+y.marked <- ifelse(is.na(y), 0, y)
+cap.histories <- data.frame(
+    ch=apply(y.marked, 1, paste, collapse=""))
+head(cap.histories, n=3)
+@ 
+  \pause
+  \vfill
+  You can use the formulas to add covariates.
+<<marked-fit,size='footnotesize',results='hide',message=FALSE>>=
+fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
+           model.parameters=list(Phi=list(formula=~1),
+                                 p=list(formula=~1)))
+@ 
 \end{frame}
 
 
@@ -288,26 +329,73 @@ y[,1:7]
 
 
 \begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+  Estimates of apparent survival and capture probability.
+<<marked-predict,size='footnotesize'>>=
+predict(fm0)
+@ 
+\end{frame}
+
+
+
+
+\subsection{Bayesian}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Non-spatial CJS model in JAGS}
+%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-nonspatial.jag}}}
+<<jags-nonsp,size='scriptsize'>>=
+writeLines(readLines("CJS-nonspatial.jag"))
+@ 
+\end{frame}
+
+
+
+<<jagsUI,include=FALSE,results='hide'>>=
+library(jagsUI)
+library(coda)
+@ 
+
+
+
+\begin{frame}[fragile]
   \frametitle{JAGS}
-%  \footnotesize
-  {\bf Initial values for $z$ matrix}
-  \scriptsize
-<<zi>>=
-zi <- matrix(NA, n, T)
+  Data
+<<nonsp-data,size='scriptsize'>>=
+jags.data.nonsp <- list(y=y, n=n, first=first, T=T)
+@   
+  \pause
+  \vfill
+  Initial values for $z$ matrix
+<<zi,size='scriptsize'>>=
+zi.nonsp <- matrix(NA, n, T)
 for(i in 1:n) {
-    zi[i,(first[i]+1):T] <- 1
+    zi.nonsp[i,(first[i]+1):T] <- 1
     }
-ji1 <- function() list(phi=runif(1), p=runif(1), z=zi)
+jags.inits.nonsp <- function() list(phi=runif(1), p=runif(1), z=zi.nonsp)
+jags.pars.nonsp <- c("phi", "p")
 @
-\pause
-\vfill
-  {\bf \normalsize Fit the model}
-<<jc1,eval=FALSE,results='hide'>>=
-jd1 <- list(y=y, n=n, first=first, T=T)
-jp1 <- c("phi", "p")
-library(rjags)
-jm1 <- jags.model("CJS-nonspatial.jag", jd1, ji1, n.chains=1, n.adapt=1000)
-jc1 <- coda.samples(jm1, jp1, 2000)
+  \pause
+  \vfill
+  {%\bf \normalsize
+    Fit the model}
+<<jc1,size='scriptsize',message=FALSE,results='hide',cache=TRUE>>=
+library(jagsUI)
+jags.post.samples.nonsp <- jags.basic(data=jags.data.nonsp,
+                                      inits=jags.inits.nonsp,
+                                      parameters.to.save=jags.pars.nonsp,
+                                      model.file="CJS-nonspatial.jag",
+                                      n.chains=3, n.adapt=100, n.burnin=0,
+                                      n.iter=2000, parallel=TRUE)
 @
 \end{frame}
 
@@ -321,8 +409,8 @@ jc1 <- coda.samples(jm1, jp1, 2000)
 
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
-<<jc1-plot>>=
-plot(jc1)
+<<jc1-plot,out.width="65%",fig.align='center',size='scriptsize'>>=
+plot(jags.post.samples.nonsp)
 @
 \end{frame}
 
@@ -336,9 +424,18 @@ plot(jc1)
 \section{Spatial CJS}
 
 
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
 \begin{frame}
   \frametitle{Spatial CJS}
-  {\bf \large Why spatial?}
+  {%\bf \large
+    Why spatial?}
   \begin{itemize}
     \item Comes with all the benefits of other SCR models
     \item Allows us to model movement between primary periods, making
@@ -348,7 +445,8 @@ plot(jc1)
   \end{itemize}
   \pause
   \vfill
-  {\centering \bf We begin by ignoring movement, but we use the robust design (could have been done earlier) \par}
+  {\centering %\bf
+    We begin by ignoring movement, but we use the robust design \\ }
 \end{frame}
 
 
@@ -356,57 +454,57 @@ plot(jc1)
 
 \begin{frame}[fragile]
   \frametitle{Simulating spatial CJS data with robust design}
-%  \tiny %\small
   \scriptsize %\footnotesize
   \begin{columns}
 %      \column{\dimexpr\paperwidth-10pt}
-    \begin{column}{0.5\dimexpr\paperwidth-10pt}
-  {\bf Parameters and data dimensions}
-<<sim2>>=
-T <- 10    # years/primary occasions
-K <- 3     # secondary occasions
-n <- 25
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+      {%\bf
+        Parameters and data dimensions}
+<<sim2,size='tiny'>>=
+T <- 10       # primary occasions
+K <- 3        # secondary occasions
+n <- 25       # nIndividuals
 phi <- 0.7
-p0 <- 0.4
-sigma <- 0.1
+p0 <- 0.4     # baseline capture prob
+sigma <- 0.1  # scale parameter
 @
 \pause
-{\bf Traps, activity centers, and \\ detection probability}
-<<X>>=
+{%\bf
+  Traps, activity centers, and \\ detection probability}
+<<X,size='tiny'>>=
 co <- seq(0.25, 0.75, length=5)
-X <- cbind(rep(co, each=5),
+x <- cbind(rep(co, each=5),
            rep(co, times=5))
-J <- nrow(X)
+J <- nrow(x)
 xlim <- ylim <- c(0,1)
 s <- cbind(runif(n, xlim[1], xlim[2]),
            runif(n, ylim[1], ylim[2]))
-d <- p <- matrix(NA, n, J)
+d <- p.sp <- matrix(NA, n, J)
 for(i in 1:n) {
-    d[i,] <- sqrt((s[i,1]-X[,1])^2 +
-                  (s[i,2]-X[,2])^2)
-    p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
+    d[i,] <- sqrt((s[i,1]-x[,1])^2 +
+                  (s[i,2]-x[,2])^2)
+    p.sp[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
 }
 @
     \end{column}
 \pause
 %\vfill
-\begin{column}{0.5\dimexpr\paperwidth-10pt}
+\begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
 \scriptsize %\tiny
-{\bf Generate $z$ and $y$}
-<<z2>>=
+{%\bf
+  Generate $z$ and $y$}
+<<z2,size='tiny'>>=
 z <- matrix(NA, n, T)
-## 4D array!!!
-y <- array(NA, c(n, J, K, T))
-## random release dates
-first <- rpois(n, 1)+1
+y.sp <- array(NA, c(n, J, K, T)) ## 4D array
+first <- rpois(n, 1)+1 ## random release dates
 for(i in 1:n) {
     z[i,first[i]] <- 1
     for(t in (first[i]+1):T) {
         z[i,t] <- rbinom(1, 1,
                          z[i,t-1]*phi)
         for(j in 1:J) {
-            y[i,j,1:K,t] <- rbinom(K, 1,
-                          z[i,t]* p[i,j])
+            y.sp[i,j,1:K,t] <- rbinom(K, 1,
+                z[i,t]*p.sp[i,j])
         }
     }
 }
@@ -420,16 +518,60 @@ for(i in 1:n) {
 
 
 
+\subsection{Likelihood}
 
 
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+  We'll use the R package `openpopscr' for model fitting. It isn't on
+  CRAN, but you can install it from github using the following
+  commands.
+<<install-openpopscr,size='scriptsize',message=FALSE,results='hide'>>=
+library(remotes)
+install_github("r-glennie/openpopscr", build = TRUE,
+               build_opts = c("--no-resave-data", "--no-manual"),
+               build_vignettes = TRUE)
+library(openpopscr)
+library(secr)
+@   
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+  
+\end{frame}
+
+
+\subsection{Bayesian}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
 
 
 
 
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model in JAGS}
-  \vspace{-5mm}
-  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
+%  \vspace{-5mm}
+%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
+<<jags-nonsp,size='tiny'>>=
+writeLines(readLines("CJS-spatial.jag"))
+@ 
 \end{frame}
 
 
@@ -438,25 +580,31 @@ for(i in 1:n) {
 
 \begin{frame}[fragile]
   \frametitle{JAGS}
-%  \footnotesize
-  {\bf Initial values for $z$ matrix}
+  Data
+<<sp-data,size='scriptsize'>>=
+jags.data.sp <- list(y=y.sp, n=n, first=first, x=x,
+                     J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+@   
+  Initial values for $z$ matrix
   \scriptsize
-<<ji2>>=
-zi <- matrix(NA, n, T)
+<<ji2,size='scriptsize'>>=
+zi.sp <- matrix(NA, n, T)
 for(i in 1:n) {
-    zi[i,(first[i]+1):T] <- 1
+    zi.sp[i,(first[i]+1):T] <- 1
     }
-ji2 <- function() list(phi=runif(1), z=zi)
+jags.inits.sp <- function() list(phi=runif(1), z=zi.sp)
+jags.pars.sp <- c("phi", "p0", "sigma")
 @
 \pause
 \vfill
-  {\bf \normalsize Fit the model}
-<<jc2,eval=FALSE,results='hide'>>=
-jd2 <- list(y=y, n=n, first=first, X=X,
-            J=J, K=K, T=T, xlim=xlim, ylim=ylim)
-jp2 <- c("phi", "p0", "sigma")
-jm2 <- jags.model("CJS-spatial.jag", jd2, ji2, n.chains=1, n.adapt=1000)
-jc2 <- coda.samples(jm2, jp2, 1000)
+  {\normalsize Fit the model}
+<<jc2,size='scriptsize',cache=TRUE,results='hide'>>=
+jags.post.samples.sp <- jags.basic(data=jags.data.sp,
+                                   inits=jags.inits.sp,
+                                   parameters.to.save=jags.pars.sp,
+                                   model.file="CJS-spatial.jag",
+                                   n.chains=3, n.adapt=100, n.burnin=0,
+                                   n.iter=2000, parallel=TRUE)
 @
 \end{frame}
 
@@ -470,23 +618,10 @@ jc2 <- coda.samples(jm2, jp2, 1000)
 
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
-<<jc2-plot>>=
-plot(jc2)
+<<jc2-plot,size='scriptsize',out.width="60%",fig.align='center'>>=
+plot(jags.post.samples.sp)
 @
 \end{frame}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
