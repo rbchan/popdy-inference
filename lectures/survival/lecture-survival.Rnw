@@ -838,7 +838,7 @@ jp.sp.move <- c("phi", "p0", "sigma", "tau")
   \pause
   \vfill
   Fit the model
-<<jc3,size='scriptsize',eval=FALSE,results='hide'>>=
+<<jc3,size='scriptsize',results='hide',cache=TRUE>>=
 jps.sp.move <- jags.basic(data=jd.sp.move,
                           inits=ji.sp.move,
                           parameters.to.save=jp.sp.move,
@@ -865,39 +865,35 @@ plot(jps.sp.move[,jp.sp.move])
 \begin{frame}
   \frametitle{Summary}
   \large
-  {\bf Key points}
+  Key points
   \begin{itemize}[<+->]
-    \item The term ``open populations'' doesn't fully cover the range
-      of potential SCR models
-    \item We can model geographic and/or demographic dynamics
     \item Spatial CJS models allow for inference about survival,
       movement, and capture probability
     \item We could have considered many other movement models
-    \item But you might as well estimate abundance and recruitment if
-      you have robust design data
-    \item This can be done using Jolly-Seber models
+    \item Next, we'll use Jolly-Seber models to study spatio-temporal
+      variation in abundance and recruitment too
   \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}
-  \frametitle{Assignment}
-  {\bf \large For next week}
-  \begin{enumerate}[\bf (1)]
-    \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
-    \item Work on analysis of your own data
-    \item Prepare a 2-min presentation on your planned analysis.
-    \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
-      font, including:
-      \begin{itemize}
-        \item Introduction
-        \item Methods (including model description)
-        \item Results (with figures)
-        \item Discussion
-      \end{itemize}
-  \end{enumerate}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Assignment}
+%   {\bf \large For next week}
+%   \begin{enumerate}[\bf (1)]
+%     \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
+%     \item Work on analysis of your own data
+%     \item Prepare a 2-min presentation on your planned analysis.
+%     \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
+%       font, including:
+%       \begin{itemize}
+%         \item Introduction
+%         \item Methods (including model description)
+%         \item Results (with figures)
+%         \item Discussion
+%       \end{itemize}
+%   \end{enumerate}
+% \end{frame}
 
 
 \end{document}

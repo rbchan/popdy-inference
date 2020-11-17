@@ -1124,7 +1124,7 @@ Generate $z$ and $y$
 ##   s[i,1,first[i]] ~ dunif(xlim[1], xlim[2])
 ##   s[i,2,first[i]] ~ dunif(ylim[1], ylim[2])
 ##   for(j in 1:J) {
-##     d[i,j,first[i]] <- sqrt((s[i,1,first[i]] - X[j,1])^2 + (s[i,2,first[i]] - X[j,2])^2)
+##     d[i,j,first[i]] <- sqrt((s[i,1,first[i]] - x[j,1])^2 + (s[i,2,first[i]] - x[j,2])^2)
 ##     p[i,j,first[i]] <- p0*exp(-d[i,j,first[i]]^2/(2*sigma^2))
 ##     }
 ##   z[i,first[i]] <- 1
@@ -1153,6 +1153,16 @@ Generate $z$ and $y$
 
 \begin{frame}[fragile]
   \frametitle{JAGS}
+  \small
+  Data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jd.sp.move} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.move,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{x}\hlstd{=x,}
+                   \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,} \hlkwc{T}\hlstd{=T,} \hlkwc{xlim}\hlstd{=xlim,} \hlkwc{ylim}\hlstd{=ylim)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   Initial values for $z$ matrix
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -1161,31 +1171,27 @@ Generate $z$ and $y$
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
     \hlstd{zi[i,(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T]} \hlkwb{<-} \hlnum{1}
     \hlstd{\}}
-\hlstd{ji3} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=zi)}
+\hlstd{ji.sp.move} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=zi)}
+\hlstd{jp.sp.move} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"tau"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
   \pause
   \vfill
-  \large Fit the model
-\begin{knitrout}
+  Fit the model
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jd3} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.move,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{X}\hlstd{=X,}
-            \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,} \hlkwc{T}\hlstd{=T,} \hlkwc{xlim}\hlstd{=xlim,} \hlkwc{ylim}\hlstd{=ylim)}
-\hlstd{jp3} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"tau"}\hlstd{)}
-\hlstd{jm3} \hlkwb{<-} \hlkwd{jags.model}\hlstd{(}\hlstr{"CJS-spatial-move.jag"}\hlstd{, jd3, ji3,} \hlkwc{n.chains}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{1000}\hlstd{)}
-\hlstd{jc3} \hlkwb{<-} \hlkwd{coda.samples}\hlstd{(jm3, jp3,} \hlnum{3000}\hlstd{)}
+\hlstd{jps.sp.move} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.sp.move,}
+                          \hlkwc{inits}\hlstd{=ji.sp.move,}
+                          \hlkwc{parameters.to.save}\hlstd{=jp.sp.move,}
+                          \hlkwc{model.file}\hlstd{=}\hlstr{"CJS-spatial-move.jag"}\hlstd{,}
+                          \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                          \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \end{frame}
-
-
-
-
-
-
 
 
 
@@ -1194,11 +1200,11 @@ Generate $z$ and $y$
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jc3)}
+\hlkwd{plot}\hlstd{(jps.sp.move[,jp.sp.move])}
 \end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in plot(jc3): object 'jc3' not found}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in plot(jps.sp.move[, jp.sp.move]): object 'jps.sp.move' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 

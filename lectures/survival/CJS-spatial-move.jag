@@ -18,7 +18,7 @@ for(i in 1:n) {
     s[i,1,t] ~ dnorm(s[i,1,t-1], tauprec)#T(xlim[1], xlim[2])
     s[i,2,t] ~ dnorm(s[i,2,t-1], tauprec)#T(ylim[1], ylim[2])
     for(j in 1:J) {
-      d[i,j,t] <- sqrt((s[i,1,t] - X[j,1])^2 + (s[i,2,t] - X[j,2])^2)
+      d[i,j,t] <- sqrt((s[i,1,t] - x[j,1])^2 + (s[i,2,t] - x[j,2])^2)
       p[i,j,t] <- p0*exp(-d[i,j,t]^2/(2*sigma^2))
       }
     z[i,t] ~ dbern(z[i,t-1]*phi)
