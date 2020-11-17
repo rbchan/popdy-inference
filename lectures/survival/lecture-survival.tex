@@ -71,8 +71,6 @@
 
 
 
-
-
 \newcommand{\bxt}{${\bm x}_j$}
 \newcommand{\bx}{{\bm x}}
 \newcommand{\bxj}{{\bm x}_j}
@@ -1132,7 +1130,7 @@ Generate $z$ and $y$
 ##     s[i,1,t] ~ dnorm(s[i,1,t-1], tauprec)#T(xlim[1], xlim[2])
 ##     s[i,2,t] ~ dnorm(s[i,2,t-1], tauprec)#T(ylim[1], ylim[2])
 ##     for(j in 1:J) {
-##       d[i,j,t] <- sqrt((s[i,1,t] - X[j,1])^2 + (s[i,2,t] - X[j,2])^2)
+##       d[i,j,t] <- sqrt((s[i,1,t] - x[j,1])^2 + (s[i,2,t] - x[j,2])^2)
 ##       p[i,j,t] <- p0*exp(-d[i,j,t]^2/(2*sigma^2))
 ##       }
 ##     z[i,t] ~ dbern(z[i,t-1]*phi)
@@ -1197,14 +1195,19 @@ Generate $z$ and $y$
 
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
-\begin{knitrout}
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jps.sp.move[,jp.sp.move])}
 \end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/jc3-plot-1} 
+
+}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in plot(jps.sp.move[, jp.sp.move]): object 'jps.sp.move' not found}}\end{kframe}
+
 \end{knitrout}
 \end{frame}
 
@@ -1216,39 +1219,40 @@ Generate $z$ and $y$
 \begin{frame}
   \frametitle{Summary}
   \large
-  {\bf Key points}
-  \begin{itemize}[<+->]
-    \item The term ``open populations'' doesn't fully cover the range
-      of potential SCR models
-    \item We can model geographic and/or demographic dynamics
-    \item Spatial CJS models allow for inference about survival,
-      movement, and capture probability
-    \item We could have considered many other movement models
-    \item But you might as well estimate abundance and recruitment if
-      you have robust design data
-    \item This can be done using Jolly-Seber models
-  \end{itemize}
+%  Key points
+%  \begin{itemize}[<+->]
+%  \item
+  Spatial CJS models allow for inference about survival,
+  movement, and capture probability \\
+  \pause \vfill
+  % \item
+  We could have considered many other movement models \\
+  \pause \vfill
+  % \item
+  Next, we'll use Jolly-Seber models to study spatio-temporal
+  variation in abundance and recruitment too \\
+%  \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}
-  \frametitle{Assignment}
-  {\bf \large For next week}
-  \begin{enumerate}[\bf (1)]
-    \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
-    \item Work on analysis of your own data
-    \item Prepare a 2-min presentation on your planned analysis.
-    \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
-      font, including:
-      \begin{itemize}
-        \item Introduction
-        \item Methods (including model description)
-        \item Results (with figures)
-        \item Discussion
-      \end{itemize}
-  \end{enumerate}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Assignment}
+%   {\bf \large For next week}
+%   \begin{enumerate}[\bf (1)]
+%     \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
+%     \item Work on analysis of your own data
+%     \item Prepare a 2-min presentation on your planned analysis.
+%     \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
+%       font, including:
+%       \begin{itemize}
+%         \item Introduction
+%         \item Methods (including model description)
+%         \item Results (with figures)
+%         \item Discussion
+%       \end{itemize}
+%   \end{enumerate}
+% \end{frame}
 
 
 \end{document}

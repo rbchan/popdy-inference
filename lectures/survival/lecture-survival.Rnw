@@ -17,7 +17,6 @@ rnw2pdf("lecture-survival", tangle=TRUE)
 
 
 <<knitr-theme,include=FALSE,purl=FALSE>>=
-##knit_theme$set("navajo-night")
 knit_theme$set("edit-kwrite")
 @
 
@@ -25,8 +24,6 @@ knit_theme$set("edit-kwrite")
 %% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
-
-
 
 
 
@@ -852,7 +849,7 @@ jps.sp.move <- jags.basic(data=jd.sp.move,
 
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
-<<jc3-plot>>=
+<<jc3-plot,size='scriptsize',out.width="60%",fig.align='center'>>=
 plot(jps.sp.move[,jp.sp.move])
 @
 \end{frame}
@@ -865,14 +862,19 @@ plot(jps.sp.move[,jp.sp.move])
 \begin{frame}
   \frametitle{Summary}
   \large
-  Key points
-  \begin{itemize}[<+->]
-    \item Spatial CJS models allow for inference about survival,
-      movement, and capture probability
-    \item We could have considered many other movement models
-    \item Next, we'll use Jolly-Seber models to study spatio-temporal
-      variation in abundance and recruitment too
-  \end{itemize}
+%  Key points
+%  \begin{itemize}[<+->]
+%  \item
+  Spatial CJS models allow for inference about survival,
+  movement, and capture probability \\
+  \pause \vfill
+  % \item
+  We could have considered many other movement models \\
+  \pause \vfill
+  % \item
+  Next, we'll use Jolly-Seber models to study spatio-temporal
+  variation in abundance and recruitment too \\
+%  \end{itemize}
 \end{frame}
 
 
