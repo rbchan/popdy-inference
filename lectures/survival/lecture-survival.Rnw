@@ -8,8 +8,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
-
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -87,12 +85,10 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Open populations}
-  {%\bf \large
-    Overview}
+  \large
+  Overview
   \begin{itemize}[<+->]
     \normalsize
-%    \item All populations are open
-%    \item We are interested in changes in $N$ over time
     \item Population closure is an assumption we make to estimate
       density in short time periods
     \item If we want to study the processes governing spatial and
@@ -106,31 +102,26 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{Types of ``openness''}
-%  \begin{block}{\bf Geographic closure}
-  {%\bf
-    Geographic closure}
-    \begin{itemize}
-      \item Animals cannot enter or leave the study area
-%      \item Reasonable over short time periods
-      \item But what is the study area in non-spatial settings?
-      \item What is a non-spatial setting?
-    \end{itemize}
-%  \end{block}
+  \frametitle{Types of closure}
+  \large
+  Geographic closure
+  \begin{itemize}
+    \normalsize
+    \item Animals cannot enter or leave the study area
+    \item But what is the study area in non-spatial settings?
+    \item What is a non-spatial setting?
+  \end{itemize}
   \pause
   \vfill
-%  \begin{block}{\bf Demographic closure}
-  {%\bf
-    Demographic closure}
-    \begin{itemize}
-      \item No births or deaths
-      \item Reasonable over short time periods
-      \item But temporal dynamics are often of chief interest
-    \end{itemize}
-%  \end{block}
+  \large
+  Demographic closure
+  \begin{itemize}
+    \normalsize
+    \item No births or deaths
+    \item Reasonable over short time periods
+    \item But temporal dynamics are often of chief interest
+  \end{itemize}
 \end{frame}
-
-
 
 
 
@@ -138,31 +129,33 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Two varieties of open models}
-  {%\bf
-    Cormack-Jolly-Seber Model}
-    \begin{itemize}%[<+->]
-      \item<1-> Primarily used to estimate survival
-      \item<2-> When permanent emigration is possible, estimate is of
-        ``apparent survival'' ($\phi$)
-      \item<3-> Apparent survival is the probability of
-        surviving and not leaving the study area permanently
-      \item<4-> CJS models are not used to estimate abundance or recruitment
-    \end{itemize}
-\pause
-\vfill
-  {%\bf
-    \uncover<5->{Jolly-Seber model}}
-    \begin{itemize}
-      \item<6-> Traditionally used to estimate abundance, (apparent) survival, and recruitment
-%      \item Spatial JS models also allow for estimation of movement
-    \end{itemize}
-    \pause
-    \vfill
-    \centering %\bf
-    \uncover<7->{
+  \large
+  Cormack-Jolly-Seber Model
+  \begin{itemize}%[<+->]
+    \normalsize
+    \item<1-> Primarily used to estimate survival
+    \item<2-> When permanent emigration is possible, estimate is of
+      ``apparent survival'' ($\phi$)
+    \item<3-> Apparent survival is the probability of
+      surviving and not leaving the study area permanently
+    \item<4-> CJS models are not used to estimate abundance or recruitment
+  \end{itemize}
+  \pause
+  \vfill
+  \large
+  \uncover<5->{Jolly-Seber model}
+  \normalsize
+  \begin{itemize}
+    \item<6-> Traditionally used to estimate abundance, (apparent)
+      survival, and recruitment  
+  \end{itemize}
+  \pause
+  \vfill
+  \centering %\bf
+  \uncover<7->{
     Both classes of models can be made spatially
     explicit to study movement, among other things \\
-    }
+  }
 \end{frame}
 
 
@@ -180,9 +173,10 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Non-spatial CJS model}
-  {%\bf \large
-    Notes}
+  \large
+  Notes
   \begin{itemize}[<+->]
+    \normalsize
     \item Typical scenario involves ``releasing'' indviduals and recapturing them over time
     \item We don't model initial capture process
     \item Instead, we ``condition on initial capture''
@@ -199,26 +193,24 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Non-spatial CJS model}
-  {%\bf
-    State model}
+  State model
   \[
     z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1} \times \phi)
   \]
   \vfill
-  {%\bf
-    Observation model}
+  Observation model
   \[
     y_{i,t} \sim \mbox{Bernoulli}(z_{i,t} \times p)
   \]
   \pause
   \vfill
   \small
-  {%\bf
-    where} \\
+  where
   \begin{itemize}
     \item $z_{i,t}$ is ``alive state'' of individual $i$ at time $t$
-    \item $\phi$ is ``apparent survival''. Probability of being alive and not permanently emigrating.
-    \item $y_{i,t}=1$ if individual was encountered. $y_{i,t}=0$ otherwise.
+    \item $\phi$ is ``apparent survival''. Probability of being alive
+      and not permanently emigrating. 
+    \item $y_{i,t}=1$ if individual was encountered, $y_{i,t}=0$ otherwise.
   \end{itemize}
 \end{frame}
 
@@ -434,17 +426,19 @@ plot(jags.post.samples.nonsp)
 
 \begin{frame}
   \frametitle{Spatial CJS}
-  {%\bf \large
-    Why spatial?}
+  \large
+  Why spatial?
   \begin{itemize}
+    \normalsize
     \item Comes with all the benefits of other SCR models
-    \item Allows us to model movement between primary periods, making
+    \item Allows for movement between primary periods, making
       it possible to separate survival from permanent emigration
     \item Movement itself may be of interest, such as in studies of
       dispersal
   \end{itemize}
   \pause
   \vfill
+  \normalsize
   {\centering %\bf
     We begin by ignoring movement, but we use the robust design \\ }
 \end{frame}
@@ -528,13 +522,28 @@ for(i in 1:n) {
 \end{frame}
 
 
+<<install-load,include=FALSE>>=
+if(!require(remotes))
+    install.packages("remotes")
+library(remotes)
+if(!require(openpopscr)) {
+    install_github("r-glennie/openpopscr", build = TRUE,
+                   build_opts = c("--no-resave-data", "--no-manual"),
+                   build_vignettes = TRUE)
+}
+library(openpopscr)
+if(!require(secr))
+    install.packages("secr")
+library(secr)
+@ 
+
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial CJS model}
   We'll use the R package `openpopscr' for model fitting. It isn't on
   CRAN, but you can install it from github using the following
   commands.
-<<install-openpopscr,size='scriptsize',message=FALSE,results='hide'>>=
+<<install-openpopscr,size='scriptsize',message=FALSE,results='hide',eval=FALSE>>=
 library(remotes)
 install_github("r-glennie/openpopscr", build = TRUE,
                build_opts = c("--no-resave-data", "--no-manual"),
@@ -542,14 +551,65 @@ install_github("r-glennie/openpopscr", build = TRUE,
 library(openpopscr)
 library(secr)
 @   
+\vfill
+If you're on Windows, you might have to install Rtools first. \\
+\centering
+\url{https://cran.r-project.org/bin/windows/Rtools/} \\
+
 \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial CJS model}
-  
+Begin by making a mask in `secr'
+<<mask,size='scriptsize',out.width="60%",fig.align="center">>=
+trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
+traps <- read.traps(data=trap.df, detector="proximity")
+mask <- make.mask(traps=traps, buffer=250)
+plot(mask); points(traps, pch=3, col="blue", lwd=2)
+@   
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+Format for `secr'
+<<CJS-model-new,size='scriptsize'>>=
+y.sp.secr <- y.sp; y.sp.secr[is.na(y.sp)] <- 0
+caps <- data.frame(session=1,
+                   animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),
+                   occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),
+                   trap=rep(slice.index(y.sp.secr, 2), y.sp.secr))
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=30)
+@
+\vfill
+Then format for `openpopscr'
+<<format-openpop,size='scriptsize'>>=
+cjs.data <- ScrData$new(capthist, mask, primary=rep(1:10, each=3))
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+Create the model object and the fit it
+<<cjs-mod-fit,size='scriptsize',results='hide',cache=TRUE>>=
+mod <- CjsModel$new(list(lambda0~1, sigma~1, phi~1), cjs.data,
+                    start=list(lambda0=1.5, sigma=50, phi=0.5))
+mod$fit()
+mod
+@   
+Back-transform
+<<cjs-mod-est,size='scriptsize'>>=
+mod$get_par("lambda0", k = 1, j = 1)
+mod$get_par("sigma", k = 1, j = 1)
+mod$get_par("phi", k = 1, m=1)
+@ 
+\end{frame}
+
+
+
 
 
 \subsection{Bayesian}
@@ -569,7 +629,7 @@ library(secr)
   \frametitle{Spatial CJS model in JAGS}
 %  \vspace{-5mm}
 %  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
-<<jags-nonsp,size='tiny'>>=
+<<jags-sp,size='tiny'>>=
 writeLines(readLines("CJS-spatial.jag"))
 @ 
 \end{frame}
@@ -644,18 +704,21 @@ plot(jags.post.samples.sp)
 
 \begin{frame}
   \frametitle{Modeling dispersal among years}
-  {\bf What if activity centers move between years?}
+  {\large What if activity centers move between years?}
   \begin{itemize}
+    \normalsize
     \item Could affect estimates of detection parameters
     \item More importantly, might provide opportunity to study dispersal
   \end{itemize}
   \pause
   \vfill
-  {\bf Potential movement models}
+  {\large Potential movement models}
   \begin{itemize}
-    \item Random walk: ${\bm s}(t) \sim \mbox{Normal}({\bm s}(t-1), \rho^2)$
-    \item Meta activity center: ${\bm s}(t) \sim \mbox{Normal}({\bm q}(t), \tau^2)$
-    \item Extensions can be made to allow for resource selection, landscape resistance, etc\dots
+    \normalsize
+    \item Random walk: ${\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)$
+    \item Random walk with attraction point: ${\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)$
+    \item Extensions can be made to allow for resource selection,
+      landscape resistance, etc\dots 
   \end{itemize}
 \end{frame}
 
@@ -669,21 +732,19 @@ plot(jags.post.samples.sp)
 \begin{frame}[fragile]
   \frametitle{Simulating spatial CJS data with dispersal}
   \begin{columns}
-    \tiny %\scriptsize
-    \begin{column}{0.5\dimexpr\paperwidth-10pt}
-%  \tiny %\small
-  {\bf Parameters and data dimensions}
-<<move>>=
-## same as before
-T <- 10; K <- 3; n <- 25
+    \footnotesize %\small
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+    Parameters and data dimensions
+<<move,size='tiny'>>=
+T <- 10; K <- 3; n <- 25 ## same as before
 phi <- 0.7; p0 <- 0.4; sigma <- 0.1
-## dispersal parameter (of random walk model)
-rho <- 0.05
+## dispersal parameter (of random walk)
+tau <- 0.05
 @
 \pause
-{\bf Activity centers follow a random walk}
-<<s>>=
-## state-space should be bigger??
+Activity centers take a random walk
+<<s,size='tiny'>>=
+## state-space should be bigger
 xlim <- ylim <- c(0, 1)
 first <- rpois(n, 1)+1
 s <- array(NA, c(n, 2, T))
@@ -693,35 +754,34 @@ for(i in 1:n) {
                             runif(1, ylim[1],
                                   ylim[2]))
     for(t in (first[i]+1):T) {
-        s[i,1,t] <- rnorm(1, s[i,1,t-1], rho)
-        s[i,2,t] <- rnorm(1, s[i,2,t-1], rho)
+        s[i,1,t] <- rnorm(1, s[i,1,t-1], tau)
+        s[i,2,t] <- rnorm(1, s[i,2,t-1], tau)
     }
 }
 d <- p <- array(NA, c(n, J, T))
 for(i in 1:n) {
     for(t in 1:T) {
-        d[i,,t] <- sqrt((s[i,1,t]-X[,1])^2 +
-                        (s[i,2,t]-X[,2])^2)
+        d[i,,t] <- sqrt((s[i,1,t]-x[,1])^2 +
+                        (s[i,2,t]-x[,2])^2)
         p[i,,t] <- p0*exp(-d[i,,t]^2 /
                           (2*sigma^2))
     }
 }
 @
     \end{column}
-\pause
-%\vfill
-    \begin{column}{0.5\dimexpr\paperwidth-10pt}
-{\bf Generate $z$ and $y$}
-<<z3>>=
+    \pause
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+Generate $z$ and $y$
+<<z3,size='tiny'>>=
 z <- matrix(NA, n, T)
-y <- array(NA, c(n, J, K, T)) # 4D array!!!
+y.move <- array(NA, c(n, J, K, T)) 
 for(i in 1:n) {
     z[i,first[i]] <- 1
     for(t in (first[i]+1):T) {
         z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
         for(j in 1:J) {
-            y[i,j,1:K,t] <- rbinom(K, 1,
-                                   z[i,t]*p[i,j,t])
+            y.move[i,j,1:K,t] <-
+                rbinom(K, 1, z[i,t]*p[i,j,t])
         }
     }
 }
@@ -734,14 +794,10 @@ for(i in 1:n) {
 
 
 
-
-
-
 \begin{frame}[fragile]
   \frametitle{Movement of activity center 1}
-  \scriptsize
-<<s1>>=
-plot(t(s[1,,]), pch=16, type="o", xlab="Easting", ylab="Northing",
+<<s1,size='scriptsize',out.width="65%",fig.align="center">>=
+plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
      xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
 @
 \end{frame}
@@ -749,16 +805,13 @@ plot(t(s[1,,]), pch=16, type="o", xlab="Easting", ylab="Northing",
 
 
 
-
-
-
-
-
-
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model with dispersal in JAGS}
-  \vspace{-5mm}
-  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial-move.jag}}}
+  \vspace{-2mm}
+  \tiny %\fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial-move.jag}}}
+<<jags-sp-move,size='tiny'>>=
+writeLines(readLines("CJS-spatial-move.jag"))
+@ 
 \end{frame}
 
 
@@ -767,40 +820,40 @@ plot(t(s[1,,]), pch=16, type="o", xlab="Easting", ylab="Northing",
 
 \begin{frame}[fragile]
   \frametitle{JAGS}
-%  \footnotesize
-  {\bf Initial values for $z$ matrix}
-  \scriptsize
-<<ji3>>=
+  \small
+  Data
+<<sp-move-data,size='scriptsize'>>=
+jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
+                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+@ 
+  Initial values for $z$ matrix
+<<ji3,size='scriptsize'>>=
 zi <- matrix(NA, n, T)
 for(i in 1:n) {
     zi[i,(first[i]+1):T] <- 1
     }
-ji3 <- function() list(phi=runif(1), z=zi)
+ji.sp.move <- function() list(phi=runif(1), z=zi)
+jp.sp.move <- c("phi", "p0", "sigma", "tau")
 @
-\pause
-\vfill
-  {\bf \normalsize Fit the model}
-<<jc3,eval=FALSE,results='hide'>>=
-jd3 <- list(y=y, n=n, first=first, X=X,
-            J=J, K=K, T=T, xlim=xlim, ylim=ylim)
-jp3 <- c("phi", "p0", "sigma", "rho")
-jm3 <- jags.model("CJS-spatial-move.jag", jd3, ji3, n.chains=1, n.adapt=1000)
-jc3 <- coda.samples(jm3, jp3, 3000)
+  \pause
+  \vfill
+  Fit the model
+<<jc3,size='scriptsize',eval=FALSE,results='hide'>>=
+jps.sp.move <- jags.basic(data=jd.sp.move,
+                          inits=ji.sp.move,
+                          parameters.to.save=jp.sp.move,
+                          model.file="CJS-spatial-move.jag",
+                          n.chains=3, n.adapt=100, n.burnin=0,
+                          n.iter=2000, parallel=TRUE)
 @
 \end{frame}
-
-
-
-
-
-
 
 
 
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
 <<jc3-plot>>=
-plot(jc3)
+plot(jps.sp.move[,jp.sp.move])
 @
 \end{frame}
 
