@@ -164,7 +164,7 @@ knit_theme$set("edit-kwrite")
 
 
 
-\section{Spatial JS}
+% \section{Spatial JS}
 
 
 
@@ -272,24 +272,17 @@ for(t in 2:T) {
     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
     gammaPrime <- ER/prevA
     if(gammaPrime > 1) stop("M isn't big enough")
-    ## for(i in 1:M) {
-    ##     z[i,t] <- rbinom(1, 1, z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
-    ##     recruitable[i,t] <- 1 - max(z[i,1:(t)]) # to be recruited
-    ##     died[i,t] <- z[i,t-1]==1 & z[i,t]==0
-    ##     recruited[i,t] <- z[i,t]==1 & z[i,t-1]==0
-    ## }
-    z[,t] <- rbinom(M, 1, (1-recruitable[,t-1])*z[i,t-1]*phi +
+    z[,t] <- rbinom(M, 1, (1-recruitable[,t-1])*z[,t-1]*phi +
                           recruitable[,t-1]*gammaPrime)
-    recruitable[,t] <- recruitable[,t-1]*(1-z[,t-1])
-    ## died[i,t] <- z[i,t-1]==1 & z[i,t]==0
-    ## recruited[i,t] <- z[i,t]==1 & z[i,t-1]==0
-}
+    recruitable[,t] <- recruitable[,t-1]*(1-z[,t])
+    N[t] <- sum(z[,t])  }
 @
 \pause
 \vfill
 {\normalsize Populaton size, mortalities, and recruits}
 <<sim-N,size='scriptsize'>>=
-N <- colSums(z) # Population size
+died <- (z[,1:(T-1)]==1) & (z[,2:T]==0)
+recruited <- (z[,1:(T-1)]==0) & (z[,2:T]==1)
 Deaths <- colSums(died)
 Recruits <- colSums(recruited)
 everAlive <- sum(rowSums(z)>0)
@@ -299,6 +292,16 @@ everAlive <- sum(rowSums(z)>0)
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Visualize dynamics}
+<<dynamics1,size='tiny',fig.height=5,fig.align='center',out.width='90%',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))
+plot(1:T, N, type="b", xlab="Year", ylab="", ylim=c(0, 50), pch=16)
+lines(2:T, Deaths, type="b", col="red2", pch=16); lines(2:T, Recruits, type="b", col="seagreen2", pch=16)
+legend(1, 50, c("Abundance","Mortalities","Recruits"), lty=1, pch=16, col=c("black","red2","seagreen2"))
+@   
+\end{frame}
+
 
 
 
@@ -307,13 +310,14 @@ everAlive <- sum(rowSums(z)>0)
 \begin{frame}[fragile]
   \frametitle{Simulating spatial JS data with robust design}
 {Generate encounter histories for all $M$ individuals}
-\footnotesize
-<<sim-yall>>=
-yall <- array(NA, c(M, J, K, T))
+<<sim-yall,size='footnotesize'>>=
+##yall <- array(NA, c(M, J, K, T))   ## For Bernoulli
+yall <- array(NA, c(M, J, T))        ## For Binomial
 for(i in 1:M) {
     for(t in 1:T) {
         for(j in 1:J) {
-            yall[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
+##            yall[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
+            yall[i,j,t] <- rbinom(1, K, z[i,t]*p[i,j])
         }
     }
 }
@@ -321,9 +325,10 @@ for(i in 1:M) {
 \pause
 \vfill
 {\normalsize Discard individuals that were never captured}
-<<sim-y>>=
+<<sim-y,size='footnotesize'>>=
 detected <- rowSums(yall) > 0
-y <- yall[detected,,,]
+## y <- yall[detected,,,]
+y <- yall[detected,,]
 str(y)
 @
 \end{frame}
@@ -333,31 +338,115 @@ str(y)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Time series}
-%  \tiny
-<<NDR,size='tiny',out.width='60%',fig.align='center'>>=
-plot(1:T, N, ylim=c(0, 50), type="o", pch=16,
-     xlab="Year", ylab="")
-lines(2:T, Deaths[-1], col="red", type="o", pch=16)
-lines(2:T, Recruits[-1], col="blue", type="o", pch=16)
-legend(1, 50, c("Population size", "Deaths", "Recruits"),
-       col=c("black", "red", "blue"), pch=16, lty=1)
-@
-% \vspace{-3mm}
-% \begin{center}
-%   \includegraphics[width=0.8\textwidth]{Open-JS-NDR}
-% \end{center}
+% \begin{frame}[fragile]
+%   \frametitle{Time series}
+% %  \tiny
+% <<NDR,size='tiny',out.width='60%',fig.align='center'>>=
+% plot(1:T, N, ylim=c(0, 50), type="o", pch=16,
+%      xlab="Year", ylab="")
+% lines(2:T, Deaths[-1], col="red", type="o", pch=16)
+% lines(2:T, Recruits[-1], col="blue", type="o", pch=16)
+% legend(1, 50, c("Population size", "Deaths", "Recruits"),
+%        col=c("black", "red", "blue"), pch=16, lty=1)
+% @
+% % \vspace{-3mm}
+% % \begin{center}
+% %   \includegraphics[width=0.8\textwidth]{Open-JS-NDR}
+% % \end{center}
+% \end{frame}
+
+
+
+
+\section{Likelihood inference}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
 \end{frame}
 
 
-\end{document}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+Begin by making a mask in `secr'
+<<mask,size='scriptsize',out.width="60%",fig.align="center">>=
+library(openpopscr)
+trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
+traps <- read.traps(data=trap.df, detector="proximity")
+mask <- make.mask(traps=traps, buffer=250)
+plot(mask); points(traps, pch=3, col="blue", lwd=2)
+@   
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+Format for `secr'
+<<JS-model-new,size='scriptsize'>>=
+y.secr <- y
+caps <- data.frame(session=1,
+                   animal=rep(slice.index(y, 1), y.sp.secr),
+                   occasion=rep(slice.index(y, 3), y.sp.secr),
+                   trap=rep(slice.index(y, 2), y.sp.secr))
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=T)
+@
+\vfill
+Then format for `openpopscr'
+<<format-openpop,size='scriptsize'>>=
+js.data <- ScrData$new(capthist, mask, primary=1:T)
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+Create the model object and the fit it
+<<js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=FALSE>>=
+start <- get_start_values(js.data, model = "JsModel")
+mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
+##                   start=start)
+                   start=list(lambda0=0.3, sigma=100, D=0.1, phi=0.5, beta=0.2))
+mod$fit()
+mod
+@   
+Back-transform
+<<cjs-mod-est,size='scriptsize',eval=FALSE>>=
+mod$get_par("lambda0", k = 1, j = 1)
+mod$get_par("sigma", k = 1, j = 1)
+mod$get_par("D", k = 1, m=1)     ## Density
+mod$get_par("beta", k = 1, m=1)  ## Recruitment rate
+mod$get_par("phi", k = 1, m=1)   ## Survival
+@ 
+\end{frame}
+
+
+
+
+\section{Bayesian inference}
+
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
 
 
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model in \jags}
-  \vspace{-5mm}
+  \vspace{-3mm}
   \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
+%<<jagsmod1,size='tiny'>>=
+%writeLines(readLines("JS-spatial.jag"))
+%@ 
 \end{frame}
 
 
@@ -369,35 +458,39 @@ library(coda)
 
 
 \begin{frame}[fragile]
-  \frametitle{\jags}
+  \frametitle{Bayesian analysis}
 %  \footnotesize
   {Data augmentation}
-  \scriptsize
-<<sim-aug>>=
-M <- nrow(y) + 50
-yz <- array(0, c(M, J, K, T))
-yz[1:nrow(y),,,] <- y
+<<sim-aug,size='scriptsize'>>=
+M <- nrow(y) + 50   ## Trial and error
+yz <- array(0, c(M, J, T))
+yz[1:nrow(y),,] <- y
+jags.data1 <- list(y=yz, M=M, x=x, J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 @
 \pause
 \vfill
-  {\normalsize Initial values for $z$ matrix}
-<<zi>>=
+  {\normalsize Initial values and parameters to monitor}
+<<zi,size='scriptsize'>>=
 zi <- matrix(0, M, T)
 zi[1:nrow(y),] <- 1
-ji1 <- function() list(phi=0.01, gamma=0.01, z=zi)
+ji1 <- function() list(phi=0.01, gamma=0.001, z=zi)
+jp1 <- c("phi", "gamma", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
 @
 \pause
 \vfill
   {\normalsize Fit the model}
-<<jags-run,results='hide',cache=TRUE>>=
-jd1 <- list(y=yz, M=M, x=x,
-            J=J, K=K, T=T, xlim=xlim, ylim=ylim)
-jp1 <- c("phi", "gamma", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
-library(rjags)
-jm1 <- jags.model("JS-spatial.jag", jd1, ji1, n.chains=1, n.adapt=5)
-jc1 <- coda.samples(jm1, jp1, 2)
+<<jags-run,size='scriptsize',results='hide',cache=TRUE>>=
+library(jagsUI)
+jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
+                                 parameters.to.save=jp1,
+                                 model.file="JS-spatial.jag",
+                                 n.chains=3, n.adapt=100, n.burnin=0,
+                                 n.iter=2000, parallel=TRUE)
 @
 \end{frame}
+
+
+
 
 
 
@@ -405,7 +498,8 @@ jc1 <- coda.samples(jm1, jp1, 2)
 \begin{frame}
   \frametitle{Is $M$ high enough?}
 <<Ntot,size='tiny',out.width='70%',fig.align='center'>>=
-hist(as.matrix(jc1[,"Ntot"]), xlab="Total population size", ylab="", main="", freq=FALSE, xlim=c(nrow(y), M))
+hist(as.matrix(jags.post.samples1[,"Ntot"]), xlab="Total population size",
+     ylab="", main="", freq=FALSE, xlim=c(nrow(y), M))
 abline(v=M, lwd=3, col="blue")
 @
 \end{frame}
@@ -418,7 +512,7 @@ abline(v=M, lwd=3, col="blue")
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
 <<jc1,out.width='60%',fig.align='center',size='scriptsize'>>=
-plot(jc1[,c("phi", "gamma", "p0", "sigma")])
+plot(jags.post.samples1[,c("phi", "gamma", "p0", "sigma")])
 @
 % \begin{center}
 %   \fbox{\includegraphics[width=0.7\textwidth]{Open-JS-jc1}}
@@ -433,10 +527,10 @@ plot(jc1[,c("phi", "gamma", "p0", "sigma")])
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
 <<jcN1-4,include=FALSE,echo=FALSE>>=
-plot(jc1[,c("N[1]", "N[2]", "N[3]", "N[4]")])
+plot(jags.post.samples1[,c("N[1]", "N[2]", "N[3]", "N[4]")])
 @
 <<jcN5-8,include=FALSE,echo=FALSE>>=
-plot(jc1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
+plot(jags.post.samples1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
 @
 \begin{center}
   \fbox{\includegraphics[width=0.45\textwidth]{figure/jcN1-4-1}}
@@ -448,274 +542,25 @@ plot(jc1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
 
 
 
-
-
-\section{Spatial JS with density-dependence}
-
-
-
-
-
-
-
-\begin{frame}
-  \frametitle{Density-dependent recruitment}
-  \large
-  {Logistic}
-  \[
-     \gamma_t = \gamma_{max}(1 - N_{t-1}/K)
-  \]
-  \vfill
-  {Log-linear}
-  \[
-     \gamma_t = \nu_0\exp(-\nu_1 N_{t-1})
-  \]
-  \vfill
-  {Log-linear (alt version)}
-  \[
-    \log(\gamma_t) = \nu_0 + \nu_1 N_{t-1}
-  \]
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Density-dependent recruitment}
-  \tiny
-<<dd1,fig.height=5,out.width='90%',fig.align='center'>>=
-N <- 0:50
-nu0 <- 2
-nu1 <- 0.05
-plot(N, nu0*exp(-nu1*N), type="l", ylim=c(0,2), ylab="Per-capita Recruitment")
-@
-%\vspace{-4mm}
-%\begin{center}
-%  \includegraphics[width=\textwidth]{figure/dd1-1}
-%\end{center}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Simulating spatial JS data with robust design}
-  \scriptsize % \tiny %\small
-  {Parameters and data dimensions}
-<<sim-pars-robust>>=
-T <- 10      # years/primary periods
-K <- 3       # 3 secondary sampling occasion
-## Is it necessary to be far from equilibrium to detect density-dependence?
-## Equilibrium here is where (1-phi) == gamma, where gamma is function of N
-N0 <- 10     # Abundance in year 1
-M <- 500     # Easiest way to simulate data is using data augmentation
-phi <- 0.7   # Apparent survival
-##gamma <- 0.3 # Per-capital recruitment rate
-nu0 <- 2
-nu1 <- 0.05
-p0 <- 0.4
-sigma <- 0.1
-@
-\pause
-{Traps, activity centers, and detection probability}
-<<sim-p-robust>>=
-set.seed(3479)
-co <- seq(0.25, 0.75, length=5)
-x <- cbind(rep(co, each=5), rep(co, times=5))
-J <- nrow(x)
-xlim <- ylim <- c(0,1)
-s <- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))
-d <- p <- matrix(NA, M, J)
-for(i in 1:M) {
-    d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
-    p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
-}
-@
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Simulating spatial JS data with robust design}
-{Generate $z$}
-\scriptsize
-<<sim-RS-robust>>=
-set.seed(3401)
-z2 <- recruitable <- died <- recruited <- matrix(0, M, T)
-z2[1:N0,1] <- 1 # First N0 are alive
-recruitable[(N0+1):M,1] <- 1
-for(t in 2:T) {
-    prevN <- sum(z2[,t-1]) # number alive at t-1
-    gamma <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
-    ER <- prevN*gamma # expected number of recruits
-    prevA <- sum(recruitable[,t-1]) # Number available to be recruited
-    gammaPrime <- ER/prevA
-    if(gammaPrime > 1)
-        stop("M isn't big enough")
-    for(i in 1:M) {
-        z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
-        recruitable[i,t] <- 1 - max(z2[i,1:(t)]) # to be recruited
-        died[i,t] <- z2[i,t-1]==1 & z2[i,t]==0
-        recruited[i,t] <- z2[i,t]==1 & z2[i,t-1]==0
-    }
-}
-@
-\pause
-\vfill
-{\normalsize Populaton size, mortalities, and recruits}
-<<sim-N-robust>>=
-N2 <- colSums(z2) # Population size
-Deaths2 <- colSums(died)
-Recruits2 <- colSums(recruited)
-everAlive2 <- sum(rowSums(z2)>0)
-@
-\end{frame}
-
-
-
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Simulating spatial JS data with robust design}
-{Generate encounter histories for all $M$ individuals}
-\footnotesize
-<<sim-yall-robust>>=
-yall <- array(NA, c(M, J, K, T))
-for(i in 1:M) {
-    for(t in 1:T) {
-        for(j in 1:J) {
-            yall[i,j,1:K,t] <- rbinom(K, 1, z2[i,t]*p[i,j])
-        }
-    }
-}
-@
-\pause
-\vfill
-{\normalsize Discard individuals that were never captured}
-<<sim-y-robust>>=
-detected <- rowSums(yall) > 0
-y2 <- yall[detected,,,]
-str(y2)
-@
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Time series}
-  \tiny
-<<NDR-DD,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
-plot(1:T, N2, ylim=c(0, 50), type="o", pch=16,
-     xlab="Year", ylab="")
-lines(2:T, Deaths2[-1], col="red", type="o", pch=16)
-lines(2:T, Recruits2[-1], col="blue", type="o", pch=16)
-legend(1, 50, c("Population size", "Deaths", "Recruits"),
-       col=c("black", "red", "blue"), pch=16, lty=1)
-@
-\vspace{-3mm}
-\begin{center}
-  \includegraphics[width=\textwidth]{figure/NDR-DD-1}
-\end{center}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Spatial CJS model in \jags}
-  \vspace{-5mm}
-  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial-DD.jag}}}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{\jags}
-%  \footnotesize
-  {Data augmentation}
-  \scriptsize
-<<aug-robust>>=
-M2 <- nrow(y2) + 75
-yz2 <- array(0, c(M2, J, K, T))
-yz2[1:nrow(y2),,,] <- y2
-@
-\pause
-\vfill
-  {\normalsize Initial values for $z$ matrix}
-<<zi-robust>>=
-zi <- matrix(0, M2, T)
-##zi[1:nrow(y2),] <- 1
-zi[1:nrow(y2),] <- z2[detected,] ## cheating
-ji2 <- function() list(phi=0.01, z=zi)
-@
-\pause
-\vfill
-  {\normalsize Fit the model}
-<<jags-run-robust,results='hide',cache=TRUE>>=
-jd2 <- list(y=yz2, M=M2, x=x,
-            J=J, K=K, T=T, xlim=xlim, ylim=ylim)
-jp2 <- c("phi", "nu0", "nu1", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
-library(rjags)
-jm2 <- jags.model("JS-spatial-DD.jag", jd2, ji2, n.chains=1, n.adapt=2)
-jc2 <- coda.samples(jm2, jp2, 5)
-##jc2.2 <- coda.samples(jm2, jp2, 15000)
-@
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Posterior distributions}
-<<jc2,include=FALSE,echo=FALSE>>=
-plot(jc2[,c("phi", "nu0", "nu1")])
-@
-\begin{center}
-  \fbox{\includegraphics[width=0.7\textwidth]{figure/jc2-1}}
-\end{center}
-\end{frame}
-
-
-
-
-
-
-
-
-
-
 \begin{frame}[fragile]
   \frametitle{Actual and estimated abundance}
-  {Extract and summarize posterior samples of $N_t$}
-  \footnotesize
-<<N-post-samples>>=
-Npost <- as.matrix(jc2[,paste("N[", 1:10, "]", sep="")])
+  Extract and summarize posterior samples of $N_t$
+<<N-post-samples,size='scriptsize'>>=
+Npost <- as.matrix(jags.post.samples1[,paste("N[", 1:10, "]", sep="")])
 Nmed <- apply(Npost, 2, median)
 Nupper <- apply(Npost, 2, quantile, prob=0.975)
 Nlower <- apply(Npost, 2, quantile, prob=0.025)
 @
   \pause
   \vfill
-  {\normalsize Plot}
-<<Npost,include=FALSE>>=
-plot(1:T, N2, type="o", col="blue", ylim=c(0, 100), xlab="Time",
-     ylab="Abundance")
-points(1:T, Nmed)
+  Plot
+<<Npost,size='scriptsize',fig.height=5,fig.show='hide',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(1:T, N, type="b", ylim=c(0, 100), xlab="Time", ylab="Abundance", pch=16)
 arrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3, length=0.05)
+points(1:T, Nmed, pch=16, col=gray(0.7))
 legend(1, 100, c("Actual abundance", "Estimated abundance"),
-       col=c("blue", "black"), lty=c(1,1), pch=c(1,1))
+       col=c("black", gray(0.7)), lty=c(1,1), pch=c(16,16))
 @
 \end{frame}
 
@@ -725,11 +570,320 @@ legend(1, 100, c("Actual abundance", "Estimated abundance"),
 
 \begin{frame}
   \frametitle{Actual and estimated abundance}
-  \vspace{-4mm}
+%  \vspace{-4mm}
   \begin{center}
-    \includegraphics[width=0.8\textwidth]{figure/Npost-1}
+    \includegraphics[width=\textwidth]{figure/Npost-1}
   \end{center}
 \end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Summary}
+  This is perhaps the most general approach to modeling population
+  dynamics. \\
+  \pause \vfill
+  Requires a lot of data on marked individuals, but it should be no
+  surprise that we need a lot of data to understand complex
+  processes. \\ 
+  \pause \vfill
+  Go out there and collect good data. \\
+  \pause \vfill
+  \centering The End \\
+\end{frame}
+
+
+
+
+\end{document}
+
+
+
+
+
+% \section{Spatial JS with density-dependence}
+
+
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Density-dependent recruitment}
+%   \large
+%   {Logistic}
+%   \[
+%      \gamma_t = \gamma_{max}(1 - N_{t-1}/K)
+%   \]
+%   \vfill
+%   {Log-linear}
+%   \[
+%      \gamma_t = \nu_0\exp(-\nu_1 N_{t-1})
+%   \]
+%   \vfill
+%   {Log-linear (alt version)}
+%   \[
+%     \log(\gamma_t) = \nu_0 + \nu_1 N_{t-1}
+%   \]
+% \end{frame}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Density-dependent recruitment}
+%   \tiny
+% <<dd1,fig.height=5,out.width='90%',fig.align='center'>>=
+% N <- 0:50
+% nu0 <- 2
+% nu1 <- 0.05
+% plot(N, nu0*exp(-nu1*N), type="l", ylim=c(0,2), ylab="Per-capita Recruitment")
+% @
+% %\vspace{-4mm}
+% %\begin{center}
+% %  \includegraphics[width=\textwidth]{figure/dd1-1}
+% %\end{center}
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Simulating spatial JS data with robust design}
+%   \scriptsize % \tiny %\small
+%   {Parameters and data dimensions}
+% <<sim-pars-robust>>=
+% T <- 10      # years/primary periods
+% K <- 3       # 3 secondary sampling occasion
+% ## Is it necessary to be far from equilibrium to detect density-dependence?
+% ## Equilibrium here is where (1-phi) == gamma, where gamma is function of N
+% N0 <- 10     # Abundance in year 1
+% M <- 500     # Easiest way to simulate data is using data augmentation
+% phi <- 0.7   # Apparent survival
+% ##gamma <- 0.3 # Per-capital recruitment rate
+% nu0 <- 2
+% nu1 <- 0.05
+% p0 <- 0.4
+% sigma <- 0.1
+% @
+% \pause
+% {Traps, activity centers, and detection probability}
+% <<sim-p-robust>>=
+% set.seed(3479)
+% co <- seq(0.25, 0.75, length=5)
+% x <- cbind(rep(co, each=5), rep(co, times=5))
+% J <- nrow(x)
+% xlim <- ylim <- c(0,1)
+% s <- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))
+% d <- p <- matrix(NA, M, J)
+% for(i in 1:M) {
+%     d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
+%     p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
+% }
+% @
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Simulating spatial JS data with robust design}
+% {Generate $z$}
+% \scriptsize
+% <<sim-RS-robust>>=
+% set.seed(3401)
+% z2 <- recruitable <- died <- recruited <- matrix(0, M, T)
+% z2[1:N0,1] <- 1 # First N0 are alive
+% recruitable[(N0+1):M,1] <- 1
+% for(t in 2:T) {
+%     prevN <- sum(z2[,t-1]) # number alive at t-1
+%     gamma <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
+%     ER <- prevN*gamma # expected number of recruits
+%     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
+%     gammaPrime <- ER/prevA
+%     if(gammaPrime > 1)
+%         stop("M isn't big enough")
+%     for(i in 1:M) {
+%         z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
+%         recruitable[i,t] <- 1 - max(z2[i,1:(t)]) # to be recruited
+%         died[i,t] <- z2[i,t-1]==1 & z2[i,t]==0
+%         recruited[i,t] <- z2[i,t]==1 & z2[i,t-1]==0
+%     }
+% }
+% @
+% \pause
+% \vfill
+% {\normalsize Populaton size, mortalities, and recruits}
+% <<sim-N-robust>>=
+% N2 <- colSums(z2) # Population size
+% Deaths2 <- colSums(died)
+% Recruits2 <- colSums(recruited)
+% everAlive2 <- sum(rowSums(z2)>0)
+% @
+% \end{frame}
+
+
+
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Simulating spatial JS data with robust design}
+% {Generate encounter histories for all $M$ individuals}
+% \footnotesize
+% <<sim-yall-robust>>=
+% yall <- array(NA, c(M, J, K, T))
+% for(i in 1:M) {
+%     for(t in 1:T) {
+%         for(j in 1:J) {
+%             yall[i,j,1:K,t] <- rbinom(K, 1, z2[i,t]*p[i,j])
+%         }
+%     }
+% }
+% @
+% \pause
+% \vfill
+% {\normalsize Discard individuals that were never captured}
+% <<sim-y-robust>>=
+% detected <- rowSums(yall) > 0
+% y2 <- yall[detected,,,]
+% str(y2)
+% @
+% \end{frame}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Time series}
+%   \tiny
+% <<NDR-DD,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
+% plot(1:T, N2, ylim=c(0, 50), type="o", pch=16,
+%      xlab="Year", ylab="")
+% lines(2:T, Deaths2[-1], col="red", type="o", pch=16)
+% lines(2:T, Recruits2[-1], col="blue", type="o", pch=16)
+% legend(1, 50, c("Population size", "Deaths", "Recruits"),
+%        col=c("black", "red", "blue"), pch=16, lty=1)
+% @
+% \vspace{-3mm}
+% \begin{center}
+%   \includegraphics[width=\textwidth]{figure/NDR-DD-1}
+% \end{center}
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Spatial CJS model in \jags}
+%   \vspace{-5mm}
+%   \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial-DD.jag}}}
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{\jags}
+% %  \footnotesize
+%   {Data augmentation}
+%   \scriptsize
+% <<aug-robust>>=
+% M2 <- nrow(y2) + 75
+% yz2 <- array(0, c(M2, J, K, T))
+% yz2[1:nrow(y2),,,] <- y2
+% @
+% \pause
+% \vfill
+%   {\normalsize Initial values for $z$ matrix}
+% <<zi-robust>>=
+% zi <- matrix(0, M2, T)
+% ##zi[1:nrow(y2),] <- 1
+% zi[1:nrow(y2),] <- z2[detected,] ## cheating
+% ji2 <- function() list(phi=0.01, z=zi)
+% @
+% \pause
+% \vfill
+%   {\normalsize Fit the model}
+% <<jags-run-robust,results='hide',cache=TRUE>>=
+% jd2 <- list(y=yz2, M=M2, x=x,
+%             J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+% jp2 <- c("phi", "nu0", "nu1", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
+% library(rjags)
+% jm2 <- jags.model("JS-spatial-DD.jag", jd2, ji2, n.chains=1, n.adapt=2)
+% jc2 <- coda.samples(jm2, jp2, 5)
+% ##jc2.2 <- coda.samples(jm2, jp2, 15000)
+% @
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Posterior distributions}
+% <<jc2,include=FALSE,echo=FALSE>>=
+% plot(jc2[,c("phi", "nu0", "nu1")])
+% @
+% \begin{center}
+%   \fbox{\includegraphics[width=0.7\textwidth]{figure/jc2-1}}
+% \end{center}
+% \end{frame}
+
+
+
+
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Actual and estimated abundance}
+%   {Extract and summarize posterior samples of $N_t$}
+%   \footnotesize
+% <<N-post-samples>>=
+% Npost <- as.matrix(jc2[,paste("N[", 1:10, "]", sep="")])
+% Nmed <- apply(Npost, 2, median)
+% Nupper <- apply(Npost, 2, quantile, prob=0.975)
+% Nlower <- apply(Npost, 2, quantile, prob=0.025)
+% @
+%   \pause
+%   \vfill
+%   {\normalsize Plot}
+% <<Npost,include=FALSE>>=
+% plot(1:T, N2, type="o", col="blue", ylim=c(0, 100), xlab="Time",
+%      ylab="Abundance")
+% points(1:T, Nmed)
+% arrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3, length=0.05)
+% legend(1, 100, c("Actual abundance", "Estimated abundance"),
+%        col=c("blue", "black"), lty=c(1,1), pch=c(1,1))
+% @
+% \end{frame}
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Actual and estimated abundance}
+%   \vspace{-4mm}
+%   \begin{center}
+%     \includegraphics[width=0.8\textwidth]{figure/Npost-1}
+%   \end{center}
+% \end{frame}
 
 
 
