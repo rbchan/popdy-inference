@@ -33,8 +33,8 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[plain]
   \centering
   \LARGE
-  Lecture 17 \\ Spatio-temporal variation in \\
-  survival, recruitment, and abundance %with the \\
+  Lecture 17 \\ Spatio-temporal variation in %\\
+  survival, \\ recruitment, movement and abundance %with the \\
 %  Jolly-Seber model \\
   \vfill
   \large
@@ -71,12 +71,25 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Overview}
-  \large
+%  \large
   {Jolly-Seber model}
   \begin{itemize}
+    \normalsize
     \item Extend CJS model to allow for recruitment
     \item We no longer ``condition on first capture''
     \item Typically, we use the robust design
+  \end{itemize}
+  \pause \vfill
+  Bigger picture
+  \begin{itemize}
+    \normalsize
+    \item<2-> We're interested in modeling population dynamics
+    \item<3-> This framework allows for inference on \alert{all} of the
+      key processes 
+    \item<4-> Potential to model spatial, temporal, and individual-level
+      variation vital rates
+    \item<5-> Density-dependence and biotic interactions could be
+      modeled too
   \end{itemize}
 \end{frame}
 
@@ -84,36 +97,41 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{\large Stochastic population dynamics without dispersal}
-  {Initial Abundance}
+  \frametitle{Spatial population dynamics}
+  \small
+  {Initial abundance at location $s$}
   \[
-    N_1 \sim \mbox{Poisson}(\lambda)
+    N_{s,1} \sim \mbox{Poisson}(\lambda_{s,1})
   \]
-  \vfill
-  {Survival}
-  \[
-    S_t \sim \mbox{Binomial}(N_{t-1}, \phi)
-  \]
-  \vfill
-  {Recruitment}
-  \[
-    R_t \sim \mbox{Poisson}(N_{t-1} \gamma)
-  \]
-  \vfill
+  \pause \vfill
+  Survival and recruitment (local population dynamics)
+  \begin{gather*}
+    S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
+    R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+  \end{gather*}
+  \pause \vfill
+  % {Recruitment}
+  % \[
+  %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+  % \]
+  % \pause \vfill
+  Movement (emigration and immigration)
+  \begin{gather*}
+    E_{s,t} \sim \mathrm{Binomial}(S_{s,t}+R_{s,t}, \kappa) \\
+    \{M_{1,s,t}, \dots, M_{J,s,t}\} \sim \mathrm{Multinomial}(E_{s,t}, \{\pi_1, \dots, \pi_J\}) \\
+    I_{s,t} = \sum_{j=1}^J M_{j,s,t}
+  \end{gather*}
+  % \vfill
+  % Immigration
+  % \[
+  % \]
+  % \vfill
+  \pause
   {Abundance}
   \[
-    N_t = S_t + R_t
+    N_{s,t} = S_{s,t} + R_{s,t} - E_{s,t} + I_{s,t}
   \]
 \end{frame}
-
-
-
-
-
-%% \section{Non-spatial CJS}
-
-
-
 
 
 
@@ -153,40 +171,50 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Spatial model}
-  \large
-  {Extensions}
-  \begin{itemize}
-    \item Individuals heterogeneity in vital rates
-    \item Spatial heterogeneity in vital rates
-    \item Density dependence
-    \item Dispersal
-  \end{itemize}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Spatial model}
+%   \large
+%   {Extensions}
+%   \begin{itemize}
+%     \item Individuals heterogeneity in vital rates
+%     \item Spatial heterogeneity in vital rates
+%     \item Density dependence
+%     \item Dispersal
+%   \end{itemize}
+% \end{frame}
 
 
 
 
 \begin{frame}
-  \frametitle{Spatial Model using Data Augmentation}
+  \frametitle{\Large Individual-based spatial population dynamics}
   {Initial State}
+  \begin{gather*}
+    z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
+    {\bm s}_{i,1} \propto \lambda(\bs)
+  \end{gather*}
+  \vfill
+  Survival and Recruitment
   \[
-    z_{i,1} \sim \mbox{Bernoulli}(\psi)
+    z_{i,t} \sim
+    \begin{cases}
+      \mbox{Bernoulli}(z_{i,t-1}\phi) & \quad \text{if previously recruited} \\
+      \mbox{Bernoulli}(\gamma') & \quad \text{if not yet recruited} 
+    \end{cases}
   \]
   \vfill
-  {Survival and Recruitment}
+  Movement (Assuming random walk)
   \[
-    z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1}\phi + \mbox{recruitable}_{i,t-1}\gamma')
+    \bsit \sim \mathrm{Norm}(\bsitp, \tau^2)  
   \]
   \vfill
-  {Abundance}
+  Abundance
   \[
     N_t = \sum_{i=1}^M z_{i,t}
   \]
-  \pause
-  \vfill
-  {\centering Dispersal could be added using approaches discussed last week \\}
+%  \pause
+%  \vfill
+%  {\centering Dispersal could be added using approaches discussed last week \\}
 \end{frame}
 
 
@@ -200,27 +228,27 @@ knit_theme$set("edit-kwrite")
 <<sim-pars,size='scriptsize'>>=
 T <- 10      # years/primary periods
 K <- 3       # 3 secondary sampling occasion
-N0 <- 25     # Abundance in year 1
+lambda <- 25 # Expected value of abundance in year 1
 M <- 500     # Easiest way to simulate data is using data augmentation
 phi <- 0.7   # Apparent survival
 gamma <- 0.3 # Per-capital recruitment rate
-p0 <- 0.4
-sigma <- 0.1
+p0 <- 0.4    # Baseline capture prob
+sigma <- 0.1 # Scale parameter of encounter rate function
 @
 \pause
-{Traps, activity centers, and detection probability}
+{Traps, activity centers, and capture probability}
 <<sim-p,size='scriptsize'>>=
 set.seed(340)
 co <- seq(0.25, 0.75, length=5)
-X <- cbind(rep(co, each=5), rep(co, times=5))
-J <- nrow(X)
+x <- cbind(rep(co, each=5), rep(co, times=5))
+J <- nrow(x)  ## nTraps
 xlim <- ylim <- c(0,1)
+## Activity centers, no dispersal
 s <- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))
 d <- p <- matrix(NA, M, J)
 for(i in 1:M) {
-    d[i,] <- sqrt((s[i,1]-X[,1])^2 + (s[i,2]-X[,2])^2)
-    p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
-}
+    d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
+    p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2)) } # capture prob 
 @
 \end{frame}
 
@@ -235,21 +263,26 @@ for(i in 1:M) {
 <<sim-SR,size='scriptsize'>>=
 set.seed(034)
 z <- recruitable <- died <- recruited <- matrix(0, M, T)
-z[1:N0,1] <- 1 # First N0 are alive
-recruitable[(N0+1):M,1] <- 1
+z[,1] <- rbinom(M, 1, lambda/M) # alive at t=1
+recruitable[,1] <- 1-z[,1]
+N <- integer(T)
+N[1] <- sum(z[,1])
 for(t in 2:T) {
-    prevN <- sum(z[,t-1]) # number alive at t-1
-    ER <- prevN*gamma # expected number of recruits
+    ER <- N[t-1]*gamma # expected number of recruits
     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
     gammaPrime <- ER/prevA
-    if(gammaPrime > 1)
-        stop("M isn't big enough")
-    for(i in 1:M) {
-        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
-        recruitable[i,t] <- 1 - max(z[i,1:(t)]) # to be recruited
-        died[i,t] <- z[i,t-1]==1 & z[i,t]==0
-        recruited[i,t] <- z[i,t]==1 & z[i,t-1]==0
-    }
+    if(gammaPrime > 1) stop("M isn't big enough")
+    ## for(i in 1:M) {
+    ##     z[i,t] <- rbinom(1, 1, z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
+    ##     recruitable[i,t] <- 1 - max(z[i,1:(t)]) # to be recruited
+    ##     died[i,t] <- z[i,t-1]==1 & z[i,t]==0
+    ##     recruited[i,t] <- z[i,t]==1 & z[i,t-1]==0
+    ## }
+    z[,t] <- rbinom(M, 1, (1-recruitable[,t-1])*z[i,t-1]*phi +
+                          recruitable[,t-1]*gammaPrime)
+    recruitable[,t] <- recruitable[,t-1]*(1-z[,t-1])
+    ## died[i,t] <- z[i,t-1]==1 & z[i,t]==0
+    ## recruited[i,t] <- z[i,t]==1 & z[i,t-1]==0
 }
 @
 \pause
@@ -318,6 +351,8 @@ legend(1, 50, c("Population size", "Deaths", "Recruits"),
 \end{frame}
 
 
+\end{document}
+
 
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model in \jags}
@@ -327,6 +362,10 @@ legend(1, 50, c("Population size", "Deaths", "Recruits"),
 
 
 
+<<load-jagsUI-coda,include=FALSE>>=
+library(jagsUI)
+library(coda)
+@ 
 
 
 \begin{frame}[fragile]
@@ -351,7 +390,7 @@ ji1 <- function() list(phi=0.01, gamma=0.01, z=zi)
 \vfill
   {\normalsize Fit the model}
 <<jags-run,results='hide',cache=TRUE>>=
-jd1 <- list(y=yz, M=M, X=X,
+jd1 <- list(y=yz, M=M, x=x,
             J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 jp1 <- c("phi", "gamma", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
 library(rjags)
@@ -484,13 +523,13 @@ sigma <- 0.1
 <<sim-p-robust>>=
 set.seed(3479)
 co <- seq(0.25, 0.75, length=5)
-X <- cbind(rep(co, each=5), rep(co, times=5))
-J <- nrow(X)
+x <- cbind(rep(co, each=5), rep(co, times=5))
+J <- nrow(x)
 xlim <- ylim <- c(0,1)
 s <- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))
 d <- p <- matrix(NA, M, J)
 for(i in 1:M) {
-    d[i,] <- sqrt((s[i,1]-X[,1])^2 + (s[i,2]-X[,2])^2)
+    d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
     p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
 }
 @
@@ -625,7 +664,7 @@ ji2 <- function() list(phi=0.01, z=zi)
 \vfill
   {\normalsize Fit the model}
 <<jags-run-robust,results='hide',cache=TRUE>>=
-jd2 <- list(y=yz2, M=M2, X=X,
+jd2 <- list(y=yz2, M=M2, x=x,
             J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 jp2 <- c("phi", "nu0", "nu1", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
 library(rjags)
