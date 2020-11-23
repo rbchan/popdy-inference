@@ -481,9 +481,9 @@ Format for `secr'
 \begin{alltt}
 \hlstd{y.secr} \hlkwb{<-} \hlstd{y}
 \hlstd{caps} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{session}\hlstd{=}\hlnum{1}\hlstd{,}
-                   \hlkwc{animal}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{1}\hlstd{), y.sp.secr),}
-                   \hlkwc{occasion}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{3}\hlstd{), y.sp.secr),}
-                   \hlkwc{trap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{2}\hlstd{), y.sp.secr))}
+                   \hlkwc{animal}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{1}\hlstd{), y.secr),}
+                   \hlkwc{occasion}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{3}\hlstd{), y.secr),}
+                   \hlkwc{trap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{2}\hlstd{), y.secr))}
 \hlstd{capthist} \hlkwb{<-} \hlkwd{make.capthist}\hlstd{(}\hlkwc{captures}\hlstd{=caps,} \hlkwc{traps}\hlstd{=traps,} \hlkwc{noccasions}\hlstd{=T)}
 \end{alltt}
 \end{kframe}
@@ -508,8 +508,9 @@ Create the model object and the fit it
 \begin{alltt}
 \hlstd{start} \hlkwb{<-} \hlkwd{get_start_values}\hlstd{(js.data,} \hlkwc{model} \hlstd{=} \hlstr{"JsModel"}\hlstd{)}
 \hlstd{mod} \hlkwb{<-} \hlstd{JsModel}\hlopt{$}\hlkwd{new}\hlstd{(}\hlkwd{list}\hlstd{(lambda0}\hlopt{~}\hlnum{1}\hlstd{, sigma}\hlopt{~}\hlnum{1}\hlstd{, D}\hlopt{~}\hlnum{1}\hlstd{, phi}\hlopt{~}\hlnum{1}\hlstd{, beta}\hlopt{~}\hlnum{1}\hlstd{), js.data,}
-\hlcom{##                   start=start)}
-                   \hlkwc{start}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{lambda0}\hlstd{=}\hlnum{0.3}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{D}\hlstd{=}\hlnum{0.1}\hlstd{,} \hlkwc{phi}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{beta}\hlstd{=}\hlnum{0.2}\hlstd{))}
+                   \hlcom{##                   start=start)}
+                   \hlkwc{start}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{lambda0}\hlstd{=}\hlnum{0.3}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{D}\hlstd{=}\hlnum{0.1}\hlstd{,}
+                              \hlkwc{phi}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{beta}\hlstd{=}\hlnum{0.2}\hlstd{))}
 \hlstd{mod}\hlopt{$}\hlkwd{fit}\hlstd{()}
 \hlstd{mod}
 \end{alltt}
@@ -547,7 +548,7 @@ Back-transform
 
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model in \jags}
-%  \vspace{-5mm}
+  \vspace{-3mm}
   \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
 %<<jagsmod1,size='tiny'>>=
 %writeLines(readLines("JS-spatial.jag"))
@@ -609,7 +610,7 @@ Back-transform
 
 
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Is $M$ high enough?}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -693,11 +694,13 @@ Back-transform
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, N,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Abundance"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{)}
-\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, Nlower,} \hlnum{1}\hlopt{:}\hlstd{T, Nupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{)}
+\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, N,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{60}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Abundance"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{)}
+\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, Nlower,} \hlnum{1}\hlopt{:}\hlstd{T, Nupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,}
+       \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
 \hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, Nmed,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{100}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual abundance"}\hlstd{,} \hlstr{"Estimated abundance"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
+\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{60}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),}
+       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -720,6 +723,102 @@ Back-transform
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Actual and estimated recruits}
+  Extract and summarize posterior samples of $R_t$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Rpost} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples1[,}\hlkwd{paste}\hlstd{(}\hlstr{"Recruits["}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{9}\hlstd{,}\hlstr{"]"}\hlstd{,}\hlkwc{sep}\hlstd{=}\hlstr{""}\hlstd{)])}
+\hlstd{Rmed} \hlkwb{<-} \hlkwd{apply}\hlstd{(Rpost,} \hlnum{2}\hlstd{, median)}
+\hlstd{Rupper} \hlkwb{<-} \hlkwd{apply}\hlstd{(Rpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hlstd{Rlower} \hlkwb{<-} \hlkwd{apply}\hlstd{(Rpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Plot
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Recruits,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{30}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Recruits"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"seagreen2"}\hlstd{)}
+\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Rlower,} \hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Rupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,}
+       \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
+\hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Rmed,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
+\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{30}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),}
+       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"seagreen2"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Actual and estimated recruits}
+%  \vspace{-4mm}
+  \begin{center}
+    \includegraphics[width=\textwidth]{figure/Rpost-1}
+  \end{center}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Actual and estimated mortalities}
+  Extract and summarize posterior samples of $D_t=N_t-S_t$
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Dpost} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples1[,}\hlkwd{paste}\hlstd{(}\hlstr{"Deaths["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{9}\hlstd{,} \hlstr{"]"}\hlstd{,} \hlkwc{sep}\hlstd{=}\hlstr{""}\hlstd{)])}
+\hlstd{Dmed} \hlkwb{<-} \hlkwd{apply}\hlstd{(Dpost,} \hlnum{2}\hlstd{, median)}
+\hlstd{Dupper} \hlkwb{<-} \hlkwd{apply}\hlstd{(Dpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hlstd{Dlower} \hlkwb{<-} \hlkwd{apply}\hlstd{(Dpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Plot
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Deaths,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{30}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Mortalities"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red2"}\hlstd{)}
+\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Dlower,} \hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Dupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,}
+       \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
+\hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Dmed,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
+\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{30}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),}
+       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"red2"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Actual and estimated mortalities}
+%  \vspace{-4mm}
+  \begin{center}
+    \includegraphics[width=\textwidth]{figure/Dpost-1}
+  \end{center}
+\end{frame}
+
+
+
+
+
+
+
+
 \begin{frame}
   \frametitle{Summary}
   This is perhaps the most general approach to modeling population
@@ -730,8 +829,6 @@ Back-transform
   processes. \\ 
   \pause \vfill
   Go out there and collect good data. \\
-  \pause \vfill
-  \centering The End \\
 \end{frame}
 
 

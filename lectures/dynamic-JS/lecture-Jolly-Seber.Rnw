@@ -390,9 +390,9 @@ Format for `secr'
 <<JS-model-new,size='scriptsize'>>=
 y.secr <- y
 caps <- data.frame(session=1,
-                   animal=rep(slice.index(y, 1), y.sp.secr),
-                   occasion=rep(slice.index(y, 3), y.sp.secr),
-                   trap=rep(slice.index(y, 2), y.sp.secr))
+                   animal=rep(slice.index(y, 1), y.secr),
+                   occasion=rep(slice.index(y, 3), y.secr),
+                   trap=rep(slice.index(y, 2), y.secr))
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=T)
 @
 \vfill
@@ -409,8 +409,9 @@ Create the model object and the fit it
 <<js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=FALSE>>=
 start <- get_start_values(js.data, model = "JsModel")
 mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
-##                   start=start)
-                   start=list(lambda0=0.3, sigma=100, D=0.1, phi=0.5, beta=0.2))
+                   ##                   start=start)
+                   start=list(lambda0=0.3, sigma=100, D=0.1,
+                              phi=0.5, beta=0.2))
 mod$fit()
 mod
 @   
@@ -495,7 +496,7 @@ jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
 
 
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Is $M$ high enough?}
 <<Ntot,size='tiny',out.width='70%',fig.align='center'>>=
 hist(as.matrix(jags.post.samples1[,"Ntot"]), xlab="Total population size",
@@ -556,11 +557,13 @@ Nlower <- apply(Npost, 2, quantile, prob=0.025)
   Plot
 <<Npost,size='scriptsize',fig.height=5,fig.show='hide',echo=-1>>=
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(1:T, N, type="b", ylim=c(0, 100), xlab="Time", ylab="Abundance", pch=16)
-arrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3, length=0.05)
+plot(1:T, N, type="b", ylim=c(0, 60), xlab="Time",
+     ylab="Abundance", pch=16)
+arrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3,
+       length=0.05, col=gray(0.7))
 points(1:T, Nmed, pch=16, col=gray(0.7))
-legend(1, 100, c("Actual abundance", "Estimated abundance"),
-       col=c("black", gray(0.7)), lty=c(1,1), pch=c(16,16))
+legend(1, 60, c("Actual", "Estimated"),
+       col=c("black", gray(0.7)), lty=c(NA,1), pch=c(16,16))
 @
 \end{frame}
 
@@ -581,6 +584,88 @@ legend(1, 100, c("Actual abundance", "Estimated abundance"),
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Actual and estimated recruits}
+  Extract and summarize posterior samples of $R_t$
+<<R-post-samples,size='scriptsize'>>=
+Rpost <- as.matrix(jags.post.samples1[,paste("Recruits[",1:9,"]",sep="")])
+Rmed <- apply(Rpost, 2, median)
+Rupper <- apply(Rpost, 2, quantile, prob=0.975)
+Rlower <- apply(Rpost, 2, quantile, prob=0.025)
+@
+  \pause
+  \vfill
+  Plot
+<<Rpost,size='scriptsize',fig.height=5,fig.show='hide',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(1:(T-1), Recruits, type="b", ylim=c(0, 30), xlab="Time",
+     ylab="Recruits", pch=16, col="seagreen2")
+arrows(1:(T-1), Rlower, 1:(T-1), Rupper, angle=90, code=3,
+       length=0.05, col=gray(0.7))
+points(1:(T-1), Rmed, pch=16, col=gray(0.7))
+legend(1, 30, c("Actual", "Estimated"),
+       col=c("seagreen2", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Actual and estimated recruits}
+%  \vspace{-4mm}
+  \begin{center}
+    \includegraphics[width=\textwidth]{figure/Rpost-1}
+  \end{center}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Actual and estimated mortalities}
+  Extract and summarize posterior samples of $D_t=N_t-S_t$
+<<D-post-samples,size='scriptsize'>>=
+Dpost <- as.matrix(jags.post.samples1[,paste("Deaths[", 1:9, "]", sep="")])
+Dmed <- apply(Dpost, 2, median)
+Dupper <- apply(Dpost, 2, quantile, prob=0.975)
+Dlower <- apply(Dpost, 2, quantile, prob=0.025)
+@
+  \pause
+  \vfill
+  Plot
+<<Dpost,size='scriptsize',fig.height=5,fig.show='hide',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(1:(T-1), Deaths, type="b", ylim=c(0, 30), xlab="Time",
+     ylab="Mortalities", pch=16, col="red2")
+arrows(1:(T-1), Dlower, 1:(T-1), Dupper, angle=90, code=3,
+       length=0.05, col=gray(0.7))
+points(1:(T-1), Dmed, pch=16, col=gray(0.7))
+legend(1, 30, c("Actual", "Estimated"),
+       col=c("red2", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Actual and estimated mortalities}
+%  \vspace{-4mm}
+  \begin{center}
+    \includegraphics[width=\textwidth]{figure/Dpost-1}
+  \end{center}
+\end{frame}
+
+
+
+
+
+
+
+
 \begin{frame}
   \frametitle{Summary}
   This is perhaps the most general approach to modeling population
@@ -591,8 +676,6 @@ legend(1, 100, c("Actual abundance", "Estimated abundance"),
   processes. \\ 
   \pause \vfill
   Go out there and collect good data. \\
-  \pause \vfill
-  \centering The End \\
 \end{frame}
 
 
