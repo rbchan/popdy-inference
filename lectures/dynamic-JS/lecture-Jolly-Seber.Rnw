@@ -372,7 +372,7 @@ str(y)
 
 
 \begin{frame}[fragile]
-  \frametitle{Likelihood analysis of spatial CJS model}
+  \frametitle{Likelihood analysis of spatial JS model}
 Begin by making a mask in `secr'
 <<mask,size='scriptsize',out.width="60%",fig.align="center">>=
 library(openpopscr)
@@ -385,7 +385,7 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
 
 \begin{frame}[fragile]
-  \frametitle{Likelihood analysis of spatial CJS model}
+  \frametitle{Likelihood analysis of spatial JS model}
 Format for `secr'
 <<JS-model-new,size='scriptsize'>>=
 y.secr <- y
@@ -442,7 +442,7 @@ mod$get_par("phi", k = 1, m=1)   ## Survival
 
 
 \begin{frame}[fragile]
-  \frametitle{Spatial CJS model in \jags}
+  \frametitle{Spatial JS model in \jags}
   \vspace{-3mm}
   \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
 %<<jagsmod1,size='tiny'>>=
