@@ -2,7 +2,6 @@
 %\documentclass[handout]{beamer}
 
 \usepackage[roman]{../lectures}
-%\usepackage[sans]{../lectures}
 
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
@@ -11,58 +10,44 @@
 
 \title{Lecture 1 -- Introduction to }
 \author{Richard Chandler}
-%\date{January 14, 2019}
-
 
 
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
-source("../rnw2pdf.R")
+source('../rnw2pdf.R')
 @
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf("lecture-intro")#, tangle=TRUE)
+rnw2pdf('lecture-intro')
 @ 
 
-
 <<knitr-theme,include=FALSE,purl=FALSE>>=
-##knit_theme$set("navajo-night")
-knit_theme$set("edit-kwrite")
+knit_theme$set('edit-kwrite')
+#
 @
 
 
-
-%<<knitr-setup,include=FALSE,purl=FALSE>>=
-%##opts_chunk$set(comment=NA)
-%@
-
-
-%% New command for inline code that isn't to be evaluated
+% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
 
-%% environments
+% environments
 \newenvironment{grayoutenv}{  % grey out text and markers in itemize environs
     \only{\color{gray!20}
     \setbeamercolor{itemize item}{fg=gray!20}
-    \setbeamercolor{itemize subitem}{fg=gray!20}}}{}
+    \setbeamercolor{itemize subitem}{fg=gray!20}} }{}
 
 
 
 \begin{document}
-
-% This would affect all code boxes. Not a good idea.
-% \setlength\fboxsep{0pt}
-
 
 
 \begin{frame}[plain]
   \LARGE
 %  \maketitle
   \centering
-  % \textcolor{RoyalBlue}{\huge \bf Lab 1 -- Introduction to \R} \\
   {\huge %\bf
     Lecture 1 -- Overview} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
@@ -72,9 +57,8 @@ knit_theme$set("edit-kwrite")
   Estimation of Fish and Wildlife Population Parameters \\
   \vfill
   Richard Chandler \\
-  University of Georgia \\
+  University of Georgia
 \end{frame}
-
 
 
 
@@ -84,28 +68,30 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[plain]
   \frametitle{Today's Topics}
   \Large
-  \only<1>{\tableofcontents}%[hideallsubsections]}
-  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+  \only<1>{\tableofcontents}
+  \only<2 | handout:0>{\tableofcontents[currentsection]}
 \end{frame}
 
 
 %\section{Motivation}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Overview}
   {\Large Themes}
   \begin{itemize}
-    \item<1-| grayout@5-> We need models to:
-      \begin{itemize}[<1-| grayout@5->]
+%    \item<1-| grayout@5-> We need models to:
+    \item<1-> We need models to:
+      \begin{itemize}[<1->]
         \item Evaluate hypotheses
         \item Make predictions
         \item Forecast future outcomes
         \item Inform management decisions
       \end{itemize}
-    \item<2-| grayout@5-> In the old days, models were mainly used in theoretical settings
-    \item<3-| grayout@5-> New statistical tools let us confront models with data
-    \item<4-| grayout@5-> Hierarchical models allow us to describe specific,
-      conditionally related, ecological and observation processes
+%    \item<2-| grayout@5-> In the old days, models were mainly used in theoretical settings
+    \item<2-> In the old days, models were mainly used in theoretical settings
+    \item<3-> New statistical tools let us confront models with data
+    \item<4-> Hierarchical models allow us to describe 
+      conditionally-related ecological and observation processes
     \item<5-> Before we even collect our data, we should:
       \begin{itemize}
         \item write down hypotheses about the processes that are likely to give 
@@ -170,7 +156,7 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{Chiricahua Leopard Frogs}
+  \frametitle{Example I -- Chiricahua Leopard Frogs}
   \begin{columns}
     \setlength\fboxsep{0pt}
     \begin{column}{0.5\textwidth}
@@ -257,7 +243,9 @@ knit_theme$set("edit-kwrite")
       \end{center}
     \end{column}
   \end{columns}
+  
 \end{frame}
+
 
 
 
@@ -278,22 +266,13 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
+
+
 \subsection{Central Georgia Black Bears}
 
 
 \begin{frame}
-  \frametitle{Central Georgia Black Bears}
-  % \begin{enumerate}
-  %   \item Black
-  %     \begin{enumerate}
-  %       \item LA
-  %       \item GA
-  %     \end{enumerate}
-  %   \item Brown
-  % \end{enumerate}
-  % \[
-  %   \prod_{i=1}^N \frac{\lambda({\bm s}_i)}{\int_{\mathcal{S}} \lambda({\bm s}) \mathrm{d}{\bm s}}
-  % \]
+  \frametitle{Example II -- Central Georgia Black Bears}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \vbox to 0.6\textheight{
@@ -312,6 +291,7 @@ knit_theme$set("edit-kwrite")
     \end{column}
   \end{columns}
 \end{frame}
+
 
 
 \begin{frame}
@@ -342,9 +322,10 @@ knit_theme$set("edit-kwrite")
   \frametitle{Central Georgia Black Bears}
   Female-based population model revealed population
   growth\footnote{Hooker et al. (2020, Journal of Wildlife Management)} \\
-  \vfill
+  % \vfill
+%  \vspace{-6pt}
   \centering
-  \includegraphics[width=0.9\textwidth]{figs/fig-5_abundance} \\
+  \includegraphics[width=0.9\textwidth,trim=0mm 0mm 0mm 10mm,clip]{figs/fig-5_abundance} \\
 \end{frame}
 
 
@@ -388,10 +369,6 @@ knit_theme$set("edit-kwrite")
       \includegraphics[height=6cm]{figs/SCRcover} \\
     \end{column}
   \end{columns}
-  % \vfill
-  % {\centering Other good ones \\}
-  % Statistical rethinking \\
-  % Hierarchical modeling in ecology
 \end{frame}
 
 
@@ -409,10 +386,6 @@ knit_theme$set("edit-kwrite")
       \includegraphics[height=6cm]{figs/McElreathBookCover} \\
     \end{column}
   \end{columns}
-  % \vfill
-  % {\centering Other good ones \\}
-  % Statistical rethinking \\
-  % Hierarchical modeling in ecology
 \end{frame}
 
 

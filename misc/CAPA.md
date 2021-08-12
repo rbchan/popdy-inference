@@ -10,7 +10,7 @@ WILD(FISH) 8390
 
 TITLES
 
-Course Title: Inference for models of wildlife population dynamics
+Course Title: INFERENCE FOR MODELS OF FISH AND WILDLIFE POPULATION DYNAMICS
 Athena Title: INFERENCE POP DYNAMICS
 
 COURSE DESCRIPTION
