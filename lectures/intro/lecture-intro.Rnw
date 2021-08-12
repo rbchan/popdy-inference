@@ -1,5 +1,5 @@
-\documentclass{beamer}
-%\documentclass[handout]{beamer}
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
 
@@ -14,30 +14,29 @@
 
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
-source('../rnw2pdf.R')
+source("../rnw2pdf.R")
 @
 
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
-rnw2pdf('lecture-intro')
+rnw2pdf("lecture-intro")
+rnw2pdf("lecture-intro", tangle=TRUE)
 @ 
 
+
 <<knitr-theme,include=FALSE,purl=FALSE>>=
-knit_theme$set('edit-kwrite')
-#
+knit_theme$set("edit-kwrite")
 @
 
+%<<knitr-setup,include=FALSE,purl=FALSE>>=
+%##opts_chunk$set(comment=NA)
+%@
 
-% New command for inline code that isn't to be evaluated
+
+%% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
-
-% environments
-\newenvironment{grayoutenv}{  % grey out text and markers in itemize environs
-    \only{\color{gray!20}
-    \setbeamercolor{itemize item}{fg=gray!20}
-    \setbeamercolor{itemize subitem}{fg=gray!20}} }{}
 
 
 
@@ -73,13 +72,11 @@ knit_theme$set('edit-kwrite')
 \end{frame}
 
 
-%\section{Motivation}
 
 \begin{frame}[fragile]
   \frametitle{Overview}
   {\Large Themes}
   \begin{itemize}
-%    \item<1-| grayout@5-> We need models to:
     \item<1-> We need models to:
       \begin{itemize}[<1->]
         \item Evaluate hypotheses
@@ -87,16 +84,15 @@ knit_theme$set('edit-kwrite')
         \item Forecast future outcomes
         \item Inform management decisions
       \end{itemize}
-%    \item<2-| grayout@5-> In the old days, models were mainly used in theoretical settings
-    \item<2-> In the old days, models were mainly used in theoretical settings
+    \item<2-> Until recently, models were mainly used in theoretical settings
     \item<3-> New statistical tools let us confront models with data
     \item<4-> Hierarchical models allow us to describe 
       conditionally-related ecological and observation processes
     \item<5-> Before we even collect our data, we should:
       \begin{itemize}
-        \item write down hypotheses about the processes that are likely to give 
+        \item Write down hypotheses about the processes that are likely to give 
           rise to our observations
-        \item formalize these processes as statistical models
+        \item Formalize these processes as statistical models
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -137,13 +133,8 @@ knit_theme$set('edit-kwrite')
 
 
 \begin{frame}
-  % \frametitle{C}
-  \LARGE %\huge
+  \LARGE 
   \centering
-  % Knowledge of theory or stats isn't enough on its own \\
-  % \pause
-  % \vfill
-  % You need to know how to confront models with data \\
   How do we bridge the gap between theoretical models and statistical 
   models?  \\
 \end{frame}
@@ -302,10 +293,8 @@ knit_theme$set('edit-kwrite')
       \small
       \vbox to 0.6\textheight{
         \uncover<1->{Theory goes back about a century} \\
-        % \pause
         \vfill
         \uncover<2->{Much of it focuses on the importance of density dependence} \\
-        % \pause
         \vfill
         \uncover<3->{Think back to ``maximum sustainable yield''}
       }
@@ -322,8 +311,6 @@ knit_theme$set('edit-kwrite')
   \frametitle{Central Georgia Black Bears}
   Female-based population model revealed population
   growth\footnote{Hooker et al. (2020, Journal of Wildlife Management)} \\
-  % \vfill
-%  \vspace{-6pt}
   \centering
   \includegraphics[width=0.9\textwidth,trim=0mm 0mm 0mm 10mm,clip]{figs/fig-5_abundance} \\
 \end{frame}
@@ -352,23 +339,25 @@ knit_theme$set('edit-kwrite')
 \section{Syllabus}
 
 
-
-
 \begin{frame}
   \frametitle{Books}
-  \begin{columns}[c]
-    \begin{column}{0.5\textwidth}
+  \begin{columns}
+    \begin{column}{0.33\textwidth}
       \centering
-      AHM \\
-      \includegraphics[height=6cm]{figs/KeryRoyleBookCover} \\
+      AHM vol I\\
+      \includegraphics[width=\textwidth]{figs/KeryRoyleBookCover} \\
     \end{column}
-    \hfill
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.33\textwidth}
+      \centering
+      AHM vol II\\
+      \includegraphics[width=\textwidth]{figs/KeryRoyleBookCoverV2} \\
+    \end{column}
+    \begin{column}{0.33\textwidth}
       \centering
       SCR \\
-      \includegraphics[height=6cm]{figs/SCRcover} \\
-    \end{column}
-  \end{columns}
+      \includegraphics[width=\textwidth,trim=21mm 0mm 21mm 0mm,clip]{figs/SCRcover} \\
+    \end{column} 
+  \end{columns} 
 \end{frame}
 
 
@@ -396,8 +385,7 @@ knit_theme$set('edit-kwrite')
 \begin{frame}
   \frametitle{Assignment}
   \Large
-%  \centering
-  Read: Applied Hierarchical Modeling (AHM) front-matter and chapter 1 \\
+  Read: Applied Hierarchical Modeling (AHM vol I) front-matter and chapter 1 \\
   \vfill
   Install: \href{https://sourceforge.net/projects/mcmc-jags/files/}{\jags},
   \href{https://www.r-project.org/}{\R}, and the following packages:
@@ -407,7 +395,6 @@ knit_theme$set('edit-kwrite')
     \item rjags
     \item jagsUI
   \end{itemize}
-
 \end{frame}
 
 
