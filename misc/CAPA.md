@@ -13,10 +13,9 @@ TITLES
 Course Title: Inference for models of wildlife population dynamics
 Athena Title: INFERENCE POP DYNAMICS
 
-
 COURSE DESCRIPTION
 
-Classical courses on population dynamics focus on theoretical models of how populations should behave under a set of assumptions. Evaluating how actual populations behave requires confronting models with data. Recently developed statistical tools make it possible to fit models of population dynamics to field data while accounting for observation error. This course will explain how to use these tools for statistical inference and prediction from data on wildlife populations.
+Recently developed statistical tools make it possible to fit models of population dynamics to field data while accounting for observation error. This course will explain how to use these tools for statistical inference and prediction about animal population parameters including abundance, occupancy, survival, recruitment, and dispersal.
 
 GRADING SYSTEM
 
@@ -34,7 +33,7 @@ Credit Hours
 
 Lecture Hours per week
 
-2
+3
 
 Hours in Lab per week
 
@@ -80,7 +79,7 @@ ADDITIONAL INFORMATION REQUIRED FOR THE SYLLABUS
 
 COURSE OBJECTIVES OR EXPECTED LEARNING OUTCOMES
 
-Students will learn how to (1) design studies of wildlife population dynamics, (2) fit statistical models to data collected in the field, (3) interpret results, and (4) make predictions useful for informing conservation decisions.
+Students will learn how to (1) design studies of animal population dynamics, (2) fit statistical models to data collected in the field, (3) interpret results, and (4) make predictions useful for informing conservation decisions.
 
 
 TOPICAL OUTLINE
