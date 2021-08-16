@@ -1,0 +1,13 @@
+model {
+
+# Priors
+beta0 ~ dnorm(0, 0.1) 
+beta1 ~ dnorm(0, 0.1)
+sigmaSq ~ dunif(0, 2)
+
+## Model for the data
+for(i in 1:n) {
+  y[i] ~ dnorm(beta0 + beta1*x[i], 1/sigmaSq)
+  }
+
+}

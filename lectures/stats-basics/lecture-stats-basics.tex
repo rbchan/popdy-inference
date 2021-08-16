@@ -58,7 +58,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 3 -- Basic statistical models}
+\title{Lecture 2 -- Basic statistical models}
 \author{Richard Chandler}
 
 
@@ -121,6 +121,7 @@
 
 
 
+
 % \begin{frame}
 %   \frametitle{Linear models (LMs)}
 % \end{frame}
@@ -172,6 +173,170 @@
   \includegraphics[width=0.25\textwidth]{figure/Rencher_Schaal_book} \hspace{1cm}
   \includegraphics[width=0.25\textwidth]{figure/Hocking_book} \\
 \end{frame}
+
+
+\begin{frame}
+  \frametitle{Simple linear regression}
+  Simple linear regression is the most basic linear model.
+  \[
+    y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
+    \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+  \]
+  \vspace{-6pt}
+  \pause
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      $y$ is variously called:
+      \begin{itemize}
+        \item response variable
+        \item outcome variable
+        \item dependent variable
+      \end{itemize}
+    \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}
+      It's worse for $x$
+      \begin{itemize}
+        \item predictor variable
+        \item explanatory variable
+        \item independent variable
+        \item covariate
+        \item exposure
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \pause
+  \vfill
+  We observe $x$ and $y$. \\
+  \vfill
+  We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
+  \pause
+  \vfill
+  The $\{\varepsilon_i\}$ are residuals. $\sigma^2$ is their variance.
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple linear regression example}
+  Suppose your data look like this:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{x} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.30}\hlstd{,} \hlnum{0.91}\hlstd{,} \hlnum{0.89}\hlstd{,} \hlnum{0.24}\hlstd{,} \hlnum{0.77}\hlstd{,} \hlnum{0.56}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.92}\hlstd{,} \hlnum{0.81}\hlstd{,} \hlnum{0.59}\hlstd{)}
+\hlstd{y} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.08}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.18}\hlstd{,} \hlnum{0.17}\hlstd{,} \hlnum{0.42}\hlstd{,} \hlnum{0.71}\hlstd{,} \hlnum{0.49}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlnum{0.46}\hlstd{,} \hlnum{0.04}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/slr-viz-1} 
+\end{knitrout}
+  \end{column}
+  \pause
+  \begin{column}{0.5\textwidth}
+    We can do classical inference easy:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{lm}\hlstd{(y}\hlopt{~}\hlstd{x)}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Coefficients:
+## (Intercept)            x  
+##     0.02742      0.54951
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple linear regression in Bayesland}
+  \small
+  To do analysis with JAGS, write the model in a text file:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model {
+
+# Priors
+beta0 ~ dnorm(0, 0.1) 
+beta1 ~ dnorm(0, 0.1)
+sigmaSq ~ dunif(0, 2)
+
+## Model for the data
+for(i in 1:n) {
+  y[i] ~ dnorm(beta0 + beta1*x[i], 1/sigmaSq)
+  }
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Now, put the data in a list and pick some initial values
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jd.lm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=x,} \hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(y))}
+\hlstd{ji.lm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{beta1}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{sigmaSq}\hlstd{=}\hlnum{1}\hlstd{)}
+\hlstd{jp.lm} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"sigmaSq"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple linear regression in Bayesland}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{js.lm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.lm,} \hlkwc{inits}\hlstd{=ji.lm,} \hlkwc{parameters.to.save}\hlstd{=jp.lm,}
+                    \hlkwc{model.file}\hlstd{=}\hlstr{"lm.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\begin{columns}
+  \begin{column}{0.55\textwidth}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(js.lm)}\hlopt{$}\hlstd{quant,} \hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##           2.5%   25%  50%  75% 97.5%
+## beta0    -0.56 -0.14 0.04 0.22  0.66
+## beta1    -0.35  0.29 0.55 0.79  1.42
+## deviance -2.65 -1.09 1.01 3.79 10.54
+## sigmaSq   0.03  0.06 0.08 0.13  0.32
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+  \end{column}
+  \begin{column}{0.45\textwidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/lm-jags-viz-1} 
+\end{knitrout}
+  \end{column}
+\end{columns}
+\end{frame}
+
 
 
 

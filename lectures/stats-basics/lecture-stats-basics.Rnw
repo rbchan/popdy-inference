@@ -8,7 +8,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 3 -- Basic statistical models}
+\title{Lecture 2 -- Basic statistical models}
 \author{Richard Chandler}
 
 
@@ -136,12 +136,121 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Simple linear regression}
+  Simple linear regression is the most basic linear model.
+  \[
+    y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
+    \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+  \]
+  \vspace{-6pt}
+  \pause
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      $y$ is variously called:
+      \begin{itemize}
+        \item response variable
+        \item outcome variable
+        \item dependent variable
+      \end{itemize}
+    \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}
+      It's worse for $x$
+      \begin{itemize}
+        \item predictor variable
+        \item explanatory variable
+        \item independent variable
+        \item covariate
+        \item exposure
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \pause
+  \vfill
+  We observe $x$ and $y$. \\
+  \vfill
+  We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
+  \pause
+  \vfill
+  The $\{\varepsilon_i\}$ are residuals. $\sigma^2$ is their variance.
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple linear regression example}
+  Suppose your data look like this:
+<<slr-data,size='scriptsize'>>=
+x <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)
+y <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)
+@   
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+<<slr-viz,echo=FALSE>>=
+plot(x,y)
+abline(lm(y~x))
+@     
+  \end{column}
+  \pause
+  \begin{column}{0.5\textwidth}
+    We can do classical inference easy:
+<<slr-fit,size='scriptsize'>>=
+lm(y~x)
+@ 
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple linear regression in Bayesland}
+  \small
+  To do the analysis with JAGS, write the model in a text file:
+<<lm-jag,size="scriptsize",comment="",echo=FALSE>>=
+  writeLines(readLines("lm.jag"))
+@
+\pause
+\vfill
+Now, put the data in a list and pick some initial values
+<<lm-jd>>=
+jd.lm <- list(x=x, y=y, n=length(y))
+ji.lm <- function() c(beta0=0, beta1=0, sigmaSq=1)
+jp.lm <- c("beta0", "beta1", "sigmaSq")
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple linear regression in Bayesland}
+<<lm-jags,size='scriptsize',results='hide',warning=FALSE>>=
+library(jagsUI)  
+js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
+                    model.file="lm.jag", n.chains=1, n.iter=1000)
+@ 
+\pause
+\begin{columns}
+  \begin{column}{0.55\textwidth}
+<<lm-jags-sum,size='scriptsize'>>=
+round(summary(js.lm)$quant, 2)
+@
+\pause
+  \end{column}
+  \begin{column}{0.45\textwidth}
+<<lm-jags-viz,echo=FALSE>>=
+plot(js.lm)
+@     
+  \end{column}
+\end{columns}
+\end{frame}
+
+
 
 
 \begin{frame}
   \frametitle{Linear models}
-  {%\bf
-    Linear models look like this:}
+    A more general depiction of linear models:
 
 \[
 y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \varepsilon_i
