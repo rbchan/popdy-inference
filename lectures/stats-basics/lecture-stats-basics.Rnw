@@ -208,7 +208,7 @@ lm(y~x)
   \frametitle{Simple (Bayesian) linear regression}
   \small
   To do the analysis with JAGS, write the model in a text file:
-<<lm-jag,size="scriptsize",comment="",echo=TRUE>>=
+<<lm-jag,size="scriptsize",comment="",echo=FALSE>>=
   writeLines(readLines("lm.jag"))
 @
 \pause
@@ -232,6 +232,7 @@ js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
 \pause
 \begin{columns}
   \begin{column}{0.55\textwidth}
+    Posterior summary statistics:
 <<lm-jags-sum,size='scriptsize'>>=
 round(summary(js.lm)$quant, 2)
 @
@@ -257,8 +258,8 @@ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \var
 \]
 
 where the $\beta$'s are coefficients, and the $x$ values are predictor
-variables (or dummy variables for categorical predictors). \pause The
-residuals are assumed to be normally distributed:
+variables (or dummy variables for categorical predictors). %\pause
+The residuals are assumed to be normally distributed:
 
 \[
   \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
@@ -941,19 +942,26 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
 
 
 \begin{frame}
-  \frametitle{In-class exercise}
+  \frametitle{Logistic regression example}
   \begin{enumerate}
-  \item Fit the following model to the grouse data
+  \item How could we fit the following model to the grouse data?
     \begin{gather*}
       \mathrm{logit}(p_i) = \beta_0 + \beta_1\mathrm{ELEV}_i \\
       y_i \sim \mathrm{Bern}(p_i)
     \end{gather*}
-  \item Predict and graph occurrence probability ($p$) over a range of
-    elevations. Use the same sequence of elevations as we used in the
-    linear model example.
+  \item How can we predict and graph occurrence probability ($p$) over a range of
+    elevations?
   \end{enumerate}
 \end{frame}
 
+
+
+\begin{frame}[fragile]
+\frametitle{Logistic regression example}
+<<logitreg>>=
+logitreg1 <- glm(presence ~ elevation, data=grouse.data, family=binomial(link="logit"))
+@   
+\end{frame}
 
 
 \section{Poisson regression}
@@ -1059,99 +1067,6 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
 
 
 
-
-
-% \begin{frame}
-%   \frametitle{Assessing model fit}
-%   {The most common problem in Poisson regression is
-%     {\alert{overdispersion}}. \\}
-%   \pause
-%   \vfill
-%   {Overdispersion is the situation in which there is more variability
-%     in the data than predicted by the model. \\}
-%   \pause
-%   \vfill
-%   {Overdispersion cannot be assessed by simply comparing the mean and
-%     variance of the response variable. \\}
-%   \pause
-%   \vfill
-%   {The presence of many zeros is not necessarily
-%     indicative of overdispersion. \\}
-%   \pause
-%   \vfill
-%   {Overdispersion can be assessed using a goodness-of-fit test. \\}
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Goodness-of-fit}
-% The fit of a Poisson regression can be assessed using a $\chi^2$
-% test. \\
-% \pause
-% \vfill
-% The test statistic is the residual deviance:
-% \[
-%   D = 2 \left\{\sum y_i \log\left(\frac{y_i}{\hat{\lambda_i}}\right) - (y_i-\hat{\lambda}_i)\right\}
-% \]
-% \pause
-% \vfill
-% If the null hypothesis is true (ie, the model fits the data), $D$ should
-% follow $\chi^2$ distribution with $N-K$ degrees-of-freedom.
-% \pause
-% \vfill
-% <<dev,size='footnotesize',eval=FALSE>>=
-% N <- nrow(frogData)                   # sample size
-% K <- length(coef(fm2))                # number of parameters
-% df.resid <- N-K                       # degrees-of-freedom
-% Dev <- deviance(fm2)                  # residual deviance
-% p.value <- 1-pchisq(Dev, df=df.resid) # p-value
-% p.value                               # fail to reject H0
-% @
-% \end{frame}
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{What if the model doesn't fit the data?}
-%   \Large
-%   {\bf Alternatives to the Poisson distribution}
-%   \begin{itemize}
-%     \item Negative binomial
-%     \item Zero-inflated Poisson
-%   \end{itemize}
-% \end{frame}
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Negative binomial distribution}
-% <<nb1,fig.show='hide',echo=FALSE>>=
-% x <- 0:25
-% plot(x, dnbinom(x, mu=2, size=10), type="h", lwd=5, col="blue", lend="butt",
-%      xlab="Response variable", ylab="Probability",
-%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 10", ")", sep="")), cex.lab=1.5 )
-% @
-% <<nb2,fig.show='hide',echo=FALSE>>=
-% plot(x, dnbinom(x, mu=2, size=5), type="h", lwd=5, col="blue", lend="butt",
-%      xlab="Response variable", ylab="Probability",
-%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 5", ")", sep="")), cex.lab=1.5 )
-% @
-% <<nb3,fig.show='hide',echo=FALSE>>=
-% plot(x, dnbinom(x, mu=2, size=.1), type="h", lwd=5, col="blue", lend="butt",
-%      xlab="Response variable", ylab="Probability",
-%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 0.1", ")", sep="")), cex.lab=1.5 )
-% @
-% \begin{center}
-%   \only<1>{\includegraphics[width=0.75\textwidth]{figure/nb1-1}}
-%   \only<2 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb2-1}}
-%   \only<3 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb3-1}}
-% \end{center}
-% \end{frame}
 
 
 
@@ -1343,7 +1258,7 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
       lowest AIC, and create a graph depicting the estimated
       relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Friday, Sept 3. 
 \end{frame}
 
 
