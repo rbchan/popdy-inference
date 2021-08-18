@@ -194,7 +194,7 @@ abline(lm(y~x))
   \end{column}
   \pause
   \begin{column}{0.5\textwidth}
-    We can do classical inference easy:
+    Classical inference is easy:
 <<slr-fit,size='scriptsize'>>=
 lm(y~x)
 @ 
@@ -205,10 +205,10 @@ lm(y~x)
 
 
 \begin{frame}[fragile]
-  \frametitle{Simple linear regression in Bayesland}
+  \frametitle{Simple (Bayesian) linear regression}
   \small
   To do the analysis with JAGS, write the model in a text file:
-<<lm-jag,size="scriptsize",comment="",echo=FALSE>>=
+<<lm-jag,size="scriptsize",comment="",echo=TRUE>>=
   writeLines(readLines("lm.jag"))
 @
 \pause
@@ -223,7 +223,7 @@ jp.lm <- c("beta0", "beta1", "sigmaSq")
 
 
 \begin{frame}[fragile]
-  \frametitle{Simple linear regression in Bayesland}
+  \frametitle{Simple (Bayesian) linear regression}
 <<lm-jags,size='scriptsize',results='hide',warning=FALSE>>=
 library(jagsUI)  
 js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
