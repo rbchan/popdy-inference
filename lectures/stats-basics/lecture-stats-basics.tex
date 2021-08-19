@@ -1270,161 +1270,62 @@ Linear models can also include polynomial terms and interactions
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \begin{enumerate}
-    \item Fit the following model to the grouse data
-      \begin{gather*}
-        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
-        y_i \sim \mathrm{Pois}(\lambda_i)
-      \end{gather*}
-    \item Predict and graph the expected value of abundance ($\lambda$)
-      over a range of elevations. Use the same sequence of elevations as
-      we used in the previous examples.
-    \item Simulate a new response variable $y$ using the fitted model
-  \end{enumerate}
+% \begin{frame}
+%   \frametitle{In-class exercise}
+%   \begin{enumerate}
+%     \item Fit the following model to the grouse data
+%       \begin{gather*}
+%         \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
+%         y_i \sim \mathrm{Pois}(\lambda_i)
+%       \end{gather*}
+%     \item Predict and graph the expected value of abundance ($\lambda$)
+%       over a range of elevations. Use the same sequence of elevations as
+%       we used in the previous examples.
+%     \item Simulate a new response variable $y$ using the fitted model
+%   \end{enumerate}
+% \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Poisson regression simulation}
+  \small
+  First, create a covariate:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n} \hlkwb{<-} \hlnum{100}
+\hlstd{x} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(n)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  Next, pick values for the coefficients and compute $\lambda_i =
+  E(y_i)$:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{1}
+\hlstd{beta1} \hlkwb{<-} \hlnum{1}
+\hlstd{lam} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+Now, simulate the response variable $y$:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=n,} \hlkwc{lambda}\hlstd{=lam)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+Finally, fit the model:
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(poisreg1} \hlkwb{<-} \hlkwd{glm}\hlstd{(y} \hlopt{~} \hlstd{x,} \hlkwc{family}\hlstd{=}\hlkwd{poisson}\hlstd{(}\hlkwc{link}\hlstd{=}\hlstr{"log"}\hlstd{)))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \end{frame}
-
-
-
-
-% \section{Mixed effects models}
-
-
-
-% \begin{frame}[plain]
-%   \frametitle{Outline}
-%   \Large
-%   \tableofcontents[currentsection]
-% \end{frame}
-
-
-
-
-% % \begin{frame}
-% %   \frametitle{Generalized linear mixed effects models (GLMMs)}
-% % \end{frame}
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Fixed vs random effects, revisited}
-% %  \large
-% {\bf In the context of mixed-effects models\dots \par}
-% \vspace{0.5cm}
-
-% {\bf Fixed effect \par}
-% A constant parameter
-
-% \pause
-% \vspace{1cm}
-
-% {\bf Random effect \par}
-% A parameter that is a random variable
-
-% \pause
-% \vfill
-% {\centering \bf
-% \alert{Random effects will always be associated with a probability
-%   distribution} \par}  
-% \end{frame}
-
-
-
-% % \begin{frame}
-% %   \frametitle{Previous examples}
-% %   \Large
-% %   ANOVA with random block effects
-% %   \pause
-% %   \vfill
-% %   Nested ANOVA
-% %   \pause
-% %   \vfill
-% %   Split-plot ANOVA
-% % \end{frame}
-
-
-
-
-% \begin{frame}
-%   \frametitle{A simple example}
-%   \large
-%   \[
-%     y_{ij} = \beta_0 + \beta_1 x_{i1} + \gamma_j + \varepsilon_{ij}
-%   \]
-%   where
-%   \[
-%     \gamma_j \sim \mbox{Normal}(0, \sigma^2_d)
-%   \]
-%   and
-%   \[
-%     \varepsilon_{ij} \sim \mbox{Normal}(0, \sigma^2)
-%   \]
-%   \pause
-%   \vfill
-%   \centering
-%   This amounts to a linear regression with a random intercept \\
-% \end{frame}
-
-
-
-
-
-
-%% \begin{frame}
-%%   \frametitle{Split-plot model}
-%%   The expanded additive model:
-%%   \[
-%%     y_{ijk} = \beta0 + \beta_1 + \beta_{ij} + \gamma_k +
-%%     \alpha\gamma_{ik} + \varphi y_{ijk-1} + \varepsilon_{ijk}
-%%   \]
-%% \end{frame}
-
-
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Matrix representation}
-%   \Large
-%   \[
-%     {\bf y} = {\bf X}{\bm \beta} + {\bm \gamma} + {\bm \varepsilon}
-%   \]
-%   \pause
-%   \[
-%     {\bm \gamma} \sim \mbox{Normal}(0, \sigma^2_d)
-%   \]
-%   \[
-%     {\bm \varepsilon} \sim \mbox{Normal}(0, \sigma^2)
-%   \]
-% \end{frame}
-
-
-
-
-
-
-
-
-
-% \section{Summary}
-
-
-% \begin{frame}
-%   \frametitle{Summary}
-%   \large
-%   Linear mixed-effects models are useful anytime you have
-%   fixed effects and normally-distriubted random effects \\
-%   \pause
-%   \vfill
-%   They allow for (serial, spatial, etc\dots) correlation among
-%   observations within a level of the grouping variable \\
-% %  \end{itemize}
-% \end{frame}
 
 
 
@@ -1456,7 +1357,8 @@ Linear models can also include polynomial terms and interactions
       lowest AIC, and create a graph depicting the estimated
       relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Friday, Sept 3. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Friday,
+  August 27. 
 \end{frame}
 
 
