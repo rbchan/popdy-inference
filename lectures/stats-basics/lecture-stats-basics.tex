@@ -93,7 +93,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 3 -- Refresher of basic statistical models} \\
+  {\huge Lecture 2 -- Refresher of basic statistical models} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -118,46 +118,6 @@
   \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
 \end{frame}
 
-
-
-
-
-% \begin{frame}
-%   \frametitle{Linear models (LMs)}
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Is this a linear model?}
-% \[
-% y = 20 + 0.5 x
-% \]
-% <<linmod1,include=FALSE,fig.show="hide">>=
-% par(mai=c(0.8,0.8,0.1,0.1))
-% plot(function(x) 20 + 0.5*x, 0, 10, ylab="y")
-% @
-% \begin{center}
-%   \includegraphics[width=0.6\textwidth]{figure/linmod1-1}
-% \end{center}
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Is this a linear model?}
-% \[
-% y = 20 + 0.5 x - 0.3 x^2
-% \]
-% <<linmod2,include=FALSE,fig.show='hide'>>=
-% par(mai=c(0.8,0.8,0.1,0.1))
-% plot(function(x) 20 + 0.5*x - 0.3*x^2 , 0, 10, ylab="y")
-% @
-% \begin{center}
-%   \includegraphics[width=0.6\textwidth]{figure/linmod2-1}
-% \end{center}
-% \end{frame}
 
 
 
@@ -218,6 +178,27 @@
 
 
 \begin{frame}[fragile]
+  \frametitle{Probability distributions}
+  Check out Heather Gaya's awesome Shiny App: \\
+  \vfill
+  \centering
+  \href{ % Highlighting gets messed up if on 1 line
+    https://insects.shinyapps.io/Probability_Dists/
+  }{
+    \large
+    \color{blue}
+    {https://insects.shinyapps.io/Probability\_Dists/} 
+  } \\
+  \vfill
+  \includegraphics[width=0.7\textwidth]{figs/probDists} \\
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
   \frametitle{Simple linear regression example}
   Suppose your data look like this:
 \begin{knitrout}\scriptsize
@@ -259,16 +240,42 @@
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Bayesian inference with JAGS}
+  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  JAGS can be downloaded here:  \\
+  \centering
+  \vfill
+  \href{
+    https://sourceforge.net/projects/mcmc-jags/files/}{
+    \large
+    \color{blue}
+    https://sourceforge.net/projects/mcmc-jags/files/
+  } \\
+  \pause
+  \vfill
+  \flushleft
+  The basic steps of Bayesian analysis with JAGS are:
+  \begin{enumerate}%[<+->]
+    \item Write a model in the BUGS language in a text file
+    \item Put data in a named list
+    \item Create a function to generate random initial values
+    \item Specify the parameters you want to monitor
+    \item Use MCMC to draw posterior samples
+    \item Use posterior samples for inference and prediction
+  \end{enumerate}
+\end{frame}
+
+
+
+
 
 \begin{frame}[fragile]
   \frametitle{Simple (Bayesian) linear regression}
   \small
-  To do the analysis with JAGS, write the model in a text file:
+  The model is in a text file named {\tt lm.jag} \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-  \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"lm.jag"}\hlstd{))}
-\end{alltt}
 \begin{verbatim}
 model {
 
@@ -303,6 +310,7 @@ Now, put the data in a list and pick some initial values
 
 \begin{frame}[fragile]
   \frametitle{Simple (Bayesian) linear regression}
+  Use MCMC to draw posterior samples:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -315,6 +323,7 @@ Now, put the data in a list and pick some initial values
 \pause
 \begin{columns}
   \begin{column}{0.55\textwidth}
+    Summarize the posterior samples:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -322,10 +331,10 @@ Now, put the data in a list and pick some initial values
 \end{alltt}
 \begin{verbatim}
 ##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.51 -0.13 0.03 0.20  0.61
-## beta1    -0.26  0.31 0.57 0.78  1.33
-## deviance -2.66 -1.26 0.63 3.24  9.91
-## sigmaSq   0.03  0.05 0.08 0.12  0.28
+## beta0    -0.56 -0.14 0.04 0.22  0.66
+## beta1    -0.35  0.29 0.55 0.79  1.42
+## deviance -2.65 -1.09 1.01 3.79 10.54
+## sigmaSq   0.03  0.06 0.08 0.13  0.32
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -352,8 +361,8 @@ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \var
 \]
 
 where the $\beta$'s are coefficients, and the $x$ values are predictor
-variables (or dummy variables for categorical predictors). \pause The
-residuals are assumed to be normally distributed:
+variables (or dummy variables for categorical predictors). %\pause
+The residuals are assumed to be normally distributed:
 
 \[
   \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
@@ -694,25 +703,8 @@ Linear models can also include polynomial terms and interactions
 
 
 
-% \begin{frame}
-%   \frametitle{Generalized linear models (GLMs)}
-% \end{frame}
-
-
-
-
-
 \begin{frame}
   \frametitle{Generalized linear models (GLMs)}
-  % \frametitle{Motivation}
-  %% {\bf Limitations of linear models}
-  %% \begin{itemize}[<+->]
-  %%   \item Not appropriate when response variable is discrete
-  %%     (e.g. binary)
-  %%   \item Sometimes transformations can't make residuals normal
-  %%   \item Predictions might not be on the correct scale
-  %%   \item Constant variance assumption can be problematic
-  %% \end{itemize}
   \large
   \uncover<1->{{\bf Benefits of generalized linear models}}
   \begin{itemize}%[<+->]
@@ -730,7 +722,6 @@ Linear models can also include polynomial terms and interactions
     \item Presence-absence studies
     \item Studies of survival
     \item Seed germination studies
-%    \item Analysis of zero-inflated count data
   \end{itemize}
   }
 \end{frame}
@@ -743,11 +734,6 @@ Linear models can also include polynomial terms and interactions
   \begin{itemize}
     \item The response variable is usually binary and modeled with a
       binomial distribution
-      % \begin{itemize}
-      %   \item Presence/absence data
-      %   \item Yes/no data
-      % \end{itemize}
-%    \item The response variable is modeled with a binomial distribution
     \item The probability of success is usually a logit-linear
       model
   \end{itemize}
@@ -757,33 +743,12 @@ Linear models can also include polynomial terms and interactions
   \begin{itemize}
     \item The response variable is a non-negative integer modeled with
       a Poisson distribution
-      % \begin{itemize}
-      %   \item Count data
-      % \end{itemize}
-%    \item The response variable is modeled with a Poisson distribution
     \item The expected count is usually modeled with a log-linear
       model
   \end{itemize}
   \vfill
 \end{frame}
 
-
-
-% \begin{frame}
-%   \frametitle{From linear to generalized linear}
-% \only<1>{
-%   {\bf A linear model is an equation of the form:}
-%   \[
-%     \mu_i = \beta_0 + \beta_1 x1_i + \beta_2 x2_i + \ldots + \beta_p xp_i
-%   \]
-%   }
-% \only<2>{
-%   {\bf A generalized linear model is an equation of the form:}
-%   \[
-%     g(\eta_i) = \beta_0 + \beta_1 x1_i + \beta_2 x2_i + \ldots + \beta_p xp_i
-%   \]
-%   }
-% \end{frame}
 
 
 \begin{frame}
@@ -879,29 +844,6 @@ Linear models can also include polynomial terms and interactions
     \hline
   \end{tabular}
 \end{frame}
-
-
-
-
-
-
-%% \begin{frame}[fragile]
-%%   \frametitle{Log link example}
-%% <<>>=
-%% beta0 <- 5
-%% beta1 <- -0.08
-%% elevation <- 100
-%% eta <- beta0 + beta1*elevation
-%% eta
-%% @
-%% \pause
-%% {\bf How do we convert -3 to a positive value? \par}
-%% \pause
-%% {\bf Use the inverse-log function, i.e. the exponential function:}
-%% <<>>=
-%% exp(-3)
-%% @
-%% \end{frame}
 
 
 
@@ -1125,18 +1067,103 @@ Linear models can also include polynomial terms and interactions
 
 
 \begin{frame}
-  \frametitle{In-class exercise}
+  \frametitle{Logistic regression example}
   \begin{enumerate}
-  \item Fit the following model to the grouse data
+  \item How could we fit the following model to the grouse data?
     \begin{gather*}
       \mathrm{logit}(p_i) = \beta_0 + \beta_1\mathrm{ELEV}_i \\
       y_i \sim \mathrm{Bern}(p_i)
     \end{gather*}
-  \item Predict and graph occurrence probability ($p$) over a range of
-    elevations. Use the same sequence of elevations as we used in the
-    linear model example.
+  \item How can we predict and graph occurrence probability ($p$) over a range of
+    elevations?
   \end{enumerate}
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Logistic regression example}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{logitreg1} \hlkwb{<-} \hlkwd{glm}\hlstd{(presence} \hlopt{~} \hlstd{elevation,} \hlkwc{data}\hlstd{=grouse.data,}
+                 \hlkwc{family}\hlstd{=}\hlkwd{binomial}\hlstd{(}\hlkwc{link}\hlstd{=}\hlstr{"logit"}\hlstd{))}
+\hlstd{logitreg1}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:  glm(formula = presence ~ elevation, family = binomial(link = "logit"), 
+##     data = grouse.data)
+## 
+## Coefficients:
+## (Intercept)    elevation  
+##  -3.0451857   -0.0006727  
+## 
+## Degrees of Freedom: 578 Total (i.e. Null);  577 Residual
+## Null Deviance:	    153.5 
+## Residual Deviance: 153.2 	AIC: 157.2
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Logistic regression example}
+  Predict grouse occurrence probability at a sequence of elevations \\ 
+  \vfill
+  First, create a new \inr{data.frame} with the explanatory values of
+  interest.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{elev.min} \hlkwb{<-} \hlkwd{min}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
+\hlstd{elev.max} \hlkwb{<-} \hlkwd{max}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
+\hlstd{seq.length} \hlkwb{<-} \hlnum{20} \hlcom{## Determines how smooth the function looks in GLMs }
+\hlstd{elev.seq} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=elev.min,} \hlkwc{to}\hlstd{=elev.max,} \hlkwc{length.out}\hlstd{=seq.length)}
+\hlstd{pred.data.lr} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{elevation}\hlstd{=elev.seq)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Now get the predictions.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.elev} \hlkwb{<-} \hlkwd{predict}\hlstd{(logitreg1,} \hlkwc{newdata}\hlstd{=pred.data.lr,} \hlkwc{type}\hlstd{=}\hlstr{"link"}\hlstd{,}
+                     \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Logistic regression example}
+  \small
+  Predictions and standard error interval. We add $\pm 1$ SE on
+    the logit scale, and then transform to the probability scale.
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(presence} \hlopt{~} \hlstd{elevation,} \hlkwc{data}\hlstd{=grouse.data,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\hlkwd{lines}\hlstd{(elev.seq,} \hlkwd{plogis}\hlstd{(pred.elev}\hlopt{$}\hlstd{fit),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(elev.seq,} \hlkwd{plogis}\hlstd{(pred.elev}\hlopt{$}\hlstd{fit}\hlopt{+}\hlstd{pred.elev}\hlopt{$}\hlstd{se.fit),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(elev.seq,} \hlkwd{plogis}\hlstd{(pred.elev}\hlopt{$}\hlstd{fit}\hlopt{-}\hlstd{pred.elev}\hlopt{$}\hlstd{se.fit),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.75\textwidth]{figure/grouse-lrpred-plot-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
 
 
 
@@ -1238,99 +1265,6 @@ Linear models can also include polynomial terms and interactions
 
 
 
-
-
-% \begin{frame}
-%   \frametitle{Assessing model fit}
-%   {The most common problem in Poisson regression is
-%     {\alert{overdispersion}}. \\}
-%   \pause
-%   \vfill
-%   {Overdispersion is the situation in which there is more variability
-%     in the data than predicted by the model. \\}
-%   \pause
-%   \vfill
-%   {Overdispersion cannot be assessed by simply comparing the mean and
-%     variance of the response variable. \\}
-%   \pause
-%   \vfill
-%   {The presence of many zeros is not necessarily
-%     indicative of overdispersion. \\}
-%   \pause
-%   \vfill
-%   {Overdispersion can be assessed using a goodness-of-fit test. \\}
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Goodness-of-fit}
-% The fit of a Poisson regression can be assessed using a $\chi^2$
-% test. \\
-% \pause
-% \vfill
-% The test statistic is the residual deviance:
-% \[
-%   D = 2 \left\{\sum y_i \log\left(\frac{y_i}{\hat{\lambda_i}}\right) - (y_i-\hat{\lambda}_i)\right\}
-% \]
-% \pause
-% \vfill
-% If the null hypothesis is true (ie, the model fits the data), $D$ should
-% follow $\chi^2$ distribution with $N-K$ degrees-of-freedom.
-% \pause
-% \vfill
-% <<dev,size='footnotesize',eval=FALSE>>=
-% N <- nrow(frogData)                   # sample size
-% K <- length(coef(fm2))                # number of parameters
-% df.resid <- N-K                       # degrees-of-freedom
-% Dev <- deviance(fm2)                  # residual deviance
-% p.value <- 1-pchisq(Dev, df=df.resid) # p-value
-% p.value                               # fail to reject H0
-% @
-% \end{frame}
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{What if the model doesn't fit the data?}
-%   \Large
-%   {\bf Alternatives to the Poisson distribution}
-%   \begin{itemize}
-%     \item Negative binomial
-%     \item Zero-inflated Poisson
-%   \end{itemize}
-% \end{frame}
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Negative binomial distribution}
-% <<nb1,fig.show='hide',echo=FALSE>>=
-% x <- 0:25
-% plot(x, dnbinom(x, mu=2, size=10), type="h", lwd=5, col="blue", lend="butt",
-%      xlab="Response variable", ylab="Probability",
-%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 10", ")", sep="")), cex.lab=1.5 )
-% @
-% <<nb2,fig.show='hide',echo=FALSE>>=
-% plot(x, dnbinom(x, mu=2, size=5), type="h", lwd=5, col="blue", lend="butt",
-%      xlab="Response variable", ylab="Probability",
-%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 5", ")", sep="")), cex.lab=1.5 )
-% @
-% <<nb3,fig.show='hide',echo=FALSE>>=
-% plot(x, dnbinom(x, mu=2, size=.1), type="h", lwd=5, col="blue", lend="butt",
-%      xlab="Response variable", ylab="Probability",
-%      main=expression(paste("NegBin(", lambda, "= 2, ", alpha, "= 0.1", ")", sep="")), cex.lab=1.5 )
-% @
-% \begin{center}
-%   \only<1>{\includegraphics[width=0.75\textwidth]{figure/nb1-1}}
-%   \only<2 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb2-1}}
-%   \only<3 | handout:0>{\includegraphics[width=0.75\textwidth]{figure/nb3-1}}
-% \end{center}
-% \end{frame}
 
 
 
@@ -1522,7 +1456,7 @@ Linear models can also include polynomial terms and interactions
       lowest AIC, and create a graph depicting the estimated
       relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday, Sept 7. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Friday, Sept 3. 
 \end{frame}
 
 

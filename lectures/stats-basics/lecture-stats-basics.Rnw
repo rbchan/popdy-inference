@@ -54,7 +54,7 @@ knit_theme$set("edit-kwrite")
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 3 -- Refresher of basic statistical models} \\
+  {\huge Lecture 2 -- Refresher of basic statistical models} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -79,46 +79,6 @@ knit_theme$set("edit-kwrite")
   \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
 \end{frame}
 
-
-
-
-
-% \begin{frame}
-%   \frametitle{Linear models (LMs)}
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Is this a linear model?}
-% \[
-% y = 20 + 0.5 x
-% \]
-% <<linmod1,include=FALSE,fig.show="hide">>=
-% par(mai=c(0.8,0.8,0.1,0.1))
-% plot(function(x) 20 + 0.5*x, 0, 10, ylab="y")
-% @
-% \begin{center}
-%   \includegraphics[width=0.6\textwidth]{figure/linmod1-1}
-% \end{center}
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Is this a linear model?}
-% \[
-% y = 20 + 0.5 x - 0.3 x^2
-% \]
-% <<linmod2,include=FALSE,fig.show='hide'>>=
-% par(mai=c(0.8,0.8,0.1,0.1))
-% plot(function(x) 20 + 0.5*x - 0.3*x^2 , 0, 10, ylab="y")
-% @
-% \begin{center}
-%   \includegraphics[width=0.6\textwidth]{figure/linmod2-1}
-% \end{center}
-% \end{frame}
 
 
 
@@ -179,6 +139,27 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}[fragile]
+  \frametitle{Probability distributions}
+  Check out Heather Gaya's awesome Shiny App: \\
+  \vfill
+  \centering
+  \href{ % Highlighting gets messed up if on 1 line
+    https://insects.shinyapps.io/Probability_Dists/
+  }{
+    \large
+    \color{blue}
+    {https://insects.shinyapps.io/Probability\_Dists/} 
+  } \\
+  \vfill
+  \includegraphics[width=0.7\textwidth]{figs/probDists} \\
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
   \frametitle{Simple linear regression example}
   Suppose your data look like this:
 <<slr-data,size='scriptsize'>>=
@@ -203,11 +184,40 @@ lm(y~x)
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Bayesian inference with JAGS}
+  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  JAGS can be downloaded here:  \\
+  \centering
+  \vfill
+  \href{
+    https://sourceforge.net/projects/mcmc-jags/files/}{
+    \large
+    \color{blue}
+    https://sourceforge.net/projects/mcmc-jags/files/
+  } \\
+  \pause
+  \vfill
+  \flushleft
+  The basic steps of Bayesian analysis with JAGS are:
+  \begin{enumerate}%[<+->]
+    \item Write a model in the BUGS language in a text file
+    \item Put data in a named list
+    \item Create a function to generate random initial values
+    \item Specify the parameters you want to monitor
+    \item Use MCMC to draw posterior samples
+    \item Use posterior samples for inference and prediction
+  \end{enumerate}
+\end{frame}
+
+
+
+
 
 \begin{frame}[fragile]
   \frametitle{Simple (Bayesian) linear regression}
   \small
-  To do the analysis with JAGS, write the model in a text file:
+  The model is in a text file named {\tt lm.jag} \\
 <<lm-jag,size="scriptsize",comment="",echo=FALSE>>=
   writeLines(readLines("lm.jag"))
 @
@@ -224,7 +234,8 @@ jp.lm <- c("beta0", "beta1", "sigmaSq")
 
 \begin{frame}[fragile]
   \frametitle{Simple (Bayesian) linear regression}
-<<lm-jags,size='scriptsize',results='hide',warning=FALSE>>=
+  Use MCMC to draw posterior samples:
+<<lm-jags,size='scriptsize',results='hide',warning=FALSE,cache=TRUE>>=
 library(jagsUI)  
 js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
                     model.file="lm.jag", n.chains=1, n.iter=1000)
@@ -232,7 +243,7 @@ js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
 \pause
 \begin{columns}
   \begin{column}{0.55\textwidth}
-    Posterior summary statistics:
+    Summarize the posterior samples:
 <<lm-jags-sum,size='scriptsize'>>=
 round(summary(js.lm)$quant, 2)
 @
@@ -532,25 +543,8 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
 
 
 
-% \begin{frame}
-%   \frametitle{Generalized linear models (GLMs)}
-% \end{frame}
-
-
-
-
-
 \begin{frame}
   \frametitle{Generalized linear models (GLMs)}
-  % \frametitle{Motivation}
-  %% {\bf Limitations of linear models}
-  %% \begin{itemize}[<+->]
-  %%   \item Not appropriate when response variable is discrete
-  %%     (e.g. binary)
-  %%   \item Sometimes transformations can't make residuals normal
-  %%   \item Predictions might not be on the correct scale
-  %%   \item Constant variance assumption can be problematic
-  %% \end{itemize}
   \large
   \uncover<1->{{\bf Benefits of generalized linear models}}
   \begin{itemize}%[<+->]
@@ -568,7 +562,6 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
     \item Presence-absence studies
     \item Studies of survival
     \item Seed germination studies
-%    \item Analysis of zero-inflated count data
   \end{itemize}
   }
 \end{frame}
@@ -581,11 +574,6 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
   \begin{itemize}
     \item The response variable is usually binary and modeled with a
       binomial distribution
-      % \begin{itemize}
-      %   \item Presence/absence data
-      %   \item Yes/no data
-      % \end{itemize}
-%    \item The response variable is modeled with a binomial distribution
     \item The probability of success is usually a logit-linear
       model
   \end{itemize}
@@ -595,33 +583,12 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
   \begin{itemize}
     \item The response variable is a non-negative integer modeled with
       a Poisson distribution
-      % \begin{itemize}
-      %   \item Count data
-      % \end{itemize}
-%    \item The response variable is modeled with a Poisson distribution
     \item The expected count is usually modeled with a log-linear
       model
   \end{itemize}
   \vfill
 \end{frame}
 
-
-
-% \begin{frame}
-%   \frametitle{From linear to generalized linear}
-% \only<1>{
-%   {\bf A linear model is an equation of the form:}
-%   \[
-%     \mu_i = \beta_0 + \beta_1 x1_i + \beta_2 x2_i + \ldots + \beta_p xp_i
-%   \]
-%   }
-% \only<2>{
-%   {\bf A generalized linear model is an equation of the form:}
-%   \[
-%     g(\eta_i) = \beta_0 + \beta_1 x1_i + \beta_2 x2_i + \ldots + \beta_p xp_i
-%   \]
-%   }
-% \end{frame}
 
 
 \begin{frame}
@@ -717,29 +684,6 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
     \hline
   \end{tabular}
 \end{frame}
-
-
-
-
-
-
-%% \begin{frame}[fragile]
-%%   \frametitle{Log link example}
-%% <<>>=
-%% beta0 <- 5
-%% beta1 <- -0.08
-%% elevation <- 100
-%% eta <- beta0 + beta1*elevation
-%% eta
-%% @
-%% \pause
-%% {\bf How do we convert -3 to a positive value? \par}
-%% \pause
-%% {\bf Use the inverse-log function, i.e. the exponential function:}
-%% <<>>=
-%% exp(-3)
-%% @
-%% \end{frame}
 
 
 
@@ -958,10 +902,53 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
 
 \begin{frame}[fragile]
 \frametitle{Logistic regression example}
-<<logitreg>>=
-logitreg1 <- glm(presence ~ elevation, data=grouse.data, family=binomial(link="logit"))
+<<logitreg,size='small'>>=
+logitreg1 <- glm(presence ~ elevation, data=grouse.data,
+                 family=binomial(link="logit"))
+logitreg1
 @   
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Logistic regression example}
+  Predict grouse occurrence probability at a sequence of elevations \\ 
+  \vfill
+  First, create a new \inr{data.frame} with the explanatory values of
+  interest.
+<<grouse-lrpred-dat,size='scriptsize'>>=
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data.lr <- data.frame(elevation=elev.seq)
+@
+\pause
+\vfill
+  Now get the predictions.
+<<grouse-lrpred,size='scriptsize'>>=
+pred.elev <- predict(logitreg1, newdata=pred.data.lr, type="link",
+                     se=TRUE)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Logistic regression example}
+  \small
+  Predictions and standard error interval. We add $\pm 1$ SE on
+    the logit scale, and then transform to the probability scale.
+<<grouse-lrpred-plot,fig.width=7,fig.height=5,out.width="0.75\\textwidth",fig.align='center',size='tiny'>>=
+plot(presence ~ elevation, data=grouse.data, ylim=c(0,1))
+lines(elev.seq, plogis(pred.elev$fit), col="blue", lwd=2)
+lines(elev.seq, plogis(pred.elev$fit+pred.elev$se.fit), col="blue", lwd=1, lty=2)
+lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2)
+@ 
+\end{frame}
+
+
 
 
 \section{Poisson regression}
