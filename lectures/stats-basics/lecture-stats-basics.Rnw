@@ -235,7 +235,7 @@ jp.lm <- c("beta0", "beta1", "sigmaSq")
 \begin{frame}[fragile]
   \frametitle{Simple (Bayesian) linear regression}
   Use MCMC to draw posterior samples:
-<<lm-jags,size='scriptsize',results='hide',warning=FALSE,cache=TRUE>>=
+<<lm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE>>=
 library(jagsUI)  
 js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
                     model.file="lm.jag", n.chains=1, n.iter=1000)
@@ -902,7 +902,7 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
 
 \begin{frame}[fragile]
 \frametitle{Logistic regression example}
-<<logitreg,size='small'>>=
+<<logitreg,size='scriptsize'>>=
 logitreg1 <- glm(presence ~ elevation, data=grouse.data,
                  family=binomial(link="logit"))
 logitreg1
@@ -1130,8 +1130,8 @@ Finally, fit the model:
       lowest AIC, and create a graph depicting the estimated
       relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Friday,
-  August 27. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM Monday,
+  August 30. 
 \end{frame}
 
 

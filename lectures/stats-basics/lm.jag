@@ -1,7 +1,8 @@
 model {
 
 # Priors
-beta0 ~ dnorm(0, 0.1) 
+## dnorm arguments: mean and precision (1/variance)
+beta0 ~ dnorm(0, 0.1)  
 beta1 ~ dnorm(0, 0.1)
 sigmaSq ~ dunif(0, 2)
 
