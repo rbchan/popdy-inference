@@ -1350,16 +1350,22 @@ Finally, fit the model:
       and $x$) using the \inr{glm} function. Create a figure showing
       $x$ and $y$ with the fitted regression line. Use
       \inr{predict} to get the fitted line.
-    \item Fit 4 Poisson regression models to the Canada Warbler
-      data. Try to explain as much variation in abundance as you can
-      using the two explanatory variables: {\tt elevation} and
-      {\tt year}. You can use quadratic effects and
-      interactions. Interpret the estimates from the model with the 
-      lowest AIC, and create a graph depicting the estimated
-      relationships. 
+    \item Fit the logistic regression model in JAGS. Use the
+      $\mathrm{Norm}(0, var=10)$ priors for the regression
+      coefficients. Note that, unlike linear regression, there is no
+      $\sigma^2$ parameter.
+    \item Compare and intepret the estimates of $\beta_0$ and
+      $\beta_1$ from the classical analysis and the Bayesian analysis.
+    % \item Fit 4 Poisson regression models to the Canada Warbler
+    %   data. Try to explain as much variation in abundance as you can
+    %   using the two explanatory variables: {\tt elevation} and
+    %   {\tt year}. You can use quadratic effects and
+    %   interactions. Interpret the estimates from the model with the 
+    %   lowest AIC, and create a graph depicting the estimated
+    %   relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Friday,
-  August 27. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM Monday,
+  August 30. 
 \end{frame}
 
 
