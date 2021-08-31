@@ -8,7 +8,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 4 -- Occuancy models: simulation and fitting }
+\title{Lecture 3 -- Occuancy models: simulation and fitting }
 \author{Richard Chandler}
 
 
@@ -385,14 +385,14 @@ abline(v=sum(z), col="red") ## Actual number occupied
 
 \begin{frame}
   \frametitle{Bayesian methods}
-  Bayesian methods incorporate prior distributions into inferences \\
+  Bayesian methods incorporate prior distributions into inferences. \\
   \pause
   \vfill
-  We often have prior information, and it's easy to use \\
+  We often have prior information, and it's easy to use. \\
   \pause
   \vfill
   If we don't have prior information, we can use vague priors and
-  obtain similar inferences as likelihood-based methods \\
+  obtain similar inferences as likelihood-based methods. \\
   \pause
   \vfill
   Ultimately, we want the posterior distribution of the model
@@ -406,7 +406,9 @@ abline(v=sum(z), col="red") ## Actual number occupied
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
   We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
-  be downloaded here: \url{https://sourceforge.net/projects/mcmc-jags/files/}. \\
+  be downloaded here: \url{
+    https://sourceforge.net/projects/mcmc-jags/files/
+  }. \\
   \pause
   \vfill
   The basic steps of a Bayesian analysis with JAGS are:
@@ -424,7 +426,8 @@ abline(v=sum(z), col="red") ## Actual number occupied
 
 \begin{frame}[fragile]
   \frametitle{The BUGS language}
-<<bugs,size='scriptsize'>>=
+  The BUGS model file: {\tt occupancy-model.jag}
+<<bugs,size='scriptsize',comment='',echo=FALSE>>=
 writeLines(readLines("occupancy-model.jag"))
 @ 
 \end{frame}

@@ -58,7 +58,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 4 -- Occuancy models: simulation and fitting }
+\title{Lecture 3 -- Occuancy models: simulation and fitting }
 \author{Richard Chandler}
 
 
@@ -71,11 +71,6 @@
 
 
 
-
-
-%<<knitr-setup,include=FALSE,purl=FALSE>>=
-%##opts_chunk$set(comment=NA)
-%@
 
 
 %% New command for inline code that isn't to be evaluated
@@ -336,9 +331,7 @@ Proportion of sites known to be occupied \\
 \hlcom{## install.packages("unmarked")  }
 \hlkwd{library}\hlstd{(unmarked)}
 \end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: lattice}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -592,7 +585,6 @@ Detection probability estimate ($\hat{p}$)
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -603,14 +595,14 @@ Detection probability estimate ($\hat{p}$)
 
 \begin{frame}
   \frametitle{Bayesian methods}
-  Bayesian methods incorporate prior distributions into inferences \\
+  Bayesian methods incorporate prior distributions into inferences. \\
   \pause
   \vfill
-  We often have prior information, and it's easy to use \\
+  We often have prior information, and it's easy to use. \\
   \pause
   \vfill
   If we don't have prior information, we can use vague priors and
-  obtain similar inferences as likelihood-based methods \\
+  obtain similar inferences as likelihood-based methods. \\
   \pause
   \vfill
   Ultimately, we want the posterior distribution of the model
@@ -624,7 +616,9 @@ Detection probability estimate ($\hat{p}$)
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
   We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
-  be downloaded here: \url{https://sourceforge.net/projects/mcmc-jags/files/}. \\
+  be downloaded here: \url{
+    https://sourceforge.net/projects/mcmc-jags/files/
+  }. \\
   \pause
   \vfill
   The basic steps of a Bayesian analysis with JAGS are:
@@ -642,32 +636,30 @@ Detection probability estimate ($\hat{p}$)
 
 \begin{frame}[fragile]
   \frametitle{The BUGS language}
+  The BUGS model file: {\tt occupancy-model.jag}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"occupancy-model.jag"}\hlstd{))}
-\end{alltt}
 \begin{verbatim}
-## model {
-## 
-## # Prior for occupancy parameter
-## psi ~ dunif(0,1)
-## 
-## # Prior for detection probability
-## p ~ dunif(0,1)
-## 
-## for(i in 1:nSites) {
-##   # Latent presence/absence
-##   z[i] ~ dbern(psi)   
-##   for(j in 1:nOccasions) {
-##     # Model for the data
-##     y[i,j] ~ dbern(z[i]*p)
-##   }
-## }
-## 
-## sitesOccupied <- sum(z)
-## 
-## }
+model {
+
+# Prior for occupancy parameter
+psi ~ dunif(0,1)
+
+# Prior for detection probability
+p ~ dunif(0,1)
+
+for(i in 1:nSites) {
+  # Latent presence/absence
+  z[i] ~ dbern(psi)   
+  for(j in 1:nOccasions) {
+    # Model for the data
+    y[i,j] ~ dbern(z[i]*p)
+  }
+}
+
+sitesOccupied <- sum(z)
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -728,19 +720,25 @@ Detection probability estimate ($\hat{p}$)
 \begin{alltt}
 \hlcom{## install.packages("jagsUI")}
 \hlkwd{library}\hlstd{(jagsUI)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in library(jagsUI): there is no package called 'jagsUI'}}\begin{alltt}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
                                 \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
                                 \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model.jag"}\hlstd{,}
                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in jags.basic(data = jags.data, inits = jags.inits, parameters.to.save = jags.pars, : could not find function "{}jags.basic"{}}}\end{kframe}
+\begin{verbatim}
+## 
+## Processing function input....... 
+## 
+## Done. 
+##  
+## Beginning parallel processing using 3 cores. Console output will be suppressed.
+## 
+## Parallel processing completed.
+## 
+## MCMC took 0.008 minutes.
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -753,9 +751,31 @@ Detection probability estimate ($\hat{p}$)
 \begin{alltt}
 \hlkwd{summary}\hlstd{(jags.post.samples)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'jags.post.samples' not found}}\end{kframe}
+\begin{verbatim}
+## 
+## Iterations = 1:2000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 2000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##                  Mean     SD Naive SE Time-series SE
+## deviance      40.9824 6.8249 0.088109       0.262220
+## p              0.3275 0.1116 0.001441       0.003578
+## psi            0.4349 0.1627 0.002101       0.005900
+## sitesOccupied  8.5223 2.7909 0.036030       0.116918
+## 
+## 2. Quantiles for each variable:
+## 
+##                  2.5%     25%     50%     75%   97.5%
+## deviance      32.6183 36.5054 39.8601 45.1113 57.8185
+## p              0.1279  0.2454  0.3231  0.4040  0.5512
+## psi            0.1814  0.3170  0.4131  0.5228  0.8356
+## sitesOccupied  6.0000  7.0000  8.0000 10.0000 17.0000
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -769,9 +789,13 @@ Detection probability estimate ($\hat{p}$)
 \begin{alltt}
 \hlkwd{plot}\hlstd{(jags.post.samples)}
 \end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot-1} 
+
+}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'jags.post.samples' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
