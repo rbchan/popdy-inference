@@ -1102,10 +1102,50 @@ Finally, fit the model:
 
 
 
-\begin{frame}
-  \frametitle{doh}
-  Add Bayesian analysis of simulated data here
+\begin{frame}[fragile]
+  \frametitle{Simple (Bayesian) linear regression}
+  \small
+  The model is in a text file named {\tt glm.jag} \\
+<<glm-jag,size="scriptsize",comment="",echo=FALSE>>=
+  writeLines(readLines("glm.jag"))
+@
+\pause
+\vfill
+Now, put the data in a list and pick some initial values
+<<glm-jd>>=
+jd.glm <- list(x=x, y=y, n=length(y))
+ji.glm <- function() c(beta0=rnorm(1), beta1=rnorm(1))
+jp.glm <- c("beta0", "beta1")
+@ 
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple (Bayesian) linear regression}
+  Use MCMC to draw posterior samples:
+<<glm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE>>=
+library(jagsUI)  
+js.glm <- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,
+                     model.file="glm.jag", n.chains=2, n.iter=1000)
+@ 
+\pause
+\begin{columns}
+  \begin{column}{0.55\textwidth}
+    Summarize the posterior samples:
+<<glm-jags-sum,size='scriptsize'>>=
+round(summary(js.lm)$quant, 2)
+@
+\pause
+  \end{column}
+  \begin{column}{0.45\textwidth}
+<<glm-jags-viz,echo=FALSE>>=
+plot(js.glm)
+@     
+  \end{column}
+\end{columns}
+\end{frame}
+
+
 
 
 

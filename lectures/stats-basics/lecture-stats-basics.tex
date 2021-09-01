@@ -332,10 +332,10 @@ Now, put the data in a list and pick some initial values
 \end{alltt}
 \begin{verbatim}
 ##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.58 -0.15 0.04 0.22  0.65
-## beta1    -0.32  0.26 0.54 0.80  1.45
-## deviance -2.63 -0.73 1.37 4.31 11.17
-## sigmaSq   0.03  0.06 0.09 0.14  0.29
+## beta0    -0.64 -0.16 0.02 0.21  0.71
+## beta1    -0.44  0.28 0.56 0.81  1.49
+## deviance -2.59 -1.01 1.20 4.37 14.45
+## sigmaSq   0.03  0.05 0.08 0.14  0.45
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1327,6 +1327,89 @@ Finally, fit the model:
 \end{kframe}
 \end{knitrout}
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple (Bayesian) linear regression}
+  \small
+  The model is in a text file named {\tt glm.jag} \\
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model {
+
+# Priors
+## dnorm arguments: mean and precision (1/variance)
+beta0 ~ dnorm(0, 0.1)  
+beta1 ~ dnorm(0, 0.1)
+
+## Model for the data
+for(i in 1:n) {
+  lambda[i] <- exp(beta0 + beta1*x[i])
+  y[i] ~ dpois(lambda[i])
+  }
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Now, put the data in a list and pick some initial values
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jd.glm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=x,} \hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(y))}
+\hlstd{ji.glm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{))}
+\hlstd{jp.glm} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Simple (Bayesian) linear regression}
+  Use MCMC to draw posterior samples:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{js.glm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.glm,} \hlkwc{inits}\hlstd{=ji.glm,} \hlkwc{parameters.to.save}\hlstd{=jp.glm,}
+                     \hlkwc{model.file}\hlstd{=}\hlstr{"glm.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\begin{columns}
+  \begin{column}{0.55\textwidth}
+    Summarize the posterior samples:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(js.lm)}\hlopt{$}\hlstd{quant,} \hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##           2.5%   25%  50%  75% 97.5%
+## beta0    -0.64 -0.16 0.02 0.21  0.71
+## beta1    -0.44  0.28 0.56 0.81  1.49
+## deviance -2.59 -1.01 1.20 4.37 14.45
+## sigmaSq   0.03  0.05 0.08 0.14  0.45
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+  \end{column}
+  \begin{column}{0.45\textwidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/glm-jags-viz-1} 
+\end{knitrout}
+  \end{column}
+\end{columns}
+\end{frame}
+
 
 
 
