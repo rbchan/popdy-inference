@@ -49,7 +49,7 @@ knit_theme$set("edit-kwrite")
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 4 -- Occupancy models: simulation and fitting} \\
+  {\huge Lecture 3 -- Occupancy models: simulation and fitting} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -121,8 +121,6 @@ knit_theme$set("edit-kwrite")
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
-%  \vfill
-%  \small
   Definitions \\
   $\psi_i$ -- probability that the species occurs at site $i$ \\
   $z_i$ -- binary presence/absence variable at site $i$ \\
@@ -231,7 +229,7 @@ naiveOccupancy
 %  \small
   Install and load the package  %\\
   \vspace{-12pt}
-<<un-install>>=
+<<un-install,message=FALSE>>=
 ## install.packages("unmarked")  
 library(unmarked)
 @
@@ -405,11 +403,12 @@ abline(v=sum(z), col="red") ## Actual number occupied
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
-  be downloaded here: \url{
-    https://sourceforge.net/projects/mcmc-jags/files/
-  }. \\
-  \pause
+  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  % JAGS can
+  % be downloaded here: \url{
+  %   https://sourceforge.net/projects/mcmc-jags/files/
+  % }. \\
+  % \pause
   \vfill
   The basic steps of a Bayesian analysis with JAGS are:
   \begin{enumerate}%[<+->]
@@ -470,7 +469,7 @@ jags.pars <- c("psi", "p", "sitesOccupied")
   \small
   This function will compile the model, run adaptive MCMC, and then
   draw posterior samples using 3 Markov chains run in parallel. \\
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE>>=
+<<bugs-mcmc,size='scriptsize',warning=FALSE,results='hide',cache=FALSE>>=
 ## install.packages("jagsUI")
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
@@ -539,7 +538,7 @@ plot(jags.post.samples)
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by the end of Friday Sept 10. 
 \end{frame}
 
 

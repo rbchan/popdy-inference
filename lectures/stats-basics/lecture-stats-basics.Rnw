@@ -1133,7 +1133,7 @@ js.glm <- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,
   \begin{column}{0.55\textwidth}
     Summarize the posterior samples:
 <<glm-jags-sum,size='scriptsize'>>=
-round(summary(js.lm)$quant, 2)
+round(summary(js.glm)$quant, 2)
 @
 \pause
   \end{column}

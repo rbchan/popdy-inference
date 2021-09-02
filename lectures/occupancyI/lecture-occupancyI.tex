@@ -88,7 +88,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\huge Lecture 4 -- Occupancy models: simulation and fitting} \\
+  {\huge Lecture 3 -- Occupancy models: simulation and fitting} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -160,8 +160,6 @@
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
-%  \vfill
-%  \small
   Definitions \\
   $\psi_i$ -- probability that the species occurs at site $i$ \\
   $z_i$ -- binary presence/absence variable at site $i$ \\
@@ -615,11 +613,12 @@ Detection probability estimate ($\hat{p}$)
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  We will use JAGS and the R packages `rjags' and `jagsUI'. JAGS can
-  be downloaded here: \url{
-    https://sourceforge.net/projects/mcmc-jags/files/
-  }. \\
-  \pause
+  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  % JAGS can
+  % be downloaded here: \url{
+  %   https://sourceforge.net/projects/mcmc-jags/files/
+  % }. \\
+  % \pause
   \vfill
   The basic steps of a Bayesian analysis with JAGS are:
   \begin{enumerate}%[<+->]
@@ -657,7 +656,7 @@ for(i in 1:nSites) {
   }
 }
 
-sitesOccupied <- sum(z)
+sitesOccupied <- sum(z) # Total number of sites occupied
 
 }
 \end{verbatim}
@@ -726,18 +725,6 @@ sitesOccupied <- sum(z)
                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.008 minutes.
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -838,7 +825,7 @@ sitesOccupied <- sum(z)
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by the end of Friday Sept 10. 
 \end{frame}
 
 
