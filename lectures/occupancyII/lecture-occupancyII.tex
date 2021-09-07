@@ -57,6 +57,7 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+%%% TODO: Add something about missing values
 
 \title{Lecture 5 -- Occupancy models: covariates and prediction }
 \author{Richard Chandler}
@@ -354,9 +355,7 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{alltt}
 \hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(x1,x2),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{w}\hlstd{=w))}
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: obsCovs contains characters. Converting them to factors.}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 %\vfill
@@ -595,7 +594,6 @@ Get predictions of $p$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -620,7 +618,6 @@ Get predictions of $p$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -643,7 +640,6 @@ Get predictions of $p$ for each row of prediction data.
 {\centering \includegraphics[width=0.8\linewidth]{figure/pred-p1-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -676,7 +672,6 @@ Get predictions of $p$ for each row of prediction data.
 {\centering \includegraphics[width=0.7\linewidth]{figure/pred-plot2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -740,38 +735,40 @@ Major problems if you ignore imperfect detection in this case \\
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## # Priors for occupancy coefficients
-## beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
-## beta1 ~ dnorm(0, 0.5)
-## beta2 ~ dnorm(0, 0.5)
-## 
-## # Priors for detection coefficients
-## alpha0 ~ dnorm(0, 0.5)  
-## alpha1 ~ dnorm(0, 0.5)
-## alpha2 ~ dnorm(0, 0.5)
-## 
-## for(i in 1:nSites) {
-##   logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
-##   z[i] ~ dbern(psi[i])            # Latent presence/absence
-##   for(j in 1:nOccasions) {
-##     logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wHot[i,j]
-##     y[i,j] ~ dbern(z[i]*p[i,j])   # Data
-##   }
-## }
-## 
-## sitesOccupied <- sum(z)
-## 
-## }
+model {
+
+# Priors for occupancy coefficients
+beta0 ~ dnorm(0, 0.5)  # 0.5 is 1/variance
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+alpha2 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
+  z[i] ~ dbern(psi[i])            # Latent presence/absence
+  for(j in 1:nOccasions) {
+    logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wHot[i,j]
+    y[i,j] ~ dbern(z[i]*p[i,j])   # Data
+  }
+}
+
+sitesOccupied <- sum(z)
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
 
 
+
+%% TODO: Add something here about priors and prior predictive checks
 
 
 
@@ -842,7 +839,7 @@ Major problems if you ignore imperfect detection in this case \\
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.04 minutes.
+## MCMC took 0.024 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -910,7 +907,6 @@ Major problems if you ignore imperfect detection in this case \\
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -928,7 +924,6 @@ Major problems if you ignore imperfect detection in this case \\
 {\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1018,7 +1013,6 @@ Major problems if you ignore imperfect detection in this case \\
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1039,7 +1033,6 @@ Major problems if you ignore imperfect detection in this case \\
 {\centering \includegraphics[width=0.8\linewidth]{figure/psi-pred-post-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1067,7 +1060,6 @@ Major problems if you ignore imperfect detection in this case \\
 {\centering \includegraphics[width=0.8\linewidth]{figure/psi-pred-post-meanCI-1} 
 
 }
-
 
 
 \end{knitrout}

@@ -258,7 +258,7 @@ library(unmarked)
   \frametitle{Prepare data in `unmarked'}
   \small
 Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}: 
-<<un-umf,size='tiny'>>=
+<<un-umf,size='tiny',warning=FALSE>>=
 umf <- unmarkedFrameOccu(y=y, siteCovs=data.frame(x1,x2), obsCovs=list(w=w))
 @
 \pause
@@ -489,7 +489,7 @@ Major problems if you ignore imperfect detection in this case \\
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs,size='scriptsize',echo=FALSE>>=
+<<bugs,size='scriptsize',echo=FALSE,background='lightblue',comment=''>>=
 writeLines(readLines("occupancy-model-covs.jag"))
 @ 
 \end{frame}
@@ -535,7 +535,7 @@ jags.pars <- c("beta0", "beta1", "beta2",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
+<<bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE>>=
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
                                 parameters.to.save=jags.pars,
@@ -636,7 +636,7 @@ plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
   All samples from the posterior predictive distribution
-<<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=TRUE,dpi=200>>=
+<<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=FALSE,dpi=200>>=
 plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
@@ -652,7 +652,7 @@ for(i in 1:n.iter) {
 \begin{frame}[fragile]
   \frametitle{Bayesian prediction}
   Now with posterior mean and 95\% CI
-<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=TRUE,dpi=200>>=
+<<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=FALSE,dpi=200>>=
 plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
