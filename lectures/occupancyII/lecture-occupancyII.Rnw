@@ -9,7 +9,7 @@
 
 %%% TODO: Add something about missing values
 
-\title{Lecture 5 -- Occupancy models: covariates and prediction }
+\title{Lecture 4 -- Occupancy models: covariates and prediction }
 \author{Richard Chandler}
 
 
@@ -53,9 +53,8 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[plain]
   \LARGE
-%  \maketitle
   \centering
-  {\huge Lecture 5 -- Occupancy models: covariates and prediction} \\
+  {\huge Lecture 4 -- Occupancy models: covariates and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -173,7 +172,7 @@ knit_theme$set("edit-kwrite")
   \begin{enumerate}[<+->]
   \item Covariates
 <<sim-cov1,size='scriptsize'>>=
-nSites <- 100; nVisits <- 4; set.seed(3439) ## Make it reproducible
+nSites <- 100; nVisits <- 4; set.seed(83) ## Make it reproducible
 x1 <- rnorm(nSites,0,0.5); x2 <- rnorm(nSites,100,10) ## Continuous covs
 w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
             nrow=nSites, ncol=nVisits)
@@ -181,9 +180,9 @@ wHot <- ifelse(w=="Hot", 1, 0)              ## Dummy variable
 @
   \item Coefficients, $\psi$, and $p$
 <<nsim-cov2,size='scriptsize'>>=
-beta0 <- 1; beta1 <- -1; beta2 <- 0
+beta0 <- 0; beta1 <- -1; beta2 <- 0
 psi <- plogis(beta0 + beta1*x1 + beta2*x2)
-alpha0 <- 0; alpha1 <- 1; alpha2 <- 0.5
+alpha0 <- -0.5; alpha1 <- 1; alpha2 <- 2
 p <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
 @   
   \item Simulate occupancy and detection data
@@ -316,8 +315,8 @@ fm
 \vfill
 Compare to actual parameter values:
 <<un-compare,size='tiny'>>=
-c(beta0=beta0, beta1=beta1, beta2=beta2)
-c(alpha0=alpha0, alpha1=alpha1, alpha2=alpha2)
+rbind('Occupancy coefs (beta)'=c(beta0, beta1, beta2),
+      'Detection coefs (alpha)'=c(alpha0, alpha1, alpha2))
 @ 
 \end{frame}
 
@@ -374,8 +373,9 @@ print(head(p.pred), digits=2)
 
 
 \begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-psi1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+  \frametitle{Standardized covariate}
+<<pred-psi1,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
 plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
      xlab="Standardized covariate (x1s)", ylim=0:1) 
 lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
@@ -386,8 +386,9 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
 
 
 \begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-psi1s,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
+  \frametitle{Covariate on original scale}
+<<pred-psi1s,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
 plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
 x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
@@ -399,16 +400,17 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-<<pred-p1,fig.width=7,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
-     xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(lower ~ x1s, p.pred, col="grey")
-lines(upper ~ x1s, p.pred, col="grey")
-@   
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Prediction in `unmarked'}
+% <<pred-p1,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+% par(mai=c(0.9,0.9,0.1,0.1))  
+% plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
+%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
+% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
+% lines(lower ~ x1s, p.pred, col="grey")
+% lines(upper ~ x1s, p.pred, col="grey")
+% @   
+% \end{frame}
 
 
 % \begin{frame}[fragile]
@@ -423,12 +425,13 @@ lines(upper ~ x1s, p.pred, col="grey")
 
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-<<pred-plot2,fig.width=7,fig.height=5.5,size='tiny',out.width='70%',fig.align='center'>>=
+<<pred-plot2,fig.width=7,fig.height=5,size='tiny',out.width='70%',fig.align='center',echo=-1>>=
+par(mai=c(0.9,0.9,0.1,0.1))  
 plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
-     xlab="x1", xaxt="n")
+     xlab="x1", xaxt="n", lwd=2)
 axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(Predicted ~ x1s, p.pred, col="purple")
-legend(-3, 0.75, c("psi", "p"), lty=c(1, 1), col=c("blue", "purple"))
+lines(Predicted ~ x1s, p.pred, col="orange", lwd=2)
+legend(-3, 0.3, c("Occupancy (psi)", "Detection (p)"), lty=c(1, 1), col=c("blue", "orange"), lwd=2)
 @
 %\pause
 \small
@@ -473,7 +476,7 @@ Major problems if you ignore imperfect detection in this case \\
         \alpha_2 {\color{Purple} w_{ij}} \\
         y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
       \end{gather*}
-      \pause
+%      \pause
     \item Predict $p$ again by letting (standardized) $x_1$ vary, but
       this time, predict for the case where $w$=`Cold'.
     \item Graph $p$ as a function of $x_1$.
@@ -718,12 +721,12 @@ lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
   \begin{enumerate}
 %    \small
     \footnotesize
-    \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
-      \end{itemize}
+    % \item Fit 3 covariate models in `unmarked' to the Canada Warbler data. 
+    %   \begin{itemize}
+    %     \footnotesize
+    %     \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+    %     \item Site covs: \texttt{Elevation, Wind, Noise}
+    %   \end{itemize}
     \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
       \begin{itemize}
         \footnotesize
@@ -731,7 +734,7 @@ lines(pred.data$x1, pred.post.upper, col="blue", lty=2)
         \item Site covs: \texttt{elevation, utmE, utmN}
         \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
       \end{itemize}
-    \item Make one prediction graph for each species. 
+    \item Make one prediction graph for occupancy and one for detection. 
     \item Create the same graphs as above, but using Bayesian methods.
     \item What differences do you see between likelihood and Bayesian graphs?
     \end{enumerate}
