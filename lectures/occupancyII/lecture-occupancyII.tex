@@ -824,7 +824,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.025 minutes.
+## MCMC took 0.022 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1107,12 +1107,12 @@ sitesOccupied <- sum(z)
     %     \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
     %     \item Site covs: \texttt{Elevation, Wind, Noise}
     %   \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data. 
+    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data ({\tt grouse\_data.csv}). 
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{grouse1, grouse2, grouse3}
-        \item Site covs: \texttt{elevation, utmE, utmN}
-        \item Obs covs: \texttt{Temperature.1, Temperature.2, Temperature.3}
+        \item Site covs: Elevation (\texttt{elev}), forest cover ({\tt fc})
+        \item Obs cov: Day of the year (\texttt{doy.1, doy.2, doy.3})
       \end{itemize}
     \item Make one prediction graph for occupancy and one for detection. 
     \item Create the same graphs as above, but using Bayesian methods.
