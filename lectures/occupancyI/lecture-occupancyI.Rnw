@@ -368,11 +368,21 @@ round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[,1],
   We can answer this using posterior prediction.
 <<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
 nsim <- 1000
-sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
+sites.occupied.post <- predict(z.post, func=sum, nsim=nsim)
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
     ylab="Empirical Bayes posterior probability")
 abline(v=sum(z), col="red") ## Actual number occupied
+@   
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{quant}
+  Don't forget to show students how to do this
+<<quant>>=
+quantile(sites.occupied.post, prob=c(0.025, 0.975))
 @   
 \end{frame}
 

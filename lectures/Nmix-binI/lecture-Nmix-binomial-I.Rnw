@@ -453,7 +453,7 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs,size='scriptsize',echo=FALSE>>=
+<<bugs,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("Nmix-model-covs.jag"))
 @
 <<jagsUI,include=FALSE>>=
@@ -504,7 +504,8 @@ jags.pars <- c("beta0", "beta1", "beta2",
 <<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                parameters.to.save=c(jags.pars, "N"), ## NOTE "N"!
+                                ## Monitor "N[i]" 
+                                parameters.to.save=c(jags.pars, "N"), 
                                 model.file="Nmix-model-covs.jag",
                                 n.chains=3, n.adapt=100, n.burnin=0,
                                 n.iter=2000, parallel=TRUE)
@@ -751,8 +752,8 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
   putting most of the prior weight on extreme values. \\
   \pause
   \vfill
-  Often, highly diffuse priors on the link scales result in most of the
-  prior weight being on extreme values on the natural scales. \\
+  Often, highly diffuse priors on the link scale result in most of the
+  prior weight being on extreme values on the natural scale. \\
   \pause
   \vfill
   Prior predictive checks can be used to assess this possibility, and

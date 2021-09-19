@@ -550,7 +550,6 @@ If the estimates do change, increase $K$ until they stabilize.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -571,7 +570,6 @@ If the estimates do change, increase $K$ until they stabilize.
 {\centering \includegraphics[width=0.6\linewidth]{figure/Ntotal-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -659,7 +657,6 @@ Get predictions of $\lambda$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -698,31 +695,31 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## # Priors for occupancy coefficients
-## beta0 ~ dnorm(0, 0.5)  # variance=1/0.5
-## beta1 ~ dnorm(0, 0.5)
-## beta2 ~ dnorm(0, 0.5)
-## 
-## # Priors for detection coefficients
-## alpha0 ~ dnorm(0, 0.5)  
-## alpha1 ~ dnorm(0, 0.5)
-## 
-## for(i in 1:nSites) {
-##   log(lambda[i]) <- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]
-##   N[i] ~ dpois(lambda[i])         # Latent local abundance
-##   for(j in 1:nOccasions) {
-##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
-##     y[i,j] ~ dbin(p[i,j], N[i])   # Data
-##   }
-## }
-## 
-## totalAbundance <- sum(N)
-## 
-## }
+model {
+
+# Priors for occupancy coefficients
+beta0 ~ dnorm(0, 0.5)  # variance=1/0.5
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  for(j in 1:nOccasions) {
+    logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+    y[i,j] ~ dbin(p[i,j], N[i])   # Data
+  }
+}
+
+totalAbundance <- sum(N)
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -786,7 +783,8 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"N"}\hlstd{),} \hlcom{## NOTE "N"!}
+                                \hlcom{## Monitor "N[i]" }
+                                \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"N"}\hlstd{),}
                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
@@ -801,7 +799,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.028 minutes.
+## MCMC took 0.026 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -863,7 +861,6 @@ Get predictions of $\lambda$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -883,7 +880,6 @@ Get predictions of $\lambda$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -901,7 +897,6 @@ Get predictions of $\lambda$ for each row of prediction data.
 {\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1205,8 +1200,8 @@ Get predictions of $\lambda$ for each row of prediction data.
   putting most of the prior weight on extreme values. \\
   \pause
   \vfill
-  Often, highly diffuse priors on the link scales result in most of the
-  prior weight being on extreme values on the natural scales. \\
+  Often, highly diffuse priors on the link scale result in most of the
+  prior weight being on extreme values on the natural scale. \\
   \pause
   \vfill
   Prior predictive checks can be used to assess this possibility, and
