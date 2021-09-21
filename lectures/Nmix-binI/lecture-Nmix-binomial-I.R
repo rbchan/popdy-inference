@@ -73,6 +73,15 @@ umf <- unmarkedFramePCount(y=y2, siteCovs=data.frame(forest), obsCovs=list(temp=
 summary(umf)
 
 
+## ----un-fit0,size='tiny'----------------------------------------------------------------
+fm0 <- pcount(~1 ~1, umf, K=100)    
+fm0
+
+
+## ----back,size='tiny'-------------------------------------------------------------------
+backTransform(fm0, type="state")
+
+
 ## ----un-fit,size='tiny'-----------------------------------------------------------------
 fm <- pcount(~temp ~forest, umf, K=100)    
 fm
@@ -100,9 +109,14 @@ re <- ranef(fm)
 plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 
 
-## ----Ntotal,size='scriptsize',out.width='60%',fig.align='center'------------------------
+## ----Ntotal,size='scriptsize',out.width='40%',fig.align='center'------------------------
 N.total.post <- predict(re, func=sum, nsim=1000)
 hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
+
+
+## ----Ntotal-stats,size='scriptsize'-----------------------------------------------------
+c(Estimate=mean(N.total.post), quantile(N.total.post, prob=0.025),
+  quantile(N.total.post, prob=0.975))
 
 
 ## ----preddat,size='footnotesize'--------------------------------------------------------
@@ -126,7 +140,30 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
        angle=90, length=0.1)
 
 
-## ----bugs,size='scriptsize',echo=FALSE--------------------------------------------------
+## ----bugs0,size='scriptsize',echo=FALSE,comment='',background='lightblue'---------------
+writeLines(readLines("Nmix-model.jag"))
+
+## ----jagsUI0,include=FALSE--------------------------------------------------------------
+library(jagsUI)
+
+
+## ----bugs-data0,size='scriptsize'-------------------------------------------------------
+jags.data0 <- list(y=y2, nSites=nSites, nOccasions=nVisits)
+
+
+## ----bugs-inits0,size='scriptsize'------------------------------------------------------
+jags.inits0 <- function() list(lambda=runif(1), p=runif(1), N=maxCounts)
+
+
+## ----bugs-pars0,size='scriptsize',results='hide',message=FALSE--------------------------
+jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
+                                 parameters.to.save=c("lambda", "p"), 
+                                 model.file="Nmix-model.jag",
+                                 n.chains=3, n.adapt=100, n.burnin=0,
+                                 n.iter=2000, parallel=TRUE)
+
+
+## ----bugs,size='scriptsize',echo=FALSE,comment='',background='lightblue'----------------
 writeLines(readLines("Nmix-model-covs.jag"))
 
 ## ----jagsUI,include=FALSE---------------------------------------------------------------
@@ -154,7 +191,8 @@ jags.pars <- c("beta0", "beta1", "beta2",
 ## ----bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE-------------------------------
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                parameters.to.save=c(jags.pars, "N"), ## NOTE "N"!
+                                ## Monitor "N[i]" 
+                                parameters.to.save=c(jags.pars, "N"), 
                                 model.file="Nmix-model-covs.jag",
                                 n.chains=3, n.adapt=100, n.burnin=0,
                                 n.iter=2000, parallel=TRUE)

@@ -91,7 +91,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\LARGE Lecture 6 -- Binomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
+  {\LARGE Lecture 5 -- Binomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -439,12 +439,63 @@ Proportion of sites known to be occupied \\
 
 
 
+
 \begin{frame}[fragile]
-  \frametitle{Fit the model}
+  \frametitle{Fit the model -- without covariates}
   \footnotesize
   \inr{pcount} is similar to \inr{occu}, but there's a new argument
   (\texttt{K}) that should be an integer much 
   greater than the highest possible value of local abundance. 
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fm0} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hlstd{, umf,} \hlkwc{K}\hlstd{=}\hlnum{100}\hlstd{)}
+\hlstd{fm0}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## pcount(formula = ~1 ~ 1, data = umf, K = 100)
+## 
+## Abundance:
+##  Estimate    SE    z P(>|z|)
+##     0.428 0.324 1.32   0.187
+## 
+## Detection:
+##  Estimate    SE     z  P(>|z|)
+##      -1.8 0.384 -4.69 2.74e-06
+## 
+## AIC: 459.6769
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+We can use \inr{backTransform} because there aren't covariates:
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{backTransform}\hlstd{(fm0,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## Backtransformed linear combination(s) of Abundance estimate(s)
+## 
+##  Estimate    SE LinComb (Intercept)
+##      1.53 0.498   0.428           1
+## 
+## Transformation: exp
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Fit the model -- with covariates}
+  \footnotesize
+  Detection depends on {\tt temp}. Abundance depends on {\tt forest}.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -559,6 +610,7 @@ If the estimates do change, increase $K$ until they stabilize.
 
 \begin{frame}[fragile]
   \frametitle{Total abundance (in surveyed region)}
+  \footnotesize
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -567,11 +619,24 @@ If the estimates do change, increase $K$ until they stabilize.
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.6\linewidth]{figure/Ntotal-1} 
+{\centering \includegraphics[width=0.4\linewidth]{figure/Ntotal-1} 
 
 }
 
 
+\end{knitrout}
+Estimate of total abundance in sampled area, with 95\% CI:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{c}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{mean}\hlstd{(N.total.post),} \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{),}
+  \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## Estimate     2.5%    97.5% 
+##  128.402  113.000  144.000
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -692,8 +757,78 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
+
 \begin{frame}[fragile]
-  \frametitle{The BUGS model}
+  \frametitle{The BUGS model -- without covariates}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model {
+
+lambda ~ dunif(0, 20)          # Expected value of abundance
+p ~ dunif(0, 1)                # Detection probability
+
+for(i in 1:nSites) {
+  N[i] ~ dpois(lambda)         # Latent local abundance
+  for(j in 1:nOccasions) {
+    y[i,j] ~ dbin(p, N[i])     # Data
+  }
+}
+
+totalAbundance <- sum(N)
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits0} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{lambda}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{N}\hlstd{=maxCounts)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Run it
+  \vspace{-12pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags0.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data0,} \hlkwc{inits}\hlstd{=jags.inits0,}
+                                 \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"lambda"}\hlstd{,} \hlstr{"p"}\hlstd{),}
+                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model.jag"}\hlstd{,}
+                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model -- with covariates}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
@@ -1228,23 +1363,24 @@ totalAbundance <- sum(N)
     \item Using the simulated data, compare the prior and posterior
       predictive distributions of $\lambda$ for each of the 3 forest
       types. 
-    \item Change the priors for $\alpha_0$ and $\alpha_1$ from
-      \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
-      prior and posterior predictions of $p$ as a function of
-      temperature. Make the same graph as we made above. How
-      sensitive is the posterior to the prior?
+    % \item Change the priors for $\alpha_0$ and $\alpha_1$ from
+    %   \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
+    %   prior and posterior predictions of $p$ as a function of
+    %   temperature. Make the same graph as we made above. How
+    %   sensitive is the posterior to the prior?
     \item Fit a binomial $N$-mixture model to the Canada warbler data
-      using `unmarked'. The data include: 
+      using `unmarked' and JAGS. The data include: 
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
         \item Site covs: \texttt{Elevation, Wind, Noise}
       \end{itemize}
     \item Graph the predictions of $\lambda$ over the 
-      elevation range, along with 95\% CIs.
+      elevation range, along with 95\% CIs. Do this for classical and
+      Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM Monday. 
 \end{frame}
 
 

@@ -1,0 +1,15 @@
+model {
+
+lambda ~ dunif(0, 20)          # Expected value of abundance
+p ~ dunif(0, 1)                # Detection probability
+
+for(i in 1:nSites) {
+  N[i] ~ dpois(lambda)         # Latent local abundance
+  for(j in 1:nOccasions) {
+    y[i,j] ~ dbin(p, N[i])     # Data
+  }
+}
+
+totalAbundance <- sum(N)
+
+}
