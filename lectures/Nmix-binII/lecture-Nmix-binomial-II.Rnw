@@ -51,7 +51,7 @@ knit_theme$set("edit-kwrite")
   \LARGE
 %  \maketitle
   \centering
-  {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
+  {\LARGE Lecture 6 -- Binomial $N$-mixture models: \\
     model selection, spatial prediction, and goodness-of-fit} \\  
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
@@ -102,7 +102,7 @@ knit_theme$set("edit-kwrite")
   to compare models and avoid underfitting and overfitting. \\
   \pause
   \vfill
-  Just make sure the models being compared were motivated by clear
+  Make sure the models being compared were motivated by clear
   hypotheses.
 \end{frame}
 
@@ -131,8 +131,8 @@ knit_theme$set("edit-kwrite")
   cross-validation: 
   \begin{itemize}
     \item Split data into K partitions
-    \item Fit model to the `in-sample' K-1 partitions
-    \item Predict the holdout `out-of-sample' partition
+    \item Fit model to the data in K-1 partitions
+    \item Predict the holdout partition
   \end{itemize}
   \pause
   \vfill
@@ -208,8 +208,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-
-
 \bgroup
 \let\oldfootnoterule\footnoterule
 \def\footnoterule{\only<2->\oldfootnoterule}
@@ -218,7 +216,7 @@ knit_theme$set("edit-kwrite")
   \small
   Import the grouse data
   \vspace{-6pt}
-<<grouse-in,size='footnotesize',cache=TRUE>>=
+<<grouse-in,size='footnotesize',cache=FALSE,results='hide',message=FALSE>>=
 library(unmarked)
 grouse.data <- read.csv("grouse_data_Nmix.csv", row.names=1)
 grouse.umf <- unmarkedFramePCount(
@@ -230,7 +228,7 @@ grouse.umf <- unmarkedFramePCount(
 \vfill
 Standardize the covariates\footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
   \vspace{-6pt}
-<<grouse-stand,size='footnotesize',cache=TRUE>>=
+<<grouse-stand,size='footnotesize',cache=FALSE>>=
 site.covs.s <- scale(siteCovs(grouse.umf))
 colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
 siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
@@ -247,7 +245,7 @@ obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
   \small
   Fit some models
   \vspace{-6pt}
-<<grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE>>=
+<<grouse-mods,size='footnotesize',warning=FALSE,cache=FALSE>>=
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
@@ -849,6 +847,47 @@ knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Simulating data from ZIP model}
+  Zero-inflated Poisson model
+  {\centering
+    \begin{columns}
+      \small
+      \begin{column}{0.45\textwidth}
+        \begin{gather*}
+          N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+          z_i \sim \mathrm{Bern}(\psi) \\
+        \end{gather*}
+      \end{column}
+      \begin{column}{0.1\textwidth}
+        \rule{0.1pt}{24pt} \\
+      \end{column}
+      \begin{column}{0.45\textwidth}
+        \begin{gather*}
+          \hspace{-72pt}
+          N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi) \\
+        \end{gather*}
+      \end{column}
+    \end{columns}
+}
+\vfill
+R code
+<<zip-sim,size='scriptsize'>>=
+nSites <- 20
+nVisits <- 3
+psi <- 0.5   # Proportion of extra-Poisson zeros
+z <- rbinom(n=nSites, size=1, prob=psi) # Extra zeros
+lam <- 5     # expected count when z=1
+N <- rpois(n=nSites, lambda=lam*z)      # abundance at each site
+p <- 0.5     # detection prob
+y <- matrix(NA, nSites, nVisits)
+for(i in 1:nSites) {
+    y[i,] <- rbinom(n=nVisits, size=N[i], prob=p) # count data
+}
+@   
+\end{frame}
+
+
 \subsection{Likelihood-based methods}
 
 
@@ -1081,7 +1120,7 @@ abline(a=0, b=1, col="red")
       mis-specified model?
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
 \end{frame}
 
 

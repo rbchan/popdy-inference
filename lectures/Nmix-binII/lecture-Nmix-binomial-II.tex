@@ -1,4 +1,54 @@
-\documentclass[color=usenames,dvipsnames]{beamer}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0, 0, 0}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
@@ -32,8 +82,7 @@
 %   \addtocounter{footnote}{-1}%
 %   \endgroup
 % }
-
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 
@@ -43,7 +92,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\LARGE Lecture 7 -- Binomial $N$-mixture models: \\
+  {\LARGE Lecture 6 -- Binomial $N$-mixture models: \\
     model selection, spatial prediction, and goodness-of-fit} \\  
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
@@ -94,7 +143,7 @@
   to compare models and avoid underfitting and overfitting. \\
   \pause
   \vfill
-  Just make sure the models being compared were motivated by clear
+  Make sure the models being compared were motivated by clear
   hypotheses.
 \end{frame}
 
@@ -123,8 +172,8 @@
   cross-validation: 
   \begin{itemize}
     \item Split data into K partitions
-    \item Fit model to the `in-sample' K-1 partitions
-    \item Predict the holdout `out-of-sample' partition
+    \item Fit model to the data in K-1 partitions
+    \item Predict the holdout partition
   \end{itemize}
   \pause
   \vfill
@@ -197,8 +246,6 @@
   local abundance. 
 \end{frame}
 \egroup
-
-
 
 
 
@@ -275,7 +322,7 @@ Put models in a special type of list
 \end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fitList(`lam(elev+utmE+utmN)p(temp)` = fm1, `lam(elev+utmN)p(temp)` = fm2, : could not find function "{}fitList"{}}}\end{kframe}
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
 \end{knitrout}
 \pause
 Uh oh, missing values differ among models.
@@ -293,20 +340,10 @@ Uh oh, missing values differ among models.
 \begin{alltt}
 \hlstd{na.sites} \hlkwb{<-} \hlkwd{apply}\hlstd{(}\hlkwd{is.na}\hlstd{(site.covs.s),} \hlnum{1}\hlstd{, any)}
 \hlstd{grouse.counts} \hlkwb{<-} \hlkwd{getY}\hlstd{(grouse.umf)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in getY(grouse.umf): could not find function "{}getY"{}}}\begin{alltt}
 \hlstd{grouse.counts[na.sites,]} \hlkwb{<-} \hlnum{NA}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in grouse.counts[na.sites, ] <- NA: object 'grouse.counts' not found}}\begin{alltt}
 \hlstd{grouse.umf}\hlopt{@}\hlkwc{y} \hlkwb{<-} \hlstd{grouse.counts}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'grouse.counts' not found}}\end{kframe}
+\end{kframe}
 \end{knitrout}
   \pause
   \vfill
@@ -338,9 +375,7 @@ Put models in a \inr{fitList}
                          \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
                          \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in fitList(`lam(elev+utmE+utmN)p(temp)` = fm1, `lam(elev+utmN)p(temp)` = fm2, : could not find function "{}fitList"{}}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -356,9 +391,16 @@ Put models in a \inr{fitList}
 \begin{alltt}
 \hlkwd{modSel}\hlstd{(grouse.models)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in modSel(grouse.models): could not find function "{}modSel"{}}}\end{kframe}
+\begin{verbatim}
+##                            nPars    AIC delta   AICwt cumltvWt
+## lam(elev+utmN)p(temp)          5 202.89  0.00 5.1e-01     0.51
+## lam(elev+utmE+utmN)p(temp)     6 203.76  0.87 3.3e-01     0.84
+## lam(elev)p(ptemp)              4 206.09  3.20 1.0e-01     0.95
+## lam(elev+utmN)p(.)             4 208.25  5.36 3.5e-02     0.98
+## lam(elev)p(.)                  3 209.72  6.83 1.7e-02     1.00
+## lam(.)p(.)                     2 222.52 19.63 2.8e-05     1.00
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
   \pause
   \vfill
@@ -400,15 +442,10 @@ Put models in a \inr{fitList}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(raster);} \hlkwd{library}\hlstd{(sf)}
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Registered S3 method overwritten by 'sf':\\\#\# \ \ method \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ from \ \ \ \ \ \ \\\#\# \ \ plot.sfc\_MULTIPOLYGON R\_GlobalEnv}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: package or namespace load failed for 'sf' in dyn.load(file, DLLpath = DLLpath, ...):\\\#\# \ unable to load shared object '/home/rchandler/R/x86\_64-pc-linux-gnu-library/4.1/sf/libs/sf.so':\\\#\# \ \ libgdal.so.27: cannot open shared object file: No such file or directory}}\begin{alltt}
 \hlkwd{load}\hlstd{(}\hlstr{"state_boundaries.gzip"}\hlstd{)}
 \hlstd{elev} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elev_utm16.tif"}\hlstd{)}
 \hlkwd{plot}\hlstd{(elev,} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
+\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -417,12 +454,6 @@ Put models in a \inr{fitList}
 }
 
 
-\begin{kframe}\begin{alltt}
-\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in CPL\_geos\_is\_empty(st\_geometry(x)): could not find function "{}CPL\_geos\_is\_empty"{}}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -438,6 +469,7 @@ Put models in a \inr{fitList}
 \hlstd{utmN} \hlkwb{<-} \hlstd{elev}
 \hlstd{utmN[]} \hlkwb{<-} \hlkwd{yFromCell}\hlstd{(elev,} \hlkwc{cell}\hlstd{=}\hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(elev))}
 \hlkwd{plot}\hlstd{(utmN,} \hlkwc{main}\hlstd{=}\hlstr{"UTM northing"}\hlstd{)}
+\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -446,12 +478,6 @@ Put models in a \inr{fitList}
 }
 
 
-\begin{kframe}\begin{alltt}
-\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in CPL\_geos\_is\_empty(st\_geometry(x)): could not find function "{}CPL\_geos\_is\_empty"{}}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -509,6 +535,845 @@ Put them together in a `raster stack'
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{grouse.pred.map} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm2,} \hlkwc{newdata}\hlstd{=elev.utm,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)}
+\hlkwd{plot}\hlstd{(grouse.pred.map)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.85\linewidth]{figure/lam-pred-map-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(grouse.pred.map}\hlopt{$}\hlstd{Predicted,} \hlkwc{main}\hlstd{=}\hlstr{"Grouse distribution"}\hlstd{)}
+\hlkwd{plot}\hlstd{(ga.nc.sc.tn.utm,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/Elam-pred-map-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial prediction}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.5\linewidth]{figure/Elam-pred-map2-1} 
+
+}
+
+
+\end{knitrout}
+\footnotesize
+This map depicts the expected number of grouse that would occur at a
+survey plot centered on each pixel. \\
+\pause
+\vfill
+To estimate grouse abundance in the entire region, we would need to:
+\begin{enumerate}
+  \footnotesize
+  \item Estimate density by including an \alert{offset} in the model
+    like this:
+%    \colorbox{inlinecolor}{\verb=pcount(~1~elevation.s+utmN.s+offset(log(area)))=}
+    \verb_pcount(~1~elevation.s+utmN.s+offset(log(area)))_
+  \item Predict abundance at each pixel, while accounting for pixel area
+  \item Sum pixel-specific abundance
+\end{enumerate}
+\end{frame}
+
+
+
+
+
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{WAIC}
+  Watanabe's widely applicable information criterion (WAIC) is a
+  generalization of AIC suitable for Bayesian models. %\\
+  \pause
+%  \vfill
+  As before, we have 
+  \[
+%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
+%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
+%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = \mathrm{fit} + \mathrm{penalty}
+  \]
+  \pause
+  \vfill
+  The measure of `fit' in this case is the
+  log-pointwise-predictive-density:
+  \[
+     \mathrm{lppd} = \sum_{i=1}^M \log\left(\frac{1}{S} \sum_s p(y_i|\theta_s)\right)
+  \]
+  \pause
+  \vfill
+  The penalty is proportional to the posterior variance:
+  \[
+     \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(\log p(y_i|\theta_s)))
+%     \mathrm{penalty} = \sum_{i=1}^M \frac{\left(\sum_s
+%       \log(p(y_i|\theta_s)) - \sum_s \log(p(y_i|\theta_s))/S)\right)^2}{S-1}
+  \]
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}
+    \hlkwc{y}\hlstd{=grouse.counts,}
+    \hlkwc{elevation}\hlstd{=site.covs.s[,}\hlstr{"elevation.s"}\hlstd{],}
+    \hlkwc{utmE}\hlstd{=site.covs.s[,}\hlstr{"utmE.s"}\hlstd{],}
+    \hlkwc{utmN}\hlstd{=site.covs.s[,}\hlstr{"utmN.s"}\hlstd{],}
+    \hlkwc{temp}\hlstd{=}\hlkwd{as.matrix}\hlstd{(grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"Temperature."}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)]),}
+    \hlkwc{nSites}\hlstd{=}\hlkwd{nrow}\hlstd{(grouse.counts),}
+    \hlkwc{nOccasions}\hlstd{=}\hlkwd{ncol}\hlstd{(grouse.counts))}
+\hlstd{jags.data}\hlopt{$}\hlstd{temp} \hlkwb{<-} \hlstd{(jags.data}\hlopt{$}\hlstd{temp}\hlopt{-}\hlkwd{mean}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlopt{/}
+    \hlkwd{sd}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{# standardize temperature}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),}
+         \hlkwc{N}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{2}\hlstd{, jags.data}\hlopt{$}\hlstd{nSites))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,} \hlstr{"beta3"}\hlstd{,}
+               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{,}
+               \hlstr{"ld.y.dot"}\hlstd{,} \hlstr{"ld.ydot.N"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{The BUGS model}
+  \small
+  Notice \alert{\tt modswitch}, which we can use to include/exclude
+  predictors. 
+  \tiny
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## model {
+## 
+## #beta0 ~ dnorm(0, 0.5)  
+## lambda.intercept ~ dunif(0, 5)
+## beta0 <- log(lambda.intercept)
+## beta1 ~ dnorm(0, 0.5)
+## beta2 ~ dnorm(0, 0.5)
+## beta3 ~ dnorm(0, 0.5)
+## 
+## alpha0 ~ dnorm(0, 0.5)  
+## alpha1 ~ dnorm(0, 0.5)
+## 
+## for(i in 1:nSites) {
+##   elevation[i] ~ dnorm(0, 1)
+##   utmN[i] ~ dnorm(0, 1)
+##   utmE[i] ~ dnorm(0, 1)
+##   log(lambda[i]) <- beta0 + beta1*elevation[i]*modswitch[1] +
+##     beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] 
+##   N[i] ~ dpois(lambda[i])         # Latent local abundance
+##   for(j in 1:nOccasions) {
+##     temp[i,j] ~ dnorm(0,1)
+##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]*modswitch[4]
+##     y[i,j] ~ dbin(p[i,j], N[i])   # Data
+##     ld.y[i,j] <- logdensity.bin(y[i,j], p[i,j], N[i])
+##   }
+##   ld.y.dot[i] <- sum(ld.y[i,])
+## }
+## 
+## totalAbundance <- sum(N[1:nSites])
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  Fit Model 1, corresponding to \inr{fm1}. 
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.data1} \hlkwb{<-} \hlstd{jags.data}
+\hlstd{jags.data1}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{)} \hlcom{## Include all covariates}
+\hlstd{jm1} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data1,} \hlkwc{inits}\hlstd{=jags.inits,}
+                  \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,}
+                  \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Fit Model 2
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data2} \hlkwb{<-} \hlstd{jags.data; jags.data2}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{)}
+\hlstd{jm2} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data2,} \hlkwc{inits}\hlstd{=jags.inits,}
+                  \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,}
+                  \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+  Model 3
+  \vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data3} \hlkwb{<-} \hlstd{jags.data; jags.data3}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{)}
+\hlstd{jm3} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data3,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  Model 4
+  \vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data4} \hlkwb{<-} \hlstd{jags.data; jags.data4}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{)}
+\hlstd{jm4} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data4,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  Model 5
+  \vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data5} \hlkwb{<-} \hlstd{jags.data; jags.data5}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{)}
+\hlstd{jm5} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data5,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  Model 6
+  \vspace{-6pt}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.data6} \hlkwb{<-} \hlstd{jags.data; jags.data6}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{)}
+\hlstd{jm6} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data6,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<2->\oldfootnoterule}
+\begin{frame}[fragile]
+  \frametitle{WAIC}
+  \[
+%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
+%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
+%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
+%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
+    \mathrm{WAIC} = -2(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta)))
+  \]
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{waic} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) \{}
+    \hlcom{## Parameter names}
+    \hlstd{vars} \hlkwb{<-} \hlstd{coda}\hlopt{::}\hlkwd{varnames}\hlstd{(x)}
+    \hlcom{## Extract log-density of y at each site for each post sample}
+    \hlstd{ld.samples} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(x[,}\hlkwd{grep}\hlstd{(}\hlstr{"ld.y.dot"}\hlstd{, vars)])}
+    \hlcom{## Compute log-pointwise-predictive-density}
+    \hlstd{lppd} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{log}\hlstd{(}\hlkwd{colMeans}\hlstd{(}\hlkwd{exp}\hlstd{(ld.samples))))}
+    \hlcom{## Compute penalty}
+    \hlstd{penalty} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{apply}\hlstd{(ld.samples,} \hlnum{2}\hlstd{, var))}
+    \hlcom{## Return WAIC}
+    \hlkwd{return}\hlstd{(}\hlopt{-}\hlnum{2}\hlopt{*}\hlstd{(lppd}\hlopt{-}\hlstd{penalty))}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
+$p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.} 
+\end{frame}
+\egroup
+
+
+% \begin{frame}[fragile]
+%   \frametitle{WAIC}
+% <<waic1,size='scriptsize'>>=
+% (waic1 <- waic(jm1, focus="yN"))
+% @   
+% <<waic2,size='scriptsize'>>=
+% (waic2 <- waic(jm2, focus="yN"))
+% @   
+% <<waic6,size='scriptsize'>>=
+% (waic6 <- waic(jm6, focus="yN"))
+% @   
+% \end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{WAIC}
+  WAIC for the six models
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
+\end{alltt}
+\begin{verbatim}
+## [1] 129.1708
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
+\end{alltt}
+\begin{verbatim}
+## [1] 119.9559
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
+\end{alltt}
+\begin{verbatim}
+## [1] 119.1558
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
+\end{alltt}
+\begin{verbatim}
+## [1] 151.6317
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
+\end{alltt}
+\begin{verbatim}
+## [1] 151.6321
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
+\end{alltt}
+\begin{verbatim}
+## [1] 168.6975
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+    \end{column}
+  \end{columns}
+  \pause
+  \vfill
+  In practice, you would discard burn-in and ensure convergence before
+  computing WAIC.
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{WAIC}
+  Create a WAIC table:
+  \vspace{-12pt}
+  \begin{center}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{waic.table} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{WAIC}\hlstd{=}\hlkwd{c}\hlstd{(waic1,waic2,waic3,waic4,waic5,waic5))}
+\hlkwd{rownames}\hlstd{(waic.table)} \hlkwb{<-} \hlkwd{paste}\hlstd{(}\hlstr{"Model"}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{6}\hlstd{)}
+\hlstd{waic.table}\hlopt{$}\hlstd{delta} \hlkwb{<-} \hlstd{waic.table}\hlopt{$}\hlstd{WAIC}\hlopt{-}\hlkwd{min}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC)}
+\hlstd{waic.table} \hlkwb{<-} \hlstd{waic.table[}\hlkwd{order}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC),]}
+\hlstd{knitr}\hlopt{::}\hlkwd{kable}\hlstd{(waic.table,} \hlkwc{format}\hlstd{=}\hlstr{"latex"}\hlstd{,} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{booktabs}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\begin{tabular}{lrr}
+\toprule
+  & WAIC & delta\\
+\midrule
+Model 3 & 119.16 & 0.00\\
+Model 2 & 119.96 & 0.80\\
+Model 1 & 129.17 & 10.01\\
+Model 4 & 151.63 & 32.48\\
+Model 5 & 151.63 & 32.48\\
+\addlinespace
+Model 6 & 151.63 & 32.48\\
+\bottomrule
+\end{tabular}
+
+\end{knitrout}
+  \end{center}
+\end{frame}
+
+
+
+
+
+\section{Goodness-of-fit}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Goodness-of-fit}
+  \small
+  Distributional assumptions determine the expected values
+  \alert{and the expected variance} of the random variables, including
+  the data. \\  
+  \pause
+  \vfill
+  Overdispersion occurs when there is more variance in the data than
+  expected by the model. \\
+  \pause
+  \vfill
+  Goodness-of-fit methods assess overdispersion and underdispersion. \\
+  \pause
+  \vfill
+  If the model does not fit the data very well because of
+  overdispersion, there are several remedial actions:
+  \begin{itemize}
+  \item<5-> Scientific approach
+    \begin{itemize}
+       \item Figure out why there is unexplained variation
+       \item Perhaps there were unmeasured covariates or you need a
+         better model for describing the processes
+    \end{itemize}
+  \item<6-> Statistical approach
+    \begin{itemize}
+      \item Soak up variation with random effects
+      \item Use a different distribution (we'll start here)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+\bgroup
+\let\oldfootnoterule\footnoterule
+\def\footnoterule{\only<3->\oldfootnoterule}
+\begin{frame}
+  \frametitle{Changing the distribution for $N$}
+  \small
+  Standard Poisson-binomial $N$-mixture model (without covariates):
+  \begin{gather*}
+%    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+%    \beta_2 {\color{blue} x_{i2}} + \cdots \\
+    N_i \sim \mathrm{Poisson}(\lambda) \\
+%    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+%    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+    y_{ij} \sim \mathrm{Binomial}(N_i, p)
+  \end{gather*}
+  \pause
+%  \vfill
+  We can replace the Poisson distribution with other distributions
+  that allow for greater variance in $N$. \pause Two common examples
+  are the negative 
+  binomial:
+  \begin{equation*}
+    N_i \sim \mathrm{NegBin}(\lambda_i, \kappa)
+  \end{equation*}
+  where $\lambda_i$ is the expected value of $N$ and $\kappa$ is the
+  dispersion parameter\footnote<3->{There are several other
+    parameterizations of the negative binomial}.
+  \pause
+%  \vfill
+  Another option is the zero-inflated Poisson:
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{gather*}
+        N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+        z_i \sim \mathrm{Bern}(\psi) \\
+      \end{gather*}
+    \end{column}
+    \begin{column}{0.1\textwidth}
+%      \centering
+%      Or \\
+      \rule{0.1pt}{24pt} \\
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{gather*}
+        \hspace{-72pt}
+        N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi) \\
+      \end{gather*}
+    \end{column}
+  \end{columns}
+  where $\psi$ is the expected proportion of sites with excess zeros. 
+\end{frame}
+\egroup
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating data from ZIP model}
+  Zero-inflated Poisson model
+  {\centering
+    \begin{columns}
+      \small
+      \begin{column}{0.45\textwidth}
+        \begin{gather*}
+          N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+          z_i \sim \mathrm{Bern}(\psi) \\
+        \end{gather*}
+      \end{column}
+      \begin{column}{0.1\textwidth}
+        \rule{0.1pt}{24pt} \\
+      \end{column}
+      \begin{column}{0.45\textwidth}
+        \begin{gather*}
+          \hspace{-72pt}
+          N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi) \\
+        \end{gather*}
+      \end{column}
+    \end{columns}
+}
+\vfill
+R code
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nSites} \hlkwb{<-} \hlnum{20}
+\hlstd{nVisits} \hlkwb{<-} \hlnum{3}
+\hlstd{psi} \hlkwb{<-} \hlnum{0.5}   \hlcom{# Proportion of extra-Poisson zeros}
+\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi)} \hlcom{# Extra zeros}
+\hlstd{lam} \hlkwb{<-} \hlnum{5}     \hlcom{# expected count when z=1}
+\hlstd{N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lam}\hlopt{*}\hlstd{z)}      \hlcom{# abundance at each site}
+\hlstd{p} \hlkwb{<-} \hlnum{0.5}     \hlcom{# detection prob}
+\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, nVisits)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nVisits,} \hlkwc{size}\hlstd{=N[i],} \hlkwc{prob}\hlstd{=p)} \hlcom{# count data}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\subsection{Likelihood-based methods}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  One of the simplest and best ways of assessing goodness-of-fit is to
+  look at the residuals.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(fm2)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/resid2-1} 
+
+}
+
+
+\end{knitrout}
+\pause
+\vfill
+No sign of obvious outliers or other problems.
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  The parametric bootstrap can be used to assess model fit:
+  \begin{enumerate}
+    \item Simulate a dataset from the fitted model
+    \item Fit the model to the new dataset
+    \item Compute a fit statistic
+    \item Repeat steps 1-3 several hundred/thousand times
+    \item Compare the distribution of the \alert{expected} fit
+      statistic to the fit statistic associated with
+      the actual data. 
+  \end{enumerate}
+  \pause
+  \vfill
+  The fit statistic associated with the actual data should not be in
+  an extreme quantile of the distribution of the expected values.
+  \pause
+  \vfill
+  Assuming a type I error rate of 0.05, the $p$-value should be
+  $>0.05$ if the model fits the data well, which is the null hypothesis.
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fitstat} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fm}\hlstd{) \{} \hlcom{## Sum of squared-residuals}
+    \hlkwd{return}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{SSE}\hlstd{=}\hlkwd{sum}\hlstd{(}\hlkwd{residuals}\hlstd{(fm)}\hlopt{^}\hlnum{2}\hlstd{,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
+\hlstd{\}}
+\hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/parboot-1} 
+
+}
+
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pb}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call: parboot(object = fm2, statistic = fitstat, nsim = 200, ncores = 3)
+## 
+## Parametric Bootstrap Statistics:
+##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
+## SSE 23.2           2.41              5.7        0.294
+## 
+## t_B quantiles:
+##      0% 2.5% 25% 50% 75% 97.5% 100%
+## SSE 6.9   12  17  21  24    33   39
+## 
+## t0 = Original statistic computed from data
+## t_B = Vector of bootstrap samples
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+%\pause
+\vfill
+These results suggest that model \inr{fm2} fits the data well.
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  If the model didn't fit the data well, we could try a different
+  distribution for $N_i$ such as the negative binomial:
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(fm.nb} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"NB"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## pcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, 
+##     K = 50, mixture = "NB")
+## 
+## Abundance:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -2.735 1.138 -2.40  0.0162
+## elevation.s    0.659 0.283  2.33  0.0199
+## utmN.s         0.876 0.445  1.97  0.0487
+## 
+## Detection:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -2.415 1.234 -1.96  0.0504
+## temp          -0.738 0.366 -2.01  0.0441
+## 
+## Dispersion:
+##  Estimate   SE     z P(>|z|)
+##     -1.23 1.01 -1.22   0.222
+## 
+## AIC: 202.2481
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Goodness-of-fit in `unmarked'}
+  \small
+  Or the zero-inflated Poisson:
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(fm.zip} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"ZIP"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## 
+## Call:
+## pcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, 
+##     K = 50, mixture = "ZIP")
+## 
+## Abundance:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -1.549 1.307 -1.19  0.2359
+## elevation.s    0.633 0.275  2.30  0.0213
+## utmN.s         0.875 0.433  2.02  0.0434
+## 
+## Detection:
+##             Estimate    SE     z P(>|z|)
+## (Intercept)   -2.363 1.172 -2.02  0.0438
+## temp          -0.735 0.365 -2.01  0.0441
+## 
+## Zero-inflation:
+##  Estimate   SE     z P(>|z|)
+##     0.875 0.89 0.983   0.326
+## 
+## AIC: 202.494
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Empirical Bayes -- Site-level abundance}
+% <<ranef,size='scriptsize',out.width='80%',fig.align='center',fig.width=9>>=
+% re <- ranef(fm)
+% plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
+% @   
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Total abundance (in surveyed region)}
+% <<Ntotal,size='scriptsize',out.width='60%',fig.align='center'>>=
+% N.total.post <- predict(re, func=sum, nsim=1000)
+% hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
+% @   
+% \end{frame}
 
 
 
@@ -516,52 +1381,170 @@ Put them together in a `raster stack'
 
 
 
+\subsection{Bayesian methods}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Outline}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian fit assessments}
+  In a Bayesian analysis, we can assess model fit using a
+  \alert{posterior predictive check} (PPC). \\
+  \pause
+  \vfill
+  The PPC compares the posterior distribution of a fit statistic, to
+  the posterior distribution of a fit statistic computed from
+  simulated data. \\ 
+  \pause
+  \vfill
+  The two distributions should look similar if the model fits well. \\
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{BUGS model with fit stats}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## model {
+## 
+## lambda.intercept ~ dunif(0, 5)
+## beta0 <- log(lambda.intercept)
+## beta1 ~ dnorm(0, 0.5)
+## beta3 ~ dnorm(0, 0.5)
+## 
+## alpha0 ~ dnorm(0, 0.5)  
+## alpha1 ~ dnorm(0, 0.5)
+## 
+## for(i in 1:nSites) {
+##   elevation[i] ~ dnorm(0, 1)
+##   utmN[i] ~ dnorm(0, 1)
+##   utmE[i] ~ dnorm(0, 1)
+##   log(lambda[i]) <- beta0 + beta1*elevation[i] + beta3*utmN[i]
+##   N[i] ~ dpois(lambda[i])         # Latent local abundance
+##   N.new[i] ~ dpois(lambda[i])     # Predicted local abundance
+##   for(j in 1:nOccasions) {
+##     temp[i,j] ~ dnorm(0,1)
+##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+##     y[i,j] ~ dbin(p[i,j], N[i])              # Data
+##     resid[i,j] <- y[i,j]-N[i]*p[i,j]         # Residual
+##     y.new[i,j] ~ dbin(p[i,j], N.new[i])          # Predicted data
+##     resid.new[i,j] <- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual
+##   }
+## }
+## SSE <- sum(resid^2)             # Fit stat
+## SSE.new <- sum(resid.new^2)     # Predicted fit stat
+## 
+## totalAbundance <- sum(N[1:nSites])
+## 
+## }
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  Fit Model 2, corresponding to \inr{fm2}. 
+  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                 \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"SSE"}\hlstd{,} \hlstr{"SSE.new"}\hlstd{),}
+                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse2.jag"}\hlstd{,}
+                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian goodness-of-fit}
+%  Fit Model 1, corresponding to \inr{fm1}. 
+%  \vspace{-6pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlkwd{as.matrix}\hlstd{(jm[,}\hlkwd{c}\hlstd{(}\hlstr{"SSE"}\hlstd{,} \hlstr{"SSE.new"}\hlstd{)]))}
+\hlkwd{abline}\hlstd{(}\hlkwc{a}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{b}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.55\linewidth]{figure/bugs-mcmc-gof-plot-1} 
+
+}
+
+
+\end{knitrout}
+  \vfill
+  \small
+  The distributions of {\tt SSE} and {\tt SSE.new} are similar,
+  indicating that the model fits the data well.
+\end{frame}
 
 
 
 
 
 
+\section{Assignment}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Assignment}
+  % \small
+  \footnotesize
+  Create a self-contained R script or Rmarkdown file
+  to do the following:
+  \vfill
+  \begin{enumerate}
+%    \small
+    \footnotesize
+    \item Simulate a dataset from the following $N$-mixture model:
+      \begin{itemize}
+        \footnotesize
+        \item $N_i \sim \mathrm{ZIPoisson}(\lambda=5, \psi=0.5)$
+        \item $y_{ij} \sim \mathrm{Binomial}(N_i, p=0.3)$
+        \item nSites=200, nOccasions=4
+      \end{itemize}
+    \item Fit a \alert{mis-specified model} using `unmarked' and `JAGS' with
+      $N_i \sim \mathrm{Pois}(\lambda)$ instead of
+      $N_i \sim \mathrm{ZIPois}(\lambda, \psi)$.
+    \item Assess goodness-of-fit using the parametric bootstrap and
+      the Bayesian posterior predictive check.
+    \item Fit the \alert{correct model} using `unmarked' and `JAGS'
+      and compare the fit to the mis-specified models.
+    \item Were the fit assessments methods able to identify the
+      mis-specified model?
+  \end{enumerate}
+  \vfill
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
+\end{frame}
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\end{document}
 
