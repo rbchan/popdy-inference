@@ -226,26 +226,26 @@
 
 
 
-\bgroup
-\let\oldfootnoterule\footnoterule
-\def\footnoterule{\only<1->\oldfootnoterule}
-\begin{frame}
-  \frametitle{Model selection with AIC}
-%  \small
-  For an $N$-mixture model, the `integrated likelihood' is computed by
-  marginalizing (summing over all possible values of) $N_i$:
-  \[
-     L = \prod_{i=1}^M \sum_{N^*_i=\max(y_i)}^{K\approx \infty}
-     \left\{\prod_{j=1}^J p(y_{ij}|N^*_i,p)\right\}p(N^*_i|\lambda)
-  \]
-%  \pause
-  where $p(y_{ij}|N_i,p)$ is the binomial probability
-  density\footnote<1->{\scriptsize For discrete random variables, 
-    ``mass'' is often used instead of ``density''.} function 
-  (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
-  local abundance. 
-\end{frame}
-\egroup
+% \bgroup
+% \let\oldfootnoterule\footnoterule
+% \def\footnoterule{\only<1->\oldfootnoterule}
+% \begin{frame}
+%   \frametitle{Model selection with AIC}
+% %  \small
+%   For an $N$-mixture model, the `integrated likelihood' is computed by
+%   marginalizing (summing over all possible values of) $N_i$:
+%   \[
+%      L = \prod_{i=1}^M \sum_{N^*_i=\max(y_i)}^{K\approx \infty}
+%      \left\{\prod_{j=1}^J p(y_{ij}|N^*_i,p)\right\}p(N^*_i|\lambda)
+%   \]
+% %  \pause
+%   where $p(y_{ij}|N_i,p)$ is the binomial probability
+%   density\footnote<1->{\scriptsize For discrete random variables, 
+%     ``mass'' is often used instead of ``density''.} function 
+%   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
+%   local abundance. 
+% \end{frame}
+% \egroup
 
 
 
@@ -324,7 +324,7 @@ Put models in a special type of list
 
 {\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in validityMethod(object): Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.}}\end{kframe}
 \end{knitrout}
-\pause
+%\pause
 Uh oh, missing values differ among models.
 \end{frame}
 
@@ -576,33 +576,28 @@ Put them together in a `raster stack'
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Spatial prediction}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
-
-{\centering \includegraphics[width=0.5\linewidth]{figure/Elam-pred-map2-1} 
-
-}
-
-
-\end{knitrout}
-\footnotesize
-This map depicts the expected number of grouse that would occur at a
-survey plot centered on each pixel. \\
-\pause
-\vfill
-To estimate grouse abundance in the entire region, we would need to:
-\begin{enumerate}
-  \footnotesize
-  \item Estimate density by including an \alert{offset} in the model
-    like this:
-%    \colorbox{inlinecolor}{\verb=pcount(~1~elevation.s+utmN.s+offset(log(area)))=}
-    \verb_pcount(~1~elevation.s+utmN.s+offset(log(area)))_
-  \item Predict abundance at each pixel, while accounting for pixel area
-  \item Sum pixel-specific abundance
-\end{enumerate}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Spatial prediction}
+% <<Elam-pred-map2,size='scriptsize',results='hide',fig.width=9.7,out.width='50%',fig.align='center',echo=FALSE>>=
+% plot(grouse.pred.map$Predicted, main="Grouse distribution")
+% plot(ga.nc.sc.tn.utm, add=TRUE)
+% @
+% \footnotesize
+% This map depicts the expected number of grouse that would occur at a
+% survey plot centered on each pixel. \\
+% \pause
+% \vfill
+% To estimate grouse abundance in the entire region, we would need to:
+% \begin{enumerate}
+%   \footnotesize
+%   \item Estimate density by including an \alert{offset} in the model
+%     like this:
+% %    \colorbox{inlinecolor}{\verb=pcount(~1~elevation.s+utmN.s+offset(log(area)))=}
+%     \verb_pcount(~1~elevation.s+utmN.s+offset(log(area)))_
+%   \item Predict abundance at each pixel, while accounting for pixel area
+%   \item Sum pixel-specific abundance
+% \end{enumerate}
+% \end{frame}
 
 
 
