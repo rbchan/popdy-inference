@@ -5,7 +5,7 @@
 
 
 
-## ----grouse-in,size='footnotesize',cache=TRUE---------------------------------
+## ----grouse-in,size='footnotesize',cache=FALSE,results='hide',message=FALSE----
 library(unmarked)
 grouse.data <- read.csv("grouse_data_Nmix.csv", row.names=1)
 grouse.umf <- unmarkedFramePCount(
@@ -14,14 +14,14 @@ grouse.umf <- unmarkedFramePCount(
     obsCovs=list(temp=grouse.data[,paste0("Temperature.",1:3)]))
 
 
-## ----grouse-stand,size='footnotesize',cache=TRUE------------------------------
+## ----grouse-stand,size='footnotesize',cache=FALSE-----------------------------
 site.covs.s <- scale(siteCovs(grouse.umf))
 colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
 siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
 obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
 
 
-## ----grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE-----------------
+## ----grouse-mods,size='footnotesize',warning=FALSE,cache=FALSE----------------
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
@@ -70,7 +70,7 @@ grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
 modSel(grouse.models)
 
 
-## ----elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide'----
+## ----elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE----
 library(raster); library(sf)
 load("state_boundaries.gzip")
 elev <- raster("elev_utm16.tif")
@@ -110,11 +110,6 @@ plot(grouse.pred.map$Predicted, main="Grouse distribution")
 plot(ga.nc.sc.tn.utm, add=TRUE)
 
 
-## ----Elam-pred-map2,size='scriptsize',results='hide',fig.width=9.7,out.width='50%',fig.align='center',echo=FALSE----
-plot(grouse.pred.map$Predicted, main="Grouse distribution")
-plot(ga.nc.sc.tn.utm, add=TRUE)
-
-
 ## ----bugs-data,size='scriptsize'----------------------------------------------
 jags.data <- list(
     y=grouse.counts,
@@ -141,7 +136,7 @@ jags.pars <- c("beta0", "beta1", "beta2", "beta3",
                "ld.y.dot", "ld.ydot.N")
 
 
-## ----bugs,size='tiny',echo=FALSE----------------------------------------------
+## ----bugs,size='tiny',echo=FALSE,comment='',background='lightblue'------------
 writeLines(readLines("Nmix-model-grouse.jag"))
 
 ## ----jagsUI,include=FALSE-----------------------------------------------------
@@ -252,6 +247,20 @@ waic.table <- waic.table[order(waic.table$WAIC),]
 knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
 
 
+## ----zip-sim,size='scriptsize'------------------------------------------------
+nSites <- 20
+nVisits <- 3
+psi <- 0.5   # Proportion of extra-Poisson zeros
+z <- rbinom(n=nSites, size=1, prob=psi) # Extra zeros
+lam <- 5     # expected count when z=1
+N <- rpois(n=nSites, lambda=lam*z)      # abundance at each site
+p <- 0.5     # detection prob
+y <- matrix(NA, nSites, nVisits)
+for(i in 1:nSites) {
+    y[i,] <- rbinom(n=nVisits, size=N[i], prob=p) # count data
+}
+
+
 ## ----resid2,fig.width=9,out.width='60%',fig.align='center'--------------------
 plot(fm2)
 
@@ -275,7 +284,7 @@ pb
 (fm.zip <- pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP"))
 
 
-## ----bugs2,size='tiny',echo=FALSE---------------------------------------------
+## ----bugs2,size='tiny',echo=FALSE,comment='',background='lightblue'-----------
 writeLines(readLines("Nmix-model-grouse2.jag"))
 
 

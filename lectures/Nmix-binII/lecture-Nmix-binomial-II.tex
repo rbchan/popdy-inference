@@ -60,7 +60,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 % Load function to compile and open PDF
 
 
@@ -548,7 +547,6 @@ Put them together in a `raster stack'
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -708,39 +706,39 @@ Put them together in a `raster stack'
   predictors. 
   \tiny
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## #beta0 ~ dnorm(0, 0.5)  
-## lambda.intercept ~ dunif(0, 5)
-## beta0 <- log(lambda.intercept)
-## beta1 ~ dnorm(0, 0.5)
-## beta2 ~ dnorm(0, 0.5)
-## beta3 ~ dnorm(0, 0.5)
-## 
-## alpha0 ~ dnorm(0, 0.5)  
-## alpha1 ~ dnorm(0, 0.5)
-## 
-## for(i in 1:nSites) {
-##   elevation[i] ~ dnorm(0, 1)
-##   utmN[i] ~ dnorm(0, 1)
-##   utmE[i] ~ dnorm(0, 1)
-##   log(lambda[i]) <- beta0 + beta1*elevation[i]*modswitch[1] +
-##     beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] 
-##   N[i] ~ dpois(lambda[i])         # Latent local abundance
-##   for(j in 1:nOccasions) {
-##     temp[i,j] ~ dnorm(0,1)
-##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]*modswitch[4]
-##     y[i,j] ~ dbin(p[i,j], N[i])   # Data
-##     ld.y[i,j] <- logdensity.bin(y[i,j], p[i,j], N[i])
-##   }
-##   ld.y.dot[i] <- sum(ld.y[i,])
-## }
-## 
-## totalAbundance <- sum(N[1:nSites])
-## 
-## }
+model {
+
+#beta0 ~ dnorm(0, 0.5)  
+lambda.intercept ~ dunif(0, 5)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+beta3 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  elevation[i] ~ dnorm(0, 1)
+  utmN[i] ~ dnorm(0, 1)
+  utmE[i] ~ dnorm(0, 1)
+  log(lambda[i]) <- beta0 + beta1*elevation[i]*modswitch[1] +
+    beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] 
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  for(j in 1:nOccasions) {
+    temp[i,j] ~ dnorm(0,1)
+    logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]*modswitch[4]
+    y[i,j] ~ dbin(p[i,j], N[i])   # Data
+    ld.y[i,j] <- logdensity.bin(y[i,j], p[i,j], N[i])
+  }
+  ld.y.dot[i] <- sum(ld.y[i,])
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -848,10 +846,6 @@ Put them together in a `raster stack'
 \begin{frame}[fragile]
   \frametitle{WAIC}
   \[
-%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
-%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
-%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
-%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
     \mathrm{WAIC} = -2(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta)))
   \]
 
@@ -905,7 +899,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 129.1708
+## [1] 126.3097
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -915,7 +909,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 119.9559
+## [1] 128.9799
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -925,7 +919,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 119.1558
+## [1] 115.4295
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -937,7 +931,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 151.6317
+## [1] 145.215
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -947,7 +941,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 151.6321
+## [1] 163.8655
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -957,7 +951,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 168.6975
+## [1] 152.1601
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -992,13 +986,13 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \toprule
   & WAIC & delta\\
 \midrule
-Model 3 & 119.16 & 0.00\\
-Model 2 & 119.96 & 0.80\\
-Model 1 & 129.17 & 10.01\\
-Model 4 & 151.63 & 32.48\\
-Model 5 & 151.63 & 32.48\\
+Model 3 & 115.43 & 0.00\\
+Model 1 & 126.31 & 10.88\\
+Model 2 & 128.98 & 13.55\\
+Model 4 & 145.22 & 29.79\\
+Model 5 & 163.87 & 48.44\\
 \addlinespace
-Model 6 & 151.63 & 32.48\\
+Model 6 & 163.87 & 48.44\\
 \bottomrule
 \end{tabular}
 
@@ -1233,7 +1227,6 @@ No sign of obvious outliers or other problems.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1252,11 +1245,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           2.41              5.7        0.294
+## SSE 23.2           2.41                5        0.299
 ## 
 ## t_B quantiles:
 ##      0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 6.9   12  17  21  24    33   39
+## SSE 6.9   13  17  20  24    30   39
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
@@ -1409,40 +1402,40 @@ These results suggest that model \inr{fm2} fits the data well.
 \begin{frame}[fragile]
   \frametitle{BUGS model with fit stats}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## lambda.intercept ~ dunif(0, 5)
-## beta0 <- log(lambda.intercept)
-## beta1 ~ dnorm(0, 0.5)
-## beta3 ~ dnorm(0, 0.5)
-## 
-## alpha0 ~ dnorm(0, 0.5)  
-## alpha1 ~ dnorm(0, 0.5)
-## 
-## for(i in 1:nSites) {
-##   elevation[i] ~ dnorm(0, 1)
-##   utmN[i] ~ dnorm(0, 1)
-##   utmE[i] ~ dnorm(0, 1)
-##   log(lambda[i]) <- beta0 + beta1*elevation[i] + beta3*utmN[i]
-##   N[i] ~ dpois(lambda[i])         # Latent local abundance
-##   N.new[i] ~ dpois(lambda[i])     # Predicted local abundance
-##   for(j in 1:nOccasions) {
-##     temp[i,j] ~ dnorm(0,1)
-##     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
-##     y[i,j] ~ dbin(p[i,j], N[i])              # Data
-##     resid[i,j] <- y[i,j]-N[i]*p[i,j]         # Residual
-##     y.new[i,j] ~ dbin(p[i,j], N.new[i])          # Predicted data
-##     resid.new[i,j] <- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual
-##   }
-## }
-## SSE <- sum(resid^2)             # Fit stat
-## SSE.new <- sum(resid.new^2)     # Predicted fit stat
-## 
-## totalAbundance <- sum(N[1:nSites])
-## 
-## }
+model {
+
+lambda.intercept ~ dunif(0, 5)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+beta3 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  elevation[i] ~ dnorm(0, 1)
+  utmN[i] ~ dnorm(0, 1)
+  utmE[i] ~ dnorm(0, 1)
+  log(lambda[i]) <- beta0 + beta1*elevation[i] + beta3*utmN[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  N.new[i] ~ dpois(lambda[i])     # Predicted local abundance
+  for(j in 1:nOccasions) {
+    temp[i,j] ~ dnorm(0,1)
+    logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]
+    y[i,j] ~ dbin(p[i,j], N[i])              # Data
+    resid[i,j] <- y[i,j]-N[i]*p[i,j]         # Residual
+    y.new[i,j] ~ dbin(p[i,j], N.new[i])          # Predicted data
+    resid.new[i,j] <- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual
+  }
+}
+SSE <- sum(resid^2)             # Fit stat
+SSE.new <- sum(resid.new^2)     # Predicted fit stat
+
+totalAbundance <- sum(N[1:nSites])
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

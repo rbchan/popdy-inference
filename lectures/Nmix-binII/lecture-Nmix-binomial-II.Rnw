@@ -10,7 +10,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -548,7 +547,7 @@ jags.pars <- c("beta0", "beta1", "beta2", "beta3",
   Notice \alert{\tt modswitch}, which we can use to include/exclude
   predictors. 
   \tiny
-<<bugs,size='tiny',echo=FALSE>>=
+<<bugs,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("Nmix-model-grouse.jag"))
 @
 <<jagsUI,include=FALSE>>=
@@ -633,10 +632,6 @@ jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.par
 \begin{frame}[fragile]
   \frametitle{WAIC}
   \[
-%    \mathrm{WAIC} = \sum_{i=1}^M \log(\frac{1}{S} \sum_s p(y_i|\theta_s)) +
-%    \sum_{i=1}^M \mathrm{var}(\log(p(y_i|\theta_s)))
-%    \mathrm{WAIC} = \sum_{i=1}^M \log\left(E_s( p(y_i|\theta_s))\right) +
-%    \sum_{i=1}^M V_s(\log(p(y_i|\theta_s)))
     \mathrm{WAIC} = -2(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta)))
   \]
 <<waic-fn-ld-op,size='small',include=FALSE>>=
@@ -1043,7 +1038,7 @@ These results suggest that model \inr{fm2} fits the data well.
 
 \begin{frame}[fragile]
   \frametitle{BUGS model with fit stats}
-<<bugs2,size='tiny',echo=FALSE>>=
+<<bugs2,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("Nmix-model-grouse2.jag"))
 @
 \end{frame}
