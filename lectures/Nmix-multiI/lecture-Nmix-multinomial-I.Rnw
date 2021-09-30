@@ -4,9 +4,9 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\usepackage{booktabs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
-
 
 
 % Load function to compile and open PDF
@@ -160,7 +160,7 @@ knit_theme$set("edit-kwrite")
 <<multi-sim-concept,size='footnotesize'>>=
 N <- 20
 pi <- c(survived=0.5, depredated=0.3, starved=0.2)
-drop(rmultinom(n=1, size=N, prob=pi))
+t(rmultinom(n=1, size=N, prob=pi))
 @
   \pause
 %  \vfill
@@ -274,7 +274,7 @@ set.seed(34889243)
 @ 
 
 \begin{frame}[fragile]
-  \frametitle{Removal sampling, no covariates}
+  \frametitle{Simulating removal data, no covariates}
   \small
   Abundance
 <<sim-rem-nocov1,size='scriptsize'>>=
@@ -306,6 +306,16 @@ head(y1, n=3)
 @ 
 \end{frame}
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated removal data}
+<<y1-kable,size='small',align='center',echo=FALSE>>=
+colnames(y1) <- c("Pass 1", "Pass 2", "Pass 3")
+rownames(y1) <- paste("Site", 1:nrow(y1))
+kable(y1[1:10,], format="latex", booktabs=TRUE, table.envir="table")
+@   
+\end{frame}
 
 
 \begin{frame}[fragile]
@@ -517,11 +527,11 @@ print(head(lambda.pred), digits=2)
 <<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
-     ylim=c(0,30), xlab="Stream depth", type="l")
+     ylim=c(0,20), xlab="Stream depth", type="l", lwd=2)
 lines(lower ~ streamDepth, lambda.pred, col="grey")
 lines(upper ~ streamDepth, lambda.pred, col="grey")
 points(rowSums(y2)~streamDepth)
-lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
+lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun (it's way off)
 @   
 \end{frame}
 
@@ -594,7 +604,7 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's 
   Unfortunately, this won't work in JAGS because it doesn't allow
   missing values in multinomial outcomes.
   \pause
-<<bugs-removal1,size='tiny',echo=FALSE>>=
+<<bugs-removal1,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("removal-mod1.jag"))
 @
 <<jagsUI,include=FALSE>>=
@@ -633,7 +643,7 @@ library(jagsUI)
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
 \vspace{-3pt}
-<<bugs-removal2,size='scriptsize',echo=FALSE>>=
+<<bugs-removal2,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("removal-mod2.jag"))
 @
 \end{frame}
@@ -738,7 +748,7 @@ plot(jags.post.rem2[,jags.pars.rem[4:5]])
 
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
-<<bugs-removal3,size='scriptsize',echo=FALSE>>=
+<<bugs-removal3,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("removal-mod3.jag"))
 @
 \end{frame}
@@ -826,7 +836,7 @@ plot(jags.post.rem3[,jags.pars.rem[4:5]])
 
 \begin{frame}[fragile]
   \frametitle{Marginalized $N$}
-<<bugs-removal4,size='scriptsize',echo=FALSE>>=
+<<bugs-removal4,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("removal-mod4.jag"))
 @
 \end{frame}
@@ -955,7 +965,7 @@ marginal model is only valid if $N$ is Poisson. \\
   would be specific to each pass. \\
   \pause
   \vfill
-  Removal model get used in many scenarios other than electrofishing:
+  Removal models get used in many scenarios other than electrofishing:
   \begin{itemize}
     \item<2-> Point count surveys
     \begin{itemize}
@@ -1131,7 +1141,7 @@ marginal model is only valid if $N$ is Poisson. \\
       method. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
 \end{frame}
 
 
