@@ -82,7 +82,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\LARGE Lecture 8 -- Multinomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
+  {\LARGE Lecture 7 -- Multinomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -129,9 +129,9 @@
   \begin{itemize}
     \item<2-> Double observer sampling
     \item<3-> Removal sampling
-    \item<4-> Mark-recapture
-    \item<5-> Distance sampling
-    \item<6-> And other methods that yield multinomial counts\dots
+    \item<3-> Mark-recapture
+    \item<3-> Distance sampling
+    \item<3-> And other methods that yield multinomial counts\dots
   \end{itemize}
 \end{frame}
 
@@ -818,10 +818,11 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial, some
-  of which we can exploit to fit the model in JAGS.
+  There are several equivalent formulations of the multinomial
+  % , some of which
+  that we can exploit to fit the model in JAGS.
   \begin{itemize}
-    \item Conditional-on-$N$, missing $y_{iK}$
+%    \item Conditional-on-$N$, missing $y_{iK}$
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
     \item Conditional-on-$N$, sequential binomial
     \item Marginalized $N$
@@ -842,47 +843,23 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Conditional-on-$N$, missing $y_k$}
-  \footnotesize
-  Under this formulation, we view the final multinomial cell
-  (corresponding to individuals not detected) as missing data. \\
-  \pause
-  \vfill
-  Unfortunately, this won't work in JAGS because it doesn't allow
-  missing values in multinomial outcomes.
-  \pause
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-model {
-
-lambda.intercept ~ dunif(0, 5)
-beta0 <- log(lambda.intercept)
-beta1 ~ dnorm(0, 0.5)
-
-alpha0 ~ dnorm(0, 0.5)  
-alpha1 ~ dnorm(0, 0.5)
-
-for(i in 1:nSites) {
-  log(lambda[i]) <- beta0 + beta1*streamDepth[i]
-  N[i] ~ dpois(lambda[i])         # Latent local abundance
-  logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
-  pi[i,1] <- p[i]            ## Pr(first captured in first pass)
-  pi[i,2] <- (1-p[i])*p[i]   ## Pr(first captured in second pass)
-  pi[i,3] <- (1-p[i])^2*p[i] ## Pr(first captured in third pass)
-  pi[i,4] <- (1-p[i])^3      ## Pr(not captured)
-  y[i,1:4] ~ dmulti(pi[i,1:4], N[i])
-}
-
-totalAbundance <- sum(N[1:nSites])
-
-}
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Conditional-on-$N$, missing $y_k$}
+%   \footnotesize
+%   Under this formulation, we view the final multinomial cell
+%   (corresponding to individuals not detected) as missing data. \\
+%   \pause
+%   \vfill
+%   Unfortunately, this won't work in JAGS because it doesn't allow
+%   missing values in multinomial outcomes.
+%   \pause
+% <<bugs-removal1,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
+% writeLines(readLines("removal-mod1.jag"))
+% @
+% <<jagsUI,include=FALSE>>=
+% library(jagsUI)
+% @ 
+% \end{frame}
 
 
 
@@ -890,13 +867,13 @@ totalAbundance <- sum(N[1:nSites])
 
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
-  Rather than treating the final multinomial cell as missing data:
-  \[
-    \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
-    \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
-  \]
-  \pause
-  \vfill
+  % Rather than treating the final multinomial cell as missing data:
+  % \[
+  %   \{y_{i,1}, \dots, y_{i,K-1}, \mathtt{\color{red} NA}\} \sim
+  %   \mathrm{Multinomial}(N_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}, \pi_{i,K}\})
+  % \]
+  % \pause
+  % \vfill
   We can break the problem down into two steps by conditioning on
   $n_i$, the number of individuals captured at site $i$:
   \small
@@ -1096,7 +1073,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{frame}%[fragile]
   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
   The multinomial distribution can be represented by a sequence of
-  binomial distributions in which we reduce the number of trails.
+  binomial distributions in which we reduce the number of trials.
   \pause
   \vfill
   \large
@@ -1716,8 +1693,8 @@ marginal model is only valid if $N$ is Poisson. \\
         need to create an observation covariate indicating observer A
         and B} and JAGS
     \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
-    \item Repeat steps 1-3 using the \alert{dependent} double observer
-      method. 
+    % \item Repeat steps 1-3 using the \alert{dependent} double observer
+    %   method. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
