@@ -57,9 +57,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-
-
-
 \section{Overview}
 
 
@@ -208,14 +205,6 @@ t(rmultinom(n=1, size=N, prob=pi))
 
 
 
-
-
-
-
-
-
-
-
 %\section{Simulation}
 
 \section{Removal sampling}
@@ -277,9 +266,10 @@ set.seed(34889243)
   \frametitle{Simulating removal data, no covariates}
   \small
   Abundance
-<<sim-rem-nocov1,size='scriptsize'>>=
+<<sim-rem-nocov1,size='scriptsize',echo=-1>>=
+set.seed(430)
 nSites <- 100
-lambda1 <- 2.6  ## Expected value of N
+lambda1 <- 4.6  ## Expected value of N
 N1 <- rpois(n=nSites, lambda=lambda1)
 @
 % \item
@@ -290,7 +280,7 @@ N1 <- rpois(n=nSites, lambda=lambda1)
 <<sim-nocov2,size='scriptsize'>>=
 nPasses <- 3
 K <- nPasses+1  # multinomial cells
-p1 <- 0.3
+p1 <- 0.4
 pi1 <- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)
 y1.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
@@ -310,7 +300,7 @@ head(y1, n=3)
 
 \begin{frame}[fragile]
   \frametitle{Simulated removal data}
-<<y1-kable,size='small',align='center',echo=FALSE>>=
+<<y1-kable,size='normalsize',align='center',echo=FALSE>>=
 colnames(y1) <- c("Pass 1", "Pass 2", "Pass 3")
 rownames(y1) <- paste("Site", 1:nrow(y1))
 kable(y1[1:10,], format="latex", booktabs=TRUE, table.envir="table")
@@ -828,7 +818,7 @@ plot(jags.post.rem3[,jags.pars.rem[4:5]])
   \vfill
   then the marginal distribution of $y$ is
   \[
-    y_k \sim \mathrm{Poisson}(\lambda \pi_k) 
+    y_k \sim \mathrm{Poisson}(\lambda \times \pi_k) 
   \]
 \end{frame}
 
@@ -883,7 +873,7 @@ summary(jags.post.rem4[,jags.pars.rem[1:4]])
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
 <<bugs-plot1-rem4,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.rem3[,jags.pars.rem[1:4]])
+plot(jags.post.rem4[,jags.pars.rem[1:4]])
 @ 
 \end{frame}
 

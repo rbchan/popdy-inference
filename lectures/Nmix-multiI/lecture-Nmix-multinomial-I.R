@@ -8,23 +8,24 @@
 ## ----multi-sim-concept,size='footnotesize'------------------------------------
 N <- 20
 pi <- c(survived=0.5, depredated=0.3, starved=0.2)
-drop(rmultinom(n=1, size=N, prob=pi))
+t(rmultinom(n=1, size=N, prob=pi))
 
 
 ## ----include=FALSE,echo=FALSE-------------------------------------------------
 set.seed(34889243)
 
 
-## ----sim-rem-nocov1,size='scriptsize'-----------------------------------------
+## ----sim-rem-nocov1,size='scriptsize',echo=-1---------------------------------
+set.seed(430)
 nSites <- 100
-lambda1 <- 2.6  ## Expected value of N
+lambda1 <- 4.6  ## Expected value of N
 N1 <- rpois(n=nSites, lambda=lambda1)
 
 
 ## ----sim-nocov2,size='scriptsize'---------------------------------------------
 nPasses <- 3
 K <- nPasses+1  # multinomial cells
-p1 <- 0.3
+p1 <- 0.4
 pi1 <- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)
 y1.all <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
@@ -34,6 +35,12 @@ for(i in 1:nSites) {
 ## ----N1y1,size='scriptsize'---------------------------------------------------
 y1 <- y1.all[,-K]
 head(y1, n=3)
+
+
+## ----y1-kable,size='normalsize',align='center',echo=FALSE---------------------
+colnames(y1) <- c("Pass 1", "Pass 2", "Pass 3")
+rownames(y1) <- paste("Site", 1:nrow(y1))
+kable(y1[1:10,], format="latex", booktabs=TRUE, table.envir="table")
 
 
 ## ----sim-cov1,size='scriptsize'-----------------------------------------------
@@ -122,21 +129,14 @@ print(head(lambda.pred), digits=2)
 ## ----pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1----
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
-     ylim=c(0,30), xlab="Stream depth", type="l")
+     ylim=c(0,20), xlab="Stream depth", type="l", lwd=2)
 lines(lower ~ streamDepth, lambda.pred, col="grey")
 lines(upper ~ streamDepth, lambda.pred, col="grey")
 points(rowSums(y2)~streamDepth)
-lines(lowess(rowSums(y2)~streamDepth), col="blue")  ## Loess line for fun (it's way off)
+lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun (it's way off)
 
 
-## ----bugs-removal1,size='tiny',echo=FALSE-------------------------------------
-writeLines(readLines("removal-mod1.jag"))
-
-## ----jagsUI,include=FALSE-----------------------------------------------------
-library(jagsUI)
-
-
-## ----bugs-removal2,size='scriptsize',echo=FALSE-------------------------------
+## ----bugs-removal2,size='scriptsize',echo=FALSE,comment='',background='lightblue'----
 writeLines(readLines("removal-mod2.jag"))
 
 
@@ -177,7 +177,7 @@ plot(jags.post.rem2[,jags.pars.rem[1:3]])
 plot(jags.post.rem2[,jags.pars.rem[4:5]])
 
 
-## ----bugs-removal3,size='scriptsize',echo=FALSE-------------------------------
+## ----bugs-removal3,size='scriptsize',echo=FALSE,comment='',background='lightblue'----
 writeLines(readLines("removal-mod3.jag"))
 
 
@@ -206,7 +206,7 @@ plot(jags.post.rem3[,jags.pars.rem[1:3]])
 plot(jags.post.rem3[,jags.pars.rem[4:5]])
 
 
-## ----bugs-removal4,size='scriptsize',echo=FALSE-------------------------------
+## ----bugs-removal4,size='scriptsize',echo=FALSE,comment='',background='lightblue'----
 writeLines(readLines("removal-mod4.jag"))
 
 
@@ -228,7 +228,7 @@ summary(jags.post.rem4[,jags.pars.rem[1:4]])
 
 
 ## ----bugs-plot1-rem4,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'----
-plot(jags.post.rem3[,jags.pars.rem[1:4]])
+plot(jags.post.rem4[,jags.pars.rem[1:4]])
 
 
 ## ----gel2,size='tiny'---------------------------------------------------------
