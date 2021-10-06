@@ -42,7 +42,7 @@ knit_theme$set("edit-kwrite")
   \LARGE
   \centering
   {
-    \LARGE Lecture 9 -- Hierarchical distance sampling: \\
+    \LARGE Hierarchical distance sampling: \\
     \Large simulation, fitting, and prediction %, and random effects \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -788,7 +788,7 @@ plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
 \vspace{-3pt}
-<<bugs-line,size='tiny',echo=FALSE>>=
+<<bugs-line,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("distsamp-line-mod.jag"))
 @
 \end{frame}
@@ -1130,7 +1130,7 @@ c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
 \vspace{-3pt}
-<<bugs-pt,size='tiny',echo=FALSE>>=
+<<bugs-pt,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("distsamp-point-mod.jag"))
 @
 \end{frame}

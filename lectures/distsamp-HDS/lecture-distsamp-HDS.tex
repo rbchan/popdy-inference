@@ -82,7 +82,7 @@
   \LARGE
   \centering
   {
-    \LARGE Lecture 9 -- Hierarchical distance sampling: \\
+    \LARGE Hierarchical distance sampling: \\
     \Large simulation, fitting, and prediction %, and random effects \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -203,7 +203,6 @@
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.7\linewidth]{figure/hn-1} 
-
 \end{knitrout}
 \end{frame}
 
@@ -229,7 +228,6 @@
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.7\linewidth]{figure/nexp-1} 
-
 \end{knitrout}
 \end{frame}
 
@@ -256,7 +254,6 @@
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.7\linewidth]{figure/haz-1} 
-
 \end{knitrout}
 \end{frame}
 
@@ -634,7 +631,6 @@
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.9\linewidth]{figure/dist-hist2-1} 
-
 \end{knitrout}
 \end{frame}
 
@@ -990,7 +986,6 @@ Get predictions of $\sigma$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1013,7 +1008,6 @@ Get predictions of $\sigma$ for each row of prediction data.
 {\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1041,7 +1035,6 @@ Get predictions of $\sigma$ for each row of prediction data.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1067,38 +1060,38 @@ Get predictions of $\sigma$ for each row of prediction data.
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
 \vspace{-3pt}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## lambda.intercept ~ dunif(0, 20)
-## beta0 <- log(lambda.intercept)
-## beta1 ~ dnorm(0, 0.5)
-## 
-## alpha0 ~ dnorm(0, 0.5)
-## alpha1 ~ dnorm(0, 0.5)
-## 
-## for(i in 1:nSites) {
-##   log(lambda[i]) <- beta0 + beta1*elevation[i]
-##   N[i] ~ dpois(lambda[i])         # Latent local abundance
-##   log(sigma[i]) <- alpha0 + alpha1*noise[i]
-##   tau[i] <- 1/sigma[i]^2
-##   for(j in 1:nBins) {
-##     ## Trick to do integration for *line-transects*
-##     pbar[i,j] <- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /
-##                   dnorm(0, 0, tau[i]) / (b[j+1]-b[j])
-##     pi[i,j] <- psi[j]*pbar[i,j]
-##   }
-##   pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
-##   n[i] ~ dbin(1-pi[i,nBins+1], N[i])
-##   y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
-##   ## If N~Pois(lam), then the above is equivalent to:
-##   # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
-## }
-## 
-## totalAbundance <- sum(N[1:nSites])
-## 
-## }
+model {
+
+lambda.intercept ~ dunif(0, 20)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*elevation[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  log(sigma[i]) <- alpha0 + alpha1*noise[i]
+  tau[i] <- 1/sigma[i]^2
+  for(j in 1:nBins) {
+    ## Trick to do integration for *line-transects*
+    pbar[i,j] <- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /
+                  dnorm(0, 0, tau[i]) / (b[j+1]-b[j])
+    pi[i,j] <- psi[j]*pbar[i,j]
+  }
+  pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
+  n[i] ~ dbin(1-pi[i,nBins+1], N[i])
+  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
+  ## If N~Pois(lam), then the above is equivalent to:
+  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1349,7 +1342,6 @@ Get predictions of $\sigma$ for each row of prediction data.
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.9\linewidth]{figure/dist-hist3-1} 
-
 \end{knitrout}
 \end{frame}
 
@@ -1636,39 +1628,39 @@ Compare to actual parameter values:
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{j=1}^{J} y_{i,j}$}
 \vspace{-3pt}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## lambda.intercept ~ dunif(0, 20)
-## beta0 <- log(lambda.intercept)
-## beta1 ~ dnorm(0, 0.5)
-## 
-## alpha0 ~ dnorm(0, 0.5)
-## alpha1 ~ dnorm(0, 0.5)
-## 
-## for(i in 1:nSites) {
-##   log(lambda[i]) <- beta0 + beta1*elevation[i]
-##   N[i] ~ dpois(lambda[i])         # Latent local abundance
-##   log(sigma[i]) <- alpha0 + alpha1*noise[i]
-##   tau[i] <- 1/sigma[i]^2
-##   for(j in 1:nBins) {
-##     ## Trick to do integration for *point-transects*
-##     pbar[i,j] <- (sigma[i]^2 * (1-exp(-b[j+1]^2/(2*sigma[i]^2))) -
-##                   sigma[i]^2 * (1-exp(-b[j]^2/(2*sigma[i]^2)))) * 
-##                  2*3.141593/area[j]
-##     pi[i,j] <- psi[j]*pbar[i,j]
-##   }
-##   pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
-##   n[i] ~ dbin(1-pi[i,nBins+1], N[i])
-##   y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
-##   ## If N~Pois(lam), then the above is equivalent to:
-##   # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
-## }
-## 
-## totalAbundance <- sum(N[1:nSites])
-## 
-## }
+model {
+
+lambda.intercept ~ dunif(0, 20)
+beta0 <- log(lambda.intercept)
+beta1 ~ dnorm(0, 0.5)
+
+alpha0 ~ dnorm(0, 0.5)
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*elevation[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  log(sigma[i]) <- alpha0 + alpha1*noise[i]
+  tau[i] <- 1/sigma[i]^2
+  for(j in 1:nBins) {
+    ## Trick to do integration for *point-transects*
+    pbar[i,j] <- (sigma[i]^2 * (1-exp(-b[j+1]^2/(2*sigma[i]^2))) -
+                  sigma[i]^2 * (1-exp(-b[j]^2/(2*sigma[i]^2)))) * 
+                 2*3.141593/area[j]
+    pi[i,j] <- psi[j]*pbar[i,j]
+  }
+  pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
+  n[i] ~ dbin(1-pi[i,nBins+1], N[i])
+  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
+  ## If N~Pois(lam), then the above is equivalent to:
+  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
