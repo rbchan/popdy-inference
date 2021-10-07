@@ -406,18 +406,9 @@ sigma <- 25
 
 
 
-
-
-
-
-
-
 %\section{Simulation}
 
 \section{Line transects}
-
-
-
 
 
 
@@ -465,8 +456,6 @@ sigma <- 25
     \end{tabular}
   \end{columns}
 \end{frame}
-
-
 
 
 
@@ -522,7 +511,7 @@ y1 <- y1.all[,1:J]  ## Drop final cell
   \centering
 <<dist-hist2,fig.height=5,out.width="90%",size='scriptsize',echo=-1>>=
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="tan",
+plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="skyblue4",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 @   
 \end{frame}
@@ -626,9 +615,6 @@ library(unmarked)
 
 
 
-
-
-
 %\section{Prediction}
 \subsection{Likelihood-based inference}
 
@@ -678,11 +664,6 @@ Compare to actual parameter values:
 c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 @ 
 \end{frame}
-
-
-
-
-
 
 
 
@@ -740,9 +721,9 @@ lines(lower ~ noise, sigma.pred, col="grey")
 lines(upper ~ noise, sigma.pred, col="grey")
 arrows((log(40)-3.137)/-0.369, 40, 0.1, 63, len=0.1, col="blue")
 points((log(40)-3.137)/-0.369, 40, col="orange", pch=16, cex=2)
-par( fig=c(0.5,0.95,0.55,0.95), new=TRUE)#, mar=c(0,0,0,0) )
+par( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )
 plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
-     col="orange", lwd=2)
+     col="orange", lwd=2, ylim=c(0,1), las=1)
 @   
 \end{frame}
 
@@ -761,9 +742,9 @@ lines(lower ~ noise, sigma.pred, col="grey")
 lines(upper ~ noise, sigma.pred, col="grey")
 arrows((log(15)-3.137)/-0.369, 15, 1.1, 55, len=0.1, col="blue")
 points((log(15)-3.137)/-0.369, 15, col="red", pch=16, cex=2)
-par( fig=c(0.5,0.95,0.55,0.95), new=TRUE)#, mar=c(0,0,0,0) )
+par( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )
 plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
-     col="red", lwd=2)
+     col="red", lwd=2, ylim=c(0,1), las=1)
 @   
 \end{frame}
 
@@ -971,7 +952,7 @@ y3 <- y3.all[,1:J]  ## Drop final cell
   \centering
 <<dist-hist3,fig.height=5,out.width="90%",size='scriptsize',echo=-1>>=
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="tan",
+plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="skyblue4",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 @   
 \end{frame}
@@ -1258,7 +1239,7 @@ round(summary(jags.post.pt)$quantile, digits=3)
   \end{itemize}
   \pause
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
 \end{frame}
 
 

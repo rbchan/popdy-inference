@@ -99,7 +99,7 @@ y1 <- y1.all[,1:J]  ## Drop final cell
 
 ## ----dist-hist2,fig.height=5,out.width="90%",size='scriptsize',echo=-1--------
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="tan",
+plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="skyblue4",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 
 
@@ -200,9 +200,9 @@ lines(lower ~ noise, sigma.pred, col="grey")
 lines(upper ~ noise, sigma.pred, col="grey")
 arrows((log(40)-3.137)/-0.369, 40, 0.1, 63, len=0.1, col="blue")
 points((log(40)-3.137)/-0.369, 40, col="orange", pch=16, cex=2)
-par( fig=c(0.5,0.95,0.55,0.95), new=TRUE)#, mar=c(0,0,0,0) )
+par( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )
 plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
-     col="orange", lwd=2)
+     col="orange", lwd=2, ylim=c(0,1), las=1)
 
 
 ## ----pred-sigma2-2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-c(1,5:10)----
@@ -213,12 +213,12 @@ lines(lower ~ noise, sigma.pred, col="grey")
 lines(upper ~ noise, sigma.pred, col="grey")
 arrows((log(15)-3.137)/-0.369, 15, 1.1, 55, len=0.1, col="blue")
 points((log(15)-3.137)/-0.369, 15, col="red", pch=16, cex=2)
-par( fig=c(0.5,0.95,0.55,0.95), new=TRUE)#, mar=c(0,0,0,0) )
+par( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )
 plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
-     col="red", lwd=2)
+     col="red", lwd=2, ylim=c(0,1), las=1)
 
 
-## ----bugs-line,size='tiny',echo=FALSE-----------------------------------------
+## ----bugs-line,size='tiny',echo=FALSE,comment='',background='lightblue'-------
 writeLines(readLines("distsamp-line-mod.jag"))
 
 
@@ -297,7 +297,7 @@ y3 <- y3.all[,1:J]  ## Drop final cell
 
 ## ----dist-hist3,fig.height=5,out.width="90%",size='scriptsize',echo=-1--------
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="tan",
+plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="skyblue4",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 
 
@@ -366,7 +366,7 @@ fm4
 c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 
 
-## ----bugs-pt,size='tiny',echo=FALSE-------------------------------------------
+## ----bugs-pt,size='tiny',echo=FALSE,comment='',background='lightblue'---------
 writeLines(readLines("distsamp-point-mod.jag"))
 
 
