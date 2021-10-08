@@ -16,10 +16,10 @@ for(i in 1:nSites) {
     ## Trick to do integration for *point-transects*
     pbar[i,j] <- (sigma[i]^2 * (1-exp(-b[j+1]^2/(2*sigma[i]^2))) -
                   sigma[i]^2 * (1-exp(-b[j]^2/(2*sigma[i]^2)))) * 
-                 2*3.141593/area[j]
-    pi[i,j] <- psi[j]*pbar[i,j]
+                 2*3.141593/area[j]     
+    pi[i,j] <- psi[j]*pbar[i,j]         ## Pr(present and detected in bin j)
   }
-  pi[i,nBins+1] <- 1-sum(pi[i,1:nBins])
+  pi[i,nBins+1] <- 1-sum(pi[i,1:nBins]) ## Pr(not detected)
   n[i] ~ dbin(1-pi[i,nBins+1], N[i])
   y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
   ## If N~Pois(lam), then the above is equivalent to:
