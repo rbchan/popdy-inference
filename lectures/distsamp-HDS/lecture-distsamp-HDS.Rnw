@@ -340,10 +340,21 @@ gp <- function(x) g(x)*pdf(x)
   \frametitle{In-class exercise}
   Building off the previous example\dots
   \begin{enumerate}
-    \item Compute $\bar{p}$ for line-transect sampling when
+    \item Use R code and the Shiny app below to compute $\bar{p}$ for line-transect sampling when 
       $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
     \item Repeat, but for point-transect sampling. 
-  \end{enumerate}
+    \end{enumerate}
+    \vfill
+    \centering
+    \href{
+      https://richard-chandler.shinyapps.io/distance-sampling/
+    }{
+      \Large
+      Shiny App \\
+      \normalsize
+      \color{blue}
+      https://richard-chandler.shinyapps.io/distance-sampling/
+    }
 \end{frame}
 
 
@@ -614,6 +625,10 @@ sum(y4)
 
 
 \subsection{Likelihood-based inference}
+
+<<un,include=FALSE>>=
+library(unmarked)
+@ 
 
 
 \begin{frame}[fragile]
@@ -1020,9 +1035,6 @@ colSums(y2)
 <<sim-nocov-ss3,size='scriptsize'>>=
 sum(y2)
 @
-<<un,include=FALSE>>=
-library(unmarked)
-@ 
   \end{column}
   \end{columns}
 \end{frame}
@@ -1238,14 +1250,14 @@ plot(jags.post.line[,jags.pars.line[4:5]])
       same covariates, but with negative exponential and hazard
       rate detection functions. Which has the lowest AIC? 
   \end{enumerate}
-  \pause
+%  \pause
   \vfill
   Suggestions:
   \begin{itemize}
     \item Convert response variables to matrix with \inr{as.matrix}
     \item Standardize covariates
   \end{itemize}
-  \pause
+%  \pause
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
 \end{frame}

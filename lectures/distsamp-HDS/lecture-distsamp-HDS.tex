@@ -429,10 +429,21 @@
   \frametitle{In-class exercise}
   Building off the previous example\dots
   \begin{enumerate}
-    \item Compute $\bar{p}$ for line-transect sampling when
+    \item Use R code and the Shiny app below to compute $\bar{p}$ for line-transect sampling when 
       $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
     \item Repeat, but for point-transect sampling. 
-  \end{enumerate}
+    \end{enumerate}
+    \vfill
+    \centering
+    \href{
+      https://richard-chandler.shinyapps.io/distance-sampling/
+    }{
+      \Large
+      Shiny App \\
+      \normalsize
+      \color{blue}
+      https://richard-chandler.shinyapps.io/distance-sampling/
+    }
 \end{frame}
 
 
@@ -784,6 +795,8 @@
 \subsection{Likelihood-based inference}
 
 
+
+
 \begin{frame}[fragile]
   \frametitle{Prepare data in `unmarked'}
   \small
@@ -795,9 +808,7 @@
 \hlstd{umf4} \hlkwb{<-} \hlkwd{unmarkedFrameDS}\hlstd{(}\hlkwc{y}\hlstd{=y4,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation,noise),} \hlkwc{dist.breaks}\hlstd{=b,}
                        \hlkwc{survey}\hlstd{=}\hlstr{"point"}\hlstd{,} \hlkwc{unitsIn}\hlstd{=}\hlstr{"m"}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in unmarkedFrameDS(y = y4, siteCovs = data.frame(elevation, noise), : could not find function "{}unmarkedFrameDS"{}}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \begin{knitrout}\tiny
@@ -805,9 +816,31 @@
 \begin{alltt}
 \hlkwd{summary}\hlstd{(umf4)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in summary(umf4): object 'umf4' not found}}\end{kframe}
+\begin{verbatim}
+## unmarkedFrameDS Object
+## 
+## point-transect survey design
+## Distance class cutpoints (m):  0 20 40 60 80 100 
+## 
+## 100 sites
+## Maximum number of distance classes per site: 5 
+## Mean number of distance classes per site: 5 
+## Sites with at least one detection: 55 
+## 
+## Tabulation of y observations:
+##   0   1   2   3   4   6 
+## 406  70  15   7   1   1 
+## 
+## Site-level covariates:
+##    elevation            noise         
+##  Min.   :-2.29527   Min.   :-2.80421  
+##  1st Qu.:-0.71015   1st Qu.:-0.82447  
+##  Median :-0.22187   Median :-0.06717  
+##  Mean   :-0.09012   Mean   :-0.18718  
+##  3rd Qu.: 0.57207   3rd Qu.: 0.39358  
+##  Max.   : 2.26625   Max.   : 1.84018
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -822,15 +855,26 @@
 \hlcom{## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="exp")     # negative exp}
 \hlcom{## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="hazard")  # hazard rate}
 \hlstd{fm4} \hlkwb{<-} \hlkwd{distsamp}\hlstd{(}\hlopt{~}\hlstd{noise} \hlopt{~}\hlstd{elevation, umf4,} \hlkwc{keyfun}\hlstd{=}\hlstr{"halfnorm"}\hlstd{)}   \hlcom{# half-normal}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in distsamp(\textasciitilde{}noise \textasciitilde{} elevation, umf4, keyfun = "{}halfnorm"{}): could not find function "{}distsamp"{}}}\begin{alltt}
 \hlstd{fm4}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'fm4' not found}}\end{kframe}
+\begin{verbatim}
+## 
+## Call:
+## distsamp(formula = ~noise ~ elevation, data = umf4, keyfun = "halfnorm")
+## 
+## Density:
+##             Estimate    SE     z  P(>|z|)
+## (Intercept)    0.753 0.147  5.11 3.26e-07
+## elevation      1.045 0.101 10.31 6.03e-25
+## 
+## Detection:
+##                  Estimate     SE     z  P(>|z|)
+## sigma(Intercept)    3.079 0.0550 55.95 0.00e+00
+## sigmanoise         -0.457 0.0494 -9.26 2.01e-20
+## 
+## AIC: 437.8227
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -877,9 +921,7 @@ Get predictions of $\sigma$ for each row of prediction data.
 \hlstd{sigma.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm4,} \hlkwc{newdata}\hlstd{=pred.data,}
                       \hlkwc{type}\hlstd{=}\hlstr{'det'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in predict(fm4, newdata = pred.data, type = "{}det"{}, append = TRUE): object 'fm4' not found}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -890,9 +932,16 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(sigma.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in head(sigma.pred): object 'sigma.pred' not found}}\end{kframe}
+\begin{verbatim}
+##   Predicted   SE lower upper noise
+## 1        86 12.5    64   114  -3.0
+## 2        68  8.4    54    87  -2.5
+## 3        54  5.5    44    66  -2.0
+## 4        43  3.5    37    51  -1.5
+## 5        34  2.2    30    39  -1.0
+## 6        27  1.5    25    30  -0.5
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -907,20 +956,16 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
      \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\begin{alltt}
 \hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\begin{alltt}
 \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma-1} 
+
+}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -935,26 +980,10 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
      \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\begin{alltt}
 \hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\begin{alltt}
 \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in arrows(-2, sigma.pred\$Predicted[3], 0.1, 63, len = 0.1, col = "{}blue"{}): object 'sigma.pred' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'sigma.pred' not found}}
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in par(fig = c(0.5, 0.95, 0.55, 0.95), new = TRUE, las = 1): calling par(new=TRUE) with no plot}}\end{kframe}
+\end{kframe}
 
 {\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma2-1} 
 
@@ -976,26 +1005,10 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{alltt}
 \hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
      \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\begin{alltt}
 \hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}\begin{alltt}
 \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(m\$data, eframe): object 'sigma.pred' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in arrows(1, sigma.pred\$Predicted[9], 1.1, 55, len = 0.1, col = "{}blue"{}): object 'sigma.pred' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in xy.coords(x, y): object 'sigma.pred' not found}}
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in par(fig = c(0.5, 0.95, 0.55, 0.95), new = TRUE, las = 1): calling par(new=TRUE) with no plot}}\end{kframe}
+\end{kframe}
 
 {\centering \includegraphics[width=0.8\linewidth]{figure/pred-sigma2-2-1} 
 
@@ -1431,7 +1444,6 @@ totalAbundance <- sum(N[1:nSites])
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-
   \end{column}
   \end{columns}
 \end{frame}
@@ -1794,14 +1806,14 @@ totalAbundance <- sum(N[1:nSites])
       same covariates, but with negative exponential and hazard
       rate detection functions. Which has the lowest AIC? 
   \end{enumerate}
-  \pause
+%  \pause
   \vfill
   Suggestions:
   \begin{itemize}
     \item Convert response variables to matrix with \inr{as.matrix}
     \item Standardize covariates
   \end{itemize}
-  \pause
+%  \pause
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
 \end{frame}
