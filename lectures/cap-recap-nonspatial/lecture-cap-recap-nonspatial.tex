@@ -60,19 +60,20 @@
 
 
 
-% R packages
-% Need MARK too. Linux instructions:
-% http://www.phidot.org/software/mark/rmark/linux/
-
-
-
-
-
 % Load function to compile and open PDF
 
 
 % Compile and open PDF
 
+
+
+
+
+
+
+% R packages
+% Need MARK too. Linux instructions:
+% http://www.phidot.org/software/mark/rmark/linux/
 
 
 
@@ -90,9 +91,10 @@
   \LARGE
   \centering
   {
-    \LARGE Lecture 10 -- Non-spatial mark-recapture \\ for estimating
+    \LARGE %Lecture 10 --
+    Non-spatial mark-recapture for estimating
     population size: \\
-    \Large simulation, fitting, and prediction \\
+    \Large simulation and model fitting \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -288,7 +290,10 @@
   \frametitle{Closed population estimation options}
   Conditional likelihood \\
   \begin{itemize}
-    \item Estimate $p$, and then compute $\hat{N}=n/\hat{p}$
+    \item Estimate $p$, and then estimate $N$ as a derived
+      quantity. %compute $\hat{N}=n/\hat{p}$
+    \item Most software is based on the work by Huggins, which allows
+      for continuous covariates. 
   \end{itemize}
   \pause
   \vfill
@@ -314,52 +319,93 @@
 
 
 
+% \begin{frame}
+%   \frametitle{Joint likelihood, conditional-on-$n$}
+%   \small
+%   Another way of writing the observation model is to condition on the
+%   number of individuals captured, and then use a
+%   categorical distribution for the number of times individual $i$
+%   was detected. 
+%   \begin{gather*}
+%     n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                               \\
+%     \tilde{y}_i \sim \mathrm{Categorical}(\pi_1, \dots, \pi_K) \;\;
+%     \mathrm{for}\, i=1,\dots,n 
+%   \end{gather*}
+%   \pause
+%   \centering
+%   \vspace{6pt}
+%   \begin{tabular}{ll}
+%     \hline
+%     Detections ($\tilde{y}_i$) & Multinomial cell probability                     \\
+%     \hline
+% %      0                       & $\pi_0 = (1-p)^J$                                \\
+%       1                        & $\pi_1 = Jp^{1}(1-p)^{J-1}/(1-\pi_0)$            \\
+%       2                        & $\pi_2 = {J\choose 2}p^{2}(1-p)^{J-2}/(1-\pi_0)$ \\
+%       $\cdots$                 & $\cdots$                                         \\
+%       J                        & $\pi_J = p^{J}/(1-\pi_0)$                        \\
+%       \hline
+%   \end{tabular}
+%   \flushleft
+%   \vspace{-6pt}
+%   where $\pi_0=(1-p)^J$. Probs are zero-truncated binomials. \\ 
+%   % \small
+%   \pause
+%   \vfill
+%   Definitions \\
+%   \scriptsize
+%   $N$ -- Population size                                                          \\
+%   $n$ -- Number of animals captured                                               \\
+% %  $p^*$ -- probability of being captured at least once
+% %  $y_{ij}$ -- encounter histories                                                \\
+%   $\tilde{y}_i=\sum_{j=1}^J y_{ij}$ -- number of times individual $i$ was encounter out of $J$
+%   occasions                                                                       \\
+%   $\pi_j$ -- Probability of capturing an individual $k$ times \\
+%   \pause
+%   \vfill
+%   \centering
+%   This only works if $p$ doesn't change over time. \\
+% \end{frame}
+
+
+
 \begin{frame}
-  \frametitle{Joint likelihood, conditional-on-$n$}
+  \frametitle{Joint likelihood}
+  % \footnotesize
   \small
-  Another way of writing the observation model is to condition on the
-  number of individuals captured, and then use a
-  categorical distribution for the number of times individual $i$
-  was detected. 
-  \begin{gather*}
-    n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                               \\
-    \tilde{y}_i \sim \mathrm{Categorical}(\pi_1, \dots, \pi_K) \;\;
-    \mathrm{for}\, i=1,\dots,n 
-  \end{gather*}
-  \pause
+  The joint likelihood is based on the multinomial distribution, with
+  the ``all-zero'' encounter history being unobserved. \\  
+  \vfill
+  Here's an example with $J=3$ capture occasions.  \\
+  \vfill
   \centering
-  \vspace{6pt}
-  \begin{tabular}{ll}
-    \hline
-    Detections ($\tilde{y}_i$) & Multinomial cell probability                     \\
-    \hline
-%      0                       & $\pi_0 = (1-p)^J$                                \\
-      1                        & $\pi_1 = Jp^{1}(1-p)^{J-1}/(1-\pi_0)$            \\
-      2                        & $\pi_2 = {J\choose 2}p^{2}(1-p)^{J-2}/(1-\pi_0)$ \\
-      $\cdots$                 & $\cdots$                                         \\
-      J                        & $\pi_J = p^{J}/(1-\pi_0)$                        \\
+    \begin{tabular}{ll}
       \hline
-  \end{tabular}
-  \flushleft
-  \vspace{-6pt}
-  where $\pi_0=(1-p)^J$. Probs are zero-truncated binomials. \\ 
-  % \small
-  \pause
-  \vfill
-  Definitions \\
-  \scriptsize
-  $N$ -- Population size                                                          \\
-  $n$ -- Number of animals captured                                               \\
-%  $p^*$ -- probability of being captured at least once
-%  $y_{ij}$ -- encounter histories                                                \\
-  $\tilde{y}_i=\sum_{j=1}^J y_{ij}$ -- number of times individual $i$ was encounter out of $J$
-  occasions                                                                       \\
-  $\pi_j$ -- Probability of capturing an individual $k$ times \\
-  \pause
-  \vfill
-  \centering
-  This only works if $p$ doesn't change over time. \\
+      Capture history       & Multinomial cell probability \\
+      \hline
+      000                   & $\pi_0 = \prod_j 1-p_j$      \\
+      100                   & $\pi_1=p_1(1-p_2)(1-p_3)$    \\
+      010                   & $\pi_2=(1-p_1)p_2(1-p_3)$    \\
+      001                   & $\pi_3=(1-p_1)(1-p_2)p_3$    \\
+      110                   & $\pi_4=p_1p_2(1-p_3)$        \\
+      101                   & $\pi_5=p_1(1-p_2)p_3$        \\
+      011                   & $\pi_6=(1-p_1)p_2p_3$        \\
+      111                   & $\pi_7 = p_1p_2p_3$          \\
+      \hline
+    \end{tabular}
+%   \pause
+%   \vfill
+%   \flushleft
+%   Likelihood function for this formulation
+%   \begin{equation*}
+% %  \begin{multline*}
+% %    L(N,p; y,n) =                                          \\
+%     L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
+% %    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%     \frac{N!}{(N-n)!}  \left(\pi_0\right)^{N-n}
+% %  \end{multline*}
+%   \end{equation*}
 \end{frame}
+
 
 
 
@@ -367,33 +413,34 @@
   \frametitle{Joint likelihood, conditional-on-$n$}
 %  \frametitle{Conditional-on-$n$, multinomial cell probs}
   \footnotesize
-  The more general formulation is in terms of the encounter histories,
-  but there are many ($2^J-1$) of them.                                  \\
+  Here's another option with a conditional multinomial:                 \\
   \begin{gather*}
     n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
-    k_i \sim \mathrm{Categorical}(\pi_1, \dots, \pi_K) \;\;
-    \mathrm{for}\, i=1,\dots,n                                           \\
-    y_i = h_{k_i}
+    \{f_1, \dots, f_K\} \sim \mathrm{Multinomial}(n, \pi_1, \dots, \pi_K) \;\;
+%    \mathrm{for}\, i=1,\dots,n                                           %\\
+%    y_j = h_{k_i}
   \end{gather*}
+  where $\{f_1, \dots, f_K\}$ are the observed frequencies of each
+  capture history. \\
   \pause \vfill
-  Here's an example with $J=3$.                                          \\
+  Here's an example with $J=3$ capture occasions.                                          \\
 %  \begin{columns}
 %    \column{0.9\paperwidth}
   \scriptsize
   \vspace{6pt}
   \centering
-    \begin{tabular}{lll}
+    \begin{tabular}{ll}
       \hline
-      $k$  & Capture history ($h$) & Multinomial cell probability        \\
+      Capture history & Multinomial cell probability        \\
       \hline
 %      000 & $\pi_0 = \prod_j 1-p_j/(1-\pi_0)$                           \\
-      1    & 100                   & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$ \\
-      2    & 010                   & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$ \\
-      3    & 001                   & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$ \\
-      4    & 110                   & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$     \\
-      5    & 101                   & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$     \\
-      6    & 011                   & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$     \\
-      7    & 111                   & $\pi_7 = p_1p_2p_3/(1-\pi_0)$       \\
+      100                   & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$ \\
+      010                   & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$ \\
+      001                   & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$ \\
+      110                   & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$     \\
+      101                   & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$     \\
+      011                   & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$     \\
+      111                   & $\pi_7 = p_1p_2p_3/(1-\pi_0)$       \\
       \hline
     \end{tabular}
     % \end{columns}
@@ -404,52 +451,54 @@
 
 
 
-\begin{frame}
-  \frametitle{Joint likelihood}
-  % \footnotesize
-  \small
-  Rather than condition on $n$, we can maximize the ``unconditional''
-  likelihood that includes the ``all zero'' encounter history,
-  weighted $n_0=N-n$ times. 
-  % \vfill
-  % \centering
-    % \begin{tabular}{ll}
-    %   \hline
-    %   Capture history ($h$) & Multinomial cell probability \\
-    %   \hline
-    %   000                   & $\pi_0 = \prod_j 1-p_j$      \\
-    %   100                   & $\pi_1=p_1(1-p_2)(1-p_3)$    \\
-    %   010                   & $\pi_2=(1-p_1)p_2(1-p_3)$    \\
-    %   001                   & $\pi_3=(1-p_1)(1-p_2)p_3$    \\
-    %   110                   & $\pi_4=p_1p_2(1-p_3)$        \\
-    %   101                   & $\pi_5=p_1(1-p_2)p_3$        \\
-    %   011                   & $\pi_6=(1-p_1)p_2p_3$        \\
-    %   111                   & $\pi_7 = p_1p_2p_3$          \\
-    %   \hline
-    % \end{tabular}
-  \pause
-  \vfill
-  \flushleft
-  Likelihood function for this formulation
-  \begin{equation*}
-%  \begin{multline*}
-%    L(N,p; y,n) =                                          \\
-    L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
-%    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-    \frac{N!}{(N-n)!}  \left(\pi_0\right)^{N-n}
-%  \end{multline*}
-  \end{equation*}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Joint likelihood}
+%   % \footnotesize
+%   \small
+%   Rather than condition on $n$, we can maximize the ``unconditional''
+%   likelihood that includes the ``all zero'' encounter history,
+%   weighted $n_0=N-n$ times. 
+%   % \vfill
+%   % \centering
+%     % \begin{tabular}{ll}
+%     %   \hline
+%     %   Capture history ($h$) & Multinomial cell probability \\
+%     %   \hline
+%     %   000                   & $\pi_0 = \prod_j 1-p_j$      \\
+%     %   100                   & $\pi_1=p_1(1-p_2)(1-p_3)$    \\
+%     %   010                   & $\pi_2=(1-p_1)p_2(1-p_3)$    \\
+%     %   001                   & $\pi_3=(1-p_1)(1-p_2)p_3$    \\
+%     %   110                   & $\pi_4=p_1p_2(1-p_3)$        \\
+%     %   101                   & $\pi_5=p_1(1-p_2)p_3$        \\
+%     %   011                   & $\pi_6=(1-p_1)p_2p_3$        \\
+%     %   111                   & $\pi_7 = p_1p_2p_3$          \\
+%     %   \hline
+%     % \end{tabular}
+%   \pause
+%   \vfill
+%   \flushleft
+%   Likelihood function for this formulation
+%   \begin{equation*}
+% %  \begin{multline*}
+% %    L(N,p; y,n) =                                          \\
+%     L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
+% %    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%     \frac{N!}{(N-n)!}  \left(\pi_0\right)^{N-n}
+% %  \end{multline*}
+%   \end{equation*}
+% \end{frame}
 
 
 
 \begin{frame}
   \frametitle{Model variations}
+  \small
   Aside from the approach to estimation, the key consideration
   concerns the sources of variation in capture probability ($p$). \\
   \pause
   \vfill
-  Otis et al. (1978, Wildlife Monographs) identified several model variations
+  Otis et al. (1978, Wildlife Monographs) identified several model
+  variations: 
   \begin{itemize}
     \small
     \item $M_0$ -- $p$ is constant
@@ -457,12 +506,16 @@
     \item \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
       recapture probability $c$
     \item $M_h$ -- individual heterogeneity in $p$
+      \begin{itemize}
+        \item Finite mixture models
+        \item Continuous mixture models (not available in RMark)
+      \end{itemize}
   \end{itemize}
   \pause \vfill
   These can be combined, but beware of identifiability issues. See
   Otis et al. (1978) for details.  \\
   \pause \vfill
-  Later we'll talk about another important class of models, the
+  Later we'll talk about another important class, 
   ``individual covariate'' models.  
 \end{frame}
 
@@ -802,169 +855,126 @@
 \end{frame}
 
 
-%% p(y,n|N,p)
-\begin{frame}[fragile]
-  \frametitle{Joint likelihood for $M_0$}
-  The joint likelihood has a multinomial form:
-  \begin{multline*}
-    L(N,p; y,n) = \\
-    \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
-    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-  \end{multline*}
-  \pause
-  \vfill
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{nll.M0} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{pars}\hlstd{,} \hlkwc{y}\hlstd{) \{}           \hlcom{## Negative log-likelihood}
-    \hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y);       J} \hlkwb{<-} \hlkwd{ncol}\hlstd{(y)}
-    \hlstd{N} \hlkwb{<-} \hlkwd{exp}\hlstd{(pars[}\hlnum{1}\hlstd{])}
-    \hlstd{n0} \hlkwb{<-} \hlstd{N}\hlopt{-}\hlstd{n}
-    \hlkwa{if}\hlstd{(n0}\hlopt{<}\hlnum{0}\hlstd{)} \hlkwd{return}\hlstd{(}\hlnum{NA}\hlstd{)}
-    \hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(pars[}\hlnum{2}\hlstd{])}
-    \hlstd{ld.y1} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{dbinom}\hlstd{(y,} \hlnum{1}\hlstd{, p,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{))}
-    \hlstd{p0} \hlkwb{<-} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlstd{J}
-    \hlstd{ld.n0} \hlkwb{<-} \hlkwd{lgamma}\hlstd{(N}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{-}\hlkwd{lgamma}\hlstd{(n0}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{+}\hlstd{n0}\hlopt{*}\hlkwd{log}\hlstd{(p0)}
-    \hlstd{nll} \hlkwb{<-} \hlopt{-}\hlstd{(ld.y1}\hlopt{+}\hlstd{ld.n0)}
-    \hlkwd{return}\hlstd{(nll)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% %% p(y,n|N,p)
+% \begin{frame}[fragile]
+%   \frametitle{Joint likelihood for $M_0$}
+%   The joint likelihood has a multinomial form:
+%   \begin{multline*}
+%     L(N,p; y,n) = \\
+%     \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
+%     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
+%   \end{multline*}
+%   \pause
+%   \vfill
+% % <<nll-M0,echo=TRUE,size='scriptsize'>>=
+% nll.M0 <- function(pars, y) {           ## Negative log-likelihood
+%     n <- nrow(y);       J <- ncol(y)
+%     N <- exp(pars[1])
+%     n0 <- N-n
+%     if(n0<0) return(NA)
+%     p <- plogis(pars[2])
+%     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
+%     p0 <- (1-p)^J
+%     ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
+%     nll <- -(ld.y1+ld.n0)
+%     return(nll)
+% }
+% % @
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Maximize joint likelihood for $M_0$}
-Minimized the negative log-likelihood
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fm.M0} \hlkwb{<-} \hlkwd{optim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{log.N}\hlstd{=}\hlnum{4}\hlstd{,}\hlkwc{logit.p}\hlstd{=}\hlnum{0}\hlstd{), nll.M0,} \hlkwc{y}\hlstd{=y,} \hlkwc{hessian}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlstd{fm.M0.est} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{c}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{], fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]),}
-                        \hlkwc{SE}\hlstd{=}\hlkwd{sqrt}\hlstd{(}\hlkwd{diag}\hlstd{(}\hlkwd{solve}\hlstd{(fm.M0}\hlopt{$}\hlstd{hessian))))}
-\hlstd{fm.M0.est}
-\end{alltt}
-\begin{verbatim}
-##          Estimate        SE
-## log.N    4.570652 0.1730285
-## logit.p -1.491271 0.2493760
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-Back-transform the estimates
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{N.hat}\hlstd{=}\hlkwd{exp}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{]),} \hlkwc{p.hat}\hlstd{=}\hlkwd{plogis}\hlstd{(fm.M0}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{]))}
-\end{alltt}
-\begin{verbatim}
-##   N.hat.log.N p.hat.logit.p 
-##     96.607092      0.183731
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-Compare to data-generating values
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{N}\hlstd{=N,} \hlkwc{p}\hlstd{=p)}
-\end{alltt}
-\begin{verbatim}
-##     N     p 
-## 100.0   0.2
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Maximize joint likelihood for $M_0$}
+% Minimized the negative log-likelihood
+% % <<opt-nll-M0, size='scriptsize'>>=
+% fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
+% fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
+%                         SE=sqrt(diag(solve(fm.M0$hessian))))
+% fm.M0.est
+
+% % @
+% \pause
+% \vfill
+% Back-transform the estimates
+% % <<opt-nll-M0-back, size='scriptsize'>>=
+% c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
+% % @
+% \pause
+% \vfill
+% Compare to data-generating values
+% % <<dg,size='scriptsize'>>=
+% c(N=N, p=p)
+% % @ 
+% \end{frame}
 
 
 
 
 
-%% p(y|n,p)p(n|N,p)
+% %% p(y|n,p)p(n|N,p)
+% % <<eval=FALSE,include=FALSE,echo=FALSE>>=
+% nll.M0.2 <- function(pars, y) {
+%     n <- nrow(y);       J <- ncol(y)
+%     N <- exp(pars[1])
+%     n0 <- N-n
+%     if(n0<0) return(NA)
+%     p <- plogis(pars[2])
+%     J <- ncol(y)
+%     p.star <- 1-(1-p)^J
+
+%     ydot <- rowSums(y)
+%     lcd.y <- sum(dbinom(ydot, J, p, log=TRUE)-log(p.star))
+%     ld.n <- lchoose(N, n)+n*log(p.star)+n0*log(1-p.star)
+%     nll <- -(lcd.y+ld.n)
+%     return(nll)
+% }
+% fm.M0.2 <- optim(c(5,0), nll.M0.2, y=y, hessian=TRUE)
+% c(N=exp(fm.M0.2$par[1]), p=plogis(fm.M0.2$par[2]))
+% % @ 
+
+
+
+% %% p(y|n,p)
+% % <<eval=FALSE,include=FALSE,echo=FALSE>>=
+
+% nll.M0.cn <- function(pars, y) {
+%     p <- plogis(pars[1])
+%     J <- ncol(y)
+%     p.star <- 1-(1-p)^J
+%     ydot <- rowSums(y)
+%     nll <- -sum(dbinom(ydot, J, p, log=TRUE)-log(p.star))
+%     return(nll)
+% }
+% fm.M0.cn <- optim(0, nll.M0.cn, y=y, hessian=TRUE, method="Brent", lower=-10, upper=10)
+% c(p=plogis(fm.M0.cn$par[1]))
+% % @ 
 
 
 
 
-%% p(y|n,p)
+% \begin{frame}[fragile]
+%   \frametitle{R package `Rcapture'}
+% <<Rcapture,size='scriptsize',warning=FALSE,message=FALSE>>=
+
+% ## install.packages("Rcapture")
+% library(Rcapture)
+% closedp(y)
+% @   
+% \end{frame}
 
 
 
 
+% \begin{frame}[fragile]
+%   \frametitle{R package `mra'}
+% <<mra,size='scriptsize',warning=FALSE,message=FALSE>>=
 
-\begin{frame}[fragile]
-  \frametitle{R package `Rcapture'}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{## install.packages("Rcapture")}
-\hlkwd{library}\hlstd{(Rcapture)}
-\hlkwd{closedp}\hlstd{(y)}
-\end{alltt}
-\begin{verbatim}
-## 
-## Number of captured units: 54 
-## 
-## Abundance estimations and model fits:
-##               abundance stderr deviance df    AIC    BIC    infoFit
-## M0                 98.4   17.1   11.968 13 50.185 54.163         OK
-## Mt                 98.0   17.0   10.687 10 54.904 64.849         OK
-## Mh Chao (LB)       98.4   17.1   11.968 13 50.185 54.163         OK
-## Mh Poisson2        93.5   27.3   11.923 12 52.141 58.108         OK
-## Mh Darroch         91.9   41.2   11.943 12 52.160 58.127 warning #1
-## Mh Gamma3.5        90.3   54.7   11.948 12 52.166 58.133 warning #1
-## Mth Chao (LB)      98.0   17.0   10.687 10 54.904 64.849         OK
-## Mth Poisson2       93.3   27.1   10.646  9 56.863 68.797         OK
-## Mth Darroch        91.9   41.2   10.664  9 56.882 68.816 warning #1
-## Mth Gamma3.5       90.5   54.9   10.670  9 56.887 68.821 warning #1
-## Mb                 71.4   12.8   10.285 12 50.502 56.469         OK
-## Mbh                70.1   17.8   10.273 11 52.490 60.446         OK
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{R package `mra'}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{## install.packages("mra")}
-\hlkwd{library}\hlstd{(mra)}
-\hlkwd{F.huggins.estim}\hlstd{(}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{histories}\hlstd{=y)}
-\end{alltt}
-\begin{verbatim}
-## Call:
-## F.huggins.estim(capture = ~1, histories = y)
-## 
-##  Capture and Recapture model:
-##  Variable     Est       SE     
-##  (Intercept)  -1.51415  0.24955 
-## 
-## Population Size Estimate (se): 98.4333 (17.1333)
-## 95% confidence interval for population size: 75.42 to 146.18
-## Individuals observed: 54
-## Effective sample size: 216
-## 
-## Message =  SUCCESS: Convergence criterion met
-## Number of estimable coefficients (estimated) =  1
-## Log likelihood =  -118.034116447541
-## Deviance =  236.068232895082
-## AIC =  238.068232895082
-## AICc =  238.086924483867
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% ## install.packages("mra")
+% library(mra)
+% F.huggins.estim(~1, histories=y)
+% @   
+% \end{frame}
 
 
 
@@ -976,7 +986,14 @@ Compare to data-generating values
   \url{http://www.phidot.org/software/mark/index.html}  \\
   \vfill
   Instructions for Linux and Mac users: \\
-  \url{http://www.phidot.org/software/mark/rmark/linux/}
+  \url{
+    http://www.phidot.org/software/mark/rmark/linux/
+  } \\
+  \vfill
+  Lots of good information about closed population mark-recapture: \\
+  \url{
+    http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf
+  }
 \end{frame}
 
 
@@ -989,7 +1006,7 @@ Compare to data-generating values
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## install.packages("RMark") ## Must install MARK TOO!!}
+\hlcom{## install.packages("RMark") ## Must install MARK too!!}
 \hlkwd{library}\hlstd{(RMark)}
 \hlstd{y.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
 \hlstd{mark.M0} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=y.ch,} \hlkwc{model}\hlstd{=}\hlstr{"Closed"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,}
@@ -1008,7 +1025,7 @@ Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
 \begin{verbatim}
 ##               estimate         se        lcl        ucl fixed note
 ## p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
-## f0 g1 a0 t1 42.6208600 16.7216940 20.3019980 89.4758120
+## f0 g1 a0 t1 42.6208600 16.7216950 20.3019970 89.4758140
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1054,11 +1071,11 @@ Estimates of $p_j$ and $n_0$ (called $f_0$ in MARK)
 \end{alltt}
 \begin{verbatim}
 ##               estimate        se       lcl        ucl fixed note
-## p g1 t1      0.2740198 0.0473865 0.1913594  0.3757930           
-## p g1 t2      0.5186804 0.0592722 0.4035760  0.6318356           
-## p g1 t3      0.2153013 0.0428690 0.1429996  0.3108977           
-## p g1 t4      0.3718841 0.0532543 0.2746824  0.4806869           
-## f0 g1 a0 t1 17.1823860 6.4441804 8.4388314 34.9852230
+## p g1 t1      0.2740198 0.0473865 0.1913595  0.3757930           
+## p g1 t2      0.5186803 0.0592722 0.4035760  0.6318355           
+## p g1 t3      0.2153013 0.0428689 0.1429995  0.3108976           
+## p g1 t4      0.3718840 0.0532543 0.2746824  0.4806868           
+## f0 g1 a0 t1 17.1823890 6.4441810 8.4388330 34.9852260
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1103,9 +1120,9 @@ Estimates of $p$, $c$, and $n_0$ (called $f_0$ in MARK)
 \end{alltt}
 \begin{verbatim}
 ##               estimate         se       lcl         ucl fixed note
-## p g1 t1      0.2459652  0.0827673 0.1197363   0.4389148           
+## p g1 t1      0.2459651  0.0827673 0.1197362   0.4389149           
 ## c g1 t2      0.4031008  0.0431879 0.3220497   0.4898126           
-## f0 g1 a0 t1 33.4146830 23.1165960 9.8085762 113.8331400
+## f0 g1 a0 t1 33.4146970 23.1166160 9.8085759 113.8332400
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1120,7 +1137,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate      lcl      ucl
-## 1 104.4147 80.80858 184.8331
+## 1 104.4147 80.80858 184.8332
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1130,11 +1147,47 @@ Estimate of $N$
 
 
 
-
-
-
-
-
+\begin{frame}[fragile]
+  \frametitle{`RMark' -- Model $M_h$ (Huggins variation)}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{yh.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y.Mh,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
+\hlstd{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=yh.ch,} \hlkwc{model}\hlstd{=}\hlstr{"HugHet"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{## Default model}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimates of $p$ and $\pi$, the proportion of 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mark.Mh}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
+\end{alltt}
+\begin{verbatim}
+##             estimate        se       lcl       ucl fixed note
+## pi g1 m1   0.4750210 0.0000000 0.4750210 0.4750210           
+## p g1 t1 m1 0.3048546 0.0363524 0.2385757 0.3803487
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+Estimate of $N$ 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mark.Mh}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{derived}
+\end{alltt}
+\begin{verbatim}
+## $`N Population Size`
+##   estimate      lcl      ucl
+## 1 86.10663 75.90547 106.8135
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
@@ -1164,7 +1217,7 @@ Estimate of $N$
   estimate how many of them are real. \\ 
   \pause
   \vfill
-  The total number of observed and agumented encounter histories is
+  The total number of observed and augmented encounter histories is
   $M$. \\
   \pause
   \vfill
@@ -1180,8 +1233,9 @@ Estimate of $N$
 \begin{frame}
   \frametitle{Data augmentation}
   \footnotesize
-  We can think of the problem like this: \\
+  We can think about the problem like this: \\
   \centering
+  \vfill
   \begin{tabular}{lcccc}
     \hline
                & \multicolumn{3}{c}{Occasion} \\
@@ -1216,7 +1270,7 @@ Estimate of $N$
   The model is:
   \begin{gather*}
     z_i \sim \mathrm{Bern}(\psi) \\
-    y_{ij} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    y_{ij} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
   \pause \vfill
@@ -1225,10 +1279,10 @@ Estimate of $N$
   % $\psi$, recognizing that $E(N)=M\psi$.
   Note that this looks exactly like an occupancy model. \\
   \pause \vfill
-  But why do bother with augmentation?
+  But why bother with augmentation?
   \begin{itemize}
     \item DA works for \alert{all} varieties of mark-recapture models
-    \item Make it easy to incorporate
+    \item Makes it easy to incorporate
       individual-covariates\dots\pause including distance and
       location!   
   \end{itemize}
@@ -1461,7 +1515,7 @@ individuals in the set of $M$ pseudo-individuals.
   The model is the same, but we need priors on $\psi$ and $p$. 
   \begin{gather*}
     z_i \sim \mathrm{Bern}(\psi) \\
-    y_{ij} \sim \mathrm{Bern}(z_ip) \\
+    y_{ij} \sim \mathrm{Bern}(z_i \times p) \\
     N = \sum_{i=1}^M z_i
   \end{gather*}
   \vfill
@@ -1479,26 +1533,26 @@ individuals in the set of $M$ pseudo-individuals.
   \frametitle{Model $M_0$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"M0-aug.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## model {
-## 
-## psi ~ dunif(0,1)
-## p ~ dunif(0,1)
-## 
-## for(i in 1:M) {
-##   z[i] ~ dbern(psi)
-##   for(j in 1:J) {
-##     y[i,j] ~ dbern(z[i]*p)
-##   }
-## }
-## 
-## N <- sum(z)
-## 
-## }
+model {
+
+psi ~ dunif(0,1)
+p ~ dunif(0,1)
+
+for(i in 1:M) {
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p)
+  }
+}
+
+N <- sum(z)
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1570,103 +1624,57 @@ MCMC
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Model $M_0$ -- without data augmentation}
-  Here's why practitioners like data augmentation 
-\vspace{-3pt}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"M0.jag"}\hlstd{))}
-\end{alltt}
-\begin{verbatim}
-## model {
-## 
-## n0 ~ dcat(n0probs)     ## Discrete uniform on "guys missed"
-## N <- n+n0           
-## p ~ dunif(0,1)
-## p0 <- (1-p)^J          ## Pr(not captured)
-## 
-## loglike.n <- loggam(N+1)-loggam(N-n+1)+n0*log(p0)
-## zero ~ dpois(-loglike.n+1000)  ## So-called zeros trick
-## 
-## for(i in 1:n) {        ## n not M
-##   for(j in 1:J) {
-##     y[i,j] ~ dbern(p)
-##   }
-## }
-## 
-## }
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_0$ -- without data augmentation}
+%   Here's why practitioners like data augmentation 
+% \vspace{-3pt}
+% <<bugs-M0,size='footnotesize',comment='',background='lightblue'>>=
+% writeLines(readLines("M0.jag"))
+% @
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Model $M_0$ -- without data augmentation}
-  Data
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{n0max} \hlkwb{<-} \hlnum{1000}  \hlcom{## Upper limit of prior on n0}
-\hlstd{jags.data.M0.noaug} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{n}\hlstd{=n,} \hlkwc{J}\hlstd{=J,}
-                           \hlcom{## Prior probs for n0}
-                           \hlkwc{n0probs}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlopt{/}\hlstd{n0max, n0max),} \hlkwc{zero}\hlstd{=}\hlnum{0}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  Inits and parameters
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{ji.M0.noaug} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{n0}\hlstd{=}\hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{5}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0}\hlstd{,} \hlnum{0.1}\hlstd{))}
-\hlstd{jp.M0.noaug} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-MCMC
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.post.M0.noaug} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.M0.noaug,}
-                                 \hlkwc{inits}\hlstd{=ji.M0.noaug,}
-                                 \hlkwc{parameters.to.save}\hlstd{=jp.M0.noaug,}
-                                 \hlkwc{model.file}\hlstd{=}\hlstr{"M0.jag"}\hlstd{,}
-                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_0$ -- without data augmentation}
+%   Data
+% <<jd-M0-noaug,size='scriptsize'>>=
+% n0max <- 1000  ## Upper limit of prior on n0
+% jags.data.M0.noaug <- list(y=y.aug, n=n, J=J,
+%                            ## Prior probs for n0
+%                            n0probs=rep(1/n0max, n0max), zero=0)
+% @
+% \pause
+% \vfill
+%   Inits and parameters
+% <<ji-M0-noaug,size='scriptsize'>>=
+% ji.M0.noaug <- function() list(n0=rpois(1, 5), p=runif(1, 0, 0.1))
+% jp.M0.noaug <- c("p", "N")
+% @
+% \pause
+% \vfill
+% MCMC
+% <<mcmc-M0-noaug,size='scriptsize',results='hide'>>=
+% jags.post.M0.noaug <- jags.basic(data=jags.data.M0.noaug,
+%                                  inits=ji.M0.noaug,
+%                                  parameters.to.save=jp.M0.noaug,
+%                                  model.file="M0.jag",
+%                                  n.chains=3, n.adapt=100, n.burnin=0,
+%                                  n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.M0.noaug[,jp.M0.noaug])}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-M0-noaug-1} 
-
-}
-
-
-
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<plot-mcmc-M0-noaug,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+% plot(jags.post.M0.noaug[,jp.M0.noaug])
+% @ 
+% \end{frame}
 
 
 
@@ -1679,28 +1687,28 @@ MCMC
   \frametitle{Model $M_t$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mt-aug.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## model {
-## 
-## psi ~ dunif(0,1)
-## for(j in 1:J) {
-##   p[j] ~ dunif(0,1)
-## }
-## 
-## for(i in 1:M) {
-##   z[i] ~ dbern(psi)
-##   for(j in 1:J) {
-##     y[i,j] ~ dbern(z[i]*p[j])
-##   }
-## }
-## 
-## N <- sum(z)
-## 
-## }
+model {
+
+psi ~ dunif(0,1)
+for(j in 1:J) {
+  p[j] ~ dunif(0,1)
+}
+
+for(i in 1:M) {
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[j])
+  }
+}
+
+N <- sum(z)
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1807,21 +1815,27 @@ MCMC
   \begin{enumerate}
 %    \small
 %    \footnotesize
-    \item Fit model $M_h$ in JAGS to the data simulated above
+%  \item Fit model $M_h$ in JAGS to the data simulated above
+    \item Import the Canada warbler mark-recapture data ({\tt
+        CAWAcaps\_2018.csv}) and fit the following models in RMark:
       \begin{itemize}
-%        \footnotesize
+        % \footnotesize
+        \item Model $M_0$
+        \item Model $M_t$ 
+        \item Model $M_b$
+        
         \item Use the flavor of $M_h$ that assumes $\mathrm{logit}(p_i)$ follows a
           normal distribution: $\mathrm{logit}(p_i) \sim
           \mathrm{Normal}(\bar{p}, \sigma^2_p)$.  
       \end{itemize}
-    \item Use prior predictive checks to find reasonable priors for
-      {\tt logit.p.mean} and {\tt logit.p.var}
-    \item Present summary stats for prior and posterior distributions
-      of {\tt logit.p.mean} and {\tt logit.p.var}, as well as for
-      $N$. 
+    % \item Use prior predictive checks to find reasonable priors for
+    %   {\tt logit.p.mean} and {\tt logit.p.var}
+    % \item Present summary stats for prior and posterior distributions
+    %   of {\tt logit.p.mean} and {\tt logit.p.var}, as well as for
+    %   $N$. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 
 \end{frame}
 
 
