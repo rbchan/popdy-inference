@@ -1451,7 +1451,7 @@ plot(jags.post.M0[,jp.M0])
 \begin{frame}[fragile]
   \frametitle{Model $M_b$ -- data augmentation}
 \vspace{-3pt}
-<<bugs-Mb-aug,size='small',comment='',background='lightblue'>>=
+<<bugs-Mb-aug,size='footnotesize',comment='',background='lightblue'>>=
 writeLines(readLines("Mb-aug.jag"))
 @
 \end{frame}
@@ -1530,8 +1530,9 @@ writeLines(readLines("Mh-aug.jag"))
   important? \\
   \pause \vfill
   With spatial capture-recapture (SCR) models we will use
-  \alert{distance between animals and traps} as a covariate, and we'll
-  put use a spatial point process model for animal locations. 
+  \alert{the unobserved distance between animals and traps} as a
+  covariate, and we'll use a spatial point process model for
+  animal locations.  
 \end{frame}
 
 
@@ -1554,22 +1555,18 @@ writeLines(readLines("Mh-aug.jag"))
 %    \footnotesize
 %  \item Fit model $M_h$ in JAGS to the data simulated above
     \item Import the Canada warbler mark-recapture data ({\tt
-        CAWAcaps\_2018.csv}) and fit the following models in RMark:
+        CAWAcaps\_2018.csv}) and fit the following models in RMark and
+      JAGS:
       \begin{itemize}
         % \footnotesize
         \item Model $M_0$
         \item Model $M_t$ 
         \item Model $M_b$
-        
-        \item Use the flavor of $M_h$ that assumes $\mathrm{logit}(p_i)$ follows a
-          normal distribution: $\mathrm{logit}(p_i) \sim
-          \mathrm{Normal}(\bar{p}, \sigma^2_p)$.  
+        \item Model $M_h$ -- Finite mixture
+        \item Model $M_h$ -- Logit-normal (JAGS only)
       \end{itemize}
-    % \item Use prior predictive checks to find reasonable priors for
-    %   {\tt logit.p.mean} and {\tt logit.p.var}
-    % \item Present summary stats for prior and posterior distributions
-    %   of {\tt logit.p.mean} and {\tt logit.p.var}, as well as for
-    %   $N$. 
+    \item Create a table reporting point estimates and 95\% CIs for
+      $N$ for each model. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 

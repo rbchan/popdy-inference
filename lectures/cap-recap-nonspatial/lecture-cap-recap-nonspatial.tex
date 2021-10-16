@@ -1223,9 +1223,9 @@ Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 \end{alltt}
 \begin{verbatim}
 ##             estimate        se       lcl       ucl fixed note
-## pi g1 m1   0.6178321 0.1887615 0.2522673 0.8856714           
-## p g1 t1 m1 0.3654188 0.1276650 0.1636946 0.6288180           
-## p g1 t1 m2 0.8227000 0.1059189 0.5278473 0.9506399
+## pi g1 m1   0.6178318 0.1887616 0.2522671 0.8856713           
+## p g1 t1 m1 0.3654187 0.1276650 0.1636944 0.6288180           
+## p g1 t1 m2 0.8226999 0.1059189 0.5278472 0.9506398
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1240,7 +1240,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate      lcl      ucl
-## 1 96.72754 89.74869 121.4255
+## 1 96.72755 89.74869 121.4256
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1597,17 +1597,17 @@ individuals in the set of $M$ pseudo-individuals.
 \begin{verbatim}
 model {
 
-psi ~ dunif(0,1)
-p ~ dunif(0,1)
+p ~ dunif(0,1)       ## Capture probability
+psi ~ dunif(0,1)     ## Data augmentation parameter
 
 for(i in 1:M) {
-  z[i] ~ dbern(psi)
+  z[i] ~ dbern(psi)  ## DA indicator
   for(j in 1:J) {
-    y[i,j] ~ dbern(z[i]*p)
+    y[i,j] ~ dbern(z[i]*p) ## Model for the capture histories
   }
 }
 
-N <- sum(z)
+N <- sum(z)          ## Abundance
 
 }
 \end{verbatim}
@@ -1809,7 +1809,7 @@ MCMC
 \begin{frame}[fragile]
   \frametitle{Model $M_b$ -- data augmentation}
 \vspace{-3pt}
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mb-aug.jag"}\hlstd{))}
@@ -1979,8 +1979,9 @@ N <- sum(z)
   important? \\
   \pause \vfill
   With spatial capture-recapture (SCR) models we will use
-  \alert{distance between animals and traps} as a covariate, and we'll
-  put use a spatial point process model for animal locations. 
+  \alert{the unobserved distance between animals and traps} as a
+  covariate, and we'll use a spatial point process model for
+  animal locations.  
 \end{frame}
 
 
@@ -2003,22 +2004,18 @@ N <- sum(z)
 %    \footnotesize
 %  \item Fit model $M_h$ in JAGS to the data simulated above
     \item Import the Canada warbler mark-recapture data ({\tt
-        CAWAcaps\_2018.csv}) and fit the following models in RMark:
+        CAWAcaps\_2018.csv}) and fit the following models in RMark and
+      JAGS:
       \begin{itemize}
         % \footnotesize
         \item Model $M_0$
         \item Model $M_t$ 
         \item Model $M_b$
-        
-        \item Use the flavor of $M_h$ that assumes $\mathrm{logit}(p_i)$ follows a
-          normal distribution: $\mathrm{logit}(p_i) \sim
-          \mathrm{Normal}(\bar{p}, \sigma^2_p)$.  
+        \item Model $M_h$ -- Finite mixture
+        \item Model $M_h$ -- Logit-normal (JAGS only)
       \end{itemize}
-    % \item Use prior predictive checks to find reasonable priors for
-    %   {\tt logit.p.mean} and {\tt logit.p.var}
-    % \item Present summary stats for prior and posterior distributions
-    %   of {\tt logit.p.mean} and {\tt logit.p.var}, as well as for
-    %   $N$. 
+    \item Create a table reporting point estimates and 95\% CIs for
+      $N$ for each model. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 

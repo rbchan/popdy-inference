@@ -1,15 +1,15 @@
 model {
 
-psi ~ dunif(0,1)
-p ~ dunif(0,1)
+p ~ dunif(0,1)       ## Capture probability
+psi ~ dunif(0,1)     ## Data augmentation parameter
 
 for(i in 1:M) {
-  z[i] ~ dbern(psi)
+  z[i] ~ dbern(psi)  ## DA indicator
   for(j in 1:J) {
-    y[i,j] ~ dbern(z[i]*p)
+    y[i,j] ~ dbern(z[i]*p) ## Model for the capture histories
   }
 }
 
-N <- sum(z)
+N <- sum(z)          ## Abundance
 
 }
