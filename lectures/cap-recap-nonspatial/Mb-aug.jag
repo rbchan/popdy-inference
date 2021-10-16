@@ -1,0 +1,18 @@
+model {
+
+p ~ dunif(0, 1)     ## Capture prob
+c ~ dunif(0, 1)     ## Recapture prob
+
+psi ~ dunif(0,1)    ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi) ## DA indicator
+  for(j in 1:J) {
+    pc[i,j] <- ifelse(prevcap[i,j]==0, p, c) ## First cap or recap?
+    y[i,j] ~ dbern(z[i]*pc[i,j])
+  }
+}
+
+N <- sum(z)
+
+}

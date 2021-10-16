@@ -5,8 +5,9 @@
 %\usepackage[sans]{../lectures}
 
 
-\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV},urlcolor=blue}
 
+%\urlstyle{same}
 
 
 
@@ -339,6 +340,11 @@ if(!require(secr)) install.packages("secr")
   \small
   The joint likelihood is based on the multinomial distribution, with
   the ``all-zero'' encounter history being unobserved. \\  
+  \begin{equation*}
+    \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
+  \end{equation*}
+  where $\{f_1, \dots, f_K\}$ are the frequencies of the observable capture
+  histories. \\
   \vfill
   Here's an example with $J=3$ capture occasions.  \\
   \vfill
@@ -347,7 +353,6 @@ if(!require(secr)) install.packages("secr")
       \hline
       Capture history       & Multinomial cell probability \\
       \hline
-      000                   & $\pi_0 = \prod_j 1-p_j$      \\
       100                   & $\pi_1=p_1(1-p_2)(1-p_3)$    \\
       010                   & $\pi_2=(1-p_1)p_2(1-p_3)$    \\
       001                   & $\pi_3=(1-p_1)(1-p_2)p_3$    \\
@@ -355,6 +360,7 @@ if(!require(secr)) install.packages("secr")
       101                   & $\pi_5=p_1(1-p_2)p_3$        \\
       011                   & $\pi_6=(1-p_1)p_2p_3$        \\
       111                   & $\pi_7 = p_1p_2p_3$          \\
+      000                   & $\pi_0 = \prod_j 1-p_j$      \\
       \hline
     \end{tabular}
 %   \pause
@@ -378,7 +384,7 @@ if(!require(secr)) install.packages("secr")
   \frametitle{Joint likelihood, conditional-on-$n$}
 %  \frametitle{Conditional-on-$n$, multinomial cell probs}
   \footnotesize
-  Here's another option with a conditional multinomial:                 \\
+  Here's another option (that's easy to implement in MCMC software) with a conditional multinomial: \\
   \begin{gather*}
     n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
     \{f_1, \dots, f_K\} \sim \mathrm{Multinomial}(n, \pi_1, \dots, \pi_K) \;\;
@@ -388,7 +394,7 @@ if(!require(secr)) install.packages("secr")
   where $\{f_1, \dots, f_K\}$ are the observed frequencies of each
   capture history. \\
   \pause \vfill
-  Here's an example with $J=3$ capture occasions.                                          \\
+  Example with $J=3$ capture occasions.                                          \\
 %  \begin{columns}
 %    \column{0.9\paperwidth}
   \scriptsize
@@ -688,10 +694,43 @@ y.Mb <- y.all.Mb[captured.Mb,]
 \subsection{Model $M_h$}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- Finite mixture}
+  There are many flavors of $M_h$. This one assumes there are two
+  (unknown) groups of individuals with different capture probs. 
+<<sim-Mhm-pars,size='scriptsize'>>=
+mixture.prob <- 0.6
+group <- rbinom(N, 1, mixture.prob)    ## Two groups
+p.Mh.mix <- ifelse(group==0, 0.2, 0.7) ## Two-point mixture
+@
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+<<sim-Mhm-ch,size='scriptsize'>>=
+y.all.Mh.mix <- matrix(NA, N, J)
+for(i in 1:N) {
+    y.all.Mh.mix[i,] <- rbinom(J, 1, p.Mh.mix[i])
+}
+@
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+<<sim-Mhm-y1,size='scriptsize'>>=
+captured.Mh.mix <- rowSums(y.all.Mh.mix)>0
+n.Mh.mix <- sum(captured.Mh.mix)
+y.Mh.mix <- y.all.Mh.mix[captured.Mh.mix,]
+@ 
+\end{frame}
+
+
+
 \begin{frame}[fragile]
   \frametitle{Model $M_h$ -- Individual heterogeneity}
-  There are many flavors of $M_h$. Some use finite mixture
-  models. Here we have logit-normal distribution for $p$. 
+  Here's another flavor of $M_h$ with a logit-normal distribution for
+  $p$.  
 <<sim-Mh-pars,size='scriptsize'>>=
 logit.p.bar <- -1  ## Mean p on logit scale
 logit.p.var <- 1   ## SD of p on logit scale
@@ -862,17 +901,19 @@ y.Mh <- y.all.Mh[captured.Mh,]
   Before you can use `RMark', you have to install MARK.  \\
   \vfill
   The main MARK page is here: \\
-  \url{http://www.phidot.org/software/mark/index.html}  \\
+  {\color{blue} \url{ 
+    http://www.phidot.org/software/mark/index.html
+  }}  \\
   \vfill
   Instructions for Linux and Mac users: \\
-  \url{
+   {\color{blue} \url{
     http://www.phidot.org/software/mark/rmark/linux/
-  } \\
+  } } \\
   \vfill
   Lots of good information about closed population mark-recapture: \\
-  \url{
+  {\color{blue} \footnotesize \url{ 
     http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf
-  }
+  }}
 \end{frame}
 
 
@@ -957,14 +998,17 @@ mark.Mb$results$derived
 
 
 \begin{frame}[fragile]
-  \frametitle{`RMark' -- Model $M_h$ (Huggins variation)}
-<<RMark-Mh,size='scriptsize',warning=FALSE,results='hide',cache=TRUE>>=
-yh.ch <- data.frame(ch=apply(y.Mh, 1, paste, collapse=""))
-mark.Mh <- mark(data=yh.ch, model="HugHet", silent=TRUE) ## Default model
+  \frametitle{`RMark' -- Model $M_h$}
+  This is a two-point mixture model using the conditional likelihood
+  approach of Huggins. 
+<<RMark-Mh,size='scriptsize',warning=FALSE,results='hide',cache=FALSE>>=
+yh.ch <- data.frame(ch=apply(y.Mh.mix, 1, paste, collapse=""))
+mark.Mh <- mark(data=yh.ch, model="HugHet", silent=TRUE,
+                model.parameters=list(p=list(formula=~mixture,share=TRUE)))
 @
 \pause
 \vfill
-Estimates of $p$ and $\pi$, the proportion of 
+Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 <<RMark-pn0-Mh,size='scriptsize'>>=
 mark.Mh$results$real      
 @   
@@ -1338,12 +1382,65 @@ plot(jags.post.M0[,jp.M0])
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Model $M_t$ -- data augmentation}
-\vspace{-3pt}
-<<bugs-Mt-aug,size='small',comment='',background='lightblue'>>=
-writeLines(readLines("Mt-aug.jag"))
-@
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- data augmentation}
+% \vspace{-3pt}
+% <<bugs-Mt-aug,size='small',comment='',background='lightblue'>>=
+% writeLines(readLines("Mt-aug.jag"))
+% @
+% \end{frame}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- data augmentation}
+%   Data, inits, parameters to monitor
+% <<ji-Mt-aug,size='scriptsize'>>=
+% jags.data.Mt <- jags.data.M0
+% ji.Mt <- function() list(z=rep(1,M), psi=runif(1), p=runif(4))
+% jp.Mt <- c("p", "psi", "N")
+% @
+% \pause
+% \vfill
+% MCMC
+% <<mcmc-Mt-aug,size='scriptsize',results='hide'>>=
+% jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
+%                            parameters.to.save=jp.Mt,
+%                            model.file="Mt-aug.jag",
+%                            n.chains=3, n.adapt=100, n.burnin=0,
+%                            n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<plot-mcmc-Mt1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+% plot(jags.post.Mt[,paste0("p[", 1:4, "]")])
+% @ 
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- data augmentation}
+% \vspace{-3pt}
+% <<bugs-Mt-aug,size='small',comment='',background='lightblue'>>=
+% writeLines(readLines("Mt-aug.jag"))
+% @
+% \end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \centering
+  \large
+  Write the BUGS model for $M_t$. \\
 \end{frame}
 
 
@@ -1352,20 +1449,33 @@ writeLines(readLines("Mt-aug.jag"))
 
 
 \begin{frame}[fragile]
-  \frametitle{Model $M_t$ -- data augmentation}
+  \frametitle{Model $M_b$ -- data augmentation}
+\vspace{-3pt}
+<<bugs-Mb-aug,size='small',comment='',background='lightblue'>>=
+writeLines(readLines("Mb-aug.jag"))
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_b$ -- data augmentation}
   Data, inits, parameters to monitor
-<<ji-Mt-aug,size='scriptsize'>>=
-jags.data.Mt <- jags.data.M0
-ji.Mt <- function() list(z=rep(1,M), psi=runif(1), p=runif(4))
-jp.Mt <- c("p", "psi", "N")
+<<ji-Mb-aug,size='scriptsize'>>=
+jags.data.Mb <- jags.data.M0
+jags.data.Mb$y[1:nrow(y.Mb),] <- y.Mb
+jags.data.Mb$prevcap <- ifelse(prevcap.aug=="Yes", 1, 0)
+ji.Mb <- function() list(z=rep(1,M), psi=runif(1), p=runif(1), c=runif(1))
+jp.Mb <- c("p", "c", "psi", "N")
 @
 \pause
 \vfill
 MCMC
-<<mcmc-Mt-aug,size='scriptsize',results='hide'>>=
-jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
-                           parameters.to.save=jp.Mt,
-                           model.file="Mt-aug.jag",
+<<mcmc-Mb-aug,size='scriptsize',results='hide'>>=
+jags.post.Mb <- jags.basic(data=jags.data.Mb, inits=ji.Mb,
+                           parameters.to.save=jp.Mb,
+                           model.file="Mb-aug.jag",
                            n.chains=3, n.adapt=100, n.burnin=0,
                            n.iter=2000, parallel=TRUE)
 @ 
@@ -1375,18 +1485,32 @@ jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
 
 
 
-
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
-<<plot-mcmc-Mt1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
-plot(jags.post.Mt[,paste0("p[", 1:4, "]")])
+<<plot-mcmc-Mb,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+plot(jags.post.Mb[,jp.Mb])
 @ 
 \end{frame}
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- finite mixture}
+\vspace{-3pt}
+<<bugs-Mhm-aug,size='footnotesize',comment='',background='lightblue'>>=
+writeLines(readLines("Mhm-aug.jag"))
+@
+\end{frame}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- logit normal}
+\vspace{-3pt}
+<<bugs-Mh-aug,size='footnotesize',comment='',background='lightblue'>>=
+writeLines(readLines("Mh-aug.jag"))
+@
+\end{frame}
 
 
 

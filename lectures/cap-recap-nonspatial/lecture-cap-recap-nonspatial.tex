@@ -55,8 +55,9 @@
 %\usepackage[sans]{../lectures}
 
 
-\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV},urlcolor=blue}
 
+%\urlstyle{same}
 
 
 
@@ -374,6 +375,11 @@
   \small
   The joint likelihood is based on the multinomial distribution, with
   the ``all-zero'' encounter history being unobserved. \\  
+  \begin{equation*}
+    \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
+  \end{equation*}
+  where $\{f_1, \dots, f_K\}$ are the frequencies of the observable capture
+  histories. \\
   \vfill
   Here's an example with $J=3$ capture occasions.  \\
   \vfill
@@ -382,7 +388,6 @@
       \hline
       Capture history       & Multinomial cell probability \\
       \hline
-      000                   & $\pi_0 = \prod_j 1-p_j$      \\
       100                   & $\pi_1=p_1(1-p_2)(1-p_3)$    \\
       010                   & $\pi_2=(1-p_1)p_2(1-p_3)$    \\
       001                   & $\pi_3=(1-p_1)(1-p_2)p_3$    \\
@@ -390,6 +395,7 @@
       101                   & $\pi_5=p_1(1-p_2)p_3$        \\
       011                   & $\pi_6=(1-p_1)p_2p_3$        \\
       111                   & $\pi_7 = p_1p_2p_3$          \\
+      000                   & $\pi_0 = \prod_j 1-p_j$      \\
       \hline
     \end{tabular}
 %   \pause
@@ -413,7 +419,7 @@
   \frametitle{Joint likelihood, conditional-on-$n$}
 %  \frametitle{Conditional-on-$n$, multinomial cell probs}
   \footnotesize
-  Here's another option with a conditional multinomial:                 \\
+  Here's another option (that's easy to implement in MCMC software) with a conditional multinomial: \\
   \begin{gather*}
     n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
     \{f_1, \dots, f_K\} \sim \mathrm{Multinomial}(n, \pi_1, \dots, \pi_K) \;\;
@@ -423,7 +429,7 @@
   where $\{f_1, \dots, f_K\}$ are the observed frequencies of each
   capture history. \\
   \pause \vfill
-  Here's an example with $J=3$ capture occasions.                                          \\
+  Example with $J=3$ capture occasions.                                          \\
 %  \begin{columns}
 %    \column{0.9\paperwidth}
   \scriptsize
@@ -797,10 +803,55 @@
 \subsection{Model $M_h$}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- Finite mixture}
+  There are many flavors of $M_h$. This one assumes there are two
+  (unknown) groups of individuals with different capture probs. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mixture.prob} \hlkwb{<-} \hlnum{0.6}
+\hlstd{group} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(N,} \hlnum{1}\hlstd{, mixture.prob)}    \hlcom{## Two groups}
+\hlstd{p.Mh.mix} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(group}\hlopt{==}\hlnum{0}\hlstd{,} \hlnum{0.2}\hlstd{,} \hlnum{0.7}\hlstd{)} \hlcom{## Two-point mixture}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  All capture histories (for captured and uncaptured individuals)
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y.all.Mh.mix} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{y.all.Mh.mix[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.Mh.mix[i])}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Observed capture histories (data)
+  \vspace{-6pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured.Mh.mix} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mh.mix)}\hlopt{>}\hlnum{0}
+\hlstd{n.Mh.mix} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mh.mix)}
+\hlstd{y.Mh.mix} \hlkwb{<-} \hlstd{y.all.Mh.mix[captured.Mh.mix,]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
 \begin{frame}[fragile]
   \frametitle{Model $M_h$ -- Individual heterogeneity}
-  There are many flavors of $M_h$. Some use finite mixture
-  models. Here we have logit-normal distribution for $p$. 
+  Here's another flavor of $M_h$ with a logit-normal distribution for
+  $p$.  
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -983,17 +1034,19 @@
   Before you can use `RMark', you have to install MARK.  \\
   \vfill
   The main MARK page is here: \\
-  \url{http://www.phidot.org/software/mark/index.html}  \\
+  {\color{blue} \url{ 
+    http://www.phidot.org/software/mark/index.html
+  }}  \\
   \vfill
   Instructions for Linux and Mac users: \\
-  \url{
+   {\color{blue} \url{
     http://www.phidot.org/software/mark/rmark/linux/
-  } \\
+  } } \\
   \vfill
   Lots of good information about closed population mark-recapture: \\
-  \url{
+  {\color{blue} \footnotesize \url{ 
     http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf
-  }
+  }}
 \end{frame}
 
 
@@ -1148,18 +1201,21 @@ Estimate of $N$
 
 
 \begin{frame}[fragile]
-  \frametitle{`RMark' -- Model $M_h$ (Huggins variation)}
+  \frametitle{`RMark' -- Model $M_h$}
+  This is a two-point mixture model using the conditional likelihood
+  approach of Huggins. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{yh.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y.Mh,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
-\hlstd{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=yh.ch,} \hlkwc{model}\hlstd{=}\hlstr{"HugHet"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{## Default model}
+\hlstd{yh.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y.Mh.mix,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
+\hlstd{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=yh.ch,} \hlkwc{model}\hlstd{=}\hlstr{"HugHet"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+                \hlkwc{model.parameters}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{p}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlstd{mixture,}\hlkwc{share}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
-Estimates of $p$ and $\pi$, the proportion of 
+Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1167,8 +1223,9 @@ Estimates of $p$ and $\pi$, the proportion of
 \end{alltt}
 \begin{verbatim}
 ##             estimate        se       lcl       ucl fixed note
-## pi g1 m1   0.4750210 0.0000000 0.4750210 0.4750210           
-## p g1 t1 m1 0.3048546 0.0363524 0.2385757 0.3803487
+## pi g1 m1   0.6178321 0.1887615 0.2522673 0.8856714           
+## p g1 t1 m1 0.3654188 0.1276650 0.1636946 0.6288180           
+## p g1 t1 m2 0.8227000 0.1059189 0.5278473 0.9506399
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1183,7 +1240,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate      lcl      ucl
-## 1 86.10663 75.90547 106.8135
+## 1 96.72754 89.74869 121.4255
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1683,26 +1740,93 @@ MCMC
 
 
 
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- data augmentation}
+% \vspace{-3pt}
+% <<bugs-Mt-aug,size='small',comment='',background='lightblue'>>=
+% writeLines(readLines("Mt-aug.jag"))
+% @
+% \end{frame}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- data augmentation}
+%   Data, inits, parameters to monitor
+% <<ji-Mt-aug,size='scriptsize'>>=
+% jags.data.Mt <- jags.data.M0
+% ji.Mt <- function() list(z=rep(1,M), psi=runif(1), p=runif(4))
+% jp.Mt <- c("p", "psi", "N")
+% @
+% \pause
+% \vfill
+% MCMC
+% <<mcmc-Mt-aug,size='scriptsize',results='hide'>>=
+% jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
+%                            parameters.to.save=jp.Mt,
+%                            model.file="Mt-aug.jag",
+%                            n.chains=3, n.adapt=100, n.burnin=0,
+%                            n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<plot-mcmc-Mt1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE>>=
+% plot(jags.post.Mt[,paste0("p[", 1:4, "]")])
+% @ 
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ -- data augmentation}
+% \vspace{-3pt}
+% <<bugs-Mt-aug,size='small',comment='',background='lightblue'>>=
+% writeLines(readLines("Mt-aug.jag"))
+% @
+% \end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \centering
+  \large
+  Write the BUGS model for $M_t$. \\
+\end{frame}
+
+
+
+
+
+
 \begin{frame}[fragile]
-  \frametitle{Model $M_t$ -- data augmentation}
+  \frametitle{Model $M_b$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mt-aug.jag"}\hlstd{))}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mb-aug.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
 model {
 
-psi ~ dunif(0,1)
-for(j in 1:J) {
-  p[j] ~ dunif(0,1)
-}
+p ~ dunif(0, 1)     ## Capture prob
+c ~ dunif(0, 1)     ## Recapture prob
 
-for(i in 1:M) {
-  z[i] ~ dbern(psi)
+psi ~ dunif(0,1)    ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi) ## DA indicator
   for(j in 1:J) {
-    y[i,j] ~ dbern(z[i]*p[j])
+    pc[i,j] <- ifelse(prevcap[i,j]==0, p, c) ## First cap or recap?
+    y[i,j] ~ dbern(z[i]*pc[i,j])
   }
 }
 
@@ -1717,17 +1841,17 @@ N <- sum(z)
 
 
 
-
-
 \begin{frame}[fragile]
-  \frametitle{Model $M_t$ -- data augmentation}
+  \frametitle{Model $M_b$ -- data augmentation}
   Data, inits, parameters to monitor
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.Mt} \hlkwb{<-} \hlstd{jags.data.M0}
-\hlstd{ji.Mt} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{4}\hlstd{))}
-\hlstd{jp.Mt} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"psi"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hlstd{jags.data.Mb} \hlkwb{<-} \hlstd{jags.data.M0}
+\hlstd{jags.data.Mb}\hlopt{$}\hlstd{y[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y.Mb),]} \hlkwb{<-} \hlstd{y.Mb}
+\hlstd{jags.data.Mb}\hlopt{$}\hlstd{prevcap} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(prevcap.aug}\hlopt{==}\hlstr{"Yes"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}
+\hlstd{ji.Mb} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{c}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
+\hlstd{jp.Mb} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"c"}\hlstd{,} \hlstr{"psi"}\hlstd{,} \hlstr{"N"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1737,9 +1861,9 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.Mt} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.Mt,} \hlkwc{inits}\hlstd{=ji.Mt,}
-                           \hlkwc{parameters.to.save}\hlstd{=jp.Mt,}
-                           \hlkwc{model.file}\hlstd{=}\hlstr{"Mt-aug.jag"}\hlstd{,}
+\hlstd{jags.post.Mb} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.Mb,} \hlkwc{inits}\hlstd{=ji.Mb,}
+                           \hlkwc{parameters.to.save}\hlstd{=jp.Mb,}
+                           \hlkwc{model.file}\hlstd{=}\hlstr{"Mb-aug.jag"}\hlstd{,}
                            \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                            \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
@@ -1751,20 +1875,18 @@ MCMC
 
 
 
-
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.Mt[,}\hlkwd{paste0}\hlstd{(}\hlstr{"p["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,} \hlstr{"]"}\hlstd{)])}
+\hlkwd{plot}\hlstd{(jags.post.Mb[,jp.Mb])}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-Mt1-1} 
+{\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-Mb-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1772,8 +1894,72 @@ MCMC
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- finite mixture}
+\vspace{-3pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mhm-aug.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+model {
+
+p1 ~ dunif(0, 1)     ## Capture prob, group 1
+p2 ~ dunif(0, 1)     ## Capture prob, group 2
+mixprob ~ dunif(1)   ## Finite mixture prob
+psi ~ dunif(0,1)     ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi)  ## DA indicator
+  group[i] ~ dbern(mixprob)           ## Group 1 or 2?
+  p[i] <- ifelse(group[i]==0, p1, p2) ## p depends on group
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[i])
+  }
+}
+
+N <- sum(z)
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Model $M_h$ -- logit normal}
+\vspace{-3pt}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mh-aug.jag"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+model {
+
+lp.mean ~ dnorm(0,0.1)  ## Mean of logit(p)
+lp.var ~ dexp(1)        ## Variance of logit(p)
+psi ~ dunif(0,1)        ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi)     ## DA indicator
+  lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect (p on logit scale)
+  p[i] <- plogis(lp[i]) ## Capture prob for individual i
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[i])
+  }
+}
+
+N <- sum(z)
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 

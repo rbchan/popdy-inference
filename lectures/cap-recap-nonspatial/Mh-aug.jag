@@ -1,0 +1,18 @@
+model {
+
+lp.mean ~ dnorm(0,0.1)  ## Mean of logit(p)
+lp.var ~ dexp(1)        ## Variance of logit(p)
+psi ~ dunif(0,1)        ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi)     ## DA indicator
+  lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect (p on logit scale)
+  p[i] <- plogis(lp[i]) ## Capture prob for individual i
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[i])
+  }
+}
+
+N <- sum(z)
+
+}

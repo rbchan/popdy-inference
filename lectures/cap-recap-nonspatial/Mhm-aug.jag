@@ -1,0 +1,19 @@
+model {
+
+p1 ~ dunif(0, 1)     ## Capture prob, group 1
+p2 ~ dunif(0, 1)     ## Capture prob, group 2
+mixprob ~ dunif(1)   ## Finite mixture prob
+psi ~ dunif(0,1)     ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi)  ## DA indicator
+  group[i] ~ dbern(mixprob)           ## Group 1 or 2?
+  p[i] <- ifelse(group[i]==0, p1, p2) ## p depends on group
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[i])
+  }
+}
+
+N <- sum(z)
+
+}
