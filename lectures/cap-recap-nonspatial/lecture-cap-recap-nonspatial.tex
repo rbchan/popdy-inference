@@ -1202,13 +1202,13 @@ Estimate of $N$
 
 \begin{frame}[fragile]
   \frametitle{`RMark' -- Model $M_h$}
-  This is a two-point mixture model using the conditional likelihood
-  approach of Huggins. 
+  This is a two-point mixture model. % using the conditional likelihood
+%  approach of Huggins. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{yh.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y.Mh.mix,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
-\hlstd{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=yh.ch,} \hlkwc{model}\hlstd{=}\hlstr{"HugHet"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+\hlstd{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=yh.ch,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{model}\hlstd{=}\hlstr{"HetClosed"}\hlstd{,} \hlcom{# "HugHet", }
                 \hlkwc{model.parameters}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{p}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlstd{mixture,}\hlkwc{share}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
 \end{alltt}
 \end{kframe}
@@ -1222,10 +1222,11 @@ Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 \hlstd{mark.Mh}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
 \end{alltt}
 \begin{verbatim}
-##             estimate        se       lcl       ucl fixed note
-## pi g1 m1   0.6178318 0.1887616 0.2522671 0.8856713           
-## p g1 t1 m1 0.3654187 0.1276650 0.1636944 0.6288180           
-## p g1 t1 m2 0.8226999 0.1059189 0.5278472 0.9506398
+##              estimate        se       lcl        ucl fixed note
+## pi g1 m1    0.6554416 0.1938699 0.2612445  0.9109753           
+## p g1 t1 m1  0.3985715 0.1171101 0.2027867  0.6332363           
+## p g1 t1 m2  0.8435081 0.1105441 0.5107933  0.9653084           
+## f0 g1 a0 t1 7.6766975 5.7418191 2.0786108 28.3514760
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1240,7 +1241,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate      lcl      ucl
-## 1 96.72755 89.74869 121.4256
+## 1  94.6767 89.07861 115.3515
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1907,7 +1908,7 @@ model {
 
 p1 ~ dunif(0, 1)     ## Capture prob, group 1
 p2 ~ dunif(0, 1)     ## Capture prob, group 2
-mixprob ~ dunif(1)   ## Finite mixture prob
+mixprob ~ dunif(0,1) ## Finite mixture prob
 psi ~ dunif(0,1)     ## Data augmentation parameter
 
 for(i in 1:M) {     
@@ -1940,14 +1941,14 @@ N <- sum(z)
 \begin{verbatim}
 model {
 
-lp.mean ~ dnorm(0,0.1)  ## Mean of logit(p)
-lp.var ~ dexp(1)        ## Variance of logit(p)
-psi ~ dunif(0,1)        ## Data augmentation parameter
+lp.mean ~ dnorm(0,0.1)   ## Mean of logit(p)
+lp.var ~ dexp(1)         ## Variance of logit(p)
+psi ~ dunif(0,1)         ## Data augmentation parameter
 
 for(i in 1:M) {     
-  z[i] ~ dbern(psi)     ## DA indicator
+  z[i] ~ dbern(psi)      ## DA indicator
   lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect (p on logit scale)
-  p[i] <- plogis(lp[i]) ## Capture prob for individual i
+  p[i] <- ilogit(lp[i])  ## Capture prob for individual i
   for(j in 1:J) {
     y[i,j] ~ dbern(z[i]*p[i])
   }
@@ -1994,28 +1995,30 @@ N <- sum(z)
 
 \begin{frame}[fragile]
   \frametitle{Assignment}
-  % \small
+  \small
   % \footnotesize
   Create a self-contained R script or Rmarkdown file to do the
   following: 
   \vfill
   \begin{enumerate}
-%    \small
+    \small
 %    \footnotesize
 %  \item Fit model $M_h$ in JAGS to the data simulated above
     \item Import the Canada warbler mark-recapture data ({\tt
         CAWAcaps\_2018.csv}) and fit the following models in RMark and
-      JAGS:
+      JAGS\footnote{For JAGS, use $M=800$ but note if the posterior of
+      $N$ pushes up against $M$.}:
       \begin{itemize}
         % \footnotesize
         \item Model $M_0$
         \item Model $M_t$ 
-        \item Model $M_b$
+%        \item Model $M_b$
         \item Model $M_h$ -- Finite mixture
         \item Model $M_h$ -- Logit-normal (JAGS only)
       \end{itemize}
     \item Create a table reporting point estimates and 95\% CIs for
-      $N$ for each model. 
+      $N$ for each model fit in RMark and JAGS. Which model has the
+      lowest AICc? 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 

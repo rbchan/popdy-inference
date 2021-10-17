@@ -2,7 +2,7 @@ model {
 
 p1 ~ dunif(0, 1)     ## Capture prob, group 1
 p2 ~ dunif(0, 1)     ## Capture prob, group 2
-mixprob ~ dunif(1)   ## Finite mixture prob
+mixprob ~ dunif(0,1) ## Finite mixture prob
 psi ~ dunif(0,1)     ## Data augmentation parameter
 
 for(i in 1:M) {     

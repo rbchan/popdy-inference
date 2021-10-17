@@ -999,11 +999,11 @@ mark.Mb$results$derived
 
 \begin{frame}[fragile]
   \frametitle{`RMark' -- Model $M_h$}
-  This is a two-point mixture model using the conditional likelihood
-  approach of Huggins. 
+  This is a two-point mixture model. % using the conditional likelihood
+%  approach of Huggins. 
 <<RMark-Mh,size='scriptsize',warning=FALSE,results='hide',cache=FALSE>>=
 yh.ch <- data.frame(ch=apply(y.Mh.mix, 1, paste, collapse=""))
-mark.Mh <- mark(data=yh.ch, model="HugHet", silent=TRUE,
+mark.Mh <- mark(data=yh.ch, silent=TRUE, model="HetClosed", # "HugHet", 
                 model.parameters=list(p=list(formula=~mixture,share=TRUE)))
 @
 \pause
@@ -1545,28 +1545,30 @@ writeLines(readLines("Mh-aug.jag"))
 
 \begin{frame}[fragile]
   \frametitle{Assignment}
-  % \small
+  \small
   % \footnotesize
   Create a self-contained R script or Rmarkdown file to do the
   following: 
   \vfill
   \begin{enumerate}
-%    \small
+    \small
 %    \footnotesize
 %  \item Fit model $M_h$ in JAGS to the data simulated above
     \item Import the Canada warbler mark-recapture data ({\tt
         CAWAcaps\_2018.csv}) and fit the following models in RMark and
-      JAGS:
+      JAGS\footnote{For JAGS, use $M=800$ but note if the posterior of
+      $N$ pushes up against $M$.}:
       \begin{itemize}
         % \footnotesize
         \item Model $M_0$
         \item Model $M_t$ 
-        \item Model $M_b$
+%        \item Model $M_b$
         \item Model $M_h$ -- Finite mixture
         \item Model $M_h$ -- Logit-normal (JAGS only)
       \end{itemize}
     \item Create a table reporting point estimates and 95\% CIs for
-      $N$ for each model. 
+      $N$ for each model fit in RMark and JAGS. Which model has the
+      lowest AICc? 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 
