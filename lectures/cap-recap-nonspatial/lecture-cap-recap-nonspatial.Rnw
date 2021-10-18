@@ -58,9 +58,9 @@ if(!require(secr)) install.packages("secr")
   \centering
   {
     \LARGE %Lecture 10 --
-    Non-spatial mark-recapture for estimating
-    population size: \\
-    \Large simulation and model fitting \\
+    Non-spatial mark-recapture for \\ estimating
+    population size%: \\
+    %\LARGE simulation and model fitting \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -210,7 +210,7 @@ if(!require(secr)) install.packages("secr")
   Closed population models \\
   \begin{itemize}
     \item Usually better to have $J>2$ occasions
-    \item Allows for assessment of behavioral effect, individual heterogeneity, etc\dots
+    \item Allows for assessment of behavioral effects, individual heterogeneity, etc\dots
   \end{itemize}
 \end{frame}
 
@@ -245,7 +245,8 @@ if(!require(secr)) install.packages("secr")
   \pause
   \vfill
   The problem with this formulation is that we don't observe the ``all
-  zero'' encounter histories (and thus we don't know $N$). 
+  zero'' encounter histories (and thus we don't know $N$). %As a
+  %result, the Bernoulli assumption isn't valid.
 \end{frame}
 
 
@@ -921,7 +922,7 @@ y.Mh <- y.all.Mh[captured.Mh,]
 \begin{frame}[fragile]
   \frametitle{R package `RMark' -- Model $M_0$}
   \small
-  Fit model and set capture probability equal to recapture probability
+  Fit the model and set capture probability equal to recapture probability
   ($p=c$) using the \inr{share} argument.
 <<RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE,warning=FALSE,message=FALSE>>=
 ## install.packages("RMark") ## Must install MARK too!!
@@ -1234,6 +1235,11 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
       \includegraphics[width=\textwidth]{figure/un-N-post-1}
     \end{column}
   \end{columns}
+  \vfill
+  \pause
+  \footnotesize
+  We see that $M$ is sufficiently high because: $\Pr(N=M|y) \approx
+  0$. Otherwise, we would have to rerun it with a larger value of $M$.
 \end{frame}
 
 
