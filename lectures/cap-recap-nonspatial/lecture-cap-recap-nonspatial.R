@@ -5,6 +5,8 @@
 
 
 
+
+
 ## ----include=FALSE,echo=FALSE-------------------------------------------------
 set.seed(34889243)
 
@@ -82,6 +84,25 @@ y.Mb <- y.all.Mb[captured.Mb,]
 ## prevcap[1:3,]
 
 
+## ----sim-Mhm-pars,size='scriptsize'-------------------------------------------
+mixture.prob <- 0.6
+group <- rbinom(N, 1, mixture.prob)    ## Two groups
+p.Mh.mix <- ifelse(group==0, 0.2, 0.7) ## Two-point mixture
+
+
+## ----sim-Mhm-ch,size='scriptsize'---------------------------------------------
+y.all.Mh.mix <- matrix(NA, N, J)
+for(i in 1:N) {
+    y.all.Mh.mix[i,] <- rbinom(J, 1, p.Mh.mix[i])
+}
+
+
+## ----sim-Mhm-y1,size='scriptsize'---------------------------------------------
+captured.Mh.mix <- rowSums(y.all.Mh.mix)>0
+n.Mh.mix <- sum(captured.Mh.mix)
+y.Mh.mix <- y.all.Mh.mix[captured.Mh.mix,]
+
+
 ## ----sim-Mh-pars,size='scriptsize'--------------------------------------------
 logit.p.bar <- -1  ## Mean p on logit scale
 logit.p.var <- 1   ## SD of p on logit scale
@@ -102,84 +123,8 @@ y.Mh <- y.all.Mh[captured.Mh,]
 #y.Mh[1:3,]
 
 
-## ----nll-M0,echo=TRUE,size='scriptsize'---------------------------------------
-nll.M0 <- function(pars, y) {           ## Negative log-likelihood
-    n <- nrow(y);       J <- ncol(y)
-    N <- exp(pars[1])
-    n0 <- N-n
-    if(n0<0) return(NA)
-    p <- plogis(pars[2])
-    ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
-    p0 <- (1-p)^J
-    ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
-    nll <- -(ld.y1+ld.n0)
-    return(nll)
-}
-
-
-## ----opt-nll-M0, size='scriptsize'--------------------------------------------
-fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
-fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
-                        SE=sqrt(diag(solve(fm.M0$hessian))))
-fm.M0.est
-
-
-## ----opt-nll-M0-back, size='scriptsize'---------------------------------------
-c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
-
-
-## ----dg,size='scriptsize'-----------------------------------------------------
-c(N=N, p=p)
-
-
-## ----eval=FALSE,include=FALSE,echo=FALSE--------------------------------------
-## nll.M0.2 <- function(pars, y) {
-##     n <- nrow(y);       J <- ncol(y)
-##     N <- exp(pars[1])
-##     n0 <- N-n
-##     if(n0<0) return(NA)
-##     p <- plogis(pars[2])
-##     J <- ncol(y)
-##     p.star <- 1-(1-p)^J
-##     ydot <- rowSums(y)
-##     lcd.y <- sum(dbinom(ydot, J, p, log=TRUE)-log(p.star))
-##     ld.n <- lchoose(N, n)+n*log(p.star)+n0*log(1-p.star)
-##     nll <- -(lcd.y+ld.n)
-##     return(nll)
-## }
-## 
-## fm.M0.2 <- optim(c(5,0), nll.M0.2, y=y, hessian=TRUE)
-## c(N=exp(fm.M0.2$par[1]), p=plogis(fm.M0.2$par[2]))
-
-
-## ----eval=FALSE,include=FALSE,echo=FALSE--------------------------------------
-## nll.M0.cn <- function(pars, y) {
-##     p <- plogis(pars[1])
-##     J <- ncol(y)
-##     p.star <- 1-(1-p)^J
-##     ydot <- rowSums(y)
-##     nll <- -sum(dbinom(ydot, J, p, log=TRUE)-log(p.star))
-##     return(nll)
-## }
-## 
-## fm.M0.cn <- optim(0, nll.M0.cn, y=y, hessian=TRUE, method="Brent", lower=-10, upper=10)
-## c(p=plogis(fm.M0.cn$par[1]))
-
-
-## ----Rcapture,size='scriptsize'-----------------------------------------------
-## install.packages("Rcapture")
-library(Rcapture)
-closedp(y)
-
-
-## ----mra,size='scriptsize'----------------------------------------------------
-## install.packages("mra")
-library(mra)
-F.huggins.estim(~1, histories=y)
-
-
-## ----RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE----------
-## install.packages("RMark") ## Must install MARK TOO!!
+## ----RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE,warning=FALSE,message=FALSE----
+## install.packages("RMark") ## Must install MARK too!!
 library(RMark)
 y.ch <- data.frame(ch=apply(y, 1, paste, collapse=""))
 mark.M0 <- mark(data=y.ch, model="Closed", silent=TRUE,
@@ -221,6 +166,20 @@ mark.Mb$results$real
 mark.Mb$results$derived   
 
 
+## ----RMark-Mh,size='scriptsize',warning=FALSE,results='hide',cache=FALSE------
+yh.ch <- data.frame(ch=apply(y.Mh.mix, 1, paste, collapse=""))
+mark.Mh <- mark(data=yh.ch, silent=TRUE, model="HetClosed", # "HugHet", 
+                model.parameters=list(p=list(formula=~mixture,share=TRUE)))
+
+
+## ----RMark-pn0-Mh,size='scriptsize'-------------------------------------------
+mark.Mh$results$real      
+
+
+## ----RMark-N-Mh,size='scriptsize'---------------------------------------------
+mark.Mh$results$derived   
+
+
 ## ----aug-y,size='scriptsize'--------------------------------------------------
 M <- 200
 y.aug <- matrix(0, M, J)
@@ -237,7 +196,7 @@ prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
 occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
 
 
-## ----un-umf,results='hide',size='scriptsize',warning=FALSE--------------------
+## ----un-umf,results='hide',size='scriptsize',warning=FALSE,message=FALSE------
 library(unmarked)
 umf <- unmarkedFrameOccu(y=y.aug,
                          obsCovs=list(prevcap=prevcap.aug,
@@ -281,7 +240,7 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
      xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
 
 
-## ----bugs-M0-aug,size='small'-------------------------------------------------
+## ----bugs-M0-aug,size='small',comment='',background='lightblue'---------------
 writeLines(readLines("M0-aug.jag"))
 
 
@@ -296,7 +255,7 @@ ji.M0 <- function() list(z=rep(1,M), psi=runif(1), p=runif(1))
 jp.M0 <- c("p", "psi", "N")
 
 
-## ----mcmc-M0-aug,size='scriptsize',results='hide'-----------------------------
+## ----mcmc-M0-aug,size='scriptsize',results='hide',warning=FALSE,message=FALSE----
 library(jagsUI)
 jags.post.M0 <- jags.basic(data=jags.data.M0, inits=ji.M0,
                            parameters.to.save=jp.M0,
@@ -309,53 +268,34 @@ jags.post.M0 <- jags.basic(data=jags.data.M0, inits=ji.M0,
 plot(jags.post.M0[,jp.M0])
 
 
-## ----bugs-M0,size='footnotesize'----------------------------------------------
-writeLines(readLines("M0.jag"))
+## ----bugs-Mb-aug,size='footnotesize',comment='',background='lightblue'--------
+writeLines(readLines("Mb-aug.jag"))
 
 
-## ----jd-M0-noaug,size='scriptsize'--------------------------------------------
-n0max <- 1000  ## Upper limit of prior on n0
-jags.data.M0.noaug <- list(y=y.aug, n=n, J=J,
-                           ## Prior probs for n0
-                           n0probs=rep(1/n0max, n0max), zero=0)
+## ----ji-Mb-aug,size='scriptsize'----------------------------------------------
+jags.data.Mb <- jags.data.M0
+jags.data.Mb$y[1:nrow(y.Mb),] <- y.Mb
+jags.data.Mb$prevcap <- ifelse(prevcap.aug=="Yes", 1, 0)
+ji.Mb <- function() list(z=rep(1,M), psi=runif(1), p=runif(1), c=runif(1))
+jp.Mb <- c("p", "c", "psi", "N")
 
 
-## ----ji-M0-noaug,size='scriptsize'--------------------------------------------
-ji.M0.noaug <- function() list(n0=rpois(1, 5), p=runif(1, 0, 0.1))
-jp.M0.noaug <- c("p", "N")
-
-
-## ----mcmc-M0-noaug,size='scriptsize',results='hide'---------------------------
-jags.post.M0.noaug <- jags.basic(data=jags.data.M0.noaug,
-                                 inits=ji.M0.noaug,
-                                 parameters.to.save=jp.M0.noaug,
-                                 model.file="M0.jag",
-                                 n.chains=3, n.adapt=100, n.burnin=0,
-                                 n.iter=2000, parallel=TRUE)
-
-
-## ----plot-mcmc-M0-noaug,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE----
-plot(jags.post.M0.noaug[,jp.M0.noaug])
-
-
-## ----bugs-Mt-aug,size='small'-------------------------------------------------
-writeLines(readLines("Mt-aug.jag"))
-
-
-## ----ji-Mt-aug,size='scriptsize'----------------------------------------------
-jags.data.Mt <- jags.data.M0
-ji.Mt <- function() list(z=rep(1,M), psi=runif(1), p=runif(4))
-jp.Mt <- c("p", "psi", "N")
-
-
-## ----mcmc-Mt-aug,size='scriptsize',results='hide'-----------------------------
-jags.post.Mt <- jags.basic(data=jags.data.Mt, inits=ji.Mt,
-                           parameters.to.save=jp.Mt,
-                           model.file="Mt-aug.jag",
+## ----mcmc-Mb-aug,size='scriptsize',results='hide'-----------------------------
+jags.post.Mb <- jags.basic(data=jags.data.Mb, inits=ji.Mb,
+                           parameters.to.save=jp.Mb,
+                           model.file="Mb-aug.jag",
                            n.chains=3, n.adapt=100, n.burnin=0,
                            n.iter=2000, parallel=TRUE)
 
 
-## ----plot-mcmc-Mt1,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE----
-plot(jags.post.Mt[,paste0("p[", 1:4, "]")])
+## ----plot-mcmc-Mb,size='footnotesize',out.width="0.7\\textwidth",fig.align='center',cache=TRUE----
+plot(jags.post.Mb[,jp.Mb])
+
+
+## ----bugs-Mhm-aug,size='footnotesize',comment='',background='lightblue'-------
+writeLines(readLines("Mhm-aug.jag"))
+
+
+## ----bugs-Mh-aug,size='footnotesize',comment='',background='lightblue'--------
+writeLines(readLines("Mh-aug.jag"))
 
