@@ -9,7 +9,6 @@
 
 
 
-
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -33,17 +32,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-\newcommand{\bxt}{${\bm x}_j$}
-\newcommand{\bx}{{\bm x}}
-\newcommand{\bxj}{{\bm x}_j}
-\newcommand{\bst}{${\bm s}_i$}
-\newcommand{\bs}{{\bm s}}
-\newcommand{\bsi}{{\bm s}_i}
-\newcommand{\ed}{\|\bx - \bs\|}
-\newcommand{\cs}{\mathcal{S} }
-\newcommand{\dsixj}{\|\bsi - \bxj\|}
-
-
 \begin{document}
 
 
@@ -53,8 +41,8 @@ knit_theme$set("edit-kwrite")
   \LARGE
   \centering
   {
-    \LARGE Lecture 12 -- Spatial capture-recapture \\
-    for closed populations: \\
+    \LARGE Spatial capture-recapture %\\
+    for \\ closed populations: \\
     \Large simulation, fitting, and prediction \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -88,15 +76,15 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{SCR overview}
-  {\centering Two motivations for SCR \\}
+  {\centering \large Two motivations for SCR \\}
   \vfill
   \begin{enumerate}
     \item Improved inference
     \begin{itemize}
-      \item<1-> Non-spatial models can't properly account for sources
-        of variation in $p$ that can cause bias.
+      \item<1-> Non-spatial models don't account for important sources
+        of variation in $p$. %that can cause bias.
         \begin{itemize}
-          \item<1-> Distance to traps
+          \item<1-> Distance between animals and traps
           \item<1-> Trap-specific covariates
         \end{itemize}
       \item<2-> SCR makes it possible to estimate \alert{density}, not
@@ -215,7 +203,7 @@ knit_theme$set("edit-kwrite")
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots) \\
+    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) + \cdots) \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
     \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
@@ -234,7 +222,7 @@ knit_theme$set("edit-kwrite")
   Definitions \\
   \hangindent=0.9cm $\lambda(\bs)$ -- The ``intensity function'' %or ``density surface''
   describing the density of individuals at location $\bs$ \\ 
-  $\Lambda$ -- Expected number of individuals \\
+  $\Lambda$ -- Expected number of individuals in the spatial region $\mathcal{S}$ \\
   $N$ -- Realized number of individuals (ie, population size) \\
   $\bsi$ -- Location of the $i$th activity center \\
   $\bxj$ -- Location of trap $j$ \\
@@ -325,6 +313,12 @@ knit_theme$set("edit-kwrite")
 
 
 
+% \begin{frame}
+%   \frametitle{Poisson point process}
+%   Show an example
+% \end{frame}
+
+
 
 \begin{frame}
   \frametitle{Observation model(s)}
@@ -374,9 +368,9 @@ knit_theme$set("edit-kwrite")
       \hline
     \end{tabular}
     % \end{center}
-    \pause \vfill
-There are other observation models for data from area searches,
-transects, or acoustic detectors recording signal strength.
+  \pause \vfill
+  There are other observation models for data from area searches,
+  transects, or acoustic recording units.
 \end{frame}
 
 
@@ -530,7 +524,7 @@ plot(elevation, col=topo.colors(100), main="Elevation")
 <<ippp2,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center">>=
 beta0 <- -15
 beta1 <- 0.01 #0.005
-lambda <- exp(beta0 + beta1*elevation) # Intensity function
+lambda <- exp(beta0 + beta1*elevation)  # Intensity function
 plot(lambda, col=terrain.colors(100), main="Density surface")
 @
 \end{frame}
@@ -994,9 +988,9 @@ plot(sch)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_0$
-<<secr-M0,size='scriptsize',cache=TRUE>>=
+<<secr-M0,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
-                  buffer=150, trace=FALSE)
+                  buffer=150, trace=FALSE, ncores=3, binomN=0)
 coef(fm.M0)
 @
 \pause
@@ -1014,7 +1008,7 @@ $\sigma$.
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_t$
-<<secr-Mt,size='scriptsize',cache=TRUE>>=
+<<secr-Mt,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mt)
@@ -1032,7 +1026,7 @@ predict(fm.Mt)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_b$
-<<secr-Mb,size='scriptsize',cache=TRUE>>=
+<<secr-Mb,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mb)
@@ -1131,7 +1125,7 @@ AIC(fm.M0, fm.Mt, fm.Mb)
     \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
   % A uniform prior on $\psi$ results in a discrete uniform prior on
@@ -1154,7 +1148,7 @@ AIC(fm.M0, fm.Mt, fm.Mb)
 \begin{frame}[fragile]
   \frametitle{Model SCR$_0$ -- data augmentation}
 \vspace{-3pt}
-<<bugs-SC0,size='scriptsize'>>=
+<<bugs-SC0,size='scriptsize',comment='',background='lightblue'>>=
 writeLines(readLines("SCR0.jag"))
 @
 \end{frame}
@@ -1222,14 +1216,14 @@ plot(jags.post.SCR0[,jp.SCR0])
 
 
 \begin{frame}
-  \frametitle{How do we speed up Bayesian inference?}
+  \frametitle{Easy tricks to speed up Bayesian inference}
   \begin{itemize}
-    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
-      non-spatial lecture.
-      \begin{itemize}
-        \item This can work well, but not when there are other
-          individual-level covariates.
-      \end{itemize}
+    % \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
+    %   non-spatial lecture.
+    %   \begin{itemize}
+    %     \item This can work well, but not when there are other
+    %       individual-level covariates.
+    %   \end{itemize}
     \item Treat $z_i=1$ as data for first $n$ individuals.
     \item If there are no occasion-specific covariates, collapse data
       and use binomial instead of Bernoulli distribution.
@@ -1245,7 +1239,7 @@ plot(jags.post.SCR0[,jp.SCR0])
 \begin{frame}[fragile]
   \frametitle{Model SCR$_0$ -- data augmentation}
 \vspace{-3pt}
-<<bugs-SC0-faster,size='tiny'>>=
+<<bugs-SC0-faster,size='tiny',comment='',background='lightblue'>>=
 writeLines(readLines("SCR0-faster.jag"))
 @
 \end{frame}
@@ -1316,7 +1310,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
   inference (see Ch. 10). \\ 
   \pause
   \vfill
-  Random placement of traps is not required, but it's a good idea
+  Random placement of traps is not required, but it's a good idea to
   randomly sample locations along the environmental gradients you're
   interested in. \\
   \pause \vfill
@@ -1368,7 +1362,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
       from secr for the same model (which we fit earlier).
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
 \end{frame}
 
 

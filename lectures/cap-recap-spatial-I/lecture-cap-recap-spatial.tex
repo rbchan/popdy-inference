@@ -59,7 +59,6 @@
 
 
 
-
 % Load function to compile and open PDF
 
 
@@ -72,19 +71,6 @@
 % New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
-
-
-
-
-\newcommand{\bxt}{${\bm x}_j$}
-\newcommand{\bx}{{\bm x}}
-\newcommand{\bxj}{{\bm x}_j}
-\newcommand{\bst}{${\bm s}_i$}
-\newcommand{\bs}{{\bm s}}
-\newcommand{\bsi}{{\bm s}_i}
-\newcommand{\ed}{\|\bx - \bs\|}
-\newcommand{\cs}{\mathcal{S} }
-\newcommand{\dsixj}{\|\bsi - \bxj\|}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -95,8 +81,8 @@
   \LARGE
   \centering
   {
-    \LARGE Lecture 12 -- Spatial capture-recapture \\
-    for closed populations: \\
+    \LARGE Spatial capture-recapture %\\
+    for \\ closed populations: \\
     \Large simulation, fitting, and prediction \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -130,15 +116,15 @@
 
 \begin{frame}
   \frametitle{SCR overview}
-  {\centering Two motivations for SCR \\}
+  {\centering \large Two motivations for SCR \\}
   \vfill
   \begin{enumerate}
     \item Improved inference
     \begin{itemize}
-      \item<1-> Non-spatial models can't properly account for sources
-        of variation in $p$ that can cause bias.
+      \item<1-> Non-spatial models don't account for important sources
+        of variation in $p$. %that can cause bias.
         \begin{itemize}
-          \item<1-> Distance to traps
+          \item<1-> Distance between animals and traps
           \item<1-> Trap-specific covariates
         \end{itemize}
       \item<2-> SCR makes it possible to estimate \alert{density}, not
@@ -257,7 +243,7 @@
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots \\
+    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) + \cdots) \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
     \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
@@ -266,7 +252,7 @@
 %  \vfill
   Observation model (supposing $N$ was known)
   \begin{gather*}
-    p_{ij} = g_0\exp(\|\bsi - \bxj\|/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
   \end{gather*}
   \pause
@@ -276,7 +262,7 @@
   Definitions \\
   \hangindent=0.9cm $\lambda(\bs)$ -- The ``intensity function'' %or ``density surface''
   describing the density of individuals at location $\bs$ \\ 
-  $\Lambda$ -- Expected number of individuals \\
+  $\Lambda$ -- Expected number of individuals in the spatial region $\mathcal{S}$ \\
   $N$ -- Realized number of individuals (ie, population size) \\
   $\bsi$ -- Location of the $i$th activity center \\
   $\bxj$ -- Location of trap $j$ \\
@@ -367,6 +353,12 @@
 
 
 
+% \begin{frame}
+%   \frametitle{Poisson point process}
+%   Show an example
+% \end{frame}
+
+
 
 \begin{frame}
   \frametitle{Observation model(s)}
@@ -416,9 +408,9 @@
       \hline
     \end{tabular}
     % \end{center}
-    \pause \vfill
-There are other observation models for data from area searches,
-transects, or acoustic detectors recording signal strength.
+  \pause \vfill
+  There are other observation models for data from area searches,
+  transects, or acoustic recording units.
 \end{frame}
 
 
@@ -471,7 +463,6 @@ transects, or acoustic detectors recording signal strength.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -501,7 +492,6 @@ transects, or acoustic detectors recording signal strength.
 {\centering \includegraphics[width=0.6\linewidth]{figure/ippp1-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -551,7 +541,7 @@ transects, or acoustic detectors recording signal strength.
 \begin{alltt}
 \hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
 \hlstd{beta1} \hlkwb{<-} \hlnum{0.01} \hlcom{#0.005}
-\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)} \hlcom{# Intensity function}
+\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}  \hlcom{# Intensity function}
 \hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Density surface"}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -559,7 +549,6 @@ transects, or acoustic detectors recording signal strength.
 {\centering \includegraphics[width=0.6\linewidth]{figure/ippp2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -630,7 +619,6 @@ inside its pixel.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -656,7 +644,6 @@ inside its pixel.
 {\centering \includegraphics[width=0.6\linewidth]{figure/traps1-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1104,7 +1091,7 @@ Spatial recaptures
 \hlkwd{library}\hlstd{(secr)}
 \hlstd{sch} \hlkwb{<-} \hlkwd{read.capthist}\hlstd{(}\hlkwc{captfile}\hlstd{=}\hlstr{"encounter_data_file.csv"}\hlstd{,}
                      \hlkwc{trapfile}\hlstd{=}\hlstr{"trap_data_file.csv"}\hlstd{,}
-                     \hlkwc{detector}\hlstd{=}\hlstr{"multi"}\hlstd{,} \hlkwc{fmt}\hlstd{=}\hlstr{"trapID"}\hlstd{)}
+                     \hlkwc{detector}\hlstd{=}\hlstr{"proximity"}\hlstd{,} \hlkwc{fmt}\hlstd{=}\hlstr{"trapID"}\hlstd{)}
 \end{alltt}
 
 
@@ -1113,7 +1100,7 @@ Spatial recaptures
 \end{alltt}
 \begin{verbatim}
 ## Object class       capthist 
-## Detector type      multi 
+## Detector type      proximity 
 ## Detector number    64 
 ## Average spacing    100 m 
 ## x-range            150 850 m 
@@ -1126,8 +1113,8 @@ Spatial recaptures
 ## f                 26 23  8  2  0    59
 ## M(t+1)            20 35 48 52 59    59
 ## losses             0  0  0  0  0     0
-## detections        20 23 22 19 20   104
-## detectors visited 15 20 17 18 17    87
+## detections        23 25 23 22 24   117
+## detectors visited 17 21 18 21 21    98
 ## detectors used    64 64 64 64 64   320
 \end{verbatim}
 \end{kframe}
@@ -1150,7 +1137,6 @@ Spatial recaptures
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1164,14 +1150,14 @@ Spatial recaptures
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
-                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{)}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
 \hlkwd{coef}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##              beta    SE.beta        lcl        ucl
-## D     -0.01162548 0.14297005 -0.2918416  0.2685907
-## g0    -1.20686796 0.23519620 -1.6678440 -0.7458919
-## sigma  3.90580945 0.07612483  3.7566075  4.0550114
+##              beta   SE.beta        lcl        ucl
+## D     -0.02101696 0.1397615 -0.2949446  0.2529106
+## g0    -1.17323867 0.2169291 -1.5984119 -0.7480655
+## sigma  3.90384640 0.0659476  3.7745915  4.0331013
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1184,10 +1170,10 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate        lcl        ucl
-## D       log  0.9884418  0.14204281  0.7468868  1.3081196
-## g0    logit  0.2302557  0.04168571  0.1587118  0.3217171
-## sigma   log 49.6902853  3.78815135 42.8029711 57.6858192
+##        link   estimate SE.estimate        lcl       ucl
+## D       log  0.9792024   0.1375259  0.7445729  1.287768
+## g0    logit  0.2362701   0.0391441  0.1682037  0.321243
+## sigma   log 49.5928368   3.2740877 43.5797017 56.435665
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1208,14 +1194,14 @@ $\sigma$.
 \hlkwd{coef}\hlstd{(fm.Mt)}
 \end{alltt}
 \begin{verbatim}
-##              beta    SE.beta        lcl        ucl
-## D     -0.01257499 0.14291865 -0.2926904  0.2675404
-## g0    -1.25610254 0.33755875 -1.9177055 -0.5944995
-## g0.t2  0.19994362 0.37786653 -0.5406612  0.9405484
-## g0.t3  0.13938072 0.37961812 -0.6046571  0.8834186
-## g0.t4 -0.08008000 0.38608665 -0.8367959  0.6766359
-## g0.t5 -0.01268276 0.38325431 -0.7638474  0.7384819
-## sigma  3.90555770 0.07613275  3.7563403  4.0547751
+##               beta    SE.beta        lcl        ucl
+## D     -0.021308348 0.13973866 -0.2951911  0.2525744
+## g0    -1.200971986 0.31345776 -1.8153379 -0.5866061
+## g0.t2  0.138689248 0.35810430 -0.5631823  0.8405608
+## g0.t3  0.005981131 0.36064029 -0.7008608  0.7128231
+## g0.t4 -0.056246788 0.36265319 -0.7670340  0.6545404
+## g0.t5  0.057330098 0.35843321 -0.6451861  0.7598463
+## sigma  3.903188779 0.06594118  3.7739464  4.0324311
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1228,10 +1214,10 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(fm.Mt)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate        lcl        ucl
-## D       log  0.9875037  0.14185646  0.7462532  1.3067464
-## g0    logit  0.2216455  0.05823523  0.1281176  0.3556031
-## sigma   log 49.6777774  3.78759287 42.7915328 57.6721937
+##        link   estimate SE.estimate        lcl       ucl
+## D       log  0.9789171  0.13746307  0.7443893  1.287335
+## g0    logit  0.2313024  0.05573328  0.1399942  0.357414
+## sigma   log 49.5602340  3.27161634 43.5515996 56.397855
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1251,10 +1237,10 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##                 beta    SE.beta        lcl        ucl
-## D         0.01559591 0.19060698 -0.3579869  0.3891787
-## g0       -1.28559967 0.41829717 -2.1054471 -0.4657523
-## g0.bTRUE  0.09666728 0.41987118 -0.7262651  0.9195997
-## sigma     3.90626997 0.07626587  3.7567916  4.0557483
+## D         0.01138487 0.16953201 -0.3208918  0.3436615
+## g0       -1.27247229 0.34837306 -1.9552709 -0.5896736
+## g0.bTRUE  0.12709372 0.34549138 -0.5500570  0.8042444
+## sigma     3.90573225 0.06628265  3.7758206  4.0356439
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1268,9 +1254,9 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##        link   estimate SE.estimate        lcl        ucl
-## D       log  1.0157182  0.19537481  0.6990822  1.4757683
-## g0    logit  0.2165985  0.07097817  0.1085685  0.3856221
-## sigma   log 49.7131739  3.79693852 42.8108511 57.7283468
+## D       log  1.0114499  0.17271263  0.7255018  1.4101012
+## g0    logit  0.2188343  0.05955293  0.1239798  0.3567097
+## sigma   log 49.6864494  3.29697001 43.6333011 56.5793373
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1289,8 +1275,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 96.81711    13.91298 73.15698 128.1293 59
-## R.N 96.81716     9.83636 81.90352 121.4418 59
+## E.N 95.91211   13.470552 72.93033 126.1359 59
+## R.N 95.91214    9.248982 81.75748 118.8707 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1302,8 +1288,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 96.72522   13.894729 73.09491 127.9948 59
-## R.N 96.72527    9.815207 81.84476 121.2986 59
+## E.N 95.88416   13.464401 72.91235 126.0935 59
+## R.N 95.88418    9.241532 81.74076 118.8240 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1315,8 +1301,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 99.48880    19.13681 68.47456 144.5504 59
-## R.N 99.48884    16.33183 77.91667 145.6614 59
+## E.N 99.07073    16.91707 71.06233 138.1183 59
+## R.N 99.07076    13.67905 79.90358 135.8130 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1336,7 +1322,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link estimate SE.estimate       lcl      ucl
-## D  log 1.014208   0.1443613 0.7683777 1.338687
+## D  log 1.005157   0.1403068 0.7655794 1.319708
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1349,7 +1335,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.9884415   0.1420427 0.7468867 1.308119
+## D  log 0.9792021   0.1375259 0.7445727 1.287768
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1362,7 +1348,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.9872495   0.1420249 0.7457621 1.306934
+## D  log 0.9779249   0.1374419 0.7434613 1.286331
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1374,8 +1360,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{250}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl     ucl
-## D  log 0.9872298   0.1420268 0.7457403 1.30692
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.9779014   0.1374416 0.7434391 1.286307
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1387,8 +1373,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{300}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link estimate SE.estimate       lcl     ucl
-## D  log  0.98723    0.142027 0.7457403 1.30692
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.9779008   0.1374415 0.7434386 1.286306
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1404,11 +1390,13 @@ Estimates on original scale
 \begin{alltt}
 \hlkwd{AIC}\hlstd{(fm.M0, fm.Mt, fm.Mb)}
 \end{alltt}
-\begin{verbatim}
-##                  model   detectfn npar    logLik     AIC    AICc dAICc AICcwt
-## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -330.3091 666.618 667.055 0.000 0.7486
-## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -330.2817 668.563 669.304 2.249 0.2431
-## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -329.9340 673.868 676.064 9.009 0.0083
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning in AIC.secr(fm.M0, fm.Mt, fm.Mb): models not compatible for AIC}}\begin{verbatim}
+##                  model   detectfn npar    logLik     AIC    AICc   dAICc AICcwt
+## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -223.3812 452.762 453.199   0.000      1
+## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -380.3911 768.782 769.523 316.324      0
+## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -380.2940 774.588 776.784 323.585      0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1438,8 +1426,8 @@ Estimates on original scale
   \begin{gather*}
     \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp(-\|\bsi-\bxj\|/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
   % A uniform prior on $\psi$ results in a discrete uniform prior on
@@ -1463,32 +1451,32 @@ Estimates on original scale
   \frametitle{Model SCR$_0$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## model {
-## psi ~ dunif(0, 1)
-## g0 ~ dunif(0, 1)
-## sigma ~ dunif(0, 0.5)
-## 
-## for(i in 1:M) {
-##   s[i,1] ~ dunif(xlim[1], xlim[2])
-##   s[i,2] ~ dunif(ylim[1], ylim[2])
-##   z[i] ~ dbern(psi)
-##   for(j in 1:J) {
-##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
-##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
-##     for(k in 1:K) {
-##       y[i,j,k] ~ dbern(z[i]*p[i,j])
-##     }
-##   }
-## }
-## 
-## EN <- M*psi
-## N <- sum(z)
-## }
+model {
+psi ~ dunif(0, 1)
+g0 ~ dunif(0, 1)
+sigma ~ dunif(0, 0.5)
+
+for(i in 1:M) {
+  s[i,1] ~ dunif(xlim[1], xlim[2])
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+    p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
+    for(k in 1:K) {
+      y[i,j,k] ~ dbern(z[i]*p[i,j])
+    }
+  }
+}
+
+EN <- M*psi
+N <- sum(z)
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1602,20 +1590,19 @@ MCMC
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{How do we speed up Bayesian inference?}
+  \frametitle{Easy tricks to speed up Bayesian inference}
   \begin{itemize}
-    \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
-      non-spatial lecture.
-      \begin{itemize}
-        \item This can work well, but not when there are other
-          individual-level covariates.
-      \end{itemize}
+    % \item Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
+    %   non-spatial lecture.
+    %   \begin{itemize}
+    %     \item This can work well, but not when there are other
+    %       individual-level covariates.
+    %   \end{itemize}
     \item Treat $z_i=1$ as data for first $n$ individuals.
     \item If there are no occasion-specific covariates, collapse data
       and use binomial instead of Bernoulli distribution.
@@ -1632,38 +1619,38 @@ MCMC
   \frametitle{Model SCR$_0$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0-faster.jag"}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
-## model {
-## psi ~ dunif(0, 1)
-## g0 ~ dunif(0, 1)
-## sigma ~ dunif(0, 0.5)
-## 
-## for(i in 1:M) {
-##   s[i,1] ~ dunif(xlim[1], xlim[2])
-##   s[i,2] ~ dunif(ylim[1], ylim[2])
-##   z[i] ~ dbern(psi)
-##   for(j in 1:J) {
-##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
-##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
-##   }
-## }
-## for(i in 1:n) {  ## Model for observed capture histories
-##   for(j in 1:J) {
-##     y.tilde[i,j] ~ dbinom(p[i,j], K)
-##   }
-## }
-## for(i in (n+1):M) { ## Model for augmented guys
-##   PrMoreThanOneDet[i] <- 1-prod(1-p[i,])^K
-##   zero[i] ~ dbern(PrMoreThanOneDet[i]*z[i])
-## }
-## 
-## EN <- M*psi
-## N <- sum(z)
-## }
+model {
+psi ~ dunif(0, 1)
+g0 ~ dunif(0, 1)
+sigma ~ dunif(0, 0.5)
+
+for(i in 1:M) {
+  s[i,1] ~ dunif(xlim[1], xlim[2])
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+    p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
+  }
+}
+for(i in 1:n) {  ## Model for observed capture histories
+  for(j in 1:J) {
+    y.tilde[i,j] ~ dbinom(p[i,j], K)
+  }
+}
+for(i in (n+1):M) { ## Model for augmented guys
+  PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+  zero[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
+}
+
+EN <- M*psi
+N <- sum(z)
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1775,7 +1762,6 @@ MCMC
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1788,7 +1774,7 @@ MCMC
   inference (see Ch. 10). \\ 
   \pause
   \vfill
-  Random placement of traps is not required, but it's a good idea
+  Random placement of traps is not required, but it's a good idea to
   randomly sample locations along the environmental gradients you're
   interested in. \\
   \pause \vfill
@@ -1840,7 +1826,7 @@ MCMC
       from secr for the same model (which we fit earlier).
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
 \end{frame}
 
 
