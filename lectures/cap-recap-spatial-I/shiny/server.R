@@ -1,5 +1,16 @@
 function(input, output, session) {
 
+    output$hpp <- renderPlot({
+        ED <- input$ED
+        input$simButton
+        N <- rpois(n=1, lambda=ED)
+        s <- cbind(runif(N), runif(N))
+        plot(s, pch=16, col="blue", asp=1, xlim=c(0,1), ylim=c(0,1),
+##             main="Homogeneous Poisson point process",
+             main=paste("N =", N),
+             xlab="x coordinate", ylab="y coordinate")
+    })
+    
     output$gdist <- renderPlot({
         g0 <- input$g0
         sig <- input$sigma
