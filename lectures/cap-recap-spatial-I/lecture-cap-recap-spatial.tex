@@ -361,7 +361,7 @@
 
 
 \begin{frame}
-  \frametitle{Observation model(s)}
+  \frametitle{Observation models}
   The SCR model assumes that capture probability decreases with
   distance between activity centers and traps. \\
   \pause
@@ -381,6 +381,27 @@
   However, there are many options and we aren't restricted to the
   Bernoulli observation model. 
 \end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Shiny app}
+  \LARGE
+  \centering
+  % \href{
+  %   https://richard-chandler.shinyapps.io/scr-cap-prob/
+  % }{
+  %   Shiny App 
+  % } \\
+  Shiny App \\
+  \normalsize
+  \color{blue}
+  \url{
+    https://richard-chandler.shinyapps.io/scr-cap-prob/
+  } \\
+\end{frame}
+
 
 
 
@@ -1150,7 +1171,7 @@ Spatial recaptures
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
-                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{binomN}\hlstd{=}\hlnum{0}\hlstd{)}
 \hlkwd{coef}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
