@@ -82,8 +82,8 @@
   \centering
   {
     \LARGE Spatial capture-recapture %\\
-    for \\ closed populations: \\
-    \Large simulation, fitting, and prediction \\
+    for \\ closed populations \\
+%    \Large simulation, fitting, and prediction \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
@@ -246,7 +246,7 @@
     \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) + \cdots) \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
-    \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
+    \bsi \propto \lambda(\bs) \;\; \mathrm{for}\; i=1,\dots,N 
   \end{gather*}
   \pause
 %  \vfill
@@ -260,8 +260,8 @@
 %  \footnotesize
   \scriptsize
   Definitions \\
-  \hangindent=0.9cm $\lambda(\bs)$ -- The ``intensity function'' %or ``density surface''
-  describing the density of individuals at location $\bs$ \\ 
+  \hangindent=0.9cm $\lambda(\bs)$ -- ``Intensity function'' %or ``density surface''
+  describing expected density of individuals at location $\bs$ \\ 
   $\Lambda$ -- Expected number of individuals in the spatial region $\mathcal{S}$ \\
   $N$ -- Realized number of individuals (ie, population size) \\
   $\bsi$ -- Location of the $i$th activity center \\
@@ -288,14 +288,14 @@
     The state model of SCR is a spatial (or spatio-temporal) point process \\}
   \vfill
   \pause
-  There are many varieties of spatial point processes \\
+  There are many varieties of spatial point processes, including \\
   \begin{itemize}
     \item (In)homogeneous binomial point process
     \item (In)homogeneous Poisson point process
     \item Cox process
     \item Gibbs process
     \item Markov point process
-    \item Among others
+%    \item Among others
   \end{itemize}
 \end{frame}
 
@@ -353,10 +353,27 @@
 
 
 
-% \begin{frame}
-%   \frametitle{Poisson point process}
-%   Show an example
-% \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Shiny app}
+  \LARGE
+  \centering
+  % \href{
+  %   https://richard-chandler.shinyapps.io/scr-cap-prob/
+  % }{
+  %   Shiny App 
+  % } \\
+  Shiny App \\
+  \vfill
+  \normalsize
+  \color{blue}
+  \url{
+    https://richard-chandler.shinyapps.io/scr-cap-prob/
+  } \\
+\end{frame}
+
 
 
 
@@ -418,26 +435,6 @@
 \end{frame}
 
 
-
-
-
-\begin{frame}
-  \frametitle{Shiny app}
-  \LARGE
-  \centering
-  % \href{
-  %   https://richard-chandler.shinyapps.io/scr-cap-prob/
-  % }{
-  %   Shiny App 
-  % } \\
-  Shiny App \\
-  \vfill
-  \normalsize
-  \color{blue}
-  \url{
-    https://richard-chandler.shinyapps.io/scr-cap-prob/
-  } \\
-\end{frame}
 
 
 
@@ -659,14 +656,14 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\hlkwd{round}\hlstd{(dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##           [,1]      [,2]      [,3]      [,4]      [,5]
-## [1,] 0.5313677 0.5498079 0.5850006 0.6341631 0.6943341
-## [2,] 0.1020718 0.1248719 0.2019092 0.2931581 0.3887364
-## [3,] 0.8779253 0.7862564 0.6968827 0.6108124 0.5296585
-## [4,] 1.0073959 0.9356777 0.8695626 0.8104231 0.7598894
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,] 0.53 0.55 0.59 0.63 0.69
+## [2,] 0.10 0.12 0.20 0.29 0.39
+## [3,] 0.88 0.79 0.70 0.61 0.53
+## [4,] 1.01 0.94 0.87 0.81 0.76
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -696,14 +693,14 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{round}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##          [,1]     [,2]     [,3]     [,4]     [,5]
-## [1,] 5.97e-26 1.11e-27 3.76e-31 2.34e-36 2.67e-43
-## [2,] 2.49e-02 8.84e-03 5.75e-05 6.86e-09 1.50e-14
-## [3,] 2.26e-68 4.03e-55 1.31e-43 7.85e-34 8.59e-26
-## [4,] 1.42e-89 1.81e-77 4.20e-67 1.79e-58 1.40e-51
+##       [,1]  [,2] [,3] [,4] [,5]
+## [1,] 0.000 0.000    0    0    0
+## [2,] 0.025 0.009    0    0    0
+## [3,] 0.000 0.000    0    0    0
+## [4,] 0.000 0.000    0    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -824,16 +821,14 @@ Spatial recaptures
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## plot(lambda, col=terrain.colors(100),}
-\hlcom{##      main="Density surface, activity centers, traps, and capture locs")}
-\hlkwd{plot}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,}
+\hlkwd{plot}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{,}
      \hlkwc{main}\hlstd{=}\hlstr{"Activity centers, traps, and capture locs"}\hlstd{)}
 \hlstd{s.cap} \hlkwb{<-} \hlstd{s[captured,]}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
     \hlstd{traps.i} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{rowSums}\hlstd{(y[i,,])}\hlopt{>}\hlnum{0}\hlstd{)}
     \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(traps.i)) \{}
         \hlkwd{segments}\hlstd{(s.cap[i,}\hlnum{1}\hlstd{], s.cap[i,}\hlnum{2}\hlstd{],}
-                 \hlstd{x[traps.i[j],}\hlnum{1}\hlstd{], x[traps.i[j],}\hlnum{2}\hlstd{],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.9}\hlstd{))}
+                 \hlstd{x[traps.i[j],}\hlnum{1}\hlstd{], x[traps.i[j],}\hlnum{2}\hlstd{],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.6}\hlstd{))}
     \hlstd{\}}
 \hlstd{\}}
 \hlkwd{points}\hlstd{(s[captured,],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
@@ -1438,15 +1433,19 @@ Estimates on original scale
   \frametitle{Model SCR$_0$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
-psi ~ dunif(0, 1)
-g0 ~ dunif(0, 1)
-sigma ~ dunif(0, 0.5)
+g0 ~ dunif(0, 1)       ## Baseline capture probability
+sigma ~ dunif(0, 0.5)  ## Scale parameter of encounter function
+psi ~ dunif(0, 1)      ## Data augmentation parameter
 
 for(i in 1:M) {
   s[i,1] ~ dunif(xlim[1], xlim[2])
@@ -1461,8 +1460,8 @@ for(i in 1:M) {
   }
 }
 
-EN <- M*psi
-N <- sum(z)
+EN <- M*psi  ## Expected value of N
+N <- sum(z)  ## Realized value of N
 }
 \end{verbatim}
 \end{kframe}
@@ -1606,15 +1605,19 @@ MCMC
   \frametitle{Model SCR$_0$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0-faster.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
-psi ~ dunif(0, 1)
-g0 ~ dunif(0, 1)
-sigma ~ dunif(0, 0.5)
+g0 ~ dunif(0, 1)       ## Baseline capture probability
+sigma ~ dunif(0, 0.5)  ## Scale parameter of encounter function
+psi ~ dunif(0, 1)      ## Data augmentation parameter
 
 for(i in 1:M) {
   s[i,1] ~ dunif(xlim[1], xlim[2])
@@ -1635,8 +1638,8 @@ for(i in (n+1):M) { ## Model for augmented guys
   zero[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
 }
 
-EN <- M*psi
-N <- sum(z)
+EN <- M*psi  ## Expected value of N
+N <- sum(z)  ## Realized value of N
 }
 \end{verbatim}
 \end{kframe}
@@ -1806,11 +1809,11 @@ MCMC
   following: 
   \vfill
   \begin{enumerate}
-    \item Fit a ``local behavioral response'' model,
-      rather than a ``global behavioral response'' model in secr.
-    \item Fit a model in JAGS where $g_0$ varies among
-      occasions. Compare estimates of $E(N)$ and $N$ to the estimates
-      from secr for the same model (which we fit earlier).
+%    \item Fit a ``local behavioral response'' model,
+%      rather than a ``global behavioral response'' model in secr.
+    \item Import the bear data and compute the capture frequencies and the number of spatial recapture. 
+    \item Fit a model in `secr' and JAGS where $g_0$ varies among
+      occasions. Compare estimates and 95\% CIs for $g_0$, $\sigma$, $E(N)$ and $N$. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 

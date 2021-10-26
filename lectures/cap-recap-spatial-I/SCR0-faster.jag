@@ -1,7 +1,7 @@
 model {
-psi ~ dunif(0, 1)
-g0 ~ dunif(0, 1)
-sigma ~ dunif(0, 0.5)
+g0 ~ dunif(0, 1)       ## Baseline capture probability
+sigma ~ dunif(0, 0.5)  ## Scale parameter of encounter function
+psi ~ dunif(0, 1)      ## Data augmentation parameter
 
 for(i in 1:M) {
   s[i,1] ~ dunif(xlim[1], xlim[2])
@@ -22,6 +22,6 @@ for(i in (n+1):M) { ## Model for augmented guys
   zero[i] ~ dbern(PrAtLeastOneCap[i]*z[i])
 }
 
-EN <- M*psi
-N <- sum(z)
+EN <- M*psi  ## Expected value of N
+N <- sum(z)  ## Realized value of N
 }
