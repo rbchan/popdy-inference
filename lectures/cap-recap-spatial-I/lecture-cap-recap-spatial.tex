@@ -73,7 +73,7 @@
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-
+    
 
 
 
@@ -828,12 +828,12 @@ Spatial recaptures
     \hlstd{traps.i} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{rowSums}\hlstd{(y[i,,])}\hlopt{>}\hlnum{0}\hlstd{)}
     \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(traps.i)) \{}
         \hlkwd{segments}\hlstd{(s.cap[i,}\hlnum{1}\hlstd{], s.cap[i,}\hlnum{2}\hlstd{],}
-                 \hlstd{x[traps.i[j],}\hlnum{1}\hlstd{], x[traps.i[j],}\hlnum{2}\hlstd{],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.6}\hlstd{))}
+                 \hlstd{x[traps.i[j],}\hlnum{1}\hlstd{], x[traps.i[j],}\hlnum{2}\hlstd{],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.3}\hlstd{))}
     \hlstd{\}}
 \hlstd{\}}
 \hlkwd{points}\hlstd{(s[captured,],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
 \hlkwd{points}\hlstd{(s[}\hlopt{!}\hlstd{captured,],} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
-\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}              \hlcom{## Trap locations}
+\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}                         \hlcom{## Trap locations}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1132,14 +1132,14 @@ Spatial recaptures
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
-                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{binomN}\hlstd{=}\hlnum{0}\hlstd{)}
+                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
 \hlkwd{coef}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##              beta   SE.beta        lcl        ucl
-## D     -0.02101696 0.1397615 -0.2949446  0.2529106
-## g0    -1.17323867 0.2169291 -1.5984119 -0.7480655
-## sigma  3.90384640 0.0659476  3.7745915  4.0331013
+##            beta   SE.beta       lcl        ucl
+## D     -2.145679 0.3706765 -2.872192 -1.4191670
+## g0    -1.352849 0.5347385 -2.400917 -0.3047806
+## sigma  4.110796 0.1640624  3.789240  4.4323528
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1152,10 +1152,10 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate        lcl       ucl
-## D       log  0.9792024   0.1375259  0.7445729  1.287768
-## g0    logit  0.2362701   0.0391441  0.1682037  0.321243
-## sigma   log 49.5928368   3.2740877 43.5797017 56.435665
+##        link   estimate SE.estimate         lcl        ucl
+## D       log  0.1169885  0.04489802  0.05657478  0.2419155
+## g0    logit  0.2054050  0.08727670  0.08310280  0.4243892
+## sigma   log 60.9952794 10.07474779 44.22278410 84.1291244
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1256,9 +1256,9 @@ Estimates on original scale
 \hlkwd{region.N}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##     estimate SE.estimate      lcl      ucl  n
-## E.N 95.91211   13.470552 72.93033 126.1359 59
-## R.N 95.91214    9.248982 81.75748 118.8707 59
+##     estimate SE.estimate      lcl      ucl n
+## E.N 11.45893    4.397726 5.541455 23.69543 8
+## R.N 11.45894    2.807322 8.857879 21.94634 8
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1375,10 +1375,14 @@ Estimates on original scale
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning in AIC.secr(fm.M0, fm.Mt, fm.Mb): models not compatible for AIC}}\begin{verbatim}
-##                  model   detectfn npar    logLik     AIC    AICc   dAICc AICcwt
-## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -223.3812 452.762 453.199   0.000      1
-## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -380.3911 768.782 769.523 316.324      0
-## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -380.2940 774.588 776.784 323.585      0
+##                  model   detectfn npar     logLik     AIC    AICc   dAICc
+## fm.M0 D~1 g0~1 sigma~1 halfnormal    3  -49.30668 104.613 110.613   0.000
+## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -380.39109 768.782 769.523 658.910
+## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -380.29404 774.588 776.784 666.171
+##       AICcwt
+## fm.M0      1
+## fm.Mb      0
+## fm.Mt      0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1811,9 +1815,13 @@ MCMC
   \begin{enumerate}
 %    \item Fit a ``local behavioral response'' model,
 %      rather than a ``global behavioral response'' model in secr.
-    \item Import the bear data and compute the capture frequencies and the number of spatial recapture. 
-    \item Fit a model in `secr' and JAGS where $g_0$ varies among
-      occasions. Compare estimates and 95\% CIs for $g_0$, $\sigma$, $E(N)$ and $N$. 
+    \item Import the bear data formatted for `secr' and fit a model
+      where $g_0$ varies among the 8 occasions. Use `secr' to
+      determine what an appropriate buffer should be.
+    \item Import the bear data formatted for JAGS and tabulate the
+      capture frequencies and the number of spatial recapture. Fit the
+      same model in JAGS that you fit in secr. Compare estimates and 95\% CIs
+      for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 

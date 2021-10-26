@@ -60,49 +60,14 @@ plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
 ## 
 
 
-## ----ippp1,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center",results="hide"----
-library(raster)
-elevation <- raster("elevation.tif")
-plot(elevation, col=topo.colors(100), main="Elevation")
-
-
-## ----ippp2,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center"----
-beta0 <- -15
-beta1 <- 0.01 #0.005
-lambda <- exp(beta0 + beta1*elevation) # Intensity function
-plot(lambda, col=terrain.colors(100), main="Density surface")
-
-
-## ----ippp3,size='footnotesize'------------------------------------------------
-set.seed(538)  
-ds <- 1                            ## Pixel area is 1 ha
-lambda.values <- values(lambda)    ## Convert raster to vector
-Lambda <- sum(lambda.values*ds)    ## E(N)
-(N <- rpois(1, Lambda))            ## Realized N
-
-
-## ----ipp4,size='footnotesize'-------------------------------------------------
-n.pixels <- length(lambda)
-jitter <- 0.005                    ## Half width of pixel 
-s.pixels <- sample(n.pixels, size=N, replace=TRUE,
-                   prob=lambda.values/Lambda)
-elevation.xyz <- as.data.frame(elevation, xy=TRUE)
-s <- elevation.xyz[s.pixels,c("x","y")] +
-    cbind(runif(N, -jitter, jitter),runif(N, -jitter, jitter))
-
-
-## ----ippp5,size='scriptsize',fig.width=7.2,out.width="70%",fig.align="center"----
-plot(lambda, col=terrain.colors(100),
-     main="Density surface with activity centers")
-points(s, pch=16, cex=1, col="blue")
-
-
-## ----traps1,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center"----
+## ----traps1,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center",echo=-(2:4)----
 x <- cbind(rep(seq(0.15, 0.85, by=0.1), each=8),
            rep(seq(0.15, 0.85, by=0.1), times=8))  ## Trap locations
-plot(lambda, col=terrain.colors(100),
-     main="Density surface with activity centers and traps")
-points(s, pch=16, col="blue") ## Activity center locations
+##plot(lambda, col=terrain.colors(100),
+##     main="Density surface with activity centers and traps")
+##points(s, pch=16, col="blue") ## Activity center locations
+plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing", asp=1,
+     main="Activity centers and traps")
 points(x, pch=3)              ## Trap locations
 
 
@@ -115,7 +80,7 @@ for(i in 1:N) {
 
 
 ## ----dist2,size='footnotesize'------------------------------------------------
-dist.sx[1:4,1:5]
+round(dist.sx[1:4,1:5], digits=2)
 
 
 ## ----p1,size='footnotesize'---------------------------------------------------
@@ -125,7 +90,7 @@ p <- g0*exp(-dist.sx^2/(2*sigma^2))
 
 
 ## ----p2,size='footnotesize'---------------------------------------------------
-print(p[1:4,1:5], digits=3)
+round(p[1:4,1:5], digits=3)
 
 
 ## ----y1,size='footnotesize'---------------------------------------------------
@@ -162,20 +127,22 @@ y.nojk <- apply(y.nok>0, 1, sum)
 table(y.nojk)
 
 
-## ----spider,size='scriptsize',fig.width=7.15,fig.show='hide'------------------
-plot(lambda, col=terrain.colors(100),
-     main="Density surface, activity centers, traps, and capture locs")
+## ----spider,size='scriptsize',fig.width=7.15,fig.show='hide',echo=-(1:2)------
+## plot(lambda, col=terrain.colors(100),
+##      main="Density surface, activity centers, traps, and capture locs")
+plot(0, xlim=c(0,1), ylim=c(0,1), asp=1, xlab="", ylab="",
+     main="Activity centers, traps, and capture locs")
 s.cap <- s[captured,]
 for(i in 1:n) {
     traps.i <- which(rowSums(y[i,,])>0)
     for(j in 1:length(traps.i)) {
         segments(s.cap[i,1], s.cap[i,2],
-                 x[traps.i[j],1], x[traps.i[j],2], col=gray(0.9))
+                 x[traps.i[j],1], x[traps.i[j],2], col=gray(0.3))
     }
 }
 points(s[captured,], pch=16, col="blue") ## Activity center locations
 points(s[!captured,], pch=1, col="blue") ## Activity center locations
-points(x, pch=3)              ## Trap locations
+points(x, pch=3)                         ## Trap locations
 
 
 ## ----write,include=FALSE,results="hide"---------------------------------------
@@ -195,7 +162,7 @@ library(secr)
 library(secr)  
 sch <- read.capthist(captfile="encounter_data_file.csv",
                      trapfile="trap_data_file.csv",
-                     detector="multi", fmt="trapID")
+                     detector="proximity", fmt="trapID")
 summary(sch)
 
 
@@ -203,9 +170,9 @@ summary(sch)
 plot(sch)
 
 
-## ----secr-M0,size='scriptsize',cache=TRUE-------------------------------------
+## ----secr-M0,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
-                  buffer=150, trace=FALSE)
+                  buffer=150, trace=FALSE, ncores=3)
 coef(fm.M0)
 
 
@@ -213,7 +180,7 @@ coef(fm.M0)
 predict(fm.M0)
 
 
-## ----secr-Mt,size='scriptsize',cache=TRUE-------------------------------------
+## ----secr-Mt,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mt)
@@ -223,7 +190,7 @@ coef(fm.Mt)
 predict(fm.Mt)
 
 
-## ----secr-Mb,size='scriptsize',cache=TRUE-------------------------------------
+## ----secr-Mb,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mb)
@@ -269,7 +236,10 @@ predict(update(fm.M0, buffer=300))[1,]
 AIC(fm.M0, fm.Mt, fm.Mb)
 
 
-## ----bugs-SC0,size='scriptsize'-----------------------------------------------
+## ----bugs-SC0-R,size='scriptsize',eval=FALSE----------------------------------
+## writeLines(readLines("SCR0.jag"))
+
+## ----bugs-SC0,size='scriptsize',comment='',background='lightblue',echo=FALSE----
 writeLines(readLines("SCR0.jag"))
 
 
@@ -310,7 +280,10 @@ summary(jags.post.SCR0)
 plot(jags.post.SCR0[,jp.SCR0])
 
 
-## ----bugs-SC0-faster,size='tiny'----------------------------------------------
+## ----bugs-SC0-faster-R,size='tiny',eval=FALSE---------------------------------
+## writeLines(readLines("SCR0-faster.jag"))
+
+## ----bugs-SC0-faster,size='tiny',comment='',background='lightblue',echo=FALSE----
 writeLines(readLines("SCR0-faster.jag"))
 
 

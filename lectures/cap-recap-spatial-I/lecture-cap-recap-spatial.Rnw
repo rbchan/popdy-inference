@@ -33,7 +33,7 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{document}
-
+    
 
 
 
@@ -744,12 +744,12 @@ for(i in 1:n) {
     traps.i <- which(rowSums(y[i,,])>0)
     for(j in 1:length(traps.i)) {
         segments(s.cap[i,1], s.cap[i,2],
-                 x[traps.i[j],1], x[traps.i[j],2], col=gray(0.6))
+                 x[traps.i[j],1], x[traps.i[j],2], col=gray(0.3))
     }
 }
 points(s[captured,], pch=16, col="blue") ## Activity center locations
 points(s[!captured,], pch=1, col="blue") ## Activity center locations
-points(x, pch=3)              ## Trap locations
+points(x, pch=3)                         ## Trap locations
 @   
 \end{frame}
 
@@ -1018,7 +1018,7 @@ plot(sch)
   Fit the SCR equivalent of Model $M_0$
 <<secr-M0,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
-                  buffer=150, trace=FALSE, ncores=3, binomN=0)
+                  buffer=150, trace=FALSE, ncores=3)
 coef(fm.M0)
 @
 \pause
@@ -1391,9 +1391,13 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
   \begin{enumerate}
 %    \item Fit a ``local behavioral response'' model,
 %      rather than a ``global behavioral response'' model in secr.
-    \item Import the bear data and compute the capture frequencies and the number of spatial recapture. 
-    \item Fit a model in `secr' and JAGS where $g_0$ varies among
-      occasions. Compare estimates and 95\% CIs for $g_0$, $\sigma$, $E(N)$ and $N$. 
+    \item Import the bear data formatted for `secr' and fit a model
+      where $g_0$ varies among the 8 occasions. Use `secr' to
+      determine what an appropriate buffer should be.
+    \item Import the bear data formatted for JAGS and tabulate the
+      capture frequencies and the number of spatial recapture. Fit the
+      same model in JAGS that you fit in secr. Compare estimates and 95\% CIs
+      for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
