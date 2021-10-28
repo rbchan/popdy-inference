@@ -5,7 +5,8 @@
 
 
 
-## ----ppp1,size='footnotesize',out.width="50%",fig.align="center"--------------
+## ----ppp1,size='footnotesize',out.width="50%",fig.align="center",echo=-1------
+set.seed(439)
 lambda1 <- 25; A <- 1     ## lambda1=density, A=area
 N <- rpois(1, lambda1*A)  
 s <- cbind(runif(N, 0, 1), runif(N, 0, 1))
@@ -13,51 +14,6 @@ plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
      xlim=c(0,1), ylim=c(0,1), cex.lab=1.5, asp=1)
 
 
-## ----include=FALSE,eval=FALSE-------------------------------------------------
-## ## Simulate covariate from normal distribution with exponential covariance
-## delta <- 0.01
-## grid0 <- seq(0+delta/2, 1-delta/2, delta)
-## grid <- cbind(rep(grid0, each=length(grid0)),
-##               rep(grid0, times=length(grid0)))
-## dist.grid <- as.matrix(dist(grid))
-## V <- exp(-dist.grid*10)
-## set.seed(4984)
-## w <- t(chol(V)) %*% rnorm(nrow(V))
-## 
-## elevation <- 1000 + w*100
-## 
-## library(raster)
-## elevation.r <- rasterFromXYZ(cbind(grid[,1], grid[,2], elevation))
-## plot(elevation.r)
-## writeRaster(elevation.r, filename="elevation.tif", overwrite=TRUE)
-## 
-## 
-## 
-## ## library(lattice)
-## 
-## ## levelplot(w ~ grid[,1]+grid[,2], aspect="iso", at=seq(min(w), max(w), len=100))
-## 
-## ## lambda <- exp(-7 + 1.5*w)
-## ## (Lambda <- sum(lambda*delta^2*1e4))
-## ## (N <- rpois(1, Lambda))
-## 
-## ## levelplot(lambda ~ grid[,1]+grid[,2], aspect="iso",
-## ##           at=seq(min(lambda), max(lambda), len=100),
-## ##           col.regions=topo.colors(100))
-## 
-## ## pi <- lambda/sum(lambda)
-## 
-## ## s <- grid[sample(nrow(grid), size=N, replace=TRUE, prob=pi),]
-## 
-## ## levelplot(lambda ~ grid[,1]+grid[,2], aspect="iso",
-## ##           panel=function(...) {
-## ##               panel.levelplot(...)
-## ##               lpoints(s, pch=16, col="blue")
-## ##           },
-## ##           at=seq(min(lambda), max(lambda), len=100),
-## ##           col.regions=terrain.colors(100))
-## 
-## 
 
 
 ## ----traps1,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center",echo=-(2:4)----
@@ -145,17 +101,6 @@ points(s[!captured,], pch=1, col="blue") ## Activity center locations
 points(x, pch=3)                         ## Trap locations
 
 
-## ----write,include=FALSE,results="hide"---------------------------------------
-ch.out <- data.frame(session=1,
-                     individual=rep(slice.index(y, 1), y),
-                     occasion=rep(slice.index(y, 3), y),
-                     trap=rep(slice.index(y, 2), y))
-write.table(ch.out, file="encounter_data_file.csv",
-            row.names=FALSE, col.names=FALSE, sep=",")
-traps.out <- data.frame(trap=1:nrow(x), x*1000)
-write.table(traps.out, file="trap_data_file.csv",
-            row.names=FALSE, col.names=FALSE, sep=",")
-library(secr)
 
 
 ## ----secr-in,warning=FALSE,size='tiny'----------------------------------------
@@ -170,7 +115,7 @@ summary(sch)
 plot(sch)
 
 
-## ----secr-M0,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
+## ----secr-M0,size='scriptsize',cache=FALSE,warning=FALSE----------------------
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.M0)
@@ -180,7 +125,7 @@ coef(fm.M0)
 predict(fm.M0)
 
 
-## ----secr-Mt,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
+## ----secr-Mt,size='scriptsize',cache=FALSE,warning=FALSE----------------------
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mt)
@@ -190,7 +135,7 @@ coef(fm.Mt)
 predict(fm.Mt)
 
 
-## ----secr-Mb,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
+## ----secr-Mb,size='scriptsize',cache=FALSE,warning=FALSE----------------------
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mb)
@@ -212,23 +157,23 @@ region.N(fm.Mt)
 region.N(fm.Mb)
 
 
-## ----buffer1,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
+## ----buffer1,size='scriptsize',warning=FALSE,cache=FALSE----------------------
 predict(update(fm.M0, buffer=100))[1,]
 
 
-## ----buffer2,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
+## ----buffer2,size='scriptsize',warning=FALSE,cache=FALSE----------------------
 predict(update(fm.M0, buffer=150))[1,]
 
 
-## ----buffer3,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
+## ----buffer3,size='scriptsize',warning=FALSE,cache=FALSE----------------------
 predict(update(fm.M0, buffer=200))[1,]
 
 
-## ----buffer4,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
+## ----buffer4,size='scriptsize',warning=FALSE,cache=FALSE----------------------
 predict(update(fm.M0, buffer=250))[1,]
 
 
-## ----buffer5,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
+## ----buffer5,size='scriptsize',warning=FALSE,cache=FALSE----------------------
 predict(update(fm.M0, buffer=300))[1,]
 
 

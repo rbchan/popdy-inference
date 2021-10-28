@@ -4,14 +4,14 @@ sigma ~ dunif(0, 0.5)  ## Scale parameter of encounter function
 psi ~ dunif(0, 1)      ## Data augmentation parameter
 
 for(i in 1:M) {
-  s[i,1] ~ dunif(xlim[1], xlim[2])
-  s[i,2] ~ dunif(ylim[1], ylim[2])
-  z[i] ~ dbern(psi)
+  s[i,1] ~ dunif(xlim[1], xlim[2]) ## x-coord of activity center
+  s[i,2] ~ dunif(ylim[1], ylim[2]) ## y-coord of activity center
+  z[i] ~ dbern(psi)                ## Is this individual part of the population?
   for(j in 1:J) {
     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
     for(k in 1:K) {
-      y[i,j,k] ~ dbern(z[i]*p[i,j])
+      y[i,j,k] ~ dbern(z[i]*p[i,j]) ## Model for the capture histories
     }
   }
 }

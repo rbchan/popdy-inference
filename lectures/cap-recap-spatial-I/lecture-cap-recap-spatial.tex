@@ -660,10 +660,10 @@
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4] [,5]
-## [1,] 0.53 0.55 0.59 0.63 0.69
-## [2,] 0.10 0.12 0.20 0.29 0.39
-## [3,] 0.88 0.79 0.70 0.61 0.53
-## [4,] 1.01 0.94 0.87 0.81 0.76
+## [1,] 0.88 0.85 0.82 0.81 0.81
+## [2,] 0.88 0.79 0.71 0.63 0.56
+## [3,] 0.27 0.33 0.41 0.50 0.59
+## [4,] 0.79 0.80 0.83 0.87 0.92
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -696,11 +696,11 @@
 \hlkwd{round}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##       [,1]  [,2] [,3] [,4] [,5]
-## [1,] 0.000 0.000    0    0    0
-## [2,] 0.025 0.009    0    0    0
-## [3,] 0.000 0.000    0    0    0
-## [4,] 0.000 0.000    0    0    0
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0    0    0    0    0
+## [2,]    0    0    0    0    0
+## [3,]    0    0    0    0    0
+## [4,]    0    0    0    0    0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -773,7 +773,7 @@
 \hlstd{(n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y))}
 \end{alltt}
 \begin{verbatim}
-## [1] 8
+## [1] 18
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -789,7 +789,7 @@
 \begin{verbatim}
 ## y.tilde
 ## 1 2 3 4 
-## 3 2 2 1
+## 9 7 1 1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -806,8 +806,8 @@ Spatial recaptures
 \end{alltt}
 \begin{verbatim}
 ## y.nojk
-## 1 2 3 
-## 3 4 1
+##  1  2  3 
+## 13  4  1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1090,13 +1090,13 @@ Spatial recaptures
 ## 
 ## Counts by occasion 
 ##                    1  2  3  4  5 Total
-## n                  2  4  2  4  3    15
-## u                  2  3  0  3  0     8
-## f                  3  3  2  0  0     8
-## M(t+1)             2  5  5  8  8     8
+## n                  9  4  4  6  6    29
+## u                  9  1  2  3  3    18
+## f                  9  7  2  0  0    18
+## M(t+1)             9 10 12 15 18    18
 ## losses             0  0  0  0  0     0
-## detections         3  5  2  4  3    17
-## detectors visited  3  4  2  4  3    16
+## detections         9  5  4  6  6    30
+## detectors visited  9  5  4  6  6    30
 ## detectors used    64 64 64 64 64   320
 \end{verbatim}
 \end{kframe}
@@ -1137,9 +1137,9 @@ Spatial recaptures
 \end{alltt}
 \begin{verbatim}
 ##            beta   SE.beta       lcl        ucl
-## D     -2.145679 0.3706765 -2.872192 -1.4191670
-## g0    -1.352849 0.5347385 -2.400917 -0.3047806
-## sigma  4.110796 0.1640624  3.789240  4.4323528
+## D     -1.050969 0.2738747 -1.587753 -0.5141840
+## g0    -1.276752 0.4489721 -2.156721 -0.3967828
+## sigma  3.789683 0.1342465  3.526564  4.0528012
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1152,10 +1152,10 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate         lcl        ucl
-## D       log  0.1169885  0.04489802  0.05657478  0.2419155
-## g0    logit  0.2054050  0.08727670  0.08310280  0.4243892
-## sigma   log 60.9952794 10.07474779 44.22278410 84.1291244
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.3495990  0.09757012  0.2043843  0.5979884
+## g0    logit  0.2181036  0.07656520  0.1037048  0.4020856
+## sigma   log 44.2423656  5.96624550 34.0069338 57.5584653
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1176,14 +1176,14 @@ $\sigma$.
 \hlkwd{coef}\hlstd{(fm.Mt)}
 \end{alltt}
 \begin{verbatim}
-##               beta    SE.beta        lcl        ucl
-## D     -0.021308348 0.13973866 -0.2951911  0.2525744
-## g0    -1.200971986 0.31345776 -1.8153379 -0.5866061
-## g0.t2  0.138689248 0.35810430 -0.5631823  0.8405608
-## g0.t3  0.005981131 0.36064029 -0.7008608  0.7128231
-## g0.t4 -0.056246788 0.36265319 -0.7670340  0.6545404
-## g0.t5  0.057330098 0.35843321 -0.6451861  0.7598463
-## sigma  3.903188779 0.06594118  3.7739464  4.0324311
+##             beta   SE.beta       lcl        ucl
+## D     -1.0603936 0.2725341 -1.594551 -0.5262366
+## g0    -0.6434653 0.6623730 -1.941693  0.6547619
+## g0.t2 -0.8125255 0.7056724 -2.195618  0.5705670
+## g0.t3 -1.1182751 0.7397365 -2.568132  0.3315818
+## g0.t4 -0.6023296 0.6829504 -1.940888  0.7362286
+## g0.t5 -0.6045681 0.6819762 -1.941217  0.7320807
+## sigma  3.7799754 0.1330985  3.519107  4.0408436
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1196,10 +1196,10 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(fm.Mt)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate        lcl       ucl
-## D       log  0.9789171  0.13746307  0.7443893  1.287335
-## g0    logit  0.2313024  0.05573328  0.1399942  0.357414
-## sigma   log 49.5602340  3.27161634 43.5515996 56.397855
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.3463195  0.09616387  0.2029997  0.5908243
+## g0    logit  0.3444636  0.14956941  0.1254620  0.6580827
+## sigma   log 43.8149641  5.85762699 33.7542802 56.8743006
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1218,11 +1218,11 @@ Estimates on original scale
 \hlkwd{coef}\hlstd{(fm.Mb)}
 \end{alltt}
 \begin{verbatim}
-##                 beta    SE.beta        lcl        ucl
-## D         0.01138487 0.16953201 -0.3208918  0.3436615
-## g0       -1.27247229 0.34837306 -1.9552709 -0.5896736
-## g0.bTRUE  0.12709372 0.34549138 -0.5500570  0.8042444
-## sigma     3.90573225 0.06628265  3.7758206  4.0356439
+##                beta   SE.beta       lcl       ucl
+## D        -0.9355618 0.5587820 -2.030754 0.1596308
+## g0       -1.5401416 1.0918000 -3.680030 0.5997471
+## g0.bTRUE  0.2900355 1.0711393 -1.809359 2.3894300
+## sigma     3.7945281 0.1361529  3.527673 4.0613829
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1236,9 +1236,9 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##        link   estimate SE.estimate        lcl        ucl
-## D       log  1.0114499  0.17271263  0.7255018  1.4101012
-## g0    logit  0.2188343  0.05955293  0.1239798  0.3567097
-## sigma   log 49.6864494  3.29697001 43.6333011 56.5793373
+## D       log  0.3923654   0.2375282  0.1312365  1.1730777
+## g0    logit  0.1765147   0.1587011  0.0246017  0.6455985
+## sigma   log 44.4572513   6.0811447 34.0446632 58.0545379
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1256,9 +1256,9 @@ Estimates on original scale
 \hlkwd{region.N}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##     estimate SE.estimate      lcl      ucl n
-## E.N 11.45893    4.397726 5.541455 23.69543 8
-## R.N 11.45894    2.807322 8.857879 21.94634 8
+##     estimate SE.estimate      lcl      ucl  n
+## E.N 34.24295    9.556917 20.01928 58.57249 18
+## R.N 34.24296    7.555906 24.82226 56.67249 18
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1270,8 +1270,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 95.88416   13.464401 72.91235 126.0935 59
-## R.N 95.88418    9.241532 81.74076 118.8240 59
+## E.N 33.92172    9.419176 19.88367 57.87078 18
+## R.N 33.92173    7.402645 24.69006 55.89224 18
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1283,8 +1283,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 99.07073    16.91707 71.06233 138.1183 59
-## R.N 99.07076    13.67905 79.90358 135.8130 59
+## E.N 38.43188    23.26570 12.85451 114.9020 18
+## R.N 38.43189    22.42456 21.57676 134.7152 18
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1303,8 +1303,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{100}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link estimate SE.estimate       lcl      ucl
-## D  log 1.005157   0.1403068 0.7655794 1.319708
+##   link  estimate SE.estimate       lcl       ucl
+## D  log 0.3554085  0.09872473 0.2082871 0.6064476
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1316,8 +1316,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.9792021   0.1375259 0.7445727 1.287768
+##   link  estimate SE.estimate       lcl       ucl
+## D  log 0.3495989  0.09757007 0.2043843 0.5979881
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1329,8 +1329,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{200}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.9779249   0.1374419 0.7434613 1.286331
+##   link  estimate SE.estimate       lcl       ucl
+## D  log 0.3494253  0.09755103 0.2042509 0.5977844
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1343,7 +1343,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.9779014   0.1374416 0.7434391 1.286307
+## D  log 0.3494236  0.09755101 0.2042495 0.597783
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1355,8 +1355,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{300}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.9779008   0.1374415 0.7434386 1.286306
+##   link  estimate SE.estimate       lcl       ucl
+## D  log 0.3494236  0.09755099 0.2042495 0.5977829
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1375,14 +1375,10 @@ Estimates on original scale
 
 
 {\ttfamily\noindent\color{warningcolor}{\#\# Warning in AIC.secr(fm.M0, fm.Mt, fm.Mb): models not compatible for AIC}}\begin{verbatim}
-##                  model   detectfn npar     logLik     AIC    AICc   dAICc
-## fm.M0 D~1 g0~1 sigma~1 halfnormal    3  -49.30668 104.613 110.613   0.000
-## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -380.39109 768.782 769.523 658.910
-## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -380.29404 774.588 776.784 666.171
-##       AICcwt
-## fm.M0      1
-## fm.Mb      0
-## fm.Mt      0
+##                  model   detectfn npar     logLik     AIC    AICc  dAICc AICcwt
+## fm.M0 D~1 g0~1 sigma~1 halfnormal    3  -75.23465 156.469 158.184  0.000      1
+## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -117.28477 242.570 245.646 87.462      0
+## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -115.94973 245.899 257.099 98.915      0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

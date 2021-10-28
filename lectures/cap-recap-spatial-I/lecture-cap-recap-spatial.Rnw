@@ -431,7 +431,8 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[fragile]
   \frametitle{Homogeneous Poisson point process}
-<<ppp1,size='footnotesize',out.width="50%",fig.align="center">>=
+<<ppp1,size='footnotesize',out.width="50%",fig.align="center",echo=-1>>=
+set.seed(439)
 lambda1 <- 25; A <- 1     ## lambda1=density, A=area
 N <- rpois(1, lambda1*A)  
 s <- cbind(runif(N, 0, 1), runif(N, 0, 1))
@@ -442,7 +443,7 @@ plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
 
 
 
-<<include=FALSE,eval=FALSE>>=
+<<include=FALSE,eval=FALSE,purl=FALSE>>=
 ## Simulate covariate from normal distribution with exponential covariance
 delta <- 0.01
 grid0 <- seq(0+delta/2, 1-delta/2, delta)
@@ -975,7 +976,7 @@ points(x, pch=3)                         ## Trap locations
 % \end{frame}
 
 
-<<write,include=FALSE,results="hide">>=
+<<write,include=FALSE,results="hide",purl=FALSE>>=
 ch.out <- data.frame(session=1,
                      individual=rep(slice.index(y, 1), y),
                      occasion=rep(slice.index(y, 3), y),
@@ -1016,7 +1017,7 @@ plot(sch)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_0$
-<<secr-M0,size='scriptsize',cache=TRUE,warning=FALSE>>=
+<<secr-M0,size='scriptsize',cache=FALSE,warning=FALSE>>=
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.M0)
@@ -1036,7 +1037,7 @@ $\sigma$.
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_t$
-<<secr-Mt,size='scriptsize',cache=TRUE,warning=FALSE>>=
+<<secr-Mt,size='scriptsize',cache=FALSE,warning=FALSE>>=
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mt)
@@ -1054,7 +1055,7 @@ predict(fm.Mt)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_b$
-<<secr-Mb,size='scriptsize',cache=TRUE,warning=FALSE>>=
+<<secr-Mb,size='scriptsize',cache=FALSE,warning=FALSE>>=
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mb)
@@ -1093,27 +1094,27 @@ region.N(fm.Mb)
   \frametitle{R package `secr'}
   \small
   Was \inr{buffer} big enough?
-<<buffer1,size='scriptsize',warning=FALSE,cache=TRUE>>=
+<<buffer1,size='scriptsize',warning=FALSE,cache=FALSE>>=
 predict(update(fm.M0, buffer=100))[1,]
 @
 \pause
 \vspace{-12pt}
-<<buffer2,size='scriptsize',warning=FALSE,cache=TRUE>>=
+<<buffer2,size='scriptsize',warning=FALSE,cache=FALSE>>=
 predict(update(fm.M0, buffer=150))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer3,size='scriptsize',warning=FALSE,cache=TRUE>>=
+<<buffer3,size='scriptsize',warning=FALSE,cache=FALSE>>=
 predict(update(fm.M0, buffer=200))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer4,size='scriptsize',warning=FALSE,cache=TRUE>>=
+<<buffer4,size='scriptsize',warning=FALSE,cache=FALSE>>=
 predict(update(fm.M0, buffer=250))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer5,size='scriptsize',warning=FALSE,cache=TRUE>>=
+<<buffer5,size='scriptsize',warning=FALSE,cache=FALSE>>=
 predict(update(fm.M0, buffer=300))[1,]
 @   
 \end{frame}
@@ -1217,7 +1218,7 @@ library(jagsUI)
 \vfill
 MCMC
   \vspace{-6pt}
-<<mcmc-M0-aug,size='scriptsize',results='hide',cache=TRUE>>=
+<<mcmc-M0-aug,size='scriptsize',results='hide',cache=FALSE>>=
 jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
                              parameters.to.save=jp.SCR0,
                              model.file="SCR0.jag",
@@ -1306,7 +1307,7 @@ ji.SCR0.faster <- function() {
 @
 MCMC
   \vspace{-6pt}
-<<mcmc-M0-aug-faster,size='scriptsize',results='hide',cache=TRUE>>=
+<<mcmc-M0-aug-faster,size='scriptsize',results='hide',cache=FALSE>>=
 jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
                                     inits=ji.SCR0.faster,
                                     parameters.to.save=jp.SCR0,
