@@ -768,7 +768,7 @@ Estimates on original scale (at average covariate values).
     \psi = \Lambda/M \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
   \pause \vfill
@@ -849,7 +849,7 @@ N <- sum(z)
 %    \psi \sim \mathrm{Unif}(0,1) \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
 %  \pause \vfill
@@ -1261,7 +1261,6 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{)}
 \hlkwd{points}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.1}\hlstd{))}
 \hlkwd{contour}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{]),} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \hlkwd{points}\hlstd{(x[y.tilde[}\hlnum{1}\hlstd{,]}\hlopt{>}\hlnum{0}\hlstd{,,}\hlkwc{drop}\hlstd{=}\hlnum{FALSE}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{2}\hlstd{)}
@@ -1302,9 +1301,12 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{)}
-\hlkwd{points}\hlstd{(s1.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],}
-       \hlstd{s2.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.8}\hlstd{))}
+\hlcom{## plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)}
+\hlkwd{image}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],}
+                  \hlstd{s2.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{]))}
+\hlkwd{points}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlcom{##points(s1.post[z.post[,150]==1,150],}
+\hlcom{##       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
