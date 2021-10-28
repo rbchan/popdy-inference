@@ -32,16 +32,15 @@ knit_theme$set("edit-kwrite")
 
 
 
-
-\newcommand{\bxt}{${\bm x}_j$}
-\newcommand{\bx}{{\bm x}}
-\newcommand{\bxj}{{\bm x}_j}
-\newcommand{\bst}{${\bm s}_i$}
-\newcommand{\bs}{{\bm s}}
-\newcommand{\bsi}{{\bm s}_i}
-\newcommand{\ed}{\|\bx - \bs\|}
-\newcommand{\cs}{\mathcal{S} }
-\newcommand{\dsixj}{\|\bsi - \bxj\|}
+% \newcommand{\bxt}{${\bm x}_j$}
+% \newcommand{\bx}{{\bm x}}
+% \newcommand{\bxj}{{\bm x}_j}
+% \newcommand{\bst}{${\bm s}_i$}
+% \newcommand{\bs}{{\bm s}}
+% \newcommand{\bsi}{{\bm s}_i}
+% \newcommand{\ed}{\|\bx - \bs\|}
+% \newcommand{\cs}{\mathcal{S} }
+% \newcommand{\dsixj}{\|\bsi - \bxj\|}
 
 
 \begin{document}
@@ -53,8 +52,8 @@ knit_theme$set("edit-kwrite")
   \LARGE
   \centering
   {
-    \LARGE Lecture 12 -- Spatial capture-recapture \\
-    for closed populations: Part II \\
+    \LARGE Spatial capture-recapture for \\
+    closed populations: Part II \\
     \Large Mapping density surfaces and activity centers \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -423,7 +422,7 @@ y[1:2,1:5,1]
 
 
 
-<<write,include=FALSE,results="hide">>=
+<<write,include=FALSE,results="hide",purl=FALSE>>=
 ch.out <- data.frame(session=1,
                      individual=rep(slice.index(y, 1), y),
                      occasion=rep(slice.index(y, 3), y),
@@ -486,7 +485,7 @@ plot(trp, add=TRUE)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Model density as a function of elevation. 
-<<secr-elev,size='scriptsize',cache=TRUE>>=
+<<secr-elev,size='scriptsize',cache=FALSE>>=
 fm.elev <- secr.fit(sch, model=list(D=~elevation, g0=~1, sigma=~1),
                     mask=mask, trace=FALSE)  ## Don't use 'buffer'
 coef(fm.elev)
@@ -503,7 +502,7 @@ predict(fm.elev)
 
 \begin{frame}[fragile]
   \frametitle{Estimated density surface}
-<<secr-dsurf,size='scriptsize',fig.height=6.8,echo=-1,size='scriptsize',fig.show='hide'>>=
+<<secr-dsurf,size='scriptsize',fig.height=6.8,echo=-1,size='scriptsize',fig.show='hide',warning=FALSE>>=
 #par(mai=c(0.6,0.6,0.1,0.8))
 dsurf <- predictDsurface(fm.elev)
 dsurf.r <- raster(dsurf, covariate="D.0")
@@ -522,10 +521,11 @@ plot(dsurf.r/pix.area, col=terrain.colors(100), zlim=c(0,0.18),
 
 \begin{frame}[fragile]
   \frametitle{Estimated activity centers}
-  Can't get this to work???? Should create contour map for the
+  % Can't get this to work???? Should create
+  Contour map for the
   Empirical Bayes posterior distribution of the activity center for
   individual 1. 
-<<fxi,eval=FALSE,size='scriptsize'>>=
+<<fxi,eval=TRUE,size='scriptsize',out.width='70%',fig.align='center'>>=
 fxi.contour(fm.elev, i=1)
 @   
 \end{frame}
@@ -575,7 +575,7 @@ region.N(fm.elev)
     \psi = \Lambda/M \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
   \pause \vfill
@@ -589,17 +589,20 @@ region.N(fm.elev)
 \begin{frame}[fragile]
   \frametitle{SCR with IPP -- version 1}
   \vspace{-3pt}
-<<bugs-SCR-elev,size='tiny'>>=
+<<bugs-SCR-elev-R,size='tiny',eval=FALSE>>=
+writeLines(readLines("SCR-elev-v1.jag"))
+@
+<<bugs-SCR-elev,size='tiny',echo=FALSE,background='lightblue',comment=''>>=
 writeLines(readLines("SCR-elev-v1.jag"))
 @
 \end{frame}
 
 
 
-\begin{frame}
-  \frametitle{Add code to convert from secr format to 3D array}
+% \begin{frame}
+%   \frametitle{Add code to convert from secr format to 3D array}
   
-\end{frame}
+% \end{frame}
 
 
 
@@ -616,7 +619,7 @@ writeLines(readLines("SCR-elev-v1.jag"))
 %    \psi \sim \mathrm{Unif}(0,1) \\
     z_i \sim \mathrm{Bern}(\psi) \\
     p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bern}(z_i p_{ij}) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
 %  \pause \vfill
@@ -630,7 +633,10 @@ writeLines(readLines("SCR-elev-v1.jag"))
 \begin{frame}[fragile]
   \frametitle{SCR with IPP -- version 2}
 \vspace{-3pt}
-<<bugs-SCR-elev-v2,size='tiny'>>=
+<<bugs-SCR-elev-v2-R,size='tiny',eval=FALSE>>=
+writeLines(readLines("SCR-elev-v2.jag"))
+@
+<<bugs-SCR-elev-v2,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("SCR-elev-v2.jag"))
 @
 \end{frame}
@@ -741,6 +747,7 @@ ji.SCR.elev <- function() {
 MCMC
   \vspace{-6pt}
 <<mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE>>=
+library(jagsUI)  
 jags.post.SCR.elev <- jags.basic(
     data=jags.data.SCR.elev, inits=ji.SCR.elev,
     parameters.to.save=jp.SCR.elev, model.file="SCR-elev-v2.jag",
@@ -817,7 +824,8 @@ panels <- c(panel1, panel2, panel3)
 panels <- update(
     panels, scales=list(draw=FALSE), layout=c(3,1),
     xlab="", ylab="",
-    par.settings=ggplot2like(), #theEconomist.theme(), 
+    col.regions=hcl.colors(100),
+##    par.settings=ggplot2like(), #theEconomist.theme(), 
     strip=strip.custom(
         factor.levels=c("Lower CI","Posterior mean","Upper CI")))
 plot(panels)
@@ -839,7 +847,7 @@ plot(panels)
 \begin{frame}[fragile]
   \frametitle{Realized density surface}
   We need to monitor $z$ and $\bsi$.
-<<mcmc-SCR-elev-sz,size='scriptsize',results='hide',cache=TRUE>>=
+<<mcmc-SCR-elev-sz,size='scriptsize',results='hide',cache=FALSE>>=
 jags.post.SCR.elev.sz <- jags.basic(
     data=jags.data.SCR.elev, inits=ji.SCR.elev,
     parameters.to.save=c(jp.SCR.elev,"s","z"),
@@ -938,6 +946,7 @@ for(i in 1:n) {
 <<si-post-y0,size='scriptsize',echo=-1,fig.show='hide'>>=
 par(mai=c(0.0,0.0,0.0,0.0))
 plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
+##MASS::kde2d(s1.post[z.post[,150]==1,150]
 points(s1.post[z.post[,150]==1,150],
        s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))
 @

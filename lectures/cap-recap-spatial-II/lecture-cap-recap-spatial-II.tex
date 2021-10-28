@@ -75,16 +75,15 @@
 
 
 
-
-\newcommand{\bxt}{${\bm x}_j$}
-\newcommand{\bx}{{\bm x}}
-\newcommand{\bxj}{{\bm x}_j}
-\newcommand{\bst}{${\bm s}_i$}
-\newcommand{\bs}{{\bm s}}
-\newcommand{\bsi}{{\bm s}_i}
-\newcommand{\ed}{\|\bx - \bs\|}
-\newcommand{\cs}{\mathcal{S} }
-\newcommand{\dsixj}{\|\bsi - \bxj\|}
+% \newcommand{\bxt}{${\bm x}_j$}
+% \newcommand{\bx}{{\bm x}}
+% \newcommand{\bxj}{{\bm x}_j}
+% \newcommand{\bst}{${\bm s}_i$}
+% \newcommand{\bs}{{\bm s}}
+% \newcommand{\bsi}{{\bm s}_i}
+% \newcommand{\ed}{\|\bx - \bs\|}
+% \newcommand{\cs}{\mathcal{S} }
+% \newcommand{\dsixj}{\|\bsi - \bxj\|}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -95,8 +94,8 @@
   \LARGE
   \centering
   {
-    \LARGE Lecture 12 -- Spatial capture-recapture \\
-    for closed populations: Part II \\
+    \LARGE Spatial capture-recapture for \\
+    closed populations: Part II \\
     \Large Mapping density surfaces and activity centers \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
@@ -195,7 +194,7 @@
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
-    \lambda(\bs) = \beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) \dots \\
+    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs)) \dots \\
     \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
     N \sim \mathrm{Pois}(\Lambda) \\
     \bsi \propto p(\lambda(\bs)) \;\; \mathrm{for}\; i=1,\dots,N 
@@ -294,7 +293,6 @@
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -318,7 +316,6 @@
 {\centering \includegraphics[width=0.6\linewidth]{figure/ippp2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -389,7 +386,6 @@ inside its pixel.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -417,7 +413,6 @@ inside its pixel.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -425,79 +420,126 @@ inside its pixel.
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Distance between traps and activity centers}
-%   Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
-%   and traps ($\bx_1, \dots, \bx_J$).
-% <<dist1,size='footnotesize'>>=
-% J <- nrow(x)                 ## nTraps
-% dist.sx <- matrix(NA, N, J)  
-% for(i in 1:N) {
-%     dist.sx[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
-% }
-% @
-% \pause
-% \vfill
-%   Look at distances between first 4 individuals and first 5 traps.
-% <<dist2,size='footnotesize'>>=
-% dist.sx[1:4,1:5]
-% @
+\begin{frame}[fragile]
+  \frametitle{Distance between traps and activity centers}
+  Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
+  and traps ($\bx_1, \dots, \bx_J$).
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}                 \hlcom{## nTraps}
+\hlstd{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlstd{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+} \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Look at distances between first 4 individuals and first 5 traps.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##           [,1]      [,2]      [,3]      [,4]      [,5]
+## [1,] 0.1218625 0.1175070 0.1810119 0.2678109 0.3614970
+## [2,] 0.9587743 0.8922040 0.8323508 0.7807610 0.7391668
+## [3,] 0.7162980 0.6912027 0.6800289 0.6834600 0.7012815
+## [4,] 0.6222620 0.5569781 0.5032288 0.4650310 0.4463949
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
-% \end{frame}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Capture probability}
-%   Compute capture probability
-% <<p1,size='footnotesize'>>=
-% g0 <- 0.2
-% sigma <- 0.05
-% p <- g0*exp(-dist.sx^2/(2*sigma^2))
-% @
-% \pause
-% \vfill
-%   Look at capture probs for first 4 individuals and first 5 traps.
-% <<p2,size='footnotesize'>>=
-% print(p[1:4,1:5], digits=3)
-% @
-
-% \end{frame}
+\end{frame}
 
 
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Capture histories}
-%   Simulate capture histories for all $N$ individuals
-% <<y1,size='footnotesize'>>=
-% K <- 5                          # nOccasions
-% y.all <- array(NA, c(N, J, K))
-% for(i in 1:N) {
-%     for(j in 1:J) {
-%         y.all[i,j,] <- rbinom(K, 1, prob=p[i,j])
-%     }
-% }
-% @
-% \pause
-% \vfill
-%   Discard individuals not captured
-% <<y2,size='footnotesize'>>=
-% captured <- rowSums(y.all)>0
-% y <- y.all[captured,,]
-% @
-% \pause
-% \vfill
-%   Capture histories for first 2 individuals and first 5 traps
-%   on first occasion.
-% <<y3,size='footnotesize'>>=
-% y[1:2,1:5,1]
-% @
-% \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Capture probability}
+  Compute capture probability
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{g0} \hlkwb{<-} \hlnum{0.2}
+\hlstd{sigma} \hlkwb{<-} \hlnum{0.05}
+\hlstd{p} \hlkwb{<-} \hlstd{g0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Look at capture probs for first 4 individuals and first 5 traps.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##          [,1]     [,2]     [,3]     [,4]     [,5]
+## [1,] 1.03e-02 1.26e-02 2.85e-04 1.18e-07 8.92e-13
+## [2,] 2.86e-81 1.44e-70 1.33e-61 2.25e-54 6.98e-49
+## [3,] 5.44e-46 6.36e-43 1.36e-41 5.34e-42 3.84e-44
+## [4,] 4.66e-35 2.27e-28 2.02e-23 3.29e-20 9.84e-19
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Capture histories}
+  Simulate capture histories for all $N$ individuals
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
+\hlstd{y.all} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(N, J, K))}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
+    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
+        \hlstd{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=p[i,j])}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Discard individuals not captured
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
+\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,,]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Capture histories for first 2 individuals and first 5 traps
+  on first occasion.
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{1}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    0    0    0    0    0
+## [2,]    0    0    0    0    0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
@@ -584,7 +626,6 @@ inside its pixel.
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -603,10 +644,10 @@ inside its pixel.
 \end{alltt}
 \begin{verbatim}
 ##                   beta    SE.beta        lcl        ucl
-## D           -0.5600270 0.23323665 -1.0171624 -0.1028915
-## D.elevation  0.9419099 0.18885698  0.5717571  1.3120628
-## g0          -1.1779407 0.21368690 -1.5967593 -0.7591221
-## sigma        3.9089793 0.06556921  3.7804660  4.0374926
+## D           -0.5600286 0.23323695 -1.0171646 -0.1028926
+## D.elevation  0.9419116 0.18885715  0.5717584  1.3120649
+## g0          -1.1779499 0.21368727 -1.5967692 -0.7591305
+## sigma        3.9089834 0.06556955  3.7804695  4.0374974
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -619,10 +660,10 @@ Estimates on original scale (at average covariate values).
 \hlkwd{predict}\hlstd{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
-##        link   estimate SE.estimate       lcl        ucl
-## D       log  1.4142517  0.19670669  1.078203  1.8550375
-## g0    logit  0.2354227  0.03846339  0.168435  0.3188369
-## sigma   log 49.8480463  3.27201314 43.836466 56.6840344
+##        link  estimate SE.estimate        lcl        ucl
+## D       log  1.414252  0.19670666  1.0782035  1.8550375
+## g0    logit  0.235421  0.03846327  0.1684336  0.3188351
+## sigma   log 49.848252  3.27204390 43.8366171 56.6843069
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -654,7 +695,8 @@ Estimates on original scale (at average covariate values).
 
 \begin{frame}[fragile]
   \frametitle{Estimated activity centers}
-  Can't get this to work???? Should create contour map for the
+  % Can't get this to work???? Should create
+  Contour map for the
   Empirical Bayes posterior distribution of the activity center for
   individual 1. 
 \begin{knitrout}\scriptsize
@@ -663,6 +705,12 @@ Estimates on original scale (at average covariate values).
 \hlkwd{fxi.contour}\hlstd{(fm.elev,} \hlkwc{i}\hlstd{=}\hlnum{1}\hlstd{)}
 \end{alltt}
 \end{kframe}
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/fxi-1} 
+
+}
+
+
 \end{knitrout}
 \end{frame}
 
@@ -683,8 +731,8 @@ Estimates on original scale (at average covariate values).
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 87.35371   12.228406 66.48163 114.7786 59
-## R.N 93.53557    7.885442 81.20125 112.7225 59
+## E.N 87.35370   12.228401 66.48163 114.7786 59
+## R.N 93.53552    7.885436 81.20121 112.7224 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -739,42 +787,52 @@ Estimates on original scale (at average covariate values).
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev-v1.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## beta0 ~ dnorm(0, 0.1)
-## beta1 ~ dnorm(0, 0.1)
-## g0 ~ dunif(0, 1)
-## sigma ~ dunif(0, 0.5)
-## for(g in 1:G) { ## Loop over pixels
-##   lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
-##   pi[g] <- lambda[g]/Lambda }
-## Lambda <- sum(lambda)
-## EN <- sum(lambda) ## Expected value of N
-## psi <- EN/M
-## for(i in 1:M) {
-##   s[i,1] ~ dunif(xlim[1], xlim[2]) 
-##   s[i,2] ~ dunif(ylim[1], ylim[2])
-##   pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
-##                      round((s[i,1]-xlim[1])/delta+0.5)]  ## column
-##   logProb[i] <- log(pi[pixel[i]])
-##   zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
-##   z[i] ~ dbern(psi)
-##   for(j in 1:J) {
-##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
-##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2)) } }
-## for(i in 1:n) {  ## Model for observed capture histories
-##   for(j in 1:J) {
-##     y.tilde[i,j] ~ dbinom(p[i,j], K) } }
-## for(i in (n+1):M) { ## Model for augmented guys
-##   PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
-##   zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i]) }
-## N <- sum(z)
-## }
+model {
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+g0 ~ dunif(0, 1)
+sigma ~ dunif(0, 0.5)
+for(g in 1:G) { ## Loop over pixels
+  lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
+  pi[g] <- lambda[g]/Lambda }
+Lambda <- sum(lambda)
+EN <- sum(lambda) ## Expected value of N
+psi <- EN/M
+for(i in 1:M) {
+  s[i,1] ~ dunif(xlim[1], xlim[2]) 
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
+                     round((s[i,1]-xlim[1])/delta+0.5)]  ## column
+  logProb[i] <- log(pi[pixel[i]])
+  zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+    p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2)) } }
+for(i in 1:n) {  ## Model for observed capture histories
+  for(j in 1:J) {
+    y.tilde[i,j] ~ dbinom(p[i,j], K) } }
+for(i in (n+1):M) { ## Model for augmented guys
+  PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+  zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i]) }
+N <- sum(z)
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
 
+
+
+% \begin{frame}
+%   \frametitle{Add code to convert from secr format to 3D array}
+  
+% \end{frame}
 
 
 
@@ -810,37 +868,41 @@ Estimates on original scale (at average covariate values).
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev-v2.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## psi ~ dunif(0, 1)  ## Can't put prior on psi *and* beta0
-## beta0 <- log(M*psi/Lambda) ## Algebra
-## beta1 ~ dnorm(0, 0.1)
-## g0 ~ dunif(0, 1)
-## sigma ~ dunif(0, 0.5)
-## for(g in 1:G) { ## Loop over pixels
-##   lambda[g] <- exp(beta1*elevation[g])*pixelArea
-##   pi[g] <- lambda[g]/Lambda }
-## Lambda <- sum(lambda)
-## EN <- M*psi
-## for(i in 1:M) {
-##   s[i,1] ~ dunif(xlim[1], xlim[2]) 
-##   s[i,2] ~ dunif(ylim[1], ylim[2])
-##   pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
-##                      round((s[i,1]-xlim[1])/delta+0.5)]  ## column
-##   logProb[i] <- log(pi[pixel[i]])
-##   zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
-##   z[i] ~ dbern(psi)
-##   for(j in 1:J) {
-##     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
-##     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))  } }
-## for(i in 1:n) {  ## Model for observed capture histories
-##   for(j in 1:J) {
-##     y.tilde[i,j] ~ dbinom(p[i,j], K) } }
-## for(i in (n+1):M) { ## Model for augmented guys
-##   PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
-##   zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i])  }
-## N <- sum(z)
-## }
+model {
+psi ~ dunif(0, 1)  ## Can't put prior on psi *and* beta0
+beta0 <- log(M*psi/Lambda) ## Algebra
+beta1 ~ dnorm(0, 0.1)
+g0 ~ dunif(0, 1)
+sigma ~ dunif(0, 0.5)
+for(g in 1:G) { ## Loop over pixels
+  lambda[g] <- exp(beta1*elevation[g])*pixelArea
+  pi[g] <- lambda[g]/Lambda }
+Lambda <- sum(lambda)
+EN <- M*psi
+for(i in 1:M) {
+  s[i,1] ~ dunif(xlim[1], xlim[2]) 
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
+                     round((s[i,1]-xlim[1])/delta+0.5)]  ## column
+  logProb[i] <- log(pi[pixel[i]])
+  zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+    p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))  } }
+for(i in 1:n) {  ## Model for observed capture histories
+  for(j in 1:J) {
+    y.tilde[i,j] ~ dbinom(p[i,j], K) } }
+for(i in (n+1):M) { ## Model for augmented guys
+  PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+  zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i])  }
+N <- sum(z)
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -963,6 +1025,7 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
     \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
     \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,} \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
@@ -993,24 +1056,24 @@ MCMC
 ##    plus standard error of the mean:
 ## 
 ##                Mean        SD  Naive SE Time-series SE
-## EN         87.01079  9.808043 1.791e-01      0.4493685
-## N          87.22433  7.880400 1.439e-01      0.3574045
-## beta0     -14.61980  2.059545 3.760e-02      0.1586006
-## beta1       0.00928  0.001833 3.346e-05      0.0001392
-## deviance 3168.16302 44.263561 8.081e-01      3.1643839
-## g0          0.23861  0.036864 6.730e-04      0.0017826
-## sigma       0.05016  0.003292 6.009e-05      0.0001893
+## EN        8.829e+01  9.977617 1.822e-01      0.4613329
+## N         8.856e+01  8.166137 1.491e-01      0.4016001
+## beta0    -1.415e+01  2.073910 3.786e-02      0.1500099
+## beta1     8.864e-03  0.001853 3.382e-05      0.0001327
+## deviance  3.177e+03 44.911679 8.200e-01      3.2062181
+## g0        2.346e-01  0.039152 7.148e-04      0.0022487
+## sigma     5.026e-02  0.003429 6.260e-05      0.0002202
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##                2.5%        25%        50%        75%      97.5%
-## EN        6.858e+01  8.041e+01  8.670e+01   93.29148  107.18148
-## N         7.400e+01  8.200e+01  8.700e+01   92.00000  104.00000
-## beta0    -1.877e+01 -1.600e+01 -1.463e+01  -13.21068  -10.75426
-## beta1     5.776e-03  8.034e-03  9.294e-03    0.01051    0.01293
-## deviance  3.078e+03  3.139e+03  3.169e+03 3198.84040 3251.56170
-## g0        1.711e-01  2.123e-01  2.370e-01    0.26269    0.31526
-## sigma     4.448e-02  4.776e-02  4.991e-02    0.05231    0.05719
+## EN        6.974e+01  8.142e+01  8.800e+01   94.73555  109.06133
+## N         7.500e+01  8.300e+01  8.800e+01   94.00000  107.00000
+## beta0    -1.854e+01 -1.546e+01 -1.407e+01  -12.74256  -10.33929
+## beta1     5.423e-03  7.608e-03  8.796e-03    0.01006    0.01278
+## deviance  3.086e+03  3.148e+03  3.180e+03 3209.07695 3258.69782
+## g0        1.672e-01  2.057e-01  2.310e-01    0.25895    0.32332
+## sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1032,7 +1095,6 @@ MCMC
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -1050,7 +1112,6 @@ MCMC
 {\centering \includegraphics[width=0.7\textwidth]{figure/plot-mcmc-SCR-elev2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1187,7 +1248,6 @@ Chop activity centers into discrete intervals, then tabulate.
 \end{alltt}
 \end{kframe}
 \includegraphics[width=\maxwidth]{figure/lambda-r-1} 
-
 \end{knitrout}
 %  \end{columns}
 \end{frame}
