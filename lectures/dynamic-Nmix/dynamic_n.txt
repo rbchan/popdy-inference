@@ -1,14 +1,15 @@
 model {
 for (i in 1:n.sites) {
-  log(gamma[i]) <- gamma0 + gamma1*elevation[i]
   log(lambda[i]) <- psi0 + psi1*elevation[i]
   
   N[i,1] ~dpois(lambda[i]) 
   
   for (t in 2:n.years){
     logit(phi[i,t]) <- phi0 + phi1*precip[i,t]
+    log(gamma[i,t]) <- gamma0 + gamma1*elevation[i]+gamma2*precip[i,t]
+    
     S[i,t] ~ dbin(phi[i,t], N[i,t-1])
-    G[i,t] ~ dpois(N[i,t-1]*gamma[i])
+    G[i,t] ~ dpois(N[i,t-1]*gamma[i,t])
              
     N[i,t] <- S[i,t] + G[i,t]
   } #end t
@@ -19,13 +20,15 @@ for (i in 1:n.sites) {
   }#end t again
   } #end i
   
-  for (t in 1:n.years){
-    p[t] ~ dunif(0,1)
-    }
+  for(t in 1:n.years){
+   p[t] ~ dunif(0,1)
+  }
+  
   gamma0 ~ dunif(-5,5)
   gamma1 ~ dunif(-5,5)
+  gamma2 ~ dunif(-5,5)
   psi0 ~ dunif(-5,5)
   psi1 ~ dunif(-5,5)
-  phi0 ~ dunif(-5,5)
-  phi1 ~ dunif(-5,5)
+  phi0 ~ dnorm(0,.3)
+  phi1 ~ dnorm(0,.3)
 }
