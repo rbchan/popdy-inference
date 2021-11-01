@@ -72,18 +72,6 @@
 % New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
-
-
-
-% \newcommand{\bxt}{${\bm x}_j$}
-% \newcommand{\bx}{{\bm x}}
-% \newcommand{\bxj}{{\bm x}_j}
-% \newcommand{\bst}{${\bm s}_i$}
-% \newcommand{\bs}{{\bm s}}
-% \newcommand{\bsi}{{\bm s}_i}
-% \newcommand{\ed}{\|\bx - \bs\|}
-% \newcommand{\cs}{\mathcal{S} }
-% \newcommand{\dsixj}{\|\bsi - \bxj\|}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -644,9 +632,9 @@ inside its pixel.
 \end{alltt}
 \begin{verbatim}
 ##                   beta    SE.beta        lcl        ucl
-## D           -0.5600286 0.23323695 -1.0171646 -0.1028926
-## D.elevation  0.9419116 0.18885715  0.5717584  1.3120649
-## g0          -1.1779499 0.21368727 -1.5967692 -0.7591305
+## D           -0.5600286 0.23323698 -1.0171647 -0.1028925
+## D.elevation  0.9419116 0.18885719  0.5717583  1.3120649
+## g0          -1.1779499 0.21368726 -1.5967692 -0.7591305
 ## sigma        3.9089834 0.06556955  3.7804695  4.0374974
 \end{verbatim}
 \end{kframe}
@@ -663,7 +651,7 @@ Estimates on original scale (at average covariate values).
 ##        link  estimate SE.estimate        lcl        ucl
 ## D       log  1.414252  0.19670666  1.0782035  1.8550375
 ## g0    logit  0.235421  0.03846327  0.1684336  0.3188351
-## sigma   log 49.848252  3.27204390 43.8366171 56.6843069
+## sigma   log 49.848252  3.27204377 43.8366173 56.6843066
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -676,7 +664,6 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{dsurf} \hlkwb{<-} \hlkwd{predictDsurface}\hlstd{(fm.elev)}
 \hlstd{dsurf.r} \hlkwb{<-} \hlkwd{raster}\hlstd{(dsurf,} \hlkwc{covariate}\hlstd{=}\hlstr{"D.0"}\hlstd{)}
 \hlstd{pix.area} \hlkwb{<-} \hlstd{(delta}\hlopt{*}\hlnum{1000}\hlstd{)}\hlopt{^}\hlnum{2}
 \hlkwd{plot}\hlstd{(dsurf.r}\hlopt{/}\hlstd{pix.area,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{zlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.18}\hlstd{),}
@@ -1026,6 +1013,12 @@ MCMC
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'jagsUI'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:coda':\\\#\# \\\#\# \ \ \ \ traceplot}}\begin{alltt}
 \hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
     \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
     \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,} \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
@@ -1261,6 +1254,7 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlkwd{plot}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{)}
 \hlkwd{points}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.1}\hlstd{))}
 \hlkwd{contour}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{]),} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \hlkwd{points}\hlstd{(x[y.tilde[}\hlnum{1}\hlstd{,]}\hlopt{>}\hlnum{0}\hlstd{,,}\hlkwc{drop}\hlstd{=}\hlnum{FALSE}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{2}\hlstd{)}
@@ -1301,7 +1295,6 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)}
 \hlkwd{image}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],}
                   \hlstd{s2.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{]))}
 \hlkwd{points}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}

@@ -32,17 +32,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-% \newcommand{\bxt}{${\bm x}_j$}
-% \newcommand{\bx}{{\bm x}}
-% \newcommand{\bxj}{{\bm x}_j}
-% \newcommand{\bst}{${\bm s}_i$}
-% \newcommand{\bs}{{\bm s}}
-% \newcommand{\bsi}{{\bm s}_i}
-% \newcommand{\ed}{\|\bx - \bs\|}
-% \newcommand{\cs}{\mathcal{S} }
-% \newcommand{\dsixj}{\|\bsi - \bxj\|}
-
-
 \begin{document}
 
 
@@ -503,7 +492,6 @@ predict(fm.elev)
 \begin{frame}[fragile]
   \frametitle{Estimated density surface}
 <<secr-dsurf,size='scriptsize',fig.height=6.8,echo=-1,size='scriptsize',fig.show='hide',warning=FALSE>>=
-#par(mai=c(0.6,0.6,0.1,0.8))
 dsurf <- predictDsurface(fm.elev)
 dsurf.r <- raster(dsurf, covariate="D.0")
 pix.area <- (delta*1000)^2
