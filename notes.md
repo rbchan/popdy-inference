@@ -1,5 +1,10 @@
 # Notes for the future
 
+## For 2022
+
+- Too many 'versions' for SCR IPP lecture
+
+
 ## For 2021
 
 - Cut out popdy-basics intro??? To make more room for dynamic models?
