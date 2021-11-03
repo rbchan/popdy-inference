@@ -1,0 +1,851 @@
+\documentclass[color=usenames,dvipsnames]{beamer}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+
+\usepackage[roman]{../lectures}
+%\usepackage[sans]{../lectures}
+
+
+\hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+% Compile and open PDF
+<<buildit,include=FALSE,eval=FALSE,purl=FALSE>>=
+source("../rnw2pdf.R")
+rnw2pdf("lecture-survival") 
+rnw2pdf("lecture-survival", tangle=TRUE)
+@ 
+
+
+<<knitr-theme,include=FALSE,purl=FALSE>>=
+knit_theme$set("edit-kwrite")
+@
+
+
+%% New command for inline code that isn't to be evaluated
+\definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
+\newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
+
+
+
+% \newcommand{\bxt}{${\bm x}_j$}
+% \newcommand{\bx}{{\bm x}}
+% \newcommand{\bxj}{{\bm x}_j}
+% \newcommand{\bst}{${\bm s}_i$}
+% \newcommand{\bs}{{\bm s}}
+% \newcommand{\bsi}{{\bm s}_i}
+% \newcommand{\ed}{\|\bx - \bs\|}
+% \newcommand{\cs}{\mathcal{S} }
+
+
+\begin{document}
+
+
+
+
+
+\begin{frame}[plain]
+  \centering
+  \LARGE
+  Classical survival analysis \\
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  Estimation of Fish and Wildlife Population Parameters \\
+  \vfill
+  Richard Chandler \\
+  University of Georgia \\
+\end{frame}
+
+
+
+
+%\section{Intro}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \only<1>{\tableofcontents}%[hideallsubsections]}
+%  \only<2 | handout:0>{\tableofcontents[currentsection]}%,hideallsubsections]}
+\end{frame}
+
+
+
+
+\section{Intro}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Open populations}
+  \large
+  Overview
+  \begin{itemize}[<+->]
+    \normalsize
+    \item Population closure is an assumption we make to estimate
+      density in short time periods
+    \item If we want to study the processes governing spatial and
+      temporal variation in density, we need to move beyond closed
+      population models
+    \item Open population SCR models allow us to model spatial and
+      temporal variation in survival, recruitment, and movement
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\section{Continuous-time models}
+
+
+
+\begin{frame}
+  \frametitle{Hazard}
+  \[
+    \lambda(t) = \lim_{\Delta_t \to 0} \Pr(t \le T < t+\Delta_t | T\ge t)/\Delta_t
+  \]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Survivorship}
+  \[
+    S(t) = \exp\left(-\int_{0}^t \lambda(j) \,dj\right)
+  \]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Probability density}
+  \[
+    p(t) = \lambda(t)\exp\left(-\int_{0}^t \lambda(j) \,dj\right)
+  \]
+\end{frame}
+
+
+
+
+
+\section{Discrete-time models}
+
+
+
+\begin{frame}
+  \frametitle{Hazard}
+  \[
+    \lambda_t = \Pr(t \le T < t+1 | T\ge t)/
+  \]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Survivorship}
+  \[
+    S(t) = \prod_{j=1}^t (1-\lambda_j)
+  \]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Probability density}
+  \[
+    p(t) = \lambda_t \prod_{j=1}^{t-1} (1-\lambda_j)
+  \]
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating CJS data without robust design}
+  {%\bf
+    Parameters and dimensions}
+  %\small
+<<sim-norobust,size='footnotesize',echo=-1>>=
+set.seed(34918)  
+T <- 10               ## primary periods (eg, years)
+K <- 1                ## only 1 secondary sampling occasion
+n <- 25
+phi <- 0.7
+p <- 0.4
+z <- matrix(NA, n, T)
+y <- matrix(NA, n, T)
+first <- rpois(n, 1)+1 ## random release dates
+@
+\pause
+\vfill
+{%\bf
+  Generate $z$ and $y$}
+<<sim-norbust2,size='footnotesize'>>=
+for(i in 1:n) {
+    z[i,first[i]] <- 1  ## Known alive at release
+    y[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi) ## Alive/dead state
+        y[i,t] <- rbinom(1, 1, z[i,t]*p)     ## Data
+    }
+}
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulated CJS data}
+  \begin{columns}
+    \tiny
+    \begin{column}{0.5\textwidth}
+<<z>>=
+z[,1:7]
+@
+    \end{column}
+    \begin{column}{0.5\textwidth}
+<<y>>=
+y[,1:7]
+@
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\subsection{Likelihood}
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+<<install-marked,include=FALSE>>=
+if(!require(marked)) install.packages("marked")
+library(marked)
+@ 
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+  \small
+  We can fit CJS models in R with the `RMark' or `marked'
+  packages. We'll use `marked', which requires the capture histories
+  to be formatted as a character vector named \inr{ch}. 
+<<marked-data,size='footnotesize'>>=
+library(marked)
+y.marked <- ifelse(is.na(y), 0, y)
+cap.histories <- data.frame(
+    ch=apply(y.marked, 1, paste, collapse=""))
+head(cap.histories, n=3)
+@ 
+  \pause
+  \vfill
+  You can use the formulas to add covariates.
+<<marked-fit,size='footnotesize',results='hide',message=FALSE>>=
+fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
+           model.parameters=list(Phi=list(formula=~1),
+                                 p=list(formula=~1)))
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+  Estimates of apparent survival and capture probability.
+<<marked-predict,size='footnotesize'>>=
+predict(fm0)
+@ 
+\end{frame}
+
+
+
+
+\subsection{Bayesian}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Non-spatial CJS model in JAGS}
+%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-nonspatial.jag}}}
+<<jags-nonsp,size='scriptsize'>>=
+writeLines(readLines("CJS-nonspatial.jag"))
+@ 
+\end{frame}
+
+
+
+<<jagsUI,include=FALSE,results='hide'>>=
+library(jagsUI)
+library(coda)
+@ 
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+  Data
+<<nonsp-data,size='scriptsize'>>=
+jags.data.nonsp <- list(y=y, n=n, first=first, T=T)
+@   
+  \pause
+  \vfill
+  Initial values for $z$ matrix
+<<zi,size='scriptsize'>>=
+zi.nonsp <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi.nonsp[i,(first[i]+1):T] <- 1
+    }
+jags.inits.nonsp <- function() list(phi=runif(1), p=runif(1), z=zi.nonsp)
+jags.pars.nonsp <- c("phi", "p")
+@
+  \pause
+  \vfill
+  {%\bf \normalsize
+    Fit the model}
+<<jc1,size='scriptsize',message=FALSE,results='hide',cache=TRUE>>=
+library(jagsUI)
+jags.post.samples.nonsp <- jags.basic(data=jags.data.nonsp,
+                                      inits=jags.inits.nonsp,
+                                      parameters.to.save=jags.pars.nonsp,
+                                      model.file="CJS-nonspatial.jag",
+                                      n.chains=3, n.adapt=100, n.burnin=0,
+                                      n.iter=2000, parallel=TRUE)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+<<jc1-plot,out.width="65%",fig.align='center',size='scriptsize'>>=
+plot(jags.post.samples.nonsp)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+\section{Spatial CJS}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Spatial CJS}
+  \large
+  Why spatial?
+  \begin{itemize}
+    \normalsize
+    \item Comes with all the benefits of other SCR models
+    \item Allows for movement between primary periods, making
+      it possible to separate survival from permanent emigration
+    \item Movement itself may be of interest, such as in studies of
+      dispersal
+  \end{itemize}
+  \pause
+  \vfill
+  \normalsize
+  {\centering %\bf
+    We begin by ignoring movement, but we use the robust design \\ }
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating spatial CJS data with robust design}
+  \scriptsize %\footnotesize
+  \begin{columns}
+%      \column{\dimexpr\paperwidth-10pt}
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+      {%\bf
+        Parameters and data dimensions}
+<<sim2,size='tiny'>>=
+T <- 10       # primary occasions
+K <- 3        # secondary occasions
+n <- 25       # nIndividuals
+phi <- 0.7
+p0 <- 0.4     # baseline capture prob
+sigma <- 0.1  # scale parameter
+@
+\pause
+{%\bf
+  Traps, activity centers, and \\ detection probability}
+<<X,size='tiny'>>=
+co <- seq(0.25, 0.75, length=5)
+x <- cbind(rep(co, each=5),
+           rep(co, times=5))
+J <- nrow(x)
+xlim <- ylim <- c(0,1)
+s <- cbind(runif(n, xlim[1], xlim[2]),
+           runif(n, ylim[1], ylim[2]))
+d <- p.sp <- matrix(NA, n, J)
+for(i in 1:n) {
+    d[i,] <- sqrt((s[i,1]-x[,1])^2 +
+                  (s[i,2]-x[,2])^2)
+    p.sp[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
+}
+@
+    \end{column}
+\pause
+%\vfill
+\begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+\scriptsize %\tiny
+{%\bf
+  Generate $z$ and $y$}
+<<z2,size='tiny'>>=
+z <- matrix(NA, n, T)
+y.sp <- array(NA, c(n, J, K, T)) ## 4D array
+first <- rpois(n, 1)+1 ## random release dates
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1,
+                         z[i,t-1]*phi)
+        for(j in 1:J) {
+            y.sp[i,j,1:K,t] <- rbinom(K, 1,
+                z[i,t]*p.sp[i,j])
+        }
+    }
+}
+@
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+
+
+\subsection{Likelihood}
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+<<install-load,include=FALSE>>=
+if(!require(remotes))
+    install.packages("remotes")
+library(remotes)
+if(!require(openpopscr)) {
+    install_github("r-glennie/openpopscr", build = TRUE,
+                   build_opts = c("--no-resave-data", "--no-manual"),
+                   build_vignettes = TRUE)
+}
+library(openpopscr)
+if(!require(secr))
+    install.packages("secr")
+library(secr)
+@ 
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+  We'll use the R package `openpopscr' for model fitting. It isn't on
+  CRAN, but you can install it from github using the following
+  commands.
+<<install-openpopscr,size='scriptsize',message=FALSE,results='hide',eval=FALSE>>=
+library(remotes)
+install_github("r-glennie/openpopscr", build = TRUE,
+               build_opts = c("--no-resave-data", "--no-manual"),
+               build_vignettes = TRUE)
+library(openpopscr)
+library(secr)
+@   
+\vfill
+If you're on Windows, you might have to install Rtools first. \\
+\centering
+\url{https://cran.r-project.org/bin/windows/Rtools/} \\
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+Begin by making a mask in `secr'
+<<mask,size='scriptsize',out.width="60%",fig.align="center">>=
+trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
+traps <- read.traps(data=trap.df, detector="proximity")
+mask <- make.mask(traps=traps, buffer=250)
+plot(mask); points(traps, pch=3, col="blue", lwd=2)
+@   
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial CJS model}
+Format for `secr'
+<<CJS-model-new,size='scriptsize'>>=
+y.sp.secr <- y.sp; y.sp.secr[is.na(y.sp)] <- 0
+caps <- data.frame(session=1,
+                   animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),
+                   occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),
+                   trap=rep(slice.index(y.sp.secr, 2), y.sp.secr))
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=30)
+@
+\vfill
+Then format for `openpopscr'
+<<format-openpop,size='scriptsize'>>=
+cjs.data <- ScrData$new(capthist, mask, primary=rep(1:10, each=3))
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis}
+Create the model object and the fit it
+<<cjs-mod-fit,size='scriptsize',results='hide',cache=TRUE>>=
+mod <- CjsModel$new(list(lambda0~1, sigma~1, phi~1), cjs.data,
+                    start=list(lambda0=1.5, sigma=50, phi=0.5))
+mod$fit()
+mod
+@   
+Back-transform
+<<cjs-mod-est,size='scriptsize'>>=
+mod$get_par("lambda0", k = 1, j = 1)
+mod$get_par("sigma", k = 1, j = 1)
+mod$get_par("phi", k = 1, m=1)
+@ 
+\end{frame}
+
+
+
+
+
+\subsection{Bayesian}
+
+
+
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial CJS model in JAGS}
+%  \vspace{-5mm}
+%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
+<<jags-sp,size='tiny'>>=
+writeLines(readLines("CJS-spatial.jag"))
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+  Data
+<<sp-data,size='scriptsize'>>=
+jags.data.sp <- list(y=y.sp, n=n, first=first, x=x,
+                     J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+@   
+  Initial values for $z$ matrix
+  \scriptsize
+<<ji2,size='scriptsize'>>=
+zi.sp <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi.sp[i,(first[i]+1):T] <- 1
+    }
+jags.inits.sp <- function() list(phi=runif(1), z=zi.sp)
+jags.pars.sp <- c("phi", "p0", "sigma")
+@
+\pause
+\vfill
+  {\normalsize Fit the model}
+<<jc2,size='scriptsize',cache=TRUE,results='hide'>>=
+jags.post.samples.sp <- jags.basic(data=jags.data.sp,
+                                   inits=jags.inits.sp,
+                                   parameters.to.save=jags.pars.sp,
+                                   model.file="CJS-spatial.jag",
+                                   n.chains=3, n.adapt=100, n.burnin=0,
+                                   n.iter=2000, parallel=TRUE)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+<<jc2-plot,size='scriptsize',out.width="60%",fig.align='center'>>=
+plot(jags.post.samples.sp)
+@
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\section{Spatial CJS with movement}
+
+
+
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Modeling dispersal among years}
+  {\large What if activity centers move between years?}
+  \begin{itemize}
+    \normalsize
+    \item Could affect estimates of detection parameters
+    \item More importantly, might provide opportunity to study dispersal
+  \end{itemize}
+  \pause
+  \vfill
+  {\large Potential movement models}
+  \begin{itemize}
+    \normalsize
+    \item Random walk: ${\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)$
+    \item Random walk with attraction point: ${\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)$
+    \item Extensions can be made to allow for resource selection,
+      landscape resistance, etc\dots 
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating spatial CJS data with dispersal}
+  \begin{columns}
+    \footnotesize %\small
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+    Parameters and data dimensions
+<<move,size='tiny'>>=
+T <- 10; K <- 3; n <- 25 ## same as before
+phi <- 0.7; p0 <- 0.4; sigma <- 0.1
+## dispersal parameter (of random walk)
+tau <- 0.05
+@
+\pause
+Activity centers take a random walk
+<<s,size='tiny'>>=
+## state-space should be bigger
+xlim <- ylim <- c(0, 1)
+first <- rpois(n, 1)+1
+s <- array(NA, c(n, 2, T))
+for(i in 1:n) {
+    s[i,,first[i]] <- cbind(runif(1, xlim[1],
+                                  xlim[2]),
+                            runif(1, ylim[1],
+                                  ylim[2]))
+    for(t in (first[i]+1):T) {
+        s[i,1,t] <- rnorm(1, s[i,1,t-1], tau)
+        s[i,2,t] <- rnorm(1, s[i,2,t-1], tau)
+    }
+}
+d <- p <- array(NA, c(n, J, T))
+for(i in 1:n) {
+    for(t in 1:T) {
+        d[i,,t] <- sqrt((s[i,1,t]-x[,1])^2 +
+                        (s[i,2,t]-x[,2])^2)
+        p[i,,t] <- p0*exp(-d[i,,t]^2 /
+                          (2*sigma^2))
+    }
+}
+@
+    \end{column}
+    \pause
+    \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
+Generate $z$ and $y$
+<<z3,size='tiny'>>=
+z <- matrix(NA, n, T)
+y.move <- array(NA, c(n, J, K, T)) 
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
+        for(j in 1:J) {
+            y.move[i,j,1:K,t] <-
+                rbinom(K, 1, z[i,t]*p[i,j,t])
+        }
+    }
+}
+@
+\end{column}
+  \end{columns}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Movement of activity center 1}
+<<s1,size='scriptsize',out.width="65%",fig.align="center">>=
+plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
+     xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Spatial CJS model with dispersal in JAGS}
+  \vspace{-2mm}
+  \tiny %\fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial-move.jag}}}
+<<jags-sp-move,size='tiny'>>=
+writeLines(readLines("CJS-spatial-move.jag"))
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+  \small
+  Data
+<<sp-move-data,size='scriptsize'>>=
+jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
+                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+@ 
+  Initial values for $z$ matrix
+<<ji3,size='scriptsize'>>=
+zi <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi[i,(first[i]+1):T] <- 1
+    }
+ji.sp.move <- function() list(phi=runif(1), z=zi)
+jp.sp.move <- c("phi", "p0", "sigma", "tau")
+@
+  \pause
+  \vfill
+  Fit the model
+<<jc3,size='scriptsize',results='hide',cache=TRUE>>=
+jps.sp.move <- jags.basic(data=jd.sp.move,
+                          inits=ji.sp.move,
+                          parameters.to.save=jp.sp.move,
+                          model.file="CJS-spatial-move.jag",
+                          n.chains=3, n.adapt=100, n.burnin=0,
+                          n.iter=2000, parallel=TRUE)
+@
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior distributions}
+<<jc3-plot,size='scriptsize',out.width="60%",fig.align='center'>>=
+plot(jps.sp.move[,jp.sp.move])
+@
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+  \frametitle{Summary}
+  \large
+%  Key points
+%  \begin{itemize}[<+->]
+%  \item
+  Spatial CJS models allow for inference about survival,
+  movement, and capture probability \\
+  \pause \vfill
+  % \item
+  We could have considered many other movement models \\
+  \pause \vfill
+  % \item
+  Next, we'll use Jolly-Seber models to study spatio-temporal
+  variation in abundance and recruitment too \\
+%  \end{itemize}
+\end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Assignment}
+%   {\bf \large For next week}
+%   \begin{enumerate}[\bf (1)]
+%     \item Modify {\tt CJS-spatial.jag} to estimate yearly survival
+%     \item Work on analysis of your own data
+%     \item Prepare a 2-min presentation on your planned analysis.
+%     \item Paper should be a minimum of 4 pages, single-spaced, 12-pt
+%       font, including:
+%       \begin{itemize}
+%         \item Introduction
+%         \item Methods (including model description)
+%         \item Results (with figures)
+%         \item Discussion
+%       \end{itemize}
+%   \end{enumerate}
+% \end{frame}
+
+
+\end{document}
+
+
+
+
+
+
+
+
