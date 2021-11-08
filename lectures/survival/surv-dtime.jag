@@ -1,0 +1,11 @@
+model{
+
+phi ~ dunif(0,1)
+
+for(i in 1:n) {
+  for(t in (first[i]+1):maxTime) {
+    z[i,t] ~ dbern(z[i,t-1]*phi)
+  }
+}
+
+}

@@ -370,39 +370,130 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Semi-parametric survival model}
+  The Cox proportional hazards model is of the form:
+  \[
+    \lambda_i(t) = \lambda_0(t)\exp(\beta_1 x_{i,1} + \beta_2 x_{i,2} + \cdots)
+  \]
+  where $\lambda_0(t)$ is the baseline hazard rate, similar to a
+  Kaplan-Meier hazard.
+  \pause \vfill
+<<coxreg,size='scriptsize'>>=
+(cox1 <- coxph(y ~ x))
+@
+\end{frame}
+
+
+
+
 \subsection{Bayes}
 
 
+\begin{frame}[fragile]
+  \frametitle{Bayesian inference}
+  In JAGS, the recommended way of dealing with censoring is with the
+  \inr{dinterval} distribution. 
+<<exp-jag,eval=FALSE>>=
+writeLines(readLines("surv-exp.jag"))
+@ 
+<<exp-jag2,size='footnotesize',background='lightblue',comment='',echo=FALSE>>=
+writeLines(readLines("surv-exp.jag"))
+@ 
+\end{frame}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian inference}
+  Prepare data
+<<jd-surv-exp,size='scriptsize'>>=
+survival.time.jags <- survival.time.c
+survival.time.jags[censored==1] <- NA
+jd.exp <- list(survivalTime=survival.time.jags, censored=censored,
+               censorTime=rep(ctime, length(censored)),
+               x=x, n=length(censored))
+@   
+\pause
+\vfill
+  Inits, parameters
+<<ji-jp-exp,size='scriptsize'>>=
+ji.exp <- function() list(beta0=rnorm(1), beta1=rnorm(1)) 
+jp.exp <- c("beta0", "beta1")
+@
+\pause
+\vfill
+  {\normalsize Fit the model}
+<<js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE>>=
+jags.post.samples.exp <- jags.basic(data=jd.exp, inits=ji.exp,
+                                    parameters.to.save=jp.exp,
+                                    model.file="surv-exp.jag",
+                                    n.chains=3, n.adapt=100, n.burnin=0,
+                                    n.iter=2000, parallel=TRUE)
+@
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC output}
+<<post-samps-exp,fig.align='center',out.width='65%'>>=
+plot(jags.post.samples.exp)
+@   
+\end{frame}
 
 
 \section{Discrete-time models}
 
 
 
-\begin{frame}
-  \frametitle{Hazard}
-  \[
-    \lambda_t = \Pr(t \le T < t+1 | T\ge t)/
-  \]
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{Survivorship}
-  \[
-    S(t) = \prod_{j=1}^t (1-\lambda_j)
-  \]
-\end{frame}
+\subsection{No covariates}
 
 
 \begin{frame}
-  \frametitle{Probability density}
+  \frametitle{Discrete-time survival models}
+  A simple way of modeling survival is to discretize time and use the
+  following model:
   \[
-    p(t) = \lambda_t \prod_{j=1}^{t-1} (1-\lambda_j)
+    z_{i,t} \sim \mathrm{Bern}(z_{i,t-1}\times \phi_t)
   \]
+  where $z_{i,t}$ indicates if individual $i$ is alive at time $t$ and
+  $\phi$ is the probability of surviving the time interval.
+  \pause
+  \vfill
+  In discrete time we have:
+  \begin{itemize}
+    \item Hazard: $\lambda_t = 1-\phi_t = \Pr(t \le T < t+1 | T\ge t)$
+    \item Survivorship: $S_t = \prod_{j=1}^t \phi_j$
+    \item Probability density: $p(t) = S_t \lambda_t$
+  \end{itemize}
 \end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Survivorship}
+%   \[
+%     S(t) = \prod_{j=1}^t (1-\lambda_j)
+%   \]
+% \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Probability density}
+%   \[
+%     p(t) = \lambda_t \prod_{j=1}^{t-1} (1-\lambda_j)
+%   \]
+% \end{frame}
 
 
 
@@ -415,18 +506,18 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
   %\small
 <<sim-norobust,size='footnotesize',echo=-1>>=
 set.seed(34918)  
-T <- 10               ## primary periods (eg, years)
-K <- 1                ## only 1 secondary sampling occasion
+maxTime <- 10               ## primary periods (eg, years)
+K <- 1                      ## only 1 secondary sampling occasion
 n <- 25
 phi <- 0.7
 p <- 0.4
-z <- matrix(NA, n, T)
+z <- matrix(NA, n, maxTime)
 first <- rpois(n, 1)+1 ## random release dates
 @
 \pause
 \vfill
 {%\bf
-  Generate $z$ and $y$}
+  Generate $z$, the alive-dead indicator}
 <<sim-norbust2,size='footnotesize'>>=
 for(i in 1:n) {
     z[i,first[i]] <- 1  ## Known alive at release
@@ -442,49 +533,40 @@ for(i in 1:n) {
 
 \begin{frame}[fragile]
   \frametitle{Simulated CJS data}
-<<z>>=
-z[,1:7]
+<<z,size='small'>>=
+z[1:15,]
 @
 \end{frame}
 
 
 
-\subsection{Likelihood}
+% \begin{frame}[plain]
+%   \frametitle{Topics}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
+% \end{frame}
 
-
-\begin{frame}[plain]
-  \frametitle{Topics}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
-
-
+% \subsection{Bayesian}
 
 
 
-
-
-\subsection{Bayesian}
-
-
-
-\begin{frame}[plain]
-  \frametitle{Topics}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
+% \begin{frame}[plain]
+%   \frametitle{Topics}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
+% \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model in JAGS}
-%  \vspace{-5mm}
-%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
-<<jags-sp,size='tiny'>>=
-writeLines(readLines("CJS-spatial.jag"))
+<<jags-surv-dtime,eval=FALSE>>=
+writeLines(readLines("surv-dtime.jag"))
+@ 
+<<jags-surv-dtime2,background='lightblue',comment='',echo=FALSE>>=
+writeLines(readLines("surv-dtime.jag"))
 @ 
 \end{frame}
-
 
 
 
@@ -492,36 +574,63 @@ writeLines(readLines("CJS-spatial.jag"))
 \begin{frame}[fragile]
   \frametitle{JAGS}
   Data
-<<sp-data,size='scriptsize'>>=
-jags.data.sp <- list(y=y.sp, n=n, first=first, x=x,
-                     J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+<<jd-dtime0,size='scriptsize'>>=
+jd.dtime0 <- list(z=z, n=n, first=first, maxTime=maxTime)
 @   
-  Initial values for $z$ matrix
+  Initial values
   \scriptsize
-<<ji2,size='scriptsize'>>=
-zi.sp <- matrix(NA, n, T)
-for(i in 1:n) {
-    zi.sp[i,(first[i]+1):T] <- 1
-    }
-jags.inits.sp <- function() list(phi=runif(1), z=zi.sp)
-jags.pars.sp <- c("phi", "p0", "sigma")
+<<ji-dtime0,size='scriptsize'>>=
+ji.dtime0 <- function() list(phi=runif(1))
+jp.dtime0 <- c("phi")
 @
 \pause
 \vfill
   {\normalsize Fit the model}
-<<jc2,size='scriptsize',cache=TRUE,results='hide',eval=FALSE>>=
-jags.post.samples.sp <- jags.basic(data=jags.data.sp,
-                                   inits=jags.inits.sp,
-                                   parameters.to.save=jags.pars.sp,
-                                   model.file="CJS-spatial.jag",
-                                   n.chains=3, n.adapt=100, n.burnin=0,
-                                   n.iter=2000, parallel=TRUE)
+<<js-dtime0,size='scriptsize',cache=TRUE,results='hide',eval=TRUE>>=
+jags.post.samples.dtime0 <- jags.basic(data=jd.dtime0, inits=ji.dtime0,
+                                       parameters.to.save=jp.dtime0,
+                                       model.file="surv-dtime.jag",
+                                       n.chains=3, n.adapt=100, n.burnin=0,
+                                       n.iter=2000, parallel=TRUE)
 @
 \end{frame}
 
 
 
 
+
+\begin{frame}[fragile]
+  \frametitle{MCMC output}
+<<post-samps-dtime0,fig.align='center',out.width='65%'>>=
+plot(jags.post.samples.dtime0)
+@   
+\end{frame}
+
+
+
+
+
+
+\subsection{Time-varying covariates}
+
+
+\subsection{Competing risks}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Assumptions of failure time models}
+  Assumptions
+  \begin{itemize}
+    \item Random sampling
+    \item Independent survival times
+    \item Mortality times are known exactly
+    \item Censoring is random and independent of survival
+    \item Well-defined time origin
+  \end{itemize}
+\end{frame}
 
 
 
@@ -541,14 +650,6 @@ jags.post.samples.sp <- jags.basic(data=jags.data.sp,
 %  \item
   Spatial CJS models allow for inference about survival,
   movement, and capture probability \\
-  \pause \vfill
-  % \item
-  We could have considered many other movement models \\
-  \pause \vfill
-  % \item
-  Next, we'll use Jolly-Seber models to study spatio-temporal
-  variation in abundance and recruitment too \\
-%  \end{itemize}
 \end{frame}
 
 

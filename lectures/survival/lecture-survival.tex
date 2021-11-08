@@ -488,39 +488,186 @@ The observed data, with censoring:
 
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Semi-parametric survival model}
+  The Cox proportional hazards model is of the form:
+  \[
+    \lambda_i(t) = \lambda_0(t)\exp(\beta_1 x_{i,1} + \beta_2 x_{i,2} + \cdots)
+  \]
+  where $\lambda_0(t)$ is the baseline hazard rate, similar to a
+  Kaplan-Meier hazard.
+  \pause \vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(cox1} \hlkwb{<-} \hlkwd{coxph}\hlstd{(y} \hlopt{~} \hlstd{x))}
+\end{alltt}
+\begin{verbatim}
+## Call:
+## coxph(formula = y ~ x)
+## 
+##       coef exp(coef) se(coef)      z        p
+## x -0.45875   0.63207  0.07584 -6.049 1.46e-09
+## 
+## Likelihood ratio test=37.81  on 1 df, p=7.801e-10
+## n= 200, number of events= 192
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
 \subsection{Bayes}
 
 
+\begin{frame}[fragile]
+  \frametitle{Bayesian inference}
+  In JAGS, the recommended way of dealing with censoring is with the
+  \inr{dinterval} distribution. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-exp.jag"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model{
+
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+
+for(i in 1:n) {
+  lambda[i] <- exp(beta0 + beta1*x[i])
+  # Survival times are observed when censored=0 
+  survivalTime[i] ~ dexp(lambda[i])
+  censored[i] ~ dinterval(survivalTime[i], censorTime[i])
+}
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Bayesian inference}
+  Prepare data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{survival.time.jags} \hlkwb{<-} \hlstd{survival.time.c}
+\hlstd{survival.time.jags[censored}\hlopt{==}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{NA}
+\hlstd{jd.exp} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{survivalTime}\hlstd{=survival.time.jags,} \hlkwc{censored}\hlstd{=censored,}
+               \hlkwc{censorTime}\hlstd{=}\hlkwd{rep}\hlstd{(ctime,} \hlkwd{length}\hlstd{(censored)),}
+               \hlkwc{x}\hlstd{=x,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(censored))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Inits, parameters
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.exp} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{))}
+\hlstd{jp.exp} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  {\normalsize Fit the model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.post.samples.exp} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.exp,} \hlkwc{inits}\hlstd{=ji.exp,}
+                                    \hlkwc{parameters.to.save}\hlstd{=jp.exp,}
+                                    \hlkwc{model.file}\hlstd{=}\hlstr{"surv-exp.jag"}\hlstd{,}
+                                    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                    \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC output}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples.exp)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.65\linewidth]{figure/post-samps-exp-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
 
 
 \section{Discrete-time models}
 
 
 
-\begin{frame}
-  \frametitle{Hazard}
-  \[
-    \lambda_t = \Pr(t \le T < t+1 | T\ge t)/
-  \]
+\begin{frame}[plain]
+  \frametitle{Topics}
+  \Large
+  \tableofcontents[currentsection]
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{Survivorship}
-  \[
-    S(t) = \prod_{j=1}^t (1-\lambda_j)
-  \]
-\end{frame}
+\subsection{No covariates}
 
 
 \begin{frame}
-  \frametitle{Probability density}
+  \frametitle{Discrete-time survival models}
+  A simple way of modeling survival is to discretize time and use the
+  following model:
   \[
-    p(t) = \lambda_t \prod_{j=1}^{t-1} (1-\lambda_j)
+    z_{i,t} \sim \mathrm{Bern}(z_{i,t-1}\times \phi_t)
   \]
+  where $z_{i,t}$ indicates if individual $i$ is alive at time $t$ and
+  $\phi$ is the probability of surviving the time interval.
+  \pause
+  \vfill
+  In discrete time we have:
+  \begin{itemize}
+    \item Hazard: $\lambda_t = 1-\phi_t = \Pr(t \le T < t+1 | T\ge t)$
+    \item Survivorship: $S_t = \prod_{j=1}^t \phi_j$
+    \item Probability density: $p(t) = S_t \lambda_t$
+  \end{itemize}
 \end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{Survivorship}
+%   \[
+%     S(t) = \prod_{j=1}^t (1-\lambda_j)
+%   \]
+% \end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Probability density}
+%   \[
+%     p(t) = \lambda_t \prod_{j=1}^{t-1} (1-\lambda_j)
+%   \]
+% \end{frame}
 
 
 
@@ -534,12 +681,12 @@ The observed data, with censoring:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{T} \hlkwb{<-} \hlnum{10}               \hlcom{## primary periods (eg, years)}
-\hlstd{K} \hlkwb{<-} \hlnum{1}                \hlcom{## only 1 secondary sampling occasion}
+\hlstd{maxTime} \hlkwb{<-} \hlnum{10}               \hlcom{## primary periods (eg, years)}
+\hlstd{K} \hlkwb{<-} \hlnum{1}                      \hlcom{## only 1 secondary sampling occasion}
 \hlstd{n} \hlkwb{<-} \hlnum{25}
 \hlstd{phi} \hlkwb{<-} \hlnum{0.7}
 \hlstd{p} \hlkwb{<-} \hlnum{0.4}
-\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
+\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, maxTime)}
 \hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1} \hlcom{## random release dates}
 \end{alltt}
 \end{kframe}
@@ -547,7 +694,7 @@ The observed data, with censoring:
 \pause
 \vfill
 {%\bf
-  Generate $z$ and $y$}
+  Generate $z$, the alive-dead indicator}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -567,38 +714,28 @@ The observed data, with censoring:
 
 \begin{frame}[fragile]
   \frametitle{Simulated CJS data}
-\begin{knitrout}
+\begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{z[,}\hlnum{1}\hlopt{:}\hlnum{7}\hlstd{]}
+\hlstd{z[}\hlnum{1}\hlopt{:}\hlnum{15}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##       [,1] [,2] [,3] [,4] [,5] [,6] [,7]
-##  [1,]    1    0    0    0    0    0    0
-##  [2,]   NA    1    1    1    1    1    1
-##  [3,]   NA    1    1    1    0    0    0
-##  [4,]    1    0    0    0    0    0    0
-##  [5,]    1    1    1    1    0    0    0
-##  [6,]   NA    1    0    0    0    0    0
-##  [7,]   NA   NA    1    1    1    1    1
-##  [8,]   NA   NA   NA    1    0    0    0
-##  [9,]    1    0    0    0    0    0    0
-## [10,]    1    1    1    1    1    1    0
-## [11,]    1    0    0    0    0    0    0
-## [12,]    1    1    1    0    0    0    0
-## [13,]   NA   NA    1    0    0    0    0
-## [14,]    1    1    0    0    0    0    0
-## [15,]   NA    1    1    1    1    1    0
-## [16,]    1    0    0    0    0    0    0
-## [17,]    1    0    0    0    0    0    0
-## [18,]    1    0    0    0    0    0    0
-## [19,]    1    1    1    1    1    1    1
-## [20,]   NA    1    1    1    1    0    0
-## [21,]   NA   NA    1    1    1    1    0
-## [22,]   NA    1    0    0    0    0    0
-## [23,]   NA    1    0    0    0    0    0
-## [24,]    1    1    0    0    0    0    0
-## [25,]   NA    1    1    1    0    0    0
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+##  [1,]    1    0    0    0    0    0    0    0    0     0
+##  [2,]   NA    1    1    1    1    1    1    1    0     0
+##  [3,]   NA    1    1    1    0    0    0    0    0     0
+##  [4,]    1    0    0    0    0    0    0    0    0     0
+##  [5,]    1    1    1    1    0    0    0    0    0     0
+##  [6,]   NA    1    0    0    0    0    0    0    0     0
+##  [7,]   NA   NA    1    1    1    1    1    1    0     0
+##  [8,]   NA   NA   NA    1    0    0    0    0    0     0
+##  [9,]    1    0    0    0    0    0    0    0    0     0
+## [10,]    1    1    1    1    1    1    0    0    0     0
+## [11,]    1    0    0    0    0    0    0    0    0     0
+## [12,]    1    1    1    0    0    0    0    0    0     0
+## [13,]   NA   NA    1    0    0    0    0    0    0     0
+## [14,]    1    1    0    0    0    0    0    0    0     0
+## [15,]   NA    1    1    1    1    1    0    0    0     0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -606,50 +743,51 @@ The observed data, with censoring:
 
 
 
-\subsection{Likelihood}
+% \begin{frame}[plain]
+%   \frametitle{Topics}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
+% \end{frame}
 
-
-\begin{frame}[plain]
-  \frametitle{Topics}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
-
-
+% \subsection{Bayesian}
 
 
 
-
-
-\subsection{Bayesian}
-
-
-
-\begin{frame}[plain]
-  \frametitle{Topics}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
+% \begin{frame}[plain]
+%   \frametitle{Topics}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
+% \end{frame}
 
 
 
 \begin{frame}[fragile]
   \frametitle{Spatial CJS model in JAGS}
-%  \vspace{-5mm}
-%  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
-\begin{knitrout}\tiny
+\begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"CJS-spatial.jag"}\hlstd{))}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-dtime.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model{
 
+phi ~ dunif(0,1)
 
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in file(con, "{}r"{}): cannot open file 'CJS-spatial.jag': No such file or directory}}
+for(i in 1:n) {
+  for(t in (first[i]+1):maxTime) {
+    z[i,t] ~ dbern(z[i,t-1]*phi)
+  }
+}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file(con, "{}r"{}): cannot open the connection}}\end{kframe}
+}
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
-
 
 
 
@@ -660,22 +798,17 @@ The observed data, with censoring:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.sp} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.sp,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{x}\hlstd{=x,}
-                     \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,} \hlkwc{T}\hlstd{=T,} \hlkwc{xlim}\hlstd{=xlim,} \hlkwc{ylim}\hlstd{=ylim)}
+\hlstd{jd.dtime0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=z,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{maxTime}\hlstd{=maxTime)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-  Initial values for $z$ matrix
+  Initial values
   \scriptsize
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{zi.sp} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, T)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
-    \hlstd{zi.sp[i,(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T]} \hlkwb{<-} \hlnum{1}
-    \hlstd{\}}
-\hlstd{jags.inits.sp} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=zi.sp)}
-\hlstd{jags.pars.sp} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{)}
+\hlstd{ji.dtime0} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
+\hlstd{jp.dtime0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -685,12 +818,11 @@ The observed data, with censoring:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.samples.sp} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.sp,}
-                                   \hlkwc{inits}\hlstd{=jags.inits.sp,}
-                                   \hlkwc{parameters.to.save}\hlstd{=jags.pars.sp,}
-                                   \hlkwc{model.file}\hlstd{=}\hlstr{"CJS-spatial.jag"}\hlstd{,}
-                                   \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                   \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{jags.post.samples.dtime0} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.dtime0,} \hlkwc{inits}\hlstd{=ji.dtime0,}
+                                       \hlkwc{parameters.to.save}\hlstd{=jp.dtime0,}
+                                       \hlkwc{model.file}\hlstd{=}\hlstr{"surv-dtime.jag"}\hlstd{,}
+                                       \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                       \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -699,6 +831,49 @@ The observed data, with censoring:
 
 
 
+
+\begin{frame}[fragile]
+  \frametitle{MCMC output}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(jags.post.samples.dtime0)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.65\linewidth]{figure/post-samps-dtime0-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+\subsection{Time-varying covariates}
+
+
+\subsection{Competing risks}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Assumptions of failure time models}
+  Assumptions
+  \begin{itemize}
+    \item Random sampling
+    \item Independent survival times
+    \item Mortality times are known exactly
+    \item Censoring is random and independent of survival
+    \item Well-defined time origin
+  \end{itemize}
+\end{frame}
 
 
 
@@ -718,14 +893,6 @@ The observed data, with censoring:
 %  \item
   Spatial CJS models allow for inference about survival,
   movement, and capture probability \\
-  \pause \vfill
-  % \item
-  We could have considered many other movement models \\
-  \pause \vfill
-  % \item
-  Next, we'll use Jolly-Seber models to study spatio-temporal
-  variation in abundance and recruitment too \\
-%  \end{itemize}
 \end{frame}
 
 
