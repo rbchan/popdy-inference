@@ -133,7 +133,7 @@
   approach. \\ 
   \pause
   \vfill
-  These are continuous time models in which the random variable of
+  These are continuous-time models in which the random variable of
   interest is the {\it survival time} ($T$). \\
   \pause
   \vfill
@@ -154,7 +154,8 @@
 \begin{frame}
   \frametitle{Censoring}
   Typically, we don't observer survival time for all individuals
-  because some are still alive at the end of the observation period. \\
+  because some are still alive at the end of the observation period,
+  either because transmitter batteries die or we stop monitoring. \\
   \pause
   \vfill
   These survival times are ``right censored'', which means that we
@@ -166,10 +167,10 @@
   \begin{itemize}%[<+->]
 %    \normalsize
     \small
-    \item Right censoring (common): survival time is in the interval $(U,\infty)$
+    \item Right censoring (common): survival time is in the interval $(U,\infty]$
     \item Left censoring (rare): survival time is in the interval
-      $(-\infty,L)$
-    \item Interval censoring (rare): survival time is in $(a,b)$. 
+      $[-\infty,L)$
+    \item Interval censoring (rare): survival time is in $(a,b]$. 
   \end{itemize}  
 \end{frame}
 
@@ -195,7 +196,7 @@
     \item[]
     \item<3-> Survivorship $S(t)$
       \begin{itemize}
-        \item The probability of surviving to or beyond time $t$
+        \item The probability of surviving at least until time $t$
       \end{itemize}
     \item[]
     \item<4-> Probability density $p(t)$
@@ -264,7 +265,8 @@
 
 \begin{frame}
   \frametitle{Exponential survival times}
-  The simplest survival model assumes that the hazard is constant over
+  The simplest survival model is the ``exponential model'',
+  which assumes that the hazard is constant over
   time: $\lambda = \lambda(t)$.
   \pause
   \vfill
@@ -373,10 +375,23 @@ The observed data, with censoring:
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-  
 \end{frame}
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Life lines}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/life-lines-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
 
 
 
@@ -394,7 +409,7 @@ The observed data, with censoring:
   \pause
   \vfill
   \[
-    \hat{S}(t) = \prod_{j|a_j < t} \left(1 - \frac{d_j}{r_j}\right)
+    \hat{S}(t) = \prod_{j:a_j < t} \left(1 - \frac{d_j}{r_j}\right)
   \]
   where
   \begin{itemize}
@@ -521,6 +536,27 @@ The observed data, with censoring:
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Semi-parametric survival model}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlkwd{survfit}\hlstd{(cox1),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,}
+     \hlkwc{main}\hlstd{=}\hlstr{"Cox proportional hazards fit"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/cox-S-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
 \subsection{Bayes}
 
 
@@ -545,7 +581,7 @@ beta1 ~ dnorm(0, 0.1)
 
 for(i in 1:n) {
   lambda[i] <- exp(beta0 + beta1*x[i])
-  # Survival times are observed when censored=0 
+  # Survival times are only observed when censored=0 
   survivalTime[i] ~ dexp(lambda[i])
   censored[i] ~ dinterval(survivalTime[i], censorTime[i])
 }
@@ -560,7 +596,8 @@ for(i in 1:n) {
 
 \begin{frame}[fragile]
   \frametitle{Bayesian inference}
-  Prepare data
+  Prepare data by treating censored (unobserved) survival times as
+  \inr{NA}. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -574,7 +611,7 @@ for(i in 1:n) {
 \end{knitrout}
 \pause
 \vfill
-  Inits, parameters
+  Inits, parameters:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -681,13 +718,9 @@ for(i in 1:n) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{maxTime} \hlkwb{<-} \hlnum{10}               \hlcom{## primary periods (eg, years)}
-\hlstd{K} \hlkwb{<-} \hlnum{1}                      \hlcom{## only 1 secondary sampling occasion}
-\hlstd{n} \hlkwb{<-} \hlnum{25}
-\hlstd{phi} \hlkwb{<-} \hlnum{0.7}
-\hlstd{p} \hlkwb{<-} \hlnum{0.4}
-\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, maxTime)}
-\hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1} \hlcom{## random release dates}
+\hlstd{maxTime} \hlkwb{<-} \hlnum{10}           \hlcom{## Time period}
+\hlstd{n} \hlkwb{<-} \hlnum{25}                 \hlcom{## nIndividuals}
+\hlstd{phi} \hlkwb{<-} \hlnum{0.7}              \hlcom{## Survival probability over 1 time step}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -698,6 +731,8 @@ for(i in 1:n) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, maxTime)}
+\hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1}  \hlcom{## random release dates}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
     \hlstd{z[i,first[i]]} \hlkwb{<-} \hlnum{1}  \hlcom{## Known alive at release}
     \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T) \{}
@@ -894,6 +929,59 @@ for(i in 1:n) {
 \subsection{Competing risks}
 
 
+\begin{frame}
+  \frametitle{Competing risks}
+  
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Competing risks}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-dtime-comp-risks.jag"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model{
+
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+
+for(i in 1:n) {
+  ## States:
+  ## 1=killed by panther
+  ## 2=killed by bear
+  ## 3=killed by mt lion
+  ## 4=alive
+  for(t in (first[i]+1):maxTime) {
+    log(lam[i,t-1,1]) <- beta0 + beta1*x[i,t-1]
+    log(lam[i,t-1,2]) <- beta0 + beta1*x[i,t-1]
+    log(lam[i,t-1,3]) <- beta0 + beta1*x[i,t-1]
+    Phi[1,t-1,1] <- lam[i,t-1,1]/(1+sum(lam[i,t-1,]))
+    Phi[1,t-1,2] <- lam[i,t-1,2]/(1+sum(lam[i,t-1,]))
+    Phi[1,t-1,3] <- lam[i,t-1,3]/(1+sum(lam[i,t-1,]))
+    Phi[1,t-1,4] <- 1-sum(Phi[1,t-1,1:3])
+    z[i,t] ~ dcat(Phi[z[i,t-1],t-1,1:4])
+  }
+}
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\section{Conclusions}
+
 
 
 
@@ -910,6 +998,24 @@ for(i in 1:n) {
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{Looking ahead}
+  Most ``open population'' mark-recapture models use discrete-time
+  survival models, with observation error coming from imperfect
+  detection. \\
+  \pause
+  \vfill
+  Statisticians call these models hidden Markov models. \\
+  \pause
+  \vfill
+  Next time, we will focus on one of the most important examples: the
+  Cormack-Jolly-Seber model.
+  \pause
+  \vfill
+  No assignment again this week. Work on your papers and
+  presentations. 
+\end{frame}
 
 
 

@@ -90,7 +90,7 @@ knit_theme$set("edit-kwrite")
   approach. \\ 
   \pause
   \vfill
-  These are continuous time models in which the random variable of
+  These are continuous-time models in which the random variable of
   interest is the {\it survival time} ($T$). \\
   \pause
   \vfill
@@ -111,7 +111,8 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Censoring}
   Typically, we don't observer survival time for all individuals
-  because some are still alive at the end of the observation period. \\
+  because some are still alive at the end of the observation period,
+  either because transmitter batteries die or we stop monitoring. \\
   \pause
   \vfill
   These survival times are ``right censored'', which means that we
@@ -123,10 +124,10 @@ knit_theme$set("edit-kwrite")
   \begin{itemize}%[<+->]
 %    \normalsize
     \small
-    \item Right censoring (common): survival time is in the interval $(U,\infty)$
+    \item Right censoring (common): survival time is in the interval $(U,\infty]$
     \item Left censoring (rare): survival time is in the interval
-      $(-\infty,L)$
-    \item Interval censoring (rare): survival time is in $(a,b)$. 
+      $[-\infty,L)$
+    \item Interval censoring (rare): survival time is in $(a,b]$. 
   \end{itemize}  
 \end{frame}
 
@@ -152,7 +153,7 @@ knit_theme$set("edit-kwrite")
     \item[]
     \item<3-> Survivorship $S(t)$
       \begin{itemize}
-        \item The probability of surviving to or beyond time $t$
+        \item The probability of surviving at least until time $t$
       \end{itemize}
     \item[]
     \item<4-> Probability density $p(t)$
@@ -221,7 +222,8 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Exponential survival times}
-  The simplest survival model assumes that the hazard is constant over
+  The simplest survival model is the ``exponential model'',
+  which assumes that the hazard is constant over
   time: $\lambda = \lambda(t)$.
   \pause
   \vfill
@@ -295,10 +297,25 @@ The observed data, with censoring:
 survival.time.c <- ifelse(censored, ctime, survival.time) 
 summary(survival.time.c)
 @
-  
 \end{frame}
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Life lines}
+<<life-lines,size='footnotesize',fig.width=8,out.width='90%',fig.align='center',echo=FALSE>>=
+plot(0, type="n", xlim=c(0, ctime), ylim=c(1,20),
+     xlab="Time", ylab="Individual")
+abline(h=1:20, col=gray(0.8))
+segments(rep(0, 20), 1:20, survival.time.c[1:20], 1:20)
+points(rep(0,20), 1:20, pch=16, col="seagreen3", cex=1)
+points(survival.time.c[1:20], 1:20, pch=17,
+       col=ifelse(survival.time.c[1:20]==ctime, "blue", "red"))
+legend(170, 23, c("mortality", "censoring"), pch=17, col=c("red", "blue"),
+       xpd=TRUE, horiz=TRUE)
+@     
+\end{frame}
 
 
 
@@ -316,7 +333,7 @@ summary(survival.time.c)
   \pause
   \vfill
   \[
-    \hat{S}(t) = \prod_{j|a_j < t} \left(1 - \frac{d_j}{r_j}\right)
+    \hat{S}(t) = \prod_{j:a_j < t} \left(1 - \frac{d_j}{r_j}\right)
   \]
   where
   \begin{itemize}
@@ -389,6 +406,17 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Semi-parametric survival model}
+<<cox-S,out.width="0.7\\textwidth",fig.width=8,fig.align='center',size='footnotesize'>>=
+plot(survfit(cox1), xlab="Time", ylab="Survivorship",
+     main="Cox proportional hazards fit")
+@
+\end{frame}
+
+
+
+
 \subsection{Bayes}
 
 
@@ -408,7 +436,8 @@ writeLines(readLines("surv-exp.jag"))
 
 \begin{frame}[fragile]
   \frametitle{Bayesian inference}
-  Prepare data
+  Prepare data by treating censored (unobserved) survival times as
+  \inr{NA}. 
 <<jd-surv-exp,size='scriptsize'>>=
 survival.time.jags <- survival.time.c
 survival.time.jags[censored==1] <- NA
@@ -418,7 +447,7 @@ jd.exp <- list(survivalTime=survival.time.jags, censored=censored,
 @   
 \pause
 \vfill
-  Inits, parameters
+  Inits, parameters:
 <<ji-jp-exp,size='scriptsize'>>=
 ji.exp <- function() list(beta0=rnorm(1), beta1=rnorm(1)) 
 jp.exp <- c("beta0", "beta1")
@@ -506,19 +535,17 @@ plot(jags.post.samples.exp)
   %\small
 <<sim-norobust,size='footnotesize',echo=-1>>=
 set.seed(34918)  
-maxTime <- 10               ## primary periods (eg, years)
-K <- 1                      ## only 1 secondary sampling occasion
-n <- 25
-phi <- 0.7
-p <- 0.4
-z <- matrix(NA, n, maxTime)
-first <- rpois(n, 1)+1 ## random release dates
+maxTime <- 10           ## Time period
+n <- 25                 ## nIndividuals
+phi <- 0.7              ## Survival probability over 1 time step
 @
 \pause
 \vfill
 {%\bf
   Generate $z$, the alive-dead indicator}
 <<sim-norbust2,size='footnotesize'>>=
+z <- matrix(NA, n, maxTime)
+first <- rpois(n, 1)+1  ## random release dates
 for(i in 1:n) {
     z[i,first[i]] <- 1  ## Known alive at release
     for(t in (first[i]+1):T) {
@@ -638,6 +665,19 @@ writeLines(readLines("surv-dtime-tcovs.jag"))
 
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Competing risks}
+<<jags-surv-dtime-comp-risk,size='scriptsize',eval=FALSE>>=
+writeLines(readLines("surv-dtime-comp-risks.jag"))
+@ 
+<<jags-surv-dtime2-comp-risk,size='scriptsize',background='lightblue',comment='',echo=FALSE>>=
+writeLines(readLines("surv-dtime-comp-risks.jag"))
+@ 
+\end{frame}
+
+
+
 \section{Conclusions}
 
 
@@ -656,6 +696,24 @@ writeLines(readLines("surv-dtime-tcovs.jag"))
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{Looking ahead}
+  Most ``open population'' mark-recapture models use discrete-time
+  survival models, with observation error coming from imperfect
+  detection. \\
+  \pause
+  \vfill
+  Statisticians call these models hidden Markov models. \\
+  \pause
+  \vfill
+  Next time, we will focus on one of the most important examples: the
+  Cormack-Jolly-Seber model.
+  \pause
+  \vfill
+  No assignment again this week. Work on your papers and
+  presentations. 
+\end{frame}
 
 
 

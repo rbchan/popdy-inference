@@ -5,7 +5,7 @@ beta1 ~ dnorm(0, 0.1)
 
 for(i in 1:n) {
   lambda[i] <- exp(beta0 + beta1*x[i])
-  # Survival times are observed when censored=0 
+  # Survival times are only observed when censored=0 
   survivalTime[i] ~ dexp(lambda[i])
   censored[i] ~ dinterval(survivalTime[i], censorTime[i])
 }
