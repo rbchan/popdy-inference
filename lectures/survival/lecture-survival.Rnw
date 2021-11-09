@@ -406,13 +406,13 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Semi-parametric survival model}
-<<cox-S,out.width="0.7\\textwidth",fig.width=8,fig.align='center',size='footnotesize'>>=
-plot(survfit(cox1), xlab="Time", ylab="Survivorship",
-     main="Cox proportional hazards fit")
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Semi-parametric survival model}
+% <<cox-S,out.width="0.7\\textwidth",fig.width=8,fig.align='center',size='footnotesize'>>=
+% plot(survfit(cox1), xlab="Time", ylab="Survivorship",
+%      main="Cox proportional hazards fit")
+% @
+% \end{frame}
 
 
 
@@ -472,6 +472,24 @@ jags.post.samples.exp <- jags.basic(data=jd.exp, inits=ji.exp,
 plot(jags.post.samples.exp)
 @   
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior hazard}
+<<haz-post,fig.width=8,out.width='90%',fig.align='center',echo=FALSE>>=
+beta.post <- as.matrix(jags.post.samples.exp)[,c("beta0","beta1")]
+x.pred <- seq(-3, 3, by=0.2)
+lambda.post <- matrix(NA_real_, nrow(beta.post), length(x.pred))
+for(i in 1:nrow(beta.post))  lambda.post[i,] <- exp(beta.post[i,1] + beta.post[i,2]*x.pred)
+matplot(x.pred, y=t(lambda.post[1:500,]), type="l", col=rgb(0,0,1,0.02),
+        xlab="Covariate (x)", ylab="Hazard")
+lines(x.pred, colMeans(lambda.post), type="l", col="blue", lwd=2)
+plot(function(x) exp(beta0 + beta1*x), from=-3, to=3, col="orange", lwd=2, add=TRUE)
+legend(1, 0.06, c("Posterior sample", "Posterior mean", "Actual"),
+       col=c(rgb(0,0,1,0.2), "blue", "orange"), lty=1, lwd=c(1,2,2))
+@   
+\end{frame}
+
 
 
 \section{Discrete-time models}
@@ -636,6 +654,20 @@ plot(jags.post.samples.dtime0)
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Posterior survivorship}
+<<phi-post,size='tiny',fig.width=8,out.width='60%',fig.align='center',echo=-3>>=
+phi.post <- as.matrix(jags.post.samples.dtime0)[,"phi"]
+S.post <- sapply(phi.post, function(x) x^(0:10))
+par(mai=c(0.9,0.9,0.1,0.1))
+matplot(0:10, S.post[,1:1000], type="l", xlab="Time", ylab="Survivorship", col=rgb(0,1,1,0.02))
+lines(0:10, rowMeans(S.post), col="green", lwd=2)
+lines(0:10, phi^(0:10), col="orange", lwd=2)
+legend(6, 1, c("Posterior sample", "Posterior mean", "Actual"),
+       col=c(rgb(0,1,1,0.2), "green", "orange"), lty=1, lwd=c(1,2,2))
+@   
+\end{frame}
+
 
 
 \subsection{Time-varying covariates}
@@ -660,7 +692,28 @@ writeLines(readLines("surv-dtime-tcovs.jag"))
 
 \begin{frame}
   \frametitle{Competing risks}
-  
+  \small
+  Competing risks models are used when there are multiple ways of
+  dying, and we're interested in the cause-specific mortality risk,
+  represented by $K$ hazard functions: 
+  \[
+    \lambda_{k,t} = \exp(\beta_{0,k} + \beta_{1,k}x_{t} + \cdots)
+  \]
+  \pause
+  %\vfill
+  We can model the conditional probability of dying during interval
+  $t$, with a multinomial link function:
+  \[
+    \pi_{k,t} = \frac{\lambda_{k,t}}{1+\sum_{j=1}^K \lambda_{j,t}}
+  \]
+  where the final multinomial cell probability is the probability of
+  surviving: $\pi_{K+1,t} = 1-\sum_{k=1}^K \pi_{k,t}$. \\
+  \pause
+  \vfill
+  The data can be modeled with a categorical distribution:
+  \[
+    z_{i,t} \sim \mathrm{Cat}({\bm \pi}_t)
+  \]
 \end{frame}
 
 
@@ -670,7 +723,8 @@ writeLines(readLines("surv-dtime-tcovs.jag"))
   \frametitle{Competing risks}
 <<jags-surv-dtime-comp-risk,size='scriptsize',eval=FALSE>>=
 writeLines(readLines("surv-dtime-comp-risks.jag"))
-@ 
+@
+\vspace{-6pt}
 <<jags-surv-dtime2-comp-risk,size='scriptsize',background='lightblue',comment='',echo=FALSE>>=
 writeLines(readLines("surv-dtime-comp-risks.jag"))
 @ 
@@ -704,7 +758,7 @@ writeLines(readLines("surv-dtime-comp-risks.jag"))
   detection. \\
   \pause
   \vfill
-  Statisticians call these models hidden Markov models. \\
+  Statisticians call these hidden Markov models. \\
   \pause
   \vfill
   Next time, we will focus on one of the most important examples: the
@@ -723,15 +777,15 @@ writeLines(readLines("surv-dtime-comp-risks.jag"))
 
 
 
-\begin{frame}
-  \frametitle{Summary}
-  \large
-%  Key points
-%  \begin{itemize}[<+->]
-%  \item
-  Spatial CJS models allow for inference about survival,
-  movement, and capture probability \\
-\end{frame}
+% \begin{frame}
+%   \frametitle{Summary}
+%   \large
+% %  Key points
+% %  \begin{itemize}[<+->]
+% %  \item
+%   Spatial CJS models allow for inference about survival,
+%   movement, and capture probability \\
+% \end{frame}
 
 
 

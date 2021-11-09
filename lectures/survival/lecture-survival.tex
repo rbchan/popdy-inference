@@ -536,23 +536,13 @@ The observed data, with censoring:
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Semi-parametric survival model}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwd{survfit}\hlstd{(cox1),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,}
-     \hlkwc{main}\hlstd{=}\hlstr{"Cox proportional hazards fit"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/cox-S-1} 
-
-}
-
-
-\end{knitrout}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Semi-parametric survival model}
+% <<cox-S,out.width="0.7\\textwidth",fig.width=8,fig.align='center',size='footnotesize'>>=
+% plot(survfit(cox1), xlab="Time", ylab="Survivorship",
+%      main="Cox proportional hazards fit")
+% @
+% \end{frame}
 
 
 
@@ -654,6 +644,21 @@ for(i in 1:n) {
 
 \end{knitrout}
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Posterior hazard}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/haz-post-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
 
 
 \section{Discrete-time models}
@@ -887,6 +892,29 @@ for(i in 1:n) {
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Posterior survivorship}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{phi.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.dtime0)[,}\hlstr{"phi"}\hlstd{]}
+\hlstd{S.post} \hlkwb{<-} \hlkwd{sapply}\hlstd{(phi.post,} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) x}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{))}
+\hlkwd{matplot}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, S.post[,}\hlnum{1}\hlopt{:}\hlnum{1000}\hlstd{],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.02}\hlstd{))}
+\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,} \hlkwd{rowMeans}\hlstd{(S.post),} \hlkwc{col}\hlstd{=}\hlstr{"green"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, phi}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{),} \hlkwc{col}\hlstd{=}\hlstr{"orange"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlnum{6}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Posterior sample"}\hlstd{,} \hlstr{"Posterior mean"}\hlstd{,} \hlstr{"Actual"}\hlstd{),}
+       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.2}\hlstd{),} \hlstr{"green"}\hlstd{,} \hlstr{"orange"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{,}\hlnum{2}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/phi-post-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
 
 
 \subsection{Time-varying covariates}
@@ -931,7 +959,28 @@ for(i in 1:n) {
 
 \begin{frame}
   \frametitle{Competing risks}
-  
+  \small
+  Competing risks models are used when there are multiple ways of
+  dying, and we're interested in the cause-specific mortality risk,
+  represented by $K$ hazard functions: 
+  \[
+    \lambda_{k,t} = \exp(\beta_{0,k} + \beta_{1,k}x_{t} + \cdots)
+  \]
+  \pause
+  %\vfill
+  We can model the conditional probability of dying during interval
+  $t$, with a multinomial link function:
+  \[
+    \pi_{k,t} = \frac{\lambda_{k,t}}{1+\sum_{j=1}^K \lambda_{j,t}}
+  \]
+  where the final multinomial cell probability is the probability of
+  surviving: $\pi_{K+1,t} = 1-\sum_{k=1}^K \pi_{k,t}$. \\
+  \pause
+  \vfill
+  The data can be modeled with a categorical distribution:
+  \[
+    z_{i,t} \sim \mathrm{Cat}({\bm \pi}_t)
+  \]
 \end{frame}
 
 
@@ -946,29 +995,28 @@ for(i in 1:n) {
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model{
 
-beta0 ~ dnorm(0, 0.1)
-beta1 ~ dnorm(0, 0.1)
+## z states could be (for example):
+## 1=killed by panther
+## 2=killed by bear
+## 3=killed by mt lion
+## 4=alive
+for(k in 1:nRisks) {
+  beta0[k] ~ dnorm(0, 0.1)          ## Intercept only model
+  lambda[k] <- exp(beta0[k])        ## Cause-specific hazard
+  pi[k] <- lambda[k]/(1+Lambda)     ## Pr(killed by cause k)
+  }
+Lambda <- sum(lambda)               ## Total risk
+pi[nRisks+1] <- 1-sum(pi[1:nRisks]) ## Pr(not killed) 
 
 for(i in 1:n) {
-  ## States:
-  ## 1=killed by panther
-  ## 2=killed by bear
-  ## 3=killed by mt lion
-  ## 4=alive
-  for(t in (first[i]+1):maxTime) {
-    log(lam[i,t-1,1]) <- beta0 + beta1*x[i,t-1]
-    log(lam[i,t-1,2]) <- beta0 + beta1*x[i,t-1]
-    log(lam[i,t-1,3]) <- beta0 + beta1*x[i,t-1]
-    Phi[1,t-1,1] <- lam[i,t-1,1]/(1+sum(lam[i,t-1,]))
-    Phi[1,t-1,2] <- lam[i,t-1,2]/(1+sum(lam[i,t-1,]))
-    Phi[1,t-1,3] <- lam[i,t-1,3]/(1+sum(lam[i,t-1,]))
-    Phi[1,t-1,4] <- 1-sum(Phi[1,t-1,1:3])
-    z[i,t] ~ dcat(Phi[z[i,t-1],t-1,1:4])
+  for(t in (first[i]+1):last[i]) {
+    z[i,t] ~ dcat(pi)
   }
 }
 
@@ -1006,7 +1054,7 @@ for(i in 1:n) {
   detection. \\
   \pause
   \vfill
-  Statisticians call these models hidden Markov models. \\
+  Statisticians call these hidden Markov models. \\
   \pause
   \vfill
   Next time, we will focus on one of the most important examples: the
@@ -1025,15 +1073,15 @@ for(i in 1:n) {
 
 
 
-\begin{frame}
-  \frametitle{Summary}
-  \large
-%  Key points
-%  \begin{itemize}[<+->]
-%  \item
-  Spatial CJS models allow for inference about survival,
-  movement, and capture probability \\
-\end{frame}
+% \begin{frame}
+%   \frametitle{Summary}
+%   \large
+% %  Key points
+% %  \begin{itemize}[<+->]
+% %  \item
+%   Spatial CJS models allow for inference about survival,
+%   movement, and capture probability \\
+% \end{frame}
 
 
 
