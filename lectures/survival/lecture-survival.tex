@@ -53,7 +53,7 @@
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
-
+\usepackage{booktabs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -740,7 +740,7 @@ for(i in 1:n) {
 \hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1}  \hlcom{## random release dates}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
     \hlstd{z[i,first[i]]} \hlkwb{<-} \hlnum{1}  \hlcom{## Known alive at release}
-    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{T) \{}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{maxTime) \{}
         \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, z[i,t}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{phi)} \hlcom{## Alive/dead state}
     \hlstd{\}}
 \hlstd{\}}
@@ -979,9 +979,85 @@ for(i in 1:n) {
   \vfill
   The data can be modeled with a categorical distribution:
   \[
-    z_{i,t} \sim \mathrm{Cat}({\bm \pi}_t)
+    z_{i,t} \sim \mathrm{Cat}({\bm \pi}_t | \mathrm{alive\; at\;} t-1)
   \]
 \end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Competing risks}
+  Suppose you can die in 3 ways: killed by cougar, bear, or wolf
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{beta0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{6}\hlstd{,} \hlopt{-}\hlnum{4}\hlstd{,} \hlopt{-}\hlnum{3}\hlstd{)} \hlcom{## log-hazard. Not covariates}
+\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0)}   \hlcom{## Cause-specific hazard}
+\hlstd{pi} \hlkwb{<-} \hlstd{lambda} \hlopt{/} \hlstd{(}\hlnum{1}\hlopt{+}\hlkwd{sum}\hlstd{(lambda))}
+\hlstd{pi[}\hlnum{4}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi)}     \hlcom{## Probability of surviving t to t+1}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Set-up the data as a multi-state indicator
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{nDeer} \hlkwb{<-} \hlnum{100}
+\hlstd{nDays} \hlkwb{<-} \hlnum{100}
+\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nDeer, nDays)}
+\hlstd{z[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{4}  \hlcom{## Everyone starts in state 4}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Competing risks}
+  There are simpler ways of modeling temporal state dynamics, but we
+  will use a general multi-state transition matrix $\Phi$:
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Phi} \hlkwb{<-} \hlkwd{diag}\hlstd{(}\hlnum{4}\hlstd{)}
+\hlkwd{rownames}\hlstd{(Phi)} \hlkwb{<-} \hlkwd{colnames}\hlstd{(Phi)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"cougar"}\hlstd{,} \hlstr{"bear"}\hlstd{,} \hlstr{"wolf"}\hlstd{,} \hlstr{"alive"}\hlstd{)}
+\hlstd{Phi[}\hlnum{4}\hlstd{,]} \hlkwb{<-} \hlstd{pi}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+       & cougar & bear & wolf & alive \\
+\midrule
+cougar & 1.000      & 0.000 & 0.000 & 0.000  \\
+bear   & 0.000      & 1.000 & 0.000 & 0.000  \\
+wolf   & 0.000      & 0.000 & 1.000 & 0.000  \\
+alive  & 0.002      & 0.017 & 0.047 & 0.934  \\
+\bottomrule
+\end{tabular}
+\pause
+\vfill
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nDeer) \{}
+    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{nDays) \{}
+        \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=Phi[z[i,t}\hlopt{-}\hlnum{1}\hlstd{],])}\hlopt{==}\hlnum{1}\hlstd{)}
+    \hlstd{\}}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
 
 
 
@@ -1002,9 +1078,9 @@ for(i in 1:n) {
 model{
 
 ## z states could be (for example):
-## 1=killed by panther
+## 1=killed by cougar
 ## 2=killed by bear
-## 3=killed by mt lion
+## 3=killed by wolf
 ## 4=alive
 for(k in 1:nRisks) {
   beta0[k] ~ dnorm(0, 0.1)          ## Intercept only model
@@ -1012,11 +1088,12 @@ for(k in 1:nRisks) {
   pi[k] <- lambda[k]/(1+Lambda)     ## Pr(killed by cause k)
   }
 Lambda <- sum(lambda)               ## Total risk
-pi[nRisks+1] <- 1-sum(pi[1:nRisks]) ## Pr(not killed) 
+pi[nRisks+1] <- 1-sum(pi[1:nRisks]) ## Pr(not killed)
+Phi[nRisks+1,] <- pi
 
 for(i in 1:n) {
-  for(t in (first[i]+1):last[i]) {
-    z[i,t] ~ dcat(pi)
+  for(t in (first[i]+1):maxTime) {
+    z[i,t] ~ dcat(Phi[z[i,t-1],1:4])
   }
 }
 
@@ -1028,6 +1105,88 @@ for(i in 1:n) {
 
 
 
+
+
+\begin{frame}[fragile]
+  \frametitle{JAGS}
+  Data
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Phi.data} \hlkwb{<-} \hlkwd{diag}\hlstd{(}\hlnum{4}\hlstd{)}
+\hlstd{Phi.data[}\hlnum{4}\hlstd{,]} \hlkwb{<-} \hlnum{NA}
+\hlstd{jd.comp.risk} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=z,} \hlkwc{n}\hlstd{=nDeer,} \hlkwc{first}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,}\hlkwd{nrow}\hlstd{(z)),} \hlkwc{maxTime}\hlstd{=}\hlkwd{ncol}\hlstd{(z),}
+                     \hlkwc{nRisks}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{Phi}\hlstd{=Phi.data)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  Initial values
+  \scriptsize
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ji.comp.risk} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{log}\hlstd{(}\hlkwd{runif}\hlstd{(}\hlnum{3}\hlstd{)))}
+\hlstd{jp.comp.risk} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"pi"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  {\normalsize Fit the model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{jags.ps.comp.risk} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.comp.risk,} \hlkwc{inits}\hlstd{=ji.comp.risk,}
+                                \hlkwc{parameters.to.save}\hlstd{=jp.comp.risk,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"surv-dtime-comp-risks.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC output}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.75\linewidth]{figure/post-samps-comp-risk-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC output}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.75\linewidth]{figure/post-samps-comp-risk-pi-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+
+
 \section{Conclusions}
 
 
@@ -1035,13 +1194,34 @@ for(i in 1:n) {
 
 \begin{frame}
   \frametitle{Assumptions of failure time models}
-  Assumptions
+  Random sampling
   \begin{itemize}
-    \item Random sampling
-    \item Independent survival times
-    \item Mortality times are known exactly
-    \item Censoring is random and independent of survival
-    \item Well-defined time origin
+    \item Very hard to do in practice.
+  \end{itemize}
+%  \pause
+  \vfill
+  Independent survival times \\
+  \begin{itemize}
+    \item Problematic for gregarious species. 
+  \end{itemize}
+%  \pause
+  \vfill
+  Mortality times are known exactly
+  \begin{itemize}
+    \item Also hard
+  \end{itemize}
+%  \pause
+  \vfill
+  Censoring is random and independent of survival
+  \begin{itemize}
+    \item This will be a problem if transmitters fail when animals
+      die, and you don't know if they died.
+  \end{itemize}
+%  \pause
+  \vfill
+  Well-defined time origin
+  \begin{itemize}
+    \item Animals don't have to be released at the same time. 
   \end{itemize}
 \end{frame}
 

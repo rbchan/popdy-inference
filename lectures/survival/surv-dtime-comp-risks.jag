@@ -1,9 +1,9 @@
 model{
 
 ## z states could be (for example):
-## 1=killed by panther
+## 1=killed by cougar
 ## 2=killed by bear
-## 3=killed by mt lion
+## 3=killed by wolf
 ## 4=alive
 for(k in 1:nRisks) {
   beta0[k] ~ dnorm(0, 0.1)          ## Intercept only model
@@ -11,11 +11,12 @@ for(k in 1:nRisks) {
   pi[k] <- lambda[k]/(1+Lambda)     ## Pr(killed by cause k)
   }
 Lambda <- sum(lambda)               ## Total risk
-pi[nRisks+1] <- 1-sum(pi[1:nRisks]) ## Pr(not killed) 
+pi[nRisks+1] <- 1-sum(pi[1:nRisks]) ## Pr(not killed)
+Phi[nRisks+1,] <- pi
 
 for(i in 1:n) {
-  for(t in (first[i]+1):last[i]) {
-    z[i,t] ~ dcat(pi)
+  for(t in (first[i]+1):maxTime) {
+    z[i,t] ~ dcat(Phi[z[i,t-1],1:4])
   }
 }
 
