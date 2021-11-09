@@ -86,7 +86,9 @@ ji.exp <- function() list(beta0=rnorm(1), beta1=rnorm(1))
 jp.exp <- c("beta0", "beta1")
 
 
-## ----js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE-----------------
+## ----js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE,echo=-(1:2)-----
+library(jagsUI)
+library(coda)
 jags.post.samples.exp <- jags.basic(data=jd.exp, inits=ji.exp,
                                     parameters.to.save=jp.exp,
                                     model.file="surv-exp.jag",
@@ -123,7 +125,7 @@ z <- matrix(NA, n, maxTime)
 first <- rpois(n, 1)+1  ## random release dates
 for(i in 1:n) {
     z[i,first[i]] <- 1  ## Known alive at release
-    for(t in (first[i]+1):T) {
+    for(t in (first[i]+1):maxTime) {
         z[i,t] <- rbinom(1, 1, z[i,t-1]*phi) ## Alive/dead state
     }
 }
@@ -179,10 +181,67 @@ legend(6, 1, c("Posterior sample", "Posterior mean", "Actual"),
 writeLines(readLines("surv-dtime-tcovs.jag"))
 
 
+## ----comp-risk-sim,size='small'-----------------------------------------------
+beta0 <- c(-6, -4, -3) ## log-hazard. Not covariates
+lambda <- exp(beta0)   ## Cause-specific hazard
+pi <- lambda / (1+sum(lambda))
+pi[4] <- 1-sum(pi)     ## Probability of surviving t to t+1
+
+
+## ----comp-risk-sim2,size='small'----------------------------------------------
+nDeer <- 100
+nDays <- 100
+z <- matrix(NA, nDeer, nDays)
+z[,1] <- 4  ## Everyone starts in state 4
+
+
+## ----comp-risk-Phi,size='scriptsize',echo=-4----------------------------------
+Phi <- diag(4)
+rownames(Phi) <- colnames(Phi) <- c("cougar", "bear", "wolf", "alive")
+Phi[4,] <- pi
+# kable(Phi, format="latex", digits=3, booktabs=TRUE)
+
+
+## ----comp-risk-z,size='scriptsize'--------------------------------------------
+for(i in 1:nDeer) {
+    for(t in 2:nDays) {
+        z[i,t] <- which(rmultinom(n=1, size=1, prob=Phi[z[i,t-1],])==1)
+    }
+}
+
+
 ## ----jags-surv-dtime-comp-risk,size='scriptsize',eval=FALSE-------------------
 ## writeLines(readLines("surv-dtime-comp-risks.jag"))
 
 
 ## ----jags-surv-dtime2-comp-risk,size='scriptsize',background='lightblue',comment='',echo=FALSE----
 writeLines(readLines("surv-dtime-comp-risks.jag"))
+
+
+## ----jd-comp-risk,size='scriptsize'-------------------------------------------
+Phi.data <- diag(4)
+Phi.data[4,] <- NA
+jd.comp.risk <- list(z=z, n=nDeer, first=rep(1,nrow(z)), maxTime=ncol(z),
+                     nRisks=3, Phi=Phi.data)
+
+
+## ----ji-comp-risk,size='scriptsize'-------------------------------------------
+ji.comp.risk <- function() list(beta0=log(runif(3)))
+jp.comp.risk <- c("beta0", "pi")
+
+
+## ----js-comp-risk,size='scriptsize',cache=TRUE,results='hide',eval=TRUE-------
+jags.ps.comp.risk <- jags.basic(data=jd.comp.risk, inits=ji.comp.risk,
+                                parameters.to.save=jp.comp.risk,
+                                model.file="surv-dtime-comp-risks.jag",
+                                n.chains=3, n.adapt=100, n.burnin=0,
+                                n.iter=2000, parallel=TRUE)
+
+
+## ----post-samps-comp-risk,fig.align='center',out.width='75%',echo=FALSE-------
+plot(jags.ps.comp.risk[,c("beta0[1]", "beta0[2]", "beta0[3]")])
+
+
+## ----post-samps-comp-risk-pi,fig.align='center',out.width='75%',echo=FALSE----
+plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
 
