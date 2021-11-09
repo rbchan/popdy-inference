@@ -1,0 +1,13 @@
+model{
+
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+
+for(i in 1:n) {
+  for(t in (first[i]+1):maxTime) {
+    logit(phi[i,t-1]) <- beta0 + beta1*x[i,t-1]
+    z[i,t] ~ dbern(z[i,t-1]*phi[i,t-1])
+  }
+}
+
+}

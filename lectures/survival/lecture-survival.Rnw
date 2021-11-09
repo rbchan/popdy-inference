@@ -532,7 +532,7 @@ for(i in 1:n) {
 
 
 \begin{frame}[fragile]
-  \frametitle{Simulated CJS data}
+  \frametitle{Simulated survival data}
 <<z,size='small'>>=
 z[1:15,]
 @
@@ -559,7 +559,7 @@ z[1:15,]
 
 
 \begin{frame}[fragile]
-  \frametitle{Spatial CJS model in JAGS}
+  \frametitle{Discrete-time survival in JAGS}
 <<jags-surv-dtime,eval=FALSE>>=
 writeLines(readLines("surv-dtime.jag"))
 @ 
@@ -614,8 +614,31 @@ plot(jags.post.samples.dtime0)
 \subsection{Time-varying covariates}
 
 
+
+\begin{frame}[fragile]
+  \frametitle{Time-varying covariates}
+<<jags-surv-dtime-tcovs,eval=FALSE>>=
+writeLines(readLines("surv-dtime-tcovs.jag"))
+@ 
+<<jags-surv-dtime2-tcovs,background='lightblue',comment='',echo=FALSE>>=
+writeLines(readLines("surv-dtime-tcovs.jag"))
+@ 
+\end{frame}
+
+
+
+
 \subsection{Competing risks}
 
+
+\begin{frame}
+  \frametitle{Competing risks}
+  
+\end{frame}
+
+
+
+\section{Conclusions}
 
 
 

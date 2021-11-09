@@ -1,0 +1,24 @@
+model{
+
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+
+for(i in 1:n) {
+  ## States:
+  ## 1=killed by panther
+  ## 2=killed by bear
+  ## 3=killed by mt lion
+  ## 4=alive
+  for(t in (first[i]+1):maxTime) {
+    log(lam[i,t-1,1]) <- beta0 + beta1*x[i,t-1]
+    log(lam[i,t-1,2]) <- beta0 + beta1*x[i,t-1]
+    log(lam[i,t-1,3]) <- beta0 + beta1*x[i,t-1]
+    Phi[1,t-1,1] <- lam[i,t-1,1]/(1+sum(lam[i,t-1,]))
+    Phi[1,t-1,2] <- lam[i,t-1,2]/(1+sum(lam[i,t-1,]))
+    Phi[1,t-1,3] <- lam[i,t-1,3]/(1+sum(lam[i,t-1,]))
+    Phi[1,t-1,4] <- 1-sum(Phi[1,t-1,1:3])
+    z[i,t] ~ dcat(Phi[z[i,t-1],t-1,1:4])
+  }
+}
+
+}

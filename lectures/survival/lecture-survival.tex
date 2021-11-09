@@ -713,7 +713,7 @@ for(i in 1:n) {
 
 
 \begin{frame}[fragile]
-  \frametitle{Simulated CJS data}
+  \frametitle{Simulated survival data}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -762,7 +762,7 @@ for(i in 1:n) {
 
 
 \begin{frame}[fragile]
-  \frametitle{Spatial CJS model in JAGS}
+  \frametitle{Discrete-time survival in JAGS}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -855,6 +855,40 @@ for(i in 1:n) {
 
 
 \subsection{Time-varying covariates}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Time-varying covariates}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-dtime-tcovs.jag"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model{
+
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+
+for(i in 1:n) {
+  for(t in (first[i]+1):maxTime) {
+    logit(phi[i,t-1]) <- beta0 + beta1*x[i,t-1]
+    z[i,t] ~ dbern(z[i,t-1]*phi[i,t-1])
+  }
+}
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
 
 
 \subsection{Competing risks}
