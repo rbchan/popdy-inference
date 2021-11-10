@@ -11,8 +11,8 @@
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
-rnw2pdf("lecture-survival") 
-rnw2pdf("lecture-survival", tangle=TRUE)
+rnw2pdf("lecture-CJS") 
+rnw2pdf("lecture-CJS", tangle=TRUE)
 @ 
 
 
@@ -46,7 +46,8 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[plain]
   \centering
   \LARGE
-  Lecture 15: Open Populations and the \\
+  % Lecture 15:
+  Open Populations and the \\
   Spatial Cormack-Jolly-Seber Model \\
   \vfill
   \large
