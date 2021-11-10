@@ -73,6 +73,11 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 writeLines(readLines("surv-exp.jag"))
 
 
+## ----load,include=FALSE-------------------------------------------------------
+library(jagsUI)
+library(coda)
+
+
 ## ----jd-surv-exp,size='scriptsize'--------------------------------------------
 survival.time.jags <- survival.time.c
 survival.time.jags[censored==1] <- NA
@@ -86,9 +91,7 @@ ji.exp <- function() list(beta0=rnorm(1), beta1=rnorm(1))
 jp.exp <- c("beta0", "beta1")
 
 
-## ----js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE,echo=-(1:2)-----
-library(jagsUI)
-library(coda)
+## ----js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE-----------------
 jags.post.samples.exp <- jags.basic(data=jd.exp, inits=ji.exp,
                                     parameters.to.save=jp.exp,
                                     model.file="surv-exp.jag",
@@ -192,7 +195,7 @@ pi[4] <- 1-sum(pi)     ## Probability of surviving t to t+1
 nDeer <- 100
 nDays <- 100
 z <- matrix(NA, nDeer, nDays)
-z[,1] <- 4  ## Everyone starts in state 4
+z[,1] <- 4  ## Everyone starts in state 4 (alive)
 
 
 ## ----comp-risk-Phi,size='scriptsize',echo=-4----------------------------------

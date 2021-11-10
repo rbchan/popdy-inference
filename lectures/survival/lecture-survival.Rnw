@@ -433,6 +433,11 @@ writeLines(readLines("surv-exp.jag"))
 \end{frame}
 
 
+<<load,include=FALSE>>=
+library(jagsUI)
+library(coda)
+@ 
+
 
 \begin{frame}[fragile]
   \frametitle{Bayesian inference}
@@ -455,9 +460,7 @@ jp.exp <- c("beta0", "beta1")
 \pause
 \vfill
   {\normalsize Fit the model}
-<<js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE,echo=-(1:2)>>=
-library(jagsUI)
-library(coda)
+<<js,size='scriptsize',cache=TRUE,results='hide',eval=TRUE>>=
 jags.post.samples.exp <- jags.basic(data=jd.exp, inits=ji.exp,
                                     parameters.to.save=jp.exp,
                                     model.file="surv-exp.jag",
@@ -739,7 +742,7 @@ pi[4] <- 1-sum(pi)     ## Probability of surviving t to t+1
 nDeer <- 100
 nDays <- 100
 z <- matrix(NA, nDeer, nDays)
-z[,1] <- 4  ## Everyone starts in state 4
+z[,1] <- 4  ## Everyone starts in state 4 (alive)
 @ 
 \end{frame}
 
