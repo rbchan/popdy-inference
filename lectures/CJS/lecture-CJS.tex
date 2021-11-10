@@ -68,17 +68,6 @@
 %% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
-
-
-
-% \newcommand{\bxt}{${\bm x}_j$}
-% \newcommand{\bx}{{\bm x}}
-% \newcommand{\bxj}{{\bm x}_j}
-% \newcommand{\bst}{${\bm s}_i$}
-% \newcommand{\bs}{{\bm s}}
-% \newcommand{\bsi}{{\bm s}_i}
-% \newcommand{\ed}{\|\bx - \bs\|}
-% \newcommand{\cs}{\mathcal{S} }
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -89,7 +78,8 @@
 \begin{frame}[plain]
   \centering
   \LARGE
-  Lecture 15: Open Populations and the \\
+  % Lecture 15:
+  Open Populations and the \\
   Spatial Cormack-Jolly-Seber Model \\
   \vfill
   \large
@@ -130,12 +120,12 @@
   \begin{itemize}[<+->]
     \normalsize
     \item Population closure is an assumption we make to estimate
-      density in short time periods
-    \item If we want to study the processes governing spatial and
-      temporal variation in density, we need to move beyond closed
-      population models
+      density in short time periods.
+    \item If we want to study the processes governing spatial
+      \alert{and temporal} variation in density, we need to move
+      beyond closed population models.
     \item Open population SCR models allow us to model spatial and
-      temporal variation in survival, recruitment, and movement
+      temporal variation in survival, recruitment, and movement.
   \end{itemize}
 \end{frame}
 
@@ -485,21 +475,25 @@
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"CJS-nonspatial.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## phi ~ dunif(0,1)
-## p ~ dunif(0,1)
-## 
-## for(i in 1:n) {
-##   z[i,first[i]] <- 1             ## Known alive at time of release
-##   for(t in (first[i]+1):T) {
-##     z[i,t] ~ dbern(z[i,t-1]*phi) ## Survives with probability phi
-##     y[i,t] ~ dbern(z[i,t]*p)     ## Detected with probability p
-##     }
-##   }
-## 
-## }
+model {
+
+phi ~ dunif(0,1)
+p ~ dunif(0,1)
+
+for(i in 1:n) {
+  z[i,first[i]] <- 1             ## Known alive at time of release
+  for(t in (first[i]+1):T) {
+    z[i,t] ~ dbern(z[i,t-1]*phi) ## Survives with probability phi
+    y[i,t] ~ dbern(z[i,t]*p)     ## Detected with probability p
+    }
+  }
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -850,32 +844,36 @@ Back-transform
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"CJS-spatial.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## phi ~ dunif(0,1)
-## p0 ~ dunif(0,1)
-## sigma ~ dunif(0, 2)
-## 
-## for(i in 1:n) {
-##   s[i,1] ~ dunif(xlim[1], xlim[2]) # static activity centers
-##   s[i,2] ~ dunif(ylim[1], ylim[2])
-##   for(j in 1:J) {
-##     d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2)
-##     p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))
-##     }
-##   z[i,first[i]] <- 1
-##   for(t in (first[i]+1):T) {
-##     z[i,t] ~ dbern(z[i,t-1]*phi)
-##     for(j in 1:J) {
-##       for(k in 1:K) {
-##         y[i,j,k,t] ~ dbern(z[i,t]*p[i,j])
-##         }
-##       }
-##     }
-##   }
-## 
-## }
+model {
+
+phi ~ dunif(0,1)
+p0 ~ dunif(0,1)
+sigma ~ dunif(0, 2)
+
+for(i in 1:n) {
+  s[i,1] ~ dunif(xlim[1], xlim[2]) # static activity centers
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  for(j in 1:J) {
+    d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2)
+    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))
+    }
+  z[i,first[i]] <- 1
+  for(t in (first[i]+1):T) {
+    z[i,t] ~ dbern(z[i,t-1]*phi)
+    for(j in 1:J) {
+      for(k in 1:K) {
+        y[i,j,k,t] ~ dbern(z[i,t]*p[i,j])
+        }
+      }
+    }
+  }
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1105,37 +1103,41 @@ Generate $z$ and $y$
 \begin{alltt}
 \hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"CJS-spatial-move.jag"}\hlstd{))}
 \end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## phi ~ dunif(0,1)
-## p0 ~ dunif(0,1)
-## sigma ~ dunif(0, 2)
-## tau ~ dunif(0, 2)
-## tauprec <- 1/tau^2 # must convert tau to precision
-## 
-## for(i in 1:n) {
-##   s[i,1,first[i]] ~ dunif(xlim[1], xlim[2])
-##   s[i,2,first[i]] ~ dunif(ylim[1], ylim[2])
-##   for(j in 1:J) {
-##     d[i,j,first[i]] <- sqrt((s[i,1,first[i]] - x[j,1])^2 + (s[i,2,first[i]] - x[j,2])^2)
-##     p[i,j,first[i]] <- p0*exp(-d[i,j,first[i]]^2/(2*sigma^2))
-##     }
-##   z[i,first[i]] <- 1
-##   for(t in (first[i]+1):T) {
-##     s[i,1,t] ~ dnorm(s[i,1,t-1], tauprec)#T(xlim[1], xlim[2])
-##     s[i,2,t] ~ dnorm(s[i,2,t-1], tauprec)#T(ylim[1], ylim[2])
-##     for(j in 1:J) {
-##       d[i,j,t] <- sqrt((s[i,1,t] - x[j,1])^2 + (s[i,2,t] - x[j,2])^2)
-##       p[i,j,t] <- p0*exp(-d[i,j,t]^2/(2*sigma^2))
-##       }
-##     z[i,t] ~ dbern(z[i,t-1]*phi)
-##     for(j in 1:J) {
-##       for(k in 1:K) {
-##         y[i,j,k,t] ~ dbern(z[i,t]*p[i,j,t])
-##   } } } }
-## 
-## }
+model {
+
+phi ~ dunif(0,1)
+p0 ~ dunif(0,1)
+sigma ~ dunif(0, 2)
+tau ~ dunif(0, 2)
+tauprec <- 1/tau^2 # must convert tau to precision
+
+for(i in 1:n) {
+  s[i,1,first[i]] ~ dunif(xlim[1], xlim[2])
+  s[i,2,first[i]] ~ dunif(ylim[1], ylim[2])
+  for(j in 1:J) {
+    d[i,j,first[i]] <- sqrt((s[i,1,first[i]] - x[j,1])^2 + (s[i,2,first[i]] - x[j,2])^2)
+    p[i,j,first[i]] <- p0*exp(-d[i,j,first[i]]^2/(2*sigma^2))
+    }
+  z[i,first[i]] <- 1
+  for(t in (first[i]+1):T) {
+    s[i,1,t] ~ dnorm(s[i,1,t-1], tauprec)#T(xlim[1], xlim[2])
+    s[i,2,t] ~ dnorm(s[i,2,t-1], tauprec)#T(ylim[1], ylim[2])
+    for(j in 1:J) {
+      d[i,j,t] <- sqrt((s[i,1,t] - x[j,1])^2 + (s[i,2,t] - x[j,2])^2)
+      p[i,j,t] <- p0*exp(-d[i,j,t]^2/(2*sigma^2))
+      }
+    z[i,t] ~ dbern(z[i,t-1]*phi)
+    for(j in 1:J) {
+      for(k in 1:K) {
+        y[i,j,k,t] ~ dbern(z[i,t]*p[i,j,t])
+  } } } }
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

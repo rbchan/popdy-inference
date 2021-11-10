@@ -27,15 +27,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-% \newcommand{\bxt}{${\bm x}_j$}
-% \newcommand{\bx}{{\bm x}}
-% \newcommand{\bxj}{{\bm x}_j}
-% \newcommand{\bst}{${\bm s}_i$}
-% \newcommand{\bs}{{\bm s}}
-% \newcommand{\bsi}{{\bm s}_i}
-% \newcommand{\ed}{\|\bx - \bs\|}
-% \newcommand{\cs}{\mathcal{S} }
-
 
 \begin{document}
 
@@ -88,12 +79,12 @@ knit_theme$set("edit-kwrite")
   \begin{itemize}[<+->]
     \normalsize
     \item Population closure is an assumption we make to estimate
-      density in short time periods
-    \item If we want to study the processes governing spatial and
-      temporal variation in density, we need to move beyond closed
-      population models
+      density in short time periods.
+    \item If we want to study the processes governing spatial
+      \alert{and temporal} variation in density, we need to move
+      beyond closed population models.
     \item Open population SCR models allow us to model spatial and
-      temporal variation in survival, recruitment, and movement
+      temporal variation in survival, recruitment, and movement.
   \end{itemize}
 \end{frame}
 
@@ -343,7 +334,10 @@ predict(fm0)
 \begin{frame}[fragile]
   \frametitle{Non-spatial CJS model in JAGS}
 %  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-nonspatial.jag}}}
-<<jags-nonsp,size='scriptsize'>>=
+<<jags-nonsp0,size='scriptsize',eval=FALSE>>=
+writeLines(readLines("CJS-nonspatial.jag"))
+@ 
+<<jags-nonsp,size='scriptsize',background='lightblue',comment='',echo=FALSE>>=
 writeLines(readLines("CJS-nonspatial.jag"))
 @ 
 \end{frame}
@@ -627,7 +621,10 @@ mod$get_par("phi", k = 1, m=1)
   \frametitle{Spatial CJS model in JAGS}
 %  \vspace{-5mm}
 %  \scriptsize \fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial.jag}}}
-<<jags-sp,size='tiny'>>=
+<<jags-sp0,size='tiny',eval=FALSE>>=
+writeLines(readLines("CJS-spatial.jag"))
+@ 
+<<jags-sp,size='tiny',background='lightblue',comment='',echo=FALSE>>=
 writeLines(readLines("CJS-spatial.jag"))
 @ 
 \end{frame}
@@ -807,7 +804,10 @@ plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
   \frametitle{Spatial CJS model with dispersal in JAGS}
   \vspace{-2mm}
   \tiny %\fbox{\parbox{\linewidth}{\verbatiminput{CJS-spatial-move.jag}}}
-<<jags-sp-move,size='tiny'>>=
+<<jags-sp-move0,size='tiny',eval=FALSE>>=
+writeLines(readLines("CJS-spatial-move.jag"))
+@ 
+<<jags-sp-move,size='tiny',background='lightblue',comment='',echo=FALSE>>=
 writeLines(readLines("CJS-spatial-move.jag"))
 @ 
 \end{frame}
