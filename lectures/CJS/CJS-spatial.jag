@@ -1,19 +1,19 @@
 model {
 
-phi ~ dunif(0,1)
-p0 ~ dunif(0,1)
-sigma ~ dunif(0, 2)
+phi ~ dunif(0,1)     ## Apparent survival
+p0 ~ dunif(0,1)      ## Baseline capture prob
+sigma ~ dunif(0, 2)  ## Scale parameter of detection function
 
-for(i in 1:n) {
+for(i in 1:n) {      ## Loop over individuals
   s[i,1] ~ dunif(xlim[1], xlim[2]) # static activity centers
   s[i,2] ~ dunif(ylim[1], ylim[2])
-  for(j in 1:J) {
+  for(j in 1:J) {    ## Loop over traps
     d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2)
-    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))
+    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2)) ## Capture prob
     }
-  z[i,first[i]] <- 1
+  z[i,first[i]] <- 1 ## Condition on first encounter
   for(t in (first[i]+1):T) {
-    z[i,t] ~ dbern(z[i,t-1]*phi)
+    z[i,t] ~ dbern(z[i,t-1]*phi) ## Model subsequent encounters
     for(j in 1:J) {
       for(k in 1:K) {
         y[i,j,k,t] ~ dbern(z[i,t]*p[i,j])

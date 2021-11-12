@@ -23,8 +23,8 @@ for(i in 1:n) {
       }
     z[i,t] ~ dbern(z[i,t-1]*phi)
     for(j in 1:J) {
-      for(k in 1:K) {
-        y[i,j,k,t] ~ dbern(z[i,t]*p[i,j,t])
-  } } } }
+      y[i,j,t] ~ dbin(z[i,t]*p[i,j,t], K)
+#      for(k in 1:K) { y[i,j,k,t] ~ dbern(z[i,t]*p[i,j,t]) }
+  } } } 
 
 }

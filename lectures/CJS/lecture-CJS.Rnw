@@ -81,7 +81,7 @@ knit_theme$set("edit-kwrite")
     \item Population closure is an assumption we make to estimate
       density in short time periods.
     \item If we want to study the processes governing spatial
-      \alert{and temporal} variation in density, we need to move
+      \textit{and temporal} variation in density, we need to move
       beyond closed population models.
     \item Open population SCR models allow us to model spatial and
       temporal variation in survival, recruitment, and movement.
@@ -249,14 +249,15 @@ for(i in 1:n) {
 \begin{frame}[fragile]
   \frametitle{Simulated CJS data}
   \begin{columns}
-    \tiny
     \begin{column}{0.5\textwidth}
-<<z>>=
+      Latent alive/dead state
+<<z,size='tiny'>>=
 z[,1:7]
 @
     \end{column}
     \begin{column}{0.5\textwidth}
-<<y>>=
+      Encounter histories (data)
+<<y,size='tiny'>>=
 y[,1:7]
 @
     \end{column}
@@ -297,7 +298,7 @@ head(cap.histories, n=3)
 @ 
   \pause
   \vfill
-  You can use the formulas to add covariates.
+  You can use formulas to model covariate effects.
 <<marked-fit,size='footnotesize',results='hide',message=FALSE>>=
 fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
            model.parameters=list(Phi=list(formula=~1),
@@ -532,7 +533,8 @@ library(secr)
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial CJS model}
-  We'll use the R package `openpopscr' for model fitting. It isn't on
+  We'll use the R package `openpopscr'\footnote{Another option is the
+`openCR' package.} for model fitting. It isn't on  
   CRAN, but you can install it from github using the following
   commands.
 <<install-openpopscr,size='scriptsize',message=FALSE,results='hide',eval=FALSE>>=
@@ -585,7 +587,7 @@ cjs.data <- ScrData$new(capthist, mask, primary=rep(1:10, each=3))
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis}
-Create the model object and the fit it
+Create the model object and then fit it
 <<cjs-mod-fit,size='scriptsize',results='hide',cache=TRUE>>=
 mod <- CjsModel$new(list(lambda0~1, sigma~1, phi~1), cjs.data,
                     start=list(lambda0=1.5, sigma=50, phi=0.5))
@@ -713,7 +715,7 @@ plot(jags.post.samples.sp)
     \item Random walk: ${\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)$
     \item Random walk with attraction point: ${\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)$
     \item Extensions can be made to allow for resource selection,
-      landscape resistance, etc\dots 
+      landscape resistance, etc\dots\footnote{https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473}. 
   \end{itemize}
 \end{frame}
 
@@ -731,8 +733,8 @@ plot(jags.post.samples.sp)
     \begin{column}{0.5\textwidth}%{0.5\dimexpr\paperwidth-10pt}
     Parameters and data dimensions
 <<move,size='tiny'>>=
-T <- 10; K <- 3; n <- 25 ## same as before
-phi <- 0.7; p0 <- 0.4; sigma <- 0.1
+T <- 10; K <- 5; n <- 25 ## same as before
+phi <- 0.9; p0 <- 0.4; sigma <- 0.05
 ## dispersal parameter (of random walk)
 tau <- 0.05
 @
@@ -744,10 +746,9 @@ xlim <- ylim <- c(0, 1)
 first <- rpois(n, 1)+1
 s <- array(NA, c(n, 2, T))
 for(i in 1:n) {
-    s[i,,first[i]] <- cbind(runif(1, xlim[1],
-                                  xlim[2]),
-                            runif(1, ylim[1],
-                                  ylim[2]))
+    s[i,,first[i]] <-
+        cbind(runif(1, xlim[1], xlim[2]),
+              runif(1, ylim[1], ylim[2]))
     for(t in (first[i]+1):T) {
         s[i,1,t] <- rnorm(1, s[i,1,t-1], tau)
         s[i,2,t] <- rnorm(1, s[i,2,t-1], tau)
@@ -769,14 +770,14 @@ for(i in 1:n) {
 Generate $z$ and $y$
 <<z3,size='tiny'>>=
 z <- matrix(NA, n, T)
-y.move <- array(NA, c(n, J, K, T)) 
+y.move <- array(NA, c(n, J, T)) 
 for(i in 1:n) {
     z[i,first[i]] <- 1
     for(t in (first[i]+1):T) {
         z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
         for(j in 1:J) {
-            y.move[i,j,1:K,t] <-
-                rbinom(K, 1, z[i,t]*p[i,j,t])
+            y.move[i,j,t] <-
+                rbinom(1, K, z[i,t]*p[i,j,t])
         }
     }
 }
@@ -794,6 +795,21 @@ for(i in 1:n) {
 <<s1,size='scriptsize',out.width="65%",fig.align="center">>=
 plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
      xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Movement of all activity centers}
+<<s-all,size='scriptsize',out.width="65%",fig.align="center",echo=FALSE>>=
+par(mai=c(0.1,0.1,0.1,0.1))  
+blue <- seq(0.1, 0.9, length=nrow(s))
+plot(t(s[1,,]), pch=1, type="o", xaxt="n", yaxt="n", frame=FALSE, ann=FALSE,
+     xlim=c(-0.2, 1.2), ylim=c(-0.2, 1.2), asp=1, col=rgb(0,0,blue[1],0.3))
+for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.3))
 @
 \end{frame}
 
@@ -820,26 +836,32 @@ writeLines(readLines("CJS-spatial-move.jag"))
   \frametitle{JAGS}
   \small
   Data
-<<sp-move-data,size='scriptsize'>>=
+<<sp-move-data,size='tiny'>>=
 jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
                    J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 @ 
-  Initial values for $z$ matrix
-<<ji3,size='scriptsize'>>=
+  Initial values for $z$, and parameters to monitor
+<<ji3,size='tiny'>>=
 zi <- matrix(NA, n, T)
 for(i in 1:n) {
     zi[i,(first[i]+1):T] <- 1
     }
-ji.sp.move <- function() list(phi=runif(1), z=zi)
+ji.sp.move <- function() list(phi=runif(1), z=zi, s=s) ## Cheating with s
 jp.sp.move <- c("phi", "p0", "sigma", "tau")
+good1 <- which.max(rowSums(z, na.rm=TRUE)+rowSums(y.move, na.rm=TRUE))
+time1 <- first[good1]:T
+jp.s1x <- paste0("s[", good1, ",1,", time1, "]")
+jp.s1y <- paste0("s[", good1, ",2,", time1, "]")
+jp.z1 <- paste0("z[", good1, ",", time1, "]") 
 @
   \pause
   \vfill
   Fit the model
-<<jc3,size='scriptsize',results='hide',cache=TRUE>>=
+<<jc3,size='tiny',results='hide',cache=FALSE>>=
 jps.sp.move <- jags.basic(data=jd.sp.move,
                           inits=ji.sp.move,
-                          parameters.to.save=jp.sp.move,
+                          parameters.to.save=
+                              c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),
                           model.file="CJS-spatial-move.jag",
                           n.chains=3, n.adapt=100, n.burnin=0,
                           n.iter=2000, parallel=TRUE)
@@ -857,6 +879,26 @@ plot(jps.sp.move[,jp.sp.move])
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Posterior movement path}
+<<jc3-s,size='scriptsize',out.width='80%',fig.align='center',echo=FALSE>>=
+s1.post <- as.matrix(window(jps.sp.move[,c(jp.s1x,jp.s1y)], start=1501, thin=10))
+z1.post <- as.matrix(window(jps.sp.move[,jp.z1], start=1501, thin=10))
+plot(x, pch=3, xlim=c(0,1), ylim=c(0,1), asp=1, ann=FALSE)
+for(i in 1:nrow(s1.post)) {
+    alive1 <- which(z1.post[i,]==1)
+    T1 <- length(alive1)
+    arrows(s1.post[i,alive1[-T1]], s1.post[i,(alive1+T1)[-T1]],
+           s1.post[i,alive1[-1]], s1.post[i,(alive1+T1)[-1]],
+           col=rgb(0,0,1,0.1), length=0.05)
+}
+traps1 <- which(rowSums(y.move[good1,,], na.rm=TRUE)>0)
+points(x[traps1,,drop=FALSE], pch=3, cex=2, lwd=2, col="red")
+lines(t(s[good1,,]), type="o", pch=16, col="blue")
+@   
+\end{frame}
+
+
 
 
 
@@ -867,14 +909,14 @@ plot(jps.sp.move[,jp.sp.move])
 %  \begin{itemize}[<+->]
 %  \item
   Spatial CJS models allow for inference about survival,
-  movement, and capture probability \\
+  movement, and capture probability. \\
   \pause \vfill
   % \item
-  We could have considered many other movement models \\
+  We could have considered many other movement models. \\
   \pause \vfill
   % \item
   Next, we'll use Jolly-Seber models to study spatio-temporal
-  variation in abundance and recruitment too \\
+  variation in abundance and recruitment. \\
 %  \end{itemize}
 \end{frame}
 
