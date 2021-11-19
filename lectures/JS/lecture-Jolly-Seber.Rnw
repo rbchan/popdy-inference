@@ -33,7 +33,8 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[plain]
   \centering
   \LARGE
-  Lecture 17 \\ Spatio-temporal variation in %\\
+  % Lecture 17 \\
+  Spatio-temporal variation in %\\
   survival, \\ recruitment, movement and abundance %with the \\
 %  Jolly-Seber model \\
   \vfill
@@ -405,7 +406,7 @@ js.data <- ScrData$new(capthist, mask, primary=1:T)
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis}
-Create the model object and the fit it
+Create the model object and then fit it
 <<js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=FALSE>>=
 start <- get_start_values(js.data, model = "JsModel")
 mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
@@ -443,11 +444,13 @@ mod$get_par("phi", k = 1, m=1)   ## Survival
 
 \begin{frame}[fragile]
   \frametitle{Spatial JS model in \jags}
-  \vspace{-3mm}
-  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
-%<<jagsmod1,size='tiny'>>=
-%writeLines(readLines("JS-spatial.jag"))
-%@ 
+%  \vspace{-3mm}
+%  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
+%  \tiny {\parbox{\linewidth}{\pagecolor{ProcessBlue}\verbatiminput{JS-spatial.jag}}}
+  \tiny
+<<jagsmod1,size='tiny',comment='',echo=FALSE,background='lightblue'>>=
+writeLines(readLines("JS-spatial.jag"))
+@ 
 \end{frame}
 
 
@@ -985,6 +988,12 @@ legend(1, 30, c("Actual", "Estimated"),
     \item Spatial Jolly-Seber models make it possible to fit
       spatio-temporal models of population dynamics to standard data
     \item We could have movement just like we did with CJS models
+    \item Lots of tricks for speeding up MCMC
+    \begin{itemize}
+      \item Replace \inr{ER[t] <- N[t]*gamma} with \inr{ER[t] <- EN[t]*gamma} where \inr{EN} is the expected value of $N$.
+      \item Repalce \inr{recruitable[i,t-1]*gammaPrime[t-1]} with \inr{Erecruitable[i,t-1]*gammaPrime[t-1]}, which again is expected value rather than the realized value
+      \item These tricks result in approximations, but they should be very close to desired inferences. 
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
