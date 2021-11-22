@@ -24,7 +24,6 @@ knit_theme$set("edit-kwrite")
 
 
 
-
 \begin{document}
 
 
@@ -200,7 +199,7 @@ knit_theme$set("edit-kwrite")
     z_{i,t} \sim
     \begin{cases}
       \mbox{Bernoulli}(z_{i,t-1}\phi) & \quad \text{if previously recruited} \\
-      \mbox{Bernoulli}(\gamma') & \quad \text{if not yet recruited} 
+      \mbox{Bernoulli}(\gamma'_t) & \quad \text{if not yet recruited} 
     \end{cases}
   \]
   \vfill
@@ -209,13 +208,10 @@ knit_theme$set("edit-kwrite")
     \bsit \sim \mathrm{Norm}(\bsitp, \tau^2)  
   \]
   \vfill
-  Abundance
+  Abundance ($M$ is the upper bound of data augmentation)
   \[
     N_t = \sum_{i=1}^M z_{i,t}
   \]
-%  \pause
-%  \vfill
-%  {\centering Dispersal could be added using approaches discussed last week \\}
 \end{frame}
 
 
@@ -312,12 +308,12 @@ legend(1, 50, c("Abundance","Mortalities","Recruits"), lty=1, pch=16, col=c("bla
   \frametitle{Simulating spatial JS data with robust design}
 {Generate encounter histories for all $M$ individuals}
 <<sim-yall,size='footnotesize'>>=
-##yall <- array(NA, c(M, J, K, T))   ## For Bernoulli
-yall <- array(NA, c(M, J, T))        ## For Binomial
+yall.bern <- array(NA, c(M, J, K, T))   ## For Bernoulli
+yall <- array(NA, c(M, J, T))           ## For Binomial
 for(i in 1:M) {
     for(t in 1:T) {
         for(j in 1:J) {
-##            yall[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
+            yall.bern[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
             yall[i,j,t] <- rbinom(1, K, z[i,t]*p[i,j])
         }
     }
@@ -327,9 +323,8 @@ for(i in 1:M) {
 \vfill
 {\normalsize Discard individuals that were never captured}
 <<sim-y,size='footnotesize'>>=
-detected <- rowSums(yall) > 0
-## y <- yall[detected,,,]
-y <- yall[detected,,]
+y.bern <- yall.bern[rowSums(yall.bern)>0,,,]
+y <- yall[rowSums(yall)>0,,]
 str(y)
 @
 \end{frame}
@@ -389,11 +384,11 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
   \frametitle{Likelihood analysis of spatial JS model}
 Format for `secr'
 <<JS-model-new,size='scriptsize'>>=
-y.secr <- y
+y.secr <- y.bern
 caps <- data.frame(session=1,
-                   animal=rep(slice.index(y, 1), y.secr),
-                   occasion=rep(slice.index(y, 3), y.secr),
-                   trap=rep(slice.index(y, 2), y.secr))
+                   animal=rep(slice.index(y.bern, 1), y.secr),
+                   occasion=rep(slice.index(y.bern, 4), y.secr),
+                   trap=rep(slice.index(y.bern, 2), y.secr))
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=T)
 @
 \vfill
@@ -410,9 +405,9 @@ Create the model object and then fit it
 <<js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=FALSE>>=
 start <- get_start_values(js.data, model = "JsModel")
 mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
-                   ##                   start=start)
-                   start=list(lambda0=0.3, sigma=100, D=0.1,
-                              phi=0.5, beta=0.2))
+                   ## start=start)
+                   start=list(lambda0=0.4, sigma=300, D=1,
+                              phi=0.5, beta=0.1))
 mod$fit()
 mod
 @   
