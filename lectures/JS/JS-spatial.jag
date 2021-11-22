@@ -1,11 +1,11 @@
 model {
-phi ~ dunif(0,1)
-gamma ~ dunif(0, 5)
-p0 ~ dunif(0,1)
-sigma ~ dunif(0, 2)
-psi ~ dunif(0,1)
+phi ~ dunif(0,1)      ## Survival
+gamma ~ dunif(0, 5)   ## Per-capita recruitment rate
+p0 ~ dunif(0,1)       ## Baseline capture probability
+sigma ~ dunif(0, 2)   ## Scale parameter of capture function
+psi ~ dunif(0,1)    
 for(t in 1:T) {
-  N[t] <- sum(z[,t])
+  N[t] <- sum(z[,t])      ## Abundance
   ER[t] <- N[t]*gamma
   totalAvail[t] <- sum(recruitable[,t])
   gammaPrime[t] <- ER[t]/totalAvail[t] }

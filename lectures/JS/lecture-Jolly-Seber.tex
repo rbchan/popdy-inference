@@ -138,42 +138,42 @@
 
 
 
-\begin{frame}
-  \frametitle{Spatial population dynamics}
-  \small
-  {Initial abundance at location $s$}
-  \[
-    N_{s,1} \sim \mbox{Poisson}(\lambda_{s,1})
-  \]
-  \pause \vfill
-  Survival and recruitment (local population dynamics)
-  \begin{gather*}
-    S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
-    R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
-  \end{gather*}
-  \pause \vfill
-  % {Recruitment}
-  % \[
-  %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
-  % \]
-  % \pause \vfill
-  Movement (emigration and immigration)
-  \begin{gather*}
-    E_{s,t} \sim \mathrm{Binomial}(S_{s,t}+R_{s,t}, \kappa) \\
-    \{M_{1,s,t}, \dots, M_{J,s,t}\} \sim \mathrm{Multinomial}(E_{s,t}, \{\pi_1, \dots, \pi_J\}) \\
-    I_{s,t} = \sum_{j=1}^J M_{j,s,t}
-  \end{gather*}
-  % \vfill
-  % Immigration
-  % \[
-  % \]
-  % \vfill
-  \pause
-  {Abundance}
-  \[
-    N_{s,t} = S_{s,t} + R_{s,t} - E_{s,t} + I_{s,t}
-  \]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Spatial population dynamics}
+%   \small
+%   {Initial abundance at location $s$}
+%   \[
+%     N_{s,1} \sim \mbox{Poisson}(\lambda_{s,1})
+%   \]
+%   \pause \vfill
+%   Survival and recruitment (local population dynamics)
+%   \begin{gather*}
+%     S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
+%     R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%   \end{gather*}
+%   \pause \vfill
+%   % {Recruitment}
+%   % \[
+%   %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%   % \]
+%   % \pause \vfill
+%   Movement (emigration and immigration)
+%   \begin{gather*}
+%     E_{s,t} \sim \mathrm{Binomial}(S_{s,t}+R_{s,t}, \kappa) \\
+%     \{M_{1,s,t}, \dots, M_{J,s,t}\} \sim \mathrm{Multinomial}(E_{s,t}, \{\pi_1, \dots, \pi_J\}) \\
+%     I_{s,t} = \sum_{j=1}^J M_{j,s,t}
+%   \end{gather*}
+%   % \vfill
+%   % Immigration
+%   % \[
+%   % \]
+%   % \vfill
+%   \pause
+%   {Abundance}
+%   \[
+%     N_{s,t} = S_{s,t} + R_{s,t} - E_{s,t} + I_{s,t}
+%   \]
+% \end{frame}
 
 
 
@@ -1173,6 +1173,12 @@ Ntot <- sum(everAlive)
     \item Spatial Jolly-Seber models make it possible to fit
       spatio-temporal models of population dynamics to standard data
     \item We could have movement just like we did with CJS models
+    \item Lots of tricks for speeding up MCMC
+    \begin{itemize}
+      \item Replace \inr{ER[t] <- N[t]*gamma} with \inr{ER[t] <- EN[t]*gamma} where \inr{EN} is the expected value of $N$.
+      \item Repalce \inr{recruitable[i,t-1]*gammaPrime[t-1]} with \inr{Erecruitable[i,t-1]*gammaPrime[t-1]}, which again is expected value rather than the realized value
+      \item These tricks result in approximations, but they should be very close to desired inferences. 
+    \end{itemize}
   \end{itemize}
 \end{frame}
 

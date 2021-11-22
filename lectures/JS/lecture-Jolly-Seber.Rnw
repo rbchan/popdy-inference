@@ -97,42 +97,42 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Spatial population dynamics}
-  \small
-  {Initial abundance at location $s$}
-  \[
-    N_{s,1} \sim \mbox{Poisson}(\lambda_{s,1})
-  \]
-  \pause \vfill
-  Survival and recruitment (local population dynamics)
-  \begin{gather*}
-    S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
-    R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
-  \end{gather*}
-  \pause \vfill
-  % {Recruitment}
-  % \[
-  %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
-  % \]
-  % \pause \vfill
-  Movement (emigration and immigration)
-  \begin{gather*}
-    E_{s,t} \sim \mathrm{Binomial}(S_{s,t}+R_{s,t}, \kappa) \\
-    \{M_{1,s,t}, \dots, M_{J,s,t}\} \sim \mathrm{Multinomial}(E_{s,t}, \{\pi_1, \dots, \pi_J\}) \\
-    I_{s,t} = \sum_{j=1}^J M_{j,s,t}
-  \end{gather*}
-  % \vfill
-  % Immigration
-  % \[
-  % \]
-  % \vfill
-  \pause
-  {Abundance}
-  \[
-    N_{s,t} = S_{s,t} + R_{s,t} - E_{s,t} + I_{s,t}
-  \]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Spatial population dynamics}
+%   \small
+%   {Initial abundance at location $s$}
+%   \[
+%     N_{s,1} \sim \mbox{Poisson}(\lambda_{s,1})
+%   \]
+%   \pause \vfill
+%   Survival and recruitment (local population dynamics)
+%   \begin{gather*}
+%     S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
+%     R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%   \end{gather*}
+%   \pause \vfill
+%   % {Recruitment}
+%   % \[
+%   %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%   % \]
+%   % \pause \vfill
+%   Movement (emigration and immigration)
+%   \begin{gather*}
+%     E_{s,t} \sim \mathrm{Binomial}(S_{s,t}+R_{s,t}, \kappa) \\
+%     \{M_{1,s,t}, \dots, M_{J,s,t}\} \sim \mathrm{Multinomial}(E_{s,t}, \{\pi_1, \dots, \pi_J\}) \\
+%     I_{s,t} = \sum_{j=1}^J M_{j,s,t}
+%   \end{gather*}
+%   % \vfill
+%   % Immigration
+%   % \[
+%   % \]
+%   % \vfill
+%   \pause
+%   {Abundance}
+%   \[
+%     N_{s,t} = S_{s,t} + R_{s,t} - E_{s,t} + I_{s,t}
+%   \]
+% \end{frame}
 
 
 
@@ -375,7 +375,7 @@ str(y)
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial JS model}
 Begin by making a mask in `secr'
-<<mask,size='scriptsize',out.width="60%",fig.align="center">>=
+<<mask,size='scriptsize',out.width="60%",fig.align="center",results='hide'>>=
 library(openpopscr)
 trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
 traps <- read.traps(data=trap.df, detector="proximity")
@@ -677,8 +677,8 @@ legend(1, 30, c("Actual", "Estimated"),
   Requires a lot of data on marked individuals, but it should be no
   surprise that we need a lot of data to understand complex
   processes. \\ 
-  \pause \vfill
-  Go out there and collect good data. \\
+  % \pause \vfill
+  % Go out there and collect good data. \\
 \end{frame}
 
 
