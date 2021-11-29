@@ -92,7 +92,10 @@ segments(1:nPrimary, apply(occupied.post, 1, quantile, prob=0.025),
 legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
 
 
-## ----bugs,size='scriptsize',echo=FALSE----------------------------------------
+## ----bugs0,size='tiny',results='hide'-----------------------------------------
+writeLines(readLines("dynocc-model.jag"))
+
+## ----bugs,size='tiny',echo=FALSE,comment='',background='lightblue'------------
 writeLines(readLines("dynocc-model.jag"))
 
 
@@ -196,7 +199,10 @@ lines(lower ~ temp, gamma.pred, col="blue")
 lines(upper ~ temp, gamma.pred, col="blue")
 
 
-## ----bugs-cov,size='tiny',echo=FALSE------------------------------------------
+## ----bugs-cov0,size='tiny',results='hide'-------------------------------------
+writeLines(readLines("dynocc-model-covars.jag"))
+
+## ----bugs-cov,size='tiny',echo=FALSE,comment='',background='lightblue'--------
 writeLines(readLines("dynocc-model-covars.jag"))
 
 

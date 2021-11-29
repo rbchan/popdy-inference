@@ -8,7 +8,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -35,9 +34,6 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{document}
-
-
-
 
 
 
@@ -77,11 +73,11 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Overview}
-  So far, we've focused exclusively on spatial variation in occupancy
-  and abundance. \\  
+  When we covered static occupancy models, we focused exclusively on
+  spatial variation. \\   
   \pause
   \vfill
-  But historically, the study of population dynamics was entirely
+  Historically, the study of population dynamics was entirely
   focused on temporal variation. \\
   \pause
   \vfill
@@ -377,7 +373,10 @@ legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs,size='scriptsize',echo=FALSE>>=
+<<bugs0,size='tiny',results='hide'>>=
+writeLines(readLines("dynocc-model.jag"))
+@ 
+<<bugs,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("dynocc-model.jag"))
 @ 
 \end{frame}
@@ -388,7 +387,7 @@ writeLines(readLines("dynocc-model.jag"))
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 <<bugs-data,size='small'>>=
 jags.data <- list(y=y, nSites=nSites,
                   J=nSecondary, K=nPrimary)
@@ -396,7 +395,7 @@ jags.data <- list(y=y, nSites=nSites,
 \pause
 \vfill
   Initial values
-  \vspace{-12pt}
+  \vspace{-6pt}
 <<bugs-inits,size='small'>>=
 jags.inits <- function() {
     list(psi1=runif(1), epsilon=runif(1),
@@ -407,7 +406,7 @@ jags.inits <- function() {
 \pause
 \vfill
   Parameters to monitor
-  \vspace{-12pt}
+  \vspace{-6pt}
 <<bugs-pars,size='small'>>=
 jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
 @ 
@@ -657,7 +656,10 @@ lines(upper ~ temp, gamma.pred, col="blue")
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs-cov,size='tiny',echo=FALSE>>=
+<<bugs-cov0,size='tiny',results='hide'>>=
+writeLines(readLines("dynocc-model-covars.jag"))
+@ 
+<<bugs-cov,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
 writeLines(readLines("dynocc-model-covars.jag"))
 @ 
 \end{frame}

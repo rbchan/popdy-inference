@@ -58,7 +58,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 % Load function to compile and open PDF
 
 
@@ -74,9 +73,6 @@
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-
-
-
 
 
 
@@ -116,11 +112,11 @@
 
 \begin{frame}
   \frametitle{Overview}
-  So far, we've focused exclusively on spatial variation in occupancy
-  and abundance. \\  
+  When we covered static occupancy models, we focused exclusively on
+  spatial variation. \\   
   \pause
   \vfill
-  But historically, the study of population dynamics was entirely
+  Historically, the study of population dynamics was entirely
   focused on temporal variation. \\
   \pause
   \vfill
@@ -566,33 +562,40 @@ Notice the new argument \inr{numPrimary}:
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"dynocc-model.jag"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## psi1 ~ dunif(0, 1)     ## initial occupancy
-## epsilon ~ dunif(0, 1)  ## local extinction
-## gamma ~ dunif(0, 1)    ## local colonization
-## p ~ dunif(0, 1)        ## detection prob
-## 
-## for(i in 1:nSites) {
-##   psi[i,1] <- psi1
-##   z[i,1] ~ dbern(psi[i,1])
-##   for(k in 2:K) {
-##     psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma
-##     z[i,k] ~ dbern(psi[i,k])
-##   }
-##   for(k in 1:K) {
-##     for(j in 1:J) {
-##       y[i,j,k] ~ dbern(z[i,k]*p)
-##   } } }
-## 
-## for(k in 1:K) {
-##   N[k] <- sum(z[,k]) ## Sites occupied
-## }
-## 
-## }
+model {
+
+psi1 ~ dunif(0, 1)     ## initial occupancy
+epsilon ~ dunif(0, 1)  ## local extinction
+gamma ~ dunif(0, 1)    ## local colonization
+p ~ dunif(0, 1)        ## detection prob
+
+for(i in 1:nSites) {
+  psi[i,1] <- psi1
+  z[i,1] ~ dbern(psi[i,1])
+  for(k in 2:K) {
+    psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma
+    z[i,k] ~ dbern(psi[i,k])
+  }
+  for(k in 1:K) {
+    for(j in 1:J) {
+      y[i,j,k] ~ dbern(z[i,k]*p)
+  } } }
+
+for(k in 1:K) {
+  N[k] <- sum(z[,k]) ## Sites occupied
+}
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -604,7 +607,7 @@ Notice the new argument \inr{numPrimary}:
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -616,7 +619,7 @@ Notice the new argument \inr{numPrimary}:
 \pause
 \vfill
   Initial values
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -631,7 +634,7 @@ Notice the new argument \inr{numPrimary}:
 \pause
 \vfill
   Parameters to monitor
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1025,34 +1028,41 @@ Get predictions of $\gamma$ for each row of prediction data.
   \frametitle{The BUGS model}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"dynocc-model-covars.jag"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-## model {
-## 
-## beta0.psi ~ dnorm(0, 0.5)   ## Intercept of initial occupancy
-## beta1.psi ~ dnorm(0, 0.5)   ## Effect of elevation
-## epsilon ~ dunif(0, 1)       ## Local extinction
-## beta0.gamma ~ dnorm(0, 0.5) ## Intercept of colonization
-## beta1.gamma ~ dnorm(0, 0.5) ## Effect of temperature
-## p ~ dunif(0, 1)        ## detection prob
-## 
-## for(i in 1:nSites) {
-##   logit(psi[i,1]) <- beta0.psi + beta1.psi*elevation[i]
-##   z[i,1] ~ dbern(psi[i,1])
-##   for(k in 2:K) {
-##     logit(gamma[i,k-1]) <- beta0.gamma + beta1.gamma*temp[i,k-1]
-##     psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma[i,k-1]
-##     z[i,k] ~ dbern(psi[i,k])
-##   }
-##   for(k in 1:K) {
-##     for(j in 1:J) {
-##       y[i,j,k] ~ dbern(z[i,k]*p)
-##   } } }
-## 
-## for(k in 1:K) {
-##   N[k] <- sum(z[,k]) ## Sites occupied
-## }
-## 
-## }
+model {
+
+beta0.psi ~ dnorm(0, 0.5)   ## Intercept of initial occupancy
+beta1.psi ~ dnorm(0, 0.5)   ## Effect of elevation
+epsilon ~ dunif(0, 1)       ## Local extinction
+beta0.gamma ~ dnorm(0, 0.5) ## Intercept of colonization
+beta1.gamma ~ dnorm(0, 0.5) ## Effect of temperature
+p ~ dunif(0, 1)        ## detection prob
+
+for(i in 1:nSites) {
+  logit(psi[i,1]) <- beta0.psi + beta1.psi*elevation[i]
+  z[i,1] ~ dbern(psi[i,1])
+  for(k in 2:K) {
+    logit(gamma[i,k-1]) <- beta0.gamma + beta1.gamma*temp[i,k-1]
+    psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma[i,k-1]
+    z[i,k] ~ dbern(psi[i,k])
+  }
+  for(k in 1:K) {
+    for(j in 1:J) {
+      y[i,j,k] ~ dbern(z[i,k]*p)
+  } } }
+
+for(k in 1:K) {
+  N[k] <- sum(z[,k]) ## Sites occupied
+}
+
+}
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
