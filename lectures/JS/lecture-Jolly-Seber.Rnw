@@ -382,19 +382,21 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial JS model}
-Format for `secr'
+Format for `secr' (with robust design)
 <<JS-model-new,size='scriptsize'>>=
 y.secr <- y.bern
+year <- rep(slice.index(y.bern, 4), y.secr)  ## Primary period
+day <- rep(slice.index(y.bern, 3), y.secr)   ## Secondary period
 caps <- data.frame(session=1,
                    animal=rep(slice.index(y.bern, 1), y.secr),
-                   occasion=rep(slice.index(y.bern, 4), y.secr),
+                   occasion=(year-1)*K+day,
                    trap=rep(slice.index(y.bern, 2), y.secr))
-capthist <- make.capthist(captures=caps, traps=traps, noccasions=T)
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
 @
 \vfill
 Then format for `openpopscr'
 <<format-openpop,size='scriptsize'>>=
-js.data <- ScrData$new(capthist, mask, primary=1:T)
+js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
 @ 
 \end{frame}
 
@@ -405,18 +407,18 @@ Create the model object and then fit it
 <<js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=FALSE>>=
 start <- get_start_values(js.data, model = "JsModel")
 mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
-                   ## start=start)
-                   start=list(lambda0=0.4, sigma=300, D=1,
-                              phi=0.5, beta=0.1))
+                   start=start)
+                   start=list(lambda0=0.1, sigma=100, D=100,
+                              phi=0.8, beta=0.2))
 mod$fit()
-mod
+## mod
 @   
 Back-transform
 <<cjs-mod-est,size='scriptsize',eval=FALSE>>=
 mod$get_par("lambda0", k = 1, j = 1)
 mod$get_par("sigma", k = 1, j = 1)
-mod$get_par("D", k = 1, m=1)     ## Density
-mod$get_par("beta", k = 1, m=1)  ## Recruitment rate
+mod$get_par("D")                 ## Superpopulation density
+mod$get_par("beta", k = 1, m=1)  ## Proportion of superpop alive in year 1
 mod$get_par("phi", k = 1, m=1)   ## Survival
 @ 
 \end{frame}

@@ -241,7 +241,7 @@
     z_{i,t} \sim
     \begin{cases}
       \mbox{Bernoulli}(z_{i,t-1}\phi) & \quad \text{if previously recruited} \\
-      \mbox{Bernoulli}(\gamma') & \quad \text{if not yet recruited} 
+      \mbox{Bernoulli}(\gamma'_t) & \quad \text{if not yet recruited} 
     \end{cases}
   \]
   \vfill
@@ -250,13 +250,10 @@
     \bsit \sim \mathrm{Norm}(\bsitp, \tau^2)  
   \]
   \vfill
-  Abundance
+  Abundance ($M$ is the upper bound of data augmentation)
   \[
     N_t = \sum_{i=1}^M z_{i,t}
   \]
-%  \pause
-%  \vfill
-%  {\centering Dispersal could be added using approaches discussed last week \\}
 \end{frame}
 
 
@@ -380,12 +377,12 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{##yall <- array(NA, c(M, J, K, T))   ## For Bernoulli}
-\hlstd{yall} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(M, J, T))}        \hlcom{## For Binomial}
+\hlstd{yall.bern} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(M, J, K, T))}   \hlcom{## For Bernoulli}
+\hlstd{yall} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(M, J, T))}           \hlcom{## For Binomial}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{M) \{}
     \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{T) \{}
         \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-\hlcom{##            yall[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])}
+            \hlstd{yall.bern[i,j,}\hlnum{1}\hlopt{:}\hlstd{K,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{, z[i,t]}\hlopt{*}\hlstd{p[i,j])}
             \hlstd{yall[i,j,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{, K, z[i,t]}\hlopt{*}\hlstd{p[i,j])}
         \hlstd{\}}
     \hlstd{\}}
@@ -399,13 +396,12 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{detected} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(yall)} \hlopt{>} \hlnum{0}
-\hlcom{## y <- yall[detected,,,]}
-\hlstd{y} \hlkwb{<-} \hlstd{yall[detected,,]}
+\hlstd{y.bern} \hlkwb{<-} \hlstd{yall.bern[}\hlkwd{rowSums}\hlstd{(yall.bern)}\hlopt{>}\hlnum{0}\hlstd{,,,]}
+\hlstd{y} \hlkwb{<-} \hlstd{yall[}\hlkwd{rowSums}\hlstd{(yall)}\hlopt{>}\hlnum{0}\hlstd{,,]}
 \hlkwd{str}\hlstd{(y)}
 \end{alltt}
 \begin{verbatim}
-##  int [1:73, 1:25, 1:10] 0 0 0 0 0 0 0 0 0 0 ...
+##  int [1:72, 1:25, 1:10] 0 0 0 0 0 0 0 0 0 0 ...
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -474,16 +470,18 @@ Begin by making a mask in `secr'
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial JS model}
-Format for `secr'
+Format for `secr' (with robust design)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.secr} \hlkwb{<-} \hlstd{y}
+\hlstd{y.secr} \hlkwb{<-} \hlstd{y.bern}
+\hlstd{year} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{4}\hlstd{), y.secr)}  \hlcom{## Primary period}
+\hlstd{day} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{3}\hlstd{), y.secr)}   \hlcom{## Secondary period}
 \hlstd{caps} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{session}\hlstd{=}\hlnum{1}\hlstd{,}
-                   \hlkwc{animal}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{1}\hlstd{), y.secr),}
-                   \hlkwc{occasion}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{3}\hlstd{), y.secr),}
-                   \hlkwc{trap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y,} \hlnum{2}\hlstd{), y.secr))}
-\hlstd{capthist} \hlkwb{<-} \hlkwd{make.capthist}\hlstd{(}\hlkwc{captures}\hlstd{=caps,} \hlkwc{traps}\hlstd{=traps,} \hlkwc{noccasions}\hlstd{=T)}
+                   \hlkwc{animal}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{1}\hlstd{), y.secr),}
+                   \hlkwc{occasion}\hlstd{=(year}\hlopt{-}\hlnum{1}\hlstd{)}\hlopt{*}\hlstd{K}\hlopt{+}\hlstd{day,}
+                   \hlkwc{trap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{2}\hlstd{), y.secr))}
+\hlstd{capthist} \hlkwb{<-} \hlkwd{make.capthist}\hlstd{(}\hlkwc{captures}\hlstd{=caps,} \hlkwc{traps}\hlstd{=traps,} \hlkwc{noccasions}\hlstd{=T}\hlopt{*}\hlstd{K)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -492,7 +490,7 @@ Then format for `openpopscr'
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{js.data} \hlkwb{<-} \hlstd{ScrData}\hlopt{$}\hlkwd{new}\hlstd{(capthist, mask,} \hlkwc{primary}\hlstd{=}\hlnum{1}\hlopt{:}\hlstd{T)}
+\hlstd{js.data} \hlkwb{<-} \hlstd{ScrData}\hlopt{$}\hlkwd{new}\hlstd{(capthist, mask,} \hlkwc{primary}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T,} \hlkwc{each}\hlstd{=K))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -505,13 +503,13 @@ Create the model object and then fit it
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{start} \hlkwb{<-} \hlkwd{get_start_values}\hlstd{(js.data,} \hlkwc{model} \hlstd{=} \hlstr{"JsModel"}\hlstd{)}
-\hlstd{mod} \hlkwb{<-} \hlstd{JsModel}\hlopt{$}\hlkwd{new}\hlstd{(}\hlkwd{list}\hlstd{(lambda0}\hlopt{~}\hlnum{1}\hlstd{, sigma}\hlopt{~}\hlnum{1}\hlstd{, D}\hlopt{~}\hlnum{1}\hlstd{, phi}\hlopt{~}\hlnum{1}\hlstd{, beta}\hlopt{~}\hlnum{1}\hlstd{), js.data,}
-                   \hlcom{##                   start=start)}
-                   \hlkwc{start}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{lambda0}\hlstd{=}\hlnum{0.3}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{D}\hlstd{=}\hlnum{0.1}\hlstd{,}
-                              \hlkwc{phi}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{beta}\hlstd{=}\hlnum{0.2}\hlstd{))}
-\hlstd{mod}\hlopt{$}\hlkwd{fit}\hlstd{()}
-\hlstd{mod}
+start <- \hlkwd{get_start_values}(js.data, model = \hlstr{"JsModel"})
+mod <- JsModel$\hlkwd{new}(\hlkwd{list}(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
+                   start=start)
+                   start=\hlkwd{list}(lambda0=0.1, sigma=100, D=100,
+                              phi=0.8, beta=0.2))
+mod$\hlkwd{fit}()
+\hlcom{## mod}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -521,8 +519,8 @@ Back-transform
 \begin{alltt}
 \hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"lambda0"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)}
 \hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"sigma"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"D"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}     \hlcom{## Density}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"beta"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}  \hlcom{## Recruitment rate}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"D"}\hlstd{)}                 \hlcom{## Superpopulation density}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"beta"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}  \hlcom{## Proportion of superpop alive in year 1}
 \hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}   \hlcom{## Survival}
 \end{alltt}
 \end{kframe}
