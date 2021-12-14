@@ -2,6 +2,8 @@
 
 ## For 2022
 
+- Ditch the dynamic N-mixture models? Not enough time?
+
 - Add more real datasets
   * Blandings turtle CJS
 

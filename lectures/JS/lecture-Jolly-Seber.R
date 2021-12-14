@@ -57,12 +57,12 @@ legend(1, 50, c("Abundance","Mortalities","Recruits"), lty=1, pch=16, col=c("bla
 
 
 ## ----sim-yall,size='footnotesize'---------------------------------------------
-##yall <- array(NA, c(M, J, K, T))   ## For Bernoulli
-yall <- array(NA, c(M, J, T))        ## For Binomial
+yall.bern <- array(NA, c(M, J, K, T))   ## For Bernoulli
+yall <- array(NA, c(M, J, T))           ## For Binomial
 for(i in 1:M) {
     for(t in 1:T) {
         for(j in 1:J) {
-##            yall[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
+            yall.bern[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
             yall[i,j,t] <- rbinom(1, K, z[i,t]*p[i,j])
         }
     }
@@ -70,13 +70,12 @@ for(i in 1:M) {
 
 
 ## ----sim-y,size='footnotesize'------------------------------------------------
-detected <- rowSums(yall) > 0
-## y <- yall[detected,,,]
-y <- yall[detected,,]
+y.bern <- yall.bern[rowSums(yall.bern)>0,,,]
+y <- yall[rowSums(yall)>0,,]
 str(y)
 
 
-## ----mask,size='scriptsize',out.width="60%",fig.align="center"----------------
+## ----mask,size='scriptsize',out.width="60%",fig.align="center",results='hide'----
 library(openpopscr)
 trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
 traps <- read.traps(data=trap.df, detector="proximity")
@@ -85,34 +84,40 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
 
 ## ----JS-model-new,size='scriptsize'-------------------------------------------
-y.secr <- y
+y.secr <- y.bern
+year <- rep(slice.index(y.bern, 4), y.secr)  ## Primary period
+day <- rep(slice.index(y.bern, 3), y.secr)   ## Secondary period
 caps <- data.frame(session=1,
-                   animal=rep(slice.index(y, 1), y.secr),
-                   occasion=rep(slice.index(y, 3), y.secr),
-                   trap=rep(slice.index(y, 2), y.secr))
-capthist <- make.capthist(captures=caps, traps=traps, noccasions=T)
+                   animal=rep(slice.index(y.bern, 1), y.secr),
+                   occasion=(year-1)*K+day,
+                   trap=rep(slice.index(y.bern, 2), y.secr))
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
 
 
 ## ----format-openpop,size='scriptsize'-----------------------------------------
-js.data <- ScrData$new(capthist, mask, primary=1:T)
+js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
 
 
 ## ----js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=FALSE--------
 ## start <- get_start_values(js.data, model = "JsModel")
 ## mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
-##                    ##                   start=start)
-##                    start=list(lambda0=0.3, sigma=100, D=0.1,
-##                               phi=0.5, beta=0.2))
+##                    start=start)
+##                    start=list(lambda0=0.1, sigma=100, D=100,
+##                               phi=0.8, beta=0.2))
 ## mod$fit()
-## mod
+## ## mod
 
 
 ## ----cjs-mod-est,size='scriptsize',eval=FALSE---------------------------------
 ## mod$get_par("lambda0", k = 1, j = 1)
 ## mod$get_par("sigma", k = 1, j = 1)
-## mod$get_par("D", k = 1, m=1)     ## Density
-## mod$get_par("beta", k = 1, m=1)  ## Recruitment rate
+## mod$get_par("D")                 ## Superpopulation density
+## mod$get_par("beta", k = 1, m=1)  ## Proportion of superpop alive in year 1
 ## mod$get_par("phi", k = 1, m=1)   ## Survival
+
+
+## ----jagsmod1,size='tiny',comment='',echo=FALSE,background='lightblue'--------
+writeLines(readLines("JS-spatial.jag"))
 
 
 ## ----load-jagsUI-coda,include=FALSE-------------------------------------------
