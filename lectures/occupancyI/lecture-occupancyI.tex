@@ -570,7 +570,7 @@ Detection probability estimate ($\hat{p}$)
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{nsim} \hlkwb{<-} \hlnum{1000}
-\hlstd{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(z.post,} \hlkwc{func}\hlstd{=}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{sum}\hlstd{(x),} \hlkwc{nsim}\hlstd{=nsim)}
+\hlstd{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(z.post,} \hlkwc{func}\hlstd{=sum,} \hlkwc{nsim}\hlstd{=nsim)}
 \hlkwd{par}\hlstd{(}\hlkwc{mai}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.9}\hlstd{,}\hlnum{0.9}\hlstd{,}\hlnum{0.1}\hlstd{,}\hlnum{0.1}\hlstd{))}
 \hlkwd{plot}\hlstd{(}\hlkwd{table}\hlstd{(sites.occupied.post)}\hlopt{/}\hlstd{nsim,} \hlkwc{lwd}\hlstd{=}\hlnum{5}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,}
     \hlkwc{ylab}\hlstd{=}\hlstr{"Empirical Bayes posterior probability"}\hlstd{)}
@@ -583,6 +583,24 @@ Detection probability estimate ($\hat{p}$)
 }
 
 
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{quant}
+  Don't forget to show students how to do this
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{quantile}\hlstd{(sites.occupied.post,} \hlkwc{prob}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.025}\hlstd{,} \hlnum{0.975}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+##  2.5% 97.5% 
+##     6    10
+\end{verbatim}
+\end{kframe}
 \end{knitrout}
 \end{frame}
 
