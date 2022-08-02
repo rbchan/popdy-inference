@@ -12,6 +12,9 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
+\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -46,6 +49,14 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+}}
+\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -159,7 +170,7 @@
 
 \begin{frame}
   \frametitle{Classical statistical models}
-  Classical statistical models are equally important \\
+  Classical statistical models are equally important. \\
   \pause
   \vfill
   You should be familiar with:
@@ -424,7 +435,7 @@
 
 \begin{frame}
   \frametitle{Assignment}
-  \Large
+  \large
   Read: Applied Hierarchical Modeling (AHM vol I) front-matter and chapter 1 \\
   \vfill
   Install: \href{https://sourceforge.net/projects/mcmc-jags/files/}{\jags},

@@ -12,6 +12,9 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
+\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -46,6 +49,14 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+}}
+\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -182,7 +193,8 @@
   Check out Heather Gaya's awesome Shiny App: \\
   \vfill
   \centering
-  \href{ % Highlighting gets messed up if on 1 line
+  % Highlighting gets messed up if on 1 line
+  \href{ 
     https://insects.shinyapps.io/Probability_Dists/
   }{
     \large
@@ -332,10 +344,10 @@ Now, put the data in a list and pick some initial values
 \end{alltt}
 \begin{verbatim}
 ##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.64 -0.16 0.02 0.21  0.71
-## beta1    -0.44  0.28 0.56 0.81  1.49
-## deviance -2.59 -1.01 1.20 4.37 14.45
-## sigmaSq   0.03  0.05 0.08 0.14  0.45
+## beta0    -0.52 -0.13 0.03 0.19  0.60
+## beta1    -0.23  0.32 0.56 0.79  1.32
+## deviance -2.67 -1.30 0.60 2.96  9.70
+## sigmaSq   0.03  0.05 0.08 0.11  0.26
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1388,14 +1400,13 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(js.lm)}\hlopt{$}\hlstd{quant,} \hlnum{2}\hlstd{)}
+\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(js.glm)}\hlopt{$}\hlstd{quant,} \hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.64 -0.16 0.02 0.21  0.71
-## beta1    -0.44  0.28 0.56 0.81  1.49
-## deviance -2.59 -1.01 1.20 4.37 14.45
-## sigmaSq   0.03  0.05 0.08 0.14  0.45
+##            2.5%    25%    50%    75%  97.5%
+## beta0     -1.67  -1.37  -1.22  -1.07  -0.68
+## beta1      0.83   1.09   1.18   1.27   1.43
+## deviance 144.98 145.53 146.35 147.84 156.21
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
