@@ -8,7 +8,7 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-\title{Lecture 2 -- Basic statistical models}
+\title{Basic statistical models}
 \author{Richard Chandler}
 
 
@@ -140,7 +140,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}[fragile]
   \frametitle{Probability distributions}
-  Check out Heather Gaya's awesome Shiny App: \\
+  Check out Heather Gaya's Shiny App: \\
   \vfill
   \centering
   % Highlighting gets messed up if on 1 line
@@ -531,6 +531,29 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
 
 
 
+
+
+
+\begin{frame}
+  \frametitle{In-class exercise}
+  \begin{enumerate}
+    \item Fit the following model to the grouse data
+      \begin{gather*}
+        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
+        y_i \sim \mathrm{Pois}(\lambda_i)
+      \end{gather*}
+    \item Predict and graph the expected value of abundance ($\lambda$)
+      over a range of elevations. Use the same sequence of elevations as
+      we used in the previous examples.
+    \item Simulate a new response variable $y$ using the fitted model
+  \end{enumerate}
+\end{frame}
+
+
+
+
+
+
 \section{Generalized linear models}
 
 
@@ -547,7 +570,7 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
 \begin{frame}
   \frametitle{Generalized linear models (GLMs)}
   \large
-  \uncover<1->{{\bf Benefits of generalized linear models}}
+  \uncover<1->{{Benefits of generalized linear models}}
   \begin{itemize}%[<+->]
     \item<2-> The residuals don't have to be normally distributed
     \item<3-> The response variable can be binary, integer,
@@ -558,7 +581,7 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
   \end{itemize}
   \vfill
   \uncover<6->{
-  {\bf Examples}
+  {Examples}
   \begin{itemize}
     \item Presence-absence studies
     \item Studies of survival
@@ -571,7 +594,7 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
 
 \begin{frame}
   \frametitle{Two important GLMs}
-  {\bf Logistic regression \\}
+  {Logistic regression \\}
   \begin{itemize}
     \item The response variable is usually binary and modeled with a
       binomial distribution
@@ -580,7 +603,7 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
   \end{itemize}
   \pause
   \vfill
-  {\bf Poisson regression \\}
+  {Poisson regression \\}
   \begin{itemize}
     \item The response variable is a non-negative integer modeled with
       a Poisson distribution
@@ -594,20 +617,20 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
 
 \begin{frame}
   \frametitle{From linear to generalized linear}
-  {\bf Linear model}
+  {Linear model}
   \begin{gather*}
     \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
   \end{gather*}
   \pause
   \vfill
-  {\bf Generalized Linear model}
+  {Generalized Linear model}
   \begin{gather*}
     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim f(\mu_i)
   \end{gather*}
   \pause
-  {\bf where} \\
+  {where} \\
   $g$ is a link function, such as the log or logit link \\
   \pause
   $f$ is a probability distribution such as the binomial or Poisson
@@ -617,13 +640,13 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
 
 \begin{frame}
   \frametitle{Alternative representations}
-  {\bf This:}
+  {This:}
   \begin{gather*}
     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim f(\mu_i)
   \end{gather*}
   \pause
-  {\bf Is the same as this:}
+  {Is the same as this:}
   \begin{gather*}
     \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
     y_i \sim f(\mu_i)
@@ -777,7 +800,7 @@ plot(function(x) plogis(5 + -0.08*x), from=0, to=100,
 %    \item<4->
   \pause
   \vfill
-  {\bf Examples:}
+  {Examples:}
       \begin{itemize}
         \normalsize
         \item Presence/absence studies
@@ -819,7 +842,7 @@ anova(glm1)
       y_i \sim \mathrm{Binomial}(N, p_i)
   \end{gather*}
   \pause
-  {\bf where: \\}
+  {where: \\}
   $N$ is the number of ``trials'' (e.g. coin flips) \\
   $p_i$ is the probability of success for sample unit $i$
 \end{frame}
@@ -861,14 +884,14 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
 
 \begin{frame}
   \frametitle{Binomial Distribution}
-  {\bf Properties}
+  {Properties}
   \begin{itemize}
     \item The expected value of $y$ is $Np$
     \item The variance is $Np(1-p)$
   \end{itemize}
   \pause
   \vfill
-  {\bf Bernoulli distribution}
+  {Bernoulli distribution}
   \begin{itemize}
     \item The Bernoulli distribution is a binomial distribution with a
       single trial ($N=1$)
@@ -964,7 +987,7 @@ lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2
       y_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
-  {\bf where: \\}
+  {where: \\}
   $\lambda_i$ is the expected value of $y_i$ \\
 \end{frame}
 
@@ -973,7 +996,7 @@ lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2
 \begin{frame}
   \frametitle{Poisson regression}
   \large
-  {\bf Useful for:}
+  {Useful for:}
   \begin{itemize}
     \item Count data
     \item Number of events in time intervals
@@ -981,7 +1004,7 @@ lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2
   \end{itemize}
   \pause
   \vfill
-  {\bf Properties}
+  {Properties}
   \begin{itemize}
     \item The expected value of $y$ ($\lambda$) is equal to the variance
     \item This is an assumption of the Poisson model
@@ -1056,26 +1079,6 @@ plot(function(x) exp(5 + -0.08*x), from=0, to=100,
 
 
 
-
-
-
-
-% \begin{frame}
-%   \frametitle{In-class exercise}
-%   \begin{enumerate}
-%     \item Fit the following model to the grouse data
-%       \begin{gather*}
-%         \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
-%         y_i \sim \mathrm{Pois}(\lambda_i)
-%       \end{gather*}
-%     \item Predict and graph the expected value of abundance ($\lambda$)
-%       over a range of elevations. Use the same sequence of elevations as
-%       we used in the previous examples.
-%     \item Simulate a new response variable $y$ using the fitted model
-%   \end{enumerate}
-% \end{frame}
-
-
 \begin{frame}[fragile]
   \frametitle{Poisson regression simulation}
   \small
@@ -1104,7 +1107,7 @@ Finally, fit the model:
 
 
 \begin{frame}[fragile]
-  \frametitle{Simple (Bayesian) linear regression}
+  \frametitle{Simple (Bayesian) Poisson regression}
   \small
   The model is in a text file named {\tt glm.jag} \\
 <<glm-jag,size="scriptsize",comment="",echo=FALSE>>=
@@ -1122,7 +1125,7 @@ jp.glm <- c("beta0", "beta1")
 
 
 \begin{frame}[fragile]
-  \frametitle{Simple (Bayesian) linear regression}
+  \frametitle{Simple (Bayesian) Poisson regression}
   Use MCMC to draw posterior samples:
 <<glm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE>>=
 library(jagsUI)  
@@ -1133,7 +1136,7 @@ js.glm <- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,
 \begin{columns}
   \begin{column}{0.55\textwidth}
     Summarize the posterior samples:
-<<glm-jags-sum,size='scriptsize'>>=
+<<glm-jags-sum,size='tiny'>>=
 round(summary(js.glm)$quant, 2)
 @
 \pause
