@@ -163,22 +163,22 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[fragile]
   \frametitle{Simple linear regression example}
   Suppose your data look like this:
-<<slr-data,size='scriptsize'>>=
-x <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)
-y <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)
+<<slr-data,size='tiny'>>=
+length <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)  ## x
+mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)    ## y
 @   
 \begin{columns}
   \begin{column}{0.5\textwidth}
 <<slr-viz,echo=FALSE>>=
-plot(x,y)
-abline(lm(y~x))
+plot(length, mass, xlim=c(0,1))
+abline(lm(mass~length))
 @     
   \end{column}
   \pause
   \begin{column}{0.5\textwidth}
     Classical inference is easy:
 <<slr-fit,size='scriptsize'>>=
-lm(y~x)
+lm(mass~length)
 @ 
   \end{column}
 \end{columns}
@@ -225,9 +225,9 @@ lm(y~x)
 \pause
 \vfill
 Now, put the data in a list and pick some initial values
-<<lm-jd>>=
-jd.lm <- list(x=x, y=y, n=length(y))
-ji.lm <- function() c(beta0=0, beta1=0, sigmaSq=1)
+<<lm-jd,size='footnotesize'>>=
+jd.lm <- list(x=length, y=mass, n=length(mass))
+ji.lm <- function() c(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
 jp.lm <- c("beta0", "beta1", "sigmaSq")
 @ 
 \end{frame}
@@ -336,16 +336,16 @@ Linear models can also include polynomial terms and interactions
 \vfill
 <<linmod,include=FALSE>>=
 set.seed(3400)  
-x1 <- runif(100, 0, 50)  
-y <- rnorm(100, 10 + 1*x1, 5)
-plot(x1, y)
-abline(lm(y~x1))
+width <- runif(100, 0, 50)  
+mass <- rnorm(100, 10 + 1*width, 5)
+plot(width, mass)
+abline(lm(mass~width))
 @
 \centering
 \begin{columns}
   \begin{column}{0.5\textwidth}
 <<linmod-out,size='tiny'>>=
-lm(y~x1)
+lm(mass~width)
 @ 
   \end{column}
   \begin{column}{0.4\textwidth}
@@ -394,11 +394,11 @@ lm(y~x1)
 \small 
 <<linmod-xc,include=FALSE>>=
 set.seed(3400)  
-xc <- gl(4, 25) 
-y <- rnorm(100, model.matrix(~xc)%*%c(10,1,-1,2), 5)
-ym <- tapply(y, xc, mean)
-yse <- sqrt(sum(resid(lm(y~xc))^2)/96)/sqrt(25)
-bpx <- barplot(ym, ylim=c(0, 15), xlab="Treatment group",
+species <- gl(4, 25) 
+mass <- rnorm(100, model.matrix(~species)%*%c(10,1,-1,2), 5)
+ym <- tapply(mass, species, mean)
+yse <- sqrt(sum(resid(lm(mass~species))^2)/96)/sqrt(25)
+bpx <- barplot(ym, ylim=c(0, 15), xlab="Species",
                ylab="Group mean", cex.lab=1.3)
 arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
 @
@@ -406,7 +406,7 @@ arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
 %\begin{columns}
 %  \begin{column}{0.5\textwidth}
 <<linmod-xc-out,size='tiny'>>=
-lm(y~xc)
+lm(mass~species)
 @ 
 %  \end{column}
 %  \begin{column}{0.4\textwidth}
@@ -485,7 +485,7 @@ str(grouse.data)
   \frametitle{Grouse data}
   Fit a linear model to the abundance data
 <<grouse-fm1,size='scriptsize'>>=
-fm1 <- lm(abundance ~ elevation + utmZone, grouse.data)
+fm1 <- lm(abundance ~ elevation, grouse.data)
 summary(fm1)
 @   
 \end{frame}
@@ -505,15 +505,13 @@ elev.min <- min(grouse.data$elevation)
 elev.max <- max(grouse.data$elevation)
 seq.length <- 20 ## Determines how smooth the function looks in GLMs 
 elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
-pred.data.west <- data.frame(elevation=elev.seq, utmZone="16S")
-pred.data.east <- data.frame(elevation=elev.seq, utmZone="17S")
+pred.data <- data.frame(elevation=elev.seq)
 @
 \pause
 \vfill
   Now get the predictions.
 <<grouse-pred,size='scriptsize'>>=
-pred.west <- predict(fm1, newdata=pred.data.west, se=TRUE)
-pred.east <- predict(fm1, newdata=pred.data.east, se=TRUE)
+pred.elev <- predict(fm1, newdata=pred.data, se=TRUE)
 @ 
 \end{frame}
 
@@ -523,9 +521,7 @@ pred.east <- predict(fm1, newdata=pred.data.east, se=TRUE)
   \frametitle{Grouse data}
 <<grouse-pred-plot,fig.width=7,fig.height=5,out.width="0.85\\textwidth",fig.align='center',size='scriptsize'>>=
 plot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))
-lines(elev.seq, pred.west$fit, col="blue", lwd=2)
-lines(elev.seq, pred.east$fit, col="grey", lwd=2)
-legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
+lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 @ 
 \end{frame}
 
@@ -539,13 +535,13 @@ legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
   \begin{enumerate}
     \item Fit the following model to the grouse data
       \begin{gather*}
-        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
-        y_i \sim \mathrm{Pois}(\lambda_i)
+        \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
+        y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
       \end{gather*}
-    \item Predict and graph the expected value of abundance ($\lambda$)
-      over a range of elevations. Use the same sequence of elevations as
-      we used in the previous examples.
-    \item Simulate a new response variable $y$ using the fitted model
+    \item Predict and graph the expected value of abundance ($\mu$)
+      over a range of elevations for both UTM zones. Use the same
+      sequence of elevations as we used in the previous examples.
+%    \item Simulate a new response variable $y$ using the fitted model
   \end{enumerate}
 \end{frame}
 

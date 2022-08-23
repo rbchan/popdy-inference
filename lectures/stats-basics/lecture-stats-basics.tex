@@ -202,11 +202,11 @@
 \begin{frame}[fragile]
   \frametitle{Simple linear regression example}
   Suppose your data look like this:
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{x} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.30}\hlstd{,} \hlnum{0.91}\hlstd{,} \hlnum{0.89}\hlstd{,} \hlnum{0.24}\hlstd{,} \hlnum{0.77}\hlstd{,} \hlnum{0.56}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.92}\hlstd{,} \hlnum{0.81}\hlstd{,} \hlnum{0.59}\hlstd{)}
-\hlstd{y} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.08}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.18}\hlstd{,} \hlnum{0.17}\hlstd{,} \hlnum{0.42}\hlstd{,} \hlnum{0.71}\hlstd{,} \hlnum{0.49}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlnum{0.46}\hlstd{,} \hlnum{0.04}\hlstd{)}
+\hlstd{length} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.30}\hlstd{,} \hlnum{0.91}\hlstd{,} \hlnum{0.89}\hlstd{,} \hlnum{0.24}\hlstd{,} \hlnum{0.77}\hlstd{,} \hlnum{0.56}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.92}\hlstd{,} \hlnum{0.81}\hlstd{,} \hlnum{0.59}\hlstd{)}  \hlcom{## x}
+\hlstd{mass} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.08}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.18}\hlstd{,} \hlnum{0.17}\hlstd{,} \hlnum{0.42}\hlstd{,} \hlnum{0.71}\hlstd{,} \hlnum{0.49}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlnum{0.46}\hlstd{,} \hlnum{0.04}\hlstd{)}    \hlcom{## y}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -223,15 +223,15 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(y}\hlopt{~}\hlstd{x)}
+\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{length)}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = y ~ x)
+## lm(formula = mass ~ length)
 ## 
 ## Coefficients:
-## (Intercept)            x  
+## (Intercept)       length  
 ##     0.02742      0.54951
 \end{verbatim}
 \end{kframe}
@@ -282,9 +282,9 @@ model {
 
 # Priors
 ## dnorm arguments: mean and precision (1/variance)
-beta0 ~ dnorm(0, 0.1)  
-beta1 ~ dnorm(0, 0.1)
-sigmaSq ~ dunif(0, 2)
+beta0 ~ dnorm(0, 0.1)  ## Intercept  
+beta1 ~ dnorm(0, 0.1)  ## Slope
+sigmaSq ~ dunif(0, 2)  ## Residual variance
 
 ## Model for the data
 for(i in 1:n) {
@@ -298,11 +298,11 @@ for(i in 1:n) {
 \pause
 \vfill
 Now, put the data in a list and pick some initial values
-\begin{knitrout}
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jd.lm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=x,} \hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(y))}
-\hlstd{ji.lm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{beta1}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{sigmaSq}\hlstd{=}\hlnum{1}\hlstd{)}
+\hlstd{jd.lm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=length,} \hlkwc{y}\hlstd{=mass,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(mass))}
+\hlstd{ji.lm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{sigmaSq}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
 \hlstd{jp.lm} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"sigmaSq"}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -333,10 +333,10 @@ Now, put the data in a list and pick some initial values
 \end{alltt}
 \begin{verbatim}
 ##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.52 -0.13 0.03 0.19  0.60
-## beta1    -0.23  0.32 0.56 0.79  1.32
-## deviance -2.67 -1.30 0.60 2.96  9.70
-## sigmaSq   0.03  0.05 0.08 0.11  0.26
+## beta0    -0.55 -0.15 0.03 0.22  0.64
+## beta1    -0.35  0.27 0.54 0.80  1.49
+## deviance -2.59 -0.99 0.93 3.83 10.33
+## sigmaSq   0.03  0.06 0.08 0.13  0.30
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -434,15 +434,15 @@ Linear models can also include polynomial terms and interactions
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(y}\hlopt{~}\hlstd{x1)}
+\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{width)}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = y ~ x1)
+## lm(formula = mass ~ width)
 ## 
 ## Coefficients:
-## (Intercept)           x1  
+## (Intercept)        width  
 ##       9.116        1.032
 \end{verbatim}
 \end{kframe}
@@ -499,15 +499,15 @@ Linear models can also include polynomial terms and interactions
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(y}\hlopt{~}\hlstd{xc)}
+\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{species)}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = y ~ xc)
+## lm(formula = mass ~ species)
 ## 
 ## Coefficients:
-## (Intercept)          xc2          xc3          xc4  
+## (Intercept)     species2     species3     species4  
 ##     10.2147       0.9994      -1.3335       0.6294
 \end{verbatim}
 \end{kframe}
@@ -605,29 +605,28 @@ Linear models can also include polynomial terms and interactions
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm1} \hlkwb{<-} \hlkwd{lm}\hlstd{(abundance} \hlopt{~} \hlstd{elevation} \hlopt{+} \hlstd{utmZone, grouse.data)}
+\hlstd{fm1} \hlkwb{<-} \hlkwd{lm}\hlstd{(abundance} \hlopt{~} \hlstd{elevation, grouse.data)}
 \hlkwd{summary}\hlstd{(fm1)}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = abundance ~ elevation + utmZone, data = grouse.data)
+## lm(formula = abundance ~ elevation, data = grouse.data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -0.06062 -0.05363 -0.02424 -0.01492  1.94864 
+## -0.04734 -0.03984 -0.03718 -0.02733  1.96076 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(>|t|)  
-## (Intercept)  3.652e-02  3.585e-02   1.019   0.3088  
-## elevation    3.158e-05  5.946e-05   0.531   0.5955  
-## utmZone17S  -4.506e-02  2.204e-02  -2.044   0.0414 *
+## (Intercept)  6.415e-02  3.329e-02   1.927   0.0545 .
+## elevation   -4.327e-05  4.697e-05  -0.921   0.3573  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.2087 on 576 degrees of freedom
-## Multiple R-squared:  0.00866,	Adjusted R-squared:  0.005218 
-## F-statistic: 2.516 on 2 and 576 DF,  p-value: 0.08169
+## Residual standard error: 0.2093 on 577 degrees of freedom
+## Multiple R-squared:  0.001469,	Adjusted R-squared:  -0.0002616 
+## F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -650,8 +649,7 @@ Linear models can also include polynomial terms and interactions
 \hlstd{elev.max} \hlkwb{<-} \hlkwd{max}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
 \hlstd{seq.length} \hlkwb{<-} \hlnum{20} \hlcom{## Determines how smooth the function looks in GLMs }
 \hlstd{elev.seq} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=elev.min,} \hlkwc{to}\hlstd{=elev.max,} \hlkwc{length.out}\hlstd{=seq.length)}
-\hlstd{pred.data.west} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{elevation}\hlstd{=elev.seq,} \hlkwc{utmZone}\hlstd{=}\hlstr{"16S"}\hlstd{)}
-\hlstd{pred.data.east} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{elevation}\hlstd{=elev.seq,} \hlkwc{utmZone}\hlstd{=}\hlstr{"17S"}\hlstd{)}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{elevation}\hlstd{=elev.seq)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -661,8 +659,7 @@ Linear models can also include polynomial terms and interactions
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.west} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm1,} \hlkwc{newdata}\hlstd{=pred.data.west,} \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlstd{pred.east} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm1,} \hlkwc{newdata}\hlstd{=pred.data.east,} \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{pred.elev} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm1,} \hlkwc{newdata}\hlstd{=pred.data,} \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -676,9 +673,7 @@ Linear models can also include polynomial terms and interactions
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{plot}\hlstd{(abundance} \hlopt{~} \hlstd{elevation,} \hlkwc{data}\hlstd{=grouse.data,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{))}
-\hlkwd{lines}\hlstd{(elev.seq, pred.west}\hlopt{$}\hlstd{fit,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(elev.seq, pred.east}\hlopt{$}\hlstd{fit,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{900}\hlstd{,} \hlnum{2}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"West"}\hlstd{,} \hlstr{"East"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,}\hlstr{"grey"}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(elev.seq, pred.elev}\hlopt{$}\hlstd{fit,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -700,13 +695,13 @@ Linear models can also include polynomial terms and interactions
   \begin{enumerate}
     \item Fit the following model to the grouse data
       \begin{gather*}
-        \mathrm{log}(\lambda_i) = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{Zone17S}\\
-        y_i \sim \mathrm{Pois}(\lambda_i)
+        \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
+        y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
       \end{gather*}
-    \item Predict and graph the expected value of abundance ($\lambda$)
-      over a range of elevations. Use the same sequence of elevations as
-      we used in the previous examples.
-    \item Simulate a new response variable $y$ using the fitted model
+    \item Predict and graph the expected value of abundance ($\mu$)
+      over a range of elevations for both UTM zones. Use the same
+      sequence of elevations as we used in the previous examples.
+%    \item Simulate a new response variable $y$ using the fitted model
   \end{enumerate}
 \end{frame}
 

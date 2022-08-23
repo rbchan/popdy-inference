@@ -5,31 +5,69 @@
 
 
 
+## ----slr-data,size='tiny'-----------------------------------------------------
+length <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)  ## x
+mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)    ## y
+
+
+## ----slr-viz,echo=FALSE-------------------------------------------------------
+plot(length, mass, xlim=c(0,1))
+abline(lm(mass~length))
+
+
+## ----slr-fit,size='scriptsize'------------------------------------------------
+lm(mass~length)
+
+
+## ----lm-jag,size="scriptsize",comment="",echo=FALSE---------------------------
+  writeLines(readLines("lm.jag"))
+
+
+## ----lm-jd,size='footnotesize'------------------------------------------------
+jd.lm <- list(x=length, y=mass, n=length(mass))
+ji.lm <- function() c(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
+jp.lm <- c("beta0", "beta1", "sigmaSq")
+
+
+## ----lm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE-------
+library(jagsUI)  
+js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
+                    model.file="lm.jag", n.chains=1, n.iter=1000)
+
+
+## ----lm-jags-sum,size='scriptsize'--------------------------------------------
+round(summary(js.lm)$quant, 2)
+
+
+## ----lm-jags-viz,echo=FALSE---------------------------------------------------
+plot(js.lm)
+
+
 ## ----linmod,include=FALSE-----------------------------------------------------
 set.seed(3400)  
-x1 <- runif(100, 0, 50)  
-y <- rnorm(100, 10 + 1*x1, 5)
-plot(x1, y)
-abline(lm(y~x1))
+width <- runif(100, 0, 50)  
+mass <- rnorm(100, 10 + 1*width, 5)
+plot(width, mass)
+abline(lm(mass~width))
 
 
 ## ----linmod-out,size='tiny'---------------------------------------------------
-lm(y~x1)
+lm(mass~width)
 
 
 ## ----linmod-xc,include=FALSE--------------------------------------------------
 set.seed(3400)  
-xc <- gl(4, 25) 
-y <- rnorm(100, model.matrix(~xc)%*%c(10,1,-1,2), 5)
-ym <- tapply(y, xc, mean)
-yse <- sqrt(sum(resid(lm(y~xc))^2)/96)/sqrt(25)
-bpx <- barplot(ym, ylim=c(0, 15), xlab="Treatment group",
+species <- gl(4, 25) 
+mass <- rnorm(100, model.matrix(~species)%*%c(10,1,-1,2), 5)
+ym <- tapply(mass, species, mean)
+yse <- sqrt(sum(resid(lm(mass~species))^2)/96)/sqrt(25)
+bpx <- barplot(ym, ylim=c(0, 15), xlab="Species",
                ylab="Group mean", cex.lab=1.3)
 arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
 
 
 ## ----linmod-xc-out,size='tiny'------------------------------------------------
-lm(y~xc)
+lm(mass~species)
 
 
 ## ----read-grouse,size='tiny'--------------------------------------------------
@@ -40,7 +78,7 @@ str(grouse.data)
 
 
 ## ----grouse-fm1,size='scriptsize'---------------------------------------------
-fm1 <- lm(abundance ~ elevation + utmZone, grouse.data)
+fm1 <- lm(abundance ~ elevation, grouse.data)
 summary(fm1)
 
 
@@ -49,20 +87,16 @@ elev.min <- min(grouse.data$elevation)
 elev.max <- max(grouse.data$elevation)
 seq.length <- 20 ## Determines how smooth the function looks in GLMs 
 elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
-pred.data.west <- data.frame(elevation=elev.seq, utmZone="16S")
-pred.data.east <- data.frame(elevation=elev.seq, utmZone="17S")
+pred.data <- data.frame(elevation=elev.seq)
 
 
 ## ----grouse-pred,size='scriptsize'--------------------------------------------
-pred.west <- predict(fm1, newdata=pred.data.west, se=TRUE)
-pred.east <- predict(fm1, newdata=pred.data.east, se=TRUE)
+pred.elev <- predict(fm1, newdata=pred.data, se=TRUE)
 
 
 ## ----grouse-pred-plot,fig.width=7,fig.height=5,out.width="0.85\\textwidth",fig.align='center',size='scriptsize'----
 plot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))
-lines(elev.seq, pred.west$fit, col="blue", lwd=2)
-lines(elev.seq, pred.east$fit, col="grey", lwd=2)
-legend(900, 2, c("West", "East"), lty=1, col=c("blue","grey"), lwd=2)
+lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 
 
 ## ----logit-p,size='tiny'------------------------------------------------------
@@ -128,6 +162,32 @@ plot(0:5, dbinom(0:5, 5, 0.9), type="h",
      main="Binomial(N=5, p=0.9)")
 
 
+## ----logitreg,size='scriptsize'-----------------------------------------------
+logitreg1 <- glm(presence ~ elevation, data=grouse.data,
+                 family=binomial(link="logit"))
+logitreg1
+
+
+## ----grouse-lrpred-dat,size='scriptsize'--------------------------------------
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data.lr <- data.frame(elevation=elev.seq)
+
+
+## ----grouse-lrpred,size='scriptsize'------------------------------------------
+pred.elev <- predict(logitreg1, newdata=pred.data.lr, type="link",
+                     se=TRUE)
+
+
+## ----grouse-lrpred-plot,fig.width=7,fig.height=5,out.width="0.75\\textwidth",fig.align='center',size='tiny'----
+plot(presence ~ elevation, data=grouse.data, ylim=c(0,1))
+lines(elev.seq, plogis(pred.elev$fit), col="blue", lwd=2)
+lines(elev.seq, plogis(pred.elev$fit+pred.elev$se.fit), col="blue", lwd=1, lty=2)
+lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2)
+
+
 ## ----pois1,fig.show='hide',echo=FALSE-----------------------------------------
 x <- 0:25
 plot(x, dpois(x, lambda=1), type="h", lwd=5, col="blue", lend="butt",
@@ -153,4 +213,47 @@ plot(function(x) 5 + -0.08*x, from=0, to=100,
 ## ----log,fig.show='hide',fig.width=7,fig.height=5,size='footnotesize'---------
 plot(function(x) exp(5 + -0.08*x), from=0, to=100,
      xlab="Elevation", ylab="Expected abundance")
+
+
+## ----pois-cov-----------------------------------------------------------------
+n <- 100  
+x <- rnorm(n)
+
+
+## ----pois-lam-----------------------------------------------------------------
+beta0 <- -1
+beta1 <- 1
+lam <- exp(beta0 + beta1*x)
+
+
+## ----pois-y-------------------------------------------------------------------
+y <- rpois(n=n, lambda=lam)
+
+
+## ----pois-fit,size='small',eval=FALSE-----------------------------------------
+## (poisreg1 <- glm(y ~ x, family=poisson(link="log")))
+
+
+## ----glm-jag,size="scriptsize",comment="",echo=FALSE--------------------------
+  writeLines(readLines("glm.jag"))
+
+
+## ----glm-jd-------------------------------------------------------------------
+jd.glm <- list(x=x, y=y, n=length(y))
+ji.glm <- function() c(beta0=rnorm(1), beta1=rnorm(1))
+jp.glm <- c("beta0", "beta1")
+
+
+## ----glm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE------
+library(jagsUI)  
+js.glm <- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,
+                     model.file="glm.jag", n.chains=2, n.iter=1000)
+
+
+## ----glm-jags-sum,size='tiny'-------------------------------------------------
+round(summary(js.glm)$quant, 2)
+
+
+## ----glm-jags-viz,echo=FALSE--------------------------------------------------
+plot(js.glm)
 
