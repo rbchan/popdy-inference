@@ -226,7 +226,8 @@ naiveOccupancy
 
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
-%  \small
+  % \small
+  \normalsize
   Install and load the package  %\\
   \vspace{-12pt}
 <<un-install,message=FALSE>>=
@@ -363,7 +364,7 @@ round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[,1],
 
 
 \begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
+  \frametitle{Occupancy estimates}
   How many sites were occupied? \pause
   We can answer this using posterior prediction.
 <<bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'>>=
@@ -379,9 +380,17 @@ abline(v=sum(z), col="red") ## Actual number occupied
 
 
 \begin{frame}[fragile]
-  \frametitle{quant}
-  Don't forget to show students how to do this
-<<quant>>=
+  \frametitle{Occupancy estimates}
+  The posterior median (or mean or mode) can be used as a point estimate:
+<<post-mean-eb>>=
+psi.cond.estimate <- median(sites.occupied.post)
+psi.cond.estimate
+@   
+
+\pause
+\vfill
+Quantiles can be used for the 95\% confidence interval:
+<<post-ci-eb>>=
 quantile(sites.occupied.post, prob=c(0.025, 0.975))
 @   
 \end{frame}
@@ -548,7 +557,7 @@ plot(jags.post.samples)
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by the end of Friday Sept 10. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Wednesday evening. 
 \end{frame}
 
 

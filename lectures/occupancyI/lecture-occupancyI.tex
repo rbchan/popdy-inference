@@ -320,7 +320,8 @@ Proportion of sites known to be occupied \\
 
 \begin{frame}[fragile]
   \frametitle{R package `unmarked'}
-%  \small
+  % \small
+  \normalsize
   Install and load the package  %\\
   \vspace{-12pt}
 \begin{knitrout}
@@ -563,7 +564,7 @@ Detection probability estimate ($\hat{p}$)
 
 
 \begin{frame}[fragile]
-  \frametitle{R package `unmarked'}
+  \frametitle{Occupancy estimates}
   How many sites were occupied? \pause
   We can answer this using posterior prediction.
 \begin{knitrout}\tiny
@@ -589,8 +590,23 @@ Detection probability estimate ($\hat{p}$)
 
 
 \begin{frame}[fragile]
-  \frametitle{quant}
-  Don't forget to show students how to do this
+  \frametitle{Occupancy estimates}
+  The posterior median (or mean or mode) can be used as a point estimate:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{psi.cond.estimate} \hlkwb{<-} \hlkwd{median}\hlstd{(sites.occupied.post)}
+\hlstd{psi.cond.estimate}
+\end{alltt}
+\begin{verbatim}
+## [1] 7
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\pause
+\vfill
+Quantiles can be used for the 95\% confidence interval:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -843,7 +859,7 @@ sitesOccupied <- sum(z) # Total number of sites occupied
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by the end of Friday Sept 10. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Wednesday evening. 
 \end{frame}
 
 
