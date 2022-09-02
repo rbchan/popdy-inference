@@ -38,7 +38,7 @@ naiveOccupancy <- sum(siteDets>0)/nSites
 naiveOccupancy 
 
 
-## ----un-install---------------------------------------------------------------
+## ----un-install,message=FALSE-------------------------------------------------
 ## install.packages("unmarked")  
 library(unmarked)
 
@@ -84,14 +84,23 @@ round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[,1],
 
 ## ----bup-hist,size='tiny',fig.width=7,fig.height=5,out.width='0.7\\textwidth',fig.align='center'----
 nsim <- 1000
-sites.occupied.post <- predict(z.post, func=function(x) sum(x), nsim=nsim)
+sites.occupied.post <- predict(z.post, func=sum, nsim=nsim)
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(table(sites.occupied.post)/nsim, lwd=5, xlab="Sites occupied",
     ylab="Empirical Bayes posterior probability")
 abline(v=sum(z), col="red") ## Actual number occupied
 
 
-## ----bugs,size='scriptsize'---------------------------------------------------
+## ----post-mean-eb-------------------------------------------------------------
+psi.cond.estimate <- median(sites.occupied.post)
+psi.cond.estimate
+
+
+## ----post-ci-eb---------------------------------------------------------------
+quantile(sites.occupied.post, prob=c(0.025, 0.975))
+
+
+## ----bugs,size='scriptsize',comment='',echo=FALSE-----------------------------
 writeLines(readLines("occupancy-model.jag"))
 
 
@@ -109,7 +118,7 @@ jags.inits <- function() {
 jags.pars <- c("psi", "p", "sitesOccupied")
 
 
-## ----bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE--------------------
+## ----bugs-mcmc,size='scriptsize',warning=FALSE,results='hide',cache=FALSE-----
 ## install.packages("jagsUI")
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,

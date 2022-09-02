@@ -9,7 +9,7 @@
 
 %%% TODO: Add something about missing values
 
-\title{Lecture 4 -- Occupancy models: covariates and prediction }
+\title{Occupancy models: covariates and prediction }
 \author{Richard Chandler}
 
 
@@ -54,7 +54,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[plain]
   \LARGE
   \centering
-  {\huge Lecture 4 -- Occupancy models: covariates and prediction} \\
+  {\huge Occupancy models: covariates and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -108,7 +108,7 @@ knit_theme$set("edit-kwrite")
   \pause
   \vfill
   \centering
-  \alert{Observation covariates cannot be used to describe variation
+  {Observation covariates cannot be used to describe variation
     in occupancy because occupancy is assumed to be \\ constant over
     time.} \\ 
 \end{frame}
@@ -280,9 +280,11 @@ summary(umf)
   Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
   \pause
 %  \vfill
-<<umf-zcov,size='small'>>=
-siteCovs(umf)$x1s <- (x1-mean(x1))/sd(x1)
-siteCovs(umf)$x2s <- (x2-mean(x2))/sd(x2)
+<<umf-zcov,size='footnotesize'>>=
+mean.x1 <- mean(x1); mean.x2 <- mean(x2)
+sd.x1 <- sd(x1); sd.x2 <- sd(x2)
+siteCovs(umf)$x1s <- (x1-mean.x1)/sd.x1
+siteCovs(umf)$x2s <- (x2-mean.x2)/sd.x2
 @
 %  \pause
 %  \vfill
@@ -330,21 +332,23 @@ rbind('Occupancy coefs (beta)'=c(beta0, beta1, beta2),
   Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
   vary while holding other two covariates constant. Important that we
   use the standardized version of the continuous covariates.
-<<preddat,size='small'>>=
+<<preddat,size='footnotesize'>>=
 pred.data <- data.frame(x1s=seq(from=-3, to=3, length=50),
-                        x2s=0, w='Hot') 
+                        x2s=0, w='Hot')
+pred.data$x1 <- pred.data$x1s*sd.x1+mean.x1 ## Back-transform x1s
+pred.data$x2 <- pred.data$x2s*sd.x2+mean.x2 ## Back-transform x2s
 @
 \pause
 \vfill
 Get predictions of $\psi$ for each row of prediction data.
-<<predpsi,size='small'>>=
+<<predpsi,size='footnotesize'>>=
 psi.pred <- predict(fm, newdata=pred.data,
                     type='state', append=TRUE)
 @
 \pause
 \vfill
 Get predictions of $p$ for each row of prediction data.
-<<predp,size='small'>>=
+<<predp,size='footnotesize'>>=
 p.pred <- predict(fm, newdata=pred.data,
                   type='det', append=TRUE)
 @
@@ -389,11 +393,9 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
   \frametitle{Covariate on original scale}
 <<pred-psi1s,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n") ## Suppress x-axis
-x1s.ticks <- -3:3  ## These are where tick marks for x1s would be
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey")
+plot(Predicted ~ x1, psi.pred, type="l", ylab="Occurrence probability", col="blue",
+     xlab="Original scale covariate (x1)", ylim=0:1)
+lines(lower ~ x1, psi.pred, col="grey"); lines(upper ~ x1, psi.pred, col="grey")
 @   
 \end{frame}
 
@@ -427,10 +429,9 @@ lines(lower ~ x1s, psi.pred, col="grey"); lines(upper ~ x1s, psi.pred, col="grey
   \frametitle{Prediction in `unmarked'}
 <<pred-plot2,fig.width=7,fig.height=5,size='tiny',out.width='70%',fig.align='center',echo=-1>>=
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(Predicted ~ x1s, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
-     xlab="x1", xaxt="n", lwd=2)
-axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-lines(Predicted ~ x1s, p.pred, col="orange", lwd=2)
+plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
+     xlab="x1", lwd=2)
+lines(Predicted ~ x1, p.pred, col="orange", lwd=2)
 legend(-3, 0.3, c("Occupancy (psi)", "Detection (p)"), lty=c(1, 1), col=c("blue", "orange"), lwd=2)
 @
 %\pause
@@ -629,7 +630,7 @@ for(i in 1:n.iter) {
   \frametitle{Bayesian prediction}
   Prediction line for first posterior sample
 <<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 @
 \end{frame}
@@ -640,10 +641,10 @@ plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
   \frametitle{Bayesian prediction}
   All samples from the posterior predictive distribution
 <<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=FALSE,dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
-    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
+    lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
 }
 @ 
 \end{frame}
@@ -656,10 +657,10 @@ for(i in 1:n.iter) {
   \frametitle{Bayesian prediction}
   Now with posterior mean and 95\% CI
 <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=FALSE,dpi=200>>=
-plot(pred.data$x1s, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
-    lines(pred.data$x1s, psi.post.pred[i,], col=gray(0.8))
+    lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
 }
 pred.post.mean <- colMeans(psi.post.pred)
 pred.post.lower <- apply(psi.post.pred, 2, quantile, prob=0.025)
