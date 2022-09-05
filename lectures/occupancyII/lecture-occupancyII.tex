@@ -12,6 +12,9 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
+\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -46,6 +49,14 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+}}
+\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -152,6 +163,24 @@
     time.} \\ 
 \end{frame}
 
+\begin{frame}
+  \frametitle{Example}
+  \begin{enumerate}
+    \item \textcolor{blue}{Site covariates} vary among sites
+      but not among occasions
+    \item \textcolor{Purple}{Observation covariates} may vary among
+      sites and occasions
+  \end{enumerate}
+  
+  Define the following as Site or Observation covariates (or both?):
+  \begin{itemize}
+    \item{Temperature}
+    \item{Distance to Stream}
+    \item{Wind}
+    \item{Others?}
+  \end{itemize}  
+\end{frame}
+    
 
 % \begin{frame}
 %   \frametitle{Ignoring detection probability}
@@ -708,6 +737,7 @@ Major problems if you ignore imperfect detection in this case \\
     \item Predict $p$ again by letting (standardized) $x_1$ vary, but
       this time, predict for the case where $w$=`Cold'.
     \item Graph $p$ as a function of $x_1$.
+    \item (Bonus) What happens when a covariate is missing for a site or observation?
   \end{enumerate}
 \end{frame}
 
@@ -825,7 +855,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.03 minutes.
+## MCMC took 0.095 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

@@ -113,6 +113,24 @@ knit_theme$set("edit-kwrite")
     time.} \\ 
 \end{frame}
 
+\begin{frame}
+  \frametitle{Example}
+  \begin{enumerate}
+    \item \textcolor{blue}{Site covariates} vary among sites
+      but not among occasions
+    \item \textcolor{Purple}{Observation covariates} may vary among
+      sites and occasions
+  \end{enumerate}
+  
+  Define the following as Site or Observation covariates (or both?):
+  \begin{itemize}
+    \item{Temperature}
+    \item{Distance to Stream}
+    \item{Wind}
+    \item{Others?}
+  \end{itemize}  
+\end{frame}
+    
 
 % \begin{frame}
 %   \frametitle{Ignoring detection probability}
@@ -481,6 +499,7 @@ Major problems if you ignore imperfect detection in this case \\
     \item Predict $p$ again by letting (standardized) $x_1$ vary, but
       this time, predict for the case where $w$=`Cold'.
     \item Graph $p$ as a function of $x_1$.
+    \item (Bonus) What happens when a covariate is missing for a site or observation?
   \end{enumerate}
 \end{frame}
 
