@@ -91,7 +91,7 @@
   \LARGE
 %  \maketitle
   \centering
-  {\LARGE Lecture 5 -- Binomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
+  {\LARGE Binomial $N$-mixture models: \\ simulation, fitting, and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -303,7 +303,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,]}
+\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
@@ -326,7 +326,6 @@
 ## [17,]    0    0    0    0
 ## [18,]    0    0    0    0
 ## [19,]    0    0    1    0
-## [20,]    0    0    0    1
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -352,17 +351,24 @@
 \end{kframe}
 \end{knitrout}
 \pause
+% \vfill
+% \small
+% Proportion of sites known to be occupied \\
+% <<sim-nocov-ss2,size='scriptsize'>>=
+% naiveOccupancy <- sum(maxCounts>0)/nSites
+% naiveOccupancy 
+% @
 \vfill
 \small
-Proportion of sites known to be occupied \\
+Observed abundance \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
-\hlstd{naiveOccupancy}
+\hlstd{naiveAbund} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts)}
+\hlstd{naiveAbund}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.45
+## [1] 60
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -471,7 +477,8 @@ Proportion of sites known to be occupied \\
 \end{knitrout}
 \pause
 \vfill
-We can use \inr{backTransform} because there aren't covariates:
+We can use \inr{backTransform} to obtain estimate of average abundance
+at each site because there aren't covariates:  
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -611,7 +618,7 @@ If the estimates do change, increase $K$ until they stabilize.
 \begin{frame}[fragile]
   \frametitle{Total abundance (in surveyed region)}
   \footnotesize
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{N.total.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=sum,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
@@ -619,14 +626,14 @@ If the estimates do change, increase $K$ until they stabilize.
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.4\linewidth]{figure/Ntotal-1} 
+{\centering \includegraphics[width=0.45\linewidth]{figure/Ntotal-1} 
 
 }
 
 
 \end{knitrout}
 Estimate of total abundance in sampled area, with 95\% CI:
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{c}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{mean}\hlstd{(N.total.post),} \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{),}
@@ -789,7 +796,7 @@ totalAbundance <- sum(N)
 \begin{frame}[fragile]
   \frametitle{Data, inits, and parameters}
   Put data in a named list
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -799,7 +806,7 @@ totalAbundance <- sum(N)
 \end{knitrout}
   \vfill
   Initial values
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -810,7 +817,7 @@ totalAbundance <- sum(N)
   \pause
   \vfill
   Run it
-  \vspace{-12pt}
+  \vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -934,7 +941,7 @@ totalAbundance <- sum(N)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.026 minutes.
+## MCMC took 0.041 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -960,22 +967,22 @@ totalAbundance <- sum(N)
 ##    plus standard error of the mean:
 ## 
 ##                    Mean      SD Naive SE Time-series SE
-## beta0           -0.3948  0.2944 0.003801        0.02864
-## beta1           -0.3543  0.3968 0.005122        0.03468
-## beta2            1.1813  0.3063 0.003954        0.02476
-## alpha0          -1.8616  0.2481 0.003203        0.04997
-## alpha1           1.2205  0.2232 0.002881        0.03982
-## totalAbundance 121.6455 22.9389 0.296140        4.43671
+## beta0           -0.3871  0.3736 0.004823        0.04629
+## beta1           -0.3078  0.4155 0.005364        0.03895
+## beta2            1.2016  0.3337 0.004308        0.02937
+## alpha0          -1.8511  0.3231 0.004171        0.07751
+## alpha1           1.1039  0.1696 0.002189        0.02088
+## totalAbundance 127.2697 32.9265 0.425079        8.69716
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##                   2.5%      25%      50%       75%    97.5%
-## beta0          -1.0191  -0.5847  -0.3840  -0.20292   0.1777
-## beta1          -1.1408  -0.6357  -0.3381  -0.07623   0.3893
-## beta2           0.6295   0.9658   1.1736   1.37667   1.8204
-## alpha0         -2.2896  -2.0223  -1.8690  -1.72943  -1.3283
-## alpha1          0.8375   1.0623   1.2013   1.37039   1.7243
-## totalAbundance 84.0000 106.0000 119.0000 134.00000 177.0000
+## beta0          -1.1137  -0.6436  -0.3899  -0.12712   0.3265
+## beta1          -1.1247  -0.5817  -0.3046  -0.03193   0.5093
+## beta2           0.6117   0.9680   1.1744   1.43482   1.8845
+## alpha0         -2.4933  -2.0475  -1.8590  -1.66871  -1.1220
+## alpha1          0.8097   0.9734   1.1009   1.21573   1.4424
+## totalAbundance 83.0000 106.0000 120.0000 141.00000 217.0000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1053,10 +1060,10 @@ totalAbundance <- sum(N)
 \end{alltt}
 \begin{verbatim}
 ##         alpha0   alpha1
-## [1,] -1.536070 1.229850
-## [2,] -1.542794 1.238841
-## [3,] -1.537215 1.251539
-## [4,] -1.599808 1.232748
+## [1,] -1.303666 1.050269
+## [2,] -1.274961 1.076019
+## [3,] -1.235899 1.088720
+## [4,] -1.240720 1.135631
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1117,7 +1124,6 @@ totalAbundance <- sum(N)
 {\centering \includegraphics[width=0.7\linewidth]{figure/psi-pred-post-meanCI-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1196,7 +1202,7 @@ totalAbundance <- sum(N)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.005 minutes.
+## MCMC took 0.006 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1223,22 +1229,22 @@ totalAbundance <- sum(N)
 ##    plus standard error of the mean:
 ## 
 ##                      Mean       SD Naive SE Time-series SE
-## alpha0          -0.014595    1.407  0.01817        0.01817
-## alpha1           0.002061    1.415  0.01827        0.01876
-## beta0            0.011140    1.407  0.01816        0.01845
-## beta1           -0.005991    1.408  0.01818        0.01818
-## beta2            0.032224    1.427  0.01842        0.01874
-## totalAbundance 582.423833 1911.608 24.67876       26.41232
+## alpha0           0.007463    1.421  0.01834        0.01834
+## alpha1           0.024058    1.421  0.01834        0.01834
+## beta0            0.020227    1.428  0.01843        0.01843
+## beta1           -0.028018    1.407  0.01817        0.01849
+## beta2            0.004004    1.385  0.01788        0.01741
+## totalAbundance 656.964833 3695.473 47.70835       54.55638
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##                  2.5%     25%        50%      75%    97.5%
-## alpha0         -2.793 -0.9539  -0.017139   0.9193    2.762
-## alpha1         -2.779 -0.9556   0.004390   0.9408    2.782
-## beta0          -2.796 -0.9281   0.011999   0.9457    2.790
-## beta1          -2.745 -0.9542  -0.008274   0.9474    2.770
-## beta2          -2.794 -0.9322   0.050079   0.9664    2.810
-## totalAbundance  6.000 49.0000 145.000000 428.0000 3824.450
+## alpha0         -2.817 -0.9272  7.988e-06   0.9552    2.810
+## alpha1         -2.774 -0.9289  1.398e-02   0.9771    2.907
+## beta0          -2.820 -0.9271  1.605e-02   0.9904    2.796
+## beta1          -2.762 -0.9652 -5.384e-02   0.9541    2.794
+## beta2          -2.680 -0.9270 -1.162e-02   0.9524    2.716
+## totalAbundance  5.000 50.0000  1.440e+02 437.0000 4136.425
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
