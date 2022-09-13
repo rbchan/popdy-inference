@@ -195,9 +195,9 @@
 \begin{alltt}
 \hlstd{nSites} \hlkwb{<-} \hlnum{100}
 \hlstd{nVisits} \hlkwb{<-} \hlnum{4}
-\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}  \hlcom{## Make it reproducible}
-\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}  \hlcom{## Expected value of N}
-\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}
+\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}                         \hlcom{## Make it reproducible}
+\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}                         \hlcom{## Expected value of N}
+\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}  \hlcom{## Realized values}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -626,7 +626,7 @@ If the estimates do change, increase $K$ until they stabilize.
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.45\linewidth]{figure/Ntotal-1} 
+{\centering \includegraphics[width=0.5\linewidth]{figure/Ntotal-1} 
 
 }
 
@@ -636,8 +636,7 @@ Estimate of total abundance in sampled area, with 95\% CI:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{mean}\hlstd{(N.total.post),} \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{),}
-  \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{))}
+\hlkwd{c}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{mean}\hlstd{(N.total.post),} \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.025}\hlstd{,} \hlnum{0.975}\hlstd{)))}
 \end{alltt}
 \begin{verbatim}
 ## Estimate     2.5%    97.5% 
@@ -1386,7 +1385,7 @@ totalAbundance <- sum(N)
       Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Monday. 
 \end{frame}
 
 

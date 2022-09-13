@@ -154,9 +154,9 @@ knit_theme$set("edit-kwrite")
 <<sim-nocov1,size='scriptsize'>>=
 nSites <- 100
 nVisits <- 4
-set.seed(3439)  ## Make it reproducible
-lambda1 <- 2.6  ## Expected value of N
-N1 <- rpois(n=nSites, lambda=lambda1)
+set.seed(3439)                         ## Make it reproducible
+lambda1 <- 2.6                         ## Expected value of N
+N1 <- rpois(n=nSites, lambda=lambda1)  ## Realized values
 @
 % \item
   \pause
@@ -385,14 +385,13 @@ plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 \begin{frame}[fragile]
   \frametitle{Total abundance (in surveyed region)}
   \footnotesize
-<<Ntotal,size='tiny',out.width='45%',fig.align='center'>>=
+<<Ntotal,size='tiny',out.width='50%',fig.align='center'>>=
 N.total.post <- predict(re, func=sum, nsim=1000)
 hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
 @
 Estimate of total abundance in sampled area, with 95\% CI:
 <<Ntotal-stats,size='tiny'>>=
-c(Estimate=mean(N.total.post), quantile(N.total.post, prob=0.025),
-  quantile(N.total.post, prob=0.975))
+c(Estimate=mean(N.total.post), quantile(N.total.post, prob=c(0.025, 0.975)))
 @ 
 \end{frame}
 
@@ -873,7 +872,7 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
       Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Monday. 
 \end{frame}
 
 

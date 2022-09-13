@@ -8,9 +8,9 @@
 ## ----sim-nocov1,size='scriptsize'-------------------------------------------------------
 nSites <- 100
 nVisits <- 4
-set.seed(3439)  ## Make it reproducible
-lambda1 <- 2.6  ## Expected value of N
-N1 <- rpois(n=nSites, lambda=lambda1)
+set.seed(3439)                         ## Make it reproducible
+lambda1 <- 2.6                         ## Expected value of N
+N1 <- rpois(n=nSites, lambda=lambda1)  ## Realized values
 
 
 ## ----sim-nocov2,size='scriptsize'-------------------------------------------------------
@@ -48,7 +48,7 @@ for(i in 1:nSites) {
 
 
 ## ----sim-nocov-dat,size='scriptsize'----------------------------------------------------
-y2[1:20,]
+y2[1:19,]
 
 
 ## ----sim-nocov-ss1,size='scriptsize'----------------------------------------------------
@@ -57,9 +57,9 @@ maxCounts <- apply(y2, 1, max)
 table(maxCounts)              
 
 
-## ----sim-nocov-ss2,size='scriptsize'----------------------------------------------------
-naiveOccupancy <- sum(maxCounts>0)/nSites
-naiveOccupancy 
+## ----sim-nocov-ss3,size='scriptsize'----------------------------------------------------
+naiveAbund <- sum(maxCounts)
+naiveAbund
 
 ## ----un,include=FALSE-------------------------------------------------------------------
 library(unmarked)
@@ -109,14 +109,13 @@ re <- ranef(fm)
 plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 
 
-## ----Ntotal,size='scriptsize',out.width='40%',fig.align='center'------------------------
+## ----Ntotal,size='tiny',out.width='50%',fig.align='center'------------------------------
 N.total.post <- predict(re, func=sum, nsim=1000)
 hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
 
 
-## ----Ntotal-stats,size='scriptsize'-----------------------------------------------------
-c(Estimate=mean(N.total.post), quantile(N.total.post, prob=0.025),
-  quantile(N.total.post, prob=0.975))
+## ----Ntotal-stats,size='tiny'-----------------------------------------------------------
+c(Estimate=mean(N.total.post), quantile(N.total.post, prob=c(0.025, 0.975)))
 
 
 ## ----preddat,size='footnotesize'--------------------------------------------------------
