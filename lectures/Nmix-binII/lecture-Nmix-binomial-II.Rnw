@@ -5,7 +5,6 @@
 %\usepackage[sans]{../lectures}
 
 \usepackage{booktabs}
-%\usepackage{lipsum}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -355,7 +354,7 @@ modSel(grouse.models)
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE>>=
+<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE,warning=FALSE>>=
 library(raster); library(sf)
 load("state_boundaries.gzip")
 elev <- raster("elev_utm16.tif")
@@ -662,7 +661,7 @@ waic <- function(x) {
 }
 @
 \let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
-$p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.} 
+$p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.} 
 \end{frame}
 \egroup
 

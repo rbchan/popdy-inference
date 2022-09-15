@@ -55,7 +55,6 @@
 %\usepackage[sans]{../lectures}
 
 \usepackage{booktabs}
-%\usepackage{lipsum}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -441,6 +440,12 @@ Put models in a \inr{fitList}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(raster);} \hlkwd{library}\hlstd{(sf)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: replacing previous import 'lifecycle::last\_warnings' by 'rlang::last\_warnings' when loading 'pillar'}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: replacing previous import 'lifecycle::last\_warnings' by 'rlang::last\_warnings' when loading 'tibble'}}\begin{alltt}
 \hlkwd{load}\hlstd{(}\hlstr{"state_boundaries.gzip"}\hlstd{)}
 \hlstd{elev} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elev_utm16.tif"}\hlstd{)}
 \hlkwd{plot}\hlstd{(elev,} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
@@ -545,6 +550,7 @@ Put them together in a `raster stack'
 {\centering \includegraphics[width=0.85\linewidth]{figure/lam-pred-map-1} 
 
 }
+
 
 
 \end{knitrout}
@@ -868,7 +874,7 @@ totalAbundance <- sum(N[1:nSites])
 \end{kframe}
 \end{knitrout}
 \let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
-$p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.} 
+$p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.} 
 \end{frame}
 \egroup
 
@@ -899,7 +905,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 126.3097
+## [1] 129.1708
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -909,7 +915,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 128.9799
+## [1] 119.9559
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -919,7 +925,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 115.4295
+## [1] 119.1558
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -931,7 +937,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 145.215
+## [1] 151.6317
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -941,7 +947,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 163.8655
+## [1] 151.6321
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -951,7 +957,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 152.1601
+## [1] 168.6975
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -986,13 +992,13 @@ $p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.}
 \toprule
   & WAIC & delta\\
 \midrule
-Model 3 & 115.43 & 0.00\\
-Model 1 & 126.31 & 10.88\\
-Model 2 & 128.98 & 13.55\\
-Model 4 & 145.22 & 29.79\\
-Model 5 & 163.87 & 48.44\\
+Model 3 & 119.16 & 0.00\\
+Model 2 & 119.96 & 0.80\\
+Model 1 & 129.17 & 10.01\\
+Model 4 & 151.63 & 32.48\\
+Model 5 & 151.63 & 32.48\\
 \addlinespace
-Model 6 & 163.87 & 48.44\\
+Model 6 & 151.63 & 32.48\\
 \bottomrule
 \end{tabular}
 
@@ -1227,6 +1233,7 @@ No sign of obvious outliers or other problems.
 }
 
 
+
 \end{knitrout}
 \end{frame}
 
@@ -1245,11 +1252,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           2.41                5        0.299
+## SSE 23.2           2.41              5.7        0.294
 ## 
 ## t_B quantiles:
 ##      0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 6.9   13  17  20  24    30   39
+## SSE 6.9   12  17  21  24    33   39
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
