@@ -180,6 +180,27 @@
 \end{frame}
 
 
+% \begin{frame}[fragile]
+%   \frametitle{Overfit}
+% <<overfit>>=
+% n <- 50
+% dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n))
+% dat$y <- rnorm(n, mean = -1 + 2*x1, sd = 2)
+% fm1 <- glm(y~1, gaussian)
+% fm2 <- glm(y~x1, gaussian)
+% fm3 <- glm(y~x2, gaussian)
+% fm4 <- glm(y~x1+x2, gaussian)
+% fm5 <- glm(y~x1+x2+x3, gaussian)
+% fm6 <- glm(y~x1+x2+x3+x4, gaussian)
+% library(boot)
+% cv.glm(dat, fm1)$delta[1]
+% cv.glm(dat, fm2)$delta[1]
+% cv.glm(dat, fm3)$delta[1]
+% cv.glm(dat, fm4)$delta[1]
+% cv.glm(dat, fm5)$delta[1]
+% @   
+% \end{frame}
+
 
 \subsection{Likelihood-based methods}
 
@@ -440,12 +461,6 @@ Put models in a \inr{fitList}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(raster);} \hlkwd{library}\hlstd{(sf)}
-\end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: replacing previous import 'lifecycle::last\_warnings' by 'rlang::last\_warnings' when loading 'pillar'}}
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: replacing previous import 'lifecycle::last\_warnings' by 'rlang::last\_warnings' when loading 'tibble'}}\begin{alltt}
 \hlkwd{load}\hlstd{(}\hlstr{"state_boundaries.gzip"}\hlstd{)}
 \hlstd{elev} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elev_utm16.tif"}\hlstd{)}
 \hlkwd{plot}\hlstd{(elev,} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
@@ -1044,7 +1059,7 @@ Model 6 & 151.63 & 32.48\\
     \begin{itemize}
        \item Figure out why there is unexplained variation
        \item Perhaps there were unmeasured covariates or you need a
-         better model for describing the processes
+         better process model
     \end{itemize}
   \item<6-> Statistical approach
     \begin{itemize}
