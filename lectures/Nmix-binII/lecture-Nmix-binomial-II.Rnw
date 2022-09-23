@@ -5,7 +5,6 @@
 %\usepackage[sans]{../lectures}
 
 \usepackage{booktabs}
-%\usepackage{lipsum}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -139,6 +138,27 @@ knit_theme$set("edit-kwrite")
   rankings as cross-validation, but with less computation.    
 \end{frame}
 
+
+% \begin{frame}[fragile]
+%   \frametitle{Overfit}
+% <<overfit>>=
+% n <- 50
+% dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n))
+% dat$y <- rnorm(n, mean = -1 + 2*x1, sd = 2)
+% fm1 <- glm(y~1, gaussian)
+% fm2 <- glm(y~x1, gaussian)
+% fm3 <- glm(y~x2, gaussian)
+% fm4 <- glm(y~x1+x2, gaussian)
+% fm5 <- glm(y~x1+x2+x3, gaussian)
+% fm6 <- glm(y~x1+x2+x3+x4, gaussian)
+% library(boot)
+% cv.glm(dat, fm1)$delta[1]
+% cv.glm(dat, fm2)$delta[1]
+% cv.glm(dat, fm3)$delta[1]
+% cv.glm(dat, fm4)$delta[1]
+% cv.glm(dat, fm5)$delta[1]
+% @   
+% \end{frame}
 
 
 \subsection{Likelihood-based methods}
@@ -355,7 +375,7 @@ modSel(grouse.models)
 
 \begin{frame}[fragile]
   \frametitle{Spatial prediction}
-<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE>>=
+<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE,warning=FALSE>>=
 library(raster); library(sf)
 load("state_boundaries.gzip")
 elev <- raster("elev_utm16.tif")
@@ -662,7 +682,7 @@ waic <- function(x) {
 }
 @
 \let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
-$p(y_i|N_i,p)p(N_i|\lambda)$, rather than just $p(y_i|N_i,p)$.} 
+$p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.} 
 \end{frame}
 \egroup
 
@@ -772,7 +792,7 @@ knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
     \begin{itemize}
        \item Figure out why there is unexplained variation
        \item Perhaps there were unmeasured covariates or you need a
-         better model for describing the processes
+         better process model
     \end{itemize}
   \item<6-> Statistical approach
     \begin{itemize}

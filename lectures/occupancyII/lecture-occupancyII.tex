@@ -59,7 +59,7 @@
 
 %%% TODO: Add something about missing values
 
-\title{Lecture 4 -- Occupancy models: covariates and prediction }
+\title{Occupancy models: covariates and prediction }
 \author{Richard Chandler}
 
 
@@ -93,7 +93,7 @@
 \begin{frame}[plain]
   \LARGE
   \centering
-  {\huge Lecture 4 -- Occupancy models: covariates and prediction} \\
+  {\huge Occupancy models: covariates and prediction} \\
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -147,11 +147,29 @@
   \pause
   \vfill
   \centering
-  \alert{Observation covariates cannot be used to describe variation
+  {Observation covariates cannot be used to describe variation
     in occupancy because occupancy is assumed to be \\ constant over
     time.} \\ 
 \end{frame}
 
+\begin{frame}
+  \frametitle{Example}
+  \begin{enumerate}
+    \item \textcolor{blue}{Site covariates} vary among sites
+      but not among occasions
+    \item \textcolor{Purple}{Observation covariates} may vary among
+      sites and occasions
+  \end{enumerate}
+  
+  Define the following as Site or Observation covariates (or both?):
+  \begin{itemize}
+    \item{Temperature}
+    \item{Distance to Stream}
+    \item{Wind}
+    \item{Others?}
+  \end{itemize}  
+\end{frame}
+    
 
 % \begin{frame}
 %   \frametitle{Ignoring detection probability}
@@ -406,11 +424,13 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
   Standardizing involves subtracting the mean and then dividing by the standard deviation. \\
   \pause
 %  \vfill
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x1s} \hlkwb{<-} \hlstd{(x1}\hlopt{-}\hlkwd{mean}\hlstd{(x1))}\hlopt{/}\hlkwd{sd}\hlstd{(x1)}
-\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x2s} \hlkwb{<-} \hlstd{(x2}\hlopt{-}\hlkwd{mean}\hlstd{(x2))}\hlopt{/}\hlkwd{sd}\hlstd{(x2)}
+\hlstd{mean.x1} \hlkwb{<-} \hlkwd{mean}\hlstd{(x1); mean.x2} \hlkwb{<-} \hlkwd{mean}\hlstd{(x2)}
+\hlstd{sd.x1} \hlkwb{<-} \hlkwd{sd}\hlstd{(x1); sd.x2} \hlkwb{<-} \hlkwd{sd}\hlstd{(x2)}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x1s} \hlkwb{<-} \hlstd{(x1}\hlopt{-}\hlstd{mean.x1)}\hlopt{/}\hlstd{sd.x1}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x2s} \hlkwb{<-} \hlstd{(x2}\hlopt{-}\hlstd{mean.x2)}\hlopt{/}\hlstd{sd.x2}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -492,18 +512,20 @@ Compare to actual parameter values:
   Create \texttt{data.frame} with prediction covariates. We'll let $x_1$
   vary while holding other two covariates constant. Important that we
   use the standardized version of the continuous covariates.
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1s}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
                         \hlkwc{x2s}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Hot'}\hlstd{)}
+\hlstd{pred.data}\hlopt{$}\hlstd{x1} \hlkwb{<-} \hlstd{pred.data}\hlopt{$}\hlstd{x1s}\hlopt{*}\hlstd{sd.x1}\hlopt{+}\hlstd{mean.x1} \hlcom{## Back-transform x1s}
+\hlstd{pred.data}\hlopt{$}\hlstd{x2} \hlkwb{<-} \hlstd{pred.data}\hlopt{$}\hlstd{x2s}\hlopt{*}\hlstd{sd.x2}\hlopt{+}\hlstd{mean.x2} \hlcom{## Back-transform x2s}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 \vfill
 Get predictions of $\psi$ for each row of prediction data.
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{psi.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
@@ -514,7 +536,7 @@ Get predictions of $\psi$ for each row of prediction data.
 \pause
 \vfill
 Get predictions of $p$ for each row of prediction data.
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{p.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
@@ -536,13 +558,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(psi.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted   SE lower upper  x1s x2s   w
-## 1      0.81 0.11  0.50  0.95 -3.0   0 Hot
-## 2      0.80 0.11  0.50  0.94 -2.9   0 Hot
-## 3      0.79 0.11  0.50  0.94 -2.8   0 Hot
-## 4      0.78 0.11  0.49  0.93 -2.6   0 Hot
-## 5      0.77 0.11  0.49  0.92 -2.5   0 Hot
-## 6      0.76 0.11  0.49  0.92 -2.4   0 Hot
+##   Predicted   SE lower upper  x1s x2s   w   x1  x2
+## 1      0.81 0.11  0.50  0.95 -3.0   0 Hot -1.5 100
+## 2      0.80 0.11  0.50  0.94 -2.9   0 Hot -1.4 100
+## 3      0.79 0.11  0.50  0.94 -2.8   0 Hot -1.4 100
+## 4      0.78 0.11  0.49  0.93 -2.6   0 Hot -1.3 100
+## 5      0.77 0.11  0.49  0.92 -2.5   0 Hot -1.2 100
+## 6      0.76 0.11  0.49  0.92 -2.4   0 Hot -1.2 100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -555,13 +577,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(p.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted   SE lower upper  x1s x2s   w
-## 1      0.57 0.14  0.30  0.80 -3.0   0 Hot
-## 2      0.58 0.13  0.32  0.80 -2.9   0 Hot
-## 3      0.60 0.13  0.35  0.80 -2.8   0 Hot
-## 4      0.61 0.12  0.37  0.81 -2.6   0 Hot
-## 5      0.63 0.11  0.39  0.81 -2.5   0 Hot
-## 6      0.64 0.11  0.42  0.81 -2.4   0 Hot
+##   Predicted   SE lower upper  x1s x2s   w   x1  x2
+## 1      0.57 0.14  0.30  0.80 -3.0   0 Hot -1.5 100
+## 2      0.58 0.13  0.32  0.80 -2.9   0 Hot -1.4 100
+## 3      0.60 0.13  0.35  0.80 -2.8   0 Hot -1.4 100
+## 4      0.61 0.12  0.37  0.81 -2.6   0 Hot -1.3 100
+## 5      0.63 0.11  0.39  0.81 -2.5   0 Hot -1.2 100
+## 6      0.64 0.11  0.42  0.81 -2.4   0 Hot -1.2 100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -599,11 +621,9 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)} \hlcom{## Suppress x-axis}
-\hlstd{x1s.ticks} \hlkwb{<-} \hlopt{-}\hlnum{3}\hlopt{:}\hlnum{3}  \hlcom{## These are where tick marks for x1s would be}
-\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -646,10 +666,9 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"x1"}\hlstd{,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{axis}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=x1s.ticks,} \hlkwc{labels}\hlstd{=}\hlkwd{round}\hlstd{(x1s.ticks}\hlopt{*}\hlkwd{sd}\hlstd{(x1)}\hlopt{+}\hlkwd{mean}\hlstd{(x1),}\hlnum{1}\hlstd{))} \hlcom{## Backtransform x1s}
-\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"orange"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"x1"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"orange"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
 \hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{0.3}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Occupancy (psi)"}\hlstd{,} \hlstr{"Detection (p)"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"orange"}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -707,6 +726,7 @@ Major problems if you ignore imperfect detection in this case \\
     \item Predict $p$ again by letting (standardized) $x_1$ vary, but
       this time, predict for the case where $w$=`Cold'.
     \item Graph $p$ as a function of $x_1$.
+    \item (Bonus) What happens when a covariate is missing for a site or observation?
   \end{enumerate}
 \end{frame}
 
@@ -824,7 +844,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.033 minutes.
+## MCMC took 0.032 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -988,7 +1008,7 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(pred.data}\hlopt{$}\hlstd{x1s, psi.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"x1s"}\hlstd{,}
+\hlkwd{plot}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, psi.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"x1s"}\hlstd{,}
      \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
 \end{alltt}
 \end{kframe}
@@ -1010,7 +1030,7 @@ sitesOccupied <- sum(z)
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
-    \hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1s, psi.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+    \hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, psi.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}

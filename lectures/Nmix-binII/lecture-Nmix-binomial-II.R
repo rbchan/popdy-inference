@@ -70,7 +70,7 @@ grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
 modSel(grouse.models)
 
 
-## ----elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE----
+## ----elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE,warning=FALSE----
 library(raster); library(sf)
 load("state_boundaries.gzip")
 elev <- raster("elev_utm16.tif")

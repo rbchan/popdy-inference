@@ -1,5 +1,11 @@
 # Notes for the future
 
+## For 2023
+
+- Ditch binomian N-mix II?
+
+- Avoid generic variable names like 'x', 'y', and 'w'
+
 ## For 2022
 
 - Ditch the dynamic N-mixture models? Not enough time?
