@@ -85,7 +85,7 @@ knit_theme$set("edit-kwrite")
   The difference is that, instead of repeated count data at each site,
   we have data from sampling methods such as:
   \begin{itemize}
-    \item<2-> Double observer sampling
+    \item<3-> Double observer sampling
     \item<3-> Removal sampling
     \item<3-> Mark-recapture
     \item<3-> Distance sampling
@@ -358,19 +358,11 @@ y2[1:19,]
 @ 
   \end{column}
   \begin{column}{0.6\textwidth}
-    \pause
+%    \pause
 %    \scriptsize
     {\centering Summary stats \\}
     \vspace{24pt}
     \small
-    Proportion of sites known to be occupied
-    \vspace{-6pt}
-<<sim-nocov-ss1,size='scriptsize'>>=
-# Max count at each site
-maxCounts <- apply(y2, 1, max) 
-naiveOccupancy <- sum(maxCounts>0)/nSites
-naiveOccupancy 
-@
   \pause
   \vfill
   \small
