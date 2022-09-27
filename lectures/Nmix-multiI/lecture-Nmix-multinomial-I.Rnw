@@ -672,7 +672,7 @@ jags.pars.rem <- c("beta0", "beta1",
   \frametitle{MCMC}
   \small
 <<bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'>>=
-library(jagsUI)
+library(jagsUI); library(coda)
 jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
                              parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
                              n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)

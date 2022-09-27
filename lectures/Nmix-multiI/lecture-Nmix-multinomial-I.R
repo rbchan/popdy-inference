@@ -68,13 +68,6 @@ y2 <- y2.all[,-K] ## Discard final column... individuals not detected
 y2[1:19,]
 
 
-## ----sim-nocov-ss1,size='scriptsize'------------------------------------------
-# Max count at each site
-maxCounts <- apply(y2, 1, max) 
-naiveOccupancy <- sum(maxCounts>0)/nSites
-naiveOccupancy 
-
-
 ## ----sim-nocov-ss2,size='scriptsize'------------------------------------------
 colSums(y2)
 
@@ -159,7 +152,7 @@ jags.pars.rem <- c("beta0", "beta1",
 
 
 ## ----bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'-------
-library(jagsUI)
+library(jagsUI); library(coda)
 jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
                              parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
                              n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
