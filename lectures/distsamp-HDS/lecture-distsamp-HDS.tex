@@ -868,9 +868,9 @@
 ## elevation      1.045 0.101 10.31 6.03e-25
 ## 
 ## Detection:
-##                  Estimate     SE     z  P(>|z|)
-## sigma(Intercept)    3.079 0.0550 55.95 0.00e+00
-## sigmanoise         -0.457 0.0494 -9.26 2.01e-20
+##             Estimate     SE     z  P(>|z|)
+## (Intercept)    3.079 0.0550 55.95 0.00e+00
+## noise         -0.457 0.0494 -9.26 2.01e-20
 ## 
 ## AIC: 437.8227
 \end{verbatim}
@@ -1054,7 +1054,6 @@ for(i in 1:nSites) {
   log(lambda[i]) <- beta0 + beta1*elevation[i]
   N[i] ~ dpois(lambda[i])         # Latent local abundance
   log(sigma[i]) <- alpha0 + alpha1*noise[i]
-  tau[i] <- 1/sigma[i]^2
   for(j in 1:nBins) {
     ## Trick to do integration for *point-transects*
     pbar[i,j] <- (sigma[i]^2 * (1-exp(-b[j+1]^2/(2*sigma[i]^2))) -
@@ -1539,9 +1538,9 @@ totalAbundance <- sum(N[1:nSites])
 ## elevation       1.05 0.0754 13.9 7.07e-44
 ## 
 ## Detection:
-##                  Estimate     SE     z  P(>|z|)
-## sigma(Intercept)    3.137 0.0515 60.90 0.00e+00
-## sigmanoise         -0.369 0.0443 -8.34 7.55e-17
+##             Estimate     SE     z  P(>|z|)
+## (Intercept)    3.137 0.0515 60.90 0.00e+00
+## noise         -0.369 0.0443 -8.34 7.55e-17
 ## 
 ## AIC: 576.9817
 \end{verbatim}
