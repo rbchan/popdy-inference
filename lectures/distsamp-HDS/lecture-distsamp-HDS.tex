@@ -571,8 +571,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{2.6}  \hlcom{## Expected value of N}
-\hlstd{N3} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}
+\hlstd{B} \hlkwb{<-} \hlnum{100}\hlstd{; Area} \hlkwb{<-} \hlstd{pi}\hlopt{*}\hlstd{B}\hlopt{^}\hlnum{2}\hlopt{/}\hlnum{1e4}   \hlcom{## plot radius (B) and area in ha}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{0.9}  \hlcom{## Expected value of density}
+\hlstd{N3} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1}\hlopt{*}\hlstd{Area)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -585,7 +586,6 @@
 \begin{alltt}
 \hlstd{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
 \hlstd{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
-\hlstd{B} \hlkwb{<-} \hlnum{100}                   \hlcom{# plot radius (B)}
 \hlstd{b} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{, B,} \hlkwc{length}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# distance break points}
 \hlstd{area} \hlkwb{<-} \hlstd{pi}\hlopt{*}\hlstd{b}\hlopt{^}\hlnum{2}             \hlcom{# area of each circle}
 \hlstd{psi} \hlkwb{<-} \hlstd{(area[}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{area[}\hlopt{-}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)])} \hlopt{/} \hlstd{area[J}\hlopt{+}\hlnum{1}\hlstd{]}
@@ -644,8 +644,8 @@
 \begin{alltt}
 \hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
 \hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
-\hlstd{lambda4} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
-\hlstd{N4} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda4)}
+\hlstd{lambda4} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}   \hlcom{# E(density)}
+\hlstd{N4} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda4}\hlopt{*}\hlstd{Area)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -704,30 +704,30 @@
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4] [,5]
-##  [1,]    0    1    0    0    0
-##  [2,]    0    0    0    0    0
-##  [3,]    0    1    0    0    0
-##  [4,]    1    1    0    0    0
+##  [1,]    0    0    0    0    0
+##  [2,]    1    5    1    0    0
+##  [3,]    0    0    0    0    0
+##  [4,]    0    1    1    1    0
 ##  [5,]    1    0    0    0    0
-##  [6,]    0    0    0    0    0
-##  [7,]    0    1    0    0    0
-##  [8,]    0    0    0    1    0
-##  [9,]    0    0    0    0    0
-## [10,]    0    0    0    0    0
-## [11,]    1    0    0    0    0
+##  [6,]    0    1    2    2    5
+##  [7,]    0    0    1    0    0
+##  [8,]    5    5    0    0    0
+##  [9,]    4    2    2    0    0
+## [10,]    1    1    0    0    0
+## [11,]    2    0    1    0    0
 ## [12,]    0    0    0    0    0
-## [13,]    0    0    0    0    0
-## [14,]    0    0    0    0    0
-## [15,]    1    1    0    0    0
-## [16,]    2    1    0    0    0
-## [17,]    0    0    0    1    0
-## [18,]    0    1    0    1    1
-## [19,]    1    0    0    1    0
-## [20,]    0    0    0    0    0
-## [21,]    0    0    0    0    0
+## [13,]    3    0    0    0    0
+## [14,]    2    1    0    0    0
+## [15,]    0    1    0    0    1
+## [16,]    2    0    0    0    0
+## [17,]    0    0    0    0    0
+## [18,]    1    1    0    0    0
+## [19,]    0    1    0    0    0
+## [20,]    1    2    0    0    0
+## [21,]    1    0    3    2    2
 ## [22,]    0    0    0    0    0
-## [23,]    0    0    0    0    0
-## [24,]    0    3    0    0    0
+## [23,]    0    1    0    0    0
+## [24,]    0    0    0    0    0
 ## [25,]    0    0    0    0    0
 \end{verbatim}
 \end{kframe}
@@ -750,7 +750,7 @@
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.55
+## [1] 0.77
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -765,7 +765,7 @@
 \hlkwd{colSums}\hlstd{(y4)}
 \end{alltt}
 \begin{verbatim}
-## [1] 26 54 26 16  9
+## [1] 89 99 54 35 30
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -779,7 +779,7 @@
 \hlkwd{sum}\hlstd{(y4)}
 \end{alltt}
 \begin{verbatim}
-## [1] 131
+## [1] 307
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -825,20 +825,20 @@
 ## 100 sites
 ## Maximum number of distance classes per site: 5 
 ## Mean number of distance classes per site: 5 
-## Sites with at least one detection: 55 
+## Sites with at least one detection: 77 
 ## 
 ## Tabulation of y observations:
-##   0   1   2   3   4   6 
-## 406  70  15   7   1   1 
+##   0   1   2   3   4   5   6   7   8   9  10 
+## 351  85  31  13   6   5   2   2   1   2   2 
 ## 
 ## Site-level covariates:
-##    elevation            noise         
-##  Min.   :-2.29527   Min.   :-2.80421  
-##  1st Qu.:-0.71015   1st Qu.:-0.82447  
-##  Median :-0.22187   Median :-0.06717  
-##  Mean   :-0.09012   Mean   :-0.18718  
-##  3rd Qu.: 0.57207   3rd Qu.: 0.39358  
-##  Max.   : 2.26625   Max.   : 1.84018
+##    elevation           noise         
+##  Min.   :-2.2953   Min.   :-2.93845  
+##  1st Qu.:-0.7225   1st Qu.:-0.72355  
+##  Median :-0.2411   Median :-0.06353  
+##  Mean   :-0.1119   Mean   :-0.05248  
+##  3rd Qu.: 0.6033   3rd Qu.: 0.53973  
+##  Max.   : 2.2662   Max.   : 2.47751
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -863,16 +863,16 @@
 ## distsamp(formula = ~noise ~ elevation, data = umf4, keyfun = "halfnorm")
 ## 
 ## Density:
-##             Estimate    SE     z  P(>|z|)
-## (Intercept)    0.753 0.147  5.11 3.26e-07
-## elevation      1.045 0.101 10.31 6.03e-25
+##             Estimate     SE    z   P(>|z|)
+## (Intercept)    2.003 0.0904 22.2 7.87e-109
+## elevation      0.945 0.0662 14.3  3.29e-46
 ## 
 ## Detection:
 ##             Estimate     SE     z  P(>|z|)
-## (Intercept)    3.079 0.0550 55.95 0.00e+00
-## noise         -0.457 0.0494 -9.26 2.01e-20
+## (Intercept)    2.963 0.0362  81.9 0.00e+00
+## noise         -0.525 0.0288 -18.2 5.75e-74
 ## 
-## AIC: 437.8227
+## AIC: 677.1907
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -934,12 +934,12 @@ Get predictions of $\sigma$ for each row of prediction data.
 \end{alltt}
 \begin{verbatim}
 ##   Predicted   SE lower upper noise
-## 1        86 12.5    64   114  -3.0
-## 2        68  8.4    54    87  -2.5
-## 3        54  5.5    44    66  -2.0
-## 4        43  3.5    37    51  -1.5
-## 5        34  2.2    30    39  -1.0
-## 6        27  1.5    25    30  -0.5
+## 1        93 8.19    79   111  -3.0
+## 2        72 5.37    62    83  -2.5
+## 3        55 3.45    49    62  -2.0
+## 4        43 2.18    38    47  -1.5
+## 5        33 1.38    30    36  -1.0
+## 6        25 0.92    23    27  -0.5
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1047,12 +1047,12 @@ lambda.intercept ~ dunif(0, 20)
 beta0 <- log(lambda.intercept)
 beta1 ~ dnorm(0, 0.5)
 
-alpha0 ~ dnorm(0, 0.5)
-alpha1 ~ dnorm(0, 0.5)
+alpha0 ~ dnorm(0, 0.1)
+alpha1 ~ dnorm(0, 0.1)
 
 for(i in 1:nSites) {
   log(lambda[i]) <- beta0 + beta1*elevation[i]
-  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance
   log(sigma[i]) <- alpha0 + alpha1*noise[i]
   for(j in 1:nBins) {
     ## Trick to do integration for *point-transects*
@@ -1088,8 +1088,9 @@ totalAbundance <- sum(N[1:nSites])
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{jags.data.pt} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y4,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y4),} \hlkwc{area}\hlstd{=}\hlkwd{diff}\hlstd{(area),}
-                     \hlkwc{b}\hlstd{=b,}           \hlcom{# Distance break points}
-                     \hlkwc{psi}\hlstd{=psi,}       \hlcom{# Pr(occuring in bin j)}
+                     \hlkwc{b}\hlstd{=b,}              \hlcom{# Distance break points}
+                     \hlkwc{Area}\hlstd{=pi}\hlopt{*}\hlstd{B}\hlopt{^}\hlnum{2}\hlopt{/}\hlnum{1e4}\hlstd{,}  \hlcom{# Area in ha}
+                     \hlkwc{psi}\hlstd{=psi,}          \hlcom{# Pr(occuring in bin j)}
                      \hlkwc{elevation}\hlstd{=elevation,} \hlkwc{noise}\hlstd{=noise,}
                      \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nBins}\hlstd{=J)}
 \end{alltt}
@@ -1231,8 +1232,9 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{2.6}  \hlcom{## Expected value of N}
-\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}
+\hlstd{B} \hlkwb{<-} \hlnum{100}\hlstd{; L} \hlkwb{<-} \hlnum{100}\hlstd{; A} \hlkwb{<-} \hlnum{2}\hlopt{*}\hlstd{B}\hlopt{*}\hlstd{L}\hlopt{/}\hlnum{1e4}  \hlcom{## transect widths, length, and area}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{1.3}       \hlcom{## Expected value of density}
+\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1}\hlopt{*}\hlstd{A)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1245,7 +1247,6 @@ totalAbundance <- sum(N[1:nSites])
 \begin{alltt}
 \hlstd{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
 \hlstd{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
-\hlstd{B} \hlkwb{<-} \hlnum{100}\hlstd{; L} \hlkwb{<-} \hlnum{100}         \hlcom{# transect widths (B) and lengths (L)}
 \hlstd{b} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{, B,} \hlkwc{length}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# distance break points}
 \hlstd{psi} \hlkwb{<-} \hlkwd{diff}\hlstd{(b)}\hlopt{/}\hlstd{B}           \hlcom{# Pr(x is in bin j)}
 \hlstd{pbar1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J)}        \hlcom{# average detection probability}
@@ -1305,7 +1306,7 @@ totalAbundance <- sum(N[1:nSites])
 \hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
 \hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
 \hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda2)}
+\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda2}\hlopt{*}\hlstd{A)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1364,31 +1365,31 @@ totalAbundance <- sum(N[1:nSites])
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4] [,5]
-##  [1,]    1    0    0    0    0
-##  [2,]    1    1    0    0    0
-##  [3,]    4    3    0    0    0
-##  [4,]    0    0    0    0    0
-##  [5,]    1    1    0    0    0
-##  [6,]    1    1    0    1    0
-##  [7,]    1    1    0    0    0
-##  [8,]    0    0    0    0    0
-##  [9,]    0    2    0    0    0
-## [10,]    1    2    0    0    0
-## [11,]    0    1    0    0    0
-## [12,]    1    0    0    0    0
+##  [1,]    3    2    0    0    0
+##  [2,]    4    1    1    0    0
+##  [3,]    6    2    3    0    0
+##  [4,]    7    4    1    0    0
+##  [5,]    2    2    0    0    0
+##  [6,]    0    0    0    0    0
+##  [7,]    1    0    0    0    0
+##  [8,]    5    0    1    0    0
+##  [9,]    3    7    2    0    0
+## [10,]    5    2    0    0    0
+## [11,]    4    2    0    0    0
+## [12,]    5    2    0    0    0
 ## [13,]    2    1    0    0    0
-## [14,]    2    0    0    0    0
-## [15,]    0    0    1    0    1
-## [16,]    0    0    0    0    0
-## [17,]    2    1    0    0    0
-## [18,]    3    1    0    1    0
-## [19,]    3    0    0    0    0
-## [20,]    1    0    0    0    0
-## [21,]    1    0    0    0    0
-## [22,]    1    0    0    0    0
-## [23,]    1    0    0    0    0
-## [24,]    1    0    0    0    0
-## [25,]    9    4    1    1    0
+## [14,]   12   10    8    4    1
+## [15,]    3    0    0    0    0
+## [16,]    3    0    0    0    0
+## [17,]    2    0    0    0    0
+## [18,]    9    1    0    0    0
+## [19,]    7    5    4    0    0
+## [20,]    1    1    1    0    0
+## [21,]    5    4    2    1    0
+## [22,]    1    1    1    3    0
+## [23,]    3    2    0    0    0
+## [24,]    1    0    1    0    0
+## [25,]    7    8    4    1    2
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1410,7 +1411,7 @@ totalAbundance <- sum(N[1:nSites])
 \hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.77
+## [1] 0.9
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1425,7 +1426,7 @@ totalAbundance <- sum(N[1:nSites])
 \hlkwd{colSums}\hlstd{(y2)}
 \end{alltt}
 \begin{verbatim}
-## [1] 137  78  28  11   1
+## [1] 360 151  63  32  15
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1439,7 +1440,7 @@ totalAbundance <- sum(N[1:nSites])
 \hlkwd{sum}\hlstd{(y2)}
 \end{alltt}
 \begin{verbatim}
-## [1] 255
+## [1] 621
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1495,20 +1496,20 @@ totalAbundance <- sum(N[1:nSites])
 ## 100 sites
 ## Maximum number of distance classes per site: 5 
 ## Mean number of distance classes per site: 5 
-## Sites with at least one detection: 77 
+## Sites with at least one detection: 90 
 ## 
 ## Tabulation of y observations:
-##   0   1   2   3   4   5   6   8   9  12 
-## 368  77  23  16  11   1   1   1   1   1 
+##   0   1   2   3   4   5   6   7   8   9  10  11  12  15  17  19  28 
+## 308  75  39  25  12  10   6   8   6   2   2   1   1   2   1   1   1 
 ## 
 ## Site-level covariates:
 ##    elevation            noise         
-##  Min.   :-2.15115   Min.   :-2.10388  
-##  1st Qu.:-0.67921   1st Qu.:-0.62759  
-##  Median :-0.20250   Median :-0.09483  
-##  Mean   :-0.07937   Mean   : 0.04132  
-##  3rd Qu.: 0.60327   3rd Qu.: 0.65752  
-##  Max.   : 2.03949   Max.   : 2.83252
+##  Min.   :-2.15115   Min.   :-2.80421  
+##  1st Qu.:-0.67921   1st Qu.:-0.83893  
+##  Median :-0.20250   Median :-0.06717  
+##  Mean   :-0.07937   Mean   :-0.18973  
+##  3rd Qu.: 0.60327   3rd Qu.: 0.39358  
+##  Max.   : 2.03949   Max.   : 1.84018
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1533,16 +1534,16 @@ totalAbundance <- sum(N[1:nSites])
 ## distsamp(formula = ~noise ~ elevation, data = umf, keyfun = "halfnorm")
 ## 
 ## Density:
-##             Estimate     SE    z  P(>|z|)
-## (Intercept)     1.10 0.0957 11.5 1.93e-30
-## elevation       1.05 0.0754 13.9 7.07e-44
+##             Estimate     SE    z   P(>|z|)
+## (Intercept)     2.05 0.0611 33.5 2.00e-245
+## elevation       1.02 0.0489 21.0  1.82e-97
 ## 
 ## Detection:
 ##             Estimate     SE     z  P(>|z|)
-## (Intercept)    3.137 0.0515 60.90 0.00e+00
-## noise         -0.369 0.0443 -8.34 7.55e-17
+## (Intercept)    2.929 0.0369  79.4 0.00e+00
+## noise         -0.513 0.0312 -16.5 5.68e-61
 ## 
-## AIC: 576.9817
+## AIC: 824.6483
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1593,12 +1594,12 @@ lambda.intercept ~ dunif(0, 20)
 beta0 <- log(lambda.intercept)
 beta1 ~ dnorm(0, 0.5)
 
-alpha0 ~ dnorm(0, 0.5)
-alpha1 ~ dnorm(0, 0.5)
+alpha0 ~ dnorm(0, 0.1)
+alpha1 ~ dnorm(0, 0.1)
 
 for(i in 1:nSites) {
   log(lambda[i]) <- beta0 + beta1*elevation[i]
-  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance
   log(sigma[i]) <- alpha0 + alpha1*noise[i]
   tau[i] <- 1/sigma[i]^2
   for(j in 1:nBins) {
@@ -1636,6 +1637,7 @@ totalAbundance <- sum(N[1:nSites])
 \hlstd{jags.data.line} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2),}
                        \hlkwc{b}\hlstd{=b,}           \hlcom{# Distance break points}
                        \hlkwc{psi}\hlstd{=}\hlkwd{diff}\hlstd{(b)}\hlopt{/}\hlstd{B,} \hlcom{# Pr(occuring in bin j)}
+                       \hlkwc{Area}\hlstd{=A,}        \hlcom{# Area in ha}
                        \hlkwc{elevation}\hlstd{=elevation,} \hlkwc{noise}\hlstd{=noise,}
                        \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nBins}\hlstd{=J)}
 \end{alltt}

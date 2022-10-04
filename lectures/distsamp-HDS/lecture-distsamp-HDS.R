@@ -59,14 +59,14 @@ set.seed(34889243)
 
 
 ## ----sim-hds-nocovN3-pt,size='scriptsize'-------------------------------------
-nSites <- 100; lambda1 <- 2.6  ## Expected value of N
-N3 <- rpois(n=nSites, lambda=lambda1)
+B <- 100; Area <- pi*B^2/1e4   ## plot radius (B) and area in ha
+nSites <- 100; lambda1 <- 0.9  ## Expected value of density
+N3 <- rpois(n=nSites, lambda=lambda1*Area)
 
 
 ## ----sim-hds-nocov3-pt,size='scriptsize'--------------------------------------
 J <- 5                     # distance bins
 sigma <- 50                # scale parameter
-B <- 100                   # plot radius (B)
 b <- seq(0, B, length=J+1) # distance break points
 area <- pi*b^2             # area of each circle
 psi <- (area[-1]-area[-(J+1)]) / area[J+1]
@@ -95,8 +95,8 @@ plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="skyblue4",
 ## ----sim-hds-covN4-pt,size='scriptsize'---------------------------------------
 elevation <- rnorm(nSites)  
 beta0 <- 2; beta1 <- 1
-lambda4 <- exp(beta0 + beta1*elevation)
-N4 <- rpois(n=nSites, lambda=lambda4)
+lambda4 <- exp(beta0 + beta1*elevation)   # E(density)
+N4 <- rpois(n=nSites, lambda=lambda4*Area)
 
 
 ## ----sim-hds-cov4-pt,size='scriptsize'----------------------------------------
@@ -214,8 +214,9 @@ writeLines(readLines("distsamp-point-mod.jag"))
 
 ## ----bugs-data-pt,size='footnotesize'-----------------------------------------
 jags.data.pt <- list(y=y4, n=rowSums(y4), area=diff(area),
-                     b=b,           # Distance break points
-                     psi=psi,       # Pr(occuring in bin j)
+                     b=b,              # Distance break points
+                     Area=pi*B^2/1e4,  # Area in ha
+                     psi=psi,          # Pr(occuring in bin j)
                      elevation=elevation, noise=noise,
                      nSites=nSites, nBins=J)
 
@@ -249,14 +250,14 @@ set.seed(34889243)
 
 
 ## ----sim-hds-nocov1,size='scriptsize'-----------------------------------------
-nSites <- 100; lambda1 <- 2.6  ## Expected value of N
-N1 <- rpois(n=nSites, lambda=lambda1)
+B <- 100; L <- 100; A <- 2*B*L/1e4  ## transect widths, length, and area
+nSites <- 100; lambda1 <- 1.3       ## Expected value of density
+N1 <- rpois(n=nSites, lambda=lambda1*A)
 
 
 ## ----sim-hds-nocov2,size='scriptsize'-----------------------------------------
 J <- 5                     # distance bins
 sigma <- 50                # scale parameter
-B <- 100; L <- 100         # transect widths (B) and lengths (L)
 b <- seq(0, B, length=J+1) # distance break points
 psi <- diff(b)/B           # Pr(x is in bin j)
 pbar1 <- numeric(J)        # average detection probability
@@ -286,7 +287,7 @@ plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="skyblue4",
 elevation <- rnorm(nSites)  
 beta0 <- 2; beta1 <- 1
 lambda2 <- exp(beta0 + beta1*elevation)
-N2 <- rpois(n=nSites, lambda=lambda2)
+N2 <- rpois(n=nSites, lambda=lambda2*A)
 
 
 ## ----sim-hds-cov2,size='scriptsize'-------------------------------------------
@@ -355,6 +356,7 @@ writeLines(readLines("distsamp-line-mod.jag"))
 jags.data.line <- list(y=y2, n=rowSums(y2),
                        b=b,           # Distance break points
                        psi=diff(b)/B, # Pr(occuring in bin j)
+                       Area=A,        # Area in ha
                        elevation=elevation, noise=noise,
                        nSites=nSites, nBins=J)
 
