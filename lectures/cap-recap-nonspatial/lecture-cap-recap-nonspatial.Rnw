@@ -111,6 +111,34 @@ if(!require(secr)) install.packages("secr")
 
 
 
+
+
+
+\begin{frame}
+  \frametitle{Closed populations}
+  For this lecture, we will assume population closure:
+  \begin{itemize}
+    \item No births or deaths during the time of sampling \\ (demographic
+      closure)
+    \item No permanent immigration or emigration \\ (geographic closure)
+  \end{itemize}
+  \pause
+  \vfill
+  There are several other assumptions that depend on the specific
+  model being employed, such as
+  \begin{itemize}
+    \item No misidentification
+    \item No band/tag loss
+    \item etc\dots
+  \end{itemize}
+  \pause
+  \vfill
+  Later, we will relax the closure assumption so that we can study
+  survival, recruitment, and movement.
+\end{frame}
+
+
+
 \begin{frame}
   \frametitle{Mark-recapture overview}
   The simplest estimator of abundance is 
@@ -126,12 +154,36 @@ if(!require(secr)) install.packages("secr")
   probability. \\ 
   \pause
   \vfill
-  For the simplest mark-recapture problems, $p$ is a constant and we
+  For the simplest mark-recapture problems, $p$ is a constant (scalar) and we
   estimate it by trapping on multiple occasions and marking and
   recapturing as we go.  
 \end{frame}
 
 
+
+
+
+\begin{frame}
+  \frametitle{Classical approaches}
+  Lincoln-Peterson  \\
+  \begin{itemize}
+    \item $J=2$ occasions
+    \item Data are:
+      \begin{itemize}
+        \item $n_1$ -- number of individuals captured on first occasion
+        \item $n_2$ -- number of individuals captured on second occasion
+        \item $m_2$ -- number of recaptures
+      \end{itemize}
+    \item Estimator is $\hat{N} = n_1n_2/m_2$  
+  \end{itemize}
+  \pause
+  \vfill
+  Closed population models \\
+  \begin{itemize}
+    \item Usually better to have $J>2$ occasions
+    \item Allows for assessment of behavioral effects, individual heterogeneity, etc\dots
+  \end{itemize}
+\end{frame}
 
 
 
@@ -190,42 +242,8 @@ if(!require(secr)) install.packages("secr")
 
 
 
-
-
 \begin{frame}
-  \frametitle{Classical approaches}
-  Lincoln-Peterson  \\
-  \begin{itemize}
-    \item $J=2$ occasions
-    \item Data are:
-      \begin{itemize}
-        \item $n_1$ -- number of individuals captured on first occasion
-        \item $n_2$ -- number of individuals captured on second occasion
-        \item $m_2$ -- number of recaptures
-      \end{itemize}
-    \item Estimator is $\hat{N} = n_1n_2/m_2$  
-  \end{itemize}
-  \pause
-  \vfill
-  Closed population models \\
-  \begin{itemize}
-    \item Usually better to have $J>2$ occasions
-    \item Allows for assessment of behavioral effects, individual heterogeneity, etc\dots
-  \end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}
-  \frametitle{CLosed pop assumptions}
-  Say something here about closure
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{\large Closed population model ($N$ known hypothetically) }
+  \frametitle{\large Closed population model (if we knew $N$) }
   \small
   State model \\
   \vspace{6pt}
@@ -243,15 +261,19 @@ if(!require(secr)) install.packages("secr")
 %  \vfill
   \small
   Definitions \\
+  {\footnotesize
   $N$ -- Population size \\
-  \hangindent=0.8cm $y_{ij}$ -- encounter histories, indicating if
+  \hangindent=0.8cm $y_{ij}$ -- Capture histories, indicating if
   individual $i$ was captured on occasion $j$ \\  
-  $p$ -- Capture probability
+  $p$ -- Capture probability \\
+  %}
   \pause
   \vfill
   The problem with this formulation is that we don't observe the ``all
-  zero'' encounter histories (and thus we don't know $N$). %As a
-  %result, the Bernoulli assumption isn't valid.
+  zero'' encounter histories (and thus we don't know $N$). \pause As a
+  result, the Bernoulli assumption isn't valid, and we need to develop
+  a model that describes how many individuals we failed to capture.
+  }
 \end{frame}
 
 
@@ -390,7 +412,7 @@ if(!require(secr)) install.packages("secr")
   \frametitle{Joint likelihood, conditional-on-$n$}
 %  \frametitle{Conditional-on-$n$, multinomial cell probs}
   \footnotesize
-  Here's another option (that's easy to implement in MCMC software) with a conditional multinomial: \\
+  Here's another option (that's easy to implement in JAGS) with a conditional multinomial: \\
   \begin{gather*}
     n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
     \{f_1, \dots, f_K\} \sim \mathrm{Multinomial}(n, \pi_1, \dots, \pi_K) \;\;
@@ -470,11 +492,11 @@ if(!require(secr)) install.packages("secr")
 \begin{frame}
   \frametitle{Model variations}
   \small
-  Aside from the approach to estimation, the key consideration
-  concerns the sources of variation in capture probability ($p$). \\
+  More important than the estimation approach, is identification of
+  the sources of variation in capture probability ($p$). \\ 
   \pause
   \vfill
-  Otis et al. (1978, Wildlife Monographs) identified several model
+  Otis et al. (1978) identified several model
   variations: 
   \begin{itemize}
     \small
@@ -492,7 +514,7 @@ if(!require(secr)) install.packages("secr")
   These can be combined, but beware of identifiability issues. See
   Otis et al. (1978) for details.  \\
   \pause \vfill
-  Later we'll talk about another important class, 
+  Later we'll talk about %another important class, 
   ``individual covariate'' models.  
 \end{frame}
 
@@ -735,7 +757,7 @@ y.Mh.mix <- y.all.Mh.mix[captured.Mh.mix,]
 
 \begin{frame}[fragile]
   \frametitle{Model $M_h$ -- Individual heterogeneity}
-  Here's another flavor of $M_h$ with a logit-normal distribution for
+  Here's another flavor of $M_h$: logit-normal distribution for
   $p$.  
 <<sim-Mh-pars,size='scriptsize'>>=
 logit.p.bar <- -1  ## Mean p on logit scale
@@ -1128,145 +1150,145 @@ mark.Mh$results$derived
 
 
 
-\subsection{Likelihood-based data augmentation}
+% \subsection{Likelihood-based data augmentation}
 
 
-\begin{frame}[fragile]
-  \frametitle{Likelihood-based data augmentation}
-  \small
-  Normally, DA is used with Bayesian inference, but since it's exactly
-  the same model as a single-season occupancy model, we can also fit
-  it in `unmarked'.
-  \pause
-  \vfill
-  First, let's augment the data simulated under model $M_b$, with
-  $M=200$.
-\vspace{-6pt}
-<<aug-y,size='scriptsize'>>=
-M <- 200
-y.aug <- matrix(0, M, J)
-y.aug[1:nrow(y.Mb),] <- y.Mb
-@
-\pause
-\vfill
-We also need to augment the \inr{prevcap} object.
-\vspace{-6pt}
-<<un-prevcap,size='scriptsize'>>=
-prevcap.aug <- matrix(FALSE, M, J)
-prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
-prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
-@
-And we need a covariate indicating time (occasion)
-\vspace{-6pt}
-<<un-occ,size='scriptsize'>>=
-occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Likelihood-based data augmentation}
+%   \small
+%   Normally, DA is used with Bayesian inference, but since it's exactly
+%   the same model as a single-season occupancy model, we can also fit
+%   it in `unmarked'.
+%   \pause
+%   \vfill
+%   First, let's augment the data simulated under model $M_b$, with
+%   $M=200$.
+% \vspace{-6pt}
+% <<aug-y,size='scriptsize'>>=
+% M <- 200
+% y.aug <- matrix(0, M, J)
+% y.aug[1:nrow(y.Mb),] <- y.Mb
+% @
+% \pause
+% \vfill
+% We also need to augment the \inr{prevcap} object.
+% \vspace{-6pt}
+% <<un-prevcap,size='scriptsize'>>=
+% prevcap.aug <- matrix(FALSE, M, J)
+% prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
+% prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
+% @
+% And we need a covariate indicating time (occasion)
+% \vspace{-6pt}
+% <<un-occ,size='scriptsize'>>=
+% occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
+% @ 
+% \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{Model $M_0$ with `unmarked'}
-  \small
-  Create the unmarked frame
-<<un-umf,results='hide',size='scriptsize',warning=FALSE,message=FALSE>>=
-library(unmarked)
-umf <- unmarkedFrameOccu(y=y.aug,
-                         obsCovs=list(prevcap=prevcap.aug,
-                                      occasion=occasion.aug))
-@   
-  Fit the model  
-<<un-M0,size='scriptsize'>>=
-fm.M0 <- occu(~1~1, umf)
-fm.M0
-@   
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Model $M_t$ with `unmarked'}
-<<un-Mt,size='scriptsize'>>=
-fm.Mt <- occu(~occasion~1, umf)
-fm.Mt
-@   
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_0$ with `unmarked'}
+%   \small
+%   Create the unmarked frame
+% <<un-umf,results='hide',size='scriptsize',warning=FALSE,message=FALSE>>=
+% library(unmarked)
+% umf <- unmarkedFrameOccu(y=y.aug,
+%                          obsCovs=list(prevcap=prevcap.aug,
+%                                       occasion=occasion.aug))
+% @   
+%   Fit the model  
+% <<un-M0,size='scriptsize'>>=
+% fm.M0 <- occu(~1~1, umf)
+% fm.M0
+% @   
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Model $M_b$ with `unmarked'}
-<<un-Mb,size='scriptsize'>>=
-fm.Mb <- occu(~prevcap~1, umf)
-fm.Mb
-@   
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{But how do we estimate $N$?}
-  First compute Empirical Bayes posterior probability that each
-  individual was ``real''. 
-<<un-re,size='footnotesize'>>=
-re.M0 <- ranef(fm.M0)
-re.Mt <- ranef(fm.Mt)
-re.Mb <- ranef(fm.Mb)
-@
-\pause
-\vfill
-Then we predict $N$, which can be thought of as the number of real
-individuals in the set of $M$ pseudo-individuals.
-<<un-N,size='footnotesize'>>=
-N.post.M0 <- predict(re.M0, func=sum, nsim=1000)
-N.post.Mt <- predict(re.Mt, func=sum, nsim=1000)
-N.post.Mb <- predict(re.Mb, func=sum, nsim=1000)
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_t$ with `unmarked'}
+% <<un-Mt,size='scriptsize'>>=
+% fm.Mt <- occu(~occasion~1, umf)
+% fm.Mt
+% @   
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Empirical Bayes posteriors of $N$}
-<<un-N-post, size='tiny',fig.height=3,out.width="100%",fig.show='hide', echo=-1>>=
-par(mfrow=c(1,3), mai=c(0.6,0.6,0.5,0.1))
-plot(table(N.post.M0), xlab="N", ylab="Posterior probability", main="M0",
-     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
-plot(table(N.post.Mt), xlab="N", ylab="Posterior probability", main="Mt",
-     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
-plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
-     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
-@
-  \begin{columns}
-    \begin{column}{0.95\paperwidth}
-      \includegraphics[width=\textwidth]{figure/un-N-post-1}
-    \end{column}
-  \end{columns}
-  \vfill
-  \pause
-  \footnotesize
-  We see that $M$ is sufficiently high because: $\Pr(N=M|y) \approx
-  0$. Otherwise, we would have to rerun it with a larger value of $M$.
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Model $M_b$ with `unmarked'}
+% <<un-Mb,size='scriptsize'>>=
+% fm.Mb <- occu(~prevcap~1, umf)
+% fm.Mb
+% @   
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{But how do we estimate $N$?}
+%   First compute Empirical Bayes posterior probability that each
+%   individual was ``real''. 
+% <<un-re,size='footnotesize'>>=
+% re.M0 <- ranef(fm.M0)
+% re.Mt <- ranef(fm.Mt)
+% re.Mb <- ranef(fm.Mb)
+% @
+% \pause
+% \vfill
+% Then we predict $N$, which can be thought of as the number of real
+% individuals in the set of $M$ pseudo-individuals.
+% <<un-N,size='footnotesize'>>=
+% N.post.M0 <- predict(re.M0, func=sum, nsim=1000)
+% N.post.Mt <- predict(re.Mt, func=sum, nsim=1000)
+% N.post.Mb <- predict(re.Mb, func=sum, nsim=1000)
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Empirical Bayes posteriors of $N$}
+% <<un-N-post, size='tiny',fig.height=3,out.width="100%",fig.show='hide', echo=-1>>=
+% par(mfrow=c(1,3), mai=c(0.6,0.6,0.5,0.1))
+% plot(table(N.post.M0), xlab="N", ylab="Posterior probability", main="M0",
+%      xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
+% plot(table(N.post.Mt), xlab="N", ylab="Posterior probability", main="Mt",
+%      xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
+% plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
+%      xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
+% @
+%   \begin{columns}
+%     \begin{column}{0.95\paperwidth}
+%       \includegraphics[width=\textwidth]{figure/un-N-post-1}
+%     \end{column}
+%   \end{columns}
+%   \vfill
+%   \pause
+%   \footnotesize
+%   We see that $M$ is sufficiently high because: $\Pr(N=M|y) \approx
+%   0$. Otherwise, we would have to rerun it with a larger value of $M$.
+% \end{frame}
 
 
 
 
 
-\subsection{Bayesian data augmentation}
+% \subsection{Bayesian data augmentation}
 
-%\subsection{Bayesian inference}
+% %\subsection{Bayesian inference}
 
 
-\begin{frame}
-  \frametitle{Outline}
-  \Large
-  \tableofcontents[currentsection,currentsubsection]
-\end{frame}
+% \begin{frame}
+%   \frametitle{Outline}
+%   \Large
+%   \tableofcontents[currentsection,currentsubsection]
+% \end{frame}
 
 
 
 \begin{frame}
   \frametitle{Bayesian data augmentation}
-  The model is the same, but we need priors on $\psi$ and $p$. 
+  For Bayesian inference, we need priors on $\psi$ and $p$. 
   \begin{gather*}
     z_i \sim \mathrm{Bern}(\psi) \\
     y_{ij} \sim \mathrm{Bern}(z_i \times p) \\
@@ -1286,7 +1308,7 @@ plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
 \begin{frame}[fragile]
   \frametitle{Model $M_0$ -- data augmentation}
 \vspace{-3pt}
-<<bugs-M0-aug,size='small',comment='',background='lightblue'>>=
+<<bugs-M0-aug,size='footnotesize',comment='',background='lightblue'>>=
 writeLines(readLines("M0-aug.jag"))
 @
 \end{frame}
@@ -1538,7 +1560,8 @@ writeLines(readLines("Mh-aug.jag"))
   \pause \vfill
   A solution is to use individual covariates to explain the variation,
   rather than random effects. \pause But what covariates are
-  important? \\
+  important? And how do we know the covariates values for uncaptured
+  individuals? \\
   \pause \vfill
   With spatial capture-recapture (SCR) models we will use
   \alert{the unobserved distance between animals and traps} as a
