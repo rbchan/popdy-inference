@@ -196,51 +196,7 @@ prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
 occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
 
 
-## ----un-umf,results='hide',size='scriptsize',warning=FALSE,message=FALSE------
-library(unmarked)
-umf <- unmarkedFrameOccu(y=y.aug,
-                         obsCovs=list(prevcap=prevcap.aug,
-                                      occasion=occasion.aug))
-
-
-## ----un-M0,size='scriptsize'--------------------------------------------------
-fm.M0 <- occu(~1~1, umf)
-fm.M0
-
-
-## ----un-Mt,size='scriptsize'--------------------------------------------------
-fm.Mt <- occu(~occasion~1, umf)
-fm.Mt
-
-
-## ----un-Mb,size='scriptsize'--------------------------------------------------
-fm.Mb <- occu(~prevcap~1, umf)
-fm.Mb
-
-
-## ----un-re,size='footnotesize'------------------------------------------------
-re.M0 <- ranef(fm.M0)
-re.Mt <- ranef(fm.Mt)
-re.Mb <- ranef(fm.Mb)
-
-
-## ----un-N,size='footnotesize'-------------------------------------------------
-N.post.M0 <- predict(re.M0, func=sum, nsim=1000)
-N.post.Mt <- predict(re.Mt, func=sum, nsim=1000)
-N.post.Mb <- predict(re.Mb, func=sum, nsim=1000)
-
-
-## ----un-N-post, size='tiny',fig.height=3,out.width="100%",fig.show='hide', echo=-1----
-par(mfrow=c(1,3), mai=c(0.6,0.6,0.5,0.1))
-plot(table(N.post.M0), xlab="N", ylab="Posterior probability", main="M0",
-     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
-plot(table(N.post.Mt), xlab="N", ylab="Posterior probability", main="Mt",
-     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
-plot(table(N.post.Mb), xlab="N", ylab="Posterior probability", main="Mb",
-     xlim=c(75, 130), ylim=c(0,150)); abline(v=N, col="red")
-
-
-## ----bugs-M0-aug,size='small',comment='',background='lightblue'---------------
+## ----bugs-M0-aug,size='footnotesize',comment='',background='lightblue'--------
 writeLines(readLines("M0-aug.jag"))
 
 

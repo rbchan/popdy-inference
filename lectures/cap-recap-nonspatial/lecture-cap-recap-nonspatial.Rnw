@@ -1125,8 +1125,8 @@ mark.Mh$results$derived
 
 
 \begin{frame}
-  \frametitle{Data augmentation model}
-  The model is:
+  \frametitle{Data augmentation}
+  The model:
   \begin{gather*}
     z_i \sim \mathrm{Bern}(\psi) \\
     y_{ij} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
@@ -1153,37 +1153,37 @@ mark.Mh$results$derived
 % \subsection{Likelihood-based data augmentation}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Likelihood-based data augmentation}
-%   \small
-%   Normally, DA is used with Bayesian inference, but since it's exactly
-%   the same model as a single-season occupancy model, we can also fit
-%   it in `unmarked'.
-%   \pause
-%   \vfill
-%   First, let's augment the data simulated under model $M_b$, with
-%   $M=200$.
-% \vspace{-6pt}
-% <<aug-y,size='scriptsize'>>=
-% M <- 200
-% y.aug <- matrix(0, M, J)
-% y.aug[1:nrow(y.Mb),] <- y.Mb
-% @
-% \pause
-% \vfill
-% We also need to augment the \inr{prevcap} object.
-% \vspace{-6pt}
-% <<un-prevcap,size='scriptsize'>>=
-% prevcap.aug <- matrix(FALSE, M, J)
-% prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
-% prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
-% @
-% And we need a covariate indicating time (occasion)
-% \vspace{-6pt}
-% <<un-occ,size='scriptsize'>>=
-% occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
-% @ 
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Data augmentation}
+  % \small
+  % Normally, DA is used with Bayesian inference, but since it's exactly
+  % the same model as a single-season occupancy model, we can also fit
+  % it in `unmarked'.
+  % \pause
+  % \vfill
+  First, let's augment the data simulated under model $M_b$, with
+  $M=200$.
+\vspace{-6pt}
+<<aug-y,size='scriptsize'>>=
+M <- 200
+y.aug <- matrix(0, M, J)
+y.aug[1:nrow(y.Mb),] <- y.Mb
+@
+\pause
+\vfill
+We also need to augment the \inr{prevcap} object.
+\vspace{-6pt}
+<<un-prevcap,size='scriptsize'>>=
+prevcap.aug <- matrix(FALSE, M, J)
+prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
+prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
+@
+And we need a covariate indicating time (occasion)
+\vspace{-6pt}
+<<un-occ,size='scriptsize'>>=
+occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
+@ 
+\end{frame}
 
 
 % \begin{frame}[fragile]
