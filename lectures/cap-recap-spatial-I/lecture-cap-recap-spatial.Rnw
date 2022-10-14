@@ -1218,7 +1218,7 @@ library(jagsUI)
 \vfill
 MCMC
   \vspace{-6pt}
-<<mcmc-M0-aug,size='scriptsize',results='hide',cache=FALSE>>=
+<<mcmc-M0-aug,size='scriptsize',results='hide',cache=TRUE>>=
 jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
                              parameters.to.save=jp.SCR0,
                              model.file="SCR0.jag",
@@ -1307,7 +1307,7 @@ ji.SCR0.faster <- function() {
 @
 MCMC
   \vspace{-6pt}
-<<mcmc-M0-aug-faster,size='scriptsize',results='hide',cache=FALSE>>=
+<<mcmc-M0-aug-faster,size='scriptsize',results='hide',cache=TRUE>>=
 jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
                                     inits=ji.SCR0.faster,
                                     parameters.to.save=jp.SCR0,
