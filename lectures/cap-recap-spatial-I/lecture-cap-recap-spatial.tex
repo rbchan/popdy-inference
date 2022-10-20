@@ -1132,14 +1132,15 @@ Spatial recaptures
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
+                  \hlkwc{details} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{fastproximity} \hlstd{=} \hlnum{FALSE}\hlstd{),}
                   \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
 \hlkwd{coef}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
-##            beta   SE.beta       lcl       ucl
-## D     -1.050969 0.2738747 -1.587753 -0.514184
-## g0    -1.276752 0.4489725 -2.156722 -0.396782
-## sigma  3.789683 0.1342466  3.526564  4.052801
+##            beta   SE.beta       lcl        ucl
+## D     -1.050968 0.2738747 -1.587753 -0.5141834
+## g0    -1.276753 0.4489717 -2.156721 -0.3967843
+## sigma  3.789683 0.1342465  3.526565  4.0528010
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1153,9 +1154,9 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##        link   estimate SE.estimate        lcl        ucl
-## D       log  0.3495990  0.09757012  0.2043843  0.5979884
-## g0    logit  0.2181036  0.07656527  0.1037047  0.4020857
-## sigma   log 44.2423655  5.96624722 34.0069311 57.5584695
+## D       log  0.3495992  0.09757018  0.2043844  0.5979887
+## g0    logit  0.2181035  0.07656510  0.1037048  0.4020852
+## sigma   log 44.2423619  5.96624128 34.0069365 57.5584511
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1257,8 +1258,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 34.24295    9.556917 20.01928 58.57249 18
-## R.N 34.24296    7.555906 24.82226 56.67249 18
+## E.N 34.24296    9.556923 20.01929 58.57253 18
+## R.N 34.24297    7.555912 24.82226 56.67252 18
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1304,7 +1305,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl       ucl
-## D  log 0.3554085  0.09872471 0.2082872 0.6064475
+## D  log 0.3554085  0.09872471 0.2082871 0.6064475
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1316,8 +1317,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl       ucl
-## D  log 0.3495989  0.09757007 0.2043843 0.5979882
+##   link estimate SE.estimate       lcl       ucl
+## D  log 0.349599  0.09757013 0.2043843 0.5979884
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1330,7 +1331,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate      lcl       ucl
-## D  log 0.3494253  0.09755101 0.204251 0.5977843
+## D  log 0.3494254  0.09755103 0.204251 0.5977845
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1342,8 +1343,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{250}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl       ucl
-## D  log 0.3494236  0.09755098 0.2042495 0.5977829
+##   link  estimate SE.estimate       lcl      ucl
+## D  log 0.3494237    0.097551 0.2042496 0.597783
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1356,7 +1357,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl       ucl
-## D  log 0.3494236  0.09755097 0.2042495 0.5977829
+## D  log 0.3494236  0.09755101 0.2042494 0.5977829
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1372,13 +1373,11 @@ Estimates on original scale
 \begin{alltt}
 \hlkwd{AIC}\hlstd{(fm.M0, fm.Mt, fm.Mb)}
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning in AIC.secr(fm.M0, fm.Mt, fm.Mb): models not compatible for AIC}}\begin{verbatim}
-##                  model   detectfn npar     logLik     AIC    AICc  dAICc AICcwt
-## fm.M0 D~1 g0~1 sigma~1 halfnormal    3  -75.23465 156.469 158.184  0.000      1
-## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -117.28477 242.570 245.646 87.462      0
-## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -115.94973 245.899 257.099 98.915      0
+\begin{verbatim}
+##                  model   detectfn npar    logLik     AIC    AICc  dAICc AICcwt
+## fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -117.3269 240.654 242.368  0.000 0.8374
+## fm.Mb D~1 g0~b sigma~1 halfnormal    4 -117.2848 242.570 245.646  3.278 0.1626
+## fm.Mt D~1 g0~t sigma~1 halfnormal    7 -115.9497 245.899 257.099 14.731 0.0000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1501,7 +1500,11 @@ N <- sum(z)  ## Realized value of N
 \hlstd{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
 \hlkwd{library}\hlstd{(jagsUI)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'jagsUI'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:coda':\\\#\# \\\#\# \ \ \ \ traceplot}}\end{kframe}
 \end{knitrout}
 \pause
 \vfill

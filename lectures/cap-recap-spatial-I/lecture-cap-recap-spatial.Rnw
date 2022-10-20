@@ -1019,7 +1019,8 @@ plot(sch)
   Fit the SCR equivalent of Model $M_0$
 <<secr-M0,size='scriptsize',cache=FALSE,warning=FALSE>>=
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
-                  buffer=150, trace=FALSE, ncores=3)
+    details = list(fastproximity = FALSE), ## For AIC comparisons
+    buffer=150, trace=FALSE, ncores=3)
 coef(fm.M0)
 @
 \pause
