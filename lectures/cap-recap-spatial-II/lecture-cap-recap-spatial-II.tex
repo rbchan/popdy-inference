@@ -267,11 +267,12 @@
 \begin{frame}[fragile]
   \frametitle{Inhomogeneous Poisson point process}
   First, let's import a raster layer
-\begin{knitrout}\footnotesize
+\begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(raster)}
 \hlstd{elevation} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elevation.tif"}\hlstd{)}
+\hlstd{delta} \hlkwb{<-} \hlkwd{res}\hlstd{(elevation)[}\hlnum{1}\hlstd{]}  \hlcom{## resolution}
 \hlkwd{plot}\hlstd{(elevation,} \hlkwc{col}\hlstd{=}\hlkwd{topo.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
 \end{alltt}
 \end{kframe}
@@ -291,7 +292,7 @@
   \frametitle{Inhomogeneous Poisson point process}
   \small
   Second, let's pick some coefficients and create a density surface
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
@@ -632,10 +633,10 @@ inside its pixel.
 \end{alltt}
 \begin{verbatim}
 ##                   beta    SE.beta        lcl        ucl
-## D           -0.5600286 0.23323698 -1.0171647 -0.1028925
-## D.elevation  0.9419116 0.18885719  0.5717583  1.3120649
-## g0          -1.1779499 0.21368726 -1.5967692 -0.7591305
-## sigma        3.9089834 0.06556955  3.7804695  4.0374974
+## D           -0.5600286 0.23323692 -1.0171646 -0.1028926
+## D.elevation  0.9419116 0.18885714  0.5717584  1.3120648
+## g0          -1.1779499 0.21368708 -1.5967689 -0.7591309
+## sigma        3.9089834 0.06556953  3.7804695  4.0374973
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -648,10 +649,10 @@ Estimates on original scale (at average covariate values).
 \hlkwd{predict}\hlstd{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
-##        link  estimate SE.estimate        lcl        ucl
-## D       log  1.414252  0.19670666  1.0782035  1.8550375
-## g0    logit  0.235421  0.03846327  0.1684336  0.3188351
-## sigma   log 49.848252  3.27204377 43.8366173 56.6843066
+##        link  estimate SE.estimate        lcl       ucl
+## D       log  1.414252  0.19670665  1.0782035  1.855037
+## g0    logit  0.235421  0.03846324  0.1684337  0.318835
+## sigma   log 49.848252  3.27204265 43.8366192 56.684304
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -719,7 +720,7 @@ Estimates on original scale (at average covariate values).
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
 ## E.N 87.35370   12.228401 66.48163 114.7786 59
-## R.N 93.53552    7.885436 81.20121 112.7224 59
+## R.N 93.53552    7.885435 81.20121 112.7224 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

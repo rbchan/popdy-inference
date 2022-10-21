@@ -226,9 +226,10 @@ knit_theme$set("edit-kwrite")
 \begin{frame}[fragile]
   \frametitle{Inhomogeneous Poisson point process}
   First, let's import a raster layer
-<<ippp1,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center",results="hide">>=
+<<ippp1,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center",results="hide",message=FALSE>>=
 library(raster)
 elevation <- raster("elevation.tif")
+delta <- res(elevation)[1]  ## resolution
 plot(elevation, col=topo.colors(100), main="Elevation")
 @
 \end{frame}
@@ -240,7 +241,7 @@ plot(elevation, col=topo.colors(100), main="Elevation")
   \frametitle{Inhomogeneous Poisson point process}
   \small
   Second, let's pick some coefficients and create a density surface
-<<ippp2,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center">>=
+<<ippp2,size='tiny',fig.width=7.2,out.width="60%",fig.align="center">>=
 beta0 <- -15
 beta1 <- 0.01 #0.005
 lambda <- exp(beta0 + beta1*elevation) # Intensity function
@@ -509,11 +510,10 @@ plot(dsurf.r/pix.area, col=terrain.colors(100), zlim=c(0,0.18),
 
 \begin{frame}[fragile]
   \frametitle{Estimated activity centers}
-  % Can't get this to work???? Should create
-  Contour map for the
-  Empirical Bayes posterior distribution of the activity center for
-  individual 1. 
-<<fxi,eval=TRUE,size='scriptsize',out.width='70%',fig.align='center'>>=
+  \small
+  Contour map for the Empirical Bayes posterior distribution of the
+  activity center for individual 1. 
+<<fxi,eval=TRUE,size='scriptsize',out.width='65%',fig.align='center'>>=
 fxi.contour(fm.elev, i=1)
 @   
 \end{frame}
@@ -734,7 +734,7 @@ ji.SCR.elev <- function() {
 @
 MCMC
   \vspace{-6pt}
-<<mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE>>=
+<<mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE,message=FALSE>>=
 library(jagsUI)  
 jags.post.SCR.elev <- jags.basic(
     data=jags.data.SCR.elev, inits=ji.SCR.elev,
