@@ -322,10 +322,10 @@
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{set.seed}\hlstd{(}\hlnum{538}\hlstd{)}
-\hlstd{ds} \hlkwb{<-} \hlnum{1}                            \hlcom{## Pixel area is 1 ha}
-\hlstd{lambda.values} \hlkwb{<-} \hlkwd{values}\hlstd{(lambda)}    \hlcom{## Convert raster to vector}
-\hlstd{Lambda} \hlkwb{<-} \hlkwd{sum}\hlstd{(lambda.values}\hlopt{*}\hlstd{ds)}    \hlcom{## E(N)}
-\hlstd{(N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, Lambda))}            \hlcom{## Realized N}
+\hlstd{ds} \hlkwb{<-} \hlnum{1}                          \hlcom{## Pixel area is 1 ha}
+\hlstd{lambda.values} \hlkwb{<-} \hlkwd{values}\hlstd{(lambda)}  \hlcom{## Convert raster to vector}
+\hlstd{Lambda} \hlkwb{<-} \hlkwd{sum}\hlstd{(lambda.values}\hlopt{*}\hlstd{ds)}  \hlcom{## E(N)}
+\hlstd{(N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, Lambda))}          \hlcom{## Realized N}
 \end{alltt}
 \begin{verbatim}
 ## [1] 98
@@ -334,7 +334,7 @@
 \end{knitrout}
 \pause
 \vfill
-Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we'll pick
+Fourth, simulate $\bs_1, \dots, \bs_N$. To do this, we'll pick
 pixels proportional to density. Then we'll jitter each point
 inside its pixel. 
   \vspace{-6pt}
@@ -683,10 +683,9 @@ Estimates on original scale (at average covariate values).
 
 \begin{frame}[fragile]
   \frametitle{Estimated activity centers}
-  % Can't get this to work???? Should create
-  Contour map for the
-  Empirical Bayes posterior distribution of the activity center for
-  individual 1. 
+  \small
+  Contour map for the Empirical Bayes posterior distribution of the
+  activity center for individual 1. 
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -694,7 +693,7 @@ Estimates on original scale (at average covariate values).
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=0.7\linewidth]{figure/fxi-1} 
+{\centering \includegraphics[width=0.65\linewidth]{figure/fxi-1} 
 
 }
 
@@ -1014,12 +1013,6 @@ MCMC
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'jagsUI'}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:coda':\\\#\# \\\#\# \ \ \ \ traceplot}}\begin{alltt}
 \hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
     \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
     \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,} \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
@@ -1154,6 +1147,7 @@ MCMC
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(latticeExtra)}
+\hlkwd{trellis.par.set}\hlstd{(}\hlkwc{regions}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{col}\hlstd{=}\hlkwd{topo.colors}\hlstd{(}\hlnum{100}\hlstd{)))}
 \hlstd{panel1} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.lower} \hlopt{~} \hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{,}
                     \hlkwc{colorkey}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"bottom"}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
 \hlstd{panel2} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.mean} \hlopt{~}\hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{)}
@@ -1162,7 +1156,7 @@ MCMC
 \hlstd{panels} \hlkwb{<-} \hlkwd{update}\hlstd{(}
     \hlstd{panels,} \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{draw}\hlstd{=}\hlnum{FALSE}\hlstd{),} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{3}\hlstd{,}\hlnum{1}\hlstd{),}
     \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{,}
-    \hlkwc{par.settings}\hlstd{=}\hlkwd{ggplot2like}\hlstd{(),} \hlcom{#theEconomist.theme(), }
+\hlcom{##    par.settings=ggplot2like(), #theEconomist.theme(), }
     \hlkwc{strip}\hlstd{=}\hlkwd{strip.custom}\hlstd{(}
         \hlkwc{factor.levels}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Lower CI"}\hlstd{,}\hlstr{"Posterior mean"}\hlstd{,}\hlstr{"Upper CI"}\hlstd{)))}
 \hlkwd{plot}\hlstd{(panels)}

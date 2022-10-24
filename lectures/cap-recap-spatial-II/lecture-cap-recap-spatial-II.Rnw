@@ -259,14 +259,14 @@ plot(lambda, col=terrain.colors(100), main="Density surface", zlim=c(0,0.18))
   \vspace{-6pt}
 <<ippp3,size='footnotesize'>>=
 set.seed(538)  
-ds <- 1                            ## Pixel area is 1 ha
-lambda.values <- values(lambda)    ## Convert raster to vector
-Lambda <- sum(lambda.values*ds)    ## E(N)
-(N <- rpois(1, Lambda))            ## Realized N
+ds <- 1                          ## Pixel area is 1 ha
+lambda.values <- values(lambda)  ## Convert raster to vector
+Lambda <- sum(lambda.values*ds)  ## E(N)
+(N <- rpois(1, Lambda))          ## Realized N
 @
 \pause
 \vfill
-Fourth, simulate and $\bs_1, \dots, \bs_N$. To do this, we'll pick
+Fourth, simulate $\bs_1, \dots, \bs_N$. To do this, we'll pick
 pixels proportional to density. Then we'll jitter each point
 inside its pixel. 
   \vspace{-6pt}
@@ -475,7 +475,7 @@ plot(trp, add=TRUE)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Model density as a function of elevation. 
-<<secr-elev,size='scriptsize',cache=FALSE>>=
+<<secr-elev,size='scriptsize',cache=TRUE>>=
 fm.elev <- secr.fit(sch, model=list(D=~elevation, g0=~1, sigma=~1),
                     mask=mask, trace=FALSE)  ## Don't use 'buffer'
 coef(fm.elev)
@@ -804,15 +804,16 @@ lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
   along with 95\% CI.
 <<lambda-post,size='scriptsize',fig.height=5,fig.show="hide",dev='png',dpi=400>>=
 library(latticeExtra)
+trellis.par.set(regions=list(col=hcl.colors(100))) ## Colors
 panel1 <- levelplot(lambda.post.lower ~ x+y, elevation.xyz, aspect="iso",
+                    at=seq(0,0.05,0.001), ## Resolution of color key
                     colorkey=list(space="bottom"), xlab="", ylab="")
 panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso")
 panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso")
-panels <- c(panel1, panel2, panel3)
+panels <- c(panel3, panel2, panel1)
 panels <- update(
     panels, scales=list(draw=FALSE), layout=c(3,1),
-    xlab="", ylab="",
-    par.settings=ggplot2like(), #theEconomist.theme(), 
+    xlab="", ylab="", ## par.settings=ggplot2like(), #theEconomist.theme(), 
     strip=strip.custom(
         factor.levels=c("Lower CI","Posterior mean","Upper CI")))
 plot(panels)
