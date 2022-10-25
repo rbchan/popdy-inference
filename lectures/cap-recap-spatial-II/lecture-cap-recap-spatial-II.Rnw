@@ -806,15 +806,18 @@ lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
 library(latticeExtra)
 trellis.par.set(regions=list(col=hcl.colors(100))) ## Colors
 panel1 <- levelplot(lambda.post.lower ~ x+y, elevation.xyz, aspect="iso",
-                    at=seq(0,0.05,0.001), ## Resolution of color key
-                    colorkey=list(space="bottom"), xlab="", ylab="")
-panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso")
-panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso")
-panels <- c(panel3, panel2, panel1)
-panels <- update(
-    panels, scales=list(draw=FALSE), layout=c(3,1),
-    xlab="", ylab="", ## par.settings=ggplot2like(), #theEconomist.theme(), 
-    strip=strip.custom(
+                    at=seq(0,0.20,0.005), ## Resolution of color key
+                    colorkey=list(space="bottom"),
+                    xlab="", ylab="")
+panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso",
+                    at=seq(0,0.20,0.005))
+panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso",
+                    at=seq(0,0.20,0.005))
+panels <- c(panel1, panel2, panel3)
+panels <- update( 
+    panels, scales=list(draw=FALSE), layout=c(3,1), 
+    xlab="", ylab="", 
+    strip=strip.custom(bg=gray(0.8),
         factor.levels=c("Lower CI","Posterior mean","Upper CI")))
 plot(panels)
 @   
@@ -826,7 +829,7 @@ plot(panels)
 \begin{frame}
   \frametitle{Predicted density surface}
   Posterior mean and 95\% CI \\
-  \includegraphics[width=\textwidth]{figure/lambda-post-1}  
+  \includegraphics[width=\textwidth]{figure/lambda-post-1}  \\
 \end{frame}
 
 
@@ -868,13 +871,13 @@ for(i in 1:n.samples) {
   \frametitle{Realized density surface}
 %  \begin{columns}
 %  \wide    
-<<lambda-r,size='scriptsize',fig.height=3.2,echo=-1>>=
-#par(mai=c(0.9,0.9,0.9,5))  
-lambda.r.mean <- raster(t(apply(lambda.r.post, c(1,2), mean)))
+<<lambda-r,size='scriptsize',fig.height=3,out.width='99%',echo=-1>>=
+par(omi=c(0,0,0,0.2))  
+lambda.r.mean <- raster(apply(lambda.r.post, c(1,2), mean))
 lambda.e.mean <- raster(matrix(lambda.post.mean, sqrt(n.pixels), byrow=TRUE))
 lambda.re <- stack(lambda.r.mean, lambda.e.mean)
 names(lambda.re) <- c("Realized", "Expected")
-plot(lambda.re)
+plot(lambda.re, zlim=c(0,0.18))
 @   
 %  \end{columns}
 \end{frame}

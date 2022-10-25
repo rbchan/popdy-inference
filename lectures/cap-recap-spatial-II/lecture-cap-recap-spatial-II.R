@@ -5,13 +5,14 @@
 
 
 
-## ----ippp1,size='footnotesize',fig.width=7.2,out.width="60%",fig.align="center",results="hide"----
+## ----ippp1,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center",results="hide",message=FALSE----
 library(raster)
 elevation <- raster("elevation.tif")
+delta <- res(elevation)[1]  ## resolution
 plot(elevation, col=topo.colors(100), main="Elevation")
 
 
-## ----ippp2,size='scriptsize',fig.width=7.2,out.width="60%",fig.align="center"----
+## ----ippp2,size='tiny',fig.width=7.2,out.width="60%",fig.align="center"-------
 beta0 <- -15
 beta1 <- 0.01 #0.005
 lambda <- exp(beta0 + beta1*elevation) # Intensity function
@@ -20,10 +21,10 @@ plot(lambda, col=terrain.colors(100), main="Density surface", zlim=c(0,0.18))
 
 ## ----ippp3,size='footnotesize'------------------------------------------------
 set.seed(538)  
-ds <- 1                            ## Pixel area is 1 ha
-lambda.values <- values(lambda)    ## Convert raster to vector
-Lambda <- sum(lambda.values*ds)    ## E(N)
-(N <- rpois(1, Lambda))            ## Realized N
+ds <- 1                          ## Pixel area is 1 ha
+lambda.values <- values(lambda)  ## Convert raster to vector
+Lambda <- sum(lambda.values*ds)  ## E(N)
+(N <- rpois(1, Lambda))          ## Realized N
 
 
 ## ----ipp4,size='footnotesize'-------------------------------------------------
@@ -51,17 +52,47 @@ points(s, pch=16, col="blue") ## Activity center locations
 points(x, pch=3)              ## Trap locations
 
 
-## ----write,include=FALSE,results="hide"---------------------------------------
-ch.out <- data.frame(session=1,
-                     individual=rep(slice.index(y, 1), y),
-                     occasion=rep(slice.index(y, 3), y),
-                     trap=rep(slice.index(y, 2), y))
-write.table(ch.out, file="encounter_data_file.csv",
-            row.names=FALSE, col.names=FALSE, sep=",")
-traps.out <- data.frame(trap=1:nrow(x), x*1000)
-write.table(traps.out, file="trap_data_file.csv",
-            row.names=FALSE, col.names=FALSE, sep=",")
-library(secr)
+## ----dist1,size='footnotesize'------------------------------------------------
+J <- nrow(x)                 ## nTraps
+dist.sx <- matrix(NA, N, J)  
+for(i in 1:N) {
+    dist.sx[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
+}
+
+
+## ----dist2,size='footnotesize'------------------------------------------------
+dist.sx[1:4,1:5]
+
+
+## ----p1,size='footnotesize'---------------------------------------------------
+g0 <- 0.2
+sigma <- 0.05
+p <- g0*exp(-dist.sx^2/(2*sigma^2))
+
+
+## ----p2,size='footnotesize'---------------------------------------------------
+print(p[1:4,1:5], digits=3)
+
+
+## ----y1,size='footnotesize'---------------------------------------------------
+K <- 5                          # nOccasions
+y.all <- array(NA, c(N, J, K))
+for(i in 1:N) {
+    for(j in 1:J) {
+        y.all[i,j,] <- rbinom(K, 1, prob=p[i,j])
+    }
+}
+
+
+## ----y2,size='footnotesize'---------------------------------------------------
+captured <- rowSums(y.all)>0
+y <- y.all[captured,,]
+
+
+## ----y3,size='footnotesize'---------------------------------------------------
+y[1:2,1:5,1]
+
+
 
 
 ## ----secr-in,warning=FALSE,size='scriptsize',results='hide',message=FALSE-----
@@ -105,8 +136,7 @@ coef(fm.elev)
 predict(fm.elev)
 
 
-## ----secr-dsurf,size='scriptsize',fig.height=6.8,echo=-1,size='scriptsize',fig.show='hide'----
-#par(mai=c(0.6,0.6,0.1,0.8))
+## ----secr-dsurf,size='scriptsize',fig.height=6.8,echo=-1,size='scriptsize',fig.show='hide',warning=FALSE----
 dsurf <- predictDsurface(fm.elev)
 dsurf.r <- raster(dsurf, covariate="D.0")
 pix.area <- (delta*1000)^2
@@ -114,19 +144,25 @@ plot(dsurf.r/pix.area, col=terrain.colors(100), zlim=c(0,0.18),
      main="Estimated density surface")
 
 
-## ----fxi,eval=FALSE,size='scriptsize'-----------------------------------------
-## fxi.contour(fm.elev, i=1)
+## ----fxi,eval=TRUE,size='scriptsize',out.width='65%',fig.align='center'-------
+fxi.contour(fm.elev, i=1)
 
 
 ## ----regionN-M0,size='small'--------------------------------------------------
 region.N(fm.elev)
 
 
-## ----bugs-SCR-elev,size='tiny'------------------------------------------------
+## ----bugs-SCR-elev-R,size='tiny',eval=FALSE-----------------------------------
+## writeLines(readLines("SCR-elev-v1.jag"))
+
+## ----bugs-SCR-elev,size='tiny',echo=FALSE,background='lightblue',comment=''----
 writeLines(readLines("SCR-elev-v1.jag"))
 
 
-## ----bugs-SCR-elev-v2,size='tiny'---------------------------------------------
+## ----bugs-SCR-elev-v2-R,size='tiny',eval=FALSE--------------------------------
+## writeLines(readLines("SCR-elev-v2.jag"))
+
+## ----bugs-SCR-elev-v2,size='tiny',echo=FALSE,comment='',background='lightblue'----
 writeLines(readLines("SCR-elev-v2.jag"))
 
 
@@ -166,7 +202,8 @@ ji.SCR.elev <- function() {
          g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
 
 
-## ----mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE----------------
+## ----mcmc-SCR-elev,size='scriptsize',results='hide',cache=TRUE,message=FALSE----
+library(jagsUI)  
 jags.post.SCR.elev <- jags.basic(
     data=jags.data.SCR.elev, inits=ji.SCR.elev,
     parameters.to.save=jp.SCR.elev, model.file="SCR-elev-v2.jag",
@@ -204,16 +241,20 @@ lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
 
 ## ----lambda-post,size='scriptsize',fig.height=5,fig.show="hide",dev='png',dpi=400----
 library(latticeExtra)
+trellis.par.set(regions=list(col=hcl.colors(100))) ## Colors
 panel1 <- levelplot(lambda.post.lower ~ x+y, elevation.xyz, aspect="iso",
-                    colorkey=list(space="bottom"), xlab="", ylab="")
-panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso")
-panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso")
+                    at=seq(0,0.20,0.005), ## Resolution of color key
+                    colorkey=list(space="bottom"),
+                    xlab="", ylab="")
+panel2 <- levelplot(lambda.post.mean ~x+y, elevation.xyz, aspect="iso",
+                    at=seq(0,0.20,0.005))
+panel3 <- levelplot(lambda.post.upper ~x+y, elevation.xyz, aspect="iso",
+                    at=seq(0,0.20,0.005))
 panels <- c(panel1, panel2, panel3)
-panels <- update(
-    panels, scales=list(draw=FALSE), layout=c(3,1),
-    xlab="", ylab="",
-    par.settings=ggplot2like(), #theEconomist.theme(), 
-    strip=strip.custom(
+panels <- update( 
+    panels, scales=list(draw=FALSE), layout=c(3,1), 
+    xlab="", ylab="", 
+    strip=strip.custom(bg=gray(0.8),
         factor.levels=c("Lower CI","Posterior mean","Upper CI")))
 plot(panels)
 
@@ -242,16 +283,16 @@ for(i in 1:n.samples) {
 }
 
 
-## ----lambda-r,size='scriptsize',fig.height=3.2,echo=-1------------------------
-#par(mai=c(0.9,0.9,0.9,5))  
-lambda.r.mean <- raster(t(apply(lambda.r.post, c(1,2), mean)))
+## ----lambda-r,size='scriptsize',fig.height=3,out.width='99%',echo=-1----------
+par(omi=c(0,0,0,0.2))  
+lambda.r.mean <- raster(apply(lambda.r.post, c(1,2), mean))
 lambda.e.mean <- raster(matrix(lambda.post.mean, sqrt(n.pixels), byrow=TRUE))
 lambda.re <- stack(lambda.r.mean, lambda.e.mean)
 names(lambda.re) <- c("Realized", "Expected")
-plot(lambda.re)
+plot(lambda.re, zlim=c(0,0.18))
 
 
-## ----si-post,size='scriptsize',echo=-1,fig.show='hide'------------------------
+## ----si-post,size='scriptsize',echo=-(1),fig.show='hide'----------------------
 par(mai=c(0.0,0.0,0.0,0.0))
 plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
 points(s1.post[,1], s2.post[,1], pch=16, col=rgb(0,0,1,0.1))
@@ -269,9 +310,12 @@ for(i in 1:n) {
 }
 
 
-## ----si-post-y0,size='scriptsize',echo=-1,fig.show='hide'---------------------
+## ----si-post-y0,size='scriptsize',echo=-(1:2),fig.show='hide'-----------------
 par(mai=c(0.0,0.0,0.0,0.0))
-plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
-points(s1.post[z.post[,150]==1,150],
-       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))
+## plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
+image(MASS::kde2d(s1.post[z.post[,150]==1,150],
+                  s2.post[z.post[,150]==1,150]))
+points(x, asp=1, pch=3)
+##points(s1.post[z.post[,150]==1,150],
+##       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))
 
