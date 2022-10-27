@@ -626,10 +626,10 @@ gamma.pred <- predict(fm2, newdata=pred.data,
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
 <<pred-gamma1,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'>>=
-plot(Predicted ~ temp, gamma.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Standardized temperature", ylim=0:1, lwd=3) 
-lines(lower ~ temp, gamma.pred, col="blue")
-lines(upper ~ temp, gamma.pred, col="blue")
+plot(Predicted ~ temp, gamma.pred, type="l", ylab="Occurrence probability",
+     xlab="Standardized temperature", ylim=0:1, lwd=2) 
+lines(lower ~ temp, gamma.pred, col=gray(0.6))
+lines(upper ~ temp, gamma.pred, col=gray(0.6))
 @   
 \end{frame}
 
