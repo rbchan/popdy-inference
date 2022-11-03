@@ -182,7 +182,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Hazard}
   The continuous-time definition of the hazard rate is the
-  instantaneous mortality risk:
+  instantaneous mortality risk, conditional on surviving to time $t$:
   \[
     \lambda(t) = \lim_{\Delta_t \to 0} \Pr(t \le T < t+\Delta_t | T\ge t)/\Delta_t
   \]
@@ -406,13 +406,15 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Semi-parametric survival model}
-% <<cox-S,out.width="0.7\\textwidth",fig.width=8,fig.align='center',size='footnotesize'>>=
-% plot(survfit(cox1), xlab="Time", ylab="Survivorship",
-%      main="Cox proportional hazards fit")
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Semi-parametric survival model}
+<<cox-S,out.width="0.65\\textwidth",fig.width=8,fig.align='center',size='scriptsize'>>=
+plot(survfit(cox1, newdata=data.frame(x=c(-2,0,2))),
+     xlab="Time", ylab="Survivorship", col=1:3,
+     main="Cox proportional hazards fit")
+legend(350, 1, paste("x =", c(-2, 0, 2)), lty=1, col=1:3)
+@
+\end{frame}
 
 
 
@@ -865,13 +867,13 @@ plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
   \frametitle{Assumptions of failure time models}
   Random sampling
   \begin{itemize}
-    \item Very hard to do in practice.
+    \item Very hard to do in practice
   \end{itemize}
 %  \pause
   \vfill
   Independent survival times \\
   \begin{itemize}
-    \item Problematic for gregarious species. 
+    \item Problematic for gregarious species
   \end{itemize}
 %  \pause
   \vfill
@@ -890,7 +892,7 @@ plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
   \vfill
   Well-defined time origin
   \begin{itemize}
-    \item Animals don't have to be released at the same time. 
+    \item Animals don't have to be released at the same time 
   \end{itemize}
 \end{frame}
 
@@ -906,7 +908,7 @@ plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
   Statisticians call these hidden Markov models. \\
   \pause
   \vfill
-  Next time, we will focus on one of the most important examples: the
+  Next time, we'll focus on one of the most important examples: the
   Cormack-Jolly-Seber model.
   \pause
   \vfill

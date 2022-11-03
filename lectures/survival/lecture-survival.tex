@@ -88,7 +88,7 @@
 
 \begin{frame}[plain]
   \centering
-  \LARGE
+  \huge %\LARGE
   Classical survival analysis \\
   \vfill
   \large
@@ -139,7 +139,7 @@
   \vfill
   There are many great books about survival analysis, and much of the
   information can be found online. This is a particularly good
-  resources: \\
+  resource: \\
   \vfill
   \centering
   \color{blue} \url{
@@ -196,7 +196,7 @@
     \item[]
     \item<3-> Survivorship $S(t)$
       \begin{itemize}
-        \item The probability of surviving at least until time $t$
+        \item The probability of surviving until time $t$
       \end{itemize}
     \item[]
     \item<4-> Probability density $p(t)$
@@ -225,7 +225,7 @@
 \begin{frame}
   \frametitle{Hazard}
   The continuous-time definition of the hazard rate is the
-  instantaneous mortality risk:
+  instantaneous mortality risk, conditional on surviving to time $t$:
   \[
     \lambda(t) = \lim_{\Delta_t \to 0} \Pr(t \le T < t+\Delta_t | T\ge t)/\Delta_t
   \]
@@ -536,13 +536,25 @@ The observed data, with censoring:
 
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Semi-parametric survival model}
-% <<cox-S,out.width="0.7\\textwidth",fig.width=8,fig.align='center',size='footnotesize'>>=
-% plot(survfit(cox1), xlab="Time", ylab="Survivorship",
-%      main="Cox proportional hazards fit")
-% @
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Semi-parametric survival model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlkwd{survfit}\hlstd{(cox1,} \hlkwc{newdata}\hlstd{=}\hlkwd{data.frame}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{2}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{))),}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,}
+     \hlkwc{main}\hlstd{=}\hlstr{"Cox proportional hazards fit"}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlnum{350}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{paste}\hlstd{(}\hlstr{"x ="}\hlstd{,} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{2}\hlstd{,} \hlnum{0}\hlstd{,} \hlnum{2}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=0.65\textwidth]{figure/cox-S-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
 
 
 
@@ -1198,13 +1210,13 @@ for(i in 1:n) {
   \frametitle{Assumptions of failure time models}
   Random sampling
   \begin{itemize}
-    \item Very hard to do in practice.
+    \item Very hard to do in practice
   \end{itemize}
 %  \pause
   \vfill
   Independent survival times \\
   \begin{itemize}
-    \item Problematic for gregarious species. 
+    \item Problematic for gregarious species
   \end{itemize}
 %  \pause
   \vfill
@@ -1223,7 +1235,7 @@ for(i in 1:n) {
   \vfill
   Well-defined time origin
   \begin{itemize}
-    \item Animals don't have to be released at the same time. 
+    \item Animals don't have to be released at the same time 
   \end{itemize}
 \end{frame}
 
@@ -1239,7 +1251,7 @@ for(i in 1:n) {
   Statisticians call these hidden Markov models. \\
   \pause
   \vfill
-  Next time, we will focus on one of the most important examples: the
+  Next time, we'll focus on one of the most important examples: the
   Cormack-Jolly-Seber model.
   \pause
   \vfill

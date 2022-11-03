@@ -66,6 +66,13 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 (cox1 <- coxph(y ~ x))
 
 
+## ----cox-S,out.width="0.65\\textwidth",fig.width=8,fig.align='center',size='scriptsize'----
+plot(survfit(cox1, newdata=data.frame(x=c(-2,0,2))),
+     xlab="Time", ylab="Survivorship", col=1:3,
+     main="Cox proportional hazards fit")
+legend(350, 1, paste("x =", c(-2, 0, 2)), lty=1, col=1:3)
+
+
 ## ----exp-jag,eval=FALSE-------------------------------------------------------
 ## writeLines(readLines("surv-exp.jag"))
 
