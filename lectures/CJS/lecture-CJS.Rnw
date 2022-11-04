@@ -715,7 +715,7 @@ plot(jags.post.samples.sp)
     \item Random walk: ${\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)$
     \item Random walk with attraction point: ${\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)$
     \item Extensions can be made to allow for resource selection,
-      landscape resistance, etc\dots\footnote{https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473}. 
+      landscape resistance, etc.%\dots\footnote{https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473}. 
   \end{itemize}
 \end{frame}
 
@@ -795,6 +795,7 @@ for(i in 1:n) {
 <<s1,size='scriptsize',out.width="65%",fig.align="center">>=
 plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
      xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
+points(x, pch=3)
 @
 \end{frame}
 
@@ -808,8 +809,9 @@ plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
 par(mai=c(0.1,0.1,0.1,0.1))  
 blue <- seq(0.1, 0.9, length=nrow(s))
 plot(t(s[1,,]), pch=1, type="o", xaxt="n", yaxt="n", frame=FALSE, ann=FALSE,
-     xlim=c(-0.2, 1.2), ylim=c(-0.2, 1.2), asp=1, col=rgb(0,0,blue[1],0.3))
-for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.3))
+     xlim=c(-0.2, 1.2), ylim=c(-0.2, 1.2), asp=1, col=rgb(0,0,blue[1],0.5))
+for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.5))
+points(x, pch=3)
 @
 \end{frame}
 
@@ -857,7 +859,7 @@ jp.z1 <- paste0("z[", good1, ",", time1, "]")
   \pause
   \vfill
   Fit the model
-<<jc3,size='tiny',results='hide',cache=FALSE>>=
+<<jc3,size='tiny',results='hide',cache=TRUE>>=
 jps.sp.move <- jags.basic(data=jd.sp.move,
                           inits=ji.sp.move,
                           parameters.to.save=
