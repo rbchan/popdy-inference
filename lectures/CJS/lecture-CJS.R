@@ -165,7 +165,8 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
 
 ## ----CJS-model-new,size='scriptsize'------------------------------------------
-y.sp.secr <- y.sp; y.sp.secr[is.na(y.sp)] <- 0
+y.sp.secr <- y.sp
+y.sp.secr[is.na(y.sp)] <- 0
 caps <- data.frame(session=1,
                    animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),
                    occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),
@@ -274,14 +275,16 @@ for(i in 1:n) {
 ## ----s1,size='scriptsize',out.width="65%",fig.align="center"------------------
 plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
      xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
+points(x, pch=3)
 
 
 ## ----s-all,size='scriptsize',out.width="65%",fig.align="center",echo=FALSE----
 par(mai=c(0.1,0.1,0.1,0.1))  
 blue <- seq(0.1, 0.9, length=nrow(s))
 plot(t(s[1,,]), pch=1, type="o", xaxt="n", yaxt="n", frame=FALSE, ann=FALSE,
-     xlim=c(-0.2, 1.2), ylim=c(-0.2, 1.2), asp=1, col=rgb(0,0,blue[1],0.3))
-for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.3))
+     xlim=c(-0.2, 1.2), ylim=c(-0.2, 1.2), asp=1, col=rgb(0,0,blue[1],0.5))
+for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.5))
+points(x, pch=3)
 
 
 ## ----jags-sp-move0,size='tiny',eval=FALSE-------------------------------------
@@ -310,7 +313,7 @@ jp.s1y <- paste0("s[", good1, ",2,", time1, "]")
 jp.z1 <- paste0("z[", good1, ",", time1, "]") 
 
 
-## ----jc3,size='tiny',results='hide',cache=FALSE-------------------------------
+## ----jc3,size='tiny',results='hide',cache=TRUE--------------------------------
 jps.sp.move <- jags.basic(data=jd.sp.move,
                           inits=ji.sp.move,
                           parameters.to.save=

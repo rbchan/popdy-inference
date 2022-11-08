@@ -133,7 +133,7 @@
     \item Population closure is an assumption we make to estimate
       density in short time periods.
     \item If we want to study the processes governing spatial
-      \textit{and temporal} variation in density, we need to move
+      {and temporal} variation in density, we need to move
       beyond closed population models.
     \item Open population SCR models allow us to model spatial and
       temporal variation in survival, recruitment, and movement.
@@ -772,7 +772,8 @@ Format for `secr'
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.sp.secr} \hlkwb{<-} \hlstd{y.sp; y.sp.secr[}\hlkwd{is.na}\hlstd{(y.sp)]} \hlkwb{<-} \hlnum{0}
+\hlstd{y.sp.secr} \hlkwb{<-} \hlstd{y.sp}
+\hlstd{y.sp.secr[}\hlkwd{is.na}\hlstd{(y.sp)]} \hlkwb{<-} \hlnum{0}
 \hlstd{caps} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{session}\hlstd{=}\hlnum{1}\hlstd{,}
                    \hlkwc{animal}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.sp.secr,} \hlnum{1}\hlstd{), y.sp.secr),}
                    \hlkwc{occasion}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.sp.secr,} \hlnum{3}\hlopt{:}\hlnum{4}\hlstd{), y.sp.secr),}

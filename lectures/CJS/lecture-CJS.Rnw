@@ -81,7 +81,7 @@ knit_theme$set("edit-kwrite")
     \item Population closure is an assumption we make to estimate
       density in short time periods.
     \item If we want to study the processes governing spatial
-      \textit{and temporal} variation in density, we need to move
+      {and temporal} variation in density, we need to move
       beyond closed population models.
     \item Open population SCR models allow us to model spatial and
       temporal variation in survival, recruitment, and movement.
@@ -570,7 +570,8 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
   \frametitle{Likelihood analysis of spatial CJS model}
 Format for `secr'
 <<CJS-model-new,size='scriptsize'>>=
-y.sp.secr <- y.sp; y.sp.secr[is.na(y.sp)] <- 0
+y.sp.secr <- y.sp
+y.sp.secr[is.na(y.sp)] <- 0
 caps <- data.frame(session=1,
                    animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),
                    occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),
