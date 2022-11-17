@@ -12,6 +12,9 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
+\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -46,6 +49,14 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
+\makeatletter
+\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+}}
+\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -476,7 +487,7 @@ Format for `secr' (with robust design)
 \begin{alltt}
 \hlstd{y.secr} \hlkwb{<-} \hlstd{y.bern}
 \hlstd{year} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{4}\hlstd{), y.secr)}  \hlcom{## Primary period}
-\hlstd{day} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{3}\hlstd{), y.secr)}   \hlcom{## Secondary period}
+\hlstd{day} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{3}\hlstd{), y.secr)}   \hlcom{## Secondary period }
 \hlstd{caps} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{session}\hlstd{=}\hlnum{1}\hlstd{,}
                    \hlkwc{animal}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{1}\hlstd{), y.secr),}
                    \hlkwc{occasion}\hlstd{=(year}\hlopt{-}\hlnum{1}\hlstd{)}\hlopt{*}\hlstd{K}\hlopt{+}\hlstd{day,}
@@ -503,13 +514,10 @@ Create the model object and then fit it
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-start <- \hlkwd{get_start_values}(js.data, model = \hlstr{"JsModel"})
-mod <- JsModel$\hlkwd{new}(\hlkwd{list}(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
-                   start=start)
-                   start=\hlkwd{list}(lambda0=0.1, sigma=100, D=100,
-                              phi=0.8, beta=0.2))
-mod$\hlkwd{fit}()
-\hlcom{## mod}
+\hlstd{start} \hlkwb{<-} \hlkwd{get_start_values}\hlstd{(js.data,} \hlkwc{model} \hlstd{=} \hlstr{"JsModel"}\hlstd{)}
+\hlstd{mod} \hlkwb{<-} \hlstd{JsModel}\hlopt{$}\hlkwd{new}\hlstd{(}\hlkwd{list}\hlstd{(lambda0}\hlopt{~}\hlnum{1}\hlstd{, sigma}\hlopt{~}\hlnum{1}\hlstd{, D}\hlopt{~}\hlnum{1}\hlstd{, phi}\hlopt{~}\hlnum{1}\hlstd{, beta}\hlopt{~}\hlnum{1}\hlstd{), js.data,}
+                   \hlkwc{start}\hlstd{=start)}
+\hlstd{mod}\hlopt{$}\hlkwd{fit}\hlstd{()}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -560,30 +568,30 @@ sigma ~ dunif(0, 2)   ## Scale parameter of capture function
 psi ~ dunif(0,1)    
 for(t in 1:T) {
   N[t] <- sum(z[,t])      ## Abundance
-  ER[t] <- N[t]*gamma
-  totalAvail[t] <- sum(recruitable[,t])
-  gammaPrime[t] <- ER[t]/totalAvail[t] }
+  ER[t] <- N[t]*gamma     ## Expected number of recruits in year t
+  totalAvail[t] <- sum(recruitable[,t])  ## nAvailable to be recruited
+  gammaPrime[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
 for(i in 1:M) {
-  z[i,1] ~ dbern(psi)
-  recruitable[i,1] <- 1 - z[i,1]
-  s[i,1] ~ dunif(xlim[1], xlim[2]) # static activity centers
+  z[i,1] ~ dbern(psi)              ## Alive/dead state in year 1
+  recruitable[i,1] <- 1 - z[i,1]   ## Recruitable next year if not recruited yet
+  s[i,1] ~ dunif(xlim[1], xlim[2]) ## static activity centers
   s[i,2] ~ dunif(ylim[1], ylim[2])
   for(j in 1:J) {
-    d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2)
-    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))
-    y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }
+    d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2) ## Distance
+    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))                   ## Cap prob
+    y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }                      ## Data in year 1
   for(t in 2:T) {
-    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1])
-    died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)
-    recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)
+    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1]) ## Alive/dead state 
+    died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)                 ## Did this guy die?
+    recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)            ## Or was it recruited?
     recruitable[i,t] <- recruitable[i,t-1]*(1-z[i,t])
     for(j in 1:J) {
-      y[i,j,t] ~ dbin(z[i,t]*p[i,j], K) }  }
+      y[i,j,t] ~ dbin(z[i,t]*p[i,j], K) }  }                  ## Data in year t
   everAlive[i] <- sum(z[i,]) > 0  }
 for(t in 2:T) {
-  Deaths[t-1] <- sum(died[,t])
-  Recruits[t-1] <- sum(recruited[,t]) }
-Ntot <- sum(everAlive)
+  Deaths[t-1] <- sum(died[,t])             ## Total deaths each year
+  Recruits[t-1] <- sum(recruited[,t]) }    ## Total recruits each year
+Ntot <- sum(everAlive)                     ## Super-population size
 }
 \end{verbatim}
 \end{kframe}
@@ -638,9 +646,6 @@ Ntot <- sum(everAlive)
 \end{kframe}
 \end{knitrout}
 \end{frame}
-
-
-
 
 
 
@@ -855,13 +860,15 @@ Ntot <- sum(everAlive)
 \begin{frame}
   \frametitle{Summary}
   This is perhaps the most general approach to modeling population
-  dynamics. \\
+  dynamics, especially when the model includes a movement process. \\
   \pause \vfill
   Requires a lot of data on marked individuals, but it should be no
   surprise that we need a lot of data to understand complex
   processes. \\ 
-  % \pause \vfill
-  % Go out there and collect good data. \\
+  \pause \vfill
+  Integrated population models can be used to draw inferences using
+  this model and a combination of data on marked and unmarked
+  individuals. \\ 
 \end{frame}
 
 

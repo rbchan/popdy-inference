@@ -6,28 +6,28 @@ sigma ~ dunif(0, 2)   ## Scale parameter of capture function
 psi ~ dunif(0,1)    
 for(t in 1:T) {
   N[t] <- sum(z[,t])      ## Abundance
-  ER[t] <- N[t]*gamma
-  totalAvail[t] <- sum(recruitable[,t])
-  gammaPrime[t] <- ER[t]/totalAvail[t] }
+  ER[t] <- N[t]*gamma     ## Expected number of recruits in year t
+  totalAvail[t] <- sum(recruitable[,t])  ## nAvailable to be recruited
+  gammaPrime[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
 for(i in 1:M) {
-  z[i,1] ~ dbern(psi)
-  recruitable[i,1] <- 1 - z[i,1]
-  s[i,1] ~ dunif(xlim[1], xlim[2]) # static activity centers
+  z[i,1] ~ dbern(psi)              ## Alive/dead state in year 1
+  recruitable[i,1] <- 1 - z[i,1]   ## Recruitable next year if not recruited yet
+  s[i,1] ~ dunif(xlim[1], xlim[2]) ## static activity centers
   s[i,2] ~ dunif(ylim[1], ylim[2])
   for(j in 1:J) {
-    d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2)
-    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))
-    y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }
+    d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2) ## Distance
+    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))                   ## Cap prob
+    y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }                      ## Data in year 1
   for(t in 2:T) {
-    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1])
-    died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)
-    recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)
+    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1]) ## Alive/dead state 
+    died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)                 ## Did this guy die?
+    recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)            ## Or was it recruited?
     recruitable[i,t] <- recruitable[i,t-1]*(1-z[i,t])
     for(j in 1:J) {
-      y[i,j,t] ~ dbin(z[i,t]*p[i,j], K) }  }
+      y[i,j,t] ~ dbin(z[i,t]*p[i,j], K) }  }                  ## Data in year t
   everAlive[i] <- sum(z[i,]) > 0  }
 for(t in 2:T) {
-  Deaths[t-1] <- sum(died[,t])
-  Recruits[t-1] <- sum(recruited[,t]) }
-Ntot <- sum(everAlive)
+  Deaths[t-1] <- sum(died[,t])             ## Total deaths each year
+  Recruits[t-1] <- sum(recruited[,t]) }    ## Total recruits each year
+Ntot <- sum(everAlive)                     ## Super-population size
 }
