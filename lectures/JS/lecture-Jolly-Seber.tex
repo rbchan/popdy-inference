@@ -522,19 +522,67 @@ Create the model object and then fit it
 \end{kframe}
 \end{knitrout}
 Back-transform
-\begin{knitrout}\scriptsize
+\begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"lambda0"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"sigma"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"D"}\hlstd{)}                 \hlcom{## Superpopulation density}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"beta"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}  \hlcom{## Proportion of superpop alive in year 1}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}   \hlcom{## Survival}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"lambda0"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)} \hlcom{## Baseline capture probability}
 \end{alltt}
+\begin{verbatim}
+## [1] 0.449656
+\end{verbatim}
+\begin{alltt}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"sigma"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)}   \hlcom{## Scale parameter of the detection function}
+\end{alltt}
+\begin{verbatim}
+## [1] 96.1884
+\end{verbatim}
+\begin{alltt}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"D"}\hlstd{)}                     \hlcom{## Superpopulation density}
+\end{alltt}
+\begin{verbatim}
+## [1] 96.00797
+\end{verbatim}
+\begin{alltt}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"beta"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}      \hlcom{## Proportion of superpop alive in year 1}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.2811347
+\end{verbatim}
+\begin{alltt}
+\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}       \hlcom{## Survival}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.6503956
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
 
+
+
+\begin{frame}[fragile]
+  \frametitle{Density estimates}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{mod}\hlopt{$}\hlkwd{estimates}\hlstd{()}\hlopt{$}\hlstd{D}
+\end{alltt}
+\begin{verbatim}
+##    Estimate       SE      LCL      UCL
+## 1  26.99117 6.592624 17.04979 42.72918
+## 2  25.22347 4.412889 18.03533 35.27651
+## 3  24.07377 3.582891 18.06686 32.07786
+## 4  23.32600 3.441197 17.54839 31.00584
+## 5  22.83966 3.534214 16.95278 30.77077
+## 6  22.52335 3.663363 16.47433 30.79343
+## 7  22.31762 3.770463 16.13495 30.86939
+## 8  22.18381 3.847131 15.90660 30.93820
+## 9  22.09679 3.898544 15.75686 30.98765
+## 10 22.04018 3.931822 15.66004 31.01970
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 
