@@ -6,6 +6,10 @@
 
 - Avoid generic variable names like 'x', 'y', and 'w'
 
+
+
+
+
 ## For 2022
 
 - Ditch the dynamic N-mixture models? Not enough time?

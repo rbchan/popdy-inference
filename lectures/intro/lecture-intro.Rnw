@@ -82,16 +82,17 @@ knit_theme$set("edit-kwrite")
         \item Forecast future outcomes
         \item Inform management decisions
       \end{itemize}
-    \item<2-> Until recently, models were mainly used in theoretical settings
-    \item<3-> New statistical tools let us confront models with data
-    \item<4-> Hierarchical models allow us to describe 
-      conditional ecological and observation processes
-    \item<5-> Before we even collect our data, we should:
-      \begin{itemize}
-        \item Write down hypotheses about the processes that are likely to give 
-          rise to our observations
-        \item Formalize these processes as statistical models
-      \end{itemize}
+    \item<2-> Until recently, population models were mainly used in theoretical settings
+    \item<3-> New statistical tools let us confront population models with data
+    \item<4-> Hierarchical models make it possible to learn about
+      ``hidden'' population dynamics by modeling the observation
+      processes conditional on the population processes of interest
+  %   \item<5-> Before we even collect our data, we should:
+  %     \begin{itemize}
+  %       \item Write down hypotheses about the processes that are likely to give 
+  %         rise to our observations
+  %       \item Formalize these processes as statistical models
+  %     \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -206,43 +207,62 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Estimated extinction risk\footnote{\scriptsize Howell et al. (2020, Ecological Applications)}}
-  \begin{columns}
-    \begin{column}{0.6\textwidth}
-      \begin{itemize}%[<+->]
-      \item<1-> Metapopulation models fit to the detection
-        data 
-      \item[]
-      \item<2-> Extinction probability estimated to be 2\% by 2100
-      \item[]
-      \item<3-> What can be done about it?
-        \begin{itemize}
-        \item<4-> Control predators
-        \item<4-> Increase hydroperiod in existing wetlands
-        \item<4-> Create new wetlands\dots
-%        \item<6-> \dots but where?
-        \end{itemize}
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.38\textwidth}
-      \begin{center}
-%        \includegraphics[width=0.4\textwidth]{figs/extinction3}
-        \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
-      \end{center}
-    \end{column}
-  \end{columns}
-  
-\end{frame}
+% \begin{frame}
+%   \frametitle{Estimated extinction risk\footnote{\scriptsize Howell et al. (2020, Ecological Applications)}}
+%   \begin{columns}
+%     \begin{column}{0.6\textwidth}
+%       \begin{itemize}%[<+->]
+%       \item<1-> Metapopulation models fit to the detection
+%         data 
+%       \item[]
+%       \item<2-> Extinction probability estimated to be 2\% by 2100
+%       \item[]
+%       \item<3-> What can be done about it?
+%         \begin{itemize}
+%         \item<4-> Control predators
+%         \item<4-> Increase hydroperiod in existing wetlands
+%         \item<4-> Create new wetlands\dots
+% %        \item<6-> \dots but where?
+%         \end{itemize}
+%       \end{itemize}
+%     \end{column}
+%     \begin{column}{0.38\textwidth}
+%       \begin{center}
+% %        \includegraphics[width=0.4\textwidth]{figs/extinction3}
+%         \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
+%       \end{center}
+%     \end{column}
+%   \end{columns}  
+% \end{frame}
 
 
 
 
 \begin{frame}
   \frametitle{Extinction risk}
-  \begin{center}
-    \includegraphics[width=\textwidth]{figs/lich-forecasts}
-  \end{center}
+  \small
+   Management options 
+   \begin{itemize} \small
+     \item<1-> Control predators
+     \item<1-> Increase hydroperiod in existing wetlands
+     \item<1-> Create new wetlands\dots
+%        \item<6-> \dots but where?
+   \end{itemize}
+   % \pause
+   \vfill
+    Metapopulation models fitted to detected data predicted extinction
+    risk to be 4\% after 50 years. Restoring just 1 pond, reduced the
+    risk to 2.5\%.   \\
+%       \item[]
+%       \item<3-> What can be done about it?
+%         \begin{itemize}
+%         \item<4-> Control predators
+%         \item<4-> Increase hydroperiod in existing wetlands
+%         \item<4-> Create new wetlands\dots
+% %        \item<6-> \dots but where?
+  \vfill
+  \centering
+  \includegraphics[width=0.7\textwidth]{figs/lich-forecasts} \\
 \end{frame}
 
 
@@ -290,11 +310,11 @@ knit_theme$set("edit-kwrite")
     \begin{column}{0.6\textwidth}
       \small
       \vbox to 0.6\textheight{
-        \uncover<1->{Theory goes back about a century} \\
+        \uncover<1->{Theory goes back about a century.} \\
         \vfill
-        \uncover<2->{Much of it focuses on the importance of density dependence} \\
+        \uncover<2->{Much of it focuses on the importance of density dependence.} \\
         \vfill
-        \uncover<3->{Think back to ``maximum sustainable yield''}
+        \uncover<3->{Think back to ``maximum sustainable yield''.}
       }
     \end{column}
     \begin{column}{0.4\textwidth}
@@ -308,7 +328,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Central Georgia Black Bears}
   Female-based population model revealed population
-  growth\footnote{Hooker et al. (2020, Journal of Wildlife Management)} \\
+  growth. \\%\footnote{Hooker et al. (2020, Journal of Wildlife Management)} \\
   \centering
   \includegraphics[width=0.9\textwidth,trim=0mm 0mm 0mm 10mm,clip]{figs/fig-5_abundance} \\
 \end{frame}
@@ -328,7 +348,7 @@ knit_theme$set("edit-kwrite")
   Extinction risk low unless harvest increases by $>$10 females/year \\
   \vfill
   \centering
-  \includegraphics[width=0.45\textwidth]{figs/fig-6_forecasts_h0-h20} \\
+  \includegraphics[width=0.45\textwidth,trim=0mm 0mm 0mm 40mm,clip]{figs/fig-6_forecasts_h0-h20} \\
 \end{frame}
 
 

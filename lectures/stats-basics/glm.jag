@@ -9,6 +9,6 @@ beta1 ~ dnorm(0, 0.1)
 for(i in 1:n) {
   lambda[i] <- exp(beta0 + beta1*x[i])
   y[i] ~ dpois(lambda[i])
-  }
+}
 
 }
