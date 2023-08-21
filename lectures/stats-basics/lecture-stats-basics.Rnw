@@ -85,7 +85,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Linear models}
 %  \small
-  All ANOVAs and fixed-effects regression models are linear models \\
+  All ANOVAs and fixed-effects regression models are linear models. \\
   \vspace{12pt}
   You must understand linear models before you can apply more advanced
   models such as GLMs, GAMS, hierarchical models etc\dots  
@@ -314,24 +314,24 @@ predictors variables, with dozens of associated $\beta$ coefficients.
 %% \begin{itemize}
 %%   \item For continuous explano
 %% \end{itemize}
-Linear models can also include polynomial terms and interactions
+Linear models can also include polynomial terms and interactions. 
 \end{frame}
 
 
 \begin{frame}[fragile]
   \frametitle{Interpreting the $\beta$'s}
   \small 
-  The intercept $\beta_0$ is the expected value of $y$, when all $x=0$ \\
+  The intercept $\beta_0$ is the expected value of $y$, when all $x=0$. \\
   \pause
   \vfill
   If $x_1$ is a {\bf continuous} explanatory variable: %, $\beta$ is
   \begin{itemize}
     \item $\beta_1$ can usually be interpreted as a \textit{slope}
-      parameter
+      parameter.
     \item In this case, $\beta_1$ is the
       change in $y$ resulting from a 1 unit change in $x_1$ (while
-      holding the other predictors constant)
-    \end{itemize}
+      holding the other predictors constant).
+  \end{itemize}
 \pause
 \vfill
 <<linmod,include=FALSE>>=
@@ -361,21 +361,21 @@ lm(mass~width)
   \frametitle{\small Interpreting $\beta$'s for categorical explanatory variables}
   Things are more complicated for {\bf categorical} explanatory
   variables (i.e., factors) because they must be converted to dummy
-  variables
+  variables.
   \pause
   \vfill
-  There are many ways of creating dummy variables
+  There are many ways of creating dummy variables.
   \pause
   \vfill
 %  For a {\bf categorical} explanatory variable %, $\beta$ is
   In \R, the default method for creating dummy variables from
-  unordered factors works like
-  this: %unordered factors is called \inr{"contr.treatment"}
+  unordered factors works like this:
+  % unordered factors is called \inr{"contr.treatment"}
   \begin{itemize}
-    \item One level of the factor is treated as a \alert{reference level}
-    \item The reference level is associated with the intercept
+    \item One level of the factor is treated as a \alert{reference level}.
+    \item The reference level is associated with the intercept.
     \item The $\beta$ coefficients for the other levels of the factor
-      are differences from the reference level
+      are differences from the reference level.
   \end{itemize}
 %   \pause
 %   \vfill
@@ -566,12 +566,12 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 \begin{frame}
   \frametitle{Generalized linear models (GLMs)}
   \large
-  \uncover<1->{{Benefits of generalized linear models}}
+  \uncover<1->{Benefits of generalized linear models:}
   \begin{itemize}%[<+->]
-    \item<2-> The residuals don't have to be normally distributed
+    \item<2-> The residuals don't have to be normally distributed.
     \item<3-> The response variable can be binary, integer,
       strictly-positive, etc...
-    \item<4-> The variance is not assumed to be constant
+    \item<4-> The variance is not assumed to be constant.
     \item<5-> Useful for manipulative experiments or observational
       studies, just like linear models.
   \end{itemize}
@@ -593,18 +593,18 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
   {Logistic regression \\}
   \begin{itemize}
     \item The response variable is usually binary and modeled with a
-      binomial distribution
+      binomial distribution.
     \item The probability of success is usually a logit-linear
-      model
+      model.
   \end{itemize}
   \pause
   \vfill
   {Poisson regression \\}
   \begin{itemize}
     \item The response variable is a non-negative integer modeled with
-      a Poisson distribution
+      a Poisson distribution.
     \item The expected count is usually modeled with a log-linear
-      model
+      model.
   \end{itemize}
   \vfill
 \end{frame}
@@ -661,11 +661,11 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 %  \begin{itemize}[<+->]
 %    \item
   An inverse link function ($g^{-1}$) transforms values from the $(-\infty,\infty)$
-  scale to the scale of interest, such as $(0,1)$ for probabilities  \\
+  scale to the scale of interest, such as $(0,1)$ for probabilities.  \\
   \pause
   \vfill
 %    \item
-  The link function ($g$) does the reverse \\
+  The link function ($g$) does the reverse. \\
 %    \item
 %  \pause
 %  \vfill
@@ -782,7 +782,7 @@ plot(function(x) plogis(5 + -0.08*x), from=0, to=100,
 %    \item<1->
   Logistic regression is a specific type of GLM in which the
       response variable follows a binomial distribution and the link
-      function is the logit \\
+      function is the logit. \\
   \pause
   \vfill
 %    \item<2->
@@ -933,7 +933,7 @@ logitreg1
 
 \begin{frame}[fragile]
   \frametitle{Logistic regression example}
-  Predict grouse occurrence probability at a sequence of elevations \\ 
+  Predict grouse occurrence probability at a sequence of elevations. \\ 
   \vfill
   First, create a new \inr{data.frame} with the explanatory values of
   interest.
@@ -1182,8 +1182,7 @@ plot(js.glm)
     %   lowest AIC, and create a graph depicting the estimated
     %   relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM Monday,
-  August 30. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM Monday.
 \end{frame}
 
 

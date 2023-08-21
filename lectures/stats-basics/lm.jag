@@ -9,6 +9,6 @@ sigmaSq ~ dunif(0, 2)  ## Residual variance
 ## Model for the data
 for(i in 1:n) {
   y[i] ~ dnorm(beta0 + beta1*x[i], 1/sigmaSq)
-  }
+}
 
 }
