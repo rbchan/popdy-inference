@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -98,7 +98,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+  % Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife \\ Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -177,22 +178,22 @@
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Probability distributions}
-  Check out Heather Gaya's Shiny App: \\
-  \vfill
-  \centering
-  % Highlighting gets messed up if on 1 line
-  \href{ 
-    https://insects.shinyapps.io/Probability_Dists/
-  }{
-    \large
-    \color{blue}
-    {https://insects.shinyapps.io/Probability\_Dists/} 
-  } \\
-  \vfill
-  \includegraphics[width=0.7\textwidth]{figs/probDists} \\
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Probability distributions}
+%   Check out Heather Gaya's Shiny App: \\
+%   \vfill
+%   \centering
+%   % Highlighting gets messed up if on 1 line
+%   \href{ 
+%     https://insects.shinyapps.io/Probability_Dists/
+%   }{
+%     \large
+%     \color{blue}
+%     {https://insects.shinyapps.io/Probability\_Dists/} 
+%   } \\
+%   \vfill
+%   \includegraphics[width=0.7\textwidth]{figs/probDists} \\
+% \end{frame}
 
 
 
@@ -205,8 +206,8 @@
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{length} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.30}\hlstd{,} \hlnum{0.91}\hlstd{,} \hlnum{0.89}\hlstd{,} \hlnum{0.24}\hlstd{,} \hlnum{0.77}\hlstd{,} \hlnum{0.56}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.92}\hlstd{,} \hlnum{0.81}\hlstd{,} \hlnum{0.59}\hlstd{)}  \hlcom{## x}
-\hlstd{mass} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.08}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.18}\hlstd{,} \hlnum{0.17}\hlstd{,} \hlnum{0.42}\hlstd{,} \hlnum{0.71}\hlstd{,} \hlnum{0.49}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlnum{0.46}\hlstd{,} \hlnum{0.04}\hlstd{)}    \hlcom{## y}
+\hlstd{width} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.30}\hlstd{,} \hlnum{0.91}\hlstd{,} \hlnum{0.89}\hlstd{,} \hlnum{0.24}\hlstd{,} \hlnum{0.77}\hlstd{,} \hlnum{0.56}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.92}\hlstd{,} \hlnum{0.81}\hlstd{,} \hlnum{0.59}\hlstd{)}  \hlcom{## x}
+\hlstd{mass} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.08}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.18}\hlstd{,} \hlnum{0.17}\hlstd{,} \hlnum{0.42}\hlstd{,} \hlnum{0.71}\hlstd{,} \hlnum{0.49}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlnum{0.46}\hlstd{,} \hlnum{0.04}\hlstd{)}   \hlcom{## y}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -223,15 +224,15 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{length)}
+\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{width)}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = mass ~ length)
+## lm(formula = mass ~ width)
 ## 
 ## Coefficients:
-## (Intercept)       length  
+## (Intercept)        width  
 ##     0.02742      0.54951
 \end{verbatim}
 \end{kframe}
@@ -276,7 +277,7 @@
   \small
   The model is in a text file named {\tt lm.jag} \\
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -301,7 +302,7 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jd.lm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=length,} \hlkwc{y}\hlstd{=mass,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(mass))}
+\hlstd{jd.lm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=width,} \hlkwc{y}\hlstd{=mass,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(mass))}
 \hlstd{ji.lm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{sigmaSq}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
 \hlstd{jp.lm} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"sigmaSq"}\hlstd{)}
 \end{alltt}
@@ -333,10 +334,10 @@ Now, put the data in a list and pick some initial values
 \end{alltt}
 \begin{verbatim}
 ##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.59 -0.16 0.03 0.21  0.65
-## beta1    -0.34  0.28 0.56 0.82  1.47
-## deviance -2.66 -1.02 0.93 3.79 11.21
-## sigmaSq   0.03  0.06 0.08 0.13  0.35
+## beta0    -0.55 -0.15 0.03 0.22  0.64
+## beta1    -0.35  0.27 0.54 0.80  1.49
+## deviance -2.59 -0.99 0.93 3.83 10.33
+## sigmaSq   0.03  0.06 0.08 0.13  0.30
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -427,7 +428,13 @@ Linear models can also include polynomial terms and interactions.
   \end{itemize}
 \pause
 \vfill
-
+%<<linmod,include=FALSE>>=
+%set.seed(3400)  
+%width <- runif(100, 0, 50)  
+%mass <- rnorm(100, 10 + 1*width, 5)
+%plot(width, mass)
+%abline(lm(mass~width))
+%@
 \centering
 \begin{columns}
   \begin{column}{0.5\textwidth}
@@ -443,13 +450,14 @@ Linear models can also include polynomial terms and interactions.
 ## 
 ## Coefficients:
 ## (Intercept)        width  
-##       9.116        1.032
+##     0.02742      0.54951
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
   \end{column}
   \begin{column}{0.4\textwidth}
-  \includegraphics[width=\textwidth]{figure/linmod-1} \\
+%  \includegraphics[width=\textwidth]{figure/linmod-1} \\
+  \includegraphics[width=\textwidth]{figure/slr-viz-1} \\
   \end{column}
 \end{columns}
 \end{frame}
@@ -1334,7 +1342,7 @@ Finally, fit the model:
   \small
   The model is in a text file named {\tt glm.jag} \\
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
