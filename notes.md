@@ -1,5 +1,13 @@
 # Notes for the future
 
+## For 2024
+
+- Start linear model section with alt form:
+  * mu = b0+b1*x, y~N(mu,sig2)
+  * Easier transition to GLMs than b0+b1*x+eps
+
+
+
 ## For 2023
 
 - Ditch binomian N-mix II?

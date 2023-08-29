@@ -6,25 +6,25 @@
 
 
 ## ----slr-data,size='tiny'-----------------------------------------------------
-length <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)  ## x
-mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)    ## y
+width <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)  ## x
+mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)   ## y
 
 
 ## ----slr-viz,echo=FALSE-------------------------------------------------------
-plot(length, mass, xlim=c(0,1))
-abline(lm(mass~length))
+plot(width, mass, xlim=c(0,1))
+abline(lm(mass~width))
 
 
 ## ----slr-fit,size='scriptsize'------------------------------------------------
-lm(mass~length)
+lm(mass~width)
 
 
-## ----lm-jag,size="scriptsize",comment="",echo=FALSE---------------------------
+## ----lm-jag,size="scriptsize",comment="",echo=FALSE,background='beige'--------
   writeLines(readLines("lm.jag"))
 
 
 ## ----lm-jd,size='footnotesize'------------------------------------------------
-jd.lm <- list(x=length, y=mass, n=length(mass))
+jd.lm <- list(x=width, y=mass, n=length(mass))
 ji.lm <- function() c(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
 jp.lm <- c("beta0", "beta1", "sigmaSq")
 
@@ -41,14 +41,6 @@ round(summary(js.lm)$quant, 2)
 
 ## ----lm-jags-viz,echo=FALSE---------------------------------------------------
 plot(js.lm)
-
-
-## ----linmod,include=FALSE-----------------------------------------------------
-set.seed(3400)  
-width <- runif(100, 0, 50)  
-mass <- rnorm(100, 10 + 1*width, 5)
-plot(width, mass)
-abline(lm(mass~width))
 
 
 ## ----linmod-out,size='tiny'---------------------------------------------------
@@ -234,7 +226,7 @@ y <- rpois(n=n, lambda=lam)
 ## (poisreg1 <- glm(y ~ x, family=poisson(link="log")))
 
 
-## ----glm-jag,size="scriptsize",comment="",echo=FALSE--------------------------
+## ----glm-jag,size="scriptsize",comment="",echo=FALSE,background='beige'-------
   writeLines(readLines("glm.jag"))
 
 
