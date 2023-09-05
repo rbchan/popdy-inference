@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -98,8 +98,9 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
-  \vfill
+%  Estimation of Fish and Wildlife Population Parameters \\
+   Inference for Models of Fish and Wildlife Population Dynamics \\
+ \vfill
   \large
   Richard Chandler \\
   University of Georgia \\
@@ -138,7 +139,7 @@
   \begin{enumerate}
     \item \textcolor{blue}{Site covariates} vary among sites
       but not among occasions
-    \item \textcolor{Purple}{Observation covariates} may vary among
+    \item \textcolor{RawSienna}{Observation covariates} may vary among
       sites and occasions
   \end{enumerate}
   \pause
@@ -152,30 +153,28 @@
     time.} \\ 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Example}
-  \begin{enumerate}
-    \item \textcolor{blue}{Site covariates} vary among sites
-      but not among occasions
-    \item \textcolor{Purple}{Observation covariates} may vary among
-      sites and occasions
-  \end{enumerate}
-  
-  Define the following as Site or Observation covariates (or both?):
-  \begin{itemize}
-    \item{Temperature}
-    \item{Distance to Stream}
-    \item{Wind}
-    \item{Others?}
-  \end{itemize}  
-\end{frame}
-    
+
+
+
 
 % \begin{frame}
-%   \frametitle{Ignoring detection probability}
-%   Show some examples
+%   \frametitle{Example}
+%   \begin{enumerate}
+%     \item \textcolor{blue}{Site covariates} vary among sites
+%       but not among occasions
+%     \item \textcolor{RawSienna}{Observation covariates} may vary among
+%       sites and occasions
+%   \end{enumerate}
+  
+%   Define the following as Site or Observation covariates (or both?):
+%   \begin{itemize}
+%     \item{Temperature}
+%     \item{Distance to Stream}
+%     \item{Wind}
+%     \item{Others?}
+%   \end{itemize}  
 % \end{frame}
-
+    
 
 
 \begin{frame}
@@ -192,7 +191,7 @@
   Observation model
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+    + \alpha_2 {\color{RawSienna} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
@@ -206,7 +205,7 @@
   \vfill
   $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
   \vspace{12pt}
-  $\color{Purple} w$ is an observation covariate
+  $\color{RawSienna} w$ is an observation covariate
 \end{frame}
 
 
@@ -719,7 +718,7 @@ Major problems if you ignore imperfect detection in this case \\
 %      \end{gather*}
 %      \begin{gather*}
         \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
-        \alpha_2 {\color{Purple} w_{ij}} \\
+        \alpha_2 {\color{RawSienna} w_{ij}} \\
         y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
       \end{gather*}
 %      \pause
@@ -844,7 +843,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.032 minutes.
+## MCMC took 0.029 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1136,10 +1135,10 @@ sitesOccupied <- sum(z)
       \end{itemize}
     \item Make one prediction graph for occupancy and one for detection. 
     \item Create the same graphs as above, but using Bayesian methods.
-    \item What differences do you see between likelihood and Bayesian graphs?
+    \item Are the likelihood and Bayesian predictions qualitatively similar?
     \end{enumerate}
     \vfill
-    Upload your {\tt .R} or {\tt .Rmd} file to ELC before Monday. 
+    Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
 \end{frame}
 
 
