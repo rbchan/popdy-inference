@@ -139,7 +139,7 @@
   \begin{enumerate}
     \item \textcolor{blue}{Site covariates} vary among sites
       but not among occasions
-    \item \textcolor{RawSienna}{Observation covariates} may vary among
+    \item \textcolor{Bittersweet}{Observation covariates} may vary among
       sites and occasions
   \end{enumerate}
   \pause
@@ -162,7 +162,7 @@
 %   \begin{enumerate}
 %     \item \textcolor{blue}{Site covariates} vary among sites
 %       but not among occasions
-%     \item \textcolor{RawSienna}{Observation covariates} may vary among
+%     \item \textcolor{Bittersweet}{Observation covariates} may vary among
 %       sites and occasions
 %   \end{enumerate}
   
@@ -191,7 +191,7 @@
   Observation model
   \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{RawSienna} w_{ij}} + \cdots \\
+    + \alpha_2 {\color{Bittersweet} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
   \pause
@@ -205,7 +205,7 @@
   \vfill
   $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
   \vspace{12pt}
-  $\color{RawSienna} w$ is an observation covariate
+  $\color{Bittersweet} w$ is an observation covariate
 \end{frame}
 
 
@@ -718,7 +718,7 @@ Major problems if you ignore imperfect detection in this case \\
 %      \end{gather*}
 %      \begin{gather*}
         \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} +
-        \alpha_2 {\color{RawSienna} w_{ij}} \\
+        \alpha_2 {\color{Bittersweet} w_{ij}} \\
         y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
       \end{gather*}
 %      \pause
@@ -843,7 +843,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.029 minutes.
+## MCMC took 0.036 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1126,16 +1126,20 @@ sitesOccupied <- sum(z)
     %     \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
     %     \item Site covs: \texttt{Elevation, Wind, Noise}
     %   \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse data ({\tt grouse\_data.csv}). 
+    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse
+      data ({\tt grouse\_data.csv}). You can choose which covariates
+      to include in the models.  
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{grouse1, grouse2, grouse3}
         \item Site covs: Elevation (\texttt{elev}), forest cover ({\tt fc})
         \item Obs cov: Day of the year (\texttt{doy.1, doy.2, doy.3})
       \end{itemize}
-    \item Make one prediction graph for occupancy and one for detection. 
+    \item Make one prediction graph for occupancy and one for
+      detection.  
     \item Create the same graphs as above, but using Bayesian methods.
-    \item Are the likelihood and Bayesian predictions qualitatively similar?
+    \item Compare the likelihood and Bayesian predictions. Are they
+      similar?   
     \end{enumerate}
     \vfill
     Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
