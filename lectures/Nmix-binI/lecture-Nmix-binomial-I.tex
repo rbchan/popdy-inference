@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -96,7 +96,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+  %% Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -132,8 +133,9 @@
   Occupancy isn't useful if all sites are occupied. \\
   \pause
   \vfill
-  Binomial $N$-mixture models are useful in this context if we have
-  repeated count data, instead of repeated detection data. 
+  Binomial $N$-mixture models are useful for studying spatial
+  variation in abundance if we have repeated count data, instead of
+  repeated detection data.
 \end{frame}
 
 
@@ -940,7 +942,7 @@ totalAbundance <- sum(N)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.041 minutes.
+## MCMC took 0.031 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1201,7 +1203,7 @@ totalAbundance <- sum(N)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.006 minutes.
+## MCMC took 0.01 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1381,11 +1383,11 @@ totalAbundance <- sum(N)
         \item Site covs: \texttt{Elevation, Wind, Noise}
       \end{itemize}
     \item Graph the predictions of $\lambda$ over the 
-      elevation range, along with 95\% CIs. Do this for classical and
+      elevation range, along with 95\% CIs for both the likelihood-based and  
       Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
 \end{frame}
 
 
