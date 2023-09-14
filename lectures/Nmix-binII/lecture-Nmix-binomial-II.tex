@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -96,7 +96,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%   Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -567,7 +568,6 @@ Put them together in a `raster stack'
 }
 
 
-
 \end{knitrout}
 \end{frame}
 
@@ -920,7 +920,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 129.1708
+## [1] 125.5645
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -930,7 +930,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 119.9559
+## [1] 123.2067
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -940,7 +940,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 119.1558
+## [1] 137.0568
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -952,7 +952,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 151.6317
+## [1] 143.8135
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -962,7 +962,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 151.6321
+## [1] 146.7478
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -972,7 +972,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 168.6975
+## [1] 140.2578
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1007,13 +1007,13 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \toprule
   & WAIC & delta\\
 \midrule
-Model 3 & 119.16 & 0.00\\
-Model 2 & 119.96 & 0.80\\
-Model 1 & 129.17 & 10.01\\
-Model 4 & 151.63 & 32.48\\
-Model 5 & 151.63 & 32.48\\
+Model 2 & 123.21 & 0.00\\
+Model 1 & 125.56 & 2.36\\
+Model 3 & 137.06 & 13.85\\
+Model 4 & 143.81 & 20.61\\
+Model 5 & 146.75 & 23.54\\
 \addlinespace
-Model 6 & 151.63 & 32.48\\
+Model 6 & 146.75 & 23.54\\
 \bottomrule
 \end{tabular}
 
@@ -1241,12 +1241,13 @@ No sign of obvious outliers or other problems.
 \hlstd{\}}
 \hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Running parametric bootstrap in parallel on 3 cores.}}\end{kframe}
 
 {\centering \includegraphics[width=0.7\linewidth]{figure/parboot-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1267,11 +1268,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           2.41              5.7        0.294
+## SSE 23.2           1.38             5.19        0.373
 ## 
 ## t_B quantiles:
 ##      0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 6.9   12  17  21  24    33   39
+## SSE 7.7   13  18  21  25    32   36
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
@@ -1549,7 +1550,7 @@ totalAbundance <- sum(N[1:nSites])
       mis-specified model?
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
 \end{frame}
 
 
