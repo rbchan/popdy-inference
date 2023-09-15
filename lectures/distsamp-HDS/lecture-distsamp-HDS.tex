@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -12,9 +12,6 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
-\makeatletter
-\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
-\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -49,14 +46,6 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
-\makeatletter
-\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-}}
-\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -93,14 +82,15 @@
   \LARGE
   \centering
   {
-    \LARGE Hierarchical distance sampling: \\
-    \Large simulation, fitting, and prediction %, and random effects \\
+    \huge Hierarchical distance sampling: \\
+    \LARGE simulation, fitting, and prediction %, and random effects \\
   }
   {\color{default} \rule{\textwidth}{0.1pt} }
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%   Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -135,7 +125,7 @@
   \pause
   \vfill
   If we can estimate the function describing how $p$ declines with
-  distance $x$, we can estimate abundance\dots \pause if certain
+  distance $x$, we can estimate abundance\dots if certain
   assumptions hold, as always. \\
 \end{frame}
 
@@ -879,9 +869,9 @@
 ## elevation      0.945 0.0662 14.3  3.29e-46
 ## 
 ## Detection:
-##                  Estimate     SE     z  P(>|z|)
-## sigma(Intercept)    2.963 0.0362  81.9 0.00e+00
-## sigmanoise         -0.525 0.0288 -18.2 5.75e-74
+##             Estimate     SE     z  P(>|z|)
+## (Intercept)    2.963 0.0362  81.9 0.00e+00
+## noise         -0.525 0.0288 -18.2 5.75e-74
 ## 
 ## AIC: 677.1907
 \end{verbatim}
@@ -1550,9 +1540,9 @@ totalAbundance <- sum(N[1:nSites])
 ## elevation       1.02 0.0489 21.0  1.82e-97
 ## 
 ## Detection:
-##                  Estimate     SE     z  P(>|z|)
-## sigma(Intercept)    2.929 0.0369  79.4 0.00e+00
-## sigmanoise         -0.513 0.0312 -16.5 5.68e-61
+##             Estimate     SE     z  P(>|z|)
+## (Intercept)    2.929 0.0369  79.4 0.00e+00
+## noise         -0.513 0.0312 -16.5 5.68e-61
 ## 
 ## AIC: 824.6483
 \end{verbatim}
@@ -1825,7 +1815,7 @@ totalAbundance <- sum(N[1:nSites])
   \end{itemize}
 %  \pause
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
 \end{frame}
 
 
