@@ -2,6 +2,8 @@
 
 ## For 2024
 
+- Tell professors not to send their students until they're good with R
+
 - Start linear model section with alt form:
   * mu = b0+b1*x, y~N(mu,sig2)
   * Easier transition to GLMs than b0+b1*x+eps
