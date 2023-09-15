@@ -2,6 +2,8 @@
 
 ## For 2024
 
+- Nmix-bin II is too long
+
 - Start linear model section with alt form:
   * mu = b0+b1*x, y~N(mu,sig2)
   * Easier transition to GLMs than b0+b1*x+eps
@@ -10,7 +12,7 @@
 
 ## For 2023
 
-- Ditch binomian N-mix II?
+- Ditch binomial N-mix II?
 
 - Avoid generic variable names like 'x', 'y', and 'w'
 

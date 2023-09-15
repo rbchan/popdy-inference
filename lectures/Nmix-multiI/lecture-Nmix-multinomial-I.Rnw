@@ -563,7 +563,7 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun
   \end{itemize}
   \pause
   \vfill
-  These are just fun probability tricks that can help improve MCMC performance. \\
+  These are just probability tricks that can help improve MCMC performance. See AHM I for details. Here, we will focus on the first option. \\
 \end{frame}
 
 
@@ -711,233 +711,233 @@ plot(jags.post.rem2[,jags.pars.rem[4:5]])
 
 
 
-\begin{frame}%[fragile]
-  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
-  The multinomial distribution can be represented by a sequence of
-  binomial distributions in which we reduce the number of trials.
-  \pause
-  \vfill
-  \large
-  \begin{gather*}
-    y_{i1} \sim \mathrm{Bin}(N_i, p) \\
-    y_{i2} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}}, p) \\
-    y_{i3} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}-y_{i2}}, p) \\
-  \end{gather*}
-\end{frame}
+% \begin{frame}%[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+%   The multinomial distribution can be represented by a sequence of
+%   binomial distributions in which we reduce the number of trials.
+%   \pause
+%   \vfill
+%   \large
+%   \begin{gather*}
+%     y_{i1} \sim \mathrm{Bin}(N_i, p) \\
+%     y_{i2} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}}, p) \\
+%     y_{i3} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}-y_{i2}}, p) \\
+%   \end{gather*}
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
-<<bugs-removal3,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
-writeLines(readLines("removal-mod3.jag"))
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+% <<bugs-removal3,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+% writeLines(readLines("removal-mod3.jag"))
+% @
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-6pt}
-<<bugs-data3,size='small'>>=
-jags.data.rem3 <- list(y=y2, streamDepth=streamDepth,
-                       nSites=nSites)
-@
-\vfill
-  Do MCMC
-  \vspace{-6pt}
-<<bugs-mcmc-rem3,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
-jags.post.rem3 <- jags.basic(data=jags.data.rem3, inits=jags.inits.rem,
-                             parameters.to.save=jags.pars.rem,
-                             model.file="removal-mod3.jag",
-                             n.chains=3, n.adapt=100, n.burnin=0,
-                             n.iter=2000, parallel=TRUE)
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-6pt}
+% <<bugs-data3,size='small'>>=
+% jags.data.rem3 <- list(y=y2, streamDepth=streamDepth,
+%                        nSites=nSites)
+% @
+% \vfill
+%   Do MCMC
+%   \vspace{-6pt}
+% <<bugs-mcmc-rem3,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+% jags.post.rem3 <- jags.basic(data=jags.data.rem3, inits=jags.inits.rem,
+%                              parameters.to.save=jags.pars.rem,
+%                              model.file="removal-mod3.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0,
+%                              n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
-<<bugs-sum-rem3,size='tiny'>>=
-summary(jags.post.rem3[,jags.pars.rem])
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Summarize output}
+% <<bugs-sum-rem3,size='tiny'>>=
+% summary(jags.post.rem3[,jags.pars.rem])
+% @ 
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot1-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.rem3[,jags.pars.rem[1:3]])
-@ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem3[,jags.pars.rem[1:3]])
+% @ 
+% \end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot2-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.rem3[,jags.pars.rem[4:5]])
-@ 
-\end{frame}
-
-
-
-
-
-
-
-\begin{frame}%[fragile]
-  \frametitle{Marginalized $N$}
-  If
-  \[
-    N \sim \mathrm{Poisson}(\lambda)
-  \]
-  and
-  \[
-    \{y_1, \dots, y_K\}|N \sim \mathrm{Multinomial}(N, \{\pi_1, \dots, \pi_K\})
-  \]
-  \pause
-  \vfill
-  then the marginal distribution of $y$ is
-  \[
-    y_k \sim \mathrm{Poisson}(\lambda \times \pi_k) 
-  \]
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Marginalized $N$}
-<<bugs-removal4,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
-writeLines(readLines("removal-mod4.jag"))
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot2-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem3[,jags.pars.rem[4:5]])
+% @ 
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-6pt}
-<<bugs-data4,size='small'>>=
-jags.data.rem4 <- list(y=y2, streamDepth=streamDepth,
-                       nSites=nSites)
-@
-\vfill
-  Do MCMC
-  \vspace{-6pt}
-<<bugs-mcmc-rem4,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
-jags.post.rem4 <- jags.basic(data=jags.data.rem4, inits=jags.inits.rem,
-                             parameters.to.save=jags.pars.rem,
-                             model.file="removal-mod4.jag",
-                             n.chains=3, n.adapt=100, n.burnin=0,
-                             n.iter=2000, parallel=TRUE)
-@ 
-\end{frame}
+
+
+% \begin{frame}%[fragile]
+%   \frametitle{Marginalized $N$}
+%   If
+%   \[
+%     N \sim \mathrm{Poisson}(\lambda)
+%   \]
+%   and
+%   \[
+%     \{y_1, \dots, y_K\}|N \sim \mathrm{Multinomial}(N, \{\pi_1, \dots, \pi_K\})
+%   \]
+%   \pause
+%   \vfill
+%   then the marginal distribution of $y$ is
+%   \[
+%     y_k \sim \mathrm{Poisson}(\lambda \times \pi_k) 
+%   \]
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Marginalized $N$}
+% <<bugs-removal4,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+% writeLines(readLines("removal-mod4.jag"))
+% @
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
-<<bugs-sum-rem4,size='tiny'>>=
-summary(jags.post.rem4[,jags.pars.rem[1:4]])
-@ 
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-<<bugs-plot1-rem4,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.rem4[,jags.pars.rem[1:4]])
-@ 
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Compare convergence}
-  \small
-\centering
-%\vfill
-You want $\hat{R}<1.1$ for all parameters \\
-%All the results were similar, but let's make sure they converged
-%\begin{columns}
-%  \begin{column}{0.33\paperwidth}
-%  \begin{column}{0.5\textwidth}
-<<gel2,size='tiny'>>=
-library(coda)
-gelman.diag(jags.post.rem2[,jags.pars.rem[1:4]], multivar=FALSE) ## Conditional-on-N and n
-@   
-%  \end{column}
-%  \begin{column}{0.33\paperwidth}
-\pause
-\vspace{-8pt}
-<<gel3,size='tiny',echo=-(1:2)>>=
-#Rhat3 <- gelman.diag(jags.post.rem3)$psrf
-#Rhat3[jags.pars.rem[1:4],1,drop=FALSE]
-gelman.diag(jags.post.rem3[,jags.pars.rem[1:4]], multivar=FALSE) ## Sequential binomial
-@   
-%  \end{column}
-%  \begin{column}{0.33\paperwidth}
-\pause
-\vspace{-8pt}
-<<gel4,size='tiny',echo=-(1:2)>>=
-#Rhat4 <- gelman.diag(jags.post.rem4)$psrf
-#Rhat4[jags.pars.rem[1:4],1,drop=FALSE]
-gelman.diag(jags.post.rem4[,jags.pars.rem[1:4]], multivar=FALSE) ## Marginalized N
-@   
-%  \end{column}
-%\end{columns}
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-6pt}
+% <<bugs-data4,size='small'>>=
+% jags.data.rem4 <- list(y=y2, streamDepth=streamDepth,
+%                        nSites=nSites)
+% @
+% \vfill
+%   Do MCMC
+%   \vspace{-6pt}
+% <<bugs-mcmc-rem4,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+% jags.post.rem4 <- jags.basic(data=jags.data.rem4, inits=jags.inits.rem,
+%                              parameters.to.save=jags.pars.rem,
+%                              model.file="removal-mod4.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0,
+%                              n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Compare effective sample size}
-  \small
-  Conditional-on-$N$, conditional-on-$n$
-  \vspace{-6pt}
-<<ess2,size='scriptsize'>>=
-effectiveSize(jags.post.rem2[,jags.pars.rem[1:4]])
-@   
-  Conditional-on-$N$, sequential binomial
-  \vspace{-6pt}
-<<ess3,size='scriptsize'>>=
-effectiveSize(jags.post.rem3[,jags.pars.rem[1:4]])
-@   
-  Marginalized $N$
-  \vspace{-6pt}
-<<ess4,size='scriptsize'>>=
-effectiveSize(jags.post.rem4[,jags.pars.rem[1:4]])
-@
-\pause
-%\vfill
-\centering
-\small
-The ``marginalized $N$'' formulation wins in terms of both convergence and
-effective sample size\pause\dots but remember: this particular
-marginal model is only valid if $N$ is Poisson. \\ 
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Summarize output}
+% <<bugs-sum-rem4,size='tiny'>>=
+% summary(jags.post.rem4[,jags.pars.rem[1:4]])
+% @ 
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem4,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem4[,jags.pars.rem[1:4]])
+% @ 
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Compare convergence}
+%   \small
+% \centering
+% %\vfill
+% You want $\hat{R}<1.1$ for all parameters \\
+% %All the results were similar, but let's make sure they converged
+% %\begin{columns}
+% %  \begin{column}{0.33\paperwidth}
+% %  \begin{column}{0.5\textwidth}
+% <<gel2,size='tiny'>>=
+% library(coda)
+% gelman.diag(jags.post.rem2[,jags.pars.rem[1:4]], multivar=FALSE) ## Conditional-on-N and n
+% @   
+% %  \end{column}
+% %  \begin{column}{0.33\paperwidth}
+% \pause
+% \vspace{-8pt}
+% <<gel3,size='tiny',echo=-(1:2)>>=
+% #Rhat3 <- gelman.diag(jags.post.rem3)$psrf
+% #Rhat3[jags.pars.rem[1:4],1,drop=FALSE]
+% gelman.diag(jags.post.rem3[,jags.pars.rem[1:4]], multivar=FALSE) ## Sequential binomial
+% @   
+% %  \end{column}
+% %  \begin{column}{0.33\paperwidth}
+% \pause
+% \vspace{-8pt}
+% <<gel4,size='tiny',echo=-(1:2)>>=
+% #Rhat4 <- gelman.diag(jags.post.rem4)$psrf
+% #Rhat4[jags.pars.rem[1:4],1,drop=FALSE]
+% gelman.diag(jags.post.rem4[,jags.pars.rem[1:4]], multivar=FALSE) ## Marginalized N
+% @   
+% %  \end{column}
+% %\end{columns}
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Compare effective sample size}
+%   \small
+%   Conditional-on-$N$, conditional-on-$n$
+%   \vspace{-6pt}
+% <<ess2,size='scriptsize'>>=
+% effectiveSize(jags.post.rem2[,jags.pars.rem[1:4]])
+% @   
+%   Conditional-on-$N$, sequential binomial
+%   \vspace{-6pt}
+% <<ess3,size='scriptsize'>>=
+% effectiveSize(jags.post.rem3[,jags.pars.rem[1:4]])
+% @   
+%   Marginalized $N$
+%   \vspace{-6pt}
+% <<ess4,size='scriptsize'>>=
+% effectiveSize(jags.post.rem4[,jags.pars.rem[1:4]])
+% @
+% \pause
+% %\vfill
+% \centering
+% \small
+% The ``marginalized $N$'' formulation wins in terms of both convergence and
+% effective sample size\pause\dots but remember: this particular
+% marginal model is only valid if $N$ is Poisson. \\ 
+% \end{frame}
 
 
 
@@ -1119,12 +1119,12 @@ marginal model is only valid if $N$ is Poisson. \\
     \item Fit the model using `unmarked'\footnote{\scriptsize You will
         need to create an observation covariate indicating observer A
         and B} and JAGS
-    \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
+    \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
     % \item Repeat steps 1-3 using the \alert{dependent} double observer
     %   method. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday.
 \end{frame}
 
 

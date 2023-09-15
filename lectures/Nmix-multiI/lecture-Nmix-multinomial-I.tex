@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -202,7 +202,7 @@
 \end{alltt}
 \begin{verbatim}
 ##      survived depredated starved
-## [1,]        9          7       4
+## [1,]        8          9       3
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -803,7 +803,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \end{itemize}
   \pause
   \vfill
-  These are just fun probability tricks that can help improve MCMC performance. \\
+  These are just probability tricks that can help improve MCMC performance. See AHM I for details. Here, we will focus on the first option. \\
 \end{frame}
 
 
@@ -1044,447 +1044,233 @@ totalAbundance <- sum(N[1:nSites])
 
 
 
-\begin{frame}%[fragile]
-  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
-  The multinomial distribution can be represented by a sequence of
-  binomial distributions in which we reduce the number of trials.
-  \pause
-  \vfill
-  \large
-  \begin{gather*}
-    y_{i1} \sim \mathrm{Bin}(N_i, p) \\
-    y_{i2} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}}, p) \\
-    y_{i3} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}-y_{i2}}, p) \\
-  \end{gather*}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-model {
-
-lambda.intercept ~ dunif(0, 5)
-beta0 <- log(lambda.intercept)
-beta1 ~ dnorm(0, 0.5)
-
-alpha0 ~ dnorm(0, 0.5)  
-alpha1 ~ dnorm(0, 0.5)
-
-for(i in 1:nSites) {
-  log(lambda[i]) <- beta0 + beta1*streamDepth[i]
-  N[i] ~ dpois(lambda[i])         # Latent local abundance
-  logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
-  y[i,1] ~ dbin(p[i], N[i])
-  y[i,2] ~ dbin(p[i], N[i]-y[i,1])
-  y[i,3] ~ dbin(p[i], N[i]-y[i,1]-y[i,2])
-}
-
-totalAbundance <- sum(N[1:nSites])
-
-}
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-6pt}
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.data.rem3} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{streamDepth}\hlstd{=streamDepth,}
-                       \hlkwc{nSites}\hlstd{=nSites)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\vfill
-  Do MCMC
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.post.rem3} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.rem3,} \hlkwc{inits}\hlstd{=jags.inits.rem,}
-                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,}
-                             \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod3.jag"}\hlstd{,}
-                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                             \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.rem3[,jags.pars.rem])}
-\end{alltt}
-\begin{verbatim}
-## 
-## Iterations = 1:2000
-## Thinning interval = 1 
-## Number of chains = 3 
-## Sample size per chain = 2000 
-## 
-## 1. Empirical mean and standard deviation for each variable,
-##    plus standard error of the mean:
-## 
-##                    Mean       SD Naive SE Time-series SE
-## beta0            0.8509  0.08454 0.001091       0.006119
-## beta1            0.3760  0.10901 0.001407       0.009684
-## alpha0           0.1971  0.18707 0.002415       0.027903
-## alpha1          -0.9562  0.18956 0.002447       0.028028
-## totalAbundance 261.2537 22.28578 0.287708       2.919323
-## 
-## 2. Quantiles for each variable:
-## 
-##                    2.5%       25%      50%      75%    97.5%
-## beta0            0.6793   0.79296   0.8520   0.9098   1.0116
-## beta1            0.1675   0.30095   0.3756   0.4484   0.5958
-## alpha0          -0.1682   0.06105   0.1910   0.3362   0.5442
-## alpha1          -1.2982  -1.08690  -0.9730  -0.8432  -0.5331
-## totalAbundance 227.0000 245.00000 258.0000 274.0000 312.0000
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+% \begin{frame}%[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+%   The multinomial distribution can be represented by a sequence of
+%   binomial distributions in which we reduce the number of trials.
+%   \pause
+%   \vfill
+%   \large
+%   \begin{gather*}
+%     y_{i1} \sim \mathrm{Bin}(N_i, p) \\
+%     y_{i2} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}}, p) \\
+%     y_{i3} \sim \mathrm{Bin}(N_i{\color{red} -y_{i1}-y_{i2}}, p) \\
+%   \end{gather*}
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem3[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
-\end{alltt}
-\end{kframe}
 
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-rem3-1} 
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Conditional-on-$N$, sequential binomial}
+% <<bugs-removal3,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+% writeLines(readLines("removal-mod3.jag"))
+% @
+% \end{frame}
 
-}
 
 
-\end{knitrout}
-\end{frame}
 
 
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-6pt}
+% <<bugs-data3,size='small'>>=
+% jags.data.rem3 <- list(y=y2, streamDepth=streamDepth,
+%                        nSites=nSites)
+% @
+% \vfill
+%   Do MCMC
+%   \vspace{-6pt}
+% <<bugs-mcmc-rem3,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+% jags.post.rem3 <- jags.basic(data=jags.data.rem3, inits=jags.inits.rem,
+%                              parameters.to.save=jags.pars.rem,
+%                              model.file="removal-mod3.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0,
+%                              n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem3[,jags.pars.rem[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-rem3-1} 
-
-}
 
 
-\end{knitrout}
-\end{frame}
 
 
+% \begin{frame}[fragile]
+%   \frametitle{Summarize output}
+% <<bugs-sum-rem3,size='tiny'>>=
+% summary(jags.post.rem3[,jags.pars.rem])
+% @ 
+% \end{frame}
 
 
 
-
-
-\begin{frame}%[fragile]
-  \frametitle{Marginalized $N$}
-  If
-  \[
-    N \sim \mathrm{Poisson}(\lambda)
-  \]
-  and
-  \[
-    \{y_1, \dots, y_K\}|N \sim \mathrm{Multinomial}(N, \{\pi_1, \dots, \pi_K\})
-  \]
-  \pause
-  \vfill
-  then the marginal distribution of $y$ is
-  \[
-    y_k \sim \mathrm{Poisson}(\lambda \times \pi_k) 
-  \]
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Marginalized $N$}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-model {
-
-lambda.intercept ~ dunif(0, 5)
-beta0 <- log(lambda.intercept)
-beta1 ~ dnorm(0, 0.5)
-
-alpha0 ~ dnorm(0, 0.5)  
-alpha1 ~ dnorm(0, 0.5)
-
-for(i in 1:nSites) {
-  log(lambda[i]) <- beta0 + beta1*streamDepth[i]
-  logit(p[i]) <- alpha0 + alpha1*streamDepth[i]
-  pi[i,1] <- p[i]
-  pi[i,2] <- (1-p[i])*p[i]
-  pi[i,3] <- (1-p[i])^2*p[i]
-  y[i,1] ~ dpois(lambda[i]*pi[i,1])
-  y[i,2] ~ dpois(lambda[i]*pi[i,2])
-  y[i,3] ~ dpois(lambda[i]*pi[i,3])
-}
-
-# Could recover N here using Bayes rule (not shown)
-# totalAbundance <- sum(N[1:nSites])
-
-}
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Data, inits, and parameters}
-  Put data in a named list
-  \vspace{-6pt}
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.data.rem4} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{streamDepth}\hlstd{=streamDepth,}
-                       \hlkwc{nSites}\hlstd{=nSites)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\vfill
-  Do MCMC
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{jags.post.rem4} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.rem4,} \hlkwc{inits}\hlstd{=jags.inits.rem,}
-                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,}
-                             \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod4.jag"}\hlstd{,}
-                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                             \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Summarize output}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.rem4[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
-\end{alltt}
-\begin{verbatim}
-## 
-## Iterations = 1:2000
-## Thinning interval = 1 
-## Number of chains = 3 
-## Sample size per chain = 2000 
-## 
-## 1. Empirical mean and standard deviation for each variable,
-##    plus standard error of the mean:
-## 
-##           Mean      SD Naive SE Time-series SE
-## beta0   0.8674 0.09317 0.001203       0.003005
-## beta1   0.4048 0.13034 0.001683       0.004766
-## alpha0  0.1576 0.21039 0.002716       0.006265
-## alpha1 -1.0019 0.21624 0.002792       0.006795
-## 
-## 2. Quantiles for each variable:
-## 
-##           2.5%      25%     50%     75%   97.5%
-## beta0   0.6925  0.80585  0.8644  0.9273  1.0566
-## beta1   0.1764  0.31467  0.3980  0.4843  0.6976
-## alpha0 -0.2739  0.02863  0.1696  0.2993  0.5413
-## alpha1 -1.4254 -1.14946 -1.0055 -0.8532 -0.5802
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Traceplots and density plots}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem4[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot1-rem4-1} 
-
-}
-
-
-\end{knitrout}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Compare convergence}
-  \small
-\centering
-%\vfill
-You want $\hat{R}<1.1$ for all parameters \\
-%All the results were similar, but let's make sure they converged
-%\begin{columns}
-%  \begin{column}{0.33\paperwidth}
-%  \begin{column}{0.5\textwidth}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hlstd{(coda)}
-\hlkwd{gelman.diag}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Conditional-on-N and n}
-\end{alltt}
-\begin{verbatim}
-## Potential scale reduction factors:
-## 
-##        Point est. Upper C.I.
-## beta0        1.02       1.08
-## beta1        1.05       1.17
-## alpha0       1.04       1.12
-## alpha1       1.02       1.07
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-%  \end{column}
-%  \begin{column}{0.33\paperwidth}
-\pause
-\vspace{-8pt}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{gelman.diag}\hlstd{(jags.post.rem3[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Sequential binomial}
-\end{alltt}
-\begin{verbatim}
-## Potential scale reduction factors:
-## 
-##        Point est. Upper C.I.
-## beta0        1.01       1.02
-## beta1        1.02       1.03
-## alpha0       1.12       1.32
-## alpha1       1.12       1.38
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-%  \end{column}
-%  \begin{column}{0.33\paperwidth}
-\pause
-\vspace{-8pt}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{gelman.diag}\hlstd{(jags.post.rem4[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]],} \hlkwc{multivar}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{## Marginalized N}
-\end{alltt}
-\begin{verbatim}
-## Potential scale reduction factors:
-## 
-##        Point est. Upper C.I.
-## beta0        1.02       1.05
-## beta1        1.02       1.06
-## alpha0       1.02       1.06
-## alpha1       1.01       1.02
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-%  \end{column}
-%\end{columns}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Compare effective sample size}
-  \small
-  Conditional-on-$N$, conditional-on-$n$
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{effectiveSize}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
-\end{alltt}
-\begin{verbatim}
-##    beta0    beta1   alpha0   alpha1 
-## 306.1222 237.8064 338.1930 414.2832
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-  Conditional-on-$N$, sequential binomial
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{effectiveSize}\hlstd{(jags.post.rem3[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
-\end{alltt}
-\begin{verbatim}
-##     beta0     beta1    alpha0    alpha1 
-## 356.46885 149.20647  52.01098  49.73281
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-  Marginalized $N$
-  \vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{effectiveSize}\hlstd{(jags.post.rem4[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
-\end{alltt}
-\begin{verbatim}
-##     beta0     beta1    alpha0    alpha1 
-## 1119.9167  814.6232 1268.7355 1012.7694
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\pause
-%\vfill
-\centering
-\small
-The ``marginalized $N$'' formulation wins in terms of both convergence and
-effective sample size\pause\dots but remember: this particular
-marginal model is only valid if $N$ is Poisson. \\ 
-\end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem3[,jags.pars.rem[1:3]])
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot2-rem3,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem3[,jags.pars.rem[4:5]])
+% @ 
+% \end{frame}
+
+
+
+
+
+
+
+% \begin{frame}%[fragile]
+%   \frametitle{Marginalized $N$}
+%   If
+%   \[
+%     N \sim \mathrm{Poisson}(\lambda)
+%   \]
+%   and
+%   \[
+%     \{y_1, \dots, y_K\}|N \sim \mathrm{Multinomial}(N, \{\pi_1, \dots, \pi_K\})
+%   \]
+%   \pause
+%   \vfill
+%   then the marginal distribution of $y$ is
+%   \[
+%     y_k \sim \mathrm{Poisson}(\lambda \times \pi_k) 
+%   \]
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Marginalized $N$}
+% <<bugs-removal4,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+% writeLines(readLines("removal-mod4.jag"))
+% @
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Data, inits, and parameters}
+%   Put data in a named list
+%   \vspace{-6pt}
+% <<bugs-data4,size='small'>>=
+% jags.data.rem4 <- list(y=y2, streamDepth=streamDepth,
+%                        nSites=nSites)
+% @
+% \vfill
+%   Do MCMC
+%   \vspace{-6pt}
+% <<bugs-mcmc-rem4,size='scriptsize',message=FALSE,cache=TRUE,results='hide'>>=
+% jags.post.rem4 <- jags.basic(data=jags.data.rem4, inits=jags.inits.rem,
+%                              parameters.to.save=jags.pars.rem,
+%                              model.file="removal-mod4.jag",
+%                              n.chains=3, n.adapt=100, n.burnin=0,
+%                              n.iter=2000, parallel=TRUE)
+% @ 
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Summarize output}
+% <<bugs-sum-rem4,size='tiny'>>=
+% summary(jags.post.rem4[,jags.pars.rem[1:4]])
+% @ 
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Traceplots and density plots}
+% <<bugs-plot1-rem4,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
+% plot(jags.post.rem4[,jags.pars.rem[1:4]])
+% @ 
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Compare convergence}
+%   \small
+% \centering
+% %\vfill
+% You want $\hat{R}<1.1$ for all parameters \\
+% %All the results were similar, but let's make sure they converged
+% %\begin{columns}
+% %  \begin{column}{0.33\paperwidth}
+% %  \begin{column}{0.5\textwidth}
+% <<gel2,size='tiny'>>=
+% library(coda)
+% gelman.diag(jags.post.rem2[,jags.pars.rem[1:4]], multivar=FALSE) ## Conditional-on-N and n
+% @   
+% %  \end{column}
+% %  \begin{column}{0.33\paperwidth}
+% \pause
+% \vspace{-8pt}
+% <<gel3,size='tiny',echo=-(1:2)>>=
+% #Rhat3 <- gelman.diag(jags.post.rem3)$psrf
+% #Rhat3[jags.pars.rem[1:4],1,drop=FALSE]
+% gelman.diag(jags.post.rem3[,jags.pars.rem[1:4]], multivar=FALSE) ## Sequential binomial
+% @   
+% %  \end{column}
+% %  \begin{column}{0.33\paperwidth}
+% \pause
+% \vspace{-8pt}
+% <<gel4,size='tiny',echo=-(1:2)>>=
+% #Rhat4 <- gelman.diag(jags.post.rem4)$psrf
+% #Rhat4[jags.pars.rem[1:4],1,drop=FALSE]
+% gelman.diag(jags.post.rem4[,jags.pars.rem[1:4]], multivar=FALSE) ## Marginalized N
+% @   
+% %  \end{column}
+% %\end{columns}
+% \end{frame}
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Compare effective sample size}
+%   \small
+%   Conditional-on-$N$, conditional-on-$n$
+%   \vspace{-6pt}
+% <<ess2,size='scriptsize'>>=
+% effectiveSize(jags.post.rem2[,jags.pars.rem[1:4]])
+% @   
+%   Conditional-on-$N$, sequential binomial
+%   \vspace{-6pt}
+% <<ess3,size='scriptsize'>>=
+% effectiveSize(jags.post.rem3[,jags.pars.rem[1:4]])
+% @   
+%   Marginalized $N$
+%   \vspace{-6pt}
+% <<ess4,size='scriptsize'>>=
+% effectiveSize(jags.post.rem4[,jags.pars.rem[1:4]])
+% @
+% \pause
+% %\vfill
+% \centering
+% \small
+% The ``marginalized $N$'' formulation wins in terms of both convergence and
+% effective sample size\pause\dots but remember: this particular
+% marginal model is only valid if $N$ is Poisson. \\ 
+% \end{frame}
 
 
 
@@ -1666,12 +1452,12 @@ marginal model is only valid if $N$ is Poisson. \\
     \item Fit the model using `unmarked'\footnote{\scriptsize You will
         need to create an observation covariate indicating observer A
         and B} and JAGS
-    \item Use the point estimate of $p$ to compute the $\pi$ probabilities.
+    \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
     % \item Repeat steps 1-3 using the \alert{dependent} double observer
     %   method. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday.
 \end{frame}
 
 

@@ -50,7 +50,8 @@ knit_theme$set("edit-kwrite")
 %  \maketitle
   \centering
   {\LARGE Lecture 6 -- Binomial $N$-mixture models: \\
-    model selection, spatial prediction, and goodness-of-fit} \\  
+    model selection % , spatial prediction,
+    and goodness-of-fit} \\  
   {\color{default} \rule{\textwidth}{0.1pt}}
   \vfill
   \large
@@ -348,103 +349,103 @@ modSel(grouse.models)
   \vfill
   Or, we could model-average the predictions, which we'll cover later
   in the course. \\
-  \pause
-  \vfill
-  For now, let's use the top model to predict grouse abundance across
-  N Georgia.
+  % \pause
+  % \vfill
+  % For now, let's use the top model to predict grouse abundance across
+  % N Georgia.
 \end{frame}
 
 
-\subsubsection{Spatial prediction}
+% \subsubsection{Spatial prediction}
 
 
-\begin{frame}
-  \frametitle{Spatial prediction}
-  When our covariates are available as raster layers, we can paint our
-  predictions across the landscape. \\
-  \pause
-  \vfill
-  This doesn't account for spatial autocorrelation, except through the
-  covariates, but it can be very useful nonetheless for modeling
-  species distributions. \\
-  \pause
-  \vfill
-  We will cover spatial autocorrelation later. 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Spatial prediction}
-<<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE,warning=FALSE>>=
-library(raster); library(sf)
-load("state_boundaries.gzip")
-elev <- raster("elev_utm16.tif")
-plot(elev, main="Elevation")
-plot(ga.nc.sc.tn.utm, add=TRUE)
-@ 
-\end{frame}
+% \begin{frame}
+%   \frametitle{Spatial prediction}
+%   When our covariates are available as raster layers, we can paint our
+%   predictions across the landscape. \\
+%   \pause
+%   \vfill
+%   This doesn't account for spatial autocorrelation, except through the
+%   covariates, but it can be very useful nonetheless for modeling
+%   species distributions. \\
+%   \pause
+%   \vfill
+%   We will cover spatial autocorrelation later. 
+% \end{frame}
 
 
 
-
-\begin{frame}[fragile]
-  \frametitle{Spatial prediction}
-%  Extract UTM northing:
-<<utmN-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize'>>=
-utmN <- elev
-utmN[] <- yFromCell(elev, cell=1:length(elev))
-plot(utmN, main="UTM northing")
-plot(ga.nc.sc.tn.utm, add=TRUE)
-@ 
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Spatial prediction}
-  We have to standardize our rasters \alert{using the same mean and SD
-    as used before}.  
-\vspace{-6pt}
-<<means-sds,size='scriptsize'>>=
-attributes(site.covs.s)[3] ## Means
-attributes(site.covs.s)[4] ## SDs
-@
-\pause
-\vfill
-<<std-rast,size='scriptsize'>>=
-elev.s <- (elev-666.1)/186.6        
-utmN.s <- (utmN-3852681.2)/18030.2  
-@
-\pause
-\vfill
-Put them together in a `raster stack'
-\vspace{-6pt}
-<<stack,size='scriptsize'>>=
-elev.utm <- stack(elev.s,utmN.s)
-names(elev.utm) <- c("elevation.s", "utmN.s")
-@ 
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Spatial prediction}
-<<lam-pred-map,size='scriptsize',results='hide',fig.width=10.5,out.width='85%',fig.align='center',cache=TRUE>>=
-grouse.pred.map <- predict(fm2, newdata=elev.utm, type="state")
-plot(grouse.pred.map)
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Spatial prediction}
+% <<elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE,warning=FALSE>>=
+% library(raster); library(sf)
+% load("state_boundaries.gzip")
+% elev <- raster("elev_utm16.tif")
+% plot(elev, main="Elevation")
+% plot(ga.nc.sc.tn.utm, add=TRUE)
+% @ 
+% \end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Spatial prediction}
-<<Elam-pred-map,size='scriptsize',results='hide',fig.width=9.7,out.width='90%',fig.align='center'>>=
-plot(grouse.pred.map$Predicted, main="Grouse distribution")
-plot(ga.nc.sc.tn.utm, add=TRUE)
-@
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{Spatial prediction}
+% %  Extract UTM northing:
+% <<utmN-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize'>>=
+% utmN <- elev
+% utmN[] <- yFromCell(elev, cell=1:length(elev))
+% plot(utmN, main="UTM northing")
+% plot(ga.nc.sc.tn.utm, add=TRUE)
+% @ 
+% \end{frame}
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Spatial prediction}
+%   We have to standardize our rasters \alert{using the same mean and SD
+%     as used before}.  
+% \vspace{-6pt}
+% <<means-sds,size='scriptsize'>>=
+% attributes(site.covs.s)[3] ## Means
+% attributes(site.covs.s)[4] ## SDs
+% @
+% \pause
+% \vfill
+% <<std-rast,size='scriptsize'>>=
+% elev.s <- (elev-666.1)/186.6        
+% utmN.s <- (utmN-3852681.2)/18030.2  
+% @
+% \pause
+% \vfill
+% Put them together in a `raster stack'
+% \vspace{-6pt}
+% <<stack,size='scriptsize'>>=
+% elev.utm <- stack(elev.s,utmN.s)
+% names(elev.utm) <- c("elevation.s", "utmN.s")
+% @ 
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Spatial prediction}
+% <<lam-pred-map,size='scriptsize',results='hide',fig.width=10.5,out.width='85%',fig.align='center',cache=TRUE>>=
+% grouse.pred.map <- predict(fm2, newdata=elev.utm, type="state")
+% plot(grouse.pred.map)
+% @
+% \end{frame}
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Spatial prediction}
+% <<Elam-pred-map,size='scriptsize',results='hide',fig.width=9.7,out.width='90%',fig.align='center'>>=
+% plot(grouse.pred.map$Predicted, main="Grouse distribution")
+% plot(ga.nc.sc.tn.utm, add=TRUE)
+% @
+% \end{frame}
 
 
 
@@ -653,7 +654,7 @@ jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.par
 \begin{frame}[fragile]
   \frametitle{WAIC}
   \[
-    \mathrm{WAIC} = -2(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta)))
+    \mathrm{WAIC} = -2\left(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta))\right)
   \]
 <<waic-fn-ld-op,size='small',include=FALSE>>=
 waic <- function(x, focus=c("y", "yN")) {
