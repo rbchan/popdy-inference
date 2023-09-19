@@ -270,9 +270,9 @@
 
 
 
-\bgroup
-\let\oldfootnoterule\footnoterule
-\def\footnoterule{\only<2->\oldfootnoterule}
+% \bgroup
+% \let\oldfootnoterule\footnoterule
+% \def\footnoterule{\only<2->\oldfootnoterule}
 \begin{frame}[fragile]
   \frametitle{Model selection in `unmarked'}
   \small
@@ -292,11 +292,13 @@
 \end{knitrout}
 \pause
 \vfill
-Standardize the covariates\footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
+Standardize the covariates
+% \footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
   \vspace{-6pt}
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcom{## scale() only works if all the covariates are continuous  }
 \hlstd{site.covs.s} \hlkwb{<-} \hlkwd{scale}\hlstd{(}\hlkwd{siteCovs}\hlstd{(grouse.umf))}
 \hlkwd{colnames}\hlstd{(site.covs.s)} \hlkwb{<-} \hlkwd{paste0}\hlstd{(}\hlkwd{colnames}\hlstd{(site.covs.s),} \hlstr{".s"}\hlstd{)}
 \hlkwd{siteCovs}\hlstd{(grouse.umf)} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{siteCovs}\hlstd{(grouse.umf), site.covs.s)}
@@ -305,7 +307,7 @@ Standardize the covariates\footnote<2->{\inr{scale} will only work if all the co
 \end{kframe}
 \end{knitrout}
 \end{frame}
-\egroup
+%\egroup
 
 
 
@@ -857,7 +859,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 125.5645
+## [1] 126.7338
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -867,7 +869,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 123.2067
+## [1] 114.9215
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -877,7 +879,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 137.0568
+## [1] 116.2775
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -889,7 +891,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 143.8135
+## [1] 151.9427
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -899,7 +901,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 146.7478
+## [1] 152.4884
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -909,7 +911,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 140.2578
+## [1] 148.2607
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -944,13 +946,13 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \toprule
   & WAIC & delta\\
 \midrule
-Model 2 & 123.21 & 0.00\\
-Model 1 & 125.56 & 2.36\\
-Model 3 & 137.06 & 13.85\\
-Model 4 & 143.81 & 20.61\\
-Model 5 & 146.75 & 23.54\\
+Model 2 & 114.92 & 0.00\\
+Model 3 & 116.28 & 1.36\\
+Model 1 & 126.73 & 11.81\\
+Model 4 & 151.94 & 37.02\\
+Model 5 & 152.49 & 37.57\\
 \addlinespace
-Model 6 & 146.75 & 23.54\\
+Model 6 & 152.49 & 37.57\\
 \bottomrule
 \end{tabular}
 
@@ -1178,9 +1180,7 @@ No sign of obvious outliers or other problems.
 \hlstd{\}}
 \hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
 \end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Running parametric bootstrap in parallel on 3 cores.}}\end{kframe}
+\end{kframe}
 
 {\centering \includegraphics[width=0.7\linewidth]{figure/parboot-1} 
 
@@ -1205,11 +1205,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           1.38             5.19        0.373
+## SSE 23.2           1.83             5.28        0.348
 ## 
 ## t_B quantiles:
-##      0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 7.7   13  18  21  25    32   36
+##       0% 2.5% 25% 50% 75% 97.5% 100%
+## [1,] 7.9   11  18  21  25    33   35
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples

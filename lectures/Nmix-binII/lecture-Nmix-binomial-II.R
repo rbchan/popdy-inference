@@ -15,13 +15,14 @@ grouse.umf <- unmarkedFramePCount(
 
 
 ## ----grouse-stand,size='footnotesize',cache=FALSE-----------------------------
+## scale() only works if all the covariates are continuous  
 site.covs.s <- scale(siteCovs(grouse.umf))
 colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
 siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
 obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
 
 
-## ----grouse-mods,size='footnotesize',warning=FALSE,cache=FALSE----------------
+## ----grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE-----------------
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
@@ -68,46 +69,6 @@ grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
 
 ## ----aic-table,size='scriptsize'----------------------------------------------
 modSel(grouse.models)
-
-
-## ----elev-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize',results='hide',message=FALSE,warning=FALSE----
-library(raster); library(sf)
-load("state_boundaries.gzip")
-elev <- raster("elev_utm16.tif")
-plot(elev, main="Elevation")
-plot(ga.nc.sc.tn.utm, add=TRUE)
-
-
-## ----utmN-sp,fig.width=9.7,out.width='80%',fig.align='center',size='scriptsize'----
-utmN <- elev
-utmN[] <- yFromCell(elev, cell=1:length(elev))
-plot(utmN, main="UTM northing")
-plot(ga.nc.sc.tn.utm, add=TRUE)
-
-
-## ----means-sds,size='scriptsize'----------------------------------------------
-attributes(site.covs.s)[3] ## Means
-attributes(site.covs.s)[4] ## SDs
-
-
-## ----std-rast,size='scriptsize'-----------------------------------------------
-elev.s <- (elev-666.1)/186.6        
-utmN.s <- (utmN-3852681.2)/18030.2  
-
-
-## ----stack,size='scriptsize'--------------------------------------------------
-elev.utm <- stack(elev.s,utmN.s)
-names(elev.utm) <- c("elevation.s", "utmN.s")
-
-
-## ----lam-pred-map,size='scriptsize',results='hide',fig.width=10.5,out.width='85%',fig.align='center',cache=TRUE----
-grouse.pred.map <- predict(fm2, newdata=elev.utm, type="state")
-plot(grouse.pred.map)
-
-
-## ----Elam-pred-map,size='scriptsize',results='hide',fig.width=9.7,out.width='90%',fig.align='center'----
-plot(grouse.pred.map$Predicted, main="Grouse distribution")
-plot(ga.nc.sc.tn.utm, add=TRUE)
 
 
 ## ----bugs-data,size='scriptsize'----------------------------------------------

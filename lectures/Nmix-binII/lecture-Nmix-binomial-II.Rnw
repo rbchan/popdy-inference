@@ -229,9 +229,9 @@ knit_theme$set("edit-kwrite")
 
 
 
-\bgroup
-\let\oldfootnoterule\footnoterule
-\def\footnoterule{\only<2->\oldfootnoterule}
+% \bgroup
+% \let\oldfootnoterule\footnoterule
+% \def\footnoterule{\only<2->\oldfootnoterule}
 \begin{frame}[fragile]
   \frametitle{Model selection in `unmarked'}
   \small
@@ -247,16 +247,18 @@ grouse.umf <- unmarkedFramePCount(
 @
 \pause
 \vfill
-Standardize the covariates\footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
+Standardize the covariates
+% \footnote<2->{\inr{scale} will only work if all the covariates are continuous}:
   \vspace{-6pt}
 <<grouse-stand,size='footnotesize',cache=FALSE>>=
+## scale() only works if all the covariates are continuous  
 site.covs.s <- scale(siteCovs(grouse.umf))
 colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
 siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
 obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
 @ 
 \end{frame}
-\egroup
+%\egroup
 
 
 
@@ -266,7 +268,7 @@ obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
   \small
   Fit some models
   \vspace{-6pt}
-<<grouse-mods,size='footnotesize',warning=FALSE,cache=FALSE>>=
+<<grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE>>=
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
