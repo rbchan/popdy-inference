@@ -7,6 +7,9 @@
 
 - Nmix-bin II is too long
 
+- Remove missing values in grouse data, especially for Nmix examples
+  * Too much for students to learn so many things at once
+
 - Start linear model section with alt form:
   * mu = b0+b1*x, y~N(mu,sig2)
   * Easier transition to GLMs than b0+b1*x+eps
