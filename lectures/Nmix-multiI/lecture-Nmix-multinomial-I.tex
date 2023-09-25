@@ -215,11 +215,11 @@
 
 
 
-\begin{frame}[fragile]
-  \frametitle{\normalsize Multinomial/Categorical vs Binomial/Bernoulli}
-  \centering
-  \fbox{\includegraphics[width=0.85\textwidth]{figs/fig7-1}} \\
-\end{frame}
+% \begin{frame}[fragile]
+%   \frametitle{\normalsize Multinomial/Categorical vs Binomial/Bernoulli}
+%   \centering
+%   \fbox{\includegraphics[width=0.85\textwidth]{figs/fig7-1}} \\
+% \end{frame}
 
 
 
@@ -412,7 +412,6 @@ Site 10 & 0 & 1 & 0\\
 \hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{streamDepth)}
 \hlstd{alpha0} \hlkwb{<-} \hlnum{0}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{1}
 \hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{streamDepth)}
-\hlstd{pi2} \hlkwb{<-} \hlkwd{t}\hlstd{(}\hlkwd{sapply}\hlstd{(p2,} \hlkwa{function}\hlstd{(}\hlkwc{p}\hlstd{)} \hlkwd{c}\hlstd{(p, (}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{*}\hlstd{p, (}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlnum{2}\hlopt{*}\hlstd{p, (}\hlnum{1}\hlopt{-}\hlstd{p)}\hlopt{^}\hlnum{3}\hlstd{)))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -424,8 +423,9 @@ Site 10 & 0 & 1 & 0\\
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}         \hlcom{## local abundance }
-\hlstd{y2.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
+\hlstd{y2.all} \hlkwb{<-} \hlstd{pi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
 \hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{pi2[i,]} \hlkwb{<-} \hlkwd{c}\hlstd{(p2[i], (}\hlnum{1}\hlopt{-}\hlstd{p2[i])}\hlopt{*}\hlstd{p2[i], (}\hlnum{1}\hlopt{-}\hlstd{p2[i])}\hlopt{^}\hlnum{2}\hlopt{*}\hlstd{p2[i], (}\hlnum{1}\hlopt{-}\hlstd{p2[i])}\hlopt{^}\hlnum{3}\hlstd{)}
     \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])}
 \hlstd{\}}
 \hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlopt{-}\hlstd{K]} \hlcom{## Discard final column... individuals not detected}
@@ -793,18 +793,20 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial
-  % , some of which
-  that we can exploit to fit the model in JAGS.
+  There are several equivalent formulations of the multinomial, some
+  of which that we can exploit to fit the model in JAGS. \\
+  
   \begin{itemize}
-%    \item Conditional-on-$N$, missing $y_{iK}$
+    \item Conditional-on-$N$, missing $y_{iK}$ (Not possible in JAGS)
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
     \item Conditional-on-$N$, sequential binomial
     \item Marginalized $N$
   \end{itemize}
   \pause
   \vfill
-  These are just probability tricks that can help improve MCMC performance. See AHM I for details. Here, we will focus on the first option. \\
+  These are just probability tricks that can affect MCMC
+  performance. See AHM I for details. Here, we will focus on the second
+  option. \\ 
 \end{frame}
 
 
@@ -1458,7 +1460,7 @@ totalAbundance <- sum(N[1:nSites])
     %   method. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday.
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday.
 \end{frame}
 
 

@@ -47,18 +47,19 @@ kable(y1[1:10,], format="latex", booktabs=TRUE, table.envir="table")
 streamDepth <- rnorm(nSites)
 
 
-## ----nsim-cov2,size='scriptsize'----------------------------------------------
+## ----nsim-cov2,size='scriptsize',echo=1:4-------------------------------------
 beta0 <- 1; beta1 <- 0.5
 lambda2 <- exp(beta0 + beta1*streamDepth)
 alpha0 <- 0; alpha1 <- -1
 p2 <- plogis(alpha0 + alpha1*streamDepth)
-pi2 <- t(sapply(p2, function(p) c(p, (1-p)*p, (1-p)^2*p, (1-p)^3)))
+## pi2 <- t(sapply(p2, function(p) c(p, (1-p)*p, (1-p)^2*p, (1-p)^3)))
 
 
 ## ----sim-cov3,size='scriptsize'-----------------------------------------------
 N2 <- rpois(nSites, lambda=lambda2)         ## local abundance 
-y2.all <- matrix(NA, nrow=nSites, ncol=K)
+y2.all <- pi2 <- matrix(NA, nrow=nSites, ncol=K)
 for(i in 1:nSites) {
+    pi2[i,] <- c(p2[i], (1-p2[i])*p2[i], (1-p2[i])^2*p2[i], (1-p2[i])^3)
     y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])
 }
 y2 <- y2.all[,-K] ## Discard final column... individuals not detected
@@ -151,7 +152,7 @@ jags.pars.rem <- c("beta0", "beta1",
                    "alpha0", "alpha1", "totalAbundance")
 
 
-## ----bugs-mcmc-rem2,size='tiny',message=FALSE,cache=TRUE,results='hide'-------
+## ----bugs-mcmc-rem2,size='tiny',message=FALSE,cache=FALSE,results='hide'------
 library(jagsUI); library(coda)
 jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
                              parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
