@@ -8,7 +8,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -1251,7 +1250,8 @@ plot(jags.post.line[,jags.pars.line[4:5]])
       parameter ($\sigma$).
     \item Compare the half-normal model to two other models with the
       same covariates, but with negative exponential and hazard
-      rate detection functions. Which has the lowest AIC? 
+      rate detection functions. Which has the lowest AIC? Do this with
+      `unmarked', not JAGS.  
   \end{enumerate}
 %  \pause
   \vfill
@@ -1262,7 +1262,7 @@ plot(jags.post.line[,jags.pars.line[4:5]])
   \end{itemize}
 %  \pause
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
 \end{frame}
 
 

@@ -58,7 +58,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
-
 % Load function to compile and open PDF
 
 
@@ -427,20 +426,20 @@
 
 
 \begin{frame}
-  \frametitle{In-class exercise}
-  Building off the previous example\dots
-  \begin{enumerate}
-    \item Use R code and the Shiny app below to compute $\bar{p}$ for line-transect sampling when 
-      $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
-    \item Repeat, but for point-transect sampling. 
-    \end{enumerate}
-    \vfill
+  \frametitle{Shiny App}
+  % Building off the previous example\dots
+  % \begin{enumerate}
+  %   \item Use R code and the Shiny app below to compute $\bar{p}$ for line-transect sampling when 
+  %     $\sigma=50, 100, \mathrm{and}\, 200$, instead of $\sigma=25$.  
+  %   \item Repeat, but for point-transect sampling. 
+  %   \end{enumerate}
+  %   \vfill
     \centering
     \href{
       https://richard-chandler.shinyapps.io/distance-sampling/
     }{
       \Large
-      Shiny App \\
+%      Shiny App \\
       \normalsize
       \color{blue}
       https://richard-chandler.shinyapps.io/distance-sampling/
@@ -1804,7 +1803,8 @@ totalAbundance <- sum(N[1:nSites])
       parameter ($\sigma$).
     \item Compare the half-normal model to two other models with the
       same covariates, but with negative exponential and hazard
-      rate detection functions. Which has the lowest AIC? 
+      rate detection functions. Which has the lowest AIC? Do this with
+      `unmarked', not JAGS.  
   \end{enumerate}
 %  \pause
   \vfill
@@ -1815,7 +1815,7 @@ totalAbundance <- sum(N[1:nSites])
   \end{itemize}
 %  \pause
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
 \end{frame}
 
 
