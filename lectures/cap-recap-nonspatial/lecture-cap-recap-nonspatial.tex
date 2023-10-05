@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -12,9 +12,6 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
-\makeatletter
-\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
-\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -49,14 +46,6 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
-\makeatletter
-\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-}}
-\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -69,7 +58,6 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV},urlcolor=blue}
 
 %\urlstyle{same}
-
 
 
 % Load function to compile and open PDF
@@ -86,9 +74,6 @@
 % R packages
 % Need MARK too. Linux instructions:
 % http://www.phidot.org/software/mark/rmark/linux/
-
-
-
 
 % New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
@@ -1122,7 +1107,7 @@ Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
 \begin{verbatim}
 ##               estimate         se        lcl        ucl fixed note
 ## p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
-## f0 g1 a0 t1 42.6208650 16.7216970 20.3019990 89.4758260
+## f0 g1 a0 t1 42.6208580 16.7216940 20.3019960 89.4758100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1136,8 +1121,8 @@ Estimate of $N$
 \end{alltt}
 \begin{verbatim}
 ## $`N Population Size`
-##   estimate    lcl      ucl
-## 1 96.62086 74.302 143.4758
+##   estimate       se    lcl      ucl
+## 1 96.62086 16.72169 74.302 143.4758
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1267,10 +1252,10 @@ Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 \end{alltt}
 \begin{verbatim}
 ##              estimate        se       lcl        ucl fixed note
-## pi g1 m1    0.6554419 0.1938704 0.2612436  0.9109759           
-## p g1 t1 m1  0.3985716 0.1171104 0.2027864  0.6332370           
-## p g1 t1 m2  0.8435083 0.1105444 0.5107920  0.9653087           
-## f0 g1 a0 t1 7.6766940 5.7418266 2.0786060 28.3515150
+## pi g1 m1    0.6554418 0.1938699 0.2612444  0.9109754           
+## p g1 t1 m1  0.3985715 0.1171101 0.2027866  0.6332365           
+## p g1 t1 m2  0.8435082 0.1105442 0.5107930  0.9653085           
+## f0 g1 a0 t1 7.6766990 5.7418226 2.0786103 28.3514930
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1284,8 +1269,8 @@ Estimate of $N$
 \end{alltt}
 \begin{verbatim}
 ## $`N Population Size`
-##   estimate      lcl      ucl
-## 1 94.67669 89.07861 115.3515
+##   estimate       se      lcl      ucl
+## 1  94.6767 5.741823 89.07861 115.3515
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1384,9 +1369,8 @@ Estimate of $N$
   But why bother with augmentation?
   \begin{itemize}
     \item DA works for \alert{all} varieties of mark-recapture models
-    \item Makes it easy to incorporate
-      individual-covariates\dots\pause including distance and
-      location!   
+    \item Makes it easy to incorporate individual-covariates\dots \pause
+      including distance and location.
   \end{itemize}
 \end{frame}
 
@@ -1405,8 +1389,8 @@ Estimate of $N$
   % \pause
   % \vfill
   First, let's augment the data simulated under model $M_b$, with
-  $M=200$.
-\vspace{-6pt}
+  $M=200$. \\
+%\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1418,8 +1402,8 @@ Estimate of $N$
 \end{knitrout}
 \pause
 \vfill
-We also need to augment the \inr{prevcap} object.
-\vspace{-6pt}
+We also need to augment the \inr{prevcap} object. \\
+%\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1429,8 +1413,10 @@ We also need to augment the \inr{prevcap} object.
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-And we need a covariate indicating time (occasion)
-\vspace{-6pt}
+\pause
+\vfill
+And we need a covariate indicating time (occasion). \\
+%\vspace{-6pt}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1994,7 +1980,7 @@ N <- sum(z)
       lowest AICc? 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday.
 \end{frame}
 
 

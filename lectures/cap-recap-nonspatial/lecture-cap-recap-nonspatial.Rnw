@@ -10,7 +10,6 @@
 %\urlstyle{same}
 
 
-
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -38,9 +37,6 @@ if(!require(Rcapture)) install.packages("Rcapture")
 if(!require(RMark)) install.packages("RMark")
 if(!require(secr)) install.packages("secr")
 @ 
-
-
-
 % New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
@@ -956,7 +952,7 @@ y.Mh <- y.all.Mh[captured.Mh,]
   \small
   Fit the model and set capture probability equal to recapture probability
   ($p=c$) using the \inr{share} argument.
-<<RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE,warning=FALSE,message=FALSE>>=
+<<RMark,size='scriptsize',warning=FALSE,results='hide',cache=FALSE,warning=FALSE,message=FALSE>>=
 ## install.packages("RMark") ## Must install MARK too!!
 library(RMark)
 y.ch <- data.frame(ch=apply(y, 1, paste, collapse=""))
@@ -1146,9 +1142,8 @@ mark.Mh$results$derived
   But why bother with augmentation?
   \begin{itemize}
     \item DA works for \alert{all} varieties of mark-recapture models
-    \item Makes it easy to incorporate
-      individual-covariates\dots\pause including distance and
-      location!   
+    \item Makes it easy to incorporate individual-covariates\dots \pause
+      including distance and location.
   \end{itemize}
 \end{frame}
 
@@ -1167,8 +1162,8 @@ mark.Mh$results$derived
   % \pause
   % \vfill
   First, let's augment the data simulated under model $M_b$, with
-  $M=200$.
-\vspace{-6pt}
+  $M=200$. \\
+%\vspace{-6pt}
 <<aug-y,size='scriptsize'>>=
 M <- 200
 y.aug <- matrix(0, M, J)
@@ -1176,15 +1171,17 @@ y.aug[1:nrow(y.Mb),] <- y.Mb
 @
 \pause
 \vfill
-We also need to augment the \inr{prevcap} object.
-\vspace{-6pt}
+We also need to augment the \inr{prevcap} object. \\
+%\vspace{-6pt}
 <<un-prevcap,size='scriptsize'>>=
 prevcap.aug <- matrix(FALSE, M, J)
 prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
 prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
 @
-And we need a covariate indicating time (occasion)
-\vspace{-6pt}
+\pause
+\vfill
+And we need a covariate indicating time (occasion). \\
+%\vspace{-6pt}
 <<un-occ,size='scriptsize'>>=
 occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
 @ 
@@ -1610,7 +1607,7 @@ writeLines(readLines("Mh-aug.jag"))
       lowest AICc? 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by Monday at 5:00 PM. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday.
 \end{frame}
 
 
