@@ -290,11 +290,11 @@ if(!require(secr)) install.packages("secr")
   Joint likelihood \\
   \begin{itemize}
     \item Estimate $N$ and $p$ jointly
-    \item Joint likelihood can be written as
-      \begin{itemize}
-      \item $L(N,p;y,n) = p(y|n,p)p(n|N,p)$ or
-      \item $L(N,p;y,n) = p(y,n|N,p)$
-      \end{itemize}
+    % \item Joint likelihood can be written as
+    %   \begin{itemize}
+    %   \item $L(N,p;y,n) = p(y|n,p)p(n|N,p)$ or
+    %   \item $L(N,p;y,n) = p(y,n|N,p)$
+    %   \end{itemize}
   \end{itemize}
   \pause \vfill
   Data augmentation \\
@@ -404,44 +404,44 @@ if(!require(secr)) install.packages("secr")
 
 
 
-\begin{frame}
-  \frametitle{Joint likelihood, conditional-on-$n$}
-%  \frametitle{Conditional-on-$n$, multinomial cell probs}
-  \footnotesize
-  Here's another option (that's easy to implement in JAGS) with a conditional multinomial: \\
-  \begin{gather*}
-    n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
-    \{f_1, \dots, f_K\} \sim \mathrm{Multinomial}(n, \pi_1, \dots, \pi_K) \;\;
-%    \mathrm{for}\, i=1,\dots,n                                           %\\
-%    y_j = h_{k_i}
-  \end{gather*}
-  where $\{f_1, \dots, f_K\}$ are the observed frequencies of each
-  capture history. \\
-  \pause \vfill
-  Example with $J=3$ capture occasions.                                          \\
-%  \begin{columns}
-%    \column{0.9\paperwidth}
-  \scriptsize
-  \vspace{6pt}
-  \centering
-    \begin{tabular}{ll}
-      \hline
-      Capture history & Multinomial cell probability        \\
-      \hline
-%      000 & $\pi_0 = \prod_j 1-p_j/(1-\pi_0)$                           \\
-      100                   & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$ \\
-      010                   & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$ \\
-      001                   & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$ \\
-      110                   & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$     \\
-      101                   & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$     \\
-      011                   & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$     \\
-      111                   & $\pi_7 = p_1p_2p_3/(1-\pi_0)$       \\
-      \hline
-    \end{tabular}
-    % \end{columns}
-    \flushleft
-  where $\pi_0=\prod_{j=1}^J 1-p_j$.                                     \\
-\end{frame}
+% \begin{frame}
+%   \frametitle{Joint likelihood, conditional-on-$n$}
+% %  \frametitle{Conditional-on-$n$, multinomial cell probs}
+%   \footnotesize
+%   Here's another option (that's easy to implement in JAGS) with a conditional multinomial: \\
+%   \begin{gather*}
+%     n \sim \mathrm{Binomial}\left(N, 1-\pi_0\right)                      \\
+%     \{f_1, \dots, f_K\} \sim \mathrm{Multinomial}(n, \pi_1, \dots, \pi_K) \;\;
+% %    \mathrm{for}\, i=1,\dots,n                                           %\\
+% %    y_j = h_{k_i}
+%   \end{gather*}
+%   where $\{f_1, \dots, f_K\}$ are the observed frequencies of each
+%   capture history. \\
+%   \pause \vfill
+%   Example with $J=3$ capture occasions.                                          \\
+% %  \begin{columns}
+% %    \column{0.9\paperwidth}
+%   \scriptsize
+%   \vspace{6pt}
+%   \centering
+%     \begin{tabular}{ll}
+%       \hline
+%       Capture history & Multinomial cell probability        \\
+%       \hline
+% %      000 & $\pi_0 = \prod_j 1-p_j/(1-\pi_0)$                           \\
+%       100                   & $\pi_1=p_1(1-p_2)(1-p_3)/(1-\pi_0)$ \\
+%       010                   & $\pi_2=(1-p_1)p_2(1-p_3)/(1-\pi_0)$ \\
+%       001                   & $\pi_3=(1-p_1)(1-p_2)p_3/(1-\pi_0)$ \\
+%       110                   & $\pi_4=p_1p_2(1-p_3)/(1-\pi_0)$     \\
+%       101                   & $\pi_5=p_1(1-p_2)p_3/(1-\pi_0)$     \\
+%       011                   & $\pi_6=(1-p_1)p_2p_3/(1-\pi_0)$     \\
+%       111                   & $\pi_7 = p_1p_2p_3/(1-\pi_0)$       \\
+%       \hline
+%     \end{tabular}
+%     % \end{columns}
+%     \flushleft
+%   where $\pi_0=\prod_{j=1}^J 1-p_j$.                                     \\
+% \end{frame}
 
 
 

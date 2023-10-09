@@ -123,7 +123,7 @@ y.Mh <- y.all.Mh[captured.Mh,]
 #y.Mh[1:3,]
 
 
-## ----RMark,size='scriptsize',warning=FALSE,results='hide',cache=TRUE,warning=FALSE,message=FALSE----
+## ----RMark,size='scriptsize',warning=FALSE,results='hide',cache=FALSE,warning=FALSE,message=FALSE----
 ## install.packages("RMark") ## Must install MARK too!!
 library(RMark)
 y.ch <- data.frame(ch=apply(y, 1, paste, collapse=""))
