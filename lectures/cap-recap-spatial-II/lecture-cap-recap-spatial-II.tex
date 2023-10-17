@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -90,7 +90,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -201,7 +202,7 @@
   Definitions \\
   \hangindent=0.9cm $\lambda(\bs)$ -- The ``intensity function'' %or ``density surface''
   describing the density of individuals at location $\bs$ \\ 
-  $\Lambda$ -- Expected number of individuals \\
+  $\Lambda$ -- Expected number of individuals in the spatial region $\cal S$ \\
   $N$ -- Realized number of individuals (ie, population size) \\
   $\bsi$ -- Location of the $i$th activity center \\
   $\bxj$ -- Location of trap $j$ \\
@@ -212,6 +213,79 @@
   $p_{ij}$ -- Capture probability \\
   $y_{ijk}$ -- Spatial capture histories \\
 \end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Spatial point processes}
+  {\centering \large
+    The state model of SCR is a spatial (or spatio-temporal) point process \\}
+  \vfill
+  \pause
+  There are many varieties of spatial point processes, including \\
+  \begin{itemize}
+    \item (In)homogeneous binomial point process
+    \item (In)homogeneous Poisson point process
+    \item Cox process
+    \item Gibbs process
+    \item Markov point process
+%    \item Among others
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+  \frametitle{Spatial point processes}
+%  \large
+  All share a few properties \\
+  \begin{itemize}%[<+->]
+    \item<1-> The data are a collection of points called a ``point pattern''
+    \item<2-> Points are in an area called the state-space
+      ($\mathcal{S}$), or observation window, which is usually two
+      dimensional  
+    \item<3-> An intensity function ($\lambda(\bs)$) describes spatial
+      variation in the density of points
+    \item<4-> The area under this function is the expected number of
+      points (a.k.a, $N$) in the region:
+  \end{itemize}
+  \vfill
+%  \Large
+  \uncover<5->{
+\[
+  E(N) = \Lambda = \int_{\mathcal{S}} \lambda(\bs) \;\mathrm{d}\bs
+\]
+}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Poisson point process}
+  Properties
+  \begin{itemize}
+    \item If density is constant throughout the state-space:
+      $\lambda(\bs) = \lambda$, the process is said to be
+      ``homogeneous''
+    \item Otherwise, the process is ``inhomogeneous''
+    \item The number of points in any region of the state-space is
+      Poisson distributed
+    \item Points are independent of one another (no attraction or
+      repulsion) 
+  \end{itemize}
+  \pause
+  \vfill
+%   \centering {\bf Note:} For more complicated models, it's easier to
+%   work in discrete space than continuous space. Plus, spatial
+%   covariates always come to us in the form of raster. \\
+  An inhomogeneous point process allows for spatial variation
+  in density, which can be modeled using \alert{spatial covariates},
+  such as raster layers. \\
+\end{frame}
+
 
 
 
@@ -633,10 +707,10 @@ inside its pixel.
 \end{alltt}
 \begin{verbatim}
 ##                   beta    SE.beta        lcl        ucl
-## D           -0.5600286 0.23323692 -1.0171646 -0.1028926
-## D.elevation  0.9419116 0.18885714  0.5717584  1.3120648
-## g0          -1.1779499 0.21368708 -1.5967689 -0.7591309
-## sigma        3.9089834 0.06556953  3.7804695  4.0374973
+## D           -0.5600286 0.23323698 -1.0171647 -0.1028925
+## D.elevation  0.9419116 0.18885718  0.5717584  1.3120649
+## g0          -1.1779499 0.21368740 -1.5967695 -0.7591303
+## sigma        3.9089834 0.06556957  3.7804694  4.0374974
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -649,10 +723,10 @@ Estimates on original scale (at average covariate values).
 \hlkwd{predict}\hlstd{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
-##        link  estimate SE.estimate        lcl       ucl
-## D       log  1.414252  0.19670665  1.0782035  1.855037
-## g0    logit  0.235421  0.03846324  0.1684337  0.318835
-## sigma   log 49.848252  3.27204265 43.8366192 56.684304
+##        link  estimate SE.estimate        lcl        ucl
+## D       log  1.414252   0.1967067  1.0782035  1.8550375
+## g0    logit  0.235421   0.0384633  0.1684336  0.3188351
+## sigma   log 49.848252   3.2720450 43.8366152 56.6843093
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -718,8 +792,8 @@ Estimates on original scale (at average covariate values).
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 87.35370   12.228401 66.48163 114.7786 59
-## R.N 93.53552    7.885435 81.20121 112.7224 59
+## E.N 87.35370   12.228402 66.48162 114.7786 59
+## R.N 93.53552    7.885437 81.20121 112.7224 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1316,8 +1390,8 @@ Chop activity centers into discrete intervals, then tabulate.
   we can also estimate the realized and expected value of abundance
   (or density) at each location in the region of interest. \\
   \pause \vfill
-  Sometimes, the region of interest will be different than the
-  state-space, and we can easily obtain estimates of abundance in
+  Sometimes, the region of interest will be different than
+  $\cal S$, and we can easily obtain estimates of abundance in
   subsets of $\mathcal{S}$. \\
   \pause \vfill
   When we get back to SCR later, we'll talk about modeling both

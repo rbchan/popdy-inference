@@ -14,6 +14,8 @@
 source("../rnw2pdf.R")
 @
 
+
+
 % Compile and open PDF
 <<buildit,include=FALSE,eval=FALSE>>=
 rnw2pdf("lecture-cap-recap-spatial")
@@ -49,7 +51,8 @@ knit_theme$set("edit-kwrite")
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -242,74 +245,101 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Spatial point processes}
-  {\centering \large
-    The state model of SCR is a spatial (or spatio-temporal) point process \\}
-  \vfill
-  \pause
-  There are many varieties of spatial point processes, including \\
-  \begin{itemize}
-    \item (In)homogeneous binomial point process
-    \item (In)homogeneous Poisson point process
-    \item Cox process
-    \item Gibbs process
-    \item Markov point process
-%    \item Among others
-  \end{itemize}
-\end{frame}
-
-
-
 
 
 \begin{frame}
-  \frametitle{Spatial point processes}
-%  \large
-  All share a few properties \\
-  \begin{itemize}%[<+->]
-    \item<1-> The data are a collection of points called a ``point pattern''
-    \item<2-> Points are in an area called the state-space
-      ($\mathcal{S}$), or observation window, which is usually two
-      dimensional  
-    \item<3-> An intensity function ($\lambda(\bs)$) describes spatial
-      variation in the density of points
-    \item<4-> The area under this function is the expected number of
-      points (a.k.a, $N$) in the region:
-  \end{itemize}
-  \vfill
-%  \Large
-  \uncover<5->{
-\[
-  E(N) = \Lambda = \int_{\mathcal{S}} \lambda(\bs) \;\mathrm{d}\bs
-\]
-}
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{Poisson point process}
-  Properties
-  \begin{itemize}
-    \item If density is constant throughout the state-space:
-      $\lambda(\bs) = \lambda$, the process is said to be
-      ``homogeneous''
-    \item Otherwise, the process is ``inhomogeneous''
-    \item The number of points in any region of the state-space is
-      Poisson distributed
-    \item Points are independent of one another (no attraction or
-      repulsion) 
-  \end{itemize}
+  \frametitle{\large Closed population model ($N$ known hypothetically) }
+  \footnotesize
+  Many variations and extensions are possible for both the state and
+  observation models, but today we will focus on the simplest case
+  with no spatial variation in the expected value of density.
+  \begin{gather*}
+    N \sim \mathrm{Pois}(\lambda) \\
+    \bsi \sim \mathrm{Unif}(\cal S) \\
+    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
+  \end{gather*}
   \pause
   \vfill
-%   \centering {\bf Note:} For more complicated models, it's easier to
-%   work in discrete space than continuous space. Plus, spatial
-%   covariates always come to us in the form of raster. \\
-  An inhomogeneous point process allows for spatial variation
-  in density, which can be modeled using \alert{spatial covariates},
-  such as raster layers. \\
+  Just remember, this formulation isn't exactly correct because we
+  can't observe the ``all zero'' encounter histories (and thus we
+  don't know $N$).
 \end{frame}
+
+
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Spatial point processes}
+%   {\centering \large
+%     The state model of SCR is a spatial (or spatio-temporal) point process \\}
+%   \vfill
+%   \pause
+%   There are many varieties of spatial point processes, including \\
+%   \begin{itemize}
+%     \item (In)homogeneous binomial point process
+%     \item (In)homogeneous Poisson point process
+%     \item Cox process
+%     \item Gibbs process
+%     \item Markov point process
+% %    \item Among others
+%   \end{itemize}
+% \end{frame}
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Spatial point processes}
+% %  \large
+%   All share a few properties \\
+%   \begin{itemize}%[<+->]
+%     \item<1-> The data are a collection of points called a ``point pattern''
+%     \item<2-> Points are in an area called the state-space
+%       ($\mathcal{S}$), or observation window, which is usually two
+%       dimensional  
+%     \item<3-> An intensity function ($\lambda(\bs)$) describes spatial
+%       variation in the density of points
+%     \item<4-> The area under this function is the expected number of
+%       points (a.k.a, $N$) in the region:
+%   \end{itemize}
+%   \vfill
+% %  \Large
+%   \uncover<5->{
+% \[
+%   E(N) = \Lambda = \int_{\mathcal{S}} \lambda(\bs) \;\mathrm{d}\bs
+% \]
+% }
+% \end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Poisson point process}
+%   Properties
+%   \begin{itemize}
+%     \item If density is constant throughout the state-space:
+%       $\lambda(\bs) = \lambda$, the process is said to be
+%       ``homogeneous''
+%     \item Otherwise, the process is ``inhomogeneous''
+%     \item The number of points in any region of the state-space is
+%       Poisson distributed
+%     \item Points are independent of one another (no attraction or
+%       repulsion) 
+%   \end{itemize}
+%   \pause
+%   \vfill
+% %   \centering {\bf Note:} For more complicated models, it's easier to
+% %   work in discrete space than continuous space. Plus, spatial
+% %   covariates always come to us in the form of raster. \\
+%   An inhomogeneous point process allows for spatial variation
+%   in density, which can be modeled using \alert{spatial covariates},
+%   such as raster layers. \\
+% \end{frame}
 
 
 
@@ -337,27 +367,27 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Observation models}
-  The SCR model assumes that capture probability decreases with
-  distance between activity centers and traps. \\
-  \pause
-  \vfill
-  We can use encounter rate functions similar to those from distance 
-  sampling for this purpose. \\
-  \pause
-  \vfill
-  The most common encounter rate function that we'll consider is based
-  on the Gaussian distribution:
-  \begin{gather*}
-    p_{ij} = g_0\exp(-\dsixj/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bernoulli}(p_{ij}) 
-  \end{gather*}
-  \pause
-%  \vfill
-  However, there are many options and we aren't restricted to the
-  Bernoulli observation model. 
-\end{frame}
+% \begin{frame}
+%   \frametitle{Observation models}
+%   The SCR model assumes that capture probability decreases with
+%   distance between activity centers and traps. \\
+%   \pause
+%   \vfill
+%   We can use encounter rate functions similar to those from distance 
+%   sampling for this purpose. \\
+%   \pause
+%   \vfill
+%   The most common encounter rate function that we'll consider is based
+%   on the Gaussian distribution:
+%   \begin{gather*}
+%     p_{ij} = g_0\exp(-\dsixj/(2\sigma^2)) \\
+%     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij}) 
+%   \end{gather*}
+%   \pause
+% %  \vfill
+%   However, there are many options and we aren't restricted to the
+%   Bernoulli observation model. 
+% \end{frame}
 
 
 
@@ -365,34 +395,34 @@ knit_theme$set("edit-kwrite")
 
 
 
-\begin{frame}
-  \frametitle{Observation models}
-%  \begin{itemize}
-%  \item
-  Observation models are not the same as encounter rate functions. \\
-  \pause \vfill
-  % \item
-  Observation models are chosen with respect to the sampling
-      method (mist-net, camera trap, hair snare, etc\dots) \\
-%  \end{itemize}
-  \pause \vfill
-  % \begin{center}
-  \centering
-    \begin{tabular}{lll}
-      \hline
-      Model       & Detector/Trap     & Examples           \\
-      \hline
-      Bernoulli   & Proximity    & Hair-snares        \\
-      Poisson     & Count        & Camera trap        \\
-      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
-      ---          & Single-catch & Sherman trap       \\
-      \hline
-    \end{tabular}
-    % \end{center}
-  \pause \vfill
-  There are other observation models for data from area searches,
-  transects, or acoustic recording units.
-\end{frame}
+% \begin{frame}
+%   \frametitle{Observation models}
+% %  \begin{itemize}
+% %  \item
+%   Observation models are not the same as encounter rate functions. \\
+%   \pause \vfill
+%   % \item
+%   Observation models are chosen with respect to the sampling
+%       method (mist-net, camera trap, hair snare, etc\dots) \\
+% %  \end{itemize}
+%   \pause \vfill
+%   % \begin{center}
+%   \centering
+%     \begin{tabular}{lll}
+%       \hline
+%       Model       & Detector/Trap     & Examples           \\
+%       \hline
+%       Bernoulli   & Proximity    & Hair-snares        \\
+%       Poisson     & Count        & Camera trap        \\
+%       Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
+%       ---          & Single-catch & Sherman trap       \\
+%       \hline
+%     \end{tabular}
+%     % \end{center}
+%   \pause \vfill
+%   There are other observation models for data from area searches,
+%   transects, or acoustic recording units.
+% \end{frame}
 
 
 
@@ -1017,7 +1047,7 @@ plot(sch)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_0$
-<<secr-M0,size='scriptsize',cache=FALSE,warning=FALSE>>=
+<<secr-M0,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
     details = list(fastproximity = FALSE), ## For AIC comparisons
     buffer=150, trace=FALSE, ncores=3)
@@ -1026,10 +1056,10 @@ coef(fm.M0)
 \pause
 \vfill
 Estimates on original scale
-<<secr-M0-real,size='scriptsize'>>=
+<<secr-M0-real,size='scriptsize',cache=TRUE>>=
 predict(fm.M0)
 @
-\inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
+\inr{D} is density ($\lambda$, animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
 $\sigma$.   
 \end{frame}
 
@@ -1038,7 +1068,7 @@ $\sigma$.
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_t$
-<<secr-Mt,size='scriptsize',cache=FALSE,warning=FALSE>>=
+<<secr-Mt,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mt)
@@ -1046,7 +1076,7 @@ coef(fm.Mt)
 \pause
 \vfill
 Estimates on original scale
-<<secr-Mt-real,size='scriptsize'>>=
+<<secr-Mt-real,size='scriptsize',cache=TRUE>>=
 predict(fm.Mt)
 @ 
 \end{frame}
@@ -1056,7 +1086,7 @@ predict(fm.Mt)
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   Fit the SCR equivalent of Model $M_b$
-<<secr-Mb,size='scriptsize',cache=FALSE,warning=FALSE>>=
+<<secr-Mb,size='scriptsize',cache=TRUE,warning=FALSE>>=
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mb)
@@ -1064,7 +1094,7 @@ coef(fm.Mb)
 \pause
 \vfill
 Estimates on original scale
-<<secr-Mb-real,size='scriptsize'>>=
+<<secr-Mb-real,size='scriptsize',cache=TRUE>>=
 predict(fm.Mb)
 @ 
 \end{frame}
@@ -1095,27 +1125,27 @@ region.N(fm.Mb)
   \frametitle{R package `secr'}
   \small
   Was \inr{buffer} big enough?
-<<buffer1,size='scriptsize',warning=FALSE,cache=FALSE>>=
+<<buffer1,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=100))[1,]
 @
 \pause
 \vspace{-12pt}
-<<buffer2,size='scriptsize',warning=FALSE,cache=FALSE>>=
+<<buffer2,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=150))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer3,size='scriptsize',warning=FALSE,cache=FALSE>>=
+<<buffer3,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=200))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer4,size='scriptsize',warning=FALSE,cache=FALSE>>=
+<<buffer4,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=250))[1,]
 @   
 \pause
 \vspace{-12pt}
-<<buffer5,size='scriptsize',warning=FALSE,cache=FALSE>>=
+<<buffer5,size='scriptsize',warning=FALSE,cache=TRUE>>=
 predict(update(fm.M0, buffer=300))[1,]
 @   
 \end{frame}
@@ -1125,7 +1155,7 @@ predict(update(fm.M0, buffer=300))[1,]
 \begin{frame}[fragile]
   \frametitle{R package `secr'}
   AIC
-<<aic,size='tiny'>>=
+<<aic,size='tiny',cache=TRUE>>=
 AIC(fm.M0, fm.Mt, fm.Mb)
 @   
 \end{frame}
@@ -1338,6 +1368,45 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
 \end{frame}
 
 
+\section{Summary}
+
+
+
+\begin{frame}
+  \frametitle{Alternative observation models}
+%  \begin{itemize}
+%  \item
+  % Observation models are not the same as encounter rate functions. \\
+  % \pause \vfill
+  % % \item
+  Observation models are chosen with respect to the sampling
+      method (mist-net, camera trap, hair snare, etc\dots) \\
+%  \end{itemize}
+  \pause \vfill
+  % \begin{center}
+  Common options include:
+  \centering
+    \begin{tabular}{lll}
+      \hline
+      Model       & Detector/Trap     & Examples           \\
+      \hline
+      Bernoulli   & Proximity    & Hair-snares        \\
+      Poisson     & Count        & Camera trap        \\
+      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
+      ---          & Single-catch & Sherman trap       \\
+      \hline
+    \end{tabular}
+    % \end{center}
+  \pause \vfill
+  There are other observation models for data from area searches,
+  transects, or acoustic recording units.
+\end{frame}
+
+
+
+
+
+
 
 
 \begin{frame}
@@ -1380,7 +1449,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
 
 
 
-\section{Assignment}
+%\section{Assignment}
 
 
 
@@ -1402,7 +1471,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
       for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
 \end{frame}
 
 

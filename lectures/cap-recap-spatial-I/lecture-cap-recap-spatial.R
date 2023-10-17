@@ -115,33 +115,34 @@ summary(sch)
 plot(sch)
 
 
-## ----secr-M0,size='scriptsize',cache=FALSE,warning=FALSE----------------------
+## ----secr-M0,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
-                  buffer=150, trace=FALSE, ncores=3)
+    details = list(fastproximity = FALSE), ## For AIC comparisons
+    buffer=150, trace=FALSE, ncores=3)
 coef(fm.M0)
 
 
-## ----secr-M0-real,size='scriptsize'-------------------------------------------
+## ----secr-M0-real,size='scriptsize',cache=TRUE--------------------------------
 predict(fm.M0)
 
 
-## ----secr-Mt,size='scriptsize',cache=FALSE,warning=FALSE----------------------
+## ----secr-Mt,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mt)
 
 
-## ----secr-Mt-real,size='scriptsize'-------------------------------------------
+## ----secr-Mt-real,size='scriptsize',cache=TRUE--------------------------------
 predict(fm.Mt)
 
 
-## ----secr-Mb,size='scriptsize',cache=FALSE,warning=FALSE----------------------
+## ----secr-Mb,size='scriptsize',cache=TRUE,warning=FALSE-----------------------
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
                   buffer=150, trace=FALSE, ncores=3)
 coef(fm.Mb)
 
 
-## ----secr-Mb-real,size='scriptsize'-------------------------------------------
+## ----secr-Mb-real,size='scriptsize',cache=TRUE--------------------------------
 predict(fm.Mb)
 
 
@@ -157,27 +158,27 @@ region.N(fm.Mt)
 region.N(fm.Mb)
 
 
-## ----buffer1,size='scriptsize',warning=FALSE,cache=FALSE----------------------
+## ----buffer1,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
 predict(update(fm.M0, buffer=100))[1,]
 
 
-## ----buffer2,size='scriptsize',warning=FALSE,cache=FALSE----------------------
+## ----buffer2,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
 predict(update(fm.M0, buffer=150))[1,]
 
 
-## ----buffer3,size='scriptsize',warning=FALSE,cache=FALSE----------------------
+## ----buffer3,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
 predict(update(fm.M0, buffer=200))[1,]
 
 
-## ----buffer4,size='scriptsize',warning=FALSE,cache=FALSE----------------------
+## ----buffer4,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
 predict(update(fm.M0, buffer=250))[1,]
 
 
-## ----buffer5,size='scriptsize',warning=FALSE,cache=FALSE----------------------
+## ----buffer5,size='scriptsize',warning=FALSE,cache=TRUE-----------------------
 predict(update(fm.M0, buffer=300))[1,]
 
 
-## ----aic,size='tiny'----------------------------------------------------------
+## ----aic,size='tiny',cache=TRUE-----------------------------------------------
 AIC(fm.M0, fm.Mt, fm.Mb)
 
 

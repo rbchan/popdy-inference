@@ -14,6 +14,7 @@
   * mu = b0+b1*x, y~N(mu,sig2)
   * Easier transition to GLMs than b0+b1*x+eps
 
+- Add spider plot to SCR shiny app
 
 
 ## For 2023

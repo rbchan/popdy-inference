@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -62,6 +62,8 @@
 % Load function to compile and open PDF
 
 
+
+
 % Compile and open PDF
 
 
@@ -89,7 +91,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -282,74 +285,101 @@
 
 
 
-\begin{frame}
-  \frametitle{Spatial point processes}
-  {\centering \large
-    The state model of SCR is a spatial (or spatio-temporal) point process \\}
-  \vfill
-  \pause
-  There are many varieties of spatial point processes, including \\
-  \begin{itemize}
-    \item (In)homogeneous binomial point process
-    \item (In)homogeneous Poisson point process
-    \item Cox process
-    \item Gibbs process
-    \item Markov point process
-%    \item Among others
-  \end{itemize}
-\end{frame}
-
-
-
 
 
 \begin{frame}
-  \frametitle{Spatial point processes}
-%  \large
-  All share a few properties \\
-  \begin{itemize}%[<+->]
-    \item<1-> The data are a collection of points called a ``point pattern''
-    \item<2-> Points are in an area called the state-space
-      ($\mathcal{S}$), or observation window, which is usually two
-      dimensional  
-    \item<3-> An intensity function ($\lambda(\bs)$) describes spatial
-      variation in the density of points
-    \item<4-> The area under this function is the expected number of
-      points (a.k.a, $N$) in the region:
-  \end{itemize}
-  \vfill
-%  \Large
-  \uncover<5->{
-\[
-  E(N) = \Lambda = \int_{\mathcal{S}} \lambda(\bs) \;\mathrm{d}\bs
-\]
-}
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{Poisson point process}
-  Properties
-  \begin{itemize}
-    \item If density is constant throughout the state-space:
-      $\lambda(\bs) = \lambda$, the process is said to be
-      ``homogeneous''
-    \item Otherwise, the process is ``inhomogeneous''
-    \item The number of points in any region of the state-space is
-      Poisson distributed
-    \item Points are independent of one another (no attraction or
-      repulsion) 
-  \end{itemize}
+  \frametitle{\large Closed population model ($N$ known hypothetically) }
+  \footnotesize
+  Many variations and extensions are possible for both the state and
+  observation models, but today we will focus on the simplest case
+  with no spatial variation in the expected value of density.
+  \begin{gather*}
+    N \sim \mathrm{Pois}(\lambda) \\
+    \bsi \sim \mathrm{Unif}(\cal S) \\
+    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
+  \end{gather*}
   \pause
   \vfill
-%   \centering {\bf Note:} For more complicated models, it's easier to
-%   work in discrete space than continuous space. Plus, spatial
-%   covariates always come to us in the form of raster. \\
-  An inhomogeneous point process allows for spatial variation
-  in density, which can be modeled using \alert{spatial covariates},
-  such as raster layers. \\
+  Just remember, this formulation isn't exactly correct because we
+  can't observe the ``all zero'' encounter histories (and thus we
+  don't know $N$).
 \end{frame}
+
+
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Spatial point processes}
+%   {\centering \large
+%     The state model of SCR is a spatial (or spatio-temporal) point process \\}
+%   \vfill
+%   \pause
+%   There are many varieties of spatial point processes, including \\
+%   \begin{itemize}
+%     \item (In)homogeneous binomial point process
+%     \item (In)homogeneous Poisson point process
+%     \item Cox process
+%     \item Gibbs process
+%     \item Markov point process
+% %    \item Among others
+%   \end{itemize}
+% \end{frame}
+
+
+
+
+
+% \begin{frame}
+%   \frametitle{Spatial point processes}
+% %  \large
+%   All share a few properties \\
+%   \begin{itemize}%[<+->]
+%     \item<1-> The data are a collection of points called a ``point pattern''
+%     \item<2-> Points are in an area called the state-space
+%       ($\mathcal{S}$), or observation window, which is usually two
+%       dimensional  
+%     \item<3-> An intensity function ($\lambda(\bs)$) describes spatial
+%       variation in the density of points
+%     \item<4-> The area under this function is the expected number of
+%       points (a.k.a, $N$) in the region:
+%   \end{itemize}
+%   \vfill
+% %  \Large
+%   \uncover<5->{
+% \[
+%   E(N) = \Lambda = \int_{\mathcal{S}} \lambda(\bs) \;\mathrm{d}\bs
+% \]
+% }
+% \end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Poisson point process}
+%   Properties
+%   \begin{itemize}
+%     \item If density is constant throughout the state-space:
+%       $\lambda(\bs) = \lambda$, the process is said to be
+%       ``homogeneous''
+%     \item Otherwise, the process is ``inhomogeneous''
+%     \item The number of points in any region of the state-space is
+%       Poisson distributed
+%     \item Points are independent of one another (no attraction or
+%       repulsion) 
+%   \end{itemize}
+%   \pause
+%   \vfill
+% %   \centering {\bf Note:} For more complicated models, it's easier to
+% %   work in discrete space than continuous space. Plus, spatial
+% %   covariates always come to us in the form of raster. \\
+%   An inhomogeneous point process allows for spatial variation
+%   in density, which can be modeled using \alert{spatial covariates},
+%   such as raster layers. \\
+% \end{frame}
 
 
 
@@ -377,27 +407,27 @@
 
 
 
-\begin{frame}
-  \frametitle{Observation models}
-  The SCR model assumes that capture probability decreases with
-  distance between activity centers and traps. \\
-  \pause
-  \vfill
-  We can use encounter rate functions similar to those from distance 
-  sampling for this purpose. \\
-  \pause
-  \vfill
-  The most common encounter rate function that we'll consider is based
-  on the Gaussian distribution:
-  \begin{gather*}
-    p_{ij} = g_0\exp(-\dsixj/(2\sigma^2)) \\
-    y_{ijk} \sim \mathrm{Bernoulli}(p_{ij}) 
-  \end{gather*}
-  \pause
-%  \vfill
-  However, there are many options and we aren't restricted to the
-  Bernoulli observation model. 
-\end{frame}
+% \begin{frame}
+%   \frametitle{Observation models}
+%   The SCR model assumes that capture probability decreases with
+%   distance between activity centers and traps. \\
+%   \pause
+%   \vfill
+%   We can use encounter rate functions similar to those from distance 
+%   sampling for this purpose. \\
+%   \pause
+%   \vfill
+%   The most common encounter rate function that we'll consider is based
+%   on the Gaussian distribution:
+%   \begin{gather*}
+%     p_{ij} = g_0\exp(-\dsixj/(2\sigma^2)) \\
+%     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij}) 
+%   \end{gather*}
+%   \pause
+% %  \vfill
+%   However, there are many options and we aren't restricted to the
+%   Bernoulli observation model. 
+% \end{frame}
 
 
 
@@ -405,34 +435,34 @@
 
 
 
-\begin{frame}
-  \frametitle{Observation models}
-%  \begin{itemize}
-%  \item
-  Observation models are not the same as encounter rate functions. \\
-  \pause \vfill
-  % \item
-  Observation models are chosen with respect to the sampling
-      method (mist-net, camera trap, hair snare, etc\dots) \\
-%  \end{itemize}
-  \pause \vfill
-  % \begin{center}
-  \centering
-    \begin{tabular}{lll}
-      \hline
-      Model       & Detector/Trap     & Examples           \\
-      \hline
-      Bernoulli   & Proximity    & Hair-snares        \\
-      Poisson     & Count        & Camera trap        \\
-      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
-      ---          & Single-catch & Sherman trap       \\
-      \hline
-    \end{tabular}
-    % \end{center}
-  \pause \vfill
-  There are other observation models for data from area searches,
-  transects, or acoustic recording units.
-\end{frame}
+% \begin{frame}
+%   \frametitle{Observation models}
+% %  \begin{itemize}
+% %  \item
+%   Observation models are not the same as encounter rate functions. \\
+%   \pause \vfill
+%   % \item
+%   Observation models are chosen with respect to the sampling
+%       method (mist-net, camera trap, hair snare, etc\dots) \\
+% %  \end{itemize}
+%   \pause \vfill
+%   % \begin{center}
+%   \centering
+%     \begin{tabular}{lll}
+%       \hline
+%       Model       & Detector/Trap     & Examples           \\
+%       \hline
+%       Bernoulli   & Proximity    & Hair-snares        \\
+%       Poisson     & Count        & Camera trap        \\
+%       Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
+%       ---          & Single-catch & Sherman trap       \\
+%       \hline
+%     \end{tabular}
+%     % \end{center}
+%   \pause \vfill
+%   There are other observation models for data from area searches,
+%   transects, or acoustic recording units.
+% \end{frame}
 
 
 
@@ -1132,8 +1162,8 @@ Spatial recaptures
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fm.M0} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
-                  \hlkwc{details} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{fastproximity} \hlstd{=} \hlnum{FALSE}\hlstd{),}
-                  \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
+    \hlkwc{details} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{fastproximity} \hlstd{=} \hlnum{FALSE}\hlstd{),} \hlcom{## For AIC comparisons}
+    \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{)}
 \hlkwd{coef}\hlstd{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
@@ -1160,7 +1190,7 @@ Estimates on original scale
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-\inr{D} is density (animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
+\inr{D} is density ($\lambda$, animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
 $\sigma$.   
 \end{frame}
 
@@ -1178,13 +1208,13 @@ $\sigma$.
 \end{alltt}
 \begin{verbatim}
 ##             beta   SE.beta       lcl        ucl
-## D     -1.0603936 0.2725341 -1.594551 -0.5262366
-## g0    -0.6434652 0.6623660 -1.941679  0.6547483
-## g0.t2 -0.8125257 0.7056650 -2.195604  0.5705522
-## g0.t3 -1.1182752 0.7397257 -2.568111  0.3315605
-## g0.t4 -0.6023298 0.6829394 -1.940866  0.7362069
-## g0.t5 -0.6045683 0.6819667 -1.941198  0.7320619
-## sigma  3.7799754 0.1330985  3.519107  4.0408436
+## D     -1.0603936 0.2725340 -1.594550 -0.5262367
+## g0    -0.6434653 0.6623739 -1.941694  0.6547637
+## g0.t2 -0.8125256 0.7056696 -2.195613  0.5705614
+## g0.t3 -1.1182751 0.7397397 -2.568138  0.3315881
+## g0.t4 -0.6023297 0.6829484 -1.940884  0.7362246
+## g0.t5 -0.6045682 0.6819724 -1.941210  0.7320733
+## sigma  3.7799754 0.1330984  3.519107  4.0408435
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1198,9 +1228,9 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##        link   estimate SE.estimate        lcl        ucl
-## D       log  0.3463195  0.09616387  0.2029997  0.5908243
-## g0    logit  0.3444636  0.14956784  0.1254635  0.6580797
-## sigma   log 43.8149641  5.85762805 33.7542786 56.8743033
+## D       log  0.3463195  0.09616385  0.2029998  0.5908242
+## g0    logit  0.3444636  0.14956962  0.1254618  0.6580832
+## sigma   log 43.8149643  5.85762566 33.7542824 56.8742975
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1271,8 +1301,8 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 33.92172    9.419176 19.88367 57.87078 18
-## R.N 33.92173    7.402645 24.69006 55.89224 18
+## E.N 33.92172    9.419174 19.88367 57.87077 18
+## R.N 33.92173    7.402642 24.69007 55.89223 18
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1305,7 +1335,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl       ucl
-## D  log 0.3554085  0.09872471 0.2082871 0.6064475
+## D  log 0.3554085  0.09872472 0.2082871 0.6064475
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1331,7 +1361,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate      lcl       ucl
-## D  log 0.3494254  0.09755103 0.204251 0.5977845
+## D  log 0.3494254  0.09755105 0.204251 0.5977846
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1343,8 +1373,8 @@ Estimates on original scale
 \hlkwd{predict}\hlstd{(}\hlkwd{update}\hlstd{(fm.M0,} \hlkwc{buffer}\hlstd{=}\hlnum{250}\hlstd{))[}\hlnum{1}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
-##   link  estimate SE.estimate       lcl      ucl
-## D  log 0.3494237    0.097551 0.2042496 0.597783
+##   link  estimate SE.estimate       lcl       ucl
+## D  log 0.3494237  0.09755102 0.2042495 0.5977831
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1357,7 +1387,7 @@ Estimates on original scale
 \end{alltt}
 \begin{verbatim}
 ##   link  estimate SE.estimate       lcl       ucl
-## D  log 0.3494236  0.09755101 0.2042494 0.5977829
+## D  log 0.3494236    0.097551 0.2042495 0.5977829
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1500,11 +1530,7 @@ N <- sum(z)  ## Realized value of N
 \hlstd{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
 \hlkwd{library}\hlstd{(jagsUI)}
 \end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'jagsUI'}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:coda':\\\#\# \\\#\# \ \ \ \ traceplot}}\end{kframe}
+\end{kframe}
 \end{knitrout}
 \pause
 \vfill
@@ -1544,20 +1570,20 @@ MCMC
 ##    plus standard error of the mean:
 ## 
 ##               Mean        SD  Naive SE Time-series SE
-## EN        99.02350 11.490544 0.1483423      0.4546191
-## N         99.46800 10.031338 0.1295040      0.4220134
-## deviance 793.70016 29.383841 0.3793438      1.2202419
-## g0         0.24050  0.040737 0.0005259      0.0018846
-## sigma      0.04956  0.003354 0.0000433      0.0001558
+## EN        38.34185 10.509583 1.357e-01      0.4260859
+## N         37.79533  9.281117 1.198e-01      0.4100381
+## deviance 212.78601 17.273841 2.230e-01      0.7465667
+## g0         0.22329  0.079472 1.026e-03      0.0036405
+## sigma      0.04474  0.006116 7.895e-05      0.0002632
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##               2.5%       25%      50%       75%     97.5%
-## EN        78.04421  90.96091  98.4428 106.44376 122.92015
-## N         83.00000  92.00000  99.0000 106.00000 121.00000
-## deviance 741.21016 772.85026 792.4470 813.05636 855.56840
-## g0         0.16455   0.21194   0.2391   0.26713   0.32417
-## sigma      0.04349   0.04716   0.0494   0.05169   0.05671
+## EN        22.32660  31.02414  36.8426  44.06243  62.78484
+## N         24.97500  31.00000  36.0000  42.00000  60.00000
+## deviance 182.60146 200.56035 211.5269 223.63981 250.24868
+## g0         0.09674   0.16522   0.2130   0.27192   0.40764
+## sigma      0.03455   0.04061   0.0441   0.04813   0.05929
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1720,20 +1746,20 @@ MCMC
 ##    plus standard error of the mean:
 ## 
 ##               Mean        SD  Naive SE Time-series SE
-## EN        98.00326 11.040638 1.425e-01      0.4079510
-## N         98.42683  9.631378 1.243e-01      0.3684158
-## deviance 520.76092 25.430234 3.283e-01      0.9887463
-## g0         0.23958  0.039458 5.094e-04      0.0017107
-## sigma      0.04975  0.003275 4.227e-05      0.0001427
+## EN        37.91885 10.538384 1.360e-01      0.4262260
+## N         37.42983  9.184596 1.186e-01      0.3924181
+## deviance 177.85757 15.153944 1.956e-01      0.5693382
+## g0         0.22650  0.081995 1.059e-03      0.0038030
+## sigma      0.04485  0.006296 8.128e-05      0.0003032
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##               2.5%       25%      50%       75%     97.5%
-## EN        77.00001  90.53685  97.4968 105.29392 120.71776
-## N         82.00000  92.00000  98.0000 105.00000 119.00000
-## deviance 473.26223 502.97915 520.0376 537.43704 572.82357
-## g0         0.17076   0.21131   0.2366   0.26443   0.32633
-## sigma      0.04386   0.04748   0.0496   0.05188   0.05645
+##               2.5%       25%       50%       75%     97.5%
+## EN        21.42326  30.30816  36.64816  43.85615  62.06503
+## N         24.00000  31.00000  36.00000  42.00000  59.00000
+## deviance 150.96169 167.13560 176.77262 187.73161 210.38517
+## g0         0.09792   0.16590   0.21589   0.27430   0.41153
+## sigma      0.03459   0.04038   0.04422   0.04853   0.05935
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1757,6 +1783,45 @@ MCMC
 
 \end{knitrout}
 \end{frame}
+
+
+\section{Summary}
+
+
+
+\begin{frame}
+  \frametitle{Alternative observation models}
+%  \begin{itemize}
+%  \item
+  % Observation models are not the same as encounter rate functions. \\
+  % \pause \vfill
+  % % \item
+  Observation models are chosen with respect to the sampling
+      method (mist-net, camera trap, hair snare, etc\dots) \\
+%  \end{itemize}
+  \pause \vfill
+  % \begin{center}
+  Common options include:
+  \centering
+    \begin{tabular}{lll}
+      \hline
+      Model       & Detector/Trap     & Examples           \\
+      \hline
+      Bernoulli   & Proximity    & Hair-snares        \\
+      Poisson     & Count        & Camera trap        \\
+      Multinomial/Categorical & Multi-catch  & Mist net, crab pot \\
+      ---          & Single-catch & Sherman trap       \\
+      \hline
+    \end{tabular}
+    % \end{center}
+  \pause \vfill
+  There are other observation models for data from area searches,
+  transects, or acoustic recording units.
+\end{frame}
+
+
+
+
 
 
 
@@ -1801,7 +1866,7 @@ MCMC
 
 
 
-\section{Assignment}
+%\section{Assignment}
 
 
 
@@ -1823,7 +1888,7 @@ MCMC
       for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC before 5:00 PM on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
 \end{frame}
 
 
