@@ -50,7 +50,8 @@ knit_theme$set("edit-kwrite")
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   Richard Chandler \\
   University of Georgia \\
@@ -667,11 +668,12 @@ plot(jags.post.samples.dtime0)
 phi.post <- as.matrix(jags.post.samples.dtime0)[,"phi"]
 S.post <- sapply(phi.post, function(x) x^(0:10))
 par(mai=c(0.9,0.9,0.1,0.1))
-matplot(0:10, S.post[,1:1000], type="l", xlab="Time", ylab="Survivorship", col=rgb(0,1,1,0.02))
-lines(0:10, rowMeans(S.post), col="green", lwd=2)
-lines(0:10, phi^(0:10), col="orange", lwd=2)
+matplot(0:10, S.post[,1:1000], type="l", xlab="Time", ylab="Survivorship",
+        col=rgb(0,0.5,1,0.02))
+lines(0:10, rowMeans(S.post), col="royalblue", lwd=3)
+lines(0:10, phi^(0:10), col="cadetblue", lwd=3)
 legend(6, 1, c("Posterior sample", "Posterior mean", "Actual"),
-       col=c(rgb(0,1,1,0.2), "green", "orange"), lty=1, lwd=c(1,2,2))
+       col=c(rgb(0,0.5,1,0.2), "royalblue", "cadetblue"), lty=1, lwd=c(1,3,3))
 @   
 \end{frame}
 

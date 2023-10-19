@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -93,7 +93,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   Richard Chandler \\
   University of Georgia \\
@@ -913,11 +914,12 @@ for(i in 1:n) {
 \begin{alltt}
 \hlstd{phi.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.dtime0)[,}\hlstr{"phi"}\hlstd{]}
 \hlstd{S.post} \hlkwb{<-} \hlkwd{sapply}\hlstd{(phi.post,} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) x}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{))}
-\hlkwd{matplot}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, S.post[,}\hlnum{1}\hlopt{:}\hlnum{1000}\hlstd{],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.02}\hlstd{))}
-\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,} \hlkwd{rowMeans}\hlstd{(S.post),} \hlkwc{col}\hlstd{=}\hlstr{"green"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, phi}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{),} \hlkwc{col}\hlstd{=}\hlstr{"orange"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{matplot}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, S.post[,}\hlnum{1}\hlopt{:}\hlnum{1000}\hlstd{],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,}
+        \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.02}\hlstd{))}
+\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,} \hlkwd{rowMeans}\hlstd{(S.post),} \hlkwc{col}\hlstd{=}\hlstr{"royalblue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, phi}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{),} \hlkwc{col}\hlstd{=}\hlstr{"cadetblue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{)}
 \hlkwd{legend}\hlstd{(}\hlnum{6}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Posterior sample"}\hlstd{,} \hlstr{"Posterior mean"}\hlstd{,} \hlstr{"Actual"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.2}\hlstd{),} \hlstr{"green"}\hlstd{,} \hlstr{"orange"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{,}\hlnum{2}\hlstd{))}
+       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.2}\hlstd{),} \hlstr{"royalblue"}\hlstd{,} \hlstr{"cadetblue"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{,}\hlnum{3}\hlstd{))}
 \end{alltt}
 \end{kframe}
 

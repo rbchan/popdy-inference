@@ -2,7 +2,6 @@
 
 ## For 2024
 
-
 - Tell professors not to send their students until they're good with R
 
 - Nmix-bin II is too long
@@ -16,6 +15,9 @@
 
 - Add spider plot to SCR shiny app
 
+- Consider moving advanced material (like SCR II) to the end after getting through survival and open models, especially if not many students are using SCR
+
+- 
 
 ## For 2023
 
