@@ -4,6 +4,8 @@
 
 - Tell professors not to send their students until they're good with R
 
+- Shorten slides and make time for homework on Thursdays
+
 - Nmix-bin II is too long
 
 - Remove missing values in grouse data, especially for Nmix examples
