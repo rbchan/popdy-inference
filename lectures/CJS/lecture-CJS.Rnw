@@ -27,6 +27,24 @@ knit_theme$set("edit-kwrite")
 
 
 
+<<install-load,include=FALSE>>=
+if(!require(remotes))
+    install.packages("remotes")
+library(remotes)
+if(!require(openpopscr)) {
+    install_github("r-glennie/openpopscr", build = TRUE,
+                   build_opts = c("--no-resave-data", "--no-manual"),
+                   build_vignettes = TRUE)
+}
+library(openpopscr)
+if(!require(secr))
+    install.packages("secr")
+library(secr)
+@ 
+
+
+
+
 
 \begin{document}
 
@@ -514,21 +532,6 @@ for(i in 1:n) {
   \tableofcontents[currentsection,currentsubsection]
 \end{frame}
 
-
-<<install-load,include=FALSE>>=
-if(!require(remotes))
-    install.packages("remotes")
-library(remotes)
-if(!require(openpopscr)) {
-    install_github("r-glennie/openpopscr", build = TRUE,
-                   build_opts = c("--no-resave-data", "--no-manual"),
-                   build_vignettes = TRUE)
-}
-library(openpopscr)
-if(!require(secr))
-    install.packages("secr")
-library(secr)
-@ 
 
 
 \begin{frame}[fragile]

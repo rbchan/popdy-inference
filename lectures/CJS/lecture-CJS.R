@@ -1,3 +1,18 @@
+## ----install-load,include=FALSE-----------------------------------------------
+if(!require(remotes))
+    install.packages("remotes")
+library(remotes)
+if(!require(openpopscr)) {
+    install_github("r-glennie/openpopscr", build = TRUE,
+                   build_opts = c("--no-resave-data", "--no-manual"),
+                   build_vignettes = TRUE)
+}
+library(openpopscr)
+if(!require(secr))
+    install.packages("secr")
+library(secr)
+
+
 ## ----sim-norobust,size='footnotesize',echo=-1---------------------------------
 set.seed(34918)  
 T <- 10               ## primary periods (eg, years)
@@ -131,21 +146,6 @@ for(i in 1:n) {
         }
     }
 }
-
-
-## ----install-load,include=FALSE-----------------------------------------------
-if(!require(remotes))
-    install.packages("remotes")
-library(remotes)
-if(!require(openpopscr)) {
-    install_github("r-glennie/openpopscr", build = TRUE,
-                   build_opts = c("--no-resave-data", "--no-manual"),
-                   build_vignettes = TRUE)
-}
-library(openpopscr)
-if(!require(secr))
-    install.packages("secr")
-library(secr)
 
 
 ## ----install-openpopscr,size='scriptsize',message=FALSE,results='hide',eval=FALSE----
