@@ -23,9 +23,7 @@ knit_theme$set("edit-kwrite")
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
 
 
-
 \begin{document}
-
 
 
 
@@ -39,7 +37,8 @@ knit_theme$set("edit-kwrite")
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   Richard Chandler \\
   University of Georgia \\
@@ -191,7 +190,7 @@ knit_theme$set("edit-kwrite")
   {Initial State}
   \begin{gather*}
     z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
-    {\bm s}_{i,1} \propto \lambda(\bs)
+    {\bm s}_{i,1} \propto \lambda_1(\bs)
   \end{gather*}
   \vfill
   Survival and Recruitment
@@ -205,7 +204,11 @@ knit_theme$set("edit-kwrite")
   \vfill
   Movement (Assuming random walk)
   \[
-    \bsit \sim \mathrm{Norm}(\bsitp, \tau^2)  
+    \bsit %\sim %\mathrm{Norm}(\bsitp, \tau^2)  
+    \begin{cases}
+      \sim \mbox{Norm}(\bsitp, \tau^2) & \quad \text{if previously recruited} \\
+      \propto \lambda_t(\bs) & \quad \text{if not yet recruited} 
+    \end{cases}
   \]
   \vfill
   Abundance ($M$ is the upper bound of data augmentation)

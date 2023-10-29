@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -12,9 +12,6 @@
 \makeatother
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
-\makeatletter
-\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{\definecolor{fgcolor}{rgb}{0, 0, 0}}}
-\makeatother
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
@@ -49,14 +46,6 @@
 \definecolor{messagecolor}{rgb}{0, 0, 0}
 \definecolor{warningcolor}{rgb}{1, 0, 1}
 \definecolor{errorcolor}{rgb}{1, 0, 0}
-\makeatletter
-\@ifundefined{AddToHook}{}{\AddToHook{package/xcolor/after}{
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-}}
-\makeatother
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
@@ -81,7 +70,6 @@
 
 
 
-
 \begin{frame}[plain]
   \centering
   \LARGE
@@ -92,7 +80,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   Richard Chandler \\
   University of Georgia \\
@@ -244,7 +233,7 @@
   {Initial State}
   \begin{gather*}
     z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
-    {\bm s}_{i,1} \propto \lambda(\bs)
+    {\bm s}_{i,1} \propto \lambda_1(\bs)
   \end{gather*}
   \vfill
   Survival and Recruitment
@@ -258,7 +247,11 @@
   \vfill
   Movement (Assuming random walk)
   \[
-    \bsit \sim \mathrm{Norm}(\bsitp, \tau^2)  
+    \bsit %\sim %\mathrm{Norm}(\bsitp, \tau^2)  
+    \begin{cases}
+      \sim \mbox{Norm}(\bsitp, \tau^2) & \quad \text{if previously recruited} \\
+      \propto \lambda_t(\bs) & \quad \text{if not yet recruited} 
+    \end{cases}
   \]
   \vfill
   Abundance ($M$ is the upper bound of data augmentation)
