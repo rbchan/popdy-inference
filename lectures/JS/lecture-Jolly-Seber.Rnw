@@ -418,7 +418,7 @@ Back-transform
 mod$get_par("lambda0", k = 1, j = 1) ## Baseline capture probability
 mod$get_par("sigma", k = 1, j = 1)   ## Scale parameter of the detection function
 mod$get_par("D")                     ## Superpopulation density
-mod$get_par("beta", k = 1, m=1)      ## Proportion of superpop alive in year 1
+mod$get_par("beta", k = 1, m=1)      ## Per-capita recruitment
 mod$get_par("phi", k = 1, m=1)       ## Survival
 @ 
 \end{frame}

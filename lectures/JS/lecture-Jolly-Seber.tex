@@ -1,54 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
-% maxwidth is the original width if it is less than linewidth
-% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0, 0, 0}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.004,0.004,0.506}{#1}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
+\documentclass[color=usenames,dvipsnames]{beamer}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
@@ -65,7 +15,8 @@
 %% New command for inline code that isn't to be evaluated
 \definecolor{inlinecolor}{rgb}{0.878, 0.918, 0.933}
 \newcommand{\inr}[1]{\colorbox{inlinecolor}{\texttt{#1}}}
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+
 \begin{document}
 
 
@@ -456,18 +407,28 @@ Begin by making a mask in `secr'
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(openpopscr)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in library(openpopscr): there is no package called 'openpopscr'}}\begin{alltt}
 \hlstd{trap.df} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(x}\hlopt{*}\hlnum{1000}\hlstd{);} \hlkwd{colnames}\hlstd{(trap.df)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"x"}\hlstd{,}\hlstr{"y"}\hlstd{)}
 \hlstd{traps} \hlkwb{<-} \hlkwd{read.traps}\hlstd{(}\hlkwc{data}\hlstd{=trap.df,} \hlkwc{detector}\hlstd{=}\hlstr{"proximity"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in read.traps(data = trap.df, detector = "{}proximity"{}): could not find function "{}read.traps"{}}}\begin{alltt}
 \hlstd{mask} \hlkwb{<-} \hlkwd{make.mask}\hlstd{(}\hlkwc{traps}\hlstd{=traps,} \hlkwc{buffer}\hlstd{=}\hlnum{250}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in make.mask(traps = traps, buffer = 250): could not find function "{}make.mask"{}}}\begin{alltt}
 \hlkwd{plot}\hlstd{(mask);} \hlkwd{points}\hlstd{(traps,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.6\linewidth]{figure/mask-1} 
-
-}
 
 
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'mask' not found}}
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'traps' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -487,7 +448,9 @@ Format for `secr' (with robust design)
                    \hlkwc{trap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlkwd{slice.index}\hlstd{(y.bern,} \hlnum{2}\hlstd{), y.secr))}
 \hlstd{capthist} \hlkwb{<-} \hlkwd{make.capthist}\hlstd{(}\hlkwc{captures}\hlstd{=caps,} \hlkwc{traps}\hlstd{=traps,} \hlkwc{noccasions}\hlstd{=T}\hlopt{*}\hlstd{K)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in make.capthist(captures = caps, traps = traps, noccasions = T * : could not find function "{}make.capthist"{}}}\end{kframe}
 \end{knitrout}
 \vfill
 Then format for `openpopscr'
@@ -496,7 +459,9 @@ Then format for `openpopscr'
 \begin{alltt}
 \hlstd{js.data} \hlkwb{<-} \hlstd{ScrData}\hlopt{$}\hlkwd{new}\hlstd{(capthist, mask,} \hlkwc{primary}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T,} \hlkwc{each}\hlstd{=K))}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'ScrData' not found}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -504,753 +469,33 @@ Then format for `openpopscr'
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis}
 Create the model object and then fit it
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{start} \hlkwb{<-} \hlkwd{get_start_values}\hlstd{(js.data,} \hlkwc{model} \hlstd{=} \hlstr{"JsModel"}\hlstd{)}
-\hlstd{mod} \hlkwb{<-} \hlstd{JsModel}\hlopt{$}\hlkwd{new}\hlstd{(}\hlkwd{list}\hlstd{(lambda0}\hlopt{~}\hlnum{1}\hlstd{, sigma}\hlopt{~}\hlnum{1}\hlstd{, D}\hlopt{~}\hlnum{1}\hlstd{, phi}\hlopt{~}\hlnum{1}\hlstd{, beta}\hlopt{~}\hlnum{1}\hlstd{), js.data,}
-                   \hlkwc{start}\hlstd{=start)}
-\hlstd{mod}\hlopt{$}\hlkwd{fit}\hlstd{()}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-Back-transform
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"lambda0"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)} \hlcom{## Baseline capture probability}
-\end{alltt}
-\begin{verbatim}
-## [1] 0.449656
-\end{verbatim}
-\begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"sigma"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{j} \hlstd{=} \hlnum{1}\hlstd{)}   \hlcom{## Scale parameter of the detection function}
-\end{alltt}
-\begin{verbatim}
-## [1] 96.1884
-\end{verbatim}
-\begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"D"}\hlstd{)}                     \hlcom{## Superpopulation density}
-\end{alltt}
-\begin{verbatim}
-## [1] 96.00797
-\end{verbatim}
-\begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"beta"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}      \hlcom{## Proportion of superpop alive in year 1}
-\end{alltt}
-\begin{verbatim}
-## [1] 0.2811347
-\end{verbatim}
-\begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{get_par}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlkwc{k} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{m}\hlstd{=}\hlnum{1}\hlstd{)}       \hlcom{## Survival}
-\end{alltt}
-\begin{verbatim}
-## [1] 0.6503956
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Density estimates}
-\begin{knitrout}\small
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{mod}\hlopt{$}\hlkwd{estimates}\hlstd{()}\hlopt{$}\hlstd{D}
-\end{alltt}
-\begin{verbatim}
-##    Estimate       SE      LCL      UCL
-## 1  26.99117 6.592624 17.04979 42.72918
-## 2  25.22347 4.412889 18.03533 35.27651
-## 3  24.07377 3.582891 18.06686 32.07786
-## 4  23.32600 3.441197 17.54839 31.00584
-## 5  22.83966 3.534214 16.95278 30.77077
-## 6  22.52335 3.663363 16.47433 30.79343
-## 7  22.31762 3.770463 16.13495 30.86939
-## 8  22.18381 3.847131 15.90660 30.93820
-## 9  22.09679 3.898544 15.75686 30.98765
-## 10 22.04018 3.931822 15.66004 31.01970
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
 
 
 
-\section{Bayesian inference}
 
 
 
 
-\begin{frame}[plain]
-  \frametitle{Topics}
-  \Large
-  \tableofcontents[currentsection]
-\end{frame}
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Spatial JS model in \jags}
-%  \vspace{-3mm}
-%  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
-%  \tiny {\parbox{\linewidth}{\pagecolor{ProcessBlue}\verbatiminput{JS-spatial.jag}}}
-  \tiny
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-model {
-phi ~ dunif(0,1)      ## Survival
-gamma ~ dunif(0, 5)   ## Per-capita recruitment rate
-p0 ~ dunif(0,1)       ## Baseline capture probability
-sigma ~ dunif(0, 2)   ## Scale parameter of capture function
-psi ~ dunif(0,1)    
-for(t in 1:T) {
-  N[t] <- sum(z[,t])      ## Abundance
-  ER[t] <- N[t]*gamma     ## Expected number of recruits in year t
-  totalAvail[t] <- sum(recruitable[,t])  ## nAvailable to be recruited
-  gammaPrime[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
-for(i in 1:M) {
-  z[i,1] ~ dbern(psi)              ## Alive/dead state in year 1
-  recruitable[i,1] <- 1 - z[i,1]   ## Recruitable next year if not recruited yet
-  s[i,1] ~ dunif(xlim[1], xlim[2]) ## static activity centers
-  s[i,2] ~ dunif(ylim[1], ylim[2])
-  for(j in 1:J) {
-    d[i,j] <- sqrt((s[i,1] - x[j,1])^2 + (s[i,2] - x[j,2])^2) ## Distance
-    p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))                   ## Cap prob
-    y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }                      ## Data in year 1
-  for(t in 2:T) {
-    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1]) ## Alive/dead state 
-    died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)                 ## Did this guy die?
-    recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)            ## Or was it recruited?
-    recruitable[i,t] <- recruitable[i,t-1]*(1-z[i,t])
-    for(j in 1:J) {
-      y[i,j,t] ~ dbin(z[i,t]*p[i,j], K) }  }                  ## Data in year t
-  everAlive[i] <- sum(z[i,]) > 0  }
-for(t in 2:T) {
-  Deaths[t-1] <- sum(died[,t])             ## Total deaths each year
-  Recruits[t-1] <- sum(recruited[,t]) }    ## Total recruits each year
-Ntot <- sum(everAlive)                     ## Super-population size
-}
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
 
 
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Bayesian analysis}
-%  \footnotesize
-  {Data augmentation}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{M} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)} \hlopt{+} \hlnum{50}   \hlcom{## Trial and error}
-\hlstd{yz} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwd{c}\hlstd{(M, J, T))}
-\hlstd{yz[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y),,]} \hlkwb{<-} \hlstd{y}
-\hlstd{jags.data1} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=yz,} \hlkwc{M}\hlstd{=M,} \hlkwc{x}\hlstd{=x,} \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,} \hlkwc{T}\hlstd{=T,} \hlkwc{xlim}\hlstd{=xlim,} \hlkwc{ylim}\hlstd{=ylim)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  {\normalsize Initial values and parameters to monitor}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{zi} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{0}\hlstd{, M, T)}
-\hlstd{zi[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y),]} \hlkwb{<-} \hlnum{1}
-\hlstd{ji1} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlnum{0.01}\hlstd{,} \hlkwc{gamma}\hlstd{=}\hlnum{0.001}\hlstd{,} \hlkwc{z}\hlstd{=zi)}
-\hlstd{jp1} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"gamma"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"N"}\hlstd{,} \hlstr{"Deaths"}\hlstd{,} \hlstr{"Recruits"}\hlstd{,} \hlstr{"Ntot"}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\pause
-\vfill
-  {\normalsize Fit the model}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples1} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data1,} \hlkwc{inits}\hlstd{=ji1,}
-                                 \hlkwc{parameters.to.save}\hlstd{=jp1,}
-                                 \hlkwc{model.file}\hlstd{=}\hlstr{"JS-spatial.jag"}\hlstd{,}
-                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
 
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Is $M$ high enough?}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{hist}\hlstd{(}\hlkwd{as.matrix}\hlstd{(jags.post.samples1[,}\hlstr{"Ntot"}\hlstd{]),} \hlkwc{xlab}\hlstd{=}\hlstr{"Total population size"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{freq}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{nrow}\hlstd{(y), M))}
-\hlkwd{abline}\hlstd{(}\hlkwc{v}\hlstd{=M,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\end{alltt}
-\end{kframe}
 
-{\centering \includegraphics[width=0.7\linewidth]{figure/Ntot-1} 
 
-}
 
 
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Posterior distributions}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples1[,}\hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{,} \hlstr{"gamma"}\hlstd{,} \hlstr{"p0"}\hlstd{,} \hlstr{"sigma"}\hlstd{)])}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.6\linewidth]{figure/jc1-1} 
-
-}
-
-
-\end{knitrout}
-% \begin{center}
-%   \fbox{\includegraphics[width=0.7\textwidth]{Open-JS-jc1}}
-% \end{center}
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Posterior distributions}
-
-
-\begin{center}
-  \fbox{\includegraphics[width=0.45\textwidth]{figure/jcN1-4-1}}
-  \fbox{\includegraphics[width=0.45\textwidth]{figure/jcN5-8-1}}
-\end{center}
-\end{frame}
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Actual and estimated abundance}
-  Extract and summarize posterior samples of $N_t$
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{Npost} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples1[,}\hlkwd{paste}\hlstd{(}\hlstr{"N["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{10}\hlstd{,} \hlstr{"]"}\hlstd{,} \hlkwc{sep}\hlstd{=}\hlstr{""}\hlstd{)])}
-\hlstd{Nmed} \hlkwb{<-} \hlkwd{apply}\hlstd{(Npost,} \hlnum{2}\hlstd{, median)}
-\hlstd{Nupper} \hlkwb{<-} \hlkwd{apply}\hlstd{(Npost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
-\hlstd{Nlower} \hlkwb{<-} \hlkwd{apply}\hlstd{(Npost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Plot
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, N,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{60}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Abundance"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{)}
-\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, Nlower,} \hlnum{1}\hlopt{:}\hlstd{T, Nupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,}
-       \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{T, Nmed,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{60}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}
-  \frametitle{Actual and estimated abundance}
-%  \vspace{-4mm}
-  \begin{center}
-    \includegraphics[width=\textwidth]{figure/Npost-1}
-  \end{center}
-\end{frame}
-
-
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Actual and estimated recruits}
-  Extract and summarize posterior samples of $R_t$
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{Rpost} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples1[,}\hlkwd{paste}\hlstd{(}\hlstr{"Recruits["}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{9}\hlstd{,}\hlstr{"]"}\hlstd{,}\hlkwc{sep}\hlstd{=}\hlstr{""}\hlstd{)])}
-\hlstd{Rmed} \hlkwb{<-} \hlkwd{apply}\hlstd{(Rpost,} \hlnum{2}\hlstd{, median)}
-\hlstd{Rupper} \hlkwb{<-} \hlkwd{apply}\hlstd{(Rpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
-\hlstd{Rlower} \hlkwb{<-} \hlkwd{apply}\hlstd{(Rpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Plot
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Recruits,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{30}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Recruits"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"seagreen2"}\hlstd{)}
-\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Rlower,} \hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Rupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,}
-       \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Rmed,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{30}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"seagreen2"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}
-  \frametitle{Actual and estimated recruits}
-%  \vspace{-4mm}
-  \begin{center}
-    \includegraphics[width=\textwidth]{figure/Rpost-1}
-  \end{center}
-\end{frame}
-
-
-
-
-\begin{frame}[fragile]
-  \frametitle{Actual and estimated mortalities}
-  Extract and summarize posterior samples of $D_t=N_t-S_t$
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{Dpost} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples1[,}\hlkwd{paste}\hlstd{(}\hlstr{"Deaths["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{9}\hlstd{,} \hlstr{"]"}\hlstd{,} \hlkwc{sep}\hlstd{=}\hlstr{""}\hlstd{)])}
-\hlstd{Dmed} \hlkwb{<-} \hlkwd{apply}\hlstd{(Dpost,} \hlnum{2}\hlstd{, median)}
-\hlstd{Dupper} \hlkwb{<-} \hlkwd{apply}\hlstd{(Dpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
-\hlstd{Dlower} \hlkwb{<-} \hlkwd{apply}\hlstd{(Dpost,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Plot
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Deaths,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{30}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Mortalities"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red2"}\hlstd{)}
-\hlkwd{arrows}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Dlower,} \hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Dupper,} \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{code}\hlstd{=}\hlnum{3}\hlstd{,}
-       \hlkwc{length}\hlstd{=}\hlnum{0.05}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{(T}\hlopt{-}\hlnum{1}\hlstd{), Dmed,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{))}
-\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{30}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"red2"}\hlstd{,} \hlkwd{gray}\hlstd{(}\hlnum{0.7}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{NA}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{16}\hlstd{,}\hlnum{16}\hlstd{))}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-
-
-
-\begin{frame}
-  \frametitle{Actual and estimated mortalities}
-%  \vspace{-4mm}
-  \begin{center}
-    \includegraphics[width=\textwidth]{figure/Dpost-1}
-  \end{center}
-\end{frame}
-
-
-
-
-
-
-
-
-\begin{frame}
-  \frametitle{Summary}
-  This is perhaps the most general approach to modeling population
-  dynamics, especially when the model includes a movement process. \\
-  \pause \vfill
-  Requires a lot of data on marked individuals, but it should be no
-  surprise that we need a lot of data to understand complex
-  processes. \\ 
-  \pause \vfill
-  Integrated population models can be used to draw inferences using
-  this model and a combination of data on marked and unmarked
-  individuals. \\ 
-\end{frame}
-
-
-
-
-\end{document}
-
-
-
-
-
-% \section{Spatial JS with density-dependence}
-
-
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Density-dependent recruitment}
-%   \large
-%   {Logistic}
-%   \[
-%      \gamma_t = \gamma_{max}(1 - N_{t-1}/K)
-%   \]
-%   \vfill
-%   {Log-linear}
-%   \[
-%      \gamma_t = \nu_0\exp(-\nu_1 N_{t-1})
-%   \]
-%   \vfill
-%   {Log-linear (alt version)}
-%   \[
-%     \log(\gamma_t) = \nu_0 + \nu_1 N_{t-1}
-%   \]
-% \end{frame}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Density-dependent recruitment}
-%   \tiny
-% <<dd1,fig.height=5,out.width='90%',fig.align='center'>>=
-% N <- 0:50
-% nu0 <- 2
-% nu1 <- 0.05
-% plot(N, nu0*exp(-nu1*N), type="l", ylim=c(0,2), ylab="Per-capita Recruitment")
-% @
-% %\vspace{-4mm}
-% %\begin{center}
-% %  \includegraphics[width=\textwidth]{figure/dd1-1}
-% %\end{center}
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Simulating spatial JS data with robust design}
-%   \scriptsize % \tiny %\small
-%   {Parameters and data dimensions}
-% <<sim-pars-robust>>=
-% T <- 10      # years/primary periods
-% K <- 3       # 3 secondary sampling occasion
-% ## Is it necessary to be far from equilibrium to detect density-dependence?
-% ## Equilibrium here is where (1-phi) == gamma, where gamma is function of N
-% N0 <- 10     # Abundance in year 1
-% M <- 500     # Easiest way to simulate data is using data augmentation
-% phi <- 0.7   # Apparent survival
-% ##gamma <- 0.3 # Per-capital recruitment rate
-% nu0 <- 2
-% nu1 <- 0.05
-% p0 <- 0.4
-% sigma <- 0.1
-% @
-% \pause
-% {Traps, activity centers, and detection probability}
-% <<sim-p-robust>>=
-% set.seed(3479)
-% co <- seq(0.25, 0.75, length=5)
-% x <- cbind(rep(co, each=5), rep(co, times=5))
-% J <- nrow(x)
-% xlim <- ylim <- c(0,1)
-% s <- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))
-% d <- p <- matrix(NA, M, J)
-% for(i in 1:M) {
-%     d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
-%     p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
-% }
-% @
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Simulating spatial JS data with robust design}
-% {Generate $z$}
-% \scriptsize
-% <<sim-RS-robust>>=
-% set.seed(3401)
-% z2 <- recruitable <- died <- recruited <- matrix(0, M, T)
-% z2[1:N0,1] <- 1 # First N0 are alive
-% recruitable[(N0+1):M,1] <- 1
-% for(t in 2:T) {
-%     prevN <- sum(z2[,t-1]) # number alive at t-1
-%     gamma <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
-%     ER <- prevN*gamma # expected number of recruits
-%     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
-%     gammaPrime <- ER/prevA
-%     if(gammaPrime > 1)
-%         stop("M isn't big enough")
-%     for(i in 1:M) {
-%         z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
-%         recruitable[i,t] <- 1 - max(z2[i,1:(t)]) # to be recruited
-%         died[i,t] <- z2[i,t-1]==1 & z2[i,t]==0
-%         recruited[i,t] <- z2[i,t]==1 & z2[i,t-1]==0
-%     }
-% }
-% @
-% \pause
-% \vfill
-% {\normalsize Populaton size, mortalities, and recruits}
-% <<sim-N-robust>>=
-% N2 <- colSums(z2) # Population size
-% Deaths2 <- colSums(died)
-% Recruits2 <- colSums(recruited)
-% everAlive2 <- sum(rowSums(z2)>0)
-% @
-% \end{frame}
-
-
-
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Simulating spatial JS data with robust design}
-% {Generate encounter histories for all $M$ individuals}
-% \footnotesize
-% <<sim-yall-robust>>=
-% yall <- array(NA, c(M, J, K, T))
-% for(i in 1:M) {
-%     for(t in 1:T) {
-%         for(j in 1:J) {
-%             yall[i,j,1:K,t] <- rbinom(K, 1, z2[i,t]*p[i,j])
-%         }
-%     }
-% }
-% @
-% \pause
-% \vfill
-% {\normalsize Discard individuals that were never captured}
-% <<sim-y-robust>>=
-% detected <- rowSums(yall) > 0
-% y2 <- yall[detected,,,]
-% str(y2)
-% @
-% \end{frame}
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Time series}
-%   \tiny
-% <<NDR-DD,include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
-% plot(1:T, N2, ylim=c(0, 50), type="o", pch=16,
-%      xlab="Year", ylab="")
-% lines(2:T, Deaths2[-1], col="red", type="o", pch=16)
-% lines(2:T, Recruits2[-1], col="blue", type="o", pch=16)
-% legend(1, 50, c("Population size", "Deaths", "Recruits"),
-%        col=c("black", "red", "blue"), pch=16, lty=1)
-% @
-% \vspace{-3mm}
-% \begin{center}
-%   \includegraphics[width=\textwidth]{figure/NDR-DD-1}
-% \end{center}
-% \end{frame}
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Spatial CJS model in \jags}
-%   \vspace{-5mm}
-%   \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial-DD.jag}}}
-% \end{frame}
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{\jags}
-% %  \footnotesize
-%   {Data augmentation}
-%   \scriptsize
-% <<aug-robust>>=
-% M2 <- nrow(y2) + 75
-% yz2 <- array(0, c(M2, J, K, T))
-% yz2[1:nrow(y2),,,] <- y2
-% @
-% \pause
-% \vfill
-%   {\normalsize Initial values for $z$ matrix}
-% <<zi-robust>>=
-% zi <- matrix(0, M2, T)
-% ##zi[1:nrow(y2),] <- 1
-% zi[1:nrow(y2),] <- z2[detected,] ## cheating
-% ji2 <- function() list(phi=0.01, z=zi)
-% @
-% \pause
-% \vfill
-%   {\normalsize Fit the model}
-% <<jags-run-robust,results='hide',cache=TRUE>>=
-% jd2 <- list(y=yz2, M=M2, x=x,
-%             J=J, K=K, T=T, xlim=xlim, ylim=ylim)
-% jp2 <- c("phi", "nu0", "nu1", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
-% library(rjags)
-% jm2 <- jags.model("JS-spatial-DD.jag", jd2, ji2, n.chains=1, n.adapt=2)
-% jc2 <- coda.samples(jm2, jp2, 5)
-% ##jc2.2 <- coda.samples(jm2, jp2, 15000)
-% @
-% \end{frame}
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Posterior distributions}
-% <<jc2,include=FALSE,echo=FALSE>>=
-% plot(jc2[,c("phi", "nu0", "nu1")])
-% @
-% \begin{center}
-%   \fbox{\includegraphics[width=0.7\textwidth]{figure/jc2-1}}
-% \end{center}
-% \end{frame}
-
-
-
-
-
-
-
-
-
-
-% \begin{frame}[fragile]
-%   \frametitle{Actual and estimated abundance}
-%   {Extract and summarize posterior samples of $N_t$}
-%   \footnotesize
-% <<N-post-samples>>=
-% Npost <- as.matrix(jc2[,paste("N[", 1:10, "]", sep="")])
-% Nmed <- apply(Npost, 2, median)
-% Nupper <- apply(Npost, 2, quantile, prob=0.975)
-% Nlower <- apply(Npost, 2, quantile, prob=0.025)
-% @
-%   \pause
-%   \vfill
-%   {\normalsize Plot}
-% <<Npost,include=FALSE>>=
-% plot(1:T, N2, type="o", col="blue", ylim=c(0, 100), xlab="Time",
-%      ylab="Abundance")
-% points(1:T, Nmed)
-% arrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3, length=0.05)
-% legend(1, 100, c("Actual abundance", "Estimated abundance"),
-%        col=c("blue", "black"), lty=c(1,1), pch=c(1,1))
-% @
-% \end{frame}
-
-
-
-
-
-% \begin{frame}
-%   \frametitle{Actual and estimated abundance}
-%   \vspace{-4mm}
-%   \begin{center}
-%     \includegraphics[width=0.8\textwidth]{figure/Npost-1}
-%   \end{center}
-% \end{frame}
-
-
-
-
-
-
-
-
-
-
-\begin{frame}
-  \frametitle{Summary}
-  \large
-  {Key points}
-  \begin{itemize}[<+->]
-    \item Spatial Jolly-Seber models make it possible to fit
-      spatio-temporal models of population dynamics to standard data
-    \item We could have movement just like we did with CJS models
-    \item Lots of tricks for speeding up MCMC
-    \begin{itemize}
-      \item Replace \inr{ER[t] <- N[t]*gamma} with \inr{ER[t] <- EN[t]*gamma} where \inr{EN} is the expected value of $N$.
-      \item Repalce \inr{recruitable[i,t-1]*gammaPrime[t-1]} with \inr{Erecruitable[i,t-1]*gammaPrime[t-1]}, which again is expected value rather than the realized value
-      \item These tricks result in approximations, but they should be very close to desired inferences. 
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-
-
-% \begin{frame}
-%   \frametitle{Assignment}
-%   {\large For next week}
-%   \begin{enumerate}[\bf (1)]
-%     \item Work on analysis of your own data and your final paper, which should include:
-%       \begin{itemize}
-%         \item Introduction
-%         \item Methods (including model description)
-%         \item Results
-%         \item Discussion
-%       \end{itemize}
-%     \item Paper should be a minimum of 4 pages, single-spaced, 12-pt font
-%   \end{enumerate}
-% \end{frame}
-
-
-
-
-
-
-\end{document}
 
 
 
