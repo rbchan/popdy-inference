@@ -9,12 +9,8 @@
 
 
 % Load function to compile and open PDF
-<<build-fun,include=FALSE,purl=FALSE>>=
+<<build-fun,include=FALSE,purl=FALSE,eval=FALSE>>=
 source("../rnw2pdf.R")
-@
-
-% Compile and open PDF
-<<buildit,include=FALSE,eval=FALSE>>=
 rnw2pdf("lecture-dynamic-occupancy") 
 rnw2pdf("lecture-dynamic-occupancy", tangle=TRUE)
 @ 
@@ -47,7 +43,8 @@ knit_theme$set("edit-kwrite")
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%   Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   Richard Chandler \\
   University of Georgia \\

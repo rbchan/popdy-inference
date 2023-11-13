@@ -1,10 +1,3 @@
-## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-dynamic-occupancy")
-## rnw2pdf("lecture-dynamic-occupancy", tangle=TRUE)
-
-
-
-
 ## ----sim-init,size='scriptsize',echo=-1---------------------------------------
 set.seed(54598)
 nSites <- 100
