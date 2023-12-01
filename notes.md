@@ -19,7 +19,11 @@
 
 - Consider moving advanced material (like SCR II) to the end after getting through survival and open models, especially if not many students are using SCR
 
-- 
+- Add something about Huggins
+
+- Make 3 days of presentations if necessary
+
+
 
 ## For 2023
 
