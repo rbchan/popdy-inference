@@ -23,6 +23,8 @@
 
 - Make 3 days of presentations if necessary
 
+- Include analysis grade as part of project/paper grade
+
 
 
 ## For 2023
