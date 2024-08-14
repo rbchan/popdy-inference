@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -140,8 +140,10 @@
   \frametitle{Simple linear regression}
   Simple linear regression is the most basic linear model.
   \[
-    y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
-    \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+    %% y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
+    %% \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+    \mu_i = \beta_0 + \beta_1 x_i \qquad \qquad
+    y_i \sim \mathrm{Norm}(\mu_i, \sigma^2)
   \]
   \vspace{-6pt}
   \pause
@@ -173,7 +175,7 @@
   We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
   \pause
   \vfill
-  The $\{\varepsilon_i\}$ are residuals. $\sigma^2$ is their variance.
+  A residual is $\varepsilon_i=y_i-\mu_i$. $\sigma^2$ is the variance of the residuals.
 \end{frame}
 
 
@@ -206,8 +208,8 @@
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{width} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.30}\hlstd{,} \hlnum{0.91}\hlstd{,} \hlnum{0.89}\hlstd{,} \hlnum{0.24}\hlstd{,} \hlnum{0.77}\hlstd{,} \hlnum{0.56}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.92}\hlstd{,} \hlnum{0.81}\hlstd{,} \hlnum{0.59}\hlstd{)}  \hlcom{## x}
-\hlstd{mass} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.08}\hlstd{,} \hlnum{0.59}\hlstd{,} \hlnum{0.18}\hlstd{,} \hlnum{0.17}\hlstd{,} \hlnum{0.42}\hlstd{,} \hlnum{0.71}\hlstd{,} \hlnum{0.49}\hlstd{,} \hlnum{0.75}\hlstd{,} \hlnum{0.46}\hlstd{,} \hlnum{0.04}\hlstd{)}   \hlcom{## y}
+\hldef{width} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.30}\hldef{,} \hlnum{0.91}\hldef{,} \hlnum{0.89}\hldef{,} \hlnum{0.24}\hldef{,} \hlnum{0.77}\hldef{,} \hlnum{0.56}\hldef{,} \hlnum{0.59}\hldef{,} \hlnum{0.92}\hldef{,} \hlnum{0.81}\hldef{,} \hlnum{0.59}\hldef{)}  \hlcom{## x}
+\hldef{mass} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.08}\hldef{,} \hlnum{0.59}\hldef{,} \hlnum{0.18}\hldef{,} \hlnum{0.17}\hldef{,} \hlnum{0.42}\hldef{,} \hlnum{0.71}\hldef{,} \hlnum{0.49}\hldef{,} \hlnum{0.75}\hldef{,} \hlnum{0.46}\hldef{,} \hlnum{0.04}\hldef{)}   \hlcom{## y}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -224,7 +226,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{width)}
+\hlkwd{lm}\hldef{(mass}\hlopt{~}\hldef{width)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -302,9 +304,9 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jd.lm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=width,} \hlkwc{y}\hlstd{=mass,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(mass))}
-\hlstd{ji.lm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{sigmaSq}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
-\hlstd{jp.lm} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"sigmaSq"}\hlstd{)}
+\hldef{jd.lm} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{x}\hldef{=width,} \hlkwc{y}\hldef{=mass,} \hlkwc{n}\hldef{=}\hlkwd{length}\hldef{(mass))}
+\hldef{ji.lm} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{beta0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{beta1}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{sigmaSq}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{))}
+\hldef{jp.lm} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,} \hlsng{"sigmaSq"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -317,9 +319,9 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{js.lm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.lm,} \hlkwc{inits}\hlstd{=ji.lm,} \hlkwc{parameters.to.save}\hlstd{=jp.lm,}
-                    \hlkwc{model.file}\hlstd{=}\hlstr{"lm.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{js.lm} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jd.lm,} \hlkwc{inits}\hldef{=ji.lm,} \hlkwc{parameters.to.save}\hldef{=jp.lm,}
+                    \hlkwc{model.file}\hldef{=}\hlsng{"lm.jag"}\hldef{,} \hlkwc{n.chains}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{1000}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -330,14 +332,14 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(js.lm)}\hlopt{$}\hlstd{quant,} \hlnum{2}\hlstd{)}
+\hlkwd{round}\hldef{(}\hlkwd{summary}\hldef{(js.lm)}\hlopt{$}\hldef{quant,} \hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##           2.5%   25%  50%  75% 97.5%
-## beta0    -0.62 -0.16 0.03 0.20  0.66
-## beta1    -0.35  0.28 0.56 0.81  1.51
-## deviance -2.58 -0.86 0.84 3.43 11.80
-## sigmaSq   0.03  0.06 0.08 0.12  0.37
+## beta0    -0.54 -0.15 0.04 0.23  0.67
+## beta1    -0.43  0.26 0.53 0.78  1.36
+## deviance -2.65 -0.83 1.30 4.07 16.26
+## sigmaSq   0.03  0.06 0.09 0.14  0.61
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -359,21 +361,26 @@ Now, put the data in a list and pick some initial values
   \frametitle{Linear models}
     A more general depiction of linear models:
 
-\[
-y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \varepsilon_i
-\]
+%% \[
+%% y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \varepsilon_i
+%% \]
+
+\begin{gather*}
+  \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+  y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+\end{gather*}
 
 where the $\beta$'s are coefficients, and the $x$ values are predictor
 variables (or dummy variables for categorical predictors). %\pause
-The residuals are assumed to be normally distributed:
+%% The residuals are assumed to be normally distributed:
 
-\[
-  \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
-\]
+%% \[
+%%   \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+%% \]
 
-\pause
+%% \pause
 
-\vfill %\vspace{0.5cm}
+%% \vfill %\vspace{0.5cm}
 
 % {\bf This equation is often expressed in matrix notation as:}
 
@@ -383,11 +390,11 @@ The residuals are assumed to be normally distributed:
 
 % where $\bf X$ is a \alert{design matrix} and $\bm{\beta}$ is a
 % vector of coefficients. %\pause More on matrix notation later\dots
-Linear models can also be written this way:
-\begin{gather*}
-  \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
-  y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
-\end{gather*}
+%% %% Linear models can also be written this way:
+%% \begin{gather*}
+%%   \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+%%   y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+%% \end{gather*}
 
 \end{frame}
 
@@ -441,7 +448,7 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{width)}
+\hlkwd{lm}\hldef{(mass}\hlopt{~}\hldef{width)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -507,7 +514,7 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{lm}\hlstd{(mass}\hlopt{~}\hlstd{species)}
+\hlkwd{lm}\hldef{(mass}\hlopt{~}\hldef{species)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -586,10 +593,10 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{grouse.data} \hlkwb{<-} \hlkwd{read.csv}\hlstd{(}\hlstr{"grouse_data_glm.csv"}\hlstd{,} \hlkwc{row.names}\hlstd{=}\hlnum{1}\hlstd{)}
-\hlstd{grouse.data}\hlopt{$}\hlstd{route} \hlkwb{<-} \hlkwd{factor}\hlstd{(grouse.data}\hlopt{$}\hlstd{route)}
-\hlstd{grouse.data}\hlopt{$}\hlstd{utmZone} \hlkwb{<-} \hlkwd{factor}\hlstd{(grouse.data}\hlopt{$}\hlstd{utmZone)}
-\hlkwd{str}\hlstd{(grouse.data)}
+\hldef{grouse.data} \hlkwb{<-} \hlkwd{read.csv}\hldef{(}\hlsng{"grouse_data_glm.csv"}\hldef{,} \hlkwc{row.names}\hldef{=}\hlnum{1}\hldef{)}
+\hldef{grouse.data}\hlopt{$}\hldef{route} \hlkwb{<-} \hlkwd{factor}\hldef{(grouse.data}\hlopt{$}\hldef{route)}
+\hldef{grouse.data}\hlopt{$}\hldef{utmZone} \hlkwb{<-} \hlkwd{factor}\hldef{(grouse.data}\hlopt{$}\hldef{utmZone)}
+\hlkwd{str}\hldef{(grouse.data)}
 \end{alltt}
 \begin{verbatim}
 ## 'data.frame':	579 obs. of  7 variables:
@@ -613,8 +620,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm1} \hlkwb{<-} \hlkwd{lm}\hlstd{(abundance} \hlopt{~} \hlstd{elevation, grouse.data)}
-\hlkwd{summary}\hlstd{(fm1)}
+\hldef{fm1} \hlkwb{<-} \hlkwd{lm}\hldef{(abundance} \hlopt{~} \hldef{elevation, grouse.data)}
+\hlkwd{summary}\hldef{(fm1)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -653,11 +660,11 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{elev.min} \hlkwb{<-} \hlkwd{min}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
-\hlstd{elev.max} \hlkwb{<-} \hlkwd{max}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
-\hlstd{seq.length} \hlkwb{<-} \hlnum{20} \hlcom{## Determines how smooth the function looks in GLMs }
-\hlstd{elev.seq} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=elev.min,} \hlkwc{to}\hlstd{=elev.max,} \hlkwc{length.out}\hlstd{=seq.length)}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{elevation}\hlstd{=elev.seq)}
+\hldef{elev.min} \hlkwb{<-} \hlkwd{min}\hldef{(grouse.data}\hlopt{$}\hldef{elevation)}
+\hldef{elev.max} \hlkwb{<-} \hlkwd{max}\hldef{(grouse.data}\hlopt{$}\hldef{elevation)}
+\hldef{seq.length} \hlkwb{<-} \hlnum{20} \hlcom{## Determines how smooth the function looks in GLMs }
+\hldef{elev.seq} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=elev.min,} \hlkwc{to}\hldef{=elev.max,} \hlkwc{length.out}\hldef{=seq.length)}
+\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{elevation}\hldef{=elev.seq)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -667,7 +674,7 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.elev} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm1,} \hlkwc{newdata}\hlstd{=pred.data,} \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{pred.elev} \hlkwb{<-} \hlkwd{predict}\hldef{(fm1,} \hlkwc{newdata}\hldef{=pred.data,} \hlkwc{se}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -680,8 +687,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(abundance} \hlopt{~} \hlstd{elevation,} \hlkwc{data}\hlstd{=grouse.data,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{))}
-\hlkwd{lines}\hlstd{(elev.seq, pred.elev}\hlopt{$}\hlstd{fit,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hldef{(abundance} \hlopt{~} \hldef{elevation,} \hlkwc{data}\hldef{=grouse.data,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{2}\hldef{))}
+\hlkwd{lines}\hldef{(elev.seq, pred.elev}\hlopt{$}\hldef{fit,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -698,20 +705,20 @@ Linear models can also include polynomial terms and interactions.
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \begin{enumerate}
-    \item Fit the following model to the grouse data
-      \begin{gather*}
-        \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
-        y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
-      \end{gather*}
-    \item Predict and graph the expected value of abundance ($\mu$)
-      over a range of elevations for both UTM zones. Use the same
-      sequence of elevations as we used in the previous examples.
-%    \item Simulate a new response variable $y$ using the fitted model
-  \end{enumerate}
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   \begin{enumerate}
+%%     \item Fit the following model to the grouse data
+%%       \begin{gather*}
+%%         \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
+%%         y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
+%%       \end{gather*}
+%%     \item Predict and graph the expected value of abundance ($\mu$)
+%%       over a range of elevations for both UTM zones. Use the same
+%%       sequence of elevations as we used in the previous examples.
+%% %    \item Simulate a new response variable $y$ using the fitted model
+%%   \end{enumerate}
+%% \end{frame}
 
 
 
@@ -802,26 +809,26 @@ Linear models can also include polynomial terms and interactions.
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Alternative representations}
-  {This:}
-  \begin{gather*}
-    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
-    y_i \sim f(\mu_i)
-  \end{gather*}
-  \pause
-  {Is the same as this:}
-  \begin{gather*}
-    \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
-    y_i \sim f(\mu_i)
-  \end{gather*}
-  % \pause
-  % {\bf Is the same as this:}
-  % \begin{gather*}
-  %   g(\mu_i) = {\bf X}{\bm \beta} \\
-  %   y_i \sim f(\mu_i)
-  % \end{gather*}
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{Alternative representations}
+%%   {This:}
+%%   \begin{gather*}
+%%     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+%%     y_i \sim f(\mu_i)
+%%   \end{gather*}
+%%   \pause
+%%   {Is the same as this:}
+%%   \begin{gather*}
+%%     \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
+%%     y_i \sim f(\mu_i)
+%%   \end{gather*}
+%%   % \pause
+%%   % {\bf Is the same as this:}
+%%   % \begin{gather*}
+%%   %   g(\mu_i) = {\bf X}{\bm \beta} \\
+%%   %   y_i \sim f(\mu_i)
+%%   % \end{gather*}
+%% \end{frame}
 
 
 \begin{frame}
@@ -852,10 +859,12 @@ Linear models can also include polynomial terms and interactions.
     \hline
 %    Normal       & identity  & $\mu$                     & ${\bf X}{\bm \beta}$  \\
 %                 &           &                           &                             \\
-    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\exp({\bf
-          X}{\bm \beta})}{1 + \exp({\bf X}{\bm \beta})}$                        \\
+    %% Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\exp({\bf  X}{\bm \beta})}{1 + \exp({\bf X}{\bm \beta})}$                        \\
+    %%              &           &                           &                             \\
+    %% Poisson      & log       & $\log(\lambda)$               & $\exp({\bf X}{\bm \beta})$  \\
+    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\eta}{1 + \exp(\eta)}$                        \\
                  &           &                           &                             \\
-    Poisson      & log       & $\log(\lambda)$               & $\exp({\bf X}{\bm \beta})$  \\
+    Poisson      & log       & $\log(\lambda)$               & $\exp(\eta)$  \\
     \hline
   \end{tabular}
 
@@ -885,10 +894,10 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlnum{5}
-\hlstd{beta1} \hlkwb{<-} \hlopt{-}\hlnum{0.08}
-\hlstd{elevation} \hlkwb{<-} \hlnum{100}
-\hlstd{(logit.p} \hlkwb{<-} \hlstd{beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
+\hldef{beta0} \hlkwb{<-} \hlnum{5}
+\hldef{beta1} \hlkwb{<-} \hlopt{-}\hlnum{0.08}
+\hldef{elevation} \hlkwb{<-} \hlnum{100}
+\hldef{(logit.p} \hlkwb{<-} \hldef{beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{elevation)}
 \end{alltt}
 \begin{verbatim}
 ## [1] -3
@@ -901,8 +910,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p} \hlkwb{<-} \hlkwd{exp}\hlstd{(logit.p)}\hlopt{/}\hlstd{(}\hlnum{1}\hlopt{+}\hlkwd{exp}\hlstd{(logit.p))}
-\hlstd{p}
+\hldef{p} \hlkwb{<-} \hlkwd{exp}\hldef{(logit.p)}\hlopt{/}\hldef{(}\hlnum{1}\hlopt{+}\hlkwd{exp}\hldef{(logit.p))}
+\hldef{p}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.04742587
@@ -914,7 +923,7 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plogis}\hlstd{(logit.p)}
+\hlkwd{plogis}\hldef{(logit.p)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.04742587
@@ -926,13 +935,13 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{log}\hlstd{(p}\hlopt{/}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p))}
+\hlkwd{log}\hldef{(p}\hlopt{/}\hldef{(}\hlnum{1}\hlopt{-}\hldef{p))}
 \end{alltt}
 \begin{verbatim}
 ## [1] -3
 \end{verbatim}
 \begin{alltt}
-\hlkwd{qlogis}\hlstd{(p)}
+\hlkwd{qlogis}\hldef{(p)}
 \end{alltt}
 \begin{verbatim}
 ## [1] -3
@@ -948,8 +957,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hlstd{x,} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Elevation"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"logit(prob of occurrence)"}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hldef{x,} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Elevation"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"logit(prob of occurrence)"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -967,8 +976,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{plogis}\hlstd{(}\hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hlstd{x),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Elevation"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability of occurrence"}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{plogis}\hldef{(}\hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hldef{x),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Elevation"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Probability of occurrence"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1114,9 +1123,9 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{logitreg1} \hlkwb{<-} \hlkwd{glm}\hlstd{(presence} \hlopt{~} \hlstd{elevation,} \hlkwc{data}\hlstd{=grouse.data,}
-                 \hlkwc{family}\hlstd{=}\hlkwd{binomial}\hlstd{(}\hlkwc{link}\hlstd{=}\hlstr{"logit"}\hlstd{))}
-\hlstd{logitreg1}
+\hldef{logitreg1} \hlkwb{<-} \hlkwd{glm}\hldef{(presence} \hlopt{~} \hldef{elevation,} \hlkwc{data}\hldef{=grouse.data,}
+                 \hlkwc{family}\hldef{=}\hlkwd{binomial}\hldef{(}\hlkwc{link}\hldef{=}\hlsng{"logit"}\hldef{))}
+\hldef{logitreg1}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1146,11 +1155,11 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{elev.min} \hlkwb{<-} \hlkwd{min}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
-\hlstd{elev.max} \hlkwb{<-} \hlkwd{max}\hlstd{(grouse.data}\hlopt{$}\hlstd{elevation)}
-\hlstd{seq.length} \hlkwb{<-} \hlnum{20} \hlcom{## Determines how smooth the function looks in GLMs }
-\hlstd{elev.seq} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=elev.min,} \hlkwc{to}\hlstd{=elev.max,} \hlkwc{length.out}\hlstd{=seq.length)}
-\hlstd{pred.data.lr} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{elevation}\hlstd{=elev.seq)}
+\hldef{elev.min} \hlkwb{<-} \hlkwd{min}\hldef{(grouse.data}\hlopt{$}\hldef{elevation)}
+\hldef{elev.max} \hlkwb{<-} \hlkwd{max}\hldef{(grouse.data}\hlopt{$}\hldef{elevation)}
+\hldef{seq.length} \hlkwb{<-} \hlnum{20} \hlcom{## Determines how smooth the function looks in GLMs }
+\hldef{elev.seq} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=elev.min,} \hlkwc{to}\hldef{=elev.max,} \hlkwc{length.out}\hldef{=seq.length)}
+\hldef{pred.data.lr} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{elevation}\hldef{=elev.seq)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1160,8 +1169,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.elev} \hlkwb{<-} \hlkwd{predict}\hlstd{(logitreg1,} \hlkwc{newdata}\hlstd{=pred.data.lr,} \hlkwc{type}\hlstd{=}\hlstr{"link"}\hlstd{,}
-                     \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{pred.elev} \hlkwb{<-} \hlkwd{predict}\hldef{(logitreg1,} \hlkwc{newdata}\hldef{=pred.data.lr,} \hlkwc{type}\hldef{=}\hlsng{"link"}\hldef{,}
+                     \hlkwc{se}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1177,10 +1186,10 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(presence} \hlopt{~} \hlstd{elevation,} \hlkwc{data}\hlstd{=grouse.data,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
-\hlkwd{lines}\hlstd{(elev.seq,} \hlkwd{plogis}\hlstd{(pred.elev}\hlopt{$}\hlstd{fit),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(elev.seq,} \hlkwd{plogis}\hlstd{(pred.elev}\hlopt{$}\hlstd{fit}\hlopt{+}\hlstd{pred.elev}\hlopt{$}\hlstd{se.fit),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(elev.seq,} \hlkwd{plogis}\hlstd{(pred.elev}\hlopt{$}\hlstd{fit}\hlopt{-}\hlstd{pred.elev}\hlopt{$}\hlstd{se.fit),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hldef{(presence} \hlopt{~} \hldef{elevation,} \hlkwc{data}\hldef{=grouse.data,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{))}
+\hlkwd{lines}\hldef{(elev.seq,} \hlkwd{plogis}\hldef{(pred.elev}\hlopt{$}\hldef{fit),} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(elev.seq,} \hlkwd{plogis}\hldef{(pred.elev}\hlopt{$}\hldef{fit}\hlopt{+}\hldef{pred.elev}\hlopt{$}\hldef{se.fit),} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(elev.seq,} \hlkwd{plogis}\hldef{(pred.elev}\hlopt{$}\hldef{fit}\hlopt{-}\hldef{pred.elev}\hlopt{$}\hldef{se.fit),} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1261,8 +1270,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hlstd{x,} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Elevation"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"log(Expected abundance)"}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hldef{x,} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Elevation"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"log(Expected abundance)"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1280,8 +1289,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hlstd{x),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Elevation"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Expected abundance"}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlnum{5} \hlopt{+ -}\hlnum{0.08}\hlopt{*}\hldef{x),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Elevation"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Expected abundance"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1301,8 +1310,8 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n} \hlkwb{<-} \hlnum{100}
-\hlstd{x} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(n)}
+\hldef{n} \hlkwb{<-} \hlnum{100}
+\hldef{x} \hlkwb{<-} \hlkwd{rnorm}\hldef{(n)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1311,9 +1320,9 @@ Linear models can also include polynomial terms and interactions.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{1}
-\hlstd{beta1} \hlkwb{<-} \hlnum{1}
-\hlstd{lam} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x)}
+\hldef{beta0} \hlkwb{<-} \hlopt{-}\hlnum{1}
+\hldef{beta1} \hlkwb{<-} \hlnum{1}
+\hldef{lam} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1321,7 +1330,7 @@ Now, simulate the response variable $y$:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=n,} \hlkwc{lambda}\hlstd{=lam)}
+\hldef{y} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=n,} \hlkwc{lambda}\hldef{=lam)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1329,7 +1338,7 @@ Finally, fit the model:
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(poisreg1} \hlkwb{<-} \hlkwd{glm}\hlstd{(y} \hlopt{~} \hlstd{x,} \hlkwc{family}\hlstd{=}\hlkwd{poisson}\hlstd{(}\hlkwc{link}\hlstd{=}\hlstr{"log"}\hlstd{)))}
+\hldef{(poisreg1} \hlkwb{<-} \hlkwd{glm}\hldef{(y} \hlopt{~} \hldef{x,} \hlkwc{family}\hldef{=}\hlkwd{poisson}\hldef{(}\hlkwc{link}\hldef{=}\hlsng{"log"}\hldef{)))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1367,9 +1376,9 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jd.glm} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=x,} \hlkwc{y}\hlstd{=y,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(y))}
-\hlstd{ji.glm} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{))}
-\hlstd{jp.glm} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{)}
+\hldef{jd.glm} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{x}\hldef{=x,} \hlkwc{y}\hldef{=y,} \hlkwc{n}\hldef{=}\hlkwd{length}\hldef{(y))}
+\hldef{ji.glm} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{c}\hldef{(}\hlkwc{beta0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{beta1}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{))}
+\hldef{jp.glm} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1382,11 +1391,13 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{js.glm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.glm,} \hlkwc{inits}\hlstd{=ji.glm,} \hlkwc{parameters.to.save}\hlstd{=jp.glm,}
-                     \hlkwc{model.file}\hlstd{=}\hlstr{"glm.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{js.glm} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jd.glm,} \hlkwc{inits}\hldef{=ji.glm,} \hlkwc{parameters.to.save}\hldef{=jp.glm,}
+                     \hlkwc{model.file}\hldef{=}\hlsng{"glm.jag"}\hldef{,} \hlkwc{n.chains}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{1000}\hldef{)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: inits function must return list}}\end{kframe}
 \end{knitrout}
 \pause
 \begin{columns}
@@ -1395,22 +1406,20 @@ Now, put the data in a list and pick some initial values
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(}\hlkwd{summary}\hlstd{(js.glm)}\hlopt{$}\hlstd{quant,} \hlnum{2}\hlstd{)}
+\hlkwd{round}\hldef{(}\hlkwd{summary}\hldef{(js.glm)}\hlopt{$}\hldef{quant,} \hlnum{2}\hldef{)}
 \end{alltt}
-\begin{verbatim}
-##            2.5%    25%    50%    75%  97.5%
-## beta0     -1.67  -1.37  -1.22  -1.07  -0.68
-## beta1      0.83   1.09   1.18   1.27   1.43
-## deviance 144.98 145.53 146.35 147.84 156.21
-\end{verbatim}
-\end{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'js.glm' not found}}\end{kframe}
 \end{knitrout}
 \pause
   \end{column}
   \begin{column}{0.45\textwidth}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/glm-jags-viz-1} 
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in eval(expr, envir, enclos): object 'js.glm' not found}}\end{kframe}
 \end{knitrout}
   \end{column}
 \end{columns}

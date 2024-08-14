@@ -3,6 +3,7 @@
 
 \usepackage[roman]{../lectures}
 
+% Introductions
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -86,8 +87,10 @@ knit_theme$set("edit-kwrite")
     \item<2-> Until recently, population models were mainly used in theoretical settings
     \item<3-> New statistical tools let us confront population models with data
     \item<4-> Hierarchical models make it possible to learn about
-      ``hidden'' population dynamics by modeling the observation
-      processes conditional on the population processes of interest
+      ``hidden'' population dynamics by modeling %the observation
+      %processes
+      % data conditional on
+      population processes observed with error
   %   \item<5-> Before we even collect our data, we should:
   %     \begin{itemize}
   %       \item Write down hypotheses about the processes that are likely to give 
@@ -404,7 +407,7 @@ knit_theme$set("edit-kwrite")
 \begin{frame}
   \frametitle{Assignment}
   \large
-  Read: Applied Hierarchical Modeling (AHM vol I) front-matter and chapter 1 \\
+  Read: Applied Hierarchical Modeling (AHM vol I) chapter 1 \\
   \vfill
   Install: \href{https://sourceforge.net/projects/mcmc-jags/files/}{\jags},
   \href{https://www.r-project.org/}{\R}, and the following packages:

@@ -101,8 +101,10 @@ knit_theme$set("edit-kwrite")
   \frametitle{Simple linear regression}
   Simple linear regression is the most basic linear model.
   \[
-    y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
-    \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+    %% y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
+    %% \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+    \mu_i = \beta_0 + \beta_1 x_i \qquad \qquad
+    y_i \sim \mathrm{Norm}(\mu_i, \sigma^2)
   \]
   \vspace{-6pt}
   \pause
@@ -134,7 +136,7 @@ knit_theme$set("edit-kwrite")
   We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
   \pause
   \vfill
-  The $\{\varepsilon_i\}$ are residuals. $\sigma^2$ is their variance.
+  A residual is $\varepsilon_i=y_i-\mu_i$. $\sigma^2$ is the variance of the residuals.
 \end{frame}
 
 
@@ -171,7 +173,7 @@ mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)   ## y
 \begin{columns}
   \begin{column}{0.5\textwidth}
 <<slr-viz,echo=FALSE>>=
-plot(width, mass, xlim=c(0,1))
+plot(width, mass, xlim=c(0,1), cex.lab=1.3)
 abline(lm(mass~width))
 @     
   \end{column}
@@ -228,7 +230,7 @@ lm(mass~width)
 Now, put the data in a list and pick some initial values
 <<lm-jd,size='footnotesize'>>=
 jd.lm <- list(x=width, y=mass, n=length(mass))
-ji.lm <- function() c(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
+ji.lm <- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
 jp.lm <- c("beta0", "beta1", "sigmaSq")
 @ 
 \end{frame}
@@ -266,21 +268,26 @@ plot(js.lm)
   \frametitle{Linear models}
     A more general depiction of linear models:
 
-\[
-y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \varepsilon_i
-\]
+%% \[
+%% y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \varepsilon_i
+%% \]
+
+\begin{gather*}
+  \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+  y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+\end{gather*}
 
 where the $\beta$'s are coefficients, and the $x$ values are predictor
 variables (or dummy variables for categorical predictors). %\pause
-The residuals are assumed to be normally distributed:
+%% The residuals are assumed to be normally distributed:
 
-\[
-  \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
-\]
+%% \[
+%%   \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+%% \]
 
-\pause
+%% \pause
 
-\vfill %\vspace{0.5cm}
+%% \vfill %\vspace{0.5cm}
 
 % {\bf This equation is often expressed in matrix notation as:}
 
@@ -290,11 +297,11 @@ The residuals are assumed to be normally distributed:
 
 % where $\bf X$ is a \alert{design matrix} and $\bm{\beta}$ is a
 % vector of coefficients. %\pause More on matrix notation later\dots
-Linear models can also be written this way:
-\begin{gather*}
-  \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
-  y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
-\end{gather*}
+%% %% Linear models can also be written this way:
+%% \begin{gather*}
+%%   \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+%%   y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+%% \end{gather*}
 
 \end{frame}
 
@@ -532,20 +539,20 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \begin{enumerate}
-    \item Fit the following model to the grouse data
-      \begin{gather*}
-        \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
-        y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
-      \end{gather*}
-    \item Predict and graph the expected value of abundance ($\mu$)
-      over a range of elevations for both UTM zones. Use the same
-      sequence of elevations as we used in the previous examples.
-%    \item Simulate a new response variable $y$ using the fitted model
-  \end{enumerate}
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   \begin{enumerate}
+%%     \item Fit the following model to the grouse data
+%%       \begin{gather*}
+%%         \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
+%%         y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
+%%       \end{gather*}
+%%     \item Predict and graph the expected value of abundance ($\mu$)
+%%       over a range of elevations for both UTM zones. Use the same
+%%       sequence of elevations as we used in the previous examples.
+%% %    \item Simulate a new response variable $y$ using the fitted model
+%%   \end{enumerate}
+%% \end{frame}
 
 
 
@@ -636,26 +643,26 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Alternative representations}
-  {This:}
-  \begin{gather*}
-    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
-    y_i \sim f(\mu_i)
-  \end{gather*}
-  \pause
-  {Is the same as this:}
-  \begin{gather*}
-    \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
-    y_i \sim f(\mu_i)
-  \end{gather*}
-  % \pause
-  % {\bf Is the same as this:}
-  % \begin{gather*}
-  %   g(\mu_i) = {\bf X}{\bm \beta} \\
-  %   y_i \sim f(\mu_i)
-  % \end{gather*}
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{Alternative representations}
+%%   {This:}
+%%   \begin{gather*}
+%%     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+%%     y_i \sim f(\mu_i)
+%%   \end{gather*}
+%%   \pause
+%%   {Is the same as this:}
+%%   \begin{gather*}
+%%     \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
+%%     y_i \sim f(\mu_i)
+%%   \end{gather*}
+%%   % \pause
+%%   % {\bf Is the same as this:}
+%%   % \begin{gather*}
+%%   %   g(\mu_i) = {\bf X}{\bm \beta} \\
+%%   %   y_i \sim f(\mu_i)
+%%   % \end{gather*}
+%% \end{frame}
 
 
 \begin{frame}
@@ -686,10 +693,12 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
     \hline
 %    Normal       & identity  & $\mu$                     & ${\bf X}{\bm \beta}$  \\
 %                 &           &                           &                             \\
-    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\exp({\bf
-          X}{\bm \beta})}{1 + \exp({\bf X}{\bm \beta})}$                        \\
+    %% Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\exp({\bf  X}{\bm \beta})}{1 + \exp({\bf X}{\bm \beta})}$                        \\
+    %%              &           &                           &                             \\
+    %% Poisson      & log       & $\log(\lambda)$               & $\exp({\bf X}{\bm \beta})$  \\
+    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\eta}{1 + \exp(\eta)}$                        \\
                  &           &                           &                             \\
-    Poisson      & log       & $\log(\lambda)$               & $\exp({\bf X}{\bm \beta})$  \\
+    Poisson      & log       & $\log(\lambda)$               & $\exp(\eta)$  \\
     \hline
   \end{tabular}
 
@@ -1116,7 +1125,7 @@ Finally, fit the model:
 Now, put the data in a list and pick some initial values
 <<glm-jd>>=
 jd.glm <- list(x=x, y=y, n=length(y))
-ji.glm <- function() c(beta0=rnorm(1), beta1=rnorm(1))
+ji.glm <- function() list(beta0=rnorm(1), beta1=rnorm(1))
 jp.glm <- c("beta0", "beta1")
 @ 
 \end{frame}
