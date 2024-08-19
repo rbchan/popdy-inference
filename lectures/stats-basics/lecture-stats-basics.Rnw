@@ -1,5 +1,5 @@
 \documentclass[color=usenames,dvipsnames]{beamer}
-%\documentclass[color=usenames,dvipsnames,handout]{beamer}
+% \documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
@@ -131,7 +131,7 @@ knit_theme$set("edit-kwrite")
   \end{columns}
   \pause
   \vfill
-  We observe $x$ and $y$. \\
+  We observe $x$ and $y$. The expected value of $y_i$ is $\mu_i$. \\
   \vfill
   We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
   \pause
@@ -597,26 +597,26 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 
 
 
-\begin{frame}
-  \frametitle{Two important GLMs}
-  {Logistic regression \\}
-  \begin{itemize}
-    \item The response variable is usually binary and modeled with a
-      binomial distribution.
-    \item The probability of success is usually a logit-linear
-      model.
-  \end{itemize}
-  \pause
-  \vfill
-  {Poisson regression \\}
-  \begin{itemize}
-    \item The response variable is a non-negative integer modeled with
-      a Poisson distribution.
-    \item The expected count is usually modeled with a log-linear
-      model.
-  \end{itemize}
-  \vfill
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{Two important GLMs}
+%%   {Logistic regression \\}
+%%   \begin{itemize}
+%%     \item The response variable is usually binary and modeled with a
+%%       binomial distribution.
+%%     \item The probability of success is usually a logit-linear
+%%       model.
+%%   \end{itemize}
+%%   \pause
+%%   \vfill
+%%   {Poisson regression \\}
+%%   \begin{itemize}
+%%     \item The response variable is a non-negative integer modeled with
+%%       a Poisson distribution.
+%%     \item The expected count is usually modeled with a log-linear
+%%       model.
+%%   \end{itemize}
+%%   \vfill
+%% \end{frame}
 
 
 
@@ -696,9 +696,9 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
     %% Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\exp({\bf  X}{\bm \beta})}{1 + \exp({\bf X}{\bm \beta})}$                        \\
     %%              &           &                           &                             \\
     %% Poisson      & log       & $\log(\lambda)$               & $\exp({\bf X}{\bm \beta})$  \\
-    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\eta}{1 + \exp(\eta)}$                        \\
+    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\mu}{1 + \exp(\mu)}$                        \\
                  &           &                           &                             \\
-    Poisson      & log       & $\log(\lambda)$               & $\exp(\eta)$  \\
+    Poisson      & log       & $\log(\lambda)$               & $\exp(\mu)$  \\
     \hline
   \end{tabular}
 
@@ -721,35 +721,35 @@ lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
 
 
 
-\begin{frame}[fragile]
-  \frametitle{Logit link example}
-  \vspace{-5pt}
-  \scriptsize
-<<logit-p,size='tiny'>>=
-beta0 <- 5
-beta1 <- -0.08
-elevation <- 100
-(logit.p <- beta0 + beta1*elevation)
-@
-\pause
-{How do we convert \Sexpr{logit.p} to a probability? \pause Use the
-  inverse-link: \\}
-<<inv-logit,size='tiny'>>=
-p <- exp(logit.p)/(1+exp(logit.p))
-p
-@
-\pause
-{Same as:}
-<<plogis,size='tiny'>>=
-plogis(logit.p)
-@
-\pause
-{To go back, use the link function itself:}
-<<logit,size='tiny'>>=
-log(p/(1-p))
-qlogis(p)
-@
-\end{frame}
+%% \begin{frame}[fragile]
+%%   \frametitle{Logit link example}
+%%   \vspace{-5pt}
+%%   \scriptsize
+%% <<logit-p,size='tiny'>>=
+%% beta0 <- 5
+%% beta1 <- -0.08
+%% elevation <- 100
+%% (logit.p <- beta0 + beta1*elevation)
+%% @
+%% \pause
+%% {How do we convert \Sexpr{logit.p} to a probability? \pause Use the
+%%   inverse-link: \\}
+%% <<inv-logit,size='tiny'>>=
+%% p <- exp(logit.p)/(1+exp(logit.p))
+%% p
+%% @
+%% \pause
+%% {Same as:}
+%% <<plogis,size='tiny'>>=
+%% plogis(logit.p)
+%% @
+%% \pause
+%% {To go back, use the link function itself:}
+%% <<logit,size='tiny'>>=
+%% log(p/(1-p))
+%% qlogis(p)
+%% @
+%% \end{frame}
 
 
 
@@ -1179,8 +1179,8 @@ plot(js.glm)
       and $x$) using the \inr{glm} function. Create a figure showing
       $x$ and $y$ with the fitted regression line. Use
       \inr{predict} to get the fitted line.
-    \item Fit the logistic regression model in JAGS. Use the
-      $\mathrm{Norm}(0, var=10)$ priors for the regression
+    \item Fit the logistic regression model in JAGS. Use
+      $\mathrm{Normal}(0, var=10)$ priors for the regression
       coefficients. Note that, unlike linear regression, there is no
       $\sigma^2$ parameter.
     \item Compare and intepret the estimates of $\beta_0$ and

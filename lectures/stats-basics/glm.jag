@@ -1,8 +1,7 @@
 model {
 
 # Priors
-## dnorm arguments: mean and precision (1/variance)
-beta0 ~ dnorm(0, 0.1)  
+beta0 ~ dnorm(0, 0.1) ## Normal prior with mean=0, variance=10
 beta1 ~ dnorm(0, 0.1)
 
 ## Model for the data
