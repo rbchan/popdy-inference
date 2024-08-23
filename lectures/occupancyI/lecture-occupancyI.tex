@@ -1,4 +1,5 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
+%\documentclass[color=usenames,dvipsnames]{beamer}
+\documentclass[color=usenames,dvipsnames,handout]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -13,10 +14,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -49,10 +50,16 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-%\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
+
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+ \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
@@ -93,7 +100,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -188,10 +196,10 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{psi} \hlkwb{<-} \hlnum{0.5}       \hlcom{## Occurrence probability}
-\hlstd{p} \hlkwb{<-} \hlnum{0.2}         \hlcom{## Detection probability}
-\hlstd{nSites} \hlkwb{<-} \hlnum{20}
-\hlstd{nVisits} \hlkwb{<-} \hlnum{4}
+\hldef{psi} \hlkwb{<-} \hlnum{0.5}       \hlcom{## Occurrence probability}
+\hldef{p} \hlkwb{<-} \hlnum{0.2}         \hlcom{## Detection probability}
+\hldef{nSites} \hlkwb{<-} \hlnum{20}
+\hldef{nVisits} \hlkwb{<-} \hlnum{4}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -199,8 +207,8 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}    \hlcom{## Just to make it reproducible}
-\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)} \hlcom{## pres/absence}
+\hlkwd{set.seed}\hldef{(}\hlnum{3439}\hldef{)}    \hlcom{## Just to make it reproducible}
+\hldef{z} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{, psi)} \hlcom{## pres/absence}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -208,10 +216,10 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i]}\hlopt{*}\hlstd{p)}
-\hlstd{\}}
+\hldef{y} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nVisits,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=z[i]}\hlopt{*}\hldef{p)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -231,7 +239,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y}
+\hldef{y}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
@@ -268,8 +276,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)} \hlcom{# Dets at each site}
-\hlkwd{table}\hlstd{(siteDets)}        \hlcom{# Frequency}
+\hldef{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y)} \hlcom{# Dets at each site}
+\hlkwd{table}\hldef{(siteDets)}        \hlcom{# Frequency}
 \end{alltt}
 \begin{verbatim}
 ## siteDets
@@ -285,8 +293,8 @@ Proportion of sites known to be occupied \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(siteDets}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
-\hlstd{naiveOccupancy}
+\hldef{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hldef{(siteDets}\hlopt{>}\hlnum{0}\hldef{)}\hlopt{/}\hldef{nSites}
+\hldef{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.3
@@ -328,7 +336,7 @@ Proportion of sites known to be occupied \\
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## install.packages("unmarked")  }
-\hlkwd{library}\hlstd{(unmarked)}
+\hlkwd{library}\hldef{(unmarked)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -339,7 +347,7 @@ Documentation (help files) %\\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{help}\hlstd{(}\hlstr{"unmarked"}\hlstd{)}
+\hlkwd{help}\hldef{(}\hlsng{"unmarked"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -349,7 +357,7 @@ Documentation (vignettes) %\\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{vignette}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{"unmarked"}\hlstd{)}
+\hlkwd{vignette}\hldef{(}\hlkwc{package}\hldef{=}\hlsng{"unmarked"}\hldef{)}
 \hlcom{## vignette("spp-dist")}
 \end{alltt}
 \end{kframe}
@@ -370,8 +378,8 @@ Documentation (vignettes) %\\
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y)}
-\hlkwd{summary}\hlstd{(umf)}
+\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hldef{(}\hlkwc{y}\hldef{=y)}
+\hlkwd{summary}\hldef{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
@@ -400,8 +408,8 @@ Fit the single-season occupancy model
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hlstd{, umf)}
-\hlkwd{summary}\hlstd{(fm)}
+\hldef{fm} \hlkwb{<-} \hlkwd{occu}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hldef{, umf)}
+\hlkwd{summary}\hldef{(fm)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -435,7 +443,7 @@ Occupancy estimate ($\hat{\psi}$)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)}
+\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"state"}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ## Backtransformed linear combination(s) of Occupancy estimate(s)
@@ -453,7 +461,7 @@ Detection probability estimate ($\hat{p}$)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"det"}\hlstd{)}
+\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"det"}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ## Backtransformed linear combination(s) of Detection estimate(s)
@@ -469,19 +477,19 @@ Detection probability estimate ($\hat{p}$)
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \begin{enumerate}
-    \item Simulate an occupancy dataset with:
-      \begin{itemize}
-        \item $\psi=0.6$
-        \item $p=0.1$
-        \item nSites=100
-        \item nVisits=5
-      \end{itemize}
-    \item Fit the model and report the estimates of $\psi$ and $p$
-  \end{enumerate}
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   \begin{enumerate}
+%%     \item Simulate an occupancy dataset with:
+%%       \begin{itemize}
+%%         \item $\psi=0.6$
+%%         \item $p=0.1$
+%%         \item nSites=100
+%%         \item nVisits=5
+%%       \end{itemize}
+%%     \item Fit the model and report the estimates of $\psi$ and $p$
+%%   \end{enumerate}
+%% \end{frame}
 
 
 
@@ -516,9 +524,9 @@ Detection probability estimate ($\hat{p}$)
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Posterior probs Pr(z_i=1 | y_i)       }
-\hlstd{z.post} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
+\hldef{z.post} \hlkwb{<-} \hlkwd{ranef}\hldef{(fm)}
 \hlcom{## Extract posterior means}
-\hlstd{psi.conditional} \hlkwb{<-}  \hlkwd{bup}\hlstd{(z.post,} \hlkwc{stat}\hlstd{=}\hlstr{"mean"}\hlstd{)}
+\hldef{psi.conditional} \hlkwb{<-}  \hlkwd{bup}\hldef{(z.post,} \hlkwc{stat}\hldef{=}\hlsng{"mean"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -531,8 +539,8 @@ Detection probability estimate ($\hat{p}$)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(}\hlkwd{data.frame}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{psi.unconditional}\hlstd{=}\hlkwd{predict}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)[,}\hlnum{1}\hlstd{],}
-                 \hlstd{psi.conditional),} \hlnum{3}\hlstd{)}
+\hlkwd{round}\hldef{(}\hlkwd{data.frame}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{psi.unconditional}\hldef{=}\hlkwd{predict}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"state"}\hldef{)[,}\hlnum{1}\hldef{],}
+                 \hldef{psi.conditional),} \hlnum{3}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##    y.1 y.2 y.3 y.4 psi.unconditional psi.conditional
@@ -570,12 +578,12 @@ Detection probability estimate ($\hat{p}$)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nsim} \hlkwb{<-} \hlnum{1000}
-\hlstd{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(z.post,} \hlkwc{func}\hlstd{=sum,} \hlkwc{nsim}\hlstd{=nsim)}
-\hlkwd{par}\hlstd{(}\hlkwc{mai}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.9}\hlstd{,}\hlnum{0.9}\hlstd{,}\hlnum{0.1}\hlstd{,}\hlnum{0.1}\hlstd{))}
-\hlkwd{plot}\hlstd{(}\hlkwd{table}\hlstd{(sites.occupied.post)}\hlopt{/}\hlstd{nsim,} \hlkwc{lwd}\hlstd{=}\hlnum{5}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,}
-    \hlkwc{ylab}\hlstd{=}\hlstr{"Empirical Bayes posterior probability"}\hlstd{)}
-\hlkwd{abline}\hlstd{(}\hlkwc{v}\hlstd{=}\hlkwd{sum}\hlstd{(z),} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)} \hlcom{## Actual number occupied}
+\hldef{nsim} \hlkwb{<-} \hlnum{1000}
+\hldef{sites.occupied.post} \hlkwb{<-} \hlkwd{predict}\hldef{(z.post,} \hlkwc{func}\hldef{=sum,} \hlkwc{nsim}\hldef{=nsim)}
+\hlkwd{par}\hldef{(}\hlkwc{mai}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0.9}\hldef{,}\hlnum{0.9}\hldef{,}\hlnum{0.1}\hldef{,}\hlnum{0.1}\hldef{))}
+\hlkwd{plot}\hldef{(}\hlkwd{table}\hldef{(sites.occupied.post)}\hlopt{/}\hldef{nsim,} \hlkwc{lwd}\hldef{=}\hlnum{5}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Sites occupied"}\hldef{,}
+    \hlkwc{ylab}\hldef{=}\hlsng{"Empirical Bayes posterior probability"}\hldef{)}
+\hlkwd{abline}\hldef{(}\hlkwc{v}\hldef{=}\hlkwd{sum}\hldef{(z),} \hlkwc{col}\hldef{=}\hlsng{"red"}\hldef{)} \hlcom{## Actual number occupied}
 \end{alltt}
 \end{kframe}
 
@@ -595,8 +603,8 @@ Detection probability estimate ($\hat{p}$)
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{psi.cond.estimate} \hlkwb{<-} \hlkwd{median}\hlstd{(sites.occupied.post)}
-\hlstd{psi.cond.estimate}
+\hldef{psi.cond.estimate} \hlkwb{<-} \hlkwd{median}\hldef{(sites.occupied.post)}
+\hldef{psi.cond.estimate}
 \end{alltt}
 \begin{verbatim}
 ## [1] 7
@@ -610,7 +618,7 @@ Quantiles can be used for the 95\% confidence interval:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{quantile}\hlstd{(sites.occupied.post,} \hlkwc{prob}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.025}\hlstd{,} \hlnum{0.975}\hlstd{))}
+\hlkwd{quantile}\hldef{(sites.occupied.post,} \hlkwc{prob}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0.025}\hldef{,} \hlnum{0.975}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ##  2.5% 97.5% 
@@ -647,7 +655,8 @@ Quantiles can be used for the 95\% confidence interval:
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  A reminder\dots
+  %% We will use JAGS and the R packages `rjags' and `jagsUI'.
   % JAGS can
   % be downloaded here: \url{
   %   https://sourceforge.net/projects/mcmc-jags/files/
@@ -671,26 +680,21 @@ Quantiles can be used for the 95\% confidence interval:
   \frametitle{The BUGS language}
   The BUGS model file: {\tt occupancy-model.jag}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
-# Prior for occupancy parameter
-psi ~ dunif(0,1)
-
-# Prior for detection probability
-p ~ dunif(0,1)
+psi ~ dunif(0,1)            # Prior for occupancy parameter
+p ~ dunif(0,1)              # Prior for detection probability
 
 for(i in 1:nSites) {
-  # Latent presence/absence
-  z[i] ~ dbern(psi)   
+  z[i] ~ dbern(psi)         # Latent presence/absence
   for(j in 1:nOccasions) {
-    # Model for the data
-    y[i,j] ~ dbern(z[i]*p)
+    y[i,j] ~ dbern(z[i]*p)  # Model for the data
   }
 }
 
-sitesOccupied <- sum(z) # Total number of sites occupied
+sitesOccupied <- sum(z)     # Total number of sites occupied
 
 }
 \end{verbatim}
@@ -709,7 +713,7 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nOccasions}\hldef{=nVisits)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -720,9 +724,9 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, nSites))}
-\hlstd{\}}
+\hldef{jags.inits} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{, nSites))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -733,7 +737,7 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"psi"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"sitesOccupied"}\hlstd{)}
+\hldef{jags.pars} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"psi"}\hldef{,} \hlsng{"p"}\hldef{,} \hlsng{"sitesOccupied"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -752,12 +756,12 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## install.packages("jagsUI")}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                                \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model.jag"}\hlstd{,}
-                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                                \hlkwc{model.file}\hldef{=}\hlsng{"occupancy-model.jag"}\hldef{,}
+                                \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -770,11 +774,11 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.samples)}
+\hlkwd{summary}\hldef{(jags.post.samples[,jags.pars])}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -782,19 +786,17 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##                  Mean     SD Naive SE Time-series SE
-## deviance      40.9824 6.8249 0.088109       0.262220
-## p              0.3275 0.1116 0.001441       0.003578
-## psi            0.4349 0.1627 0.002101       0.005900
-## sitesOccupied  8.5223 2.7909 0.036030       0.116918
+##                 Mean     SD Naive SE Time-series SE
+## psi           0.4349 0.1627 0.002101       0.005900
+## p             0.3275 0.1116 0.001441       0.003578
+## sitesOccupied 8.5223 2.7909 0.036030       0.116918
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##                  2.5%     25%     50%     75%   97.5%
-## deviance      32.6183 36.5054 39.8601 45.1113 57.8185
-## p              0.1279  0.2454  0.3231  0.4040  0.5512
-## psi            0.1814  0.3170  0.4131  0.5228  0.8356
-## sitesOccupied  6.0000  7.0000  8.0000 10.0000 17.0000
+##                 2.5%    25%    50%     75%   97.5%
+## psi           0.1814 0.3170 0.4131  0.5228  0.8356
+## p             0.1279 0.2454 0.3231  0.4040  0.5512
+## sitesOccupied 6.0000 7.0000 8.0000 10.0000 17.0000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -808,7 +810,7 @@ sitesOccupied <- sum(z) # Total number of sites occupied
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples)}
+\hlkwd{plot}\hldef{(jags.post.samples[,jags.pars])}
 \end{alltt}
 \end{kframe}
 
@@ -846,8 +848,9 @@ sitesOccupied <- sum(z) # Total number of sites occupied
   to do the following:
   \begin{enumerate}
     \small
-    \item Import the Canada Warbler data and compute basic summary
-      stats like we did earlier.
+    \item Import the Canada Warbler data ({\tt
+      "cawa\_data\_2017\_occu.csv"}) and compute basic summary  stats
+      like we did earlier. 
     \begin{itemize}
       \item Data are ``point count data'' from North Carolina
       \item Each 10-min survey was divided into 4, 2.5-min intervals 
@@ -859,7 +862,7 @@ sitesOccupied <- sum(z) # Total number of sites occupied
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00am on Monday. 
 \end{frame}
 
 

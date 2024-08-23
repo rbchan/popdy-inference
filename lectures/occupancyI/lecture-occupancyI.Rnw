@@ -4,6 +4,13 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+ \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -301,19 +308,19 @@ backTransform(fm, type="det")
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \begin{enumerate}
-    \item Simulate an occupancy dataset with:
-      \begin{itemize}
-        \item $\psi=0.6$
-        \item $p=0.1$
-        \item nSites=100
-        \item nVisits=5
-      \end{itemize}
-    \item Fit the model and report the estimates of $\psi$ and $p$
-  \end{enumerate}
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   \begin{enumerate}
+%%     \item Simulate an occupancy dataset with:
+%%       \begin{itemize}
+%%         \item $\psi=0.6$
+%%         \item $p=0.1$
+%%         \item nSites=100
+%%         \item nVisits=5
+%%       \end{itemize}
+%%     \item Fit the model and report the estimates of $\psi$ and $p$
+%%   \end{enumerate}
+%% \end{frame}
 
 
 
@@ -423,7 +430,8 @@ quantile(sites.occupied.post, prob=c(0.025, 0.975))
 
 \begin{frame}
   \frametitle{JAGS and the jagsUI package}
-  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  A reminder\dots
+  %% We will use JAGS and the R packages `rjags' and `jagsUI'.
   % JAGS can
   % be downloaded here: \url{
   %   https://sourceforge.net/projects/mcmc-jags/files/
@@ -446,7 +454,7 @@ quantile(sites.occupied.post, prob=c(0.025, 0.975))
 \begin{frame}[fragile]
   \frametitle{The BUGS language}
   The BUGS model file: {\tt occupancy-model.jag}
-<<bugs,size='scriptsize',comment='',echo=FALSE>>=
+<<bugs,size='scriptsize',comment='',echo=FALSE,background='beige'>>=
 writeLines(readLines("occupancy-model.jag"))
 @ 
 \end{frame}
@@ -505,7 +513,7 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 \begin{frame}[fragile]
   \frametitle{Summarize output}
 <<bugs-sum,size='scriptsize'>>=
-summary(jags.post.samples)
+summary(jags.post.samples[,jags.pars])
 @ 
 \end{frame}
 
@@ -515,7 +523,7 @@ summary(jags.post.samples)
 \begin{frame}[fragile]
   \frametitle{Traceplots and density plots}
 <<bugs-plot,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'>>=
-plot(jags.post.samples)
+plot(jags.post.samples[,jags.pars])
 @ 
 \end{frame}
 
@@ -545,8 +553,9 @@ plot(jags.post.samples)
   to do the following:
   \begin{enumerate}
     \small
-    \item Import the Canada Warbler data and compute basic summary
-      stats like we did earlier.
+    \item Import the Canada Warbler data ({\tt
+      "cawa\_data\_2017\_occu.csv"}) and compute basic summary  stats
+      like we did earlier. 
     \begin{itemize}
       \item Data are ``point count data'' from North Carolina
       \item Each 10-min survey was divided into 4, 2.5-min intervals 
@@ -558,7 +567,7 @@ plot(jags.post.samples)
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00am on Monday. 
 \end{frame}
 
 
