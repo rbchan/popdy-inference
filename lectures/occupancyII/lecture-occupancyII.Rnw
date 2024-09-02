@@ -4,6 +4,12 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -514,7 +520,7 @@ Major problems if you ignore imperfect detection in this case \\
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
-<<bugs,size='scriptsize',echo=FALSE,background='lightblue',comment=''>>=
+<<bugs,size='scriptsize',echo=FALSE,background='beige',comment=''>>=
 writeLines(readLines("occupancy-model-covs.jag"))
 @ 
 \end{frame}

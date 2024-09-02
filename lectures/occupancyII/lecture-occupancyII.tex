@@ -54,6 +54,12 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -734,7 +740,7 @@ Major problems if you ignore imperfect detection in this case \\
 \begin{frame}[fragile]
   \frametitle{The BUGS model}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -804,7 +810,8 @@ sitesOccupied <- sum(z)
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hldef{jags.pars} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,} \hlsng{"beta2"}\hldef{,}
-               \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"alpha2"}\hldef{,} \hlsng{"sitesOccupied"}\hldef{)}
+               \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"alpha2"}\hldef{,}
+               \hlsng{"sitesOccupied"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -837,7 +844,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.026 minutes.
+## MCMC took 0.025 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
