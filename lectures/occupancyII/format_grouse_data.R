@@ -1,3 +1,4 @@
+
 umf.df <- as(umf, "data.frame")
 
 rugr.y <- ifelse(cbind(grouse1=apply(umf.df[,1:10]>0, 1, any, na.rm=TRUE),
@@ -11,3 +12,15 @@ rugr.out <- with(umf.df,
 rugr <- rugr.out
 
 write.csv(rugr, file="grouse_data.csv", row.names=TRUE)
+
+
+## FIXUP, 2024-09-02, remove NA
+gd <- read.csv("grouse_data.csv", row.names=1)
+str(gd)
+summary(gd)
+gd$doy.2[is.na(gd$doy.2)] <- mean(gd$doy.2, na.rm=TRUE)
+gd$doy.3[is.na(gd$doy.3)] <- mean(gd$doy.3, na.rm=TRUE)
+
+summary(gd)
+
+write.csv(gd, file="grouse_data.csv", row.names=TRUE)
