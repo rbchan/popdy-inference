@@ -54,6 +54,13 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -124,7 +131,7 @@
 
 \begin{frame}
   \frametitle{Overview}
-  We're often interested in abundance more than occupancy. \\
+  We're often more interested in abundance than occupancy. \\
   \pause
   \vfill
   Even if you're interested in occupancy, you get it for free by modeling abundance. \\
@@ -197,9 +204,9 @@
 \begin{alltt}
 \hlstd{nSites} \hlkwb{<-} \hlnum{100}
 \hlstd{nVisits} \hlkwb{<-} \hlnum{4}
-\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}                         \hlcom{## Make it reproducible}
-\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}                         \hlcom{## Expected value of N}
-\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}  \hlcom{## Realized values}
+\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}                         \hlcom{# Make it reproducible}
+\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}                         \hlcom{# Expected value of N at each site}
+\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}  \hlcom{# Realized values}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -739,15 +746,15 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  \centering
-  Graph $p$ as a function of temperature. Include 95\% confidence intervals. \\
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   % \small
+%%   % \begin{enumerate}
+%%   %   \item Predict
+%%   %   \end{enumerate}
+%%   \centering
+%%   Graph $p$ as a function of temperature. Include 95\% confidence intervals. \\
+%% \end{frame}
 
 
 
@@ -769,7 +776,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{frame}[fragile]
   \frametitle{The BUGS model -- without covariates}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -838,7 +845,7 @@ totalAbundance <- sum(N)
 \begin{frame}[fragile]
   \frametitle{The BUGS model -- with covariates}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -926,24 +933,12 @@ totalAbundance <- sum(N)
 \begin{alltt}
 \hlkwd{library}\hlstd{(jagsUI)}
 \hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlcom{## Monitor "N[i]" }
+                                \hlcom{## Monitor each "N[i]" }
                                 \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"N"}\hlstd{),}
                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.031 minutes.
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
@@ -1193,18 +1188,6 @@ totalAbundance <- sum(N)
                                  \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
                                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## 
-## Processing function input....... 
-## 
-## Done. 
-##  
-## Beginning parallel processing using 3 cores. Console output will be suppressed.
-## 
-## Parallel processing completed.
-## 
-## MCMC took 0.01 minutes.
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 \end{frame}
