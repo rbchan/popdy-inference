@@ -4,6 +4,13 @@
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
@@ -85,7 +92,7 @@ knit_theme$set("edit-kwrite")
 
 \begin{frame}
   \frametitle{Overview}
-  We're often interested in abundance more than occupancy. \\
+  We're often more interested in abundance than occupancy. \\
   \pause
   \vfill
   Even if you're interested in occupancy, you get it for free by modeling abundance. \\
@@ -156,9 +163,9 @@ knit_theme$set("edit-kwrite")
 <<sim-nocov1,size='scriptsize'>>=
 nSites <- 100
 nVisits <- 4
-set.seed(3439)                         ## Make it reproducible
-lambda1 <- 2.6                         ## Expected value of N
-N1 <- rpois(n=nSites, lambda=lambda1)  ## Realized values
+set.seed(3439)                         # Make it reproducible
+lambda1 <- 2.6                         # Expected value of N at each site
+N1 <- rpois(n=nSites, lambda=lambda1)  # Realized values
 @
 % \item
   \pause
@@ -460,15 +467,15 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  \centering
-  Graph $p$ as a function of temperature. Include 95\% confidence intervals. \\
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   % \small
+%%   % \begin{enumerate}
+%%   %   \item Predict
+%%   %   \end{enumerate}
+%%   \centering
+%%   Graph $p$ as a function of temperature. Include 95\% confidence intervals. \\
+%% \end{frame}
 
 
 
@@ -489,7 +496,7 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model -- without covariates}
-<<bugs0,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+<<bugs0,size='scriptsize',echo=FALSE,comment='',background='beige'>>=
 writeLines(readLines("Nmix-model.jag"))
 @
 <<jagsUI0,include=FALSE>>=
@@ -516,7 +523,7 @@ jags.inits0 <- function() list(lambda=runif(1), p=runif(1), N=maxCounts)
   \vfill
   Run it
   \vspace{-6pt}
-<<bugs-pars0,size='scriptsize',results='hide',message=FALSE>>=
+<<bugs-pars0,size='scriptsize',results='hide',message=FALSE,results='hide',cache=TRUE>>=
 jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
                                  parameters.to.save=c("lambda", "p"), 
                                  model.file="Nmix-model.jag",
@@ -530,7 +537,7 @@ jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
 
 \begin{frame}[fragile]
   \frametitle{The BUGS model -- with covariates}
-<<bugs,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+<<bugs,size='scriptsize',echo=FALSE,comment='',background='beige'>>=
 writeLines(readLines("Nmix-model-covs.jag"))
 @
 <<jagsUI,include=FALSE>>=
@@ -578,10 +585,10 @@ jags.pars <- c("beta0", "beta1", "beta2",
 \begin{frame}[fragile]
   \frametitle{MCMC}
   \small
-<<bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE>>=
+<<bugs-mcmc,size='scriptsize',message=FALSE,results='hide',cache=TRUE>>=
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                ## Monitor "N[i]" 
+                                ## Monitor each "N[i]" 
                                 parameters.to.save=c(jags.pars, "N"), 
                                 model.file="Nmix-model-covs.jag",
                                 n.chains=3, n.adapt=100, n.burnin=0,
@@ -726,12 +733,12 @@ lines(temp.pred, pred.post.upper, col="blue", lty=2)
   \vspace{-12pt}
 <<bugs-data2,size='small'>>=
 jags.data2 <- jags.data
-jags.data2$y[] <- NA      ## Replace data with missing values
+jags.data2$y[] <- NA     # Replace data with missing values
 @
   \pause
   \vfill
   Fit model (Really, we're just sampling from the prior)
-<<bugs-mcmc-prior,size='scriptsize',message=FALSE,cache=TRUE>>=
+<<bugs-mcmc-prior,size='scriptsize',message=FALSE,results='hide',cache=TRUE>>=
 jags.prior.samples <- jags.basic(data=jags.data2, inits=jags.inits,
                                  parameters.to.save=jags.pars,
                                  model.file="Nmix-model-covs.jag",
@@ -856,12 +863,9 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
     \footnotesize
     \item Using the simulated data, compare the prior and posterior
       predictive distributions of $\lambda$ for each of the 3 forest
-      types. 
-    % \item Change the priors for $\alpha_0$ and $\alpha_1$ from
-    %   \inr{dnorm(0,0.5)} to \inr{dnorm(0, 0.001)} and then compare the
-    %   prior and posterior predictions of $p$ as a function of
-    %   temperature. Make the same graph as we made above. How
-    %   sensitive is the posterior to the prior?
+      types. Hint: because forest type is categorical (not
+      continuous), you can visualize the prior and posterior
+      predictive distributions as histograms for each forest type.  
     \item Fit a binomial $N$-mixture model to the Canada warbler data
       using `unmarked' and JAGS. The data include: 
       \begin{itemize}
@@ -874,7 +878,7 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
       Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday. 
 \end{frame}
 
 

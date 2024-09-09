@@ -8,9 +8,9 @@
 ## ----sim-nocov1,size='scriptsize'-------------------------------------------------------
 nSites <- 100
 nVisits <- 4
-set.seed(3439)                         ## Make it reproducible
-lambda1 <- 2.6                         ## Expected value of N
-N1 <- rpois(n=nSites, lambda=lambda1)  ## Realized values
+set.seed(3439)                         # Make it reproducible
+lambda1 <- 2.6                         # Expected value of N at each site
+N1 <- rpois(n=nSites, lambda=lambda1)  # Realized values
 
 
 ## ----sim-nocov2,size='scriptsize'-------------------------------------------------------
@@ -139,7 +139,7 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
        angle=90, length=0.1)
 
 
-## ----bugs0,size='scriptsize',echo=FALSE,comment='',background='lightblue'---------------
+## ----bugs0,size='scriptsize',echo=FALSE,comment='',background='beige'-------------------
 writeLines(readLines("Nmix-model.jag"))
 
 ## ----jagsUI0,include=FALSE--------------------------------------------------------------
@@ -154,7 +154,7 @@ jags.data0 <- list(y=y2, nSites=nSites, nOccasions=nVisits)
 jags.inits0 <- function() list(lambda=runif(1), p=runif(1), N=maxCounts)
 
 
-## ----bugs-pars0,size='scriptsize',results='hide',message=FALSE--------------------------
+## ----bugs-pars0,size='scriptsize',results='hide',message=FALSE,results='hide',cache=TRUE----
 jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
                                  parameters.to.save=c("lambda", "p"), 
                                  model.file="Nmix-model.jag",
@@ -162,7 +162,7 @@ jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
                                  n.iter=2000, parallel=TRUE)
 
 
-## ----bugs,size='scriptsize',echo=FALSE,comment='',background='lightblue'----------------
+## ----bugs,size='scriptsize',echo=FALSE,comment='',background='beige'--------------------
 writeLines(readLines("Nmix-model-covs.jag"))
 
 ## ----jagsUI,include=FALSE---------------------------------------------------------------
@@ -187,10 +187,10 @@ jags.pars <- c("beta0", "beta1", "beta2",
                "alpha0", "alpha1", "totalAbundance")
 
 
-## ----bugs-mcmc,size='scriptsize',message=FALSE,cache=TRUE-------------------------------
+## ----bugs-mcmc,size='scriptsize',message=FALSE,results='hide',cache=TRUE----------------
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
-                                ## Monitor "N[i]" 
+                                ## Monitor each "N[i]" 
                                 parameters.to.save=c(jags.pars, "N"), 
                                 model.file="Nmix-model-covs.jag",
                                 n.chains=3, n.adapt=100, n.burnin=0,
@@ -247,10 +247,10 @@ lines(temp.pred, pred.post.upper, col="blue", lty=2)
 
 ## ----bugs-data2,size='small'------------------------------------------------------------
 jags.data2 <- jags.data
-jags.data2$y[] <- NA      ## Replace data with missing values
+jags.data2$y[] <- NA     # Replace data with missing values
 
 
-## ----bugs-mcmc-prior,size='scriptsize',message=FALSE,cache=TRUE-------------------------
+## ----bugs-mcmc-prior,size='scriptsize',message=FALSE,results='hide',cache=TRUE----------
 jags.prior.samples <- jags.basic(data=jags.data2, inits=jags.inits,
                                  parameters.to.save=jags.pars,
                                  model.file="Nmix-model-covs.jag",

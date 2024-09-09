@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -236,12 +236,12 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{nSites} \hlkwb{<-} \hlnum{100}\hldef{; nVisits} \hlkwb{<-} \hlnum{4}\hldef{;} \hlkwd{set.seed}\hldef{(}\hlnum{83}\hldef{)} \hlcom{# Make it reproducible}
-\hldef{x1} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites,}\hlnum{0}\hldef{,}\hlnum{0.5}\hldef{)}  \hlcom{# Site covariate (continuous)}
-\hldef{x2} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites,}\hlnum{100}\hldef{,}\hlnum{10}\hldef{)} \hlcom{# Another continuous site covariate}
-\hldef{w} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{sample}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Cold"}\hldef{,} \hlsng{"Hot"}\hldef{),} \hlkwc{size}\hldef{=nSites}\hlopt{*}\hldef{nVisits,} \hlkwc{replace}\hldef{=T),}
-            \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)} \hlcom{# Categorical obs covar}
-\hldef{wHot} \hlkwb{<-} \hlkwd{ifelse}\hldef{(w}\hlopt{==}\hlsng{"Hot"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}         \hlcom{# Dummy variable}
+\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; nVisits} \hlkwb{<-} \hlnum{4}\hlstd{;} \hlkwd{set.seed}\hlstd{(}\hlnum{83}\hlstd{)} \hlcom{# Make it reproducible}
+\hlstd{x1} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{)}  \hlcom{# Site covariate (continuous)}
+\hlstd{x2} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites,}\hlnum{100}\hlstd{,}\hlnum{10}\hlstd{)} \hlcom{# Another continuous site covariate}
+\hlstd{w} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Cold"}\hlstd{,} \hlstr{"Hot"}\hlstd{),} \hlkwc{size}\hlstd{=nSites}\hlopt{*}\hlstd{nVisits,} \hlkwc{replace}\hlstd{=T),}
+            \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)} \hlcom{# Categorical obs covar}
+\hlstd{wHot} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(w}\hlopt{==}\hlstr{"Hot"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}         \hlcom{# Dummy variable}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -249,10 +249,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{beta0} \hlkwb{<-} \hlnum{0}\hldef{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hldef{; beta2} \hlkwb{<-} \hlnum{0}
-\hldef{psi} \hlkwb{<-} \hlkwd{plogis}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x1} \hlopt{+} \hldef{beta2}\hlopt{*}\hldef{x2)}
-\hldef{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{0.5}\hldef{; alpha1} \hlkwb{<-} \hlnum{1}\hldef{; alpha2} \hlkwb{<-} \hlnum{2}
-\hldef{p} \hlkwb{<-} \hlkwd{plogis}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{x1} \hlopt{+} \hldef{alpha2}\hlopt{*}\hldef{wHot)}
+\hlstd{beta0} \hlkwb{<-} \hlnum{0}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{0}
+\hlstd{psi} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{x2)}
+\hlstd{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{0.5}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}\hlstd{; alpha2} \hlkwb{<-} \hlnum{2}
+\hlstd{p} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{x1} \hlopt{+} \hlstd{alpha2}\hlopt{*}\hlstd{wHot)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -260,10 +260,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{z} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{, psi)}            \hlcom{## pres/absence}
-\hldef{y} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)}
-\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
-    \hldef{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nVisits,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=z[i]}\hlopt{*}\hldef{p[i,]) \}}
+\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{, psi)}            \hlcom{## pres/absence}
+\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
+    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i]}\hlopt{*}\hlstd{p[i,]) \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -283,7 +283,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{y[}\hlnum{1}\hlopt{:}\hlnum{20}\hldef{,]}
+\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{20}\hlstd{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
@@ -320,8 +320,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y)} \hlcom{# Dets at each site}
-\hlkwd{table}\hldef{(siteDets)}        \hlcom{# Frequency}
+\hlstd{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)} \hlcom{# Dets at each site}
+\hlkwd{table}\hlstd{(siteDets)}        \hlcom{# Frequency}
 \end{alltt}
 \begin{verbatim}
 ## siteDets
@@ -337,8 +337,8 @@ Proportion of sites known to be occupied \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hldef{(siteDets}\hlopt{>}\hlnum{0}\hldef{)}\hlopt{/}\hldef{nSites}
-\hldef{naiveOccupancy}
+\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(siteDets}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
+\hlstd{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.48
@@ -375,7 +375,7 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(x1,x2),} \hlkwc{obsCovs}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{w}\hldef{=w))}
+\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(x1,x2),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{w}\hlstd{=w))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -387,7 +387,7 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hldef{(umf)}
+\hlkwd{summary}\hlstd{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
@@ -432,12 +432,12 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{mean.x1} \hlkwb{<-} \hlkwd{mean}\hldef{(x1); mean.x2} \hlkwb{<-} \hlkwd{mean}\hldef{(x2)}
-\hldef{sd.x1} \hlkwb{<-} \hlkwd{sd}\hldef{(x1); sd.x2} \hlkwb{<-} \hlkwd{sd}\hldef{(x2)}
-\hldef{x1s} \hlkwb{<-} \hldef{(x1}\hlopt{-}\hldef{mean.x1)}\hlopt{/}\hldef{sd.x1}
-\hldef{x2s} \hlkwb{<-} \hldef{(x2}\hlopt{-}\hldef{mean.x2)}\hlopt{/}\hldef{sd.x2}
-\hlkwd{siteCovs}\hldef{(umf)}\hlopt{$}\hldef{x1s} \hlkwb{<-} \hldef{x1s}
-\hlkwd{siteCovs}\hldef{(umf)}\hlopt{$}\hldef{x2s} \hlkwb{<-} \hldef{x2s}
+\hlstd{mean.x1} \hlkwb{<-} \hlkwd{mean}\hlstd{(x1); mean.x2} \hlkwb{<-} \hlkwd{mean}\hlstd{(x2)}
+\hlstd{sd.x1} \hlkwb{<-} \hlkwd{sd}\hlstd{(x1); sd.x2} \hlkwb{<-} \hlkwd{sd}\hlstd{(x2)}
+\hlstd{x1s} \hlkwb{<-} \hlstd{(x1}\hlopt{-}\hlstd{mean.x1)}\hlopt{/}\hlstd{sd.x1}
+\hlstd{x2s} \hlkwb{<-} \hlstd{(x2}\hlopt{-}\hlstd{mean.x2)}\hlopt{/}\hlstd{sd.x2}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x1s} \hlkwb{<-} \hlstd{x1s}
+\hlkwd{siteCovs}\hlstd{(umf)}\hlopt{$}\hlstd{x2s} \hlkwb{<-} \hlstd{x2s}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -467,28 +467,27 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{fm} \hlkwb{<-} \hlkwd{occu}\hldef{(}\hlopt{~}\hldef{x1s}\hlopt{+}\hldef{w} \hlopt{~}\hldef{x1s}\hlopt{+}\hldef{x2s, umf)}    \hlcom{## Notice standardized covariates}
-\hldef{fm}
+\hlstd{fm} \hlkwb{<-} \hlkwd{occu}\hlstd{(}\hlopt{~}\hlstd{x1s}\hlopt{+}\hlstd{w} \hlopt{~}\hlstd{x1s}\hlopt{+}\hlstd{x2s, umf)}    \hlcom{## Notice standardized covariates}
+\hlstd{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
 ## occu(formula = ~x1s + w ~ x1s + x2s, data = umf)
 ## 
-## Occupancy (logit-scale):
+## Occupancy:
 ##             Estimate    SE      z P(>|z|)
 ## (Intercept)  -0.0236 0.214 -0.110  0.9122
 ## x1s          -0.4991 0.236 -2.115  0.0345
 ## x2s           0.1580 0.214  0.738  0.4606
 ## 
-## Detection (logit-scale):
+## Detection:
 ##             Estimate    SE     z  P(>|z|)
 ## (Intercept)   -0.311 0.217 -1.43 1.52e-01
 ## x1s            0.510 0.195  2.61 8.96e-03
 ## wHot           2.104 0.365  5.76 8.17e-09
 ## 
-## AIC: 352.8098 
-## Number of sites: 100
+## AIC: 352.8098
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -514,10 +513,10 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x1s}\hldef{=}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=}\hlopt{-}\hlnum{3}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{50}\hldef{),}
-                        \hlkwc{x2s}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{w}\hldef{=}\hlsng{'Hot'}\hldef{)}
-\hldef{pred.data}\hlopt{$}\hldef{x1} \hlkwb{<-} \hldef{pred.data}\hlopt{$}\hldef{x1s}\hlopt{*}\hldef{sd.x1}\hlopt{+}\hldef{mean.x1} \hlcom{## Back-transform x1s}
-\hldef{pred.data}\hlopt{$}\hldef{x2} \hlkwb{<-} \hldef{pred.data}\hlopt{$}\hldef{x2s}\hlopt{*}\hldef{sd.x2}\hlopt{+}\hldef{mean.x2} \hlcom{## Back-transform x2s}
+\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x1s}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{),}
+                        \hlkwc{x2s}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{w}\hlstd{=}\hlstr{'Hot'}\hlstd{)}
+\hlstd{pred.data}\hlopt{$}\hlstd{x1} \hlkwb{<-} \hlstd{pred.data}\hlopt{$}\hlstd{x1s}\hlopt{*}\hlstd{sd.x1}\hlopt{+}\hlstd{mean.x1} \hlcom{## Back-transform x1s}
+\hlstd{pred.data}\hlopt{$}\hlstd{x2} \hlkwb{<-} \hlstd{pred.data}\hlopt{$}\hlstd{x2s}\hlopt{*}\hlstd{sd.x2}\hlopt{+}\hlstd{mean.x2} \hlcom{## Back-transform x2s}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -527,8 +526,8 @@ Get predictions of $\psi$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{psi.pred} \hlkwb{<-} \hlkwd{predict}\hldef{(fm,} \hlkwc{newdata}\hldef{=pred.data,}
-                    \hlkwc{type}\hldef{=}\hlsng{'state'}\hldef{,} \hlkwc{append}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hlstd{psi.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                    \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -538,8 +537,8 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{p.pred} \hlkwb{<-} \hlkwd{predict}\hldef{(fm,} \hlkwc{newdata}\hldef{=pred.data,}
-                  \hlkwc{type}\hldef{=}\hlsng{'det'}\hldef{,} \hlkwc{append}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hlstd{p.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
+                  \hlkwc{type}\hlstd{=}\hlstr{'det'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -554,7 +553,7 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(psi.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(psi.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ##   Predicted   SE lower upper  x1s x2s   w   x1  x2
@@ -573,7 +572,7 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(p.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(p.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ##   Predicted   SE lower upper  x1s x2s   w   x1  x2
@@ -598,9 +597,9 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{x1s, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,}
-     \hlkwc{xlab}\hldef{=}\hlsng{"Standardized covariate (x1s)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
-\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{x1s, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{);} \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{x1s, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized covariate (x1s)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1s, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -620,9 +619,9 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,}
-     \hlkwc{xlab}\hldef{=}\hlsng{"Original scale covariate (x1)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
-\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{);} \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"Original scale covariate (x1)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{);} \hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -665,11 +664,11 @@ Get predictions of $p$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{,}
-     \hlkwc{xlab}\hldef{=}\hlsng{"x1"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
-\hlkwd{lines}\hldef{(Predicted} \hlopt{~} \hldef{x1, p.pred,} \hlkwc{col}\hldef{=}\hlsng{"orange"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
-\hlkwd{legend}\hldef{(}\hlopt{-}\hlnum{1.5}\hldef{,} \hlnum{0.3}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Occupancy (psi)"}\hldef{,} \hlsng{"Detection (p)"}\hldef{),} \hlkwc{lty}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"blue"}\hldef{,} \hlsng{"orange"}\hldef{),}
-       \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{cex}\hldef{=}\hlnum{1.3}\hldef{)}
+\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, psi.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{"x1"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(Predicted} \hlopt{~} \hlstd{x1, p.pred,} \hlkwc{col}\hlstd{=}\hlstr{"orange"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{1.5}\hlstd{,} \hlnum{0.3}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Occupancy (psi)"}\hlstd{,} \hlstr{"Detection (p)"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"orange"}\hlstd{),}
+       \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1.3}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -784,8 +783,8 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{x1}\hldef{=x1s,} \hlkwc{x2}\hldef{=x2s,} \hlkwc{wHot}\hldef{=wHot,}
-                  \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nOccasions}\hldef{=nVisits)}
+\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{x1}\hlstd{=x1s,} \hlkwc{x2}\hlstd{=x2s,} \hlkwc{wHot}\hlstd{=wHot,}
+                  \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -796,9 +795,9 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{jags.inits} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
-    \hlkwd{list}\hldef{(}\hlkwc{beta0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{alpha0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{, nSites))}
-\hldef{\}}
+\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
+    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, nSites))}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -809,9 +808,9 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{jags.pars} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,} \hlsng{"beta2"}\hldef{,}
-               \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"alpha2"}\hldef{,}
-               \hlsng{"sitesOccupied"}\hldef{)}
+\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,}
+               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"alpha2"}\hlstd{,}
+               \hlstr{"sitesOccupied"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -827,12 +826,12 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hldef{(jagsUI)}
-\hldef{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hldef{=jags.pars,}
-                                \hlkwc{model.file}\hldef{=}\hlsng{"occupancy-model-covs.jag"}\hldef{,}
-                                \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
-                                \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"occupancy-model-covs.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -844,7 +843,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.025 minutes.
+## MCMC took 0.041 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -857,11 +856,11 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hldef{(jags.post.samples)}
+\hlkwd{summary}\hlstd{(jags.post.samples)}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 101:2100
+## Iterations = 1:2000
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -903,7 +902,7 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(jags.post.samples[,}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{])}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{])}
 \end{alltt}
 \end{kframe}
 
@@ -922,7 +921,7 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(jags.post.samples[,}\hlkwd{c}\hldef{(}\hlnum{4}\hlopt{:}\hlnum{6}\hldef{,}\hlnum{8}\hldef{)])}
+\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{,}\hlnum{8}\hlstd{)])}
 \end{alltt}
 \end{kframe}
 
@@ -960,8 +959,8 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{psi.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.samples[,}\hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,}\hlsng{"beta1"}\hldef{,}\hlsng{"beta2"}\hldef{)])}
-\hlkwd{head}\hldef{(psi.coef.post,} \hlkwc{n}\hldef{=}\hlnum{4}\hldef{)}
+\hlstd{psi.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,}\hlstr{"beta1"}\hlstd{,}\hlstr{"beta2"}\hlstd{)])}
+\hlkwd{head}\hlstd{(psi.coef.post,} \hlkwc{n}\hlstd{=}\hlnum{4}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ##            beta0      beta1       beta2
@@ -979,8 +978,8 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{n.iter} \hlkwb{<-} \hlkwd{nrow}\hldef{(psi.coef.post)}
-\hldef{psi.post.pred} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=n.iter,} \hlkwc{ncol}\hldef{=}\hlkwd{nrow}\hldef{(pred.data))}
+\hlstd{n.iter} \hlkwb{<-} \hlkwd{nrow}\hlstd{(psi.coef.post)}
+\hlstd{psi.post.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{nrow}\hlstd{(pred.data))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -991,10 +990,10 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.iter) \{}
-    \hldef{psi.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hldef{(psi.coef.post[i,}\hlsng{"beta0"}\hldef{]} \hlopt{+}
-                                \hldef{psi.coef.post[i,}\hlsng{"beta1"}\hldef{]}\hlopt{*}\hldef{pred.data}\hlopt{$}\hldef{x1s)}
-\hldef{\}}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlstd{psi.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(psi.coef.post[i,}\hlstr{"beta0"}\hlstd{]} \hlopt{+}
+                                \hlstd{psi.coef.post[i,}\hlstr{"beta1"}\hlstd{]}\hlopt{*}\hlstd{pred.data}\hlopt{$}\hlstd{x1s)}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1008,8 +1007,8 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(pred.data}\hlopt{$}\hldef{x1, psi.post.pred[}\hlnum{1}\hldef{,],} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"x1s"}\hldef{,}
-     \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
+\hlkwd{plot}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, psi.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"x1s"}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
 \end{alltt}
 \end{kframe}
 
@@ -1029,9 +1028,9 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.iter) \{}
-    \hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, psi.post.pred[i,],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
-\hldef{\}}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
+    \hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, psi.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 
@@ -1053,12 +1052,12 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(psi.post.pred)}
-\hldef{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(psi.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
-\hldef{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(psi.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
-\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, pred.post.mean,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
-\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, pred.post.lower,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
-\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, pred.post.upper,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(psi.post.pred)}
+\hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(psi.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
+\hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(psi.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, pred.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{lines}\hlstd{(pred.data}\hlopt{$}\hlstd{x1, pred.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
