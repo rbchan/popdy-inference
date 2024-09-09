@@ -657,7 +657,7 @@ for(i in 1:n.iter) {
   \frametitle{Bayesian prediction}
   Prediction line for first posterior sample
 <<psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200>>=
-plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 @
 \end{frame}
@@ -668,7 +668,7 @@ plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
   \frametitle{Bayesian prediction}
   All samples from the posterior predictive distribution
 <<psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=FALSE,dpi=200>>=
-plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
     lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
@@ -684,7 +684,7 @@ for(i in 1:n.iter) {
   \frametitle{Bayesian prediction}
   Now with posterior mean and 95\% CI
 <<psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=FALSE,dpi=200>>=
-plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
     lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
