@@ -9,6 +9,14 @@
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
+
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
 source("../rnw2pdf.R")
@@ -141,26 +149,33 @@ knit_theme$set("edit-kwrite")
 \end{frame}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Overfit}
-% <<overfit>>=
-% n <- 50
-% dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n))
-% dat$y <- rnorm(n, mean = -1 + 2*x1, sd = 2)
-% fm1 <- glm(y~1, gaussian)
-% fm2 <- glm(y~x1, gaussian)
-% fm3 <- glm(y~x2, gaussian)
-% fm4 <- glm(y~x1+x2, gaussian)
-% fm5 <- glm(y~x1+x2+x3, gaussian)
-% fm6 <- glm(y~x1+x2+x3+x4, gaussian)
-% library(boot)
-% cv.glm(dat, fm1)$delta[1]
-% cv.glm(dat, fm2)$delta[1]
-% cv.glm(dat, fm3)$delta[1]
-% cv.glm(dat, fm4)$delta[1]
-% cv.glm(dat, fm5)$delta[1]
-% @   
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Overfit}
+<<overfit,size='scriptsize>>=
+n <- 50
+set.seed(43340)
+dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n), x5=rnorm(n))
+dat$y <- rnorm(n, mean = -1 + 2*dat$x1, sd = 2)
+fm1 <- glm(y~1, gaussian, dat)
+fm2 <- glm(y~x1, gaussian, dat)
+fm3 <- glm(y~x2, gaussian, dat)
+fm4 <- glm(y~x1+x2, gaussian, dat)
+fm5 <- glm(y~x1+x2+x3, gaussian, dat)
+fm6 <- glm(y~x1+x2+x3+x4, gaussian, dat)
+fm7 <- glm(y~x1+x2+x3+x4+x5, gaussian, dat)
+library(boot)
+prediction_error <- c(
+  fm1=cv.glm(dat, fm1)$delta[1],
+  fm2=cv.glm(dat, fm2)$delta[1], ## Correct model
+  fm3=cv.glm(dat, fm3)$delta[1],
+  fm4=cv.glm(dat, fm4)$delta[1],
+  fm5=cv.glm(dat, fm5)$delta[1],
+  fm6=cv.glm(dat, fm6)$delta[1],
+  fm7=cv.glm(dat, fm7)$delta[1])
+prediction_error
+barplot(prediction_error, xlab="Predication error")
+@   
+\end{frame}
 
 
 \subsection{Likelihood-based methods}
@@ -1139,7 +1154,7 @@ abline(a=0, b=1, col="red")
       mis-specified model?
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00am on Monday. 
 \end{frame}
 
 

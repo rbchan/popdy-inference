@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -57,6 +57,14 @@
 \usepackage{booktabs}
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 
 % Load function to compile and open PDF
@@ -859,7 +867,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 126.7338
+## [1] 128.4942
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -869,7 +877,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 114.9215
+## [1] 126.346
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -879,7 +887,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 116.2775
+## [1] 136.7913
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -891,7 +899,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 151.9427
+## [1] 152.0945
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -901,7 +909,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 152.4884
+## [1] 144.2773
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -911,7 +919,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 148.2607
+## [1] 157.8486
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -946,15 +954,16 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \toprule
   & WAIC & delta\\
 \midrule
-Model 2 & 114.92 & 0.00\\
-Model 3 & 116.28 & 1.36\\
-Model 1 & 126.73 & 11.81\\
-Model 4 & 151.94 & 37.02\\
-Model 5 & 152.49 & 37.57\\
+Model 2 & 126.35 & 0.00\\
+Model 1 & 128.49 & 2.15\\
+Model 3 & 136.79 & 10.45\\
+Model 5 & 144.28 & 17.93\\
+Model 6 & 144.28 & 17.93\\
 \addlinespace
-Model 6 & 152.49 & 37.57\\
+Model 4 & 152.09 & 25.75\\
 \bottomrule
 \end{tabular}
+
 
 \end{knitrout}
   \end{center}
@@ -1136,6 +1145,7 @@ R code
 }
 
 
+
 \end{knitrout}
 \pause
 \vfill
@@ -1187,6 +1197,7 @@ No sign of obvious outliers or other problems.
 }
 
 
+
 \end{knitrout}
 \end{frame}
 
@@ -1205,11 +1216,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           1.83             5.28        0.348
+## SSE 23.2            1.6             5.28        0.378
 ## 
 ## t_B quantiles:
-##       0% 2.5% 25% 50% 75% 97.5% 100%
-## [1,] 7.9   11  18  21  25    33   35
+##     0% 2.5% 25% 50% 75% 97.5% 100%
+## SSE 11   13  18  21  25    32   37
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
@@ -1440,6 +1451,7 @@ totalAbundance <- sum(N[1:nSites])
 {\centering \includegraphics[width=0.55\linewidth]{figure/bugs-mcmc-gof-plot-1} 
 
 }
+
 
 
 \end{knitrout}
