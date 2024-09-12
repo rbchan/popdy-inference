@@ -155,10 +155,10 @@ knit_theme$set("edit-kwrite")
 n <- 50
 set.seed(43340)
 dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n), x5=rnorm(n))
-dat$y <- rnorm(n, mean = -1 + 2*dat$x1, sd = 2)
+dat$y <- rnorm(n, mean = -1 + 2*dat$x2, sd = 2)
 fm1 <- glm(y~1, gaussian, dat)
 fm2 <- glm(y~x1, gaussian, dat)
-fm3 <- glm(y~x2, gaussian, dat)
+fm3 <- glm(y~x2, gaussian, dat)  # Correct model
 fm4 <- glm(y~x1+x2, gaussian, dat)
 fm5 <- glm(y~x1+x2+x3, gaussian, dat)
 fm6 <- glm(y~x1+x2+x3+x4, gaussian, dat)
@@ -166,14 +166,15 @@ fm7 <- glm(y~x1+x2+x3+x4+x5, gaussian, dat)
 library(boot)
 prediction_error <- c(
   fm1=cv.glm(dat, fm1)$delta[1],
-  fm2=cv.glm(dat, fm2)$delta[1], ## Correct model
+  fm2=cv.glm(dat, fm2)$delta[1], # Correct model
   fm3=cv.glm(dat, fm3)$delta[1],
   fm4=cv.glm(dat, fm4)$delta[1],
   fm5=cv.glm(dat, fm5)$delta[1],
   fm6=cv.glm(dat, fm6)$delta[1],
   fm7=cv.glm(dat, fm7)$delta[1])
-prediction_error
-barplot(prediction_error, xlab="Predication error")
+
+xbp <- barplot(prediction_error, xlab="Model", ylab="Predication error", cex.lab=1.3)
+text(xbp[1]+1, as.character(fm1$call)[2], srt=90, pos=2, cex=1.5)
 @   
 \end{frame}
 
