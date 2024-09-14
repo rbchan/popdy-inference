@@ -1,4 +1,4 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -48,6 +48,8 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -190,27 +192,42 @@
 \end{frame}
 
 
-% \begin{frame}[fragile]
-%   \frametitle{Overfit}
-% <<overfit>>=
-% n <- 50
-% dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n))
-% dat$y <- rnorm(n, mean = -1 + 2*x1, sd = 2)
-% fm1 <- glm(y~1, gaussian)
-% fm2 <- glm(y~x1, gaussian)
-% fm3 <- glm(y~x2, gaussian)
-% fm4 <- glm(y~x1+x2, gaussian)
-% fm5 <- glm(y~x1+x2+x3, gaussian)
-% fm6 <- glm(y~x1+x2+x3+x4, gaussian)
-% library(boot)
-% cv.glm(dat, fm1)$delta[1]
-% cv.glm(dat, fm2)$delta[1]
-% cv.glm(dat, fm3)$delta[1]
-% cv.glm(dat, fm4)$delta[1]
-% cv.glm(dat, fm5)$delta[1]
-% @   
-% \end{frame}
+\begin{frame}[fragile]
+  \frametitle{Overfitting}
+  7 regression models with 5 covariates. \\
+  
+  Only \inr{x2} is in the data generating model.  
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{n} \hlkwb{<-} \hlnum{50}
+\hldef{dat} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x1}\hldef{=}\hlkwd{rnorm}\hldef{(n),} \hlkwc{x2}\hldef{=}\hlkwd{rnorm}\hldef{(n),} \hlkwc{x3}\hldef{=}\hlkwd{rnorm}\hldef{(n),}
+                  \hlkwc{x4}\hldef{=}\hlkwd{rnorm}\hldef{(n),} \hlkwc{x5}\hldef{=}\hlkwd{rnorm}\hldef{(n))}
+\hldef{dat}\hlopt{$}\hldef{y} \hlkwb{<-} \hlkwd{rnorm}\hldef{(n,} \hlkwc{mean} \hldef{=} \hlopt{-}\hlnum{1} \hlopt{+} \hlnum{2}\hlopt{*}\hldef{dat}\hlopt{$}\hldef{x2,} \hlkwc{sd} \hldef{=} \hlnum{2}\hldef{)}
+\hldef{fm1} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hlnum{1}\hldef{, gaussian, dat)}
+\hldef{fm2} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1, gaussian, dat)}
+\hldef{fm3} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x2, gaussian, dat)}  \hlcom{# Correct model}
+\hldef{fm4} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2, gaussian, dat)}
+\hldef{fm5} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2}\hlopt{+}\hldef{x3, gaussian, dat)}
+\hldef{fm6} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2}\hlopt{+}\hldef{x3}\hlopt{+}\hldef{x4, gaussian, dat)}
+\hldef{fm7} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2}\hlopt{+}\hldef{x3}\hlopt{+}\hldef{x4}\hlopt{+}\hldef{x5, gaussian, dat)}
 
+\hlkwd{library}\hldef{(boot)}  \hlcom{## For 'cv.glm'}
+\hldef{prediction_error} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlkwc{fm1}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm1)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{],}
+  \hlkwc{fm2}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm2)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{],} \hlkwc{fm3}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm3)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{],}
+  \hlkwc{fm4}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm4)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{],} \hlkwc{fm5}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm5)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{],}
+  \hlkwc{fm6}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm6)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{],} \hlkwc{fm7}\hldef{=}\hlkwd{cv.glm}\hldef{(dat, fm7)}\hlopt{$}\hldef{delta[}\hlnum{1}\hldef{])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Overfitting}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figure/overfit-1} \\
+\end{frame}
 
 \subsection{Likelihood-based methods}
 
@@ -289,12 +306,12 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(unmarked)}
-\hlstd{grouse.data} \hlkwb{<-} \hlkwd{read.csv}\hlstd{(}\hlstr{"grouse_data_Nmix.csv"}\hlstd{,} \hlkwc{row.names}\hlstd{=}\hlnum{1}\hlstd{)}
-\hlstd{grouse.umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hlstd{(}
-    \hlkwc{y}\hlstd{=grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"grouse"}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)],}
-    \hlkwc{siteCovs}\hlstd{=grouse.data[,}\hlkwd{c}\hlstd{(}\hlstr{"utmE"}\hlstd{,}\hlstr{"utmN"}\hlstd{,}\hlstr{"elevation"}\hlstd{)],}
-    \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"Temperature."}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)]))}
+\hlkwd{library}\hldef{(unmarked)}
+\hldef{grouse.data} \hlkwb{<-} \hlkwd{read.csv}\hldef{(}\hlsng{"grouse_data_Nmix.csv"}\hldef{,} \hlkwc{row.names}\hldef{=}\hlnum{1}\hldef{)}
+\hldef{grouse.umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hldef{(}
+    \hlkwc{y}\hldef{=grouse.data[,}\hlkwd{paste0}\hldef{(}\hlsng{"grouse"}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{)],}
+    \hlkwc{siteCovs}\hldef{=grouse.data[,}\hlkwd{c}\hldef{(}\hlsng{"utmE"}\hldef{,}\hlsng{"utmN"}\hldef{,}\hlsng{"elevation"}\hldef{)],}
+    \hlkwc{obsCovs}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{temp}\hldef{=grouse.data[,}\hlkwd{paste0}\hldef{(}\hlsng{"Temperature."}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{)]))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -307,10 +324,10 @@ Standardize the covariates
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## scale() only works if all the covariates are continuous  }
-\hlstd{site.covs.s} \hlkwb{<-} \hlkwd{scale}\hlstd{(}\hlkwd{siteCovs}\hlstd{(grouse.umf))}
-\hlkwd{colnames}\hlstd{(site.covs.s)} \hlkwb{<-} \hlkwd{paste0}\hlstd{(}\hlkwd{colnames}\hlstd{(site.covs.s),} \hlstr{".s"}\hlstd{)}
-\hlkwd{siteCovs}\hlstd{(grouse.umf)} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{siteCovs}\hlstd{(grouse.umf), site.covs.s)}
-\hlkwd{obsCovs}\hlstd{(grouse.umf)} \hlkwb{<-} \hlkwd{scale}\hlstd{(}\hlkwd{obsCovs}\hlstd{(grouse.umf))}
+\hldef{site.covs.s} \hlkwb{<-} \hlkwd{scale}\hldef{(}\hlkwd{siteCovs}\hldef{(grouse.umf))}
+\hlkwd{colnames}\hldef{(site.covs.s)} \hlkwb{<-} \hlkwd{paste0}\hldef{(}\hlkwd{colnames}\hldef{(site.covs.s),} \hlsng{".s"}\hldef{)}
+\hlkwd{siteCovs}\hldef{(grouse.umf)} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{siteCovs}\hldef{(grouse.umf), site.covs.s)}
+\hlkwd{obsCovs}\hldef{(grouse.umf)} \hlkwb{<-} \hlkwd{scale}\hldef{(}\hlkwd{obsCovs}\hldef{(grouse.umf))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -328,12 +345,12 @@ Standardize the covariates
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm1} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmE.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm2} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm3} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm4} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm5} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm6} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlnum{1}\hlstd{, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
+\hldef{fm1} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmE.s}\hlopt{+}\hldef{utmN.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm2} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmN.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm3} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm4} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmN.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm5} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~} \hldef{elevation.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm6} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlnum{1}\hldef{, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -344,12 +361,12 @@ Put models in a special type of list
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{grouse.models} \hlkwb{<-} \hlkwd{fitList}\hlstd{(}\hlstr{'lam(elev+utmE+utmN)p(temp)'}\hlstd{=fm1,}
-                         \hlstr{'lam(elev+utmN)p(temp)'}\hlstd{=fm2,}
-                         \hlstr{'lam(elev)p(ptemp)'}\hlstd{=fm3,}
-                         \hlstr{'lam(elev+utmN)p(.)'}\hlstd{=fm4,}
-                         \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
-                         \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
+\hldef{grouse.models} \hlkwb{<-} \hlkwd{fitList}\hldef{(}\hlsng{'lam(elev+utmE+utmN)p(temp)'}\hldef{=fm1,}
+                         \hlsng{'lam(elev+utmN)p(temp)'}\hldef{=fm2,}
+                         \hlsng{'lam(elev)p(ptemp)'}\hldef{=fm3,}
+                         \hlsng{'lam(elev+utmN)p(.)'}\hldef{=fm4,}
+                         \hlsng{'lam(elev)p(.)'}\hldef{=fm5,}
+                         \hlsng{'lam(.)p(.)'}\hldef{=fm6)}
 \end{alltt}
 
 
@@ -369,10 +386,10 @@ Uh oh, missing values differ among models.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{na.sites} \hlkwb{<-} \hlkwd{apply}\hlstd{(}\hlkwd{is.na}\hlstd{(site.covs.s),} \hlnum{1}\hlstd{, any)}
-\hlstd{grouse.counts} \hlkwb{<-} \hlkwd{getY}\hlstd{(grouse.umf)}
-\hlstd{grouse.counts[na.sites,]} \hlkwb{<-} \hlnum{NA}
-\hlstd{grouse.umf}\hlopt{@}\hlkwc{y} \hlkwb{<-} \hlstd{grouse.counts}
+\hldef{na.sites} \hlkwb{<-} \hlkwd{apply}\hldef{(}\hlkwd{is.na}\hldef{(site.covs.s),} \hlnum{1}\hldef{, any)}
+\hldef{grouse.counts} \hlkwb{<-} \hlkwd{getY}\hldef{(grouse.umf)}
+\hldef{grouse.counts[na.sites,]} \hlkwb{<-} \hlnum{NA}
+\hldef{grouse.umf}\hlopt{@}\hlkwc{y} \hlkwb{<-} \hldef{grouse.counts}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -399,12 +416,12 @@ Put models in a \inr{fitList}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{grouse.models} \hlkwb{<-} \hlkwd{fitList}\hlstd{(}\hlstr{'lam(elev+utmE+utmN)p(temp)'}\hlstd{=fm1,}
-                         \hlstr{'lam(elev+utmN)p(temp)'}\hlstd{=fm2,}
-                         \hlstr{'lam(elev)p(ptemp)'}\hlstd{=fm3,}
-                         \hlstr{'lam(elev+utmN)p(.)'}\hlstd{=fm4,}
-                         \hlstr{'lam(elev)p(.)'}\hlstd{=fm5,}
-                         \hlstr{'lam(.)p(.)'}\hlstd{=fm6)}
+\hldef{grouse.models} \hlkwb{<-} \hlkwd{fitList}\hldef{(}\hlsng{'lam(elev+utmE+utmN)p(temp)'}\hldef{=fm1,}
+                         \hlsng{'lam(elev+utmN)p(temp)'}\hldef{=fm2,}
+                         \hlsng{'lam(elev)p(ptemp)'}\hldef{=fm3,}
+                         \hlsng{'lam(elev+utmN)p(.)'}\hldef{=fm4,}
+                         \hlsng{'lam(elev)p(.)'}\hldef{=fm5,}
+                         \hlsng{'lam(.)p(.)'}\hldef{=fm6)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -420,7 +437,7 @@ Put models in a \inr{fitList}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{modSel}\hlstd{(grouse.models)}
+\hlkwd{modSel}\hldef{(grouse.models)}
 \end{alltt}
 \begin{verbatim}
 ##                            nPars    AIC delta   AICwt cumltvWt
@@ -621,16 +638,16 @@ Put models in a \inr{fitList}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}
-    \hlkwc{y}\hlstd{=grouse.counts,}
-    \hlkwc{elevation}\hlstd{=site.covs.s[,}\hlstr{"elevation.s"}\hlstd{],}
-    \hlkwc{utmE}\hlstd{=site.covs.s[,}\hlstr{"utmE.s"}\hlstd{],}
-    \hlkwc{utmN}\hlstd{=site.covs.s[,}\hlstr{"utmN.s"}\hlstd{],}
-    \hlkwc{temp}\hlstd{=}\hlkwd{as.matrix}\hlstd{(grouse.data[,}\hlkwd{paste0}\hlstd{(}\hlstr{"Temperature."}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)]),}
-    \hlkwc{nSites}\hlstd{=}\hlkwd{nrow}\hlstd{(grouse.counts),}
-    \hlkwc{nOccasions}\hlstd{=}\hlkwd{ncol}\hlstd{(grouse.counts))}
-\hlstd{jags.data}\hlopt{$}\hlstd{temp} \hlkwb{<-} \hlstd{(jags.data}\hlopt{$}\hlstd{temp}\hlopt{-}\hlkwd{mean}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlopt{/}
-    \hlkwd{sd}\hlstd{(jags.data}\hlopt{$}\hlstd{temp,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{# standardize temperature}
+\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}
+    \hlkwc{y}\hldef{=grouse.counts,}
+    \hlkwc{elevation}\hldef{=site.covs.s[,}\hlsng{"elevation.s"}\hldef{],}
+    \hlkwc{utmE}\hldef{=site.covs.s[,}\hlsng{"utmE.s"}\hldef{],}
+    \hlkwc{utmN}\hldef{=site.covs.s[,}\hlsng{"utmN.s"}\hldef{],}
+    \hlkwc{temp}\hldef{=}\hlkwd{as.matrix}\hldef{(grouse.data[,}\hlkwd{paste0}\hldef{(}\hlsng{"Temperature."}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{)]),}
+    \hlkwc{nSites}\hldef{=}\hlkwd{nrow}\hldef{(grouse.counts),}
+    \hlkwc{nOccasions}\hldef{=}\hlkwd{ncol}\hldef{(grouse.counts))}
+\hldef{jags.data}\hlopt{$}\hldef{temp} \hlkwb{<-} \hldef{(jags.data}\hlopt{$}\hldef{temp}\hlopt{-}\hlkwd{mean}\hldef{(jags.data}\hlopt{$}\hldef{temp,} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{))}\hlopt{/}
+    \hlkwd{sd}\hldef{(jags.data}\hlopt{$}\hldef{temp,} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{)} \hlcom{# standardize temperature}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -641,10 +658,10 @@ Put models in a \inr{fitList}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{N}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{2}\hlstd{, jags.data}\hlopt{$}\hlstd{nSites))}
-\hlstd{\}}
+\hldef{jags.inits} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{lambda.intercept}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{alpha0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{N}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{2}\hldef{, jags.data}\hlopt{$}\hldef{nSites))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -655,9 +672,9 @@ Put models in a \inr{fitList}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,} \hlstr{"beta3"}\hlstd{,}
-               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{,}
-               \hlstr{"ld.y.dot"}\hlstd{,} \hlstr{"ld.ydot.N"}\hlstd{)}
+\hldef{jags.pars} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,} \hlsng{"beta2"}\hldef{,} \hlsng{"beta3"}\hldef{,}
+               \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"totalAbundance"}\hldef{,}
+               \hlsng{"ld.y.dot"}\hldef{,} \hlsng{"ld.ydot.N"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -820,18 +837,18 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{waic} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) \{}
+\hldef{waic} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) \{}
     \hlcom{## Parameter names}
-    \hlstd{vars} \hlkwb{<-} \hlstd{coda}\hlopt{::}\hlkwd{varnames}\hlstd{(x)}
+    \hldef{vars} \hlkwb{<-} \hldef{coda}\hlopt{::}\hlkwd{varnames}\hldef{(x)}
     \hlcom{## Extract log-density of y at each site for each post sample}
-    \hlstd{ld.samples} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(x[,}\hlkwd{grep}\hlstd{(}\hlstr{"ld.y.dot"}\hlstd{, vars)])}
+    \hldef{ld.samples} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(x[,}\hlkwd{grep}\hldef{(}\hlsng{"ld.y.dot"}\hldef{, vars)])}
     \hlcom{## Compute log-pointwise-predictive-density}
-    \hlstd{lppd} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{log}\hlstd{(}\hlkwd{colMeans}\hlstd{(}\hlkwd{exp}\hlstd{(ld.samples))))}
+    \hldef{lppd} \hlkwb{<-} \hlkwd{sum}\hldef{(}\hlkwd{log}\hldef{(}\hlkwd{colMeans}\hldef{(}\hlkwd{exp}\hldef{(ld.samples))))}
     \hlcom{## Compute penalty}
-    \hlstd{penalty} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{apply}\hlstd{(ld.samples,} \hlnum{2}\hlstd{, var))}
+    \hldef{penalty} \hlkwb{<-} \hlkwd{sum}\hldef{(}\hlkwd{apply}\hldef{(ld.samples,} \hlnum{2}\hldef{, var))}
     \hlcom{## Return WAIC}
-    \hlkwd{return}\hlstd{(}\hlopt{-}\hlnum{2}\hlopt{*}\hlstd{(lppd}\hlopt{-}\hlstd{penalty))}
-\hlstd{\}}
+    \hlkwd{return}\hldef{(}\hlopt{-}\hlnum{2}\hlopt{*}\hldef{(lppd}\hlopt{-}\hldef{penalty))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -864,30 +881,30 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(waic1} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm1))}
+\hldef{(waic1} \hlkwb{<-} \hlkwd{waic}\hldef{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 128.4942
+## [1] 125.5645
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(waic2} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm2))}
+\hldef{(waic2} \hlkwb{<-} \hlkwd{waic}\hldef{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 126.346
+## [1] 123.2067
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(waic3} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm3))}
+\hldef{(waic3} \hlkwb{<-} \hlkwd{waic}\hldef{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 136.7913
+## [1] 137.0568
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -896,30 +913,30 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(waic4} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm4))}
+\hldef{(waic4} \hlkwb{<-} \hlkwd{waic}\hldef{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 152.0945
+## [1] 143.8135
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(waic5} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm5))}
+\hldef{(waic5} \hlkwb{<-} \hlkwd{waic}\hldef{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 144.2773
+## [1] 146.7478
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(waic6} \hlkwb{<-} \hlkwd{waic}\hlstd{(jm6))}
+\hldef{(waic6} \hlkwb{<-} \hlkwd{waic}\hldef{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 157.8486
+## [1] 140.2578
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -943,27 +960,26 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.}
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{waic.table} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{WAIC}\hlstd{=}\hlkwd{c}\hlstd{(waic1,waic2,waic3,waic4,waic5,waic5))}
-\hlkwd{rownames}\hlstd{(waic.table)} \hlkwb{<-} \hlkwd{paste}\hlstd{(}\hlstr{"Model"}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{6}\hlstd{)}
-\hlstd{waic.table}\hlopt{$}\hlstd{delta} \hlkwb{<-} \hlstd{waic.table}\hlopt{$}\hlstd{WAIC}\hlopt{-}\hlkwd{min}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC)}
-\hlstd{waic.table} \hlkwb{<-} \hlstd{waic.table[}\hlkwd{order}\hlstd{(waic.table}\hlopt{$}\hlstd{WAIC),]}
-\hlstd{knitr}\hlopt{::}\hlkwd{kable}\hlstd{(waic.table,} \hlkwc{format}\hlstd{=}\hlstr{"latex"}\hlstd{,} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{booktabs}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{waic.table} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{WAIC}\hldef{=}\hlkwd{c}\hldef{(waic1,waic2,waic3,waic4,waic5,waic5))}
+\hlkwd{rownames}\hldef{(waic.table)} \hlkwb{<-} \hlkwd{paste}\hldef{(}\hlsng{"Model"}\hldef{,} \hlnum{1}\hlopt{:}\hlnum{6}\hldef{)}
+\hldef{waic.table}\hlopt{$}\hldef{delta} \hlkwb{<-} \hldef{waic.table}\hlopt{$}\hldef{WAIC}\hlopt{-}\hlkwd{min}\hldef{(waic.table}\hlopt{$}\hldef{WAIC)}
+\hldef{waic.table} \hlkwb{<-} \hldef{waic.table[}\hlkwd{order}\hldef{(waic.table}\hlopt{$}\hldef{WAIC),]}
+\hldef{knitr}\hlopt{::}\hlkwd{kable}\hldef{(waic.table,} \hlkwc{format}\hldef{=}\hlsng{"latex"}\hldef{,} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{booktabs}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \begin{tabular}{lrr}
 \toprule
   & WAIC & delta\\
 \midrule
-Model 2 & 126.35 & 0.00\\
-Model 1 & 128.49 & 2.15\\
-Model 3 & 136.79 & 10.45\\
-Model 5 & 144.28 & 17.93\\
-Model 6 & 144.28 & 17.93\\
+Model 2 & 123.21 & 0.00\\
+Model 1 & 125.56 & 2.36\\
+Model 3 & 137.06 & 13.85\\
+Model 4 & 143.81 & 20.61\\
+Model 5 & 146.75 & 23.54\\
 \addlinespace
-Model 4 & 152.09 & 25.75\\
+Model 6 & 146.75 & 23.54\\
 \bottomrule
 \end{tabular}
-
 
 \end{knitrout}
   \end{center}
@@ -1105,17 +1121,17 @@ R code
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{20}
-\hlstd{nVisits} \hlkwb{<-} \hlnum{3}
-\hlstd{psi} \hlkwb{<-} \hlnum{0.5}   \hlcom{# Proportion of extra-Poisson zeros}
-\hlstd{z} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi)} \hlcom{# Extra zeros}
-\hlstd{lam} \hlkwb{<-} \hlnum{5}     \hlcom{# expected count when z=1}
-\hlstd{N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lam}\hlopt{*}\hlstd{z)}      \hlcom{# abundance at each site}
-\hlstd{p} \hlkwb{<-} \hlnum{0.5}     \hlcom{# detection prob}
-\hlstd{y} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, nVisits)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nVisits,} \hlkwc{size}\hlstd{=N[i],} \hlkwc{prob}\hlstd{=p)} \hlcom{# count data}
-\hlstd{\}}
+\hldef{nSites} \hlkwb{<-} \hlnum{20}
+\hldef{nVisits} \hlkwb{<-} \hlnum{3}
+\hldef{psi} \hlkwb{<-} \hlnum{0.5}   \hlcom{# Proportion of extra-Poisson zeros}
+\hldef{z} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=psi)} \hlcom{# Extra zeros}
+\hldef{lam} \hlkwb{<-} \hlnum{5}     \hlcom{# expected count when z=1}
+\hldef{N} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lam}\hlopt{*}\hldef{z)}      \hlcom{# abundance at each site}
+\hldef{p} \hlkwb{<-} \hlnum{0.5}     \hlcom{# detection prob}
+\hldef{y} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, nSites, nVisits)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlkwc{n}\hldef{=nVisits,} \hlkwc{size}\hldef{=N[i],} \hlkwc{prob}\hldef{=p)} \hlcom{# count data}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1136,14 +1152,13 @@ R code
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(fm2)}
+\hlkwd{plot}\hldef{(fm2)}
 \end{alltt}
 \end{kframe}
 
 {\centering \includegraphics[width=0.6\linewidth]{figure/resid2-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1190,12 +1205,13 @@ No sign of obvious outliers or other problems.
 \hlstd{\}}
 \hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Running parametric bootstrap in parallel on 3 cores.}}\end{kframe}
 
 {\centering \includegraphics[width=0.7\linewidth]{figure/parboot-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1208,7 +1224,7 @@ No sign of obvious outliers or other problems.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pb}
+\hldef{pb}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1216,11 +1232,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2            1.6             5.28        0.378
+## SSE 23.2           1.38             5.19        0.373
 ## 
 ## t_B quantiles:
-##     0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 11   13  18  21  25    32   37
+##      0% 2.5% 25% 50% 75% 97.5% 100%
+## SSE 7.7   13  18  21  25    32   36
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
@@ -1443,15 +1459,14 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwd{as.matrix}\hlstd{(jm[,}\hlkwd{c}\hlstd{(}\hlstr{"SSE"}\hlstd{,} \hlstr{"SSE.new"}\hlstd{)]))}
-\hlkwd{abline}\hlstd{(}\hlkwc{a}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{b}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwd{as.matrix}\hldef{(jm[,}\hlkwd{c}\hldef{(}\hlsng{"SSE"}\hldef{,} \hlsng{"SSE.new"}\hldef{)]))}
+\hlkwd{abline}\hldef{(}\hlkwc{a}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{b}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"red"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
 {\centering \includegraphics[width=0.55\linewidth]{figure/bugs-mcmc-gof-plot-1} 
 
 }
-
 
 
 \end{knitrout}
@@ -1499,7 +1514,7 @@ totalAbundance <- sum(N[1:nSites])
       mis-specified model?
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Tuesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00am on Monday. 
 \end{frame}
 
 

@@ -150,11 +150,15 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}[fragile]
-  \frametitle{Overfit}
-<<overfit,size='scriptsize>>=
-n <- 50
+  \frametitle{Overfitting}
+  7 regression models with 5 covariates. \\
+  
+  Only \inr{x2} is in the data generating model.  
+<<overfit,size='scriptsize',echo=2:14,fig.show='hide'>>=
 set.seed(43340)
-dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n), x4=rnorm(n), x5=rnorm(n))
+n <- 50
+dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n),
+                  x4=rnorm(n), x5=rnorm(n))
 dat$y <- rnorm(n, mean = -1 + 2*dat$x2, sd = 2)
 fm1 <- glm(y~1, gaussian, dat)
 fm2 <- glm(y~x1, gaussian, dat)
@@ -163,21 +167,36 @@ fm4 <- glm(y~x1+x2, gaussian, dat)
 fm5 <- glm(y~x1+x2+x3, gaussian, dat)
 fm6 <- glm(y~x1+x2+x3+x4, gaussian, dat)
 fm7 <- glm(y~x1+x2+x3+x4+x5, gaussian, dat)
-library(boot)
-prediction_error <- c(
-  fm1=cv.glm(dat, fm1)$delta[1],
-  fm2=cv.glm(dat, fm2)$delta[1], # Correct model
-  fm3=cv.glm(dat, fm3)$delta[1],
-  fm4=cv.glm(dat, fm4)$delta[1],
-  fm5=cv.glm(dat, fm5)$delta[1],
-  fm6=cv.glm(dat, fm6)$delta[1],
-  fm7=cv.glm(dat, fm7)$delta[1])
+
+library(boot)  ## For 'cv.glm'
+prediction_error <- c(fm1=cv.glm(dat, fm1)$delta[1],
+  fm2=cv.glm(dat, fm2)$delta[1], fm3=cv.glm(dat, fm3)$delta[1],
+  fm4=cv.glm(dat, fm4)$delta[1], fm5=cv.glm(dat, fm5)$delta[1],
+  fm6=cv.glm(dat, fm6)$delta[1], fm7=cv.glm(dat, fm7)$delta[1])
 
 xbp <- barplot(prediction_error, xlab="Model", ylab="Predication error", cex.lab=1.3)
-text(xbp[1]+1, as.character(fm1$call)[2], srt=90, pos=2, cex=1.5)
+text(xbp[1], 0.3, as.character(fm1$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[2], 0.3, as.character(fm2$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[3], 0.3, as.character(fm3$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[4], 0.3, as.character(fm4$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[5], 0.3, as.character(fm5$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[6], 0.3, as.character(fm6$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[7], 0.3, as.character(fm7$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[3], prediction_error[3]+0.1, "Data-generating model", srt=90,
+     pos=4, cex=1.3)
+segments(0.3, 9.5, 2.2, 9.5, xpd=TRUE)
+text(1.2, 10, "Under-fit", xpd=TRUE, cex=1.3)
+segments(4, 4.5, 8.2, 4.5, xpd=TRUE)
+text(6, 5, "Over-fit", xpd=TRUE, cex=1.3)
 @   
 \end{frame}
 
+
+\begin{frame}[fragile]
+  \frametitle{Overfitting}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figure/overfit-1} \\
+\end{frame}
 
 \subsection{Likelihood-based methods}
 
@@ -285,7 +304,7 @@ obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
   Fit some models
   \vspace{-6pt}
 <<grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE>>=
-fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
+fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50) 
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
 fm4 <- pcount(~1 ~ elevation.s+utmN.s, grouse.umf, K=50)

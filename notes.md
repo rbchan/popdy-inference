@@ -1,5 +1,12 @@
 # Notes for the future
 
+## For 2025
+
+- R quiz to weed out students on day 1
+
+- Replace 'x1' 'x2' and 'w' with real variable names in occupancyII lecture
+
+
 ## For 2024
 
 - Tell professors not to send their students until they're good with R
