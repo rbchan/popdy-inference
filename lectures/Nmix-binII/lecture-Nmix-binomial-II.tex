@@ -203,10 +203,10 @@
 \hldef{n} \hlkwb{<-} \hlnum{50}
 \hldef{dat} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x1}\hldef{=}\hlkwd{rnorm}\hldef{(n),} \hlkwc{x2}\hldef{=}\hlkwd{rnorm}\hldef{(n),} \hlkwc{x3}\hldef{=}\hlkwd{rnorm}\hldef{(n),}
                   \hlkwc{x4}\hldef{=}\hlkwd{rnorm}\hldef{(n),} \hlkwc{x5}\hldef{=}\hlkwd{rnorm}\hldef{(n))}
-\hldef{dat}\hlopt{$}\hldef{y} \hlkwb{<-} \hlkwd{rnorm}\hldef{(n,} \hlkwc{mean} \hldef{=} \hlopt{-}\hlnum{1} \hlopt{+} \hlnum{2}\hlopt{*}\hldef{dat}\hlopt{$}\hldef{x2,} \hlkwc{sd} \hldef{=} \hlnum{2}\hldef{)}
+\hldef{dat}\hlopt{$}\hldef{y} \hlkwb{<-} \hlkwd{rnorm}\hldef{(n,} \hlkwc{mean} \hldef{=} \hlopt{-}\hlnum{1} \hlopt{+} \hlnum{2}\hlopt{*}\hldef{dat}\hlopt{$}\hldef{x2,} \hlkwc{sd} \hldef{=} \hlnum{2}\hldef{)} \hlcom{# Data generating model}
 \hldef{fm1} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hlnum{1}\hldef{, gaussian, dat)}
 \hldef{fm2} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1, gaussian, dat)}
-\hldef{fm3} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x2, gaussian, dat)}  \hlcom{# Correct model}
+\hldef{fm3} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x2, gaussian, dat)}                 \hlcom{# Data generating model}
 \hldef{fm4} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2, gaussian, dat)}
 \hldef{fm5} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2}\hlopt{+}\hldef{x3, gaussian, dat)}
 \hldef{fm6} \hlkwb{<-} \hlkwd{glm}\hldef{(y}\hlopt{~}\hldef{x1}\hlopt{+}\hldef{x2}\hlopt{+}\hldef{x3}\hlopt{+}\hldef{x4, gaussian, dat)}
@@ -226,7 +226,7 @@
 \begin{frame}[fragile]
   \frametitle{Overfitting}
   \centering
-  \includegraphics[width=0.8\textwidth]{figure/overfit-1} \\
+  \includegraphics[width=0.9\textwidth]{figure/overfit-1} \\
 \end{frame}
 
 \subsection{Likelihood-based methods}
@@ -456,8 +456,7 @@ Put models in a \inr{fitList}
   prediction. \\ 
   \pause
   \vfill
-  Or, we could model-average the predictions, which we'll cover later
-  in the course. \\
+  Or, we could model-average the predictions. \\
   % \pause
   % \vfill
   % For now, let's use the top model to predict grouse abundance across
@@ -691,7 +690,7 @@ Put models in a \inr{fitList}
   predictors. 
   \tiny
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -706,12 +705,12 @@ alpha0 ~ dnorm(0, 0.5)
 alpha1 ~ dnorm(0, 0.5)
 
 for(i in 1:nSites) {
-  elevation[i] ~ dnorm(0, 1)
-  utmN[i] ~ dnorm(0, 1)
-  utmE[i] ~ dnorm(0, 1)
+  elevation[i] ~ dnorm(0, 1) # Missing values drawn from prior
+  utmN[i] ~ dnorm(0, 1)      # Ditto
+  utmE[i] ~ dnorm(0, 1)      # Ditto
   log(lambda[i]) <- beta0 + beta1*elevation[i]*modswitch[1] +
     beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] 
-  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  N[i] ~ dpois(lambda[i])    # Latent local abundance
   for(j in 1:nOccasions) {
     temp[i,j] ~ dnorm(0,1)
     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]*modswitch[4]
@@ -853,7 +852,8 @@ totalAbundance <- sum(N[1:nSites])
 \end{kframe}
 \end{knitrout}
 \let\thefootnote\relax\footnote<2->{In this case, it might be better to focus WAIC on
-$p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just $p(y_i|N_i,p)$.} 
+$p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
+  $p(y_i|N_i,p)$. See Gaya and Ketz (2024).} 
 \end{frame}
 \egroup
 
@@ -1389,7 +1389,7 @@ These results suggest that model \inr{fm2} fits the data well.
 \begin{frame}[fragile]
   \frametitle{BUGS model with fit stats}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 

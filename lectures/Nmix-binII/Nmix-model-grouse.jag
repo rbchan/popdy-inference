@@ -11,12 +11,12 @@ alpha0 ~ dnorm(0, 0.5)
 alpha1 ~ dnorm(0, 0.5)
 
 for(i in 1:nSites) {
-  elevation[i] ~ dnorm(0, 1)
-  utmN[i] ~ dnorm(0, 1)
-  utmE[i] ~ dnorm(0, 1)
+  elevation[i] ~ dnorm(0, 1) # Missing values drawn from prior
+  utmN[i] ~ dnorm(0, 1)      # Ditto
+  utmE[i] ~ dnorm(0, 1)      # Ditto
   log(lambda[i]) <- beta0 + beta1*elevation[i]*modswitch[1] +
     beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] 
-  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  N[i] ~ dpois(lambda[i])    # Latent local abundance
   for(j in 1:nOccasions) {
     temp[i,j] ~ dnorm(0,1)
     logit(p[i,j]) <- alpha0 + alpha1*temp[i,j]*modswitch[4]

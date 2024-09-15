@@ -5,6 +5,42 @@
 
 
 
+## ----overfit,size='scriptsize',echo=2:14,fig.width=8,fig.show='hide'----------
+set.seed(43340)
+n <- 50
+dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n),
+                  x4=rnorm(n), x5=rnorm(n))
+dat$y <- rnorm(n, mean = -1 + 2*dat$x2, sd = 2) # Data generating model
+fm1 <- glm(y~1, gaussian, dat)
+fm2 <- glm(y~x1, gaussian, dat)
+fm3 <- glm(y~x2, gaussian, dat)                 # Data generating model
+fm4 <- glm(y~x1+x2, gaussian, dat)
+fm5 <- glm(y~x1+x2+x3, gaussian, dat)
+fm6 <- glm(y~x1+x2+x3+x4, gaussian, dat)
+fm7 <- glm(y~x1+x2+x3+x4+x5, gaussian, dat)
+
+library(boot)  ## For 'cv.glm'
+prediction_error <- c(fm1=cv.glm(dat, fm1)$delta[1],
+  fm2=cv.glm(dat, fm2)$delta[1], fm3=cv.glm(dat, fm3)$delta[1],
+  fm4=cv.glm(dat, fm4)$delta[1], fm5=cv.glm(dat, fm5)$delta[1],
+  fm6=cv.glm(dat, fm6)$delta[1], fm7=cv.glm(dat, fm7)$delta[1])
+
+xbp <- barplot(prediction_error, xlab="Model", ylab="Predication error", cex.lab=1.3)
+text(xbp[1], 0.3, as.character(fm1$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[2], 0.3, as.character(fm2$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[3], 0.3, as.character(fm3$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[4], 0.3, as.character(fm4$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[5], 0.3, as.character(fm5$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[6], 0.3, as.character(fm6$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[7], 0.3, as.character(fm7$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[3], prediction_error[3]+0.1, "Data generating model", srt=90,
+     pos=4, cex=1.3)
+segments(0.3, 9.5, 2.2, 9.5, xpd=TRUE)
+text(1.2, 10, "Under-fit", xpd=TRUE, cex=1.3)
+segments(4, 4.5, 8.2, 4.5, xpd=TRUE)
+text(6, 5, "Over-fit", xpd=TRUE, cex=1.3)
+
+
 ## ----grouse-in,size='footnotesize',cache=FALSE,results='hide',message=FALSE----
 library(unmarked)
 grouse.data <- read.csv("grouse_data_Nmix.csv", row.names=1)
@@ -23,7 +59,7 @@ obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
 
 
 ## ----grouse-mods,size='footnotesize',warning=FALSE,cache=TRUE-----------------
-fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
+fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50) 
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
 fm4 <- pcount(~1 ~ elevation.s+utmN.s, grouse.umf, K=50)
@@ -97,7 +133,7 @@ jags.pars <- c("beta0", "beta1", "beta2", "beta3",
                "ld.y.dot", "ld.ydot.N")
 
 
-## ----bugs,size='tiny',echo=FALSE,comment='',background='lightblue'------------
+## ----bugs,size='tiny',echo=FALSE,comment='',background='beige'----------------
 writeLines(readLines("Nmix-model-grouse.jag"))
 
 ## ----jagsUI,include=FALSE-----------------------------------------------------
@@ -162,7 +198,7 @@ waic <- function(x, focus=c("y", "yN")) {
     } else stop("focus should be either 'y' or 'yN'")
     lppd <- sum(log(colMeans(exp(ld.samples))))
     penalty <- sum(apply(ld.samples, 2, var))
-    return(-2*(lppd-penalty))
+    return(-2*lppd + 2*penalty)
 }
 
 ## ----waic-fn,size='footnotesize'----------------------------------------------
@@ -245,7 +281,7 @@ pb
 (fm.zip <- pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP"))
 
 
-## ----bugs2,size='tiny',echo=FALSE,comment='',background='lightblue'-----------
+## ----bugs2,size='tiny',echo=FALSE,comment='',background='beige'---------------
 writeLines(readLines("Nmix-model-grouse2.jag"))
 
 
