@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -197,9 +197,9 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N} \hlkwb{<-} \hlnum{20}
-\hlstd{pi} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlkwc{survived}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{depredated}\hlstd{=}\hlnum{0.3}\hlstd{,} \hlkwc{starved}\hlstd{=}\hlnum{0.2}\hlstd{)}
-\hlkwd{t}\hlstd{(}\hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N,} \hlkwc{prob}\hlstd{=pi))}
+\hldef{N} \hlkwb{<-} \hlnum{20}
+\hldef{pi} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlkwc{survived}\hldef{=}\hlnum{0.5}\hldef{,} \hlkwc{depredated}\hldef{=}\hlnum{0.3}\hldef{,} \hlkwc{starved}\hldef{=}\hlnum{0.2}\hldef{)}
+\hlkwd{t}\hldef{(}\hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N,} \hlkwc{prob}\hldef{=pi))}
 \end{alltt}
 \begin{verbatim}
 ##      survived depredated starved
@@ -315,9 +315,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}
-\hlstd{lambda1} \hlkwb{<-} \hlnum{4.6}  \hlcom{## Expected value of N}
-\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}
+\hldef{nSites} \hlkwb{<-} \hlnum{100}
+\hldef{lambda1} \hlkwb{<-} \hlnum{4.6}  \hlcom{## Expected value of N}
+\hldef{N1} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda1)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -329,13 +329,13 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nPasses} \hlkwb{<-} \hlnum{3}
-\hlstd{K} \hlkwb{<-} \hlstd{nPasses}\hlopt{+}\hlnum{1}  \hlcom{# multinomial cells}
-\hlstd{p1} \hlkwb{<-} \hlnum{0.4}
-\hlstd{pi1} \hlkwb{<-} \hlkwd{c}\hlstd{(p1, (}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{*}\hlstd{p1, (}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{*}\hlstd{p1, (}\hlnum{1}\hlopt{-}\hlstd{p1)}\hlopt{^}\hlnum{3}\hlstd{)}
-\hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=pi1)    \}}
+\hldef{nPasses} \hlkwb{<-} \hlnum{3}
+\hldef{K} \hlkwb{<-} \hldef{nPasses}\hlopt{+}\hlnum{1}  \hlcom{# multinomial cells}
+\hldef{p1} \hlkwb{<-} \hlnum{0.4}
+\hldef{pi1} \hlkwb{<-} \hlkwd{c}\hldef{(p1, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{p1, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{p1, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{^}\hlnum{3}\hldef{)}
+\hldef{y1.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=K)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N1[i],} \hlkwc{prob}\hldef{=pi1)    \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -346,8 +346,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y1} \hlkwb{<-} \hlstd{y1.all[,}\hlopt{-}\hlstd{K]}
-\hlkwd{head}\hlstd{(y1,} \hlkwc{n}\hlstd{=}\hlnum{3}\hlstd{)}
+\hldef{y1} \hlkwb{<-} \hldef{y1.all[,}\hlopt{-}\hldef{K]}
+\hlkwd{head}\hldef{(y1,} \hlkwc{n}\hldef{=}\hlnum{3}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3]
@@ -397,7 +397,7 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{streamDepth} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
+\hldef{streamDepth} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -408,10 +408,10 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlnum{1}\hlstd{; beta1} \hlkwb{<-} \hlnum{0.5}
-\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{streamDepth)}
-\hlstd{alpha0} \hlkwb{<-} \hlnum{0}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{1}
-\hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{streamDepth)}
+\hldef{beta0} \hlkwb{<-} \hlnum{1}\hldef{; beta1} \hlkwb{<-} \hlnum{0.5}
+\hldef{lambda2} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{streamDepth)}
+\hldef{alpha0} \hlkwb{<-} \hlnum{0}\hldef{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{1}
+\hldef{p2} \hlkwb{<-} \hlkwd{plogis}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{streamDepth)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -422,13 +422,13 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}         \hlcom{## local abundance }
-\hlstd{y2.all} \hlkwb{<-} \hlstd{pi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=K)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{pi2[i,]} \hlkwb{<-} \hlkwd{c}\hlstd{(p2[i], (}\hlnum{1}\hlopt{-}\hlstd{p2[i])}\hlopt{*}\hlstd{p2[i], (}\hlnum{1}\hlopt{-}\hlstd{p2[i])}\hlopt{^}\hlnum{2}\hlopt{*}\hlstd{p2[i], (}\hlnum{1}\hlopt{-}\hlstd{p2[i])}\hlopt{^}\hlnum{3}\hlstd{)}
-    \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])}
-\hlstd{\}}
-\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlopt{-}\hlstd{K]} \hlcom{## Discard final column... individuals not detected}
+\hldef{N2} \hlkwb{<-} \hlkwd{rpois}\hldef{(nSites,} \hlkwc{lambda}\hldef{=lambda2)}         \hlcom{## local abundance }
+\hldef{y2.all} \hlkwb{<-} \hldef{pi2} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=K)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{pi2[i,]} \hlkwb{<-} \hlkwd{c}\hldef{(p2[i], (}\hlnum{1}\hlopt{-}\hldef{p2[i])}\hlopt{*}\hldef{p2[i], (}\hlnum{1}\hlopt{-}\hldef{p2[i])}\hlopt{^}\hlnum{2}\hlopt{*}\hldef{p2[i], (}\hlnum{1}\hlopt{-}\hldef{p2[i])}\hlopt{^}\hlnum{3}\hldef{)}
+    \hldef{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N2[i],} \hlkwc{prob}\hldef{=pi2[i,])}
+\hldef{\}}
+\hldef{y2} \hlkwb{<-} \hldef{y2.all[,}\hlopt{-}\hldef{K]} \hlcom{## Discard final column... individuals not detected}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -449,7 +449,7 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hlstd{,]}
+\hldef{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3]
@@ -490,7 +490,7 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{colSums}\hlstd{(y2)}
+\hlkwd{colSums}\hldef{(y2)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 119  62  36
@@ -504,7 +504,7 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{sum}\hlstd{(y2)}
+\hlkwd{sum}\hldef{(y2)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 217
@@ -545,7 +545,7 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameMPois}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(streamDepth),} \hlkwc{type}\hlstd{=}\hlstr{"removal"}\hlstd{)}
+\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFrameMPois}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(streamDepth),} \hlkwc{type}\hldef{=}\hlsng{"removal"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -553,7 +553,7 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(umf)}
+\hlkwd{summary}\hldef{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
@@ -596,8 +596,8 @@ Site 10 & 0 & 1 & 0\\
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{multinomPois}\hlstd{(}\hlopt{~}\hlstd{streamDepth} \hlopt{~}\hlstd{streamDepth, umf)}
-\hlstd{fm}
+\hldef{fm} \hlkwb{<-} \hlkwd{multinomPois}\hldef{(}\hlopt{~}\hldef{streamDepth} \hlopt{~}\hldef{streamDepth, umf)}
+\hldef{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -625,7 +625,7 @@ Compare to actual parameter values:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
+\hlkwd{c}\hldef{(}\hlkwc{beta0}\hldef{=beta0,} \hlkwc{beta1}\hldef{=beta1);} \hlkwd{c}\hldef{(}\hlkwc{alpha0}\hldef{=alpha0,} \hlkwc{alpha1}\hldef{=alpha1)}
 \end{alltt}
 \begin{verbatim}
 ## beta0 beta1 
@@ -646,8 +646,8 @@ Compare to actual parameter values:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{re} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm,} \hlkwc{K}\hlstd{=}\hlnum{15}\hlstd{)}
-\hlkwd{plot}\hlstd{(re,} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{3}\hlstd{),} \hlkwc{subset}\hlstd{=site}\hlopt{%in%}\hlnum{1}\hlopt{:}\hlnum{12}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1}\hlstd{,} \hlnum{11}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{5}\hlstd{)}
+\hldef{re} \hlkwb{<-} \hlkwd{ranef}\hldef{(fm,} \hlkwc{K}\hldef{=}\hlnum{15}\hldef{)}
+\hlkwd{plot}\hldef{(re,} \hlkwc{layout}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{4}\hldef{,}\hlnum{3}\hldef{),} \hlkwc{subset}\hldef{=site}\hlopt{%in%}\hlnum{1}\hlopt{:}\hlnum{12}\hldef{,} \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlopt{-}\hlnum{1}\hldef{,} \hlnum{11}\hldef{),} \hlkwc{lwd}\hldef{=}\hlnum{5}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -668,8 +668,8 @@ Compare to actual parameter values:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N.total.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=sum,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
-\hlkwd{hist}\hlstd{(N.total.post,} \hlkwc{freq}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"N total"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{)}
+\hldef{N.total.post} \hlkwb{<-} \hlkwd{predict}\hldef{(re,} \hlkwc{func}\hldef{=sum,} \hlkwc{nsim}\hldef{=}\hlnum{1000}\hldef{)}
+\hlkwd{hist}\hldef{(N.total.post,} \hlkwc{freq}\hldef{=}\hlnum{FALSE}\hldef{,} \hlkwc{main}\hldef{=}\hlsng{""}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"N total"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Probability"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -694,7 +694,7 @@ Compare to actual parameter values:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{streamDepth}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{20}\hlstd{))}
+\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{streamDepth}\hldef{=}\hlkwd{seq}\hldef{(}\hlopt{-}\hlnum{3}\hldef{,} \hlnum{3}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{20}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -705,8 +705,8 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
-                       \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hldef{(fm,} \hlkwc{newdata}\hldef{=pred.data,}
+                       \hlkwc{type}\hldef{=}\hlsng{'state'}\hldef{,} \hlkwc{append}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -717,7 +717,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(lambda.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(lambda.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##   Predicted   SE lower upper streamDepth
@@ -741,12 +741,12 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Expected value of abundance"}\hlstd{,}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{20}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Stream depth"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{streamDepth, lambda.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{points}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth)}
-\hlkwd{lines}\hlstd{(}\hlkwd{lowess}\hlstd{(}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{~}\hlstd{streamDepth),} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}  \hlcom{## Loess line for fun (it's way off)}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{streamDepth, lambda.pred,} \hlkwc{ylab}\hldef{=}\hlsng{"Expected value of abundance"}\hldef{,}
+     \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{20}\hldef{),} \hlkwc{xlab}\hldef{=}\hlsng{"Stream depth"}\hldef{,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{streamDepth, lambda.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{streamDepth, lambda.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{points}\hldef{(}\hlkwd{rowSums}\hldef{(y2)}\hlopt{~}\hldef{streamDepth)}
+\hlkwd{lines}\hldef{(}\hlkwd{lowess}\hldef{(}\hlkwd{rowSums}\hldef{(y2)}\hlopt{~}\hldef{streamDepth),} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}  \hlcom{## Lowess line for fun (it's way off)}
 \end{alltt}
 \end{kframe}
 
@@ -764,21 +764,21 @@ Get predictions of $\lambda$ for each row of prediction data.
 
 
 
-\begin{frame}[fragile]
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  %   \centering
-%  \large
-  Do the following using the fitted removal model above:
-  \begin{enumerate}
-    \normalsize
-    \item Predict $p$ when \verb+streamDepth=-1+
-    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
-  \end{enumerate}
-\end{frame}
+%% \begin{frame}[fragile]
+%%   \frametitle{In-class exercise}
+%%   % \small
+%%   % \begin{enumerate}
+%%   %   \item Predict
+%%   %   \end{enumerate}
+%%   %   \centering
+%% %  \large
+%%   Do the following using the fitted removal model above:
+%%   \begin{enumerate}
+%%     \normalsize
+%%     \item Predict $p$ when \verb+streamDepth=-1+
+%%     \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
+%%   \end{enumerate}
+%% \end{frame}
 
 
 \subsection{Bayesian methods}
@@ -870,7 +870,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
 \vspace{-3pt}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -912,9 +912,9 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.rem2} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2),}
-                       \hlkwc{streamDepth}\hlstd{=streamDepth,}
-                       \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nPasses}\hlstd{=nPasses)}
+\hldef{jags.data.rem2} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{n}\hldef{=}\hlkwd{rowSums}\hldef{(y2),}
+                       \hlkwc{streamDepth}\hldef{=streamDepth,}
+                       \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nPasses}\hldef{=nPasses)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -925,10 +925,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits.rem} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{+}\hlkwd{rpois}\hlstd{(}\hlkwd{nrow}\hlstd{(y2),} \hlnum{2}\hlstd{))}
-\hlstd{\}}
+\hldef{jags.inits.rem} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{lambda.intercept}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{alpha0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{N}\hldef{=}\hlkwd{rowSums}\hldef{(y2)}\hlopt{+}\hlkwd{rpois}\hldef{(}\hlkwd{nrow}\hldef{(y2),} \hlnum{2}\hldef{))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -939,8 +939,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars.rem} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,}
-                   \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
+\hldef{jags.pars.rem} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,}
+                   \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"totalAbundance"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -956,10 +956,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI);} \hlkwd{library}\hlstd{(coda)}
-\hlstd{jags.post.rem2} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.rem2,} \hlkwc{inits}\hlstd{=jags.inits.rem,}
-                             \hlkwc{parameters.to.save}\hlstd{=jags.pars.rem,} \hlkwc{model.file}\hlstd{=}\hlstr{"removal-mod2.jag"}\hlstd{,}
-                             \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI);} \hlkwd{library}\hldef{(coda)}
+\hldef{jags.post.rem2} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data.rem2,} \hlkwc{inits}\hldef{=jags.inits.rem,}
+                             \hlkwc{parameters.to.save}\hldef{=jags.pars.rem,} \hlkwc{model.file}\hldef{=}\hlsng{"removal-mod2.jag"}\hldef{,}
+                             \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -972,11 +972,11 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.rem2[,jags.pars.rem])}
+\hlkwd{summary}\hldef{(jags.post.rem2[,jags.pars.rem])}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -1012,7 +1012,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.rem2[,jags.pars.rem[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1031,7 +1031,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.rem2[,jags.pars.rem[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.rem2[,jags.pars.rem[}\hlnum{4}\hlopt{:}\hlnum{5}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1042,6 +1042,61 @@ totalAbundance <- sum(N[1:nSites])
 
 \end{knitrout}
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Convergence diagnostics}
+  Gelman-Rubin diagnostic ($\hat{R}$)
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{gelman.diag}\hldef{(jags.post.rem2)}
+\end{alltt}
+\begin{verbatim}
+## Potential scale reduction factors:
+## 
+##                Point est. Upper C.I.
+## alpha0               1.03       1.10
+## alpha1               1.02       1.07
+## beta0                1.02       1.06
+## beta1                1.05       1.15
+## deviance             1.03       1.09
+## totalAbundance       1.06       1.18
+## 
+## Multivariate psrf
+## 
+## 1.04
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  Convergence is suggested by $\hat{R}$ close to 1. 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Effective posterior sample size}
+  It's a good idea to have at least 500 effective posterior samples for each parameter. 
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data.frame}\hldef{(}\hlkwc{ESS} \hldef{=} \hlkwd{effectiveSize}\hldef{(jags.post.rem2))}
+\end{alltt}
+\begin{verbatim}
+##                     ESS
+## alpha0         338.1930
+## alpha1         414.2832
+## beta0          306.1222
+## beta1          237.8064
+## deviance       342.6139
+## totalAbundance 165.2488
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
 
 
 
@@ -1437,14 +1492,14 @@ totalAbundance <- sum(N[1:nSites])
 
 \begin{frame}[fragile]
   \frametitle{Assignment}
-  % \small
-  \footnotesize
+  \small
+  %\footnotesize
   Create a self-contained R script or Rmarkdown file
   to do the following:
   \vfill
   \begin{enumerate}
-%    \small
-    \footnotesize
+    \small
+%    \footnotesize
     \item Simulate \alert{independent} double observer data with the following
       properties:
       \begin{itemize}
@@ -1452,15 +1507,16 @@ totalAbundance <- sum(N[1:nSites])
         \item $\lambda=3$
         \item $p_1=0.3$ and $p_2=0.5$
       \end{itemize}
-    \item Fit the model using `unmarked'\footnote{\scriptsize You will
-        need to create an observation covariate indicating observer A
-        and B} and JAGS
+    \item Fit the model using `unmarked.' You will need to create an
+      observation covariate indicating observer A and B. When you
+      create the \inr{unmarkedFrameMPois}, use \inr{type="double"}.
+    \item Fit the same model in JAGS
     \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
     % \item Repeat steps 1-3 using the \alert{dependent} double observer
     %   method. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday.
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday.
 \end{frame}
 
 

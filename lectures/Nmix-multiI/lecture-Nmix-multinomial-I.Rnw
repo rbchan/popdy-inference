@@ -508,14 +508,15 @@ print(head(lambda.pred), digits=2)
 
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-<<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
+<<pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=2:6>>=
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
      ylim=c(0,20), xlab="Stream depth", type="l", lwd=2)
 lines(lower ~ streamDepth, lambda.pred, col="grey")
 lines(upper ~ streamDepth, lambda.pred, col="grey")
 points(rowSums(y2)~streamDepth)
-lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun (it's way off)
+lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Lowess line for fun (it's way off)
+legend(-3, 20, c("Multinomial N-mix model", "Lowess smooth"), lwd=2, col=c("black", "blue"))
 @   
 \end{frame}
 
@@ -525,21 +526,21 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun
 
 
 
-\begin{frame}[fragile]
-  \frametitle{In-class exercise}
-  % \small
-  % \begin{enumerate}
-  %   \item Predict
-  %   \end{enumerate}
-  %   \centering
-%  \large
-  Do the following using the fitted removal model above:
-  \begin{enumerate}
-    \normalsize
-    \item Predict $p$ when \verb+streamDepth=-1+
-    \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
-  \end{enumerate}
-\end{frame}
+%% \begin{frame}[fragile]
+%%   \frametitle{In-class exercise}
+%%   % \small
+%%   % \begin{enumerate}
+%%   %   \item Predict
+%%   %   \end{enumerate}
+%%   %   \centering
+%% %  \large
+%%   Do the following using the fitted removal model above:
+%%   \begin{enumerate}
+%%     \normalsize
+%%     \item Predict $p$ when \verb+streamDepth=-1+
+%%     \item Use the prediction of $p$ to compute $\pi_1, \pi_2, \pi_3, \pi_4$
+%%   \end{enumerate}
+%% \end{frame}
 
 
 \subsection{Bayesian methods}
@@ -630,7 +631,7 @@ lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun
 \begin{frame}[fragile]
   \frametitle{\normalsize Conditional-on-$N$ and $n_i=\sum_{k=1}^{K-1} y_{i,k}$}
 \vspace{-3pt}
-<<bugs-removal2,size='scriptsize',echo=FALSE,comment='',background='lightblue'>>=
+<<bugs-removal2,size='scriptsize',echo=FALSE,comment='',background='beige'>>=
 writeLines(readLines("removal-mod2.jag"))
 @
 \end{frame}
@@ -710,6 +711,29 @@ plot(jags.post.rem2[,jags.pars.rem[1:3]])
 plot(jags.post.rem2[,jags.pars.rem[4:5]])
 @ 
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Convergence diagnostics}
+  Gelman-Rubin diagnostic ($\hat{R}$)
+<<rhat,size='small'>>=
+gelman.diag(jags.post.rem2)
+@
+  Convergence is suggested by $\hat{R}$ close to 1. 
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Effective posterior sample size}
+  It's a good idea to have at least 500 effective posterior samples for each parameter. 
+<<ess,size='small'>>=
+data.frame(ESS = effectiveSize(jags.post.rem2))
+@
+\end{frame}
+
 
 
 
@@ -1105,14 +1129,14 @@ plot(jags.post.rem2[,jags.pars.rem[4:5]])
 
 \begin{frame}[fragile]
   \frametitle{Assignment}
-  % \small
-  \footnotesize
+  \small
+  %\footnotesize
   Create a self-contained R script or Rmarkdown file
   to do the following:
   \vfill
   \begin{enumerate}
-%    \small
-    \footnotesize
+    \small
+%    \footnotesize
     \item Simulate \alert{independent} double observer data with the following
       properties:
       \begin{itemize}
@@ -1120,15 +1144,16 @@ plot(jags.post.rem2[,jags.pars.rem[4:5]])
         \item $\lambda=3$
         \item $p_1=0.3$ and $p_2=0.5$
       \end{itemize}
-    \item Fit the model using `unmarked'\footnote{\scriptsize You will
-        need to create an observation covariate indicating observer A
-        and B} and JAGS
+    \item Fit the model using `unmarked.' You will need to create an
+      observation covariate indicating observer A and B. When you
+      create the \inr{unmarkedFrameMPois}, use \inr{type="double"}.
+    \item Fit the same model in JAGS
     \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
     % \item Repeat steps 1-3 using the \alert{dependent} double observer
     %   method. 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday.
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday.
 \end{frame}
 
 
