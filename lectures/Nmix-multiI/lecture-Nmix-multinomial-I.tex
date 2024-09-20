@@ -203,7 +203,7 @@
 \end{alltt}
 \begin{verbatim}
 ##      survived depredated starved
-## [1,]        8          9       3
+## [1,]        8          8       4
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1048,7 +1048,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{frame}[fragile]
   \frametitle{Convergence diagnostics}
   Gelman-Rubin diagnostic ($\hat{R}$)
-\begin{knitrout}\small
+\begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{gelman.diag}\hldef{(jags.post.rem2)}
@@ -1078,7 +1078,7 @@ totalAbundance <- sum(N[1:nSites])
 
 \begin{frame}[fragile]
   \frametitle{Effective posterior sample size}
-  It's a good idea to have at least 500 effective posterior samples for each parameter. 
+  It's a good idea to have $>$500 effective posterior samples. 
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -1444,6 +1444,175 @@ totalAbundance <- sum(N[1:nSites])
   \end{tabular}
 \end{frame}
 
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating dependent double observer data}
+  \small
+  Abundance
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{nSites} \hlkwb{<-} \hlnum{100}
+\hldef{lambda} \hlkwb{<-} \hlnum{4.6}  \hlcom{# Expected value of N}
+\hldef{N} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+% \item
+  \pause
+  \vfill
+  Detection probability and multinomial counts
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{observer} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{sample}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"A"}\hldef{,}\hlsng{"B"}\hldef{),} \hlkwc{size}\hldef{=nSites}\hlopt{*}\hlnum{2}\hldef{,} \hlkwc{replace}\hldef{=}\hlnum{TRUE}\hldef{),}
+                   \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=}\hlnum{2}\hldef{)}
+\hldef{p1} \hlkwb{<-} \hlnum{0.4}  \hlcom{# Detection prob for observer A}
+\hldef{p2} \hlkwb{<-} \hlnum{0.3}  \hlcom{# Detection prob for observer B}
+\hldef{piAfirst} \hlkwb{<-} \hlkwd{c}\hldef{(p1, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{p2, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{p2))}
+\hldef{piBfirst} \hlkwb{<-} \hlkwd{c}\hldef{(p2, (}\hlnum{1}\hlopt{-}\hldef{p2)}\hlopt{*}\hldef{p1, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{p2))}
+\hldef{K} \hlkwb{<-} \hlkwd{length}\hldef{(piAfirst)}
+\hldef{y.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=K)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+  \hldef{pi} \hlkwb{<-} \hlkwa{if}\hldef{(observer[i,}\hlnum{1}\hldef{]}\hlopt{==}\hlsng{"A"}\hldef{) piAfirst} \hlkwa{else} \hldef{piBfirst}
+  \hldef{y.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N[i],} \hlkwc{prob}\hldef{=pi)    \}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+%\end{enumerate}
+  \pause
+  \vfill
+  Discard final column of individuals not detected
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{y} \hlkwb{<-} \hldef{y.all[,}\hlopt{-}\hldef{K]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Dependent double observer model in JAGS}
+\vspace{-3pt}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+model {
+
+lambda ~ dunif(0, 20) # Prior on E(N)
+p1 ~ dunif(0, 1)      # Prior on observer A detection prob
+p2 ~ dunif(0, 1)      # Prior on observer B detection prob
+
+# Multinomial cell probs
+piAfirst <- c(p1, (1-p1)*p2, (1-p1)*(1-p2)) # When obs A goes first
+piBfirst <- c(p2, (1-p2)*p1, (1-p1)*(1-p2)) # When obs B goes first
+
+for(i in 1:nSites) {
+  N[i] ~ dpois(lambda)         # Latent local abundance
+  pi[i,1:3] <- ifelse(observer[i,1]==1, piAfirst, piBfirst)
+  n[i] ~ dbin(1-pi[i,3], N[i])  ## nDetected at site i
+  y[i,1:2] ~ dmulti(pi[i,1:2]/(1-pi[i,3]), n[i])
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{jags.data.double} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{n}\hldef{=}\hlkwd{rowSums}\hldef{(y),} \hlkwc{nSites}\hldef{=nSites,}
+                         \hlkwc{observer}\hldef{=}\hlkwd{ifelse}\hldef{(observer}\hlopt{==}\hlsng{"A"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{2}\hldef{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{jags.inits.doub} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{lambda}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p1}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p2}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{N}\hldef{=}\hlkwd{rowSums}\hldef{(y)}\hlopt{+}\hlkwd{rpois}\hldef{(}\hlkwd{nrow}\hldef{(y),} \hlnum{2}\hldef{))}
+\hldef{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+\begin{knitrout}\small
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{jags.pars.doub} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"lambda"}\hldef{,} \hlsng{"p1"}\hldef{,} \hlsng{"p2"}\hldef{,} \hlsng{"totalAbundance"}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{jags.post.doub} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data.double,} \hlkwc{inits}\hldef{=jags.inits.doub,}
+                             \hlkwc{parameters.to.save}\hldef{=jags.pars.doub,}
+                             \hlkwc{model.file}\hldef{=}\hlsng{"double-obs-dep.jag"}\hldef{,}
+                             \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                             \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+%\end{frame}
+
+\pause
+
+%\begin{frame}[fragile]
+%  \frametitle{Summarize output}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{print}\hldef{(}\hlkwd{summary}\hldef{(jags.post.doub)}\hlopt{$}\hldef{quantiles,} \hlkwc{digits}\hldef{=}\hlnum{3}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##                   2.5%     25%     50%     75%   97.5%
+## deviance       359.920 401.638 424.376 446.839 486.597
+## lambda           3.060   3.536   3.824   4.216   5.212
+## p1               0.373   0.483   0.537   0.589   0.677
+## p2               0.232   0.310   0.356   0.399   0.485
+## totalAbundance 318.000 354.000 381.000 416.000 514.025
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
 %\subsection{Likelihood-based methods}
 
 
@@ -1512,8 +1681,6 @@ totalAbundance <- sum(N[1:nSites])
       create the \inr{unmarkedFrameMPois}, use \inr{type="double"}.
     \item Fit the same model in JAGS
     \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
-    % \item Repeat steps 1-3 using the \alert{dependent} double observer
-    %   method. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday.

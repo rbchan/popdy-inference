@@ -2,10 +2,14 @@
 
 ## For 2025
 
+- Include analysis grade as part of project/paper grade
+
 - R quiz to weed out students on day 1
 
 - Replace 'x1' 'x2' and 'w' with real variable names in occupancyII lecture
 
+- Remove missing values in grouse data, especially for Nmix examples
+  * Too much for students to learn so many things at once
 
 ## For 2024
 

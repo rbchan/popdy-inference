@@ -717,7 +717,7 @@ plot(jags.post.rem2[,jags.pars.rem[4:5]])
 \begin{frame}[fragile]
   \frametitle{Convergence diagnostics}
   Gelman-Rubin diagnostic ($\hat{R}$)
-<<rhat,size='small'>>=
+<<rhat,size='footnotesize'>>=
 gelman.diag(jags.post.rem2)
 @
   Convergence is suggested by $\hat{R}$ close to 1. 
@@ -728,7 +728,7 @@ gelman.diag(jags.post.rem2)
 
 \begin{frame}[fragile]
   \frametitle{Effective posterior sample size}
-  It's a good idea to have at least 500 effective posterior samples for each parameter. 
+  It's a good idea to have $>$500 effective posterior samples. 
 <<ess,size='small'>>=
 data.frame(ESS = effectiveSize(jags.post.rem2))
 @
@@ -1081,6 +1081,113 @@ data.frame(ESS = effectiveSize(jags.post.rem2))
   \end{tabular}
 \end{frame}
 
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Simulating dependent double observer data}
+  \small
+  Abundance
+<<sim-doub-N,size='scriptsize',echo=-1>>=
+set.seed(839)
+nSites <- 100
+lambda <- 4.6  # Expected value of N
+N <- rpois(n=nSites, lambda=lambda)
+@
+% \item
+  \pause
+  \vfill
+  Detection probability and multinomial counts
+<<sim-doub-counts,size='scriptsize'>>=
+observer <- matrix(sample(c("A","B"), size=nSites*2, replace=TRUE),
+                   nrow=nSites, ncol=2)
+p1 <- 0.4  # Detection prob for observer A
+p2 <- 0.3  # Detection prob for observer B
+piAfirst <- c(p1, (1-p1)*p2, (1-p1)*(1-p2))
+piBfirst <- c(p2, (1-p2)*p1, (1-p1)*(1-p2))
+K <- length(piAfirst)
+y.all <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+  pi <- if(observer[i,1]=="A") piAfirst else piBfirst
+  y.all[i,] <- rmultinom(n=1, size=N[i], prob=pi)    }
+@
+%\end{enumerate}
+  \pause
+  \vfill
+  Discard final column of individuals not detected
+<<y-doub,size='scriptsize'>>=
+y <- y.all[,-K]
+@ 
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{\normalsize Dependent double observer model in JAGS}
+\vspace{-3pt}
+<<bugs-double,size='scriptsize',echo=FALSE,comment='',background='beige'>>=
+writeLines(readLines("double-obs-dep.jag"))
+@
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Data, inits, and parameters}
+  Put data in a named list
+  \vspace{-12pt}
+<<bugs-data-double,size='small'>>=
+jags.data.double <- list(y=y, n=rowSums(y), nSites=nSites,
+    observer=ifelse(observer=="A", 1, 2))
+@
+\pause
+\vfill
+  Initial values
+  \vspace{-12pt}
+<<bugs-inits-double,size='small'>>=
+jags.inits.doub <- function() {
+    list(lambda=runif(1), p1=runif(1), p2=runif(1),
+         N=rowSums(y)+rpois(nrow(y), 2))
+}
+@ 
+\pause
+\vfill
+  Parameters to monitor
+  \vspace{-12pt}
+<<bugs-pars-doub,size='small'>>=
+jags.pars.doub <- c("lambda", "p1", "p2", "totalAbundance")
+@ 
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{MCMC}
+  \small
+<<bugs-mcmc-doub,size='scriptsize',message=FALSE,cache=FALSE,results='hide'>>=
+jags.post.doub <- jags.basic(data=jags.data.double, inits=jags.inits.doub,
+                             parameters.to.save=jags.pars.doub,
+                             model.file="double-obs-dep.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+@ 
+%\end{frame}
+
+\pause
+
+%\begin{frame}[fragile]
+%  \frametitle{Summarize output}
+<<bugs-sum-doub,size='scriptsize'>>=
+print(summary(jags.post.doub)$quantiles, digits=3)
+@ 
+\end{frame}
+
+
+
 %\subsection{Likelihood-based methods}
 
 
@@ -1149,8 +1256,6 @@ data.frame(ESS = effectiveSize(jags.post.rem2))
       create the \inr{unmarkedFrameMPois}, use \inr{type="double"}.
     \item Fit the same model in JAGS
     \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
-    % \item Repeat steps 1-3 using the \alert{dependent} double observer
-    %   method. 
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday.
