@@ -120,17 +120,18 @@ lambda.pred <- predict(fm, newdata=pred.data,
 print(head(lambda.pred), digits=2)
 
 
-## ----pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1----
+## ----pred-lam2,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=2:6----
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
      ylim=c(0,20), xlab="Stream depth", type="l", lwd=2)
 lines(lower ~ streamDepth, lambda.pred, col="grey")
 lines(upper ~ streamDepth, lambda.pred, col="grey")
 points(rowSums(y2)~streamDepth)
-lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Loess line for fun (it's way off)
+lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Lowess line for fun (it's way off)
+legend(-3, 20, c("Multinomial N-mix model", "Lowess smooth"), lwd=2, col=c("black", "blue"))
 
 
-## ----bugs-removal2,size='scriptsize',echo=FALSE,comment='',background='lightblue'----
+## ----bugs-removal2,size='scriptsize',echo=FALSE,comment='',background='beige'----
 writeLines(readLines("removal-mod2.jag"))
 
 
@@ -169,4 +170,69 @@ plot(jags.post.rem2[,jags.pars.rem[1:3]])
 
 ## ----bugs-plot2-rem2,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'----
 plot(jags.post.rem2[,jags.pars.rem[4:5]])
+
+
+## ----rhat,size='footnotesize'-------------------------------------------------
+gelman.diag(jags.post.rem2)
+
+
+## ----ess,size='small'---------------------------------------------------------
+data.frame(ESS = effectiveSize(jags.post.rem2))
+
+
+## ----sim-doub-N,size='scriptsize',echo=-1-------------------------------------
+set.seed(839)
+nSites <- 100
+lambda <- 4.6  # Expected value of N
+N <- rpois(n=nSites, lambda=lambda)
+
+
+## ----sim-doub-counts,size='scriptsize'----------------------------------------
+observer <- matrix(sample(c("A","B"), size=nSites*2, replace=TRUE),
+                   nrow=nSites, ncol=2)
+p1 <- 0.4  # Detection prob for observer A
+p2 <- 0.3  # Detection prob for observer B
+piAfirst <- c(p1, (1-p1)*p2, (1-p1)*(1-p2))
+piBfirst <- c(p2, (1-p2)*p1, (1-p1)*(1-p2))
+K <- length(piAfirst)
+y.all <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+  pi <- if(observer[i,1]=="A") piAfirst else piBfirst
+  y.all[i,] <- rmultinom(n=1, size=N[i], prob=pi)    }
+
+
+## ----y-doub,size='scriptsize'-------------------------------------------------
+y <- y.all[,-K]
+
+
+## ----bugs-double,size='scriptsize',echo=FALSE,comment='',background='beige'----
+writeLines(readLines("double-obs-dep.jag"))
+
+
+## ----bugs-data-double,size='small'--------------------------------------------
+jags.data.double <- list(y=y, n=rowSums(y), nSites=nSites,
+    observer=ifelse(observer=="A", 1, 2))
+
+
+## ----bugs-inits-double,size='small'-------------------------------------------
+jags.inits.doub <- function() {
+    list(lambda=runif(1), p1=runif(1), p2=runif(1),
+         N=rowSums(y)+rpois(nrow(y), 2))
+}
+
+
+## ----bugs-pars-doub,size='small'----------------------------------------------
+jags.pars.doub <- c("lambda", "p1", "p2", "totalAbundance")
+
+
+## ----bugs-mcmc-doub,size='scriptsize',message=FALSE,cache=FALSE,results='hide'----
+jags.post.doub <- jags.basic(data=jags.data.double, inits=jags.inits.doub,
+                             parameters.to.save=jags.pars.doub,
+                             model.file="double-obs-dep.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+
+
+## ----bugs-sum-doub,size='scriptsize'------------------------------------------
+print(summary(jags.post.doub)$quantiles, digits=3)
 

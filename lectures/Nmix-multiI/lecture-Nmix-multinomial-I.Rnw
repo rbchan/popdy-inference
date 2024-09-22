@@ -8,6 +8,13 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
@@ -1255,7 +1262,8 @@ print(summary(jags.post.doub)$quantiles, digits=3)
       observation covariate indicating observer A and B. When you
       create the \inr{unmarkedFrameMPois}, use \inr{type="double"}.
     \item Fit the same model in JAGS
-    \item Use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities. 
+    \item For both unmarked and JAGS, use the point estimates of $p_1$
+      and $p_2$ to compute the $\pi$ probabilities.  
   \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday.
