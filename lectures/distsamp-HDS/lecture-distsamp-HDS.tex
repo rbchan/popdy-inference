@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -48,6 +48,8 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -56,6 +58,13 @@
 
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
+
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 
 % Load function to compile and open PDF
@@ -195,11 +204,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{sigma1} \hlkwb{<-} \hlnum{25}\hlstd{; sigma2} \hlkwb{<-} \hlnum{50}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma1}\hlopt{^}\hlnum{2}\hlstd{)),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Distance (x)"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability (p)"}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma2}\hlopt{^}\hlnum{2}\hlstd{)),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{70}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"sigma=25"}\hlstd{,} \hlstr{"sigma=50"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,}\hlstr{"blue"}\hlstd{))}
+\hldef{sigma1} \hlkwb{<-} \hlnum{25}\hldef{; sigma2} \hlkwb{<-} \hlnum{50}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma1}\hlopt{^}\hlnum{2}\hldef{)),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Distance (x)"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Detection probability (p)"}\hldef{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma2}\hlopt{^}\hlnum{2}\hldef{)),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{add}\hldef{=}\hlnum{TRUE}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{4}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{70}\hldef{,} \hlnum{1}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"sigma=25"}\hldef{,} \hlsng{"sigma=50"}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"black"}\hldef{,}\hlsng{"blue"}\hldef{))}
 \end{alltt}
 \end{kframe}
 
@@ -225,11 +234,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{sigma1} \hlkwb{<-} \hlnum{25}\hlstd{; sigma2} \hlkwb{<-} \hlnum{50}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{/}\hlstd{sigma1),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Distance (x)"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability (p)"}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{/}\hlstd{sigma2),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{70}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"sigma=25"}\hlstd{,} \hlstr{"sigma=50"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,}\hlstr{"blue"}\hlstd{))}
+\hldef{sigma1} \hlkwb{<-} \hlnum{25}\hldef{; sigma2} \hlkwb{<-} \hlnum{50}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{/}\hldef{sigma1),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Distance (x)"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Detection probability (p)"}\hldef{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{/}\hldef{sigma2),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{add}\hldef{=}\hlnum{TRUE}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{4}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{70}\hldef{,} \hlnum{1}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"sigma=25"}\hldef{,} \hlsng{"sigma=50"}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"black"}\hldef{,}\hlsng{"blue"}\hldef{))}
 \end{alltt}
 \end{kframe}
 
@@ -256,11 +265,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{a1} \hlkwb{<-} \hlnum{25}\hlstd{; a2} \hlkwb{<-} \hlnum{50}\hlstd{; b1} \hlkwb{<-} \hlnum{2}\hlstd{; b2} \hlkwb{<-} \hlnum{10}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{-}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{(x}\hlopt{/}\hlstd{a1)}\hlopt{^}\hlstd{(}\hlopt{-}\hlstd{b1)),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Distance (x)"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability (p)"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{-}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{(x}\hlopt{/}\hlstd{a2)}\hlopt{^}\hlstd{(}\hlopt{-}\hlstd{b2)),} \hlkwc{from}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{70}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"a=25, b=2"}\hlstd{,} \hlstr{"a=50, b=10"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,}\hlstr{"blue"}\hlstd{))}
+\hldef{a1} \hlkwb{<-} \hlnum{25}\hldef{; a2} \hlkwb{<-} \hlnum{50}\hldef{; b1} \hlkwb{<-} \hlnum{2}\hldef{; b2} \hlkwb{<-} \hlnum{10}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1}\hlopt{-}\hlkwd{exp}\hldef{(}\hlopt{-}\hldef{(x}\hlopt{/}\hldef{a1)}\hlopt{^}\hldef{(}\hlopt{-}\hldef{b1)),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Distance (x)"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Detection probability (p)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1}\hlopt{-}\hlkwd{exp}\hldef{(}\hlopt{-}\hldef{(x}\hlopt{/}\hldef{a2)}\hlopt{^}\hldef{(}\hlopt{-}\hldef{b2)),} \hlkwc{from}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{add}\hldef{=}\hlnum{TRUE}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{4}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{70}\hldef{,} \hlnum{1}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"a=25, b=2"}\hldef{,} \hlsng{"a=50, b=10"}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"black"}\hldef{,}\hlsng{"blue"}\hldef{))}
 \end{alltt}
 \end{kframe}
 
@@ -341,9 +350,9 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{# Transect width}
-\hlstd{g} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{25}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))} \hlcom{# g(x)}
-\hlstd{pdf} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{/}\hlstd{B}                           \hlcom{# p(x), constant}
+\hldef{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{# Transect width}
+\hldef{g} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{sigma}\hldef{=}\hlnum{25}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma}\hlopt{^}\hlnum{2}\hldef{))} \hlcom{# g(x)}
+\hldef{pdf} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1}\hlopt{/}\hldef{B}                           \hlcom{# p(x), constant}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -354,8 +363,8 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{gp} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{g}\hlstd{(x)}\hlopt{*}\hlkwd{pdf}\hlstd{(x)}
-\hlstd{(pbar} \hlkwb{<-} \hlkwd{integrate}\hlstd{(gp,} \hlkwc{lower}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{upper}\hlstd{=B)}\hlopt{$}\hlstd{value)}
+\hldef{gp} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{g}\hldef{(x)}\hlopt{*}\hlkwd{pdf}\hldef{(x)}
+\hldef{(pbar} \hlkwb{<-} \hlkwd{integrate}\hldef{(gp,} \hlkwc{lower}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{upper}\hldef{=B)}\hlopt{$}\hldef{value)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.3133087
@@ -385,9 +394,9 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{# Transect width}
-\hlstd{g} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{25}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))} \hlcom{# g(x)}
-\hlstd{pdf} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{2}\hlopt{*}\hlstd{x}\hlopt{/}\hlstd{B}\hlopt{^}\hlnum{2}                       \hlcom{# p(x)}
+\hldef{B} \hlkwb{<-} \hlnum{100}                                         \hlcom{# Transect width}
+\hldef{g} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{,} \hlkwc{sigma}\hldef{=}\hlnum{25}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma}\hlopt{^}\hlnum{2}\hldef{))} \hlcom{# g(x)}
+\hldef{pdf} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{2}\hlopt{*}\hldef{x}\hlopt{/}\hldef{B}\hlopt{^}\hlnum{2}                       \hlcom{# p(x)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -398,8 +407,8 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{gp} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{g}\hlstd{(x)}\hlopt{*}\hlkwd{pdf}\hlstd{(x)}
-\hlstd{(pbar} \hlkwb{<-} \hlkwd{integrate}\hlstd{(gp,} \hlkwc{lower}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{upper}\hlstd{=B)}\hlopt{$}\hlstd{value)}
+\hldef{gp} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{g}\hldef{(x)}\hlopt{*}\hlkwd{pdf}\hldef{(x)}
+\hldef{(pbar} \hlkwb{<-} \hlkwd{integrate}\hldef{(gp,} \hlkwc{lower}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{upper}\hldef{=B)}\hlopt{$}\hldef{value)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.1249581
@@ -571,9 +580,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{B} \hlkwb{<-} \hlnum{100}\hlstd{; Area} \hlkwb{<-} \hlstd{pi}\hlopt{*}\hlstd{B}\hlopt{^}\hlnum{2}\hlopt{/}\hlnum{1e4}   \hlcom{## plot radius (B) and area in ha}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{0.9}  \hlcom{## Expected value of density}
-\hlstd{N3} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1}\hlopt{*}\hlstd{Area)}
+\hldef{B} \hlkwb{<-} \hlnum{100}\hldef{; Area} \hlkwb{<-} \hldef{pi}\hlopt{*}\hldef{B}\hlopt{^}\hlnum{2}\hlopt{/}\hlnum{1e4}   \hlcom{## plot radius (B) and area in ha}
+\hldef{nSites} \hlkwb{<-} \hlnum{100}\hldef{; lambda1} \hlkwb{<-} \hlnum{0.9}  \hlcom{## Expected value of density}
+\hldef{N3} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda1}\hlopt{*}\hldef{Area)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -584,18 +593,18 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
-\hlstd{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
-\hlstd{b} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{, B,} \hlkwc{length}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# distance break points}
-\hlstd{area} \hlkwb{<-} \hlstd{pi}\hlopt{*}\hlstd{b}\hlopt{^}\hlnum{2}             \hlcom{# area of each circle}
-\hlstd{psi} \hlkwb{<-} \hlstd{(area[}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{area[}\hlopt{-}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)])} \hlopt{/} \hlstd{area[J}\hlopt{+}\hlnum{1}\hlstd{]}
-\hlstd{pbar3} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J)}        \hlcom{# average detection probability}
-\hlstd{pi3} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)}        \hlcom{# multinomial cell probs}
-\hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-    \hlstd{pbar3[j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}\hlopt{*}\hlstd{x,}
-                          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{*}
-                          \hlstd{(}\hlnum{2}\hlopt{*}\hlstd{pi}\hlopt{/}\hlkwd{diff}\hlstd{(area)[j])}
-    \hlstd{pi3[j]} \hlkwb{<-} \hlstd{pbar3[j]}\hlopt{*}\hlstd{psi[j] \}; pi3[J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi3[}\hlnum{1}\hlopt{:}\hlstd{J])}
+\hldef{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
+\hldef{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
+\hldef{b} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{0}\hldef{, B,} \hlkwc{length}\hldef{=J}\hlopt{+}\hlnum{1}\hldef{)} \hlcom{# distance break points}
+\hldef{area} \hlkwb{<-} \hldef{pi}\hlopt{*}\hldef{b}\hlopt{^}\hlnum{2}             \hlcom{# area of each circle}
+\hldef{psi} \hlkwb{<-} \hldef{(area[}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{-}\hldef{area[}\hlopt{-}\hldef{(J}\hlopt{+}\hlnum{1}\hldef{)])} \hlopt{/} \hldef{area[J}\hlopt{+}\hlnum{1}\hldef{]}
+\hldef{pbar3} \hlkwb{<-} \hlkwd{numeric}\hldef{(J)}        \hlcom{# average detection probability}
+\hldef{pi3} \hlkwb{<-} \hlkwd{numeric}\hldef{(J}\hlopt{+}\hlnum{1}\hldef{)}        \hlcom{# multinomial cell probs}
+\hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{J) \{}
+    \hldef{pbar3[j]} \hlkwb{<-} \hlkwd{integrate}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma}\hlopt{^}\hlnum{2}\hldef{))}\hlopt{*}\hldef{x,}
+                          \hlkwc{lower}\hldef{=b[j],} \hlkwc{upper}\hldef{=b[j}\hlopt{+}\hlnum{1}\hldef{])}\hlopt{$}\hldef{value} \hlopt{*}
+                          \hldef{(}\hlnum{2}\hlopt{*}\hldef{pi}\hlopt{/}\hlkwd{diff}\hldef{(area)[j])}
+    \hldef{pi3[j]} \hlkwb{<-} \hldef{pbar3[j]}\hlopt{*}\hldef{psi[j] \}; pi3[J}\hlopt{+}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hldef{(pi3[}\hlnum{1}\hlopt{:}\hldef{J])}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -606,10 +615,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y3.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y3.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N3[i],} \hlkwc{prob}\hlstd{=pi3)    \}}
-\hlstd{y3} \hlkwb{<-} \hlstd{y3.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}  \hlcom{## Drop final cell}
+\hldef{y3.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=J}\hlopt{+}\hlnum{1}\hldef{)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y3.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N3[i],} \hlkwc{prob}\hldef{=pi3)    \}}
+\hldef{y3} \hlkwb{<-} \hldef{y3.all[,}\hlnum{1}\hlopt{:}\hldef{J]}  \hlcom{## Drop final cell}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -623,8 +632,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(b[}\hlopt{-}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)]}\hlopt{+}\hlnum{10}\hlstd{,} \hlkwd{colSums}\hlstd{(y3),} \hlkwc{type}\hlstd{=}\hlstr{"h"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{lend}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"skyblue4"}\hlstd{,}
-     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Distance"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detections"}\hlstd{)}
+\hlkwd{plot}\hldef{(b[}\hlopt{-}\hldef{(J}\hlopt{+}\hlnum{1}\hldef{)]}\hlopt{+}\hlnum{10}\hldef{,} \hlkwd{colSums}\hldef{(y3),} \hlkwc{type}\hldef{=}\hlsng{"h"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{80}\hldef{,} \hlkwc{lend}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"skyblue4"}\hldef{,}
+     \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{100}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{70}\hldef{),} \hlkwc{xlab}\hldef{=}\hlsng{"Distance"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Detections"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.9\linewidth]{figure/dist-hist3-1} 
@@ -642,10 +651,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
-\hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
-\hlstd{lambda4} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}   \hlcom{# E(density)}
-\hlstd{N4} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda4}\hlopt{*}\hlstd{Area)}
+\hldef{elevation} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites)}
+\hldef{beta0} \hlkwb{<-} \hlnum{2}\hldef{; beta1} \hlkwb{<-} \hlnum{1}
+\hldef{lambda4} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{elevation)}   \hlcom{# E(density)}
+\hldef{N4} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda4}\hlopt{*}\hldef{Area)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -656,15 +665,15 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{noise} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
-\hlstd{alpha0} \hlkwb{<-} \hlnum{3}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
-\hlstd{sigma4} \hlkwb{<-} \hlkwd{exp}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{noise)}
-\hlstd{pi4} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# multinomial cell probs}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-  \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-      \hlstd{pi4[i,j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma4[i]}\hlopt{^}\hlnum{2}\hlstd{))}\hlopt{*}\hlstd{x,}
-          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value}\hlopt{*}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{pi}\hlopt{/}\hlkwd{diff}\hlstd{(area)[j])}\hlopt{*}\hlstd{psi[j] \}}
-  \hlstd{pi4[i,J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi4[i,}\hlnum{1}\hlopt{:}\hlstd{J]) \}}
+\hldef{noise} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites)}
+\hldef{alpha0} \hlkwb{<-} \hlnum{3}\hldef{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
+\hldef{sigma4} \hlkwb{<-} \hlkwd{exp}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{noise)}
+\hldef{pi4} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, nSites, J}\hlopt{+}\hlnum{1}\hldef{)} \hlcom{# multinomial cell probs}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+  \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{J) \{}
+      \hldef{pi4[i,j]} \hlkwb{<-} \hlkwd{integrate}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma4[i]}\hlopt{^}\hlnum{2}\hldef{))}\hlopt{*}\hldef{x,}
+          \hlkwc{lower}\hldef{=b[j],} \hlkwc{upper}\hldef{=b[j}\hlopt{+}\hlnum{1}\hldef{])}\hlopt{$}\hldef{value}\hlopt{*}\hldef{(}\hlnum{2}\hlopt{*}\hldef{pi}\hlopt{/}\hlkwd{diff}\hldef{(area)[j])}\hlopt{*}\hldef{psi[j] \}}
+  \hldef{pi4[i,J}\hlopt{+}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hldef{(pi4[i,}\hlnum{1}\hlopt{:}\hldef{J]) \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -675,10 +684,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y4.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y4.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N4[i],} \hlkwc{prob}\hlstd{=pi4[i,])    \}}
-\hlstd{y4} \hlkwb{<-} \hlstd{y4.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}
+\hldef{y4.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=J}\hlopt{+}\hlnum{1}\hldef{)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y4.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N4[i],} \hlkwc{prob}\hldef{=pi4[i,])    \}}
+\hldef{y4} \hlkwb{<-} \hldef{y4.all[,}\hlnum{1}\hlopt{:}\hldef{J]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -700,7 +709,7 @@
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y4[}\hlnum{1}\hlopt{:}\hlnum{25}\hlstd{,]}
+\hldef{y4[}\hlnum{1}\hlopt{:}\hlnum{25}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4] [,5]
@@ -745,9 +754,9 @@
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{# Max count at each site}
-\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y4,} \hlnum{1}\hlstd{, max)}
-\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
-\hlstd{naiveOccupancy}
+\hldef{maxCounts} \hlkwb{<-} \hlkwd{apply}\hldef{(y4,} \hlnum{1}\hldef{, max)}
+\hldef{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hldef{(maxCounts}\hlopt{>}\hlnum{0}\hldef{)}\hlopt{/}\hldef{nSites}
+\hldef{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.77
@@ -762,7 +771,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{colSums}\hlstd{(y4)}
+\hlkwd{colSums}\hldef{(y4)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 89 99 54 35 30
@@ -776,7 +785,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{sum}\hlstd{(y4)}
+\hlkwd{sum}\hldef{(y4)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 307
@@ -805,8 +814,8 @@
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{umf4} \hlkwb{<-} \hlkwd{unmarkedFrameDS}\hlstd{(}\hlkwc{y}\hlstd{=y4,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation,noise),} \hlkwc{dist.breaks}\hlstd{=b,}
-                       \hlkwc{survey}\hlstd{=}\hlstr{"point"}\hlstd{,} \hlkwc{unitsIn}\hlstd{=}\hlstr{"m"}\hlstd{)}
+\hldef{umf4} \hlkwb{<-} \hlkwd{unmarkedFrameDS}\hldef{(}\hlkwc{y}\hldef{=y4,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(elevation,noise),} \hlkwc{dist.breaks}\hldef{=b,}
+                       \hlkwc{survey}\hldef{=}\hlsng{"point"}\hldef{,} \hlkwc{unitsIn}\hldef{=}\hlsng{"m"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -814,7 +823,7 @@
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(umf4)}
+\hlkwd{summary}\hldef{(umf4)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrameDS Object
@@ -854,8 +863,8 @@
 \begin{alltt}
 \hlcom{## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="exp")     # negative exp}
 \hlcom{## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="hazard")  # hazard rate}
-\hlstd{fm4} \hlkwb{<-} \hlkwd{distsamp}\hlstd{(}\hlopt{~}\hlstd{noise} \hlopt{~}\hlstd{elevation, umf4,} \hlkwc{keyfun}\hlstd{=}\hlstr{"halfnorm"}\hlstd{)}   \hlcom{# half-normal}
-\hlstd{fm4}
+\hldef{fm4} \hlkwb{<-} \hlkwd{distsamp}\hldef{(}\hlopt{~}\hldef{noise} \hlopt{~}\hldef{elevation, umf4,} \hlkwc{keyfun}\hldef{=}\hlsng{"halfnorm"}\hldef{)}   \hlcom{# half-normal}
+\hldef{fm4}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -883,7 +892,7 @@ Compare to actual parameter values:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
+\hlkwd{c}\hldef{(}\hlkwc{beta0}\hldef{=beta0,} \hlkwc{beta1}\hldef{=beta1);} \hlkwd{c}\hldef{(}\hlkwc{alpha0}\hldef{=alpha0,} \hlkwc{alpha1}\hldef{=alpha1)}
 \end{alltt}
 \begin{verbatim}
 ## beta0 beta1 
@@ -907,7 +916,7 @@ Compare to actual parameter values:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{noise}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.5}\hlstd{))}
+\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{noise}\hldef{=}\hlkwd{seq}\hldef{(}\hlopt{-}\hlnum{3}\hldef{,} \hlnum{3}\hldef{,} \hlkwc{by}\hldef{=}\hlnum{0.5}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -918,8 +927,8 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{sigma.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm4,} \hlkwc{newdata}\hlstd{=pred.data,}
-                      \hlkwc{type}\hlstd{=}\hlstr{'det'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{sigma.pred} \hlkwb{<-} \hlkwd{predict}\hldef{(fm4,} \hlkwc{newdata}\hldef{=pred.data,}
+                      \hlkwc{type}\hldef{=}\hlsng{'det'}\hldef{,} \hlkwc{append}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -930,7 +939,7 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(sigma.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(sigma.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##   Predicted   SE lower upper noise
@@ -954,10 +963,10 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{ylab}\hldef{=}\hlsng{"Scale parameter (sigma)"}\hldef{,}
+     \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{100}\hldef{),} \hlkwc{xlab}\hldef{=}\hlsng{"Noise level"}\hldef{,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -978,10 +987,10 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{ylab}\hldef{=}\hlsng{"Scale parameter (sigma)"}\hldef{,}
+     \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{100}\hldef{),} \hlkwc{xlab}\hldef{=}\hlsng{"Noise level"}\hldef{,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1003,10 +1012,10 @@ Get predictions of $\sigma$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{ylab}\hlstd{=}\hlstr{"Scale parameter (sigma)"}\hlstd{,}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Noise level"}\hlstd{,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{noise, sigma.pred,} \hlkwc{col}\hlstd{=}\hlstr{"grey"}\hlstd{)}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{ylab}\hldef{=}\hlsng{"Scale parameter (sigma)"}\hldef{,}
+     \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{100}\hldef{),} \hlkwc{xlab}\hldef{=}\hlsng{"Noise level"}\hldef{,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{noise, sigma.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1087,12 +1096,12 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.pt} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y4,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y4),} \hlkwc{area}\hlstd{=}\hlkwd{diff}\hlstd{(area),}
-                     \hlkwc{b}\hlstd{=b,}              \hlcom{# Distance break points}
-                     \hlkwc{Area}\hlstd{=pi}\hlopt{*}\hlstd{B}\hlopt{^}\hlnum{2}\hlopt{/}\hlnum{1e4}\hlstd{,}  \hlcom{# Area in ha}
-                     \hlkwc{psi}\hlstd{=psi,}          \hlcom{# Pr(occuring in bin j)}
-                     \hlkwc{elevation}\hlstd{=elevation,} \hlkwc{noise}\hlstd{=noise,}
-                     \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nBins}\hlstd{=J)}
+\hldef{jags.data.pt} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y4,} \hlkwc{n}\hldef{=}\hlkwd{rowSums}\hldef{(y4),} \hlkwc{area}\hldef{=}\hlkwd{diff}\hldef{(area),}
+                     \hlkwc{b}\hldef{=b,}              \hlcom{# Distance break points}
+                     \hlkwc{Area}\hldef{=pi}\hlopt{*}\hldef{B}\hlopt{^}\hlnum{2}\hlopt{/}\hlnum{1e4}\hldef{,}  \hlcom{# Area in ha}
+                     \hlkwc{psi}\hldef{=psi,}          \hlcom{# Pr(occuring in bin j)}
+                     \hlkwc{elevation}\hldef{=elevation,} \hlkwc{noise}\hldef{=noise,}
+                     \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nBins}\hldef{=J)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1103,10 +1112,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits.pt} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{5}\hlstd{),}
-         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y4)}\hlopt{+}\hlkwd{rpois}\hlstd{(}\hlkwd{nrow}\hlstd{(y4),} \hlnum{2}\hlstd{))}
-\hlstd{\}}
+\hldef{jags.inits.pt} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{lambda.intercept}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{alpha0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{,} \hlnum{5}\hldef{),}
+         \hlkwc{N}\hldef{=}\hlkwd{rowSums}\hldef{(y4)}\hlopt{+}\hlkwd{rpois}\hldef{(}\hlkwd{nrow}\hldef{(y4),} \hlnum{2}\hldef{))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1117,8 +1126,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars.pt} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,}
-                  \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
+\hldef{jags.pars.pt} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,}
+                  \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"totalAbundance"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1232,9 +1241,9 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{B} \hlkwb{<-} \hlnum{100}\hlstd{; L} \hlkwb{<-} \hlnum{100}\hlstd{; A} \hlkwb{<-} \hlnum{2}\hlopt{*}\hlstd{B}\hlopt{*}\hlstd{L}\hlopt{/}\hlnum{1e4}  \hlcom{## transect widths, length, and area}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}\hlstd{; lambda1} \hlkwb{<-} \hlnum{1.3}       \hlcom{## Expected value of density}
-\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1}\hlopt{*}\hlstd{A)}
+\hldef{B} \hlkwb{<-} \hlnum{100}\hldef{; L} \hlkwb{<-} \hlnum{100}\hldef{; A} \hlkwb{<-} \hlnum{2}\hlopt{*}\hldef{B}\hlopt{*}\hldef{L}\hlopt{/}\hlnum{1e4}  \hlcom{## transect widths, length, and area}
+\hldef{nSites} \hlkwb{<-} \hlnum{100}\hldef{; lambda1} \hlkwb{<-} \hlnum{1.3}       \hlcom{## Expected value of density}
+\hldef{N1} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda1}\hlopt{*}\hldef{A)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1245,18 +1254,18 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
-\hlstd{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
-\hlstd{b} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{, B,} \hlkwc{length}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# distance break points}
-\hlstd{psi} \hlkwb{<-} \hlkwd{diff}\hlstd{(b)}\hlopt{/}\hlstd{B}           \hlcom{# Pr(x is in bin j)}
-\hlstd{pbar1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J)}        \hlcom{# average detection probability}
-\hlstd{pi1} \hlkwb{<-} \hlkwd{numeric}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)}        \hlcom{# multinomial cell probs}
-\hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-    \hlstd{pbar1[j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{)),}
-                          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlkwd{diff}\hlstd{(b)[j]}
-    \hlstd{pi1[j]} \hlkwb{<-} \hlstd{pbar1[j]}\hlopt{*}\hlstd{psi[j]}
-\hlstd{\}}
-\hlstd{pi1[J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi1[}\hlnum{1}\hlopt{:}\hlstd{J])}
+\hldef{J} \hlkwb{<-} \hlnum{5}                     \hlcom{# distance bins}
+\hldef{sigma} \hlkwb{<-} \hlnum{50}                \hlcom{# scale parameter}
+\hldef{b} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlnum{0}\hldef{, B,} \hlkwc{length}\hldef{=J}\hlopt{+}\hlnum{1}\hldef{)} \hlcom{# distance break points}
+\hldef{psi} \hlkwb{<-} \hlkwd{diff}\hldef{(b)}\hlopt{/}\hldef{B}           \hlcom{# Pr(x is in bin j)}
+\hldef{pbar1} \hlkwb{<-} \hlkwd{numeric}\hldef{(J)}        \hlcom{# average detection probability}
+\hldef{pi1} \hlkwb{<-} \hlkwd{numeric}\hldef{(J}\hlopt{+}\hlnum{1}\hldef{)}        \hlcom{# multinomial cell probs}
+\hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{J) \{}
+    \hldef{pbar1[j]} \hlkwb{<-} \hlkwd{integrate}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma}\hlopt{^}\hlnum{2}\hldef{)),}
+                          \hlkwc{lower}\hldef{=b[j],} \hlkwc{upper}\hldef{=b[j}\hlopt{+}\hlnum{1}\hldef{])}\hlopt{$}\hldef{value} \hlopt{/} \hlkwd{diff}\hldef{(b)[j]}
+    \hldef{pi1[j]} \hlkwb{<-} \hldef{pbar1[j]}\hlopt{*}\hldef{psi[j]}
+\hldef{\}}
+\hldef{pi1[J}\hlopt{+}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hldef{(pi1[}\hlnum{1}\hlopt{:}\hldef{J])}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1267,10 +1276,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y1.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=pi1)    \}}
-\hlstd{y1} \hlkwb{<-} \hlstd{y1.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}  \hlcom{## Drop final cell}
+\hldef{y1.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=J}\hlopt{+}\hlnum{1}\hldef{)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y1.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N1[i],} \hlkwc{prob}\hldef{=pi1)    \}}
+\hldef{y1} \hlkwb{<-} \hldef{y1.all[,}\hlnum{1}\hlopt{:}\hldef{J]}  \hlcom{## Drop final cell}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1284,8 +1293,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(b[}\hlopt{-}\hlstd{(J}\hlopt{+}\hlnum{1}\hlstd{)]}\hlopt{+}\hlnum{10}\hlstd{,} \hlkwd{colSums}\hlstd{(y1),} \hlkwc{type}\hlstd{=}\hlstr{"h"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{lend}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"skyblue4"}\hlstd{,}
-     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{100}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{"Distance"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Detections"}\hlstd{)}
+\hlkwd{plot}\hldef{(b[}\hlopt{-}\hldef{(J}\hlopt{+}\hlnum{1}\hldef{)]}\hlopt{+}\hlnum{10}\hldef{,} \hlkwd{colSums}\hldef{(y1),} \hlkwc{type}\hldef{=}\hlsng{"h"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{80}\hldef{,} \hlkwc{lend}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"skyblue4"}\hldef{,}
+     \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{100}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{70}\hldef{),} \hlkwc{xlab}\hldef{=}\hlsng{"Distance"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Detections"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.9\linewidth]{figure/dist-hist2-1} 
@@ -1303,10 +1312,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
-\hlstd{beta0} \hlkwb{<-} \hlnum{2}\hlstd{; beta1} \hlkwb{<-} \hlnum{1}
-\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda2}\hlopt{*}\hlstd{A)}
+\hldef{elevation} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites)}
+\hldef{beta0} \hlkwb{<-} \hlnum{2}\hldef{; beta1} \hlkwb{<-} \hlnum{1}
+\hldef{lambda2} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{elevation)}
+\hldef{N2} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda2}\hlopt{*}\hldef{A)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1317,15 +1326,15 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{noise} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)}
-\hlstd{alpha0} \hlkwb{<-} \hlnum{3}\hlstd{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
-\hlstd{sigma2} \hlkwb{<-} \hlkwd{exp}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{noise)}
-\hlstd{pi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, J}\hlopt{+}\hlnum{1}\hlstd{)} \hlcom{# multinomial cell probs}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-  \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-      \hlstd{pi2[i,j]} \hlkwb{<-} \hlkwd{integrate}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma2[i]}\hlopt{^}\hlnum{2}\hlstd{)),}
-          \hlkwc{lower}\hlstd{=b[j],} \hlkwc{upper}\hlstd{=b[j}\hlopt{+}\hlnum{1}\hlstd{])}\hlopt{$}\hlstd{value} \hlopt{/} \hlstd{(b[j}\hlopt{+}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{b[j])} \hlopt{*} \hlstd{psi[j] \}}
-  \hlstd{pi2[i,J}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi2[i,}\hlnum{1}\hlopt{:}\hlstd{J]) \}}
+\hldef{noise} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites)}
+\hldef{alpha0} \hlkwb{<-} \hlnum{3}\hldef{; alpha1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}
+\hldef{sigma2} \hlkwb{<-} \hlkwd{exp}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{noise)}
+\hldef{pi2} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, nSites, J}\hlopt{+}\hlnum{1}\hldef{)} \hlcom{# multinomial cell probs}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+  \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{J) \{}
+      \hldef{pi2[i,j]} \hlkwb{<-} \hlkwd{integrate}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(}\hlopt{-}\hldef{x}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma2[i]}\hlopt{^}\hlnum{2}\hldef{)),}
+          \hlkwc{lower}\hldef{=b[j],} \hlkwc{upper}\hldef{=b[j}\hlopt{+}\hlnum{1}\hldef{])}\hlopt{$}\hldef{value} \hlopt{/} \hldef{(b[j}\hlopt{+}\hlnum{1}\hldef{]}\hlopt{-}\hldef{b[j])} \hlopt{*} \hldef{psi[j] \}}
+  \hldef{pi2[i,J}\hlopt{+}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hldef{(pi2[i,}\hlnum{1}\hlopt{:}\hldef{J]) \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1336,10 +1345,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=J}\hlopt{+}\hlnum{1}\hlstd{)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=pi2[i,])    \}}
-\hlstd{y2} \hlkwb{<-} \hlstd{y2.all[,}\hlnum{1}\hlopt{:}\hlstd{J]}
+\hldef{y2.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=J}\hlopt{+}\hlnum{1}\hldef{)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y2.all[i,]} \hlkwb{<-} \hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=N2[i],} \hlkwc{prob}\hldef{=pi2[i,])    \}}
+\hldef{y2} \hlkwb{<-} \hldef{y2.all[,}\hlnum{1}\hlopt{:}\hldef{J]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1361,7 +1370,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{25}\hlstd{,]}
+\hldef{y2[}\hlnum{1}\hlopt{:}\hlnum{25}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4] [,5]
@@ -1406,9 +1415,9 @@ totalAbundance <- sum(N[1:nSites])
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{# Max count at each site}
-\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)}
-\hlstd{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts}\hlopt{>}\hlnum{0}\hlstd{)}\hlopt{/}\hlstd{nSites}
-\hlstd{naiveOccupancy}
+\hldef{maxCounts} \hlkwb{<-} \hlkwd{apply}\hldef{(y2,} \hlnum{1}\hldef{, max)}
+\hldef{naiveOccupancy} \hlkwb{<-} \hlkwd{sum}\hldef{(maxCounts}\hlopt{>}\hlnum{0}\hldef{)}\hlopt{/}\hldef{nSites}
+\hldef{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.9
@@ -1423,7 +1432,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{colSums}\hlstd{(y2)}
+\hlkwd{colSums}\hldef{(y2)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 360 151  63  32  15
@@ -1437,7 +1446,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{sum}\hlstd{(y2)}
+\hlkwd{sum}\hldef{(y2)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 621
@@ -1476,8 +1485,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFrameDS}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation,noise),} \hlkwc{dist.breaks}\hlstd{=b,}
-                       \hlkwc{tlength}\hlstd{=}\hlkwd{rep}\hlstd{(L, nSites),} \hlkwc{survey}\hlstd{=}\hlstr{"line"}\hlstd{,} \hlkwc{unitsIn}\hlstd{=}\hlstr{"m"}\hlstd{)}
+\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFrameDS}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(elevation,noise),} \hlkwc{dist.breaks}\hldef{=b,}
+                       \hlkwc{tlength}\hldef{=}\hlkwd{rep}\hldef{(L, nSites),} \hlkwc{survey}\hldef{=}\hlsng{"line"}\hldef{,} \hlkwc{unitsIn}\hldef{=}\hlsng{"m"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1485,7 +1494,7 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(umf)}
+\hlkwd{summary}\hldef{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrameDS Object
@@ -1525,8 +1534,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{alltt}
 \hlcom{## fm <- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp}
 \hlcom{## fm <- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate}
-\hlstd{fm} \hlkwb{<-} \hlkwd{distsamp}\hlstd{(}\hlopt{~}\hlstd{noise} \hlopt{~}\hlstd{elevation, umf,} \hlkwc{keyfun}\hlstd{=}\hlstr{"halfnorm"}\hlstd{)}   \hlcom{# half-normal}
-\hlstd{fm}
+\hldef{fm} \hlkwb{<-} \hlkwd{distsamp}\hldef{(}\hlopt{~}\hldef{noise} \hlopt{~}\hldef{elevation, umf,} \hlkwc{keyfun}\hldef{=}\hlsng{"halfnorm"}\hldef{)}   \hlcom{# half-normal}
+\hldef{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1554,7 +1563,7 @@ Compare to actual parameter values:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
+\hlkwd{c}\hldef{(}\hlkwc{beta0}\hldef{=beta0,} \hlkwc{beta1}\hldef{=beta1);} \hlkwd{c}\hldef{(}\hlkwc{alpha0}\hldef{=alpha0,} \hlkwc{alpha1}\hldef{=alpha1)}
 \end{alltt}
 \begin{verbatim}
 ## beta0 beta1 
@@ -1634,12 +1643,12 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.line} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{n}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2),}
-                       \hlkwc{b}\hlstd{=b,}           \hlcom{# Distance break points}
-                       \hlkwc{psi}\hlstd{=}\hlkwd{diff}\hlstd{(b)}\hlopt{/}\hlstd{B,} \hlcom{# Pr(occuring in bin j)}
-                       \hlkwc{Area}\hlstd{=A,}        \hlcom{# Area in ha}
-                       \hlkwc{elevation}\hlstd{=elevation,} \hlkwc{noise}\hlstd{=noise,}
-                       \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nBins}\hlstd{=J)}
+\hldef{jags.data.line} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{n}\hldef{=}\hlkwd{rowSums}\hldef{(y2),}
+                       \hlkwc{b}\hldef{=b,}           \hlcom{# Distance break points}
+                       \hlkwc{psi}\hldef{=}\hlkwd{diff}\hldef{(b)}\hlopt{/}\hldef{B,} \hlcom{# Pr(occuring in bin j)}
+                       \hlkwc{Area}\hldef{=A,}        \hlcom{# Area in ha}
+                       \hlkwc{elevation}\hldef{=elevation,} \hlkwc{noise}\hldef{=noise,}
+                       \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nBins}\hldef{=J)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1650,10 +1659,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits.line} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{lambda.intercept}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{5}\hlstd{),}
-         \hlkwc{N}\hlstd{=}\hlkwd{rowSums}\hlstd{(y2)}\hlopt{+}\hlkwd{rpois}\hlstd{(}\hlkwd{nrow}\hlstd{(y2),} \hlnum{2}\hlstd{))}
-\hlstd{\}}
+\hldef{jags.inits.line} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{lambda.intercept}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{alpha0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{,} \hlnum{5}\hldef{),}
+         \hlkwc{N}\hldef{=}\hlkwd{rowSums}\hldef{(y2)}\hlopt{+}\hlkwd{rpois}\hldef{(}\hlkwd{nrow}\hldef{(y2),} \hlnum{2}\hldef{))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1664,8 +1673,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars.line} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,}
-                    \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
+\hldef{jags.pars.line} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,}
+                    \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"totalAbundance"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1815,7 +1824,7 @@ totalAbundance <- sum(N[1:nSites])
   \end{itemize}
 %  \pause
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 am on Monday. 
 \end{frame}
 
 

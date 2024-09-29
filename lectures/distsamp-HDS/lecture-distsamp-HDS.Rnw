@@ -7,6 +7,13 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 
 % Load function to compile and open PDF
 <<build-fun,include=FALSE,purl=FALSE>>=
@@ -1262,7 +1269,7 @@ plot(jags.post.line[,jags.pars.line[4:5]])
   \end{itemize}
 %  \pause
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 am on Monday. 
 \end{frame}
 
 
