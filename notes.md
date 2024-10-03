@@ -11,6 +11,9 @@
 - Remove missing values in grouse data, especially for Nmix examples
   * Too much for students to learn so many things at once
 
+- Leave as much time as possible for homework on Thursdays
+
+
 ## For 2024
 
 - Tell professors not to send their students until they're good with R

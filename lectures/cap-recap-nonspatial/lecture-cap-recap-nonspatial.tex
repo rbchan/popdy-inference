@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -48,6 +48,8 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -57,13 +59,16 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV},urlcolor=blue}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 %\urlstyle{same}
 
-
 % Load function to compile and open PDF
-
-
-% Compile and open PDF
 
 
 
@@ -97,7 +102,8 @@
   \vfill
   \large
   WILD(FISH) 8390 \\
-  Estimation of Fish and Wildlife Population Parameters \\
+%  Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife Population Dynamics \\
   \vfill
   \large
   Richard Chandler \\
@@ -632,8 +638,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N} \hlkwb{<-} \hlnum{100}
-\hlstd{p} \hlkwb{<-} \hlnum{0.2}
+\hldef{N} \hlkwb{<-} \hlnum{100}
+\hldef{p} \hlkwb{<-} \hlnum{0.2}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -644,11 +650,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlnum{4}  \hlcom{## Occasions}
-\hlstd{y.all} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p)}
-\hlstd{\}}
+\hldef{J} \hlkwb{<-} \hlnum{4}  \hlcom{## Occasions}
+\hldef{y.all} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{y.all[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(J,} \hlnum{1}\hldef{, p)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -659,15 +665,15 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
-\hlstd{(n} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured))}
+\hldef{captured} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all)}\hlopt{>}\hlnum{0}
+\hldef{(n} \hlkwb{<-} \hlkwd{sum}\hldef{(captured))}
 \end{alltt}
 \begin{verbatim}
 ## [1] 54
 \end{verbatim}
 \begin{alltt}
-\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,]}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
+\hldef{y} \hlkwb{<-} \hldef{y.all[captured,]}
+\hldef{y[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4]
@@ -687,8 +693,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{histories} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(histories))}
+\hldef{histories} \hlkwb{<-} \hlkwd{apply}\hldef{(y,} \hlnum{1}\hldef{, paste,} \hlkwc{collapse}\hldef{=}\hlsng{""}\hldef{)}
+\hlkwd{sort}\hldef{(}\hlkwd{table}\hldef{(histories))}
 \end{alltt}
 \begin{verbatim}
 ## histories
@@ -703,8 +709,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
-\hlkwd{sort}\hlstd{(}\hlkwd{table}\hlstd{(y.tilde))}
+\hldef{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y)}
+\hlkwd{sort}\hldef{(}\hlkwd{table}\hldef{(y.tilde))}
 \end{alltt}
 \begin{verbatim}
 ## y.tilde
@@ -726,7 +732,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p.t} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.3}\hlstd{,} \hlnum{0.5}\hlstd{,} \hlnum{0.2}\hlstd{,} \hlnum{0.4}\hlstd{)}
+\hldef{p.t} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0.3}\hldef{,} \hlnum{0.5}\hldef{,} \hlnum{0.2}\hldef{,} \hlnum{0.4}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -737,9 +743,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.all.Mt} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mt[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.t) \}}
+\hldef{y.all.Mt} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{y.all.Mt[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(J,} \hlnum{1}\hldef{, p.t) \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -750,10 +756,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured.Mt} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mt)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mt} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mt)}
-\hlstd{y.Mt} \hlkwb{<-} \hlstd{y.all.Mt[captured.Mt,]}
-\hlstd{y.Mt[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,]}
+\hldef{captured.Mt} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all.Mt)}\hlopt{>}\hlnum{0}
+\hldef{n.Mt} \hlkwb{<-} \hlkwd{sum}\hldef{(captured.Mt)}
+\hldef{y.Mt} \hlkwb{<-} \hldef{y.all.Mt[captured.Mt,]}
+\hldef{y.Mt[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4]
@@ -762,7 +768,7 @@
 ## [3,]    1    0    0    0
 \end{verbatim}
 \begin{alltt}
-\hlkwd{colSums}\hlstd{(y.Mt)}
+\hlkwd{colSums}\hldef{(y.Mt)}
 \end{alltt}
 \begin{verbatim}
 ## [1] 28 53 22 38
@@ -781,8 +787,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p.b} \hlkwb{<-} \hlnum{0.3}
-\hlstd{c} \hlkwb{<-} \hlnum{0.5}  \hlcom{## Trap happy}
+\hldef{p.b} \hlkwb{<-} \hlnum{0.3}
+\hldef{c} \hlkwb{<-} \hlnum{0.5}  \hlcom{## Trap happy}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -793,16 +799,16 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.all.Mb} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlstd{prevcap} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{FALSE}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mb[i,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, p.b)}
-    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{J) \{}
-        \hlstd{prevcap[i,j]} \hlkwb{<-} \hlkwd{any}\hlstd{(y.all.Mb[i,}\hlnum{1}\hlopt{:}\hlstd{(j}\hlopt{-}\hlnum{1}\hlstd{)]}\hlopt{>}\hlnum{0}\hlstd{)}
-        \hlstd{prob} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(prevcap[i,j], c, p.b)}
-        \hlstd{y.all.Mb[i,j]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, prob)}
-    \hlstd{\}}
-\hlstd{\}}
+\hldef{y.all.Mb} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hldef{prevcap} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{FALSE}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{y.all.Mb[i,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{, p.b)}
+    \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{J) \{}
+        \hldef{prevcap[i,j]} \hlkwb{<-} \hlkwd{any}\hldef{(y.all.Mb[i,}\hlnum{1}\hlopt{:}\hldef{(j}\hlopt{-}\hlnum{1}\hldef{)]}\hlopt{>}\hlnum{0}\hldef{)}
+        \hldef{prob} \hlkwb{<-} \hlkwd{ifelse}\hldef{(prevcap[i,j], c, p.b)}
+        \hldef{y.all.Mb[i,j]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{, prob)}
+    \hldef{\}}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -813,9 +819,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured.Mb} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mb)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mb} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mb)}
-\hlstd{y.Mb} \hlkwb{<-} \hlstd{y.all.Mb[captured.Mb,]}
+\hldef{captured.Mb} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all.Mb)}\hlopt{>}\hlnum{0}
+\hldef{n.Mb} \hlkwb{<-} \hlkwd{sum}\hldef{(captured.Mb)}
+\hldef{y.Mb} \hlkwb{<-} \hldef{y.all.Mb[captured.Mb,]}
 \hlcom{## prevcap[1:3,]}
 \end{alltt}
 \end{kframe}
@@ -835,9 +841,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mixture.prob} \hlkwb{<-} \hlnum{0.6}
-\hlstd{group} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(N,} \hlnum{1}\hlstd{, mixture.prob)}    \hlcom{## Two groups}
-\hlstd{p.Mh.mix} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(group}\hlopt{==}\hlnum{0}\hlstd{,} \hlnum{0.2}\hlstd{,} \hlnum{0.7}\hlstd{)} \hlcom{## Two-point mixture}
+\hldef{mixture.prob} \hlkwb{<-} \hlnum{0.6}
+\hldef{group} \hlkwb{<-} \hlkwd{rbinom}\hldef{(N,} \hlnum{1}\hldef{, mixture.prob)}    \hlcom{## Two groups}
+\hldef{p.Mh.mix} \hlkwb{<-} \hlkwd{ifelse}\hldef{(group}\hlopt{==}\hlnum{0}\hldef{,} \hlnum{0.2}\hldef{,} \hlnum{0.7}\hldef{)} \hlcom{## Two-point mixture}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -848,10 +854,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.all.Mh.mix} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mh.mix[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.Mh.mix[i])}
-\hlstd{\}}
+\hldef{y.all.Mh.mix} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{y.all.Mh.mix[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(J,} \hlnum{1}\hldef{, p.Mh.mix[i])}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -862,9 +868,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured.Mh.mix} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mh.mix)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mh.mix} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mh.mix)}
-\hlstd{y.Mh.mix} \hlkwb{<-} \hlstd{y.all.Mh.mix[captured.Mh.mix,]}
+\hldef{captured.Mh.mix} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all.Mh.mix)}\hlopt{>}\hlnum{0}
+\hldef{n.Mh.mix} \hlkwb{<-} \hlkwd{sum}\hldef{(captured.Mh.mix)}
+\hldef{y.Mh.mix} \hlkwb{<-} \hldef{y.all.Mh.mix[captured.Mh.mix,]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -879,9 +885,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{logit.p.bar} \hlkwb{<-} \hlopt{-}\hlnum{1}  \hlcom{## Mean p on logit scale}
-\hlstd{logit.p.var} \hlkwb{<-} \hlnum{1}   \hlcom{## SD of p on logit scale}
-\hlstd{p.h} \hlkwb{<-} \hlkwd{plogis}\hlstd{(}\hlkwd{rnorm}\hlstd{(N, logit.p.bar, logit.p.var))}
+\hldef{logit.p.bar} \hlkwb{<-} \hlopt{-}\hlnum{1}  \hlcom{## Mean p on logit scale}
+\hldef{logit.p.var} \hlkwb{<-} \hlnum{1}   \hlcom{## SD of p on logit scale}
+\hldef{p.h} \hlkwb{<-} \hlkwd{plogis}\hldef{(}\hlkwd{rnorm}\hldef{(N, logit.p.bar, logit.p.var))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -892,10 +898,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.all.Mh} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{y.all.Mh[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(J,} \hlnum{1}\hlstd{, p.h[i])}
-\hlstd{\}}
+\hldef{y.all.Mh} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{y.all.Mh[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(J,} \hlnum{1}\hldef{, p.h[i])}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -906,9 +912,9 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured.Mh} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all.Mh)}\hlopt{>}\hlnum{0}
-\hlstd{n.Mh} \hlkwb{<-} \hlkwd{sum}\hlstd{(captured.Mh)}
-\hlstd{y.Mh} \hlkwb{<-} \hlstd{y.all.Mh[captured.Mh,]}
+\hldef{captured.Mh} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all.Mh)}\hlopt{>}\hlnum{0}
+\hldef{n.Mh} \hlkwb{<-} \hlkwd{sum}\hldef{(captured.Mh)}
+\hldef{y.Mh} \hlkwb{<-} \hldef{y.all.Mh[captured.Mh,]}
 \hlcom{#y.Mh[1:3,]}
 \end{alltt}
 \end{kframe}
@@ -1089,10 +1095,10 @@
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## install.packages("RMark") ## Must install MARK too!!}
-\hlkwd{library}\hlstd{(RMark)}
-\hlstd{y.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
-\hlstd{mark.M0} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=y.ch,} \hlkwc{model}\hlstd{=}\hlstr{"Closed"}\hlstd{,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,}
-                \hlkwc{model.parameters}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{p}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,}\hlkwc{share}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
+\hlkwd{library}\hldef{(RMark)}
+\hldef{y.ch} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{ch}\hldef{=}\hlkwd{apply}\hldef{(y,} \hlnum{1}\hldef{, paste,} \hlkwc{collapse}\hldef{=}\hlsng{""}\hldef{))}
+\hldef{mark.M0} \hlkwb{<-} \hlkwd{mark}\hldef{(}\hlkwc{data}\hldef{=y.ch,} \hlkwc{model}\hldef{=}\hlsng{"Closed"}\hldef{,} \hlkwc{silent}\hldef{=}\hlnum{TRUE}\hldef{,}
+                \hlkwc{model.parameters}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{p}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,}\hlkwc{share}\hldef{=}\hlnum{TRUE}\hldef{)))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1102,12 +1108,12 @@ Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.M0}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
+\hldef{mark.M0}\hlopt{$}\hldef{results}\hlopt{$}\hldef{real}
 \end{alltt}
 \begin{verbatim}
 ##               estimate         se        lcl        ucl fixed note
 ## p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
-## f0 g1 a0 t1 42.6208670 16.7216970 20.3020000 89.4758290
+## f0 g1 a0 t1 42.6208570 16.7216940 20.3019960 89.4758090
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1117,12 +1123,12 @@ Estimate of $N$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.M0}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{derived}
+\hldef{mark.M0}\hlopt{$}\hldef{results}\hlopt{$}\hldef{derived}
 \end{alltt}
 \begin{verbatim}
 ## $`N Population Size`
-##   estimate      se    lcl      ucl
-## 1 96.62087 16.7217 74.302 143.4758
+##   estimate       se    lcl      ucl
+## 1 96.62086 16.72169 74.302 143.4758
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1149,7 +1155,7 @@ Estimates of $p_j$ and $n_0$ (called $f_0$ in MARK)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.Mt}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
+\hldef{mark.Mt}\hlopt{$}\hldef{results}\hlopt{$}\hldef{real}
 \end{alltt}
 \begin{verbatim}
 ##               estimate        se       lcl        ucl fixed note
@@ -1167,7 +1173,7 @@ Estimate of $N$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.Mt}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{derived}
+\hldef{mark.Mt}\hlopt{$}\hldef{results}\hlopt{$}\hldef{derived}
 \end{alltt}
 \begin{verbatim}
 ## $`N Population Size`
@@ -1198,7 +1204,7 @@ Estimates of $p$, $c$, and $n_0$ (called $f_0$ in MARK)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.Mb}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
+\hldef{mark.Mb}\hlopt{$}\hldef{results}\hlopt{$}\hldef{real}
 \end{alltt}
 \begin{verbatim}
 ##               estimate         se       lcl         ucl fixed note
@@ -1214,7 +1220,7 @@ Estimate of $N$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.Mb}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{derived}
+\hldef{mark.Mb}\hlopt{$}\hldef{results}\hlopt{$}\hldef{derived}
 \end{alltt}
 \begin{verbatim}
 ## $`N Population Size`
@@ -1236,9 +1242,9 @@ Estimate of $N$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{yh.ch} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{ch}\hlstd{=}\hlkwd{apply}\hlstd{(y.Mh.mix,} \hlnum{1}\hlstd{, paste,} \hlkwc{collapse}\hlstd{=}\hlstr{""}\hlstd{))}
-\hlstd{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hlstd{(}\hlkwc{data}\hlstd{=yh.ch,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{model}\hlstd{=}\hlstr{"HetClosed"}\hlstd{,} \hlcom{# "HugHet", }
-                \hlkwc{model.parameters}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{p}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{formula}\hlstd{=}\hlopt{~}\hlstd{mixture,}\hlkwc{share}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
+\hldef{yh.ch} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{ch}\hldef{=}\hlkwd{apply}\hldef{(y.Mh.mix,} \hlnum{1}\hldef{, paste,} \hlkwc{collapse}\hldef{=}\hlsng{""}\hldef{))}
+\hldef{mark.Mh} \hlkwb{<-} \hlkwd{mark}\hldef{(}\hlkwc{data}\hldef{=yh.ch,} \hlkwc{silent}\hldef{=}\hlnum{TRUE}\hldef{,} \hlkwc{model}\hldef{=}\hlsng{"HetClosed"}\hldef{,} \hlcom{# "HugHet", }
+                \hlkwc{model.parameters}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{p}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hldef{mixture,}\hlkwc{share}\hldef{=}\hlnum{TRUE}\hldef{)))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1248,14 +1254,14 @@ Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.Mh}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{real}
+\hldef{mark.Mh}\hlopt{$}\hldef{results}\hlopt{$}\hldef{real}
 \end{alltt}
 \begin{verbatim}
 ##              estimate        se       lcl        ucl fixed note
-## pi g1 m1    0.6554419 0.1938702 0.2612441  0.9109756           
-## p g1 t1 m1  0.3985716 0.1171102 0.2027866  0.6332367           
-## p g1 t1 m2  0.8435083 0.1105443 0.5107926  0.9653086           
-## f0 g1 a0 t1 7.6766952 5.7418200 2.0786092 28.3514810
+## pi g1 m1    0.6554420 0.1938702 0.2612441  0.9109757           
+## p g1 t1 m1  0.3985716 0.1171102 0.2027866  0.6332368           
+## p g1 t1 m2  0.8435083 0.1105443 0.5107924  0.9653087           
+## f0 g1 a0 t1 7.6766944 5.7418236 2.0786074 28.3515000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1265,12 +1271,12 @@ Estimate of $N$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mark.Mh}\hlopt{$}\hlstd{results}\hlopt{$}\hlstd{derived}
+\hldef{mark.Mh}\hlopt{$}\hldef{results}\hlopt{$}\hldef{derived}
 \end{alltt}
 \begin{verbatim}
 ## $`N Population Size`
-##   estimate      se      lcl      ucl
-## 1  94.6767 5.74182 89.07861 115.3515
+##   estimate       se      lcl      ucl
+## 1 94.67669 5.741824 89.07861 115.3515
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1394,9 +1400,9 @@ Estimate of $N$
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{M} \hlkwb{<-} \hlnum{200}
-\hlstd{y.aug} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{0}\hlstd{, M, J)}
-\hlstd{y.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y.Mb),]} \hlkwb{<-} \hlstd{y.Mb}
+\hldef{M} \hlkwb{<-} \hlnum{200}
+\hldef{y.aug} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{0}\hldef{, M, J)}
+\hldef{y.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(y.Mb),]} \hlkwb{<-} \hldef{y.Mb}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1407,9 +1413,9 @@ We also need to augment the \inr{prevcap} object. \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{prevcap.aug} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{FALSE}\hlstd{, M, J)}
-\hlstd{prevcap.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y.Mb),]} \hlkwb{<-} \hlstd{prevcap[captured.Mb,]}
-\hlstd{prevcap.aug} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(prevcap.aug,} \hlstr{"Yes"}\hlstd{,} \hlstr{"No"}\hlstd{)}
+\hldef{prevcap.aug} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{FALSE}\hldef{, M, J)}
+\hldef{prevcap.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(y.Mb),]} \hlkwb{<-} \hldef{prevcap[captured.Mb,]}
+\hldef{prevcap.aug} \hlkwb{<-} \hlkwd{ifelse}\hldef{(prevcap.aug,} \hlsng{"Yes"}\hldef{,} \hlsng{"No"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1420,7 +1426,7 @@ And we need a covariate indicating time (occasion). \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{occasion.aug} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{as.character}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{J), M, J,} \hlkwc{byrow}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{occasion.aug} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{as.character}\hldef{(}\hlnum{1}\hlopt{:}\hldef{J), M, J,} \hlkwc{byrow}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1550,9 +1556,9 @@ And we need a covariate indicating time (occasion). \\
   \frametitle{Model $M_0$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"M0-aug.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"M0-aug.jag"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 model {
@@ -1583,9 +1589,9 @@ N <- sum(z)          ## Abundance
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.aug} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{0}\hlstd{, M, J)}
-\hlstd{y.aug[}\hlnum{1}\hlopt{:}\hlstd{n,]} \hlkwb{<-} \hlstd{y}
-\hlstd{jags.data.M0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J)}
+\hldef{y.aug} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{0}\hldef{, M, J)}
+\hldef{y.aug[}\hlnum{1}\hlopt{:}\hldef{n,]} \hlkwb{<-} \hldef{y}
+\hldef{jags.data.M0} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y.aug,} \hlkwc{M}\hldef{=M,} \hlkwc{J}\hldef{=J)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1595,8 +1601,8 @@ N <- sum(z)          ## Abundance
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.M0} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
-\hlstd{jp.M0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"psi"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hldef{ji.M0} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,M),} \hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{))}
+\hldef{jp.M0} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"p"}\hldef{,} \hlsng{"psi"}\hldef{,} \hlsng{"N"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1606,12 +1612,12 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.M0} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.M0,} \hlkwc{inits}\hlstd{=ji.M0,}
-                           \hlkwc{parameters.to.save}\hlstd{=jp.M0,}
-                           \hlkwc{model.file}\hlstd{=}\hlstr{"M0-aug.jag"}\hlstd{,}
-                           \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                           \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.M0} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data.M0,} \hlkwc{inits}\hldef{=ji.M0,}
+                           \hlkwc{parameters.to.save}\hldef{=jp.M0,}
+                           \hlkwc{model.file}\hldef{=}\hlsng{"M0-aug.jag"}\hldef{,}
+                           \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                           \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1753,12 +1759,12 @@ MCMC
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \centering
-  \large
-  Write the BUGS model for $M_t$. \\
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   \centering
+%%   \large
+%%   Write the BUGS model for $M_t$. \\
+%% \end{frame}
 
 
 
@@ -1769,9 +1775,9 @@ MCMC
   \frametitle{Model $M_b$ -- data augmentation}
 \vspace{-3pt}
 \begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mb-aug.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"Mb-aug.jag"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 model {
@@ -1806,11 +1812,11 @@ N <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.Mb} \hlkwb{<-} \hlstd{jags.data.M0}
-\hlstd{jags.data.Mb}\hlopt{$}\hlstd{y[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y.Mb),]} \hlkwb{<-} \hlstd{y.Mb}
-\hlstd{jags.data.Mb}\hlopt{$}\hlstd{prevcap} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(prevcap.aug}\hlopt{==}\hlstr{"Yes"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}
-\hlstd{ji.Mb} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{c}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
-\hlstd{jp.Mb} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"p"}\hlstd{,} \hlstr{"c"}\hlstd{,} \hlstr{"psi"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hldef{jags.data.Mb} \hlkwb{<-} \hldef{jags.data.M0}
+\hldef{jags.data.Mb}\hlopt{$}\hldef{y[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(y.Mb),]} \hlkwb{<-} \hldef{y.Mb}
+\hldef{jags.data.Mb}\hlopt{$}\hldef{prevcap} \hlkwb{<-} \hlkwd{ifelse}\hldef{(prevcap.aug}\hlopt{==}\hlsng{"Yes"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+\hldef{ji.Mb} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,M),} \hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{c}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{))}
+\hldef{jp.Mb} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"p"}\hldef{,} \hlsng{"c"}\hldef{,} \hlsng{"psi"}\hldef{,} \hlsng{"N"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1820,11 +1826,11 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.Mb} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.Mb,} \hlkwc{inits}\hlstd{=ji.Mb,}
-                           \hlkwc{parameters.to.save}\hlstd{=jp.Mb,}
-                           \hlkwc{model.file}\hlstd{=}\hlstr{"Mb-aug.jag"}\hlstd{,}
-                           \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                           \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.post.Mb} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data.Mb,} \hlkwc{inits}\hldef{=ji.Mb,}
+                           \hlkwc{parameters.to.save}\hldef{=jp.Mb,}
+                           \hlkwc{model.file}\hldef{=}\hlsng{"Mb-aug.jag"}\hldef{,}
+                           \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                           \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1857,9 +1863,9 @@ MCMC
   \frametitle{Model $M_h$ -- finite mixture}
 \vspace{-3pt}
 \begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mhm-aug.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"Mhm-aug.jag"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 model {
@@ -1892,9 +1898,9 @@ N <- sum(z)
   \frametitle{Model $M_h$ -- logit normal}
 \vspace{-3pt}
 \begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"Mh-aug.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"Mh-aug.jag"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 model {

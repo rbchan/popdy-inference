@@ -7,16 +7,19 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV},urlcolor=blue}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
+
 %\urlstyle{same}
 
-
 % Load function to compile and open PDF
-<<build-fun,include=FALSE,purl=FALSE>>=
+<<build-fun,include=FALSE,eval=FALSE, purl=FALSE>>=
 source("../rnw2pdf.R")
-@
 
-% Compile and open PDF
-<<buildit,include=FALSE,eval=FALSE>>=
 rnw2pdf("lecture-cap-recap-nonspatial")
 rnw2pdf("lecture-cap-recap-nonspatial", tangle=TRUE)
 @ 
@@ -1311,7 +1314,7 @@ occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
 \begin{frame}[fragile]
   \frametitle{Model $M_0$ -- data augmentation}
 \vspace{-3pt}
-<<bugs-M0-aug,size='footnotesize',comment='',background='lightblue'>>=
+<<bugs-M0-aug,size='footnotesize',comment='',background='beige'>>=
 writeLines(readLines("M0-aug.jag"))
 @
 \end{frame}
@@ -1472,12 +1475,12 @@ plot(jags.post.M0[,jp.M0])
 
 
 
-\begin{frame}
-  \frametitle{In-class exercise}
-  \centering
-  \large
-  Write the BUGS model for $M_t$. \\
-\end{frame}
+%% \begin{frame}
+%%   \frametitle{In-class exercise}
+%%   \centering
+%%   \large
+%%   Write the BUGS model for $M_t$. \\
+%% \end{frame}
 
 
 
@@ -1487,7 +1490,7 @@ plot(jags.post.M0[,jp.M0])
 \begin{frame}[fragile]
   \frametitle{Model $M_b$ -- data augmentation}
 \vspace{-3pt}
-<<bugs-Mb-aug,size='footnotesize',comment='',background='lightblue'>>=
+<<bugs-Mb-aug,size='footnotesize',comment='',background='beige'>>=
 writeLines(readLines("Mb-aug.jag"))
 @
 \end{frame}
@@ -1533,7 +1536,7 @@ plot(jags.post.Mb[,jp.Mb])
 \begin{frame}[fragile]
   \frametitle{Model $M_h$ -- finite mixture}
 \vspace{-3pt}
-<<bugs-Mhm-aug,size='footnotesize',comment='',background='lightblue'>>=
+<<bugs-Mhm-aug,size='footnotesize',comment='',background='beige'>>=
 writeLines(readLines("Mhm-aug.jag"))
 @
 \end{frame}
@@ -1543,7 +1546,7 @@ writeLines(readLines("Mhm-aug.jag"))
 \begin{frame}[fragile]
   \frametitle{Model $M_h$ -- logit normal}
 \vspace{-3pt}
-<<bugs-Mh-aug,size='footnotesize',comment='',background='lightblue'>>=
+<<bugs-Mh-aug,size='footnotesize',comment='',background='beige'>>=
 writeLines(readLines("Mh-aug.jag"))
 @
 \end{frame}
