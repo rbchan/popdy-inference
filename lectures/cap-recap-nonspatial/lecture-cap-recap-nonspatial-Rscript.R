@@ -1,12 +1,3 @@
-## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-cap-recap-nonspatial")
-## rnw2pdf("lecture-cap-recap-nonspatial", tangle=TRUE)
-
-
-
-
-
-
 ## ----include=FALSE,echo=FALSE-------------------------------------------------
 set.seed(34889243)
 
@@ -196,7 +187,7 @@ prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
 occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
 
 
-## ----bugs-M0-aug,size='footnotesize',comment='',background='lightblue'--------
+## ----bugs-M0-aug,size='footnotesize',comment='',echo=-1,background='beige'----
 writeLines(readLines("M0-aug.jag"))
 
 
@@ -224,7 +215,7 @@ jags.post.M0 <- jags.basic(data=jags.data.M0, inits=ji.M0,
 plot(jags.post.M0[,jp.M0])
 
 
-## ----bugs-Mb-aug,size='footnotesize',comment='',background='lightblue'--------
+## ----bugs-Mb-aug,size='footnotesize',comment='',echo=-1,background='beige'----
 writeLines(readLines("Mb-aug.jag"))
 
 
@@ -248,10 +239,10 @@ jags.post.Mb <- jags.basic(data=jags.data.Mb, inits=ji.Mb,
 plot(jags.post.Mb[,jp.Mb])
 
 
-## ----bugs-Mhm-aug,size='footnotesize',comment='',background='lightblue'-------
+## ----bugs-Mhm-aug,size='footnotesize',comment='',echo=-1,background='beige'----
 writeLines(readLines("Mhm-aug.jag"))
 
 
-## ----bugs-Mh-aug,size='footnotesize',comment='',background='lightblue'--------
+## ----bugs-Mh-aug,size='footnotesize',comment='',echo=-1,background='beige'----
 writeLines(readLines("Mh-aug.jag"))
 

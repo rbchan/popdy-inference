@@ -6,7 +6,7 @@ psi ~ dunif(0,1)         ## Data augmentation parameter
 
 for(i in 1:M) {     
   z[i] ~ dbern(psi)      ## DA indicator
-  lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect (p on logit scale)
+  lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect, p on logit
   p[i] <- ilogit(lp[i])  ## Capture prob for individual i
   for(j in 1:J) {
     y[i,j] ~ dbern(z[i]*p[i])
