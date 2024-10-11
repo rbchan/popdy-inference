@@ -185,7 +185,7 @@ AIC(fm.M0, fm.Mt, fm.Mb)
 ## ----bugs-SC0-R,size='scriptsize',eval=FALSE----------------------------------
 ## writeLines(readLines("SCR0.jag"))
 
-## ----bugs-SC0,size='scriptsize',comment='',background='lightblue',echo=FALSE----
+## ----bugs-SC0,size='scriptsize',comment='',background='beige',echo=FALSE------
 writeLines(readLines("SCR0.jag"))
 
 
@@ -201,7 +201,7 @@ jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
                        x=x, xlim=c(0,1), ylim=c(0,1))
 
 
-## ----ji-M0-aug,size='scriptsize'----------------------------------------------
+## ----ji-M0-aug,size='scriptsize',message=FALSE,report=FALSE-------------------
 ji.SCR0 <- function() {
     list(z=rep(1,M), psi=runif(1),
          s=cbind(runif(M), runif(M)),
@@ -229,7 +229,7 @@ plot(jags.post.SCR0[,jp.SCR0])
 ## ----bugs-SC0-faster-R,size='tiny',eval=FALSE---------------------------------
 ## writeLines(readLines("SCR0-faster.jag"))
 
-## ----bugs-SC0-faster,size='tiny',comment='',background='lightblue',echo=FALSE----
+## ----bugs-SC0-faster,size='tiny',comment='',background='beige',echo=FALSE-----
 writeLines(readLines("SCR0-faster.jag"))
 
 

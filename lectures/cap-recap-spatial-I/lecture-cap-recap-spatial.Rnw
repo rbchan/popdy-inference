@@ -7,6 +7,12 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 
 % Load function to compile and open PDF
@@ -1211,7 +1217,7 @@ AIC(fm.M0, fm.Mt, fm.Mb)
 <<bugs-SC0-R,size='scriptsize',eval=FALSE>>=
 writeLines(readLines("SCR0.jag"))
 @
-<<bugs-SC0,size='scriptsize',comment='',background='lightblue',echo=FALSE>>=
+<<bugs-SC0,size='scriptsize',comment='',background='beige',echo=FALSE>>=
 writeLines(readLines("SCR0.jag"))
 @
 \end{frame}
@@ -1237,7 +1243,7 @@ jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
 \vfill
   Inits and parameters
   \vspace{-6pt}
-<<ji-M0-aug,size='scriptsize'>>=
+<<ji-M0-aug,size='scriptsize',message=FALSE,report=FALSE>>=
 ji.SCR0 <- function() {
     list(z=rep(1,M), psi=runif(1),
          s=cbind(runif(M), runif(M)),
@@ -1305,7 +1311,7 @@ plot(jags.post.SCR0[,jp.SCR0])
 <<bugs-SC0-faster-R,size='tiny',eval=FALSE>>=
 writeLines(readLines("SCR0-faster.jag"))
 @
-<<bugs-SC0-faster,size='tiny',comment='',background='lightblue',echo=FALSE>>=
+<<bugs-SC0-faster,size='tiny',comment='',background='beige',echo=FALSE>>=
 writeLines(readLines("SCR0-faster.jag"))
 @
 \end{frame}
@@ -1460,8 +1466,6 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
   following: 
   \vfill
   \begin{enumerate}
-%    \item Fit a ``local behavioral response'' model,
-%      rather than a ``global behavioral response'' model in secr.
     \item Import the bear data formatted for `secr' and fit a model
       where $g_0$ varies among the 8 occasions. Use `secr' to
       determine what an appropriate buffer should be.
@@ -1471,7 +1475,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
       for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
+  Upload your work to ELC by 8:00am on Monday. 
 \end{frame}
 
 

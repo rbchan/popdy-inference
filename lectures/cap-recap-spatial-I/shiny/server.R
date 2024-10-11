@@ -38,5 +38,45 @@ function(input, output, session) {
                   xlab="x coordinate", ylab="y coordinate", main="Capture probability")
     })
 
-    
+    output$spider <- renderPlot({
+      ED <- input$EDFull
+      input$simButtonFull
+      N <- rpois(n=1, lambda=ED)
+      s <- cbind(runif(N, 0, 1),
+                 runif(N, 0, 1))
+      g0 <- input$g0Full
+      sig <- input$sigmaFull
+      x <- cbind(rep(seq(0.15, 0.85, by=0.1), each=8),
+                 rep(seq(0.15, 0.85, by=0.1), times=8))  ## Trap locations
+      J <- nrow(x)                 ## nTraps
+      dist.sx <- matrix(NA, N, J)  
+      for(i in 1:N) {
+        dist.sx[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
+      }
+      p <- g0*exp(-dist.sx/(2*sig*sig))
+      K <- 5                          # nOccasions
+      y.all <- array(NA, c(N, J, K))
+      for(i in 1:N) {
+        for(j in 1:J) {
+          y.all[i,j,] <- rbinom(K, 1, prob=p[i,j])
+        }
+      }
+      captured <- rowSums(y.all)>0
+      y <- y.all[captured,,]
+      
+      plot(0, xlim=c(0,1), ylim=c(0,1), asp=1, xlab="", ylab="",
+           main="Activity centers, traps, and capture locs")
+      s.cap <- s[captured,]
+      for(i in 1:nrow(y)) {
+        traps.i <- which(rowSums(y[i,,])>0)
+        for(j in 1:length(traps.i)) {
+          segments(s.cap[i,1], s.cap[i,2],
+                   x[traps.i[j],1], x[traps.i[j],2], col=gray(0.3))
+        }
+      }
+      points(s[captured,], pch=16, col="blue") ## Activity center locations
+      points(s[!captured,], pch=1, col="blue") ## Activity center locations
+      points(x, pch=3)                         ## Trap locations
+      
+    })
 }

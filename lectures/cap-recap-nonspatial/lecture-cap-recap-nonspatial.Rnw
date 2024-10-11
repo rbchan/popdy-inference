@@ -1181,13 +1181,13 @@ prevcap.aug <- matrix(FALSE, M, J)
 prevcap.aug[1:nrow(y.Mb),] <- prevcap[captured.Mb,]
 prevcap.aug <- ifelse(prevcap.aug, "Yes", "No")
 @
-\pause
-\vfill
-And we need a covariate indicating time (occasion). \\
-%\vspace{-6pt}
-<<un-occ,size='scriptsize'>>=
-occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
-@ 
+%% \pause
+%% \vfill
+%% And we need a covariate indicating time (occasion). \\
+%% %\vspace{-6pt}
+%% <<un-occ,size='scriptsize'>>=
+%% occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
+%% @ 
 \end{frame}
 
 

@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -48,6 +48,8 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -57,6 +59,12 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 
 % Load function to compile and open PDF
@@ -504,11 +512,11 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda1} \hlkwb{<-} \hlnum{25}\hlstd{; A} \hlkwb{<-} \hlnum{1}     \hlcom{## lambda1=density, A=area}
-\hlstd{N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, lambda1}\hlopt{*}\hlstd{A)}
-\hlstd{s} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(N,} \hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwd{runif}\hlstd{(N,} \hlnum{0}\hlstd{,} \hlnum{1}\hlstd{))}
-\hlkwd{plot}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Easting"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Northing"}\hlstd{,}
-     \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{cex.lab}\hlstd{=}\hlnum{1.5}\hlstd{,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{)}
+\hldef{lambda1} \hlkwb{<-} \hlnum{25}\hldef{; A} \hlkwb{<-} \hlnum{1}     \hlcom{## lambda1=density, A=area}
+\hldef{N} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlnum{1}\hldef{, lambda1}\hlopt{*}\hldef{A)}
+\hldef{s} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(N,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{),} \hlkwd{runif}\hldef{(N,} \hlnum{0}\hldef{,} \hlnum{1}\hldef{))}
+\hlkwd{plot}\hldef{(s,} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Easting"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Northing"}\hldef{,}
+     \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{cex.lab}\hldef{=}\hlnum{1.5}\hldef{,} \hlkwc{asp}\hldef{=}\hlnum{1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -645,11 +653,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{x} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{each}\hlstd{=}\hlnum{8}\hlstd{),}
-           \hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{times}\hlstd{=}\hlnum{8}\hlstd{))}  \hlcom{## Trap locations}
-\hlkwd{plot}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Easting"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Northing"}\hlstd{,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,}
-     \hlkwc{main}\hlstd{=}\hlstr{"Activity centers and traps"}\hlstd{)}
-\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}              \hlcom{## Trap locations}
+\hldef{x} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{rep}\hldef{(}\hlkwd{seq}\hldef{(}\hlnum{0.15}\hldef{,} \hlnum{0.85}\hldef{,} \hlkwc{by}\hldef{=}\hlnum{0.1}\hldef{),} \hlkwc{each}\hldef{=}\hlnum{8}\hldef{),}
+           \hlkwd{rep}\hldef{(}\hlkwd{seq}\hldef{(}\hlnum{0.15}\hldef{,} \hlnum{0.85}\hldef{,} \hlkwc{by}\hldef{=}\hlnum{0.1}\hldef{),} \hlkwc{times}\hldef{=}\hlnum{8}\hldef{))}  \hlcom{## Trap locations}
+\hlkwd{plot}\hldef{(s,} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Easting"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Northing"}\hldef{,} \hlkwc{asp}\hldef{=}\hlnum{1}\hldef{,}
+     \hlkwc{main}\hldef{=}\hlsng{"Activity centers and traps"}\hldef{)}
+\hlkwd{points}\hldef{(x,} \hlkwc{pch}\hldef{=}\hlnum{3}\hldef{)}              \hlcom{## Trap locations}
 \end{alltt}
 \end{kframe}
 
@@ -672,11 +680,11 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}                 \hlcom{## nTraps}
-\hlstd{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+} \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
-\hlstd{\}}
+\hldef{J} \hlkwb{<-} \hlkwd{nrow}\hldef{(x)}                 \hlcom{## nTraps}
+\hldef{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hldef{((s[i,}\hlnum{1}\hldef{]}\hlopt{-}\hldef{x[,}\hlnum{1}\hldef{])}\hlopt{^}\hlnum{2} \hlopt{+} \hldef{(s[i,}\hlnum{2}\hldef{]}\hlopt{-}\hldef{x[,}\hlnum{2}\hldef{])}\hlopt{^}\hlnum{2}\hldef{)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -686,7 +694,7 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{round}\hldef{(dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{],} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4] [,5]
@@ -711,9 +719,9 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{g0} \hlkwb{<-} \hlnum{0.2}
-\hlstd{sigma} \hlkwb{<-} \hlnum{0.05}
-\hlstd{p} \hlkwb{<-} \hlstd{g0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+\hldef{g0} \hlkwb{<-} \hlnum{0.2}
+\hldef{sigma} \hlkwb{<-} \hlnum{0.05}
+\hldef{p} \hlkwb{<-} \hldef{g0}\hlopt{*}\hlkwd{exp}\hldef{(}\hlopt{-}\hldef{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma}\hlopt{^}\hlnum{2}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -723,7 +731,7 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{round}\hldef{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{],} \hlkwc{digits}\hldef{=}\hlnum{3}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4] [,5]
@@ -747,13 +755,13 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
-\hlstd{y.all} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(N, J, K))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-        \hlstd{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=p[i,j])}
-    \hlstd{\}}
-\hlstd{\}}
+\hldef{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
+\hldef{y.all} \hlkwb{<-} \hlkwd{array}\hldef{(}\hlnum{NA}\hldef{,} \hlkwd{c}\hldef{(N, J, K))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{J) \{}
+        \hldef{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(K,} \hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=p[i,j])}
+    \hldef{\}}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -763,8 +771,8 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
-\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,,]}
+\hldef{captured} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all)}\hlopt{>}\hlnum{0}
+\hldef{y} \hlkwb{<-} \hldef{y.all[captured,,]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -775,7 +783,7 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{1}\hlstd{]}
+\hldef{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,}\hlnum{1}\hldef{]}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4] [,5]
@@ -800,7 +808,7 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y))}
+\hldef{(n} \hlkwb{<-} \hlkwd{nrow}\hldef{(y))}
 \end{alltt}
 \begin{verbatim}
 ## [1] 18
@@ -813,8 +821,8 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)}
-\hlkwd{table}\hlstd{(y.tilde)}
+\hldef{y.tilde} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y)}
+\hlkwd{table}\hldef{(y.tilde)}
 \end{alltt}
 \begin{verbatim}
 ## y.tilde
@@ -830,9 +838,9 @@ Spatial recaptures
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.nok} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{), sum)}
-\hlstd{y.nojk} \hlkwb{<-} \hlkwd{apply}\hlstd{(y.nok}\hlopt{>}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{, sum)}
-\hlkwd{table}\hlstd{(y.nojk)}
+\hldef{y.nok} \hlkwb{<-} \hlkwd{apply}\hldef{(y,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{2}\hldef{), sum)}
+\hldef{y.nojk} \hlkwb{<-} \hlkwd{apply}\hldef{(y.nok}\hlopt{>}\hlnum{0}\hldef{,} \hlnum{1}\hldef{, sum)}
+\hlkwd{table}\hldef{(y.nojk)}
 \end{alltt}
 \begin{verbatim}
 ## y.nojk
@@ -851,19 +859,19 @@ Spatial recaptures
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{,}
-     \hlkwc{main}\hlstd{=}\hlstr{"Activity centers, traps, and capture locs"}\hlstd{)}
-\hlstd{s.cap} \hlkwb{<-} \hlstd{s[captured,]}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
-    \hlstd{traps.i} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{rowSums}\hlstd{(y[i,,])}\hlopt{>}\hlnum{0}\hlstd{)}
-    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(traps.i)) \{}
-        \hlkwd{segments}\hlstd{(s.cap[i,}\hlnum{1}\hlstd{], s.cap[i,}\hlnum{2}\hlstd{],}
-                 \hlstd{x[traps.i[j],}\hlnum{1}\hlstd{], x[traps.i[j],}\hlnum{2}\hlstd{],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.3}\hlstd{))}
-    \hlstd{\}}
-\hlstd{\}}
-\hlkwd{points}\hlstd{(s[captured,],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
-\hlkwd{points}\hlstd{(s[}\hlopt{!}\hlstd{captured,],} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
-\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}                         \hlcom{## Trap locations}
+\hlkwd{plot}\hldef{(}\hlnum{0}\hldef{,} \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{asp}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{""}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{""}\hldef{,}
+     \hlkwc{main}\hldef{=}\hlsng{"Activity centers, traps, and capture locs"}\hldef{)}
+\hldef{s.cap} \hlkwb{<-} \hldef{s[captured,]}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n) \{}
+    \hldef{traps.i} \hlkwb{<-} \hlkwd{which}\hldef{(}\hlkwd{rowSums}\hldef{(y[i,,])}\hlopt{>}\hlnum{0}\hldef{)}
+    \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hldef{(traps.i)) \{}
+        \hlkwd{segments}\hldef{(s.cap[i,}\hlnum{1}\hldef{], s.cap[i,}\hlnum{2}\hldef{],}
+                 \hldef{x[traps.i[j],}\hlnum{1}\hldef{], x[traps.i[j],}\hlnum{2}\hldef{],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.3}\hldef{))}
+    \hldef{\}}
+\hldef{\}}
+\hlkwd{points}\hldef{(s[captured,],} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hldef{(s[}\hlopt{!}\hldef{captured,],} \hlkwc{pch}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hldef{(x,} \hlkwc{pch}\hldef{=}\hlnum{3}\hldef{)}                         \hlcom{## Trap locations}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1100,15 +1108,15 @@ Spatial recaptures
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(secr)}
-\hlstd{sch} \hlkwb{<-} \hlkwd{read.capthist}\hlstd{(}\hlkwc{captfile}\hlstd{=}\hlstr{"encounter_data_file.csv"}\hlstd{,}
-                     \hlkwc{trapfile}\hlstd{=}\hlstr{"trap_data_file.csv"}\hlstd{,}
-                     \hlkwc{detector}\hlstd{=}\hlstr{"proximity"}\hlstd{,} \hlkwc{fmt}\hlstd{=}\hlstr{"trapID"}\hlstd{)}
+\hlkwd{library}\hldef{(secr)}
+\hldef{sch} \hlkwb{<-} \hlkwd{read.capthist}\hldef{(}\hlkwc{captfile}\hldef{=}\hlsng{"encounter_data_file.csv"}\hldef{,}
+                     \hlkwc{trapfile}\hldef{=}\hlsng{"trap_data_file.csv"}\hldef{,}
+                     \hlkwc{detector}\hldef{=}\hlsng{"proximity"}\hldef{,} \hlkwc{fmt}\hldef{=}\hlsng{"trapID"}\hldef{)}
 \end{alltt}
 
 
 {\ttfamily\noindent\itshape\color{messagecolor}{\#\# No errors found :-)}}\begin{alltt}
-\hlkwd{summary}\hlstd{(sch)}
+\hlkwd{summary}\hldef{(sch)}
 \end{alltt}
 \begin{verbatim}
 ## Object class       capthist 
@@ -1140,7 +1148,7 @@ Spatial recaptures
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(sch)}
+\hlkwd{plot}\hldef{(sch)}
 \end{alltt}
 \end{kframe}
 
@@ -1284,7 +1292,7 @@ Estimates on original scale
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{region.N}\hlstd{(fm.M0)}
+\hlkwd{region.N}\hldef{(fm.M0)}
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
@@ -1297,7 +1305,7 @@ Estimates on original scale
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{region.N}\hlstd{(fm.Mt)}
+\hlkwd{region.N}\hldef{(fm.Mt)}
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
@@ -1310,7 +1318,7 @@ Estimates on original scale
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{region.N}\hlstd{(fm.Mb)}
+\hlkwd{region.N}\hldef{(fm.Mb)}
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
@@ -1464,12 +1472,12 @@ Estimates on original scale
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"SCR0.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 g0 ~ dunif(0, 1)       ## Baseline capture probability
@@ -1479,7 +1487,7 @@ psi ~ dunif(0, 1)      ## Data augmentation parameter
 for(i in 1:M) {
   s[i,1] ~ dunif(xlim[1], xlim[2]) ## x-coord of activity center
   s[i,2] ~ dunif(ylim[1], ylim[2]) ## y-coord of activity center
-  z[i] ~ dbern(psi)                ## Is this individual part of the population?
+  z[i] ~ dbern(psi)                ## Is individual real?
   for(j in 1:J) {
     dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
     p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2))
@@ -1508,11 +1516,11 @@ N <- sum(z)  ## Realized value of N
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{M} \hlkwb{<-} \hlnum{150}
-\hlstd{y.aug} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{0}\hlstd{,} \hlkwd{c}\hlstd{(M, J, K))}
-\hlstd{y.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(y),,]} \hlkwb{<-} \hlstd{y}
-\hlstd{jags.data.SCR0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y.aug,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,} \hlkwc{K}\hlstd{=K,}
-                       \hlkwc{x}\hlstd{=x,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\hldef{M} \hlkwb{<-} \hlnum{150}
+\hldef{y.aug} \hlkwb{<-} \hlkwd{array}\hldef{(}\hlnum{0}\hldef{,} \hlkwd{c}\hldef{(M, J, K))}
+\hldef{y.aug[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(y),,]} \hlkwb{<-} \hldef{y}
+\hldef{jags.data.SCR0} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y.aug,} \hlkwc{M}\hldef{=M,} \hlkwc{J}\hldef{=J,} \hlkwc{K}\hldef{=K,}
+                       \hlkwc{x}\hldef{=x,} \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1523,12 +1531,12 @@ N <- sum(z)  ## Realized value of N
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.SCR0} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,M),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
-         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
-\hlstd{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
-\hlkwd{library}\hlstd{(jagsUI)}
+\hldef{ji.SCR0} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,M),} \hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{s}\hldef{=}\hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(M),} \hlkwd{runif}\hldef{(M)),}
+         \hlkwc{g0}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{sigma}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.05}\hldef{,} \hlnum{0.1}\hldef{)) \}}
+\hldef{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"g0"}\hldef{,} \hlsng{"sigma"}\hldef{,} \hlsng{"EN"}\hldef{,} \hlsng{"N"}\hldef{)}
+\hlkwd{library}\hldef{(jagsUI)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1557,7 +1565,7 @@ MCMC
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.SCR0)}
+\hlkwd{summary}\hldef{(jags.post.SCR0)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1596,7 +1604,7 @@ MCMC
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.SCR0[,jp.SCR0])}
+\hlkwd{plot}\hldef{(jags.post.SCR0[,jp.SCR0])}
 \end{alltt}
 \end{kframe}
 
@@ -1636,12 +1644,12 @@ MCMC
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR0-faster.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"SCR0-faster.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 g0 ~ dunif(0, 1)       ## Baseline capture probability
@@ -1685,12 +1693,12 @@ N <- sum(z)  ## Realized value of N
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y.tilde} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), sum)}
-\hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)}
-\hlstd{jags.data.SCR0.faster} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,}
-                              \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
-                              \hlkwc{K}\hlstd{=K,} \hlkwc{zero}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,}
-                              \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\hldef{y.tilde} \hlkwb{<-} \hlkwd{apply}\hldef{(y,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{2}\hldef{), sum)}
+\hldef{n} \hlkwb{<-} \hlkwd{nrow}\hldef{(y)}
+\hldef{jags.data.SCR0.faster} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y.tilde}\hldef{=y.tilde,} \hlkwc{n}\hldef{=n,} \hlkwc{M}\hldef{=M,} \hlkwc{J}\hldef{=J,}
+                              \hlkwc{z}\hldef{=}\hlkwd{c}\hldef{(}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{, n),} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{, M}\hlopt{-}\hldef{n)),}
+                              \hlkwc{K}\hldef{=K,} \hlkwc{zero}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{0}\hldef{, M),} \hlkwc{x}\hldef{=x,}
+                              \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1702,10 +1710,10 @@ N <- sum(z)  ## Realized value of N
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.SCR0.faster} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),} \hlkwc{psi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
-         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
+\hldef{ji.SCR0.faster} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{c}\hldef{(}\hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{, n),} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{,M}\hlopt{-}\hldef{n)),} \hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{s}\hldef{=}\hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(M),} \hlkwd{runif}\hldef{(M)),}
+         \hlkwc{g0}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{sigma}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.05}\hldef{,} \hlnum{0.1}\hldef{)) \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1733,7 +1741,7 @@ MCMC
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.SCR0.faster)}
+\hlkwd{summary}\hldef{(jags.post.SCR0.faster)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1772,7 +1780,7 @@ MCMC
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.SCR0.faster[,jp.SCR0])}
+\hlkwd{plot}\hldef{(jags.post.SCR0.faster[,jp.SCR0])}
 \end{alltt}
 \end{kframe}
 
@@ -1877,8 +1885,6 @@ MCMC
   following: 
   \vfill
   \begin{enumerate}
-%    \item Fit a ``local behavioral response'' model,
-%      rather than a ``global behavioral response'' model in secr.
     \item Import the bear data formatted for `secr' and fit a model
       where $g_0$ varies among the 8 occasions. Use `secr' to
       determine what an appropriate buffer should be.
@@ -1888,7 +1894,7 @@ MCMC
       for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by noon on Wednesday. 
+  Upload your work to ELC by 8:00am on Monday. 
 \end{frame}
 
 
