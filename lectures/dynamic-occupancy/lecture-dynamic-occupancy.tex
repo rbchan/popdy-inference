@@ -1,4 +1,5 @@
-\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
+%\documentclass[color=usenames,dvipsnames]{beamer}
+\documentclass[color=usenames,dvipsnames,handout]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -13,10 +14,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -49,7 +50,6 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-%\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
@@ -57,6 +57,12 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 % Load function to compile and open PDF
 
@@ -241,11 +247,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}
-\hlstd{nPrimary} \hlkwb{<-} \hlnum{10}
-\hlstd{z} \hlkwb{<-} \hlstd{psi} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, nPrimary)}
-\hlstd{psi[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{0.5}  \hlcom{## Initial occupancy prob}
-\hlstd{z[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi[,}\hlnum{1}\hlstd{])}
+\hldef{nSites} \hlkwb{<-} \hlnum{100}
+\hldef{nPrimary} \hlkwb{<-} \hlnum{10}
+\hldef{z} \hlkwb{<-} \hldef{psi} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, nSites, nPrimary)}
+\hldef{psi[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{0.5}  \hlcom{## Initial occupancy prob}
+\hldef{z[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=psi[,}\hlnum{1}\hldef{])}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -253,11 +259,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{epsilon} \hlkwb{<-} \hlnum{0.3} \hlcom{## Local extinction prob}
-\hlstd{gamma} \hlkwb{<-} \hlnum{0.2}   \hlcom{## Local colonization prob}
-\hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{nPrimary) \{}
-    \hlstd{psi[,k]} \hlkwb{<-} \hlstd{z[,k}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{epsilon)} \hlopt{+} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{z[,k}\hlopt{-}\hlnum{1}\hlstd{])}\hlopt{*}\hlstd{gamma}
-    \hlstd{z[,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi[,k])    \}}
+\hldef{epsilon} \hlkwb{<-} \hlnum{0.3} \hlcom{## Local extinction prob}
+\hldef{gamma} \hlkwb{<-} \hlnum{0.2}   \hlcom{## Local colonization prob}
+\hlkwa{for}\hldef{(k} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{nPrimary) \{}
+    \hldef{psi[,k]} \hlkwb{<-} \hldef{z[,k}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{epsilon)} \hlopt{+} \hldef{(}\hlnum{1}\hlopt{-}\hldef{z[,k}\hlopt{-}\hlnum{1}\hldef{])}\hlopt{*}\hldef{gamma}
+    \hldef{z[,k]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=psi[,k])    \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -265,13 +271,13 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSecondary} \hlkwb{<-} \hlnum{3}
-\hlstd{p} \hlkwb{<-} \hlnum{0.2}
-\hlstd{y} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(nSites, nSecondary, nPrimary))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nPrimary) \{}
-        \hlstd{y[i,,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSecondary,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z[i,k]}\hlopt{*}\hlstd{p)}
-    \hlstd{\} \}}
+\hldef{nSecondary} \hlkwb{<-} \hlnum{3}
+\hldef{p} \hlkwb{<-} \hlnum{0.2}
+\hldef{y} \hlkwb{<-} \hlkwd{array}\hldef{(}\hlnum{NA}\hldef{,} \hlkwd{c}\hldef{(nSites, nSecondary, nPrimary))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hlkwa{for}\hldef{(k} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nPrimary) \{}
+        \hldef{y[i,,k]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nSecondary,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=z[i,k]}\hlopt{*}\hldef{p)}
+    \hldef{\} \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -291,7 +297,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{15}\hlstd{,,}\hlnum{1}\hlstd{]}
+\hldef{y[}\hlnum{1}\hlopt{:}\hlnum{15}\hldef{,,}\hlnum{1}\hldef{]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3]
@@ -323,8 +329,8 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y)} \hlcom{# Dets at each site}
-\hlkwd{table}\hlstd{(siteDets)}        \hlcom{# Frequency}
+\hldef{siteDets} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y)} \hlcom{# Dets at each site}
+\hlkwd{table}\hldef{(siteDets)}        \hlcom{# Frequency}
 \end{alltt}
 \begin{verbatim}
 ## siteDets
@@ -340,8 +346,8 @@ Detections each year \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{yearDets} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlnum{3}\hlstd{, sum)}
-\hlstd{yearDets}
+\hldef{yearDets} \hlkwb{<-} \hlkwd{apply}\hldef{(y,} \hlnum{3}\hldef{, sum)}
+\hldef{yearDets}
 \end{alltt}
 \begin{verbatim}
 ##  [1] 27 30 31 28 22 15 22 27 20 21
@@ -375,8 +381,8 @@ Notice the new argument \inr{numPrimary}:
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Format as nSites by (nSec*nPrimary) matrix}
-\hlstd{y.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y))}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary)}
+\hldef{y.wide} \hlkwb{<-} \hlkwd{matrix}\hldef{(y,} \hlkwc{nrow}\hldef{=}\hlkwd{nrow}\hldef{(y))}
+\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hldef{(}\hlkwc{y}\hldef{=y.wide,} \hlkwc{numPrimary}\hldef{=nPrimary)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -385,7 +391,7 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(umf)}
+\hlkwd{summary}\hldef{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
@@ -415,8 +421,8 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{colext}\hlstd{(}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{, umf)}
-\hlstd{fm}
+\hldef{fm} \hlkwb{<-} \hlkwd{colext}\hldef{(}\hlopt{~}\hlnum{1}\hldef{,}\hlopt{~}\hlnum{1}\hldef{,}\hlopt{~}\hlnum{1}\hldef{,}\hlopt{~}\hlnum{1}\hldef{, umf)}
+\hldef{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -458,25 +464,25 @@ Notice the new argument \inr{numPrimary}:
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## backTransform(fm, type="psi")}
-\hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"psi"}\hlstd{))}
+\hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"psi"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.4717304
 \end{verbatim}
 \begin{alltt}
-\hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"col"}\hlstd{))}
+\hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"col"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.209229
 \end{verbatim}
 \begin{alltt}
-\hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"ext"}\hlstd{))}
+\hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"ext"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.3447256
 \end{verbatim}
 \begin{alltt}
-\hlkwd{coef}\hlstd{(}\hlkwd{backTransform}\hlstd{(fm,} \hlkwc{type}\hlstd{=}\hlstr{"det"}\hlstd{))}
+\hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"det"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.204274
@@ -490,25 +496,25 @@ Notice the new argument \inr{numPrimary}:
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{#c(initial=psi[1,1],col=gamma,ext=epsilon,det=p)}
-\hlstd{psi[}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{]}
+\hldef{psi[}\hlnum{1}\hldef{,}\hlnum{1}\hldef{]}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.5
 \end{verbatim}
 \begin{alltt}
-\hlstd{gamma}
+\hldef{gamma}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.2
 \end{verbatim}
 \begin{alltt}
-\hlstd{epsilon}
+\hldef{epsilon}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.3
 \end{verbatim}
 \begin{alltt}
-\hlstd{p}
+\hldef{p}
 \end{alltt}
 \begin{verbatim}
 ## [1] 0.2
@@ -527,14 +533,14 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{re} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
-\hlstd{occupied.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=colSums,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{rowMeans}\hlstd{(occupied.post),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{))}
-\hlkwd{lines}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{colSums}\hlstd{(z),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
-\hlkwd{segments}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{apply}\hlstd{(occupied.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{),}
-         \hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{apply}\hlstd{(occupied.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{))}
-\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{70}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{16}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{)}
+\hldef{re} \hlkwb{<-} \hlkwd{ranef}\hldef{(fm)}
+\hldef{occupied.post} \hlkwb{<-} \hlkwd{predict}\hldef{(re,} \hlkwc{func}\hldef{=colSums,} \hlkwc{nsim}\hldef{=}\hlnum{1000}\hldef{)}
+\hlkwd{plot}\hldef{(}\hlnum{1}\hlopt{:}\hldef{nPrimary,} \hlkwd{rowMeans}\hldef{(occupied.post),} \hlkwc{type}\hldef{=}\hlsng{"b"}\hldef{,} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Time"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Sites occupied"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{70}\hldef{))}
+\hlkwd{lines}\hldef{(}\hlnum{1}\hlopt{:}\hldef{nPrimary,} \hlkwd{colSums}\hldef{(z),} \hlkwc{type}\hldef{=}\hlsng{"b"}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{4}\hldef{)}
+\hlkwd{segments}\hldef{(}\hlnum{1}\hlopt{:}\hldef{nPrimary,} \hlkwd{apply}\hldef{(occupied.post,} \hlnum{1}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{),}
+         \hlnum{1}\hlopt{:}\hldef{nPrimary,} \hlkwd{apply}\hldef{(occupied.post,} \hlnum{1}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{))}
+\hlkwd{legend}\hldef{(}\hlnum{1}\hldef{,} \hlnum{70}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Actual"}\hldef{,} \hlsng{"Estimated"}\hldef{),} \hlkwc{pch}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{16}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{4}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -563,7 +569,7 @@ Notice the new argument \inr{numPrimary}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"dynocc-model.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"dynocc-model.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -609,8 +615,8 @@ for(k in 1:K) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y,} \hlkwc{nSites}\hlstd{=nSites,}
-                  \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
+\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{nSites}\hldef{=nSites,}
+                  \hlkwc{J}\hldef{=nSecondary,} \hlkwc{K}\hldef{=nPrimary)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -621,11 +627,11 @@ for(k in 1:K) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{psi1}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{epsilon}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{gamma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{z}\hlstd{=}\hlkwd{matrix}\hlstd{(}\hlnum{1}\hlstd{, nSites, nPrimary))}
-\hlstd{\}}
+\hldef{jags.inits} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{psi1}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{epsilon}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{gamma}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{z}\hldef{=}\hlkwd{matrix}\hldef{(}\hlnum{1}\hldef{, nSites, nPrimary))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -636,7 +642,7 @@ for(k in 1:K) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"psi1"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,} \hlstr{"gamma"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hldef{jags.pars} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"psi1"}\hldef{,} \hlsng{"epsilon"}\hldef{,} \hlsng{"gamma"}\hldef{,} \hlsng{"p"}\hldef{,} \hlsng{"N"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -652,12 +658,12 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                                \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model.jag"}\hlstd{,}
-                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                                \hlkwc{model.file}\hldef{=}\hlsng{"dynocc-model.jag"}\hldef{,}
+                                \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -670,11 +676,11 @@ for(k in 1:K) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\hlkwd{summary}\hldef{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hldef{]])}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -708,7 +714,7 @@ for(k in 1:K) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{4}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -785,11 +791,11 @@ for(k in 1:K) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0.psi} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta1.psi} \hlkwb{<-} \hlnum{1}
-\hlstd{elevation} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(nSites)} \hlcom{## site covariate}
-\hlstd{z2} \hlkwb{<-} \hlstd{psi2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nSites, nPrimary)}
-\hlstd{psi2[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0.psi} \hlopt{+} \hlstd{beta1.psi}\hlopt{*}\hlstd{elevation)}
-\hlstd{z2[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,}\hlnum{1}\hlstd{])}
+\hldef{beta0.psi} \hlkwb{<-} \hlopt{-}\hlnum{1}\hldef{; beta1.psi} \hlkwb{<-} \hlnum{1}
+\hldef{elevation} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites)} \hlcom{## site covariate}
+\hldef{z2} \hlkwb{<-} \hldef{psi2} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, nSites, nPrimary)}
+\hldef{psi2[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{plogis}\hldef{(beta0.psi} \hlopt{+} \hldef{beta1.psi}\hlopt{*}\hldef{elevation)}
+\hldef{z2[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=psi2[,}\hlnum{1}\hldef{])}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -797,15 +803,15 @@ for(k in 1:K) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{epsilon2} \hlkwb{<-} \hlnum{0.3} \hlcom{## Local extinction prob}
-\hlstd{temperature} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nPrimary)}\hlopt{*}\hlstd{elevation,} \hlcom{## Primary period covariate}
-                      \hlkwc{nrow}\hlstd{=nSites)}
-\hlstd{beta0.gamma} \hlkwb{<-} \hlopt{-}\hlnum{2}\hlstd{; beta1.gamma} \hlkwb{<-} \hlopt{-}\hlnum{1}
-\hlstd{gamma2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta0.gamma} \hlopt{+} \hlstd{beta1.gamma}\hlopt{*}\hlstd{temperature)}
-\hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{nPrimary) \{}
-    \hlstd{psi2[,k]} \hlkwb{<-} \hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{epsilon2)} \hlopt{+} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{z2[,k}\hlopt{-}\hlnum{1}\hlstd{])}\hlopt{*}\hlstd{gamma2[,k}\hlopt{-}\hlnum{1}\hlstd{]}
-    \hlstd{z2[,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=psi2[,k])}
-\hlstd{\}}
+\hldef{epsilon2} \hlkwb{<-} \hlnum{0.3} \hlcom{## Local extinction prob}
+\hldef{temperature} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{rnorm}\hldef{(nSites}\hlopt{*}\hldef{nPrimary)}\hlopt{*}\hldef{elevation,} \hlcom{## Primary period covariate}
+                      \hlkwc{nrow}\hldef{=nSites)}
+\hldef{beta0.gamma} \hlkwb{<-} \hlopt{-}\hlnum{2}\hldef{; beta1.gamma} \hlkwb{<-} \hlopt{-}\hlnum{1}
+\hldef{gamma2} \hlkwb{<-} \hlkwd{plogis}\hldef{(beta0.gamma} \hlopt{+} \hldef{beta1.gamma}\hlopt{*}\hldef{temperature)}
+\hlkwa{for}\hldef{(k} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{nPrimary) \{}
+    \hldef{psi2[,k]} \hlkwb{<-} \hldef{z2[,k}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{epsilon2)} \hlopt{+} \hldef{(}\hlnum{1}\hlopt{-}\hldef{z2[,k}\hlopt{-}\hlnum{1}\hldef{])}\hlopt{*}\hldef{gamma2[,k}\hlopt{-}\hlnum{1}\hldef{]}
+    \hldef{z2[,k]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=psi2[,k])}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -813,12 +819,12 @@ for(k in 1:K) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p2} \hlkwb{<-} \hlnum{0.2}
-\hlstd{y2} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(nSites, nSecondary, nPrimary))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlkwa{for}\hlstd{(k} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nPrimary) \{}
-        \hlstd{y2[i,,k]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nSecondary,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=z2[i,k]}\hlopt{*}\hlstd{p2)}
-    \hlstd{\} \}}
+\hldef{p2} \hlkwb{<-} \hlnum{0.2}
+\hldef{y2} \hlkwb{<-} \hlkwd{array}\hldef{(}\hlnum{NA}\hldef{,} \hlkwd{c}\hldef{(nSites, nSecondary, nPrimary))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hlkwa{for}\hldef{(k} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nPrimary) \{}
+        \hldef{y2[i,,k]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nSecondary,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=z2[i,k]}\hlopt{*}\hldef{p2)}
+    \hldef{\} \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -850,9 +856,9 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2.wide} \hlkwb{<-} \hlkwd{matrix}\hlstd{(y2,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(y2))} \hlcom{## nSites by (nSec*nPrimary) matrix}
-\hlstd{umf2} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hlstd{(}\hlkwc{y}\hlstd{=y2.wide,} \hlkwc{numPrimary}\hlstd{=nPrimary,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(elevation),}
-                          \hlkwc{yearlySiteCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=temperature))}
+\hldef{y2.wide} \hlkwb{<-} \hlkwd{matrix}\hldef{(y2,} \hlkwc{nrow}\hldef{=}\hlkwd{nrow}\hldef{(y2))} \hlcom{## nSites by (nSec*nPrimary) matrix}
+\hldef{umf2} \hlkwb{<-} \hlkwd{unmarkedMultFrame}\hldef{(}\hlkwc{y}\hldef{=y2.wide,} \hlkwc{numPrimary}\hldef{=nPrimary,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(elevation),}
+                          \hlkwc{yearlySiteCovs}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{temp}\hldef{=temperature))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -861,7 +867,7 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(umf2)}
+\hlkwd{summary}\hldef{(umf2)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
@@ -909,8 +915,8 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm2} \hlkwb{<-} \hlkwd{colext}\hlstd{(}\hlopt{~}\hlstd{elevation,}\hlopt{~}\hlstd{temp,}\hlopt{~}\hlnum{1}\hlstd{,}\hlopt{~}\hlnum{1}\hlstd{, umf2)}
-\hlstd{fm2}
+\hldef{fm2} \hlkwb{<-} \hlkwd{colext}\hldef{(}\hlopt{~}\hldef{elevation,}\hlopt{~}\hldef{temp,}\hlopt{~}\hlnum{1}\hldef{,}\hlopt{~}\hlnum{1}\hldef{, umf2)}
+\hldef{fm2}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -958,7 +964,7 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{temp}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{5}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{4}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{))}
+\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{temp}\hldef{=}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=}\hlopt{-}\hlnum{5}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{4}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{50}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -968,8 +974,8 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{gamma.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm2,} \hlkwc{newdata}\hlstd{=pred.data,}
-                      \hlkwc{type}\hlstd{=}\hlstr{'col'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{gamma.pred} \hlkwb{<-} \hlkwd{predict}\hldef{(fm2,} \hlkwc{newdata}\hldef{=pred.data,}
+                      \hlkwc{type}\hldef{=}\hlsng{'col'}\hldef{,} \hlkwc{append}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -986,10 +992,10 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(Predicted} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Occurrence probability"}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Standardized temperature"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(lower} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.6}\hlstd{))}
-\hlkwd{lines}\hlstd{(upper} \hlopt{~} \hlstd{temp, gamma.pred,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.6}\hlstd{))}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Standardized temperature"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.6}\hldef{))}
+\hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.6}\hldef{))}
 \end{alltt}
 \end{kframe}
 
@@ -1027,7 +1033,7 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"dynocc-model-covars.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"dynocc-model-covars.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1076,8 +1082,8 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data.covs} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{elevation}\hlstd{=elevation,}
-                       \hlkwc{temp}\hlstd{=temperature,} \hlkwc{J}\hlstd{=nSecondary,} \hlkwc{K}\hlstd{=nPrimary)}
+\hldef{jags.data.covs} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{nSites}\hldef{=nSites,} \hlkwc{elevation}\hldef{=elevation,}
+                       \hlkwc{temp}\hldef{=temperature,} \hlkwc{J}\hldef{=nSecondary,} \hlkwc{K}\hldef{=nPrimary)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1088,11 +1094,11 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits.covs} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{beta0.psi}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1.psi}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{epsilon}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{beta0.gamma}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1.gamma}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),}
-         \hlkwc{z}\hlstd{=}\hlkwd{matrix}\hlstd{(}\hlnum{1}\hlstd{, nSites, nPrimary))}
-\hlstd{\}}
+\hldef{jags.inits.covs} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{beta0.psi}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{beta1.psi}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{epsilon}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{beta0.gamma}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{beta1.gamma}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
+         \hlkwc{z}\hldef{=}\hlkwd{matrix}\hldef{(}\hlnum{1}\hldef{, nSites, nPrimary))}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1103,8 +1109,8 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars.covs} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0.psi"}\hlstd{,} \hlstr{"beta1.psi"}\hlstd{,} \hlstr{"epsilon"}\hlstd{,}
-                    \hlstr{"beta0.gamma"}\hlstd{,} \hlstr{"beta1.gamma"}\hlstd{,} \hlstr{"p"}\hlstd{,} \hlstr{"N"}\hlstd{)}
+\hldef{jags.pars.covs} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0.psi"}\hldef{,} \hlsng{"beta1.psi"}\hldef{,} \hlsng{"epsilon"}\hldef{,}
+                    \hlsng{"beta0.gamma"}\hldef{,} \hlsng{"beta1.gamma"}\hldef{,} \hlsng{"p"}\hldef{,} \hlsng{"N"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1120,12 +1126,12 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
-    \hlkwc{data}\hlstd{=jags.data.covs,} \hlkwc{inits}\hlstd{=jags.inits.covs,}
-    \hlkwc{parameters.to.save}\hlstd{=jags.pars.covs,}
-    \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model-covars.jag"}\hlstd{,}
-    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}
+    \hlkwc{data}\hldef{=jags.data.covs,} \hlkwc{inits}\hldef{=jags.inits.covs,}
+    \hlkwc{parameters.to.save}\hldef{=jags.pars.covs,}
+    \hlkwc{model.file}\hldef{=}\hlsng{"dynocc-model-covars.jag"}\hldef{,}
+    \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1138,11 +1144,11 @@ for(k in 1:K) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{6}\hlstd{]])}
+\hlkwd{summary}\hldef{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{6}\hldef{]])}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -1180,7 +1186,7 @@ for(k in 1:K) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1200,7 +1206,7 @@ for(k in 1:K) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.samples.covs[,jags.pars.covs[}\hlnum{4}\hlopt{:}\hlnum{6}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1221,12 +1227,12 @@ for(k in 1:K) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(coda)}
-\hlstd{N.names} \hlkwb{<-} \hlkwd{grep}\hlstd{(}\hlstr{"N\textbackslash{}\textbackslash{}["}\hlstd{,} \hlkwd{varnames}\hlstd{(jags.post.samples.covs)  )}
-\hlstd{N.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.covs[,N.names])}
-\hlstd{N.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(N.post)}
-\hlstd{N.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(N.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\hlstd{N.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(N.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hlkwd{library}\hldef{(coda)}
+\hldef{N.names} \hlkwb{<-} \hlkwd{grep}\hldef{(}\hlsng{"N\textbackslash{}\textbackslash{}["}\hldef{,} \hlkwd{varnames}\hldef{(jags.post.samples.covs)  )}
+\hldef{N.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.samples.covs[,N.names])}
+\hldef{N.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(N.post)}
+\hldef{N.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(N.post,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
+\hldef{N.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(N.post,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1240,11 +1246,11 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary, N.post.mean,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{70}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Sites occupied"}\hlstd{)}
-\hlkwd{segments}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary, N.post.lower,} \hlnum{1}\hlopt{:}\hlstd{nPrimary, N.post.upper)}
-\hlkwd{lines}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{nPrimary,} \hlkwd{colSums}\hlstd{(z2),} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{4}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{70}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Actual"}\hlstd{,} \hlstr{"Estimated"}\hlstd{),} \hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{16}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlnum{1}\hlopt{:}\hldef{nPrimary, N.post.mean,} \hlkwc{type}\hldef{=}\hlsng{"b"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{70}\hldef{),} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Time"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Sites occupied"}\hldef{)}
+\hlkwd{segments}\hldef{(}\hlnum{1}\hlopt{:}\hldef{nPrimary, N.post.lower,} \hlnum{1}\hlopt{:}\hldef{nPrimary, N.post.upper)}
+\hlkwd{lines}\hldef{(}\hlnum{1}\hlopt{:}\hldef{nPrimary,} \hlkwd{colSums}\hldef{(z2),} \hlkwc{type}\hldef{=}\hlsng{"b"}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{4}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{1}\hldef{,} \hlnum{70}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Actual"}\hldef{,} \hlsng{"Estimated"}\hldef{),} \hlkwc{pch}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{16}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{4}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1268,18 +1274,18 @@ for(k in 1:K) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.covs[,}\hlkwd{c}\hlstd{(}
-    \hlstr{"beta0.gamma"}\hlstd{,}\hlstr{"beta1.gamma"}\hlstd{)])}
-\hlstd{temperature.seq} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{5}\hlstd{,} \hlnum{5}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{n.samples} \hlkwb{<-} \hlkwd{nrow}\hlstd{(beta.post)}
-\hlstd{gamma.post} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n.samples,} \hlkwd{length}\hlstd{(temperature.seq))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.samples) \{}
-    \hlstd{gamma.post[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(beta.post[i,}\hlnum{1}\hlstd{]} \hlopt{+}
-                             \hlstd{beta.post[i,}\hlnum{2}\hlstd{]}\hlopt{*}\hlstd{temperature.seq)}
-\hlstd{\}}
-\hlstd{gamma.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(gamma.post)}
-\hlstd{gamma.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(gamma.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\hlstd{gamma.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(gamma.post,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hldef{beta.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.samples.covs[,}\hlkwd{c}\hldef{(}
+    \hlsng{"beta0.gamma"}\hldef{,}\hlsng{"beta1.gamma"}\hldef{)])}
+\hldef{temperature.seq} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlopt{-}\hlnum{5}\hldef{,} \hlnum{5}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{n.samples} \hlkwb{<-} \hlkwd{nrow}\hldef{(beta.post)}
+\hldef{gamma.post} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, n.samples,} \hlkwd{length}\hldef{(temperature.seq))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.samples) \{}
+    \hldef{gamma.post[i,]} \hlkwb{<-} \hlkwd{plogis}\hldef{(beta.post[i,}\hlnum{1}\hldef{]} \hlopt{+}
+                             \hldef{beta.post[i,}\hlnum{2}\hldef{]}\hlopt{*}\hldef{temperature.seq)}
+\hldef{\}}
+\hldef{gamma.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(gamma.post)}
+\hldef{gamma.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(gamma.post,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
+\hldef{gamma.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(gamma.post,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1293,11 +1299,11 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{matplot}\hlstd{(temperature.seq,} \hlkwd{t}\hlstd{(gamma.post[}\hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{,n.samples,}\hlnum{10}\hlstd{),]),} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,}
-        \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Colonization prob"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.9}\hlstd{))}
-\hlkwd{lines}\hlstd{(temperature.seq, gamma.post.mean,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(temperature.seq, gamma.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(temperature.seq, gamma.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{matplot}\hldef{(temperature.seq,} \hlkwd{t}\hldef{(gamma.post[}\hlkwd{seq}\hldef{(}\hlnum{1}\hldef{,n.samples,}\hlnum{10}\hldef{),]),} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,}
+        \hlkwc{xlab}\hldef{=}\hlsng{"Temperature (standardized)"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Colonization prob"}\hldef{,} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.9}\hldef{))}
+\hlkwd{lines}\hldef{(temperature.seq, gamma.post.mean,} \hlkwc{lwd}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
+\hlkwd{lines}\hldef{(temperature.seq, gamma.post.lower,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
+\hlkwd{lines}\hldef{(temperature.seq, gamma.post.upper,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
