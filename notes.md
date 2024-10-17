@@ -2,6 +2,14 @@
 
 ## For 2025
 
+- Email profs with syllabi and recommendations
+
+- Make homework due by Monday night instead of Monday morning
+
+- Review previous week's homework in class on Tuesdays
+
+- Add a Bayesian review lecture somewhere in the middle
+
 - Include analysis grade as part of project/paper grade
 
 - R quiz to weed out students on day 1
