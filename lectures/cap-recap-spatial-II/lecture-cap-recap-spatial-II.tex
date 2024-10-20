@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -48,6 +48,8 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -59,6 +61,12 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+%  \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 
 % Load function to compile and open PDF
@@ -344,10 +352,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(raster)}
-\hlstd{elevation} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlstr{"elevation.tif"}\hlstd{)}
-\hlstd{delta} \hlkwb{<-} \hlkwd{res}\hlstd{(elevation)[}\hlnum{1}\hlstd{]}  \hlcom{## resolution}
-\hlkwd{plot}\hlstd{(elevation,} \hlkwc{col}\hlstd{=}\hlkwd{topo.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Elevation"}\hlstd{)}
+\hlkwd{library}\hldef{(raster)}
+\hldef{elevation} \hlkwb{<-} \hlkwd{raster}\hldef{(}\hlsng{"elevation.tif"}\hldef{)}
+\hldef{delta} \hlkwb{<-} \hlkwd{res}\hldef{(elevation)[}\hlnum{1}\hldef{]}  \hlcom{## resolution}
+\hlkwd{plot}\hldef{(elevation,} \hlkwc{col}\hldef{=}\hlkwd{topo.colors}\hldef{(}\hlnum{100}\hldef{),} \hlkwc{main}\hldef{=}\hlsng{"Elevation"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -369,10 +377,10 @@
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
-\hlstd{beta1} \hlkwb{<-} \hlnum{0.01} \hlcom{#0.005}
-\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{elevation)} \hlcom{# Intensity function}
-\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{main}\hlstd{=}\hlstr{"Density surface"}\hlstd{,} \hlkwc{zlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.18}\hlstd{))}
+\hldef{beta0} \hlkwb{<-} \hlopt{-}\hlnum{15}
+\hldef{beta1} \hlkwb{<-} \hlnum{0.01} \hlcom{#0.005}
+\hldef{lambda} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{elevation)} \hlcom{# Intensity function}
+\hlkwd{plot}\hldef{(lambda,} \hlkwc{col}\hldef{=}\hlkwd{terrain.colors}\hldef{(}\hlnum{100}\hldef{),} \hlkwc{main}\hldef{=}\hlsng{"Density surface"}\hldef{,} \hlkwc{zlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.18}\hldef{))}
 \end{alltt}
 \end{kframe}
 
@@ -395,11 +403,11 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{set.seed}\hlstd{(}\hlnum{538}\hlstd{)}
-\hlstd{ds} \hlkwb{<-} \hlnum{1}                          \hlcom{## Pixel area is 1 ha}
-\hlstd{lambda.values} \hlkwb{<-} \hlkwd{values}\hlstd{(lambda)}  \hlcom{## Convert raster to vector}
-\hlstd{Lambda} \hlkwb{<-} \hlkwd{sum}\hlstd{(lambda.values}\hlopt{*}\hlstd{ds)}  \hlcom{## E(N)}
-\hlstd{(N} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlnum{1}\hlstd{, Lambda))}          \hlcom{## Realized N}
+\hlkwd{set.seed}\hldef{(}\hlnum{538}\hldef{)}
+\hldef{ds} \hlkwb{<-} \hlnum{1}                          \hlcom{## Pixel area is 1 ha}
+\hldef{lambda.values} \hlkwb{<-} \hlkwd{values}\hldef{(lambda)}  \hlcom{## Convert raster to vector}
+\hldef{Lambda} \hlkwb{<-} \hlkwd{sum}\hldef{(lambda.values}\hlopt{*}\hldef{ds)}  \hlcom{## E(N)}
+\hldef{(N} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlnum{1}\hldef{, Lambda))}          \hlcom{## Realized N}
 \end{alltt}
 \begin{verbatim}
 ## [1] 98
@@ -415,13 +423,13 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n.pixels} \hlkwb{<-} \hlkwd{length}\hlstd{(lambda)}
-\hlstd{jitter} \hlkwb{<-} \hlnum{0.005}                    \hlcom{## Half width of pixel }
-\hlstd{s.pixels} \hlkwb{<-} \hlkwd{sample}\hlstd{(n.pixels,} \hlkwc{size}\hlstd{=N,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{,}
-                   \hlkwc{prob}\hlstd{=lambda.values}\hlopt{/}\hlstd{Lambda)}
-\hlstd{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(elevation,} \hlkwc{xy}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlstd{s} \hlkwb{<-} \hlstd{elevation.xyz[s.pixels,}\hlkwd{c}\hlstd{(}\hlstr{"x"}\hlstd{,}\hlstr{"y"}\hlstd{)]} \hlopt{+}
-    \hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(N,} \hlopt{-}\hlstd{jitter, jitter),}\hlkwd{runif}\hlstd{(N,} \hlopt{-}\hlstd{jitter, jitter))}
+\hldef{n.pixels} \hlkwb{<-} \hlkwd{length}\hldef{(lambda)}
+\hldef{jitter} \hlkwb{<-} \hlnum{0.005}                    \hlcom{## Half width of pixel }
+\hldef{s.pixels} \hlkwb{<-} \hlkwd{sample}\hldef{(n.pixels,} \hlkwc{size}\hldef{=N,} \hlkwc{replace}\hldef{=}\hlnum{TRUE}\hldef{,}
+                   \hlkwc{prob}\hldef{=lambda.values}\hlopt{/}\hldef{Lambda)}
+\hldef{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hldef{(elevation,} \hlkwc{xy}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hldef{s} \hlkwb{<-} \hldef{elevation.xyz[s.pixels,}\hlkwd{c}\hldef{(}\hlsng{"x"}\hldef{,}\hlsng{"y"}\hldef{)]} \hlopt{+}
+    \hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(N,} \hlopt{-}\hldef{jitter, jitter),}\hlkwd{runif}\hldef{(N,} \hlopt{-}\hldef{jitter, jitter))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -438,9 +446,9 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
-     \hlkwc{main}\hlstd{=}\hlstr{"Density surface with activity centers"}\hlstd{)}
-\hlkwd{points}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
+\hlkwd{plot}\hldef{(lambda,} \hlkwc{col}\hldef{=}\hlkwd{terrain.colors}\hldef{(}\hlnum{100}\hldef{),}
+     \hlkwc{main}\hldef{=}\hlsng{"Density surface with activity centers"}\hldef{)}
+\hlkwd{points}\hldef{(s,} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,} \hlkwc{cex}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -462,12 +470,12 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{x} \hlkwb{<-} \hlkwd{cbind}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{each}\hlstd{=}\hlnum{8}\hlstd{),}
-           \hlkwd{rep}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{0.15}\hlstd{,} \hlnum{0.85}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.1}\hlstd{),} \hlkwc{times}\hlstd{=}\hlnum{8}\hlstd{))}  \hlcom{## Trap locations}
-\hlkwd{plot}\hlstd{(lambda,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),}
-     \hlkwc{main}\hlstd{=}\hlstr{"Density surface with activity centers and traps"}\hlstd{)}
-\hlkwd{points}\hlstd{(s,} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)} \hlcom{## Activity center locations}
-\hlkwd{points}\hlstd{(x,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}              \hlcom{## Trap locations}
+\hldef{x} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{rep}\hldef{(}\hlkwd{seq}\hldef{(}\hlnum{0.15}\hldef{,} \hlnum{0.85}\hldef{,} \hlkwc{by}\hldef{=}\hlnum{0.1}\hldef{),} \hlkwc{each}\hldef{=}\hlnum{8}\hldef{),}
+           \hlkwd{rep}\hldef{(}\hlkwd{seq}\hldef{(}\hlnum{0.15}\hldef{,} \hlnum{0.85}\hldef{,} \hlkwc{by}\hldef{=}\hlnum{0.1}\hldef{),} \hlkwc{times}\hldef{=}\hlnum{8}\hldef{))}  \hlcom{## Trap locations}
+\hlkwd{plot}\hldef{(lambda,} \hlkwc{col}\hldef{=}\hlkwd{terrain.colors}\hldef{(}\hlnum{100}\hldef{),}
+     \hlkwc{main}\hldef{=}\hlsng{"Density surface with activity centers and traps"}\hldef{)}
+\hlkwd{points}\hldef{(s,} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)} \hlcom{## Activity center locations}
+\hlkwd{points}\hldef{(x,} \hlkwc{pch}\hldef{=}\hlnum{3}\hldef{)}              \hlcom{## Trap locations}
 \end{alltt}
 \end{kframe}
 
@@ -490,11 +498,11 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{J} \hlkwb{<-} \hlkwd{nrow}\hlstd{(x)}                 \hlcom{## nTraps}
-\hlstd{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, N, J)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlstd{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hlstd{((s[i,}\hlnum{1}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{1}\hlstd{])}\hlopt{^}\hlnum{2} \hlopt{+} \hlstd{(s[i,}\hlnum{2}\hlstd{]}\hlopt{-}\hlstd{x[,}\hlnum{2}\hlstd{])}\hlopt{^}\hlnum{2}\hlstd{)}
-\hlstd{\}}
+\hldef{J} \hlkwb{<-} \hlkwd{nrow}\hldef{(x)}                 \hlcom{## nTraps}
+\hldef{dist.sx} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, N, J)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hldef{dist.sx[i,]} \hlkwb{<-} \hlkwd{sqrt}\hldef{((s[i,}\hlnum{1}\hldef{]}\hlopt{-}\hldef{x[,}\hlnum{1}\hldef{])}\hlopt{^}\hlnum{2} \hlopt{+} \hldef{(s[i,}\hlnum{2}\hldef{]}\hlopt{-}\hldef{x[,}\hlnum{2}\hldef{])}\hlopt{^}\hlnum{2}\hldef{)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -504,7 +512,7 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\hldef{dist.sx[}\hlnum{1}\hlopt{:}\hlnum{4}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{]}
 \end{alltt}
 \begin{verbatim}
 ##           [,1]      [,2]      [,3]      [,4]      [,5]
@@ -529,9 +537,9 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{g0} \hlkwb{<-} \hlnum{0.2}
-\hlstd{sigma} \hlkwb{<-} \hlnum{0.05}
-\hlstd{p} \hlkwb{<-} \hlstd{g0}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{sigma}\hlopt{^}\hlnum{2}\hlstd{))}
+\hldef{g0} \hlkwb{<-} \hlnum{0.2}
+\hldef{sigma} \hlkwb{<-} \hlnum{0.05}
+\hldef{p} \hlkwb{<-} \hldef{g0}\hlopt{*}\hlkwd{exp}\hldef{(}\hlopt{-}\hldef{dist.sx}\hlopt{^}\hlnum{2}\hlopt{/}\hldef{(}\hlnum{2}\hlopt{*}\hldef{sigma}\hlopt{^}\hlnum{2}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -541,7 +549,7 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlkwc{digits}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{print}\hldef{(p[}\hlnum{1}\hlopt{:}\hlnum{4}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{],} \hlkwc{digits}\hldef{=}\hlnum{3}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##          [,1]     [,2]     [,3]     [,4]     [,5]
@@ -565,13 +573,13 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
-\hlstd{y.all} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(N, J, K))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{N) \{}
-    \hlkwa{for}\hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{J) \{}
-        \hlstd{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(K,} \hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=p[i,j])}
-    \hlstd{\}}
-\hlstd{\}}
+\hldef{K} \hlkwb{<-} \hlnum{5}                          \hlcom{# nOccasions}
+\hldef{y.all} \hlkwb{<-} \hlkwd{array}\hldef{(}\hlnum{NA}\hldef{,} \hlkwd{c}\hldef{(N, J, K))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{N) \{}
+    \hlkwa{for}\hldef{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{J) \{}
+        \hldef{y.all[i,j,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(K,} \hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=p[i,j])}
+    \hldef{\}}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -581,8 +589,8 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{captured} \hlkwb{<-} \hlkwd{rowSums}\hlstd{(y.all)}\hlopt{>}\hlnum{0}
-\hlstd{y} \hlkwb{<-} \hlstd{y.all[captured,,]}
+\hldef{captured} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y.all)}\hlopt{>}\hlnum{0}
+\hldef{y} \hlkwb{<-} \hldef{y.all[captured,,]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -593,7 +601,7 @@ inside its pixel.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,}\hlnum{1}\hlstd{]}
+\hldef{y[}\hlnum{1}\hlopt{:}\hlnum{2}\hldef{,}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,}\hlnum{1}\hldef{]}
 \end{alltt}
 \begin{verbatim}
 ##      [,1] [,2] [,3] [,4] [,5]
@@ -635,10 +643,10 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(secr)}
-\hlstd{sch} \hlkwb{<-} \hlkwd{read.capthist}\hlstd{(}\hlkwc{captfile}\hlstd{=}\hlstr{"encounter_data_file.csv"}\hlstd{,}
-                   \hlkwc{trapfile}\hlstd{=}\hlstr{"trap_data_file.csv"}\hlstd{,}
-                   \hlkwc{detector}\hlstd{=}\hlstr{"proximity"}\hlstd{,} \hlkwc{fmt}\hlstd{=}\hlstr{"trapID"}\hlstd{)}
+\hlkwd{library}\hldef{(secr)}
+\hldef{sch} \hlkwb{<-} \hlkwd{read.capthist}\hldef{(}\hlkwc{captfile}\hldef{=}\hlsng{"encounter_data_file.csv"}\hldef{,}
+                   \hlkwc{trapfile}\hldef{=}\hlsng{"trap_data_file.csv"}\hldef{,}
+                   \hlkwc{detector}\hldef{=}\hlsng{"proximity"}\hldef{,} \hlkwc{fmt}\hldef{=}\hlsng{"trapID"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -648,13 +656,13 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(elevation,} \hlkwc{xy}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlstd{elevation.xyz}\hlopt{$}\hlstd{y} \hlkwb{<-} \hlkwd{round}\hlstd{(elevation.xyz}\hlopt{$}\hlstd{y,} \hlnum{3}\hlstd{)} \hlcom{## Fix numerical fuzz}
-\hlstd{elevation.xyz.m} \hlkwb{<-} \hlstd{elevation.xyz}
-\hlstd{elevation.xyz.m}\hlopt{$}\hlstd{x} \hlkwb{<-} \hlstd{elevation.xyz}\hlopt{$}\hlstd{x}\hlopt{*}\hlnum{1000}  \hlcom{## Convert units to meters}
-\hlstd{elevation.xyz.m}\hlopt{$}\hlstd{y} \hlkwb{<-} \hlstd{elevation.xyz}\hlopt{$}\hlstd{y}\hlopt{*}\hlnum{1000}
-\hlstd{elevation.xyz.m}\hlopt{$}\hlstd{elevation} \hlkwb{<-} \hlkwd{scale}\hlstd{(elevation.xyz}\hlopt{$}\hlstd{elevation)} \hlcom{## Standardize}
-\hlstd{elevation.m} \hlkwb{<-} \hlkwd{rasterFromXYZ}\hlstd{(elevation.xyz.m)}
+\hldef{elevation.xyz} \hlkwb{<-} \hlkwd{as.data.frame}\hldef{(elevation,} \hlkwc{xy}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hldef{elevation.xyz}\hlopt{$}\hldef{y} \hlkwb{<-} \hlkwd{round}\hldef{(elevation.xyz}\hlopt{$}\hldef{y,} \hlnum{3}\hldef{)} \hlcom{## Fix numerical fuzz}
+\hldef{elevation.xyz.m} \hlkwb{<-} \hldef{elevation.xyz}
+\hldef{elevation.xyz.m}\hlopt{$}\hldef{x} \hlkwb{<-} \hldef{elevation.xyz}\hlopt{$}\hldef{x}\hlopt{*}\hlnum{1000}  \hlcom{## Convert units to meters}
+\hldef{elevation.xyz.m}\hlopt{$}\hldef{y} \hlkwb{<-} \hldef{elevation.xyz}\hlopt{$}\hldef{y}\hlopt{*}\hlnum{1000}
+\hldef{elevation.xyz.m}\hlopt{$}\hldef{elevation} \hlkwb{<-} \hlkwd{scale}\hldef{(elevation.xyz}\hlopt{$}\hldef{elevation)} \hlcom{## Standardize}
+\hldef{elevation.m} \hlkwb{<-} \hlkwd{rasterFromXYZ}\hldef{(elevation.xyz.m)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -663,11 +671,11 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(sp)}
-\hlstd{elev.sp} \hlkwb{<-} \hlkwd{as}\hlstd{(elevation.m,} \hlstr{"SpatialGridDataFrame"}\hlstd{)}
-\hlstd{trp} \hlkwb{<-} \hlkwd{traps}\hlstd{(sch)}
-\hlstd{mask} \hlkwb{<-} \hlkwd{make.mask}\hlstd{(trp,} \hlkwc{buffer}\hlstd{=}\hlnum{150}\hlstd{,} \hlkwc{spacing}\hlstd{=}\hlnum{10}\hlstd{)}
-\hlstd{mask} \hlkwb{<-} \hlkwd{addCovariates}\hlstd{(mask,} \hlkwc{spatialdata}\hlstd{=elev.sp)}
+\hlkwd{library}\hldef{(sp)}
+\hldef{elev.sp} \hlkwb{<-} \hlkwd{as}\hldef{(elevation.m,} \hlsng{"SpatialGridDataFrame"}\hldef{)}
+\hldef{trp} \hlkwb{<-} \hlkwd{traps}\hldef{(sch)}
+\hldef{mask} \hlkwb{<-} \hlkwd{make.mask}\hldef{(trp,} \hlkwc{buffer}\hldef{=}\hlnum{150}\hldef{,} \hlkwc{spacing}\hldef{=}\hlnum{10}\hldef{)}
+\hldef{mask} \hlkwb{<-} \hlkwd{addCovariates}\hldef{(mask,} \hlkwc{spatialdata}\hldef{=elev.sp)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -679,8 +687,8 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(mask,} \hlkwc{covariate}\hlstd{=}\hlstr{"elevation"}\hlstd{)}
-\hlkwd{plot}\hlstd{(trp,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{plot}\hldef{(mask,} \hlkwc{covariate}\hldef{=}\hlsng{"elevation"}\hldef{)}
+\hlkwd{plot}\hldef{(trp,} \hlkwc{add}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -720,7 +728,7 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{predict}\hlstd{(fm.elev)}
+\hlkwd{predict}\hldef{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
 ##        link  estimate SE.estimate        lcl        ucl
@@ -739,10 +747,10 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{dsurf.r} \hlkwb{<-} \hlkwd{raster}\hlstd{(dsurf,} \hlkwc{covariate}\hlstd{=}\hlstr{"D.0"}\hlstd{)}
-\hlstd{pix.area} \hlkwb{<-} \hlstd{(delta}\hlopt{*}\hlnum{1000}\hlstd{)}\hlopt{^}\hlnum{2}
-\hlkwd{plot}\hlstd{(dsurf.r}\hlopt{/}\hlstd{pix.area,} \hlkwc{col}\hlstd{=}\hlkwd{terrain.colors}\hlstd{(}\hlnum{100}\hlstd{),} \hlkwc{zlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.18}\hlstd{),}
-     \hlkwc{main}\hlstd{=}\hlstr{"Estimated density surface"}\hlstd{)}
+\hldef{dsurf.r} \hlkwb{<-} \hlkwd{raster}\hldef{(dsurf,} \hlkwc{covariate}\hldef{=}\hlsng{"D.0"}\hldef{)}
+\hldef{pix.area} \hlkwb{<-} \hldef{(delta}\hlopt{*}\hlnum{1000}\hldef{)}\hlopt{^}\hlnum{2}
+\hlkwd{plot}\hldef{(dsurf.r}\hlopt{/}\hldef{pix.area,} \hlkwc{col}\hldef{=}\hlkwd{terrain.colors}\hldef{(}\hlnum{100}\hldef{),} \hlkwc{zlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.18}\hldef{),}
+     \hlkwc{main}\hldef{=}\hlsng{"Estimated density surface"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -763,7 +771,7 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{fxi.contour}\hlstd{(fm.elev,} \hlkwc{i}\hlstd{=}\hlnum{1}\hlstd{)}
+\hlkwd{fxi.contour}\hldef{(fm.elev,} \hlkwc{i}\hldef{=}\hlnum{1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -788,7 +796,7 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{region.N}\hlstd{(fm.elev)}
+\hlkwd{region.N}\hldef{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
@@ -846,7 +854,7 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev-v1.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"SCR-elev-v1.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -927,7 +935,7 @@ N <- sum(z)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"SCR-elev-v2.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"SCR-elev-v2.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1026,15 +1034,15 @@ N <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{G} \hlkwb{<-} \hlkwd{nrow}\hlstd{(elevation.xyz)}    \hlcom{## nPixels  }
-\hlstd{lookup} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{G,} \hlkwc{nrow}\hlstd{=}\hlkwd{nrow}\hlstd{(elevation),} \hlkwc{ncol}\hlstd{=}\hlkwd{ncol}\hlstd{(elevation),}
-                 \hlkwc{byrow}\hlstd{=}\hlnum{TRUE}\hlstd{)} \hlcom{## To be consistent with raster package}
-\hlstd{delta} \hlkwb{<-} \hlkwd{res}\hlstd{(elevation)[}\hlnum{1}\hlstd{]}  \hlcom{## resolution}
-\hlkwd{image}\hlstd{(}\hlkwd{seq}\hlstd{(delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlnum{1}\hlopt{-}\hlstd{delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{100}\hlstd{),}
-      \hlkwd{seq}\hlstd{(delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlnum{1}\hlopt{-}\hlstd{delta}\hlopt{/}\hlnum{2}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{100}\hlstd{), lookup,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,}
-      \hlkwc{xlab}\hlstd{=}\hlstr{"x"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"y"}\hlstd{,} \hlkwc{frame}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{"Pixel ID"}\hlstd{)}
-\hlkwd{text}\hlstd{(elevation.xyz}\hlopt{$}\hlstd{x[}\hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{, G,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)],}
-     \hlstd{elevation.xyz}\hlopt{$}\hlstd{y[}\hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{, G,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)],} \hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{, G,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{),} \hlkwc{cex}\hlstd{=}\hlnum{0.4}\hlstd{)}
+\hldef{G} \hlkwb{<-} \hlkwd{nrow}\hldef{(elevation.xyz)}    \hlcom{## nPixels  }
+\hldef{lookup} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{1}\hlopt{:}\hldef{G,} \hlkwc{nrow}\hldef{=}\hlkwd{nrow}\hldef{(elevation),} \hlkwc{ncol}\hldef{=}\hlkwd{ncol}\hldef{(elevation),}
+                 \hlkwc{byrow}\hldef{=}\hlnum{TRUE}\hldef{)} \hlcom{## To be consistent with raster package}
+\hldef{delta} \hlkwb{<-} \hlkwd{res}\hldef{(elevation)[}\hlnum{1}\hldef{]}  \hlcom{## resolution}
+\hlkwd{image}\hldef{(}\hlkwd{seq}\hldef{(delta}\hlopt{/}\hlnum{2}\hldef{,} \hlnum{1}\hlopt{-}\hldef{delta}\hlopt{/}\hlnum{2}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{100}\hldef{),}
+      \hlkwd{seq}\hldef{(delta}\hlopt{/}\hlnum{2}\hldef{,} \hlnum{1}\hlopt{-}\hldef{delta}\hlopt{/}\hlnum{2}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{100}\hldef{), lookup,} \hlkwc{asp}\hldef{=}\hlnum{1}\hldef{,}
+      \hlkwc{xlab}\hldef{=}\hlsng{"x"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"y"}\hldef{,} \hlkwc{frame}\hldef{=}\hlnum{FALSE}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{main}\hldef{=}\hlsng{"Pixel ID"}\hldef{)}
+\hlkwd{text}\hldef{(elevation.xyz}\hlopt{$}\hldef{x[}\hlkwd{seq}\hldef{(}\hlnum{5}\hldef{, G,} \hlkwc{by}\hldef{=}\hlnum{10}\hldef{)],}
+     \hldef{elevation.xyz}\hlopt{$}\hldef{y[}\hlkwd{seq}\hldef{(}\hlnum{5}\hldef{, G,} \hlkwc{by}\hldef{=}\hlnum{10}\hldef{)],} \hlkwd{seq}\hldef{(}\hlnum{5}\hldef{, G,} \hlkwc{by}\hldef{=}\hlnum{10}\hldef{),} \hlkwc{cex}\hldef{=}\hlnum{0.4}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1056,14 +1064,14 @@ N <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{M} \hlkwb{<-} \hlnum{150}
-\hlstd{y.tilde} \hlkwb{<-} \hlkwd{apply}\hlstd{(y,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), sum)}
-\hlstd{n} \hlkwb{<-} \hlkwd{nrow}\hlstd{(y)}
-\hlstd{jags.data.SCR.elev} \hlkwb{<-} \hlkwd{list}\hlstd{(}
-    \hlkwc{y.tilde}\hlstd{=y.tilde,} \hlkwc{n}\hlstd{=n,} \hlkwc{M}\hlstd{=M,} \hlkwc{J}\hlstd{=J,} \hlkwc{G}\hlstd{=G,} \hlkwc{delta}\hlstd{=delta,}
-    \hlkwc{lookup}\hlstd{=lookup,} \hlkwc{pixelArea}\hlstd{=delta}\hlopt{^}\hlnum{2}\hlopt{*}\hlnum{1e4}\hlstd{,} \hlcom{## Convert to hectares}
-    \hlkwc{elevation}\hlstd{=elevation.xyz}\hlopt{$}\hlstd{elevation,} \hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, M}\hlopt{-}\hlstd{n)),}
-    \hlkwc{zeros}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{K}\hlstd{=K,} \hlkwc{zero.cap}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{, M),} \hlkwc{x}\hlstd{=x,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
+\hldef{M} \hlkwb{<-} \hlnum{150}
+\hldef{y.tilde} \hlkwb{<-} \hlkwd{apply}\hldef{(y,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{2}\hldef{), sum)}
+\hldef{n} \hlkwb{<-} \hlkwd{nrow}\hldef{(y)}
+\hldef{jags.data.SCR.elev} \hlkwb{<-} \hlkwd{list}\hldef{(}
+    \hlkwc{y.tilde}\hldef{=y.tilde,} \hlkwc{n}\hldef{=n,} \hlkwc{M}\hldef{=M,} \hlkwc{J}\hldef{=J,} \hlkwc{G}\hldef{=G,} \hlkwc{delta}\hldef{=delta,}
+    \hlkwc{lookup}\hldef{=lookup,} \hlkwc{pixelArea}\hldef{=delta}\hlopt{^}\hlnum{2}\hlopt{*}\hlnum{1e4}\hldef{,} \hlcom{## Convert to hectares}
+    \hlkwc{elevation}\hldef{=elevation.xyz}\hlopt{$}\hldef{elevation,} \hlkwc{z}\hldef{=}\hlkwd{c}\hldef{(}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{, n),} \hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{, M}\hlopt{-}\hldef{n)),}
+    \hlkwc{zeros}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{0}\hldef{, M),} \hlkwc{K}\hldef{=K,} \hlkwc{zero.cap}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{0}\hldef{, M),} \hlkwc{x}\hldef{=x,} \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1073,11 +1081,11 @@ N <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jp.SCR.elev} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"g0"}\hlstd{,} \hlstr{"sigma"}\hlstd{,} \hlstr{"EN"}\hlstd{,} \hlstr{"N"}\hlstd{)}
-\hlstd{ji.SCR.elev} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlnum{NA}\hlstd{, n),} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,M}\hlopt{-}\hlstd{n)),}\hlcom{#psi=runif(1),beta0=runif(1,-20,-15),}
-         \hlkwc{beta1}\hlstd{=}\hlnum{0.01}\hlstd{,} \hlkwc{s}\hlstd{=}\hlkwd{cbind}\hlstd{(}\hlkwd{runif}\hlstd{(M),} \hlkwd{runif}\hlstd{(M)),}
-         \hlkwc{g0}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{sigma}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{0.05}\hlstd{,} \hlnum{0.1}\hlstd{)) \}}
+\hldef{jp.SCR.elev} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,} \hlsng{"g0"}\hldef{,} \hlsng{"sigma"}\hldef{,} \hlsng{"EN"}\hldef{,} \hlsng{"N"}\hldef{)}
+\hldef{ji.SCR.elev} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{c}\hldef{(}\hlkwd{rep}\hldef{(}\hlnum{NA}\hldef{, n),} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{,M}\hlopt{-}\hldef{n)),}\hlcom{#psi=runif(1),beta0=runif(1,-20,-15),}
+         \hlkwc{beta1}\hldef{=}\hlnum{0.01}\hldef{,} \hlkwc{s}\hldef{=}\hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(M),} \hlkwd{runif}\hldef{(M)),}
+         \hlkwc{g0}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{sigma}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.05}\hldef{,} \hlnum{0.1}\hldef{)) \}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1104,7 +1112,7 @@ MCMC
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.SCR.elev)}
+\hlkwd{summary}\hldef{(jags.post.SCR.elev)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1147,7 +1155,7 @@ MCMC
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.SCR.elev[,jp.SCR.elev[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.SCR.elev[,jp.SCR.elev[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1166,7 +1174,7 @@ MCMC
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.SCR.elev[,jp.SCR.elev[}\hlnum{4}\hlopt{:}\hlnum{6}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.SCR.elev[,jp.SCR.elev[}\hlnum{4}\hlopt{:}\hlnum{6}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1187,8 +1195,8 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev[,}\hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,}\hlstr{"beta1"}\hlstd{)])}
-\hlstd{n.samples} \hlkwb{<-} \hlkwd{nrow}\hlstd{(beta.post)}
+\hldef{beta.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.SCR.elev[,}\hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,}\hlsng{"beta1"}\hldef{)])}
+\hldef{n.samples} \hlkwb{<-} \hlkwd{nrow}\hldef{(beta.post)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1196,15 +1204,15 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda.post} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n.pixels, n.samples)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.samples) \{}
-    \hlstd{lambda.post[,i]} \hlkwb{<-} \hlkwd{exp}\hlstd{(}
-        \hlstd{beta.post[i,}\hlstr{"beta0"}\hlstd{]} \hlopt{+}
-        \hlstd{beta.post[i,}\hlstr{"beta1"}\hlstd{]}\hlopt{*}\hlstd{elevation.xyz}\hlopt{$}\hlstd{elevation)}
-\hlstd{\}}
-\hlstd{lambda.post.mean} \hlkwb{<-} \hlkwd{rowMeans}\hlstd{(lambda.post)}
-\hlstd{lambda.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(lambda.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\hlstd{lambda.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(lambda.post,} \hlnum{1}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hldef{lambda.post} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, n.pixels, n.samples)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.samples) \{}
+    \hldef{lambda.post[,i]} \hlkwb{<-} \hlkwd{exp}\hldef{(}
+        \hldef{beta.post[i,}\hlsng{"beta0"}\hldef{]} \hlopt{+}
+        \hldef{beta.post[i,}\hlsng{"beta1"}\hldef{]}\hlopt{*}\hldef{elevation.xyz}\hlopt{$}\hldef{elevation)}
+\hldef{\}}
+\hldef{lambda.post.mean} \hlkwb{<-} \hlkwd{rowMeans}\hldef{(lambda.post)}
+\hldef{lambda.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(lambda.post,} \hlnum{1}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
+\hldef{lambda.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(lambda.post,} \hlnum{1}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1220,23 +1228,23 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(latticeExtra)}
-\hlkwd{trellis.par.set}\hlstd{(}\hlkwc{regions}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{col}\hlstd{=}\hlkwd{hcl.colors}\hlstd{(}\hlnum{100}\hlstd{)))} \hlcom{## Colors}
-\hlstd{panel1} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.lower} \hlopt{~} \hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{,}
-                    \hlkwc{at}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.20}\hlstd{,}\hlnum{0.005}\hlstd{),} \hlcom{## Resolution of color key}
-                    \hlkwc{colorkey}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"bottom"}\hlstd{),}
-                    \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlstd{panel2} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.mean} \hlopt{~}\hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{,}
-                    \hlkwc{at}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.20}\hlstd{,}\hlnum{0.005}\hlstd{))}
-\hlstd{panel3} \hlkwb{<-} \hlkwd{levelplot}\hlstd{(lambda.post.upper} \hlopt{~}\hlstd{x}\hlopt{+}\hlstd{y, elevation.xyz,} \hlkwc{aspect}\hlstd{=}\hlstr{"iso"}\hlstd{,}
-                    \hlkwc{at}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.20}\hlstd{,}\hlnum{0.005}\hlstd{))}
-\hlstd{panels} \hlkwb{<-} \hlkwd{c}\hlstd{(panel1, panel2, panel3)}
-\hlstd{panels} \hlkwb{<-} \hlkwd{update}\hlstd{(}
-    \hlstd{panels,} \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{draw}\hlstd{=}\hlnum{FALSE}\hlstd{),} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{3}\hlstd{,}\hlnum{1}\hlstd{),}
-    \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{,}
-    \hlkwc{strip}\hlstd{=}\hlkwd{strip.custom}\hlstd{(}\hlkwc{bg}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{),}
-        \hlkwc{factor.levels}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Lower CI"}\hlstd{,}\hlstr{"Posterior mean"}\hlstd{,}\hlstr{"Upper CI"}\hlstd{)))}
-\hlkwd{plot}\hlstd{(panels)}
+\hlkwd{library}\hldef{(latticeExtra)}
+\hlkwd{trellis.par.set}\hldef{(}\hlkwc{regions}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{col}\hldef{=}\hlkwd{hcl.colors}\hldef{(}\hlnum{100}\hldef{)))} \hlcom{## Colors}
+\hldef{panel1} \hlkwb{<-} \hlkwd{levelplot}\hldef{(lambda.post.lower} \hlopt{~} \hldef{x}\hlopt{+}\hldef{y, elevation.xyz,} \hlkwc{aspect}\hldef{=}\hlsng{"iso"}\hldef{,}
+                    \hlkwc{at}\hldef{=}\hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.20}\hldef{,}\hlnum{0.005}\hldef{),} \hlcom{## Resolution of color key}
+                    \hlkwc{colorkey}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{space}\hldef{=}\hlsng{"bottom"}\hldef{),}
+                    \hlkwc{xlab}\hldef{=}\hlsng{""}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{""}\hldef{)}
+\hldef{panel2} \hlkwb{<-} \hlkwd{levelplot}\hldef{(lambda.post.mean} \hlopt{~}\hldef{x}\hlopt{+}\hldef{y, elevation.xyz,} \hlkwc{aspect}\hldef{=}\hlsng{"iso"}\hldef{,}
+                    \hlkwc{at}\hldef{=}\hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.20}\hldef{,}\hlnum{0.005}\hldef{))}
+\hldef{panel3} \hlkwb{<-} \hlkwd{levelplot}\hldef{(lambda.post.upper} \hlopt{~}\hldef{x}\hlopt{+}\hldef{y, elevation.xyz,} \hlkwc{aspect}\hldef{=}\hlsng{"iso"}\hldef{,}
+                    \hlkwc{at}\hldef{=}\hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.20}\hldef{,}\hlnum{0.005}\hldef{))}
+\hldef{panels} \hlkwb{<-} \hlkwd{c}\hldef{(panel1, panel2, panel3)}
+\hldef{panels} \hlkwb{<-} \hlkwd{update}\hldef{(}
+    \hldef{panels,} \hlkwc{scales}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{draw}\hldef{=}\hlnum{FALSE}\hldef{),} \hlkwc{layout}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{3}\hldef{,}\hlnum{1}\hldef{),}
+    \hlkwc{xlab}\hldef{=}\hlsng{""}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{""}\hldef{,}
+    \hlkwc{strip}\hldef{=}\hlkwd{strip.custom}\hldef{(}\hlkwc{bg}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{),}
+        \hlkwc{factor.levels}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"Lower CI"}\hldef{,}\hlsng{"Posterior mean"}\hldef{,}\hlsng{"Upper CI"}\hldef{)))}
+\hlkwd{plot}\hldef{(panels)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1273,9 +1281,9 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{s1.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hlstd{(}\hlstr{"s["}\hlstd{,} \hlnum{1}\hlopt{:}\hlstd{M,} \hlstr{",1]"}\hlstd{)])}
-\hlstd{s2.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hlstd{(}\hlstr{"s["}\hlstd{,} \hlnum{1}\hlopt{:}\hlstd{M,} \hlstr{",2]"}\hlstd{)])}
-\hlstd{z.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hlstd{(}\hlstr{"z["}\hlstd{,} \hlnum{1}\hlopt{:}\hlstd{M,} \hlstr{"]"}\hlstd{)])}
+\hldef{s1.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hldef{(}\hlsng{"s["}\hldef{,} \hlnum{1}\hlopt{:}\hldef{M,} \hlsng{",1]"}\hldef{)])}
+\hldef{s2.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hldef{(}\hlsng{"s["}\hldef{,} \hlnum{1}\hlopt{:}\hldef{M,} \hlsng{",2]"}\hldef{)])}
+\hldef{z.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.SCR.elev.sz[,}\hlkwd{paste0}\hldef{(}\hlsng{"z["}\hldef{,} \hlnum{1}\hlopt{:}\hldef{M,} \hlsng{"]"}\hldef{)])}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1284,13 +1292,13 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda.r.post} \hlkwb{<-} \hlkwd{array}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwd{c}\hlstd{(}\hlkwd{sqrt}\hlstd{(n.pixels),} \hlkwd{sqrt}\hlstd{(n.pixels), n.samples))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.samples) \{}
-    \hlstd{si1.post.d} \hlkwb{<-} \hlkwd{cut}\hlstd{(s1.post[i,z.post[i,]}\hlopt{==}\hlnum{1}\hlstd{],} \hlkwc{breaks}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{, delta))}
-    \hlstd{si2.post.d} \hlkwb{<-} \hlkwd{cut}\hlstd{(s2.post[i,z.post[i,]}\hlopt{==}\hlnum{1}\hlstd{],} \hlkwc{breaks}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{, delta))}
-    \hlstd{pixel.counts} \hlkwb{<-} \hlkwd{table}\hlstd{(si2.post.d, si1.post.d)}
-    \hlstd{lambda.r.post[,,i]} \hlkwb{<-} \hlstd{pixel.counts[}\hlkwd{sqrt}\hlstd{(n.pixels)}\hlopt{:}\hlnum{1}\hlstd{,]}
-\hlstd{\}}
+\hldef{lambda.r.post} \hlkwb{<-} \hlkwd{array}\hldef{(}\hlnum{NA}\hldef{,} \hlkwd{c}\hldef{(}\hlkwd{sqrt}\hldef{(n.pixels),} \hlkwd{sqrt}\hldef{(n.pixels), n.samples))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.samples) \{}
+    \hldef{si1.post.d} \hlkwb{<-} \hlkwd{cut}\hldef{(s1.post[i,z.post[i,]}\hlopt{==}\hlnum{1}\hldef{],} \hlkwc{breaks}\hldef{=}\hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{, delta))}
+    \hldef{si2.post.d} \hlkwb{<-} \hlkwd{cut}\hldef{(s2.post[i,z.post[i,]}\hlopt{==}\hlnum{1}\hldef{],} \hlkwc{breaks}\hldef{=}\hlkwd{seq}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{, delta))}
+    \hldef{pixel.counts} \hlkwb{<-} \hlkwd{table}\hldef{(si2.post.d, si1.post.d)}
+    \hldef{lambda.r.post[,,i]} \hlkwb{<-} \hldef{pixel.counts[}\hlkwd{sqrt}\hldef{(n.pixels)}\hlopt{:}\hlnum{1}\hldef{,]}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1305,11 +1313,11 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda.r.mean} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlkwd{apply}\hlstd{(lambda.r.post,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{), mean))}
-\hlstd{lambda.e.mean} \hlkwb{<-} \hlkwd{raster}\hlstd{(}\hlkwd{matrix}\hlstd{(lambda.post.mean,} \hlkwd{sqrt}\hlstd{(n.pixels),} \hlkwc{byrow}\hlstd{=}\hlnum{TRUE}\hlstd{))}
-\hlstd{lambda.re} \hlkwb{<-} \hlkwd{stack}\hlstd{(lambda.r.mean, lambda.e.mean)}
-\hlkwd{names}\hlstd{(lambda.re)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"Realized"}\hlstd{,} \hlstr{"Expected"}\hlstd{)}
-\hlkwd{plot}\hlstd{(lambda.re,} \hlkwc{zlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.18}\hlstd{))}
+\hldef{lambda.r.mean} \hlkwb{<-} \hlkwd{raster}\hldef{(}\hlkwd{apply}\hldef{(lambda.r.post,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{2}\hldef{), mean))}
+\hldef{lambda.e.mean} \hlkwb{<-} \hlkwd{raster}\hldef{(}\hlkwd{matrix}\hldef{(lambda.post.mean,} \hlkwd{sqrt}\hldef{(n.pixels),} \hlkwc{byrow}\hldef{=}\hlnum{TRUE}\hldef{))}
+\hldef{lambda.re} \hlkwb{<-} \hlkwd{stack}\hldef{(lambda.r.mean, lambda.e.mean)}
+\hlkwd{names}\hldef{(lambda.re)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"Realized"}\hldef{,} \hlsng{"Expected"}\hldef{)}
+\hlkwd{plot}\hldef{(lambda.re,} \hlkwc{zlim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.18}\hldef{))}
 \end{alltt}
 \end{kframe}
 \includegraphics[width=0.99\linewidth]{figure/lambda-r-1} 
@@ -1326,10 +1334,10 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{)}
-\hlkwd{points}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.1}\hlstd{))}
-\hlkwd{contour}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[,}\hlnum{1}\hlstd{], s2.post[,}\hlnum{1}\hlstd{]),} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlkwd{points}\hlstd{(x[y.tilde[}\hlnum{1}\hlstd{,]}\hlopt{>}\hlnum{0}\hlstd{,,}\hlkwc{drop}\hlstd{=}\hlnum{FALSE}\hlstd{],} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hldef{(x,} \hlkwc{asp}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{xlim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{,} \hlkwc{pch}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{axes}\hldef{=}\hlnum{FALSE}\hldef{,} \hlkwc{ann}\hldef{=}\hlnum{FALSE}\hldef{)}
+\hlkwd{points}\hldef{(s1.post[,}\hlnum{1}\hldef{], s2.post[,}\hlnum{1}\hldef{],} \hlkwc{pch}\hldef{=}\hlnum{16}\hldef{,} \hlkwc{col}\hldef{=}\hlkwd{rgb}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0}\hldef{,}\hlnum{1}\hldef{,}\hlnum{0.1}\hldef{))}
+\hlkwd{contour}\hldef{(MASS}\hlopt{::}\hlkwd{kde2d}\hldef{(s1.post[,}\hlnum{1}\hldef{], s2.post[,}\hlnum{1}\hldef{]),} \hlkwc{add}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hlkwd{points}\hldef{(x[y.tilde[}\hlnum{1}\hldef{,]}\hlopt{>}\hlnum{0}\hldef{,,}\hlkwc{drop}\hldef{=}\hlnum{FALSE}\hldef{],} \hlkwc{pch}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"red"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{cex}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1367,9 +1375,9 @@ Chop activity centers into discrete intervals, then tabulate.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{image}\hlstd{(MASS}\hlopt{::}\hlkwd{kde2d}\hlstd{(s1.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{],}
-                  \hlstd{s2.post[z.post[,}\hlnum{150}\hlstd{]}\hlopt{==}\hlnum{1}\hlstd{,}\hlnum{150}\hlstd{]))}
-\hlkwd{points}\hlstd{(x,} \hlkwc{asp}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{3}\hlstd{)}
+\hlkwd{image}\hldef{(MASS}\hlopt{::}\hlkwd{kde2d}\hldef{(s1.post[z.post[,}\hlnum{150}\hldef{]}\hlopt{==}\hlnum{1}\hldef{,}\hlnum{150}\hldef{],}
+                  \hldef{s2.post[z.post[,}\hlnum{150}\hldef{]}\hlopt{==}\hlnum{1}\hldef{,}\hlnum{150}\hldef{]))}
+\hlkwd{points}\hldef{(x,} \hlkwc{asp}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{pch}\hldef{=}\hlnum{3}\hldef{)}
 \hlcom{##points(s1.post[z.post[,150]==1,150],}
 \hlcom{##       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))}
 \end{alltt}

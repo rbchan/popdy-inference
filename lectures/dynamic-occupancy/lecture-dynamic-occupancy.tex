@@ -1,5 +1,4 @@
-%\documentclass[color=usenames,dvipsnames]{beamer}
-\documentclass[color=usenames,dvipsnames,handout]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
+\documentclass[color=usenames,dvipsnames]{beamer}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -49,7 +48,10 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
+%\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
 \usepackage[roman]{../lectures}
 %\usepackage[sans]{../lectures}
@@ -60,7 +62,7 @@
 \mode<handout>{
   \usetheme{default}
 %  \setbeamercolor{background canvas}{bg=black!5}
-% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+ \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
 %  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
 }
 
@@ -658,12 +660,12 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hldef{(jagsUI)}
-\hldef{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hldef{=jags.pars,}
-                                \hlkwc{model.file}\hldef{=}\hlsng{"dynocc-model.jag"}\hldef{,}
-                                \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
-                                \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
+                                \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model.jag"}\hlstd{,}
+                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
+                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -680,7 +682,7 @@ for(k in 1:K) {
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 101:2100
+## Iterations = 1:2000
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -1126,12 +1128,12 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hldef{(jagsUI)}
-\hldef{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}
-    \hlkwc{data}\hldef{=jags.data.covs,} \hlkwc{inits}\hldef{=jags.inits.covs,}
-    \hlkwc{parameters.to.save}\hldef{=jags.pars.covs,}
-    \hlkwc{model.file}\hldef{=}\hlsng{"dynocc-model-covars.jag"}\hldef{,}
-    \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
+\hlkwd{library}\hlstd{(jagsUI)}
+\hlstd{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
+    \hlkwc{data}\hlstd{=jags.data.covs,} \hlkwc{inits}\hlstd{=jags.inits.covs,}
+    \hlkwc{parameters.to.save}\hlstd{=jags.pars.covs,}
+    \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model-covars.jag"}\hlstd{,}
+    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1148,7 +1150,7 @@ for(k in 1:K) {
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 101:2100
+## Iterations = 1:2000
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
