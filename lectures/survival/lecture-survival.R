@@ -76,7 +76,7 @@ legend(350, 1, paste("x =", c(-2, 0, 2)), lty=1, col=1:3)
 ## ----exp-jag,eval=FALSE-------------------------------------------------------
 ## writeLines(readLines("surv-exp.jag"))
 
-## ----exp-jag2,size='footnotesize',background='lightblue',comment='',echo=FALSE----
+## ----exp-jag2,size='footnotesize',background='beige',comment='',echo=FALSE----
 writeLines(readLines("surv-exp.jag"))
 
 
@@ -148,7 +148,7 @@ z[1:15,]
 ## ----jags-surv-dtime,eval=FALSE-----------------------------------------------
 ## writeLines(readLines("surv-dtime.jag"))
 
-## ----jags-surv-dtime2,background='lightblue',comment='',echo=FALSE------------
+## ----jags-surv-dtime2,background='beige',comment='',echo=FALSE----------------
 writeLines(readLines("surv-dtime.jag"))
 
 
@@ -188,12 +188,12 @@ legend(6, 1, c("Posterior sample", "Posterior mean", "Actual"),
 ## ----jags-surv-dtime-tcovs,eval=FALSE-----------------------------------------
 ## writeLines(readLines("surv-dtime-tcovs.jag"))
 
-## ----jags-surv-dtime2-tcovs,background='lightblue',comment='',echo=FALSE------
+## ----jags-surv-dtime2-tcovs,background='beige',comment='',echo=FALSE----------
 writeLines(readLines("surv-dtime-tcovs.jag"))
 
 
 ## ----comp-risk-sim,size='small'-----------------------------------------------
-beta0 <- c(-6, -4, -3) ## log-hazard. Not covariates
+beta0 <- c(-6, -4, -3) ## log-hazard. No covariates
 lambda <- exp(beta0)   ## Cause-specific hazard
 pi <- lambda / (1+sum(lambda))
 pi[4] <- 1-sum(pi)     ## Probability of surviving t to t+1
@@ -225,7 +225,7 @@ for(i in 1:nDeer) {
 ## writeLines(readLines("surv-dtime-comp-risks.jag"))
 
 
-## ----jags-surv-dtime2-comp-risk,size='scriptsize',background='lightblue',comment='',echo=FALSE----
+## ----jags-surv-dtime2-comp-risk,size='scriptsize',background='beige',comment='',echo=FALSE----
 writeLines(readLines("surv-dtime-comp-risks.jag"))
 
 

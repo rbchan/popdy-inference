@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -48,6 +48,8 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\let\hlstd\hldef
+\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -57,6 +59,12 @@
 
 \hypersetup{pdfpagemode=UseNone,pdfstartview={FitV}}
 
+\mode<handout>{
+  \usetheme{default}
+%  \setbeamercolor{background canvas}{bg=black!5}
+% \pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=2.5mm]
+%  \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=10mm]
+}
 
 % Compile and open PDF
 
@@ -290,13 +298,13 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n} \hlkwb{<-} \hlnum{100}                          \hlcom{## Sample size}
-\hlstd{hazard0} \hlkwb{<-} \hlnum{1}\hlopt{/}\hlnum{100}
-\hlstd{survival.time0} \hlkwb{<-} \hlkwd{rexp}\hlstd{(n, hazard0)}
-\hlkwd{hist}\hlstd{(survival.time0,} \hlkwc{xlab}\hlstd{=}\hlstr{"Survival time (time to mortality)"}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlkwd{abline}\hlstd{(}\hlkwc{v}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{mean}\hlstd{(survival.time0),} \hlnum{100}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"black"}\hlstd{))}
-\hlkwd{legend}\hlstd{(}\hlstr{"topright"}\hlstd{,} \hlkwc{legend}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Sample mean"}\hlstd{,} \hlstr{"Population mean"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"blue"}\hlstd{,} \hlstr{"black"}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hldef{n} \hlkwb{<-} \hlnum{100}                          \hlcom{## Sample size}
+\hldef{hazard0} \hlkwb{<-} \hlnum{1}\hlopt{/}\hlnum{100}
+\hldef{survival.time0} \hlkwb{<-} \hlkwd{rexp}\hldef{(n, hazard0)}
+\hlkwd{hist}\hldef{(survival.time0,} \hlkwc{xlab}\hldef{=}\hlsng{"Survival time (time to mortality)"}\hldef{,} \hlkwc{main}\hldef{=}\hlsng{""}\hldef{)}
+\hlkwd{abline}\hldef{(}\hlkwc{v}\hldef{=}\hlkwd{c}\hldef{(}\hlkwd{mean}\hldef{(survival.time0),} \hlnum{100}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"blue"}\hldef{,} \hlsng{"black"}\hldef{))}
+\hlkwd{legend}\hldef{(}\hlsng{"topright"}\hldef{,} \hlkwc{legend}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"Sample mean"}\hldef{,} \hlsng{"Population mean"}\hldef{),}
+       \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"blue"}\hldef{,} \hlsng{"black"}\hldef{),} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -316,13 +324,13 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n} \hlkwb{<-} \hlnum{200}                          \hlcom{## Sample size}
-\hlstd{x} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(n)}                     \hlcom{## Covariate}
-\hlstd{beta0} \hlkwb{<-} \hlopt{-}\hlnum{5}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}        \hlcom{## Hazard coefficients}
-\hlstd{hazard} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x)}
-\hlstd{survival.time} \hlkwb{<-} \hlkwd{rexp}\hlstd{(n, hazard)}
+\hldef{n} \hlkwb{<-} \hlnum{200}                          \hlcom{## Sample size}
+\hldef{x} \hlkwb{<-} \hlkwd{rnorm}\hldef{(n)}                     \hlcom{## Covariate}
+\hldef{beta0} \hlkwb{<-} \hlopt{-}\hlnum{5}\hldef{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{0.5}        \hlcom{## Hazard coefficients}
+\hldef{hazard} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x)}
+\hldef{survival.time} \hlkwb{<-} \hlkwd{rexp}\hldef{(n, hazard)}
 \hlcom{## summary(survival.time)}
-\hlkwd{hist}\hlstd{(survival.time,} \hlkwc{xlab}\hlstd{=}\hlstr{"Survival time (time to mortality)"}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
+\hlkwd{hist}\hldef{(survival.time,} \hlkwc{xlab}\hldef{=}\hlsng{"Survival time (time to mortality)"}\hldef{,} \hlkwc{main}\hldef{=}\hlsng{""}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -350,9 +358,9 @@
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ctime} \hlkwb{<-} \hlnum{500}    \hlcom{## Censoring time}
-\hlstd{censored} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(survival.time}\hlopt{>}\hlstd{ctime,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}
-\hlkwd{table}\hlstd{(censored)} \hlcom{## Most individuals died before censoring time}
+\hldef{ctime} \hlkwb{<-} \hlnum{500}    \hlcom{## Censoring time}
+\hldef{censored} \hlkwb{<-} \hlkwd{ifelse}\hldef{(survival.time}\hlopt{>}\hldef{ctime,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+\hlkwd{table}\hldef{(censored)} \hlcom{## Most individuals died before censoring time}
 \end{alltt}
 \begin{verbatim}
 ## censored
@@ -367,8 +375,8 @@ The observed data, with censoring:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{survival.time.c} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(censored, ctime, survival.time)}
-\hlkwd{summary}\hlstd{(survival.time.c)}
+\hldef{survival.time.c} \hlkwb{<-} \hlkwd{ifelse}\hldef{(censored, ctime, survival.time)}
+\hlkwd{summary}\hldef{(survival.time.c)}
 \end{alltt}
 \begin{verbatim}
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -428,9 +436,9 @@ The observed data, with censoring:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(survival)}
-\hlstd{y} \hlkwb{<-} \hlkwd{Surv}\hlstd{(survival.time.c,} \hlnum{1}\hlopt{-}\hlstd{censored)}
-\hlkwd{plot}\hlstd{(y,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{"Kaplan-Meier"}\hlstd{)}
+\hlkwd{library}\hldef{(survival)}
+\hldef{y} \hlkwb{<-} \hlkwd{Surv}\hldef{(survival.time.c,} \hlnum{1}\hlopt{-}\hldef{censored)}
+\hlkwd{plot}\hldef{(y,} \hlkwc{xlab}\hldef{=}\hlsng{"Time"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Survivorship"}\hldef{,} \hlkwc{main}\hldef{=}\hlsng{"Kaplan-Meier"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -452,7 +460,7 @@ The observed data, with censoring:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(pm1} \hlkwb{<-} \hlkwd{survreg}\hlstd{(y} \hlopt{~} \hlstd{x,} \hlkwc{dist}\hlstd{=}\hlstr{"exponential"}\hlstd{))}
+\hlkwd{summary}\hldef{(pm1} \hlkwb{<-} \hlkwd{survreg}\hldef{(y} \hlopt{~} \hldef{x,} \hlkwc{dist}\hldef{=}\hlsng{"exponential"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -483,12 +491,12 @@ The observed data, with censoring:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{x),} \hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Covariate"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Hazard"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"black"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{0.035}\hlstd{))}
-\hlstd{alpha.hat} \hlkwb{<-} \hlkwd{coef}\hlstd{(pm1)}   \hlcom{## Extract the estimates}
-\hlkwd{plot}\hlstd{(}\hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlnum{1}\hlopt{/}\hlkwd{exp}\hlstd{(alpha.hat[}\hlnum{1}\hlstd{]} \hlopt{+} \hlstd{alpha.hat[}\hlnum{2}\hlstd{]}\hlopt{*}\hlstd{x),} \hlcom{## survreg formulation}
-     \hlkwc{from}\hlstd{=}\hlopt{-}\hlnum{3}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{add}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{0.5}\hlstd{,} \hlnum{0.035}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Estimated hazard"}\hlstd{,} \hlstr{"Hazard"}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlopt{:}\hlnum{1}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x),} \hlkwc{from}\hldef{=}\hlopt{-}\hlnum{3}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{3}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Covariate"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Hazard"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"black"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{0.035}\hldef{))}
+\hldef{alpha.hat} \hlkwb{<-} \hlkwd{coef}\hldef{(pm1)}   \hlcom{## Extract the estimates}
+\hlkwd{plot}\hldef{(}\hlkwa{function}\hldef{(}\hlkwc{x}\hldef{)} \hlnum{1}\hlopt{/}\hlkwd{exp}\hldef{(alpha.hat[}\hlnum{1}\hldef{]} \hlopt{+} \hldef{alpha.hat[}\hlnum{2}\hldef{]}\hlopt{*}\hldef{x),} \hlcom{## survreg formulation}
+     \hlkwc{from}\hldef{=}\hlopt{-}\hlnum{3}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{add}\hldef{=}\hlnum{TRUE}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{0.5}\hldef{,} \hlnum{0.035}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Estimated hazard"}\hldef{,} \hlsng{"Hazard"}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{4}\hldef{,}\hlnum{1}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{2}\hlopt{:}\hlnum{1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -518,7 +526,7 @@ The observed data, with censoring:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(cox1} \hlkwb{<-} \hlkwd{coxph}\hlstd{(y} \hlopt{~} \hlstd{x))}
+\hldef{(cox1} \hlkwb{<-} \hlkwd{coxph}\hldef{(y} \hlopt{~} \hldef{x))}
 \end{alltt}
 \begin{verbatim}
 ## Call:
@@ -542,10 +550,10 @@ The observed data, with censoring:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlkwd{survfit}\hlstd{(cox1,} \hlkwc{newdata}\hlstd{=}\hlkwd{data.frame}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{2}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{))),}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,}
-     \hlkwc{main}\hlstd{=}\hlstr{"Cox proportional hazards fit"}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{350}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{paste}\hlstd{(}\hlstr{"x ="}\hlstd{,} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{2}\hlstd{,} \hlnum{0}\hlstd{,} \hlnum{2}\hlstd{)),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{col}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{)}
+\hlkwd{plot}\hldef{(}\hlkwd{survfit}\hldef{(cox1,} \hlkwc{newdata}\hldef{=}\hlkwd{data.frame}\hldef{(}\hlkwc{x}\hldef{=}\hlkwd{c}\hldef{(}\hlopt{-}\hlnum{2}\hldef{,}\hlnum{0}\hldef{,}\hlnum{2}\hldef{))),}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Time"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Survivorship"}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{,}
+     \hlkwc{main}\hldef{=}\hlsng{"Cox proportional hazards fit"}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{350}\hldef{,} \hlnum{1}\hldef{,} \hlkwd{paste}\hldef{(}\hlsng{"x ="}\hldef{,} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{2}\hldef{,} \hlnum{0}\hldef{,} \hlnum{2}\hldef{)),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{col}\hldef{=}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -570,12 +578,12 @@ The observed data, with censoring:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-exp.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"surv-exp.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model{
 
@@ -606,11 +614,11 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{survival.time.jags} \hlkwb{<-} \hlstd{survival.time.c}
-\hlstd{survival.time.jags[censored}\hlopt{==}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{NA}
-\hlstd{jd.exp} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{survivalTime}\hlstd{=survival.time.jags,} \hlkwc{censored}\hlstd{=censored,}
-               \hlkwc{censorTime}\hlstd{=}\hlkwd{rep}\hlstd{(ctime,} \hlkwd{length}\hlstd{(censored)),}
-               \hlkwc{x}\hlstd{=x,} \hlkwc{n}\hlstd{=}\hlkwd{length}\hlstd{(censored))}
+\hldef{survival.time.jags} \hlkwb{<-} \hldef{survival.time.c}
+\hldef{survival.time.jags[censored}\hlopt{==}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{NA}
+\hldef{jd.exp} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{survivalTime}\hldef{=survival.time.jags,} \hlkwc{censored}\hldef{=censored,}
+               \hlkwc{censorTime}\hldef{=}\hlkwd{rep}\hldef{(ctime,} \hlkwd{length}\hldef{(censored)),}
+               \hlkwc{x}\hldef{=x,} \hlkwc{n}\hldef{=}\hlkwd{length}\hldef{(censored))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -620,8 +628,8 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.exp} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{beta1}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{))}
-\hlstd{jp.exp} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{)}
+\hldef{ji.exp} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{beta0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{beta1}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{))}
+\hldef{jp.exp} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -648,7 +656,7 @@ for(i in 1:n) {
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples.exp)}
+\hlkwd{plot}\hldef{(jags.post.samples.exp)}
 \end{alltt}
 \end{kframe}
 
@@ -738,9 +746,9 @@ for(i in 1:n) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{maxTime} \hlkwb{<-} \hlnum{10}           \hlcom{## Time period}
-\hlstd{n} \hlkwb{<-} \hlnum{25}                 \hlcom{## nIndividuals}
-\hlstd{phi} \hlkwb{<-} \hlnum{0.7}              \hlcom{## Survival probability over 1 time step}
+\hldef{maxTime} \hlkwb{<-} \hlnum{10}           \hlcom{## Time period}
+\hldef{n} \hlkwb{<-} \hlnum{25}                 \hlcom{## nIndividuals}
+\hldef{phi} \hlkwb{<-} \hlnum{0.7}              \hlcom{## Survival probability over 1 time step}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -751,14 +759,14 @@ for(i in 1:n) {
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, n, maxTime)}
-\hlstd{first} \hlkwb{<-} \hlkwd{rpois}\hlstd{(n,} \hlnum{1}\hlstd{)}\hlopt{+}\hlnum{1}  \hlcom{## random release dates}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
-    \hlstd{z[i,first[i]]} \hlkwb{<-} \hlnum{1}  \hlcom{## Known alive at release}
-    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlstd{(first[i]}\hlopt{+}\hlnum{1}\hlstd{)}\hlopt{:}\hlstd{maxTime) \{}
-        \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{, z[i,t}\hlopt{-}\hlnum{1}\hlstd{]}\hlopt{*}\hlstd{phi)} \hlcom{## Alive/dead state}
-    \hlstd{\}}
-\hlstd{\}}
+\hldef{z} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, n, maxTime)}
+\hldef{first} \hlkwb{<-} \hlkwd{rpois}\hldef{(n,} \hlnum{1}\hldef{)}\hlopt{+}\hlnum{1}  \hlcom{## random release dates}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n) \{}
+    \hldef{z[i,first[i]]} \hlkwb{<-} \hlnum{1}  \hlcom{## Known alive at release}
+    \hlkwa{for}\hldef{(t} \hlkwa{in} \hldef{(first[i]}\hlopt{+}\hlnum{1}\hldef{)}\hlopt{:}\hldef{maxTime) \{}
+        \hldef{z[i,t]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{, z[i,t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{phi)} \hlcom{## Alive/dead state}
+    \hldef{\}}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -772,7 +780,7 @@ for(i in 1:n) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{z[}\hlnum{1}\hlopt{:}\hlnum{15}\hlstd{,]}
+\hldef{z[}\hlnum{1}\hlopt{:}\hlnum{15}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -821,12 +829,12 @@ for(i in 1:n) {
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-dtime.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"surv-dtime.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model{
 
@@ -853,7 +861,7 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jd.dtime0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=z,} \hlkwc{n}\hlstd{=n,} \hlkwc{first}\hlstd{=first,} \hlkwc{maxTime}\hlstd{=maxTime)}
+\hldef{jd.dtime0} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=z,} \hlkwc{n}\hldef{=n,} \hlkwc{first}\hldef{=first,} \hlkwc{maxTime}\hldef{=maxTime)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -862,8 +870,8 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.dtime0} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{phi}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{))}
-\hlstd{jp.dtime0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"phi"}\hlstd{)}
+\hldef{ji.dtime0} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{phi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{))}
+\hldef{jp.dtime0} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"phi"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -892,7 +900,7 @@ for(i in 1:n) {
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples.dtime0)}
+\hlkwd{plot}\hldef{(jags.post.samples.dtime0)}
 \end{alltt}
 \end{kframe}
 
@@ -912,14 +920,14 @@ for(i in 1:n) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{phi.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples.dtime0)[,}\hlstr{"phi"}\hlstd{]}
-\hlstd{S.post} \hlkwb{<-} \hlkwd{sapply}\hlstd{(phi.post,} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) x}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{))}
-\hlkwd{matplot}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, S.post[,}\hlnum{1}\hlopt{:}\hlnum{1000}\hlstd{],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Time"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Survivorship"}\hlstd{,}
-        \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.02}\hlstd{))}
-\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{,} \hlkwd{rowMeans}\hlstd{(S.post),} \hlkwc{col}\hlstd{=}\hlstr{"royalblue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{)}
-\hlkwd{lines}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{, phi}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{10}\hlstd{),} \hlkwc{col}\hlstd{=}\hlstr{"cadetblue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{3}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlnum{6}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Posterior sample"}\hlstd{,} \hlstr{"Posterior mean"}\hlstd{,} \hlstr{"Actual"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.2}\hlstd{),} \hlstr{"royalblue"}\hlstd{,} \hlstr{"cadetblue"}\hlstd{),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{,}\hlnum{3}\hlstd{))}
+\hldef{phi.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.samples.dtime0)[,}\hlsng{"phi"}\hldef{]}
+\hldef{S.post} \hlkwb{<-} \hlkwd{sapply}\hldef{(phi.post,} \hlkwa{function}\hldef{(}\hlkwc{x}\hldef{) x}\hlopt{^}\hldef{(}\hlnum{0}\hlopt{:}\hlnum{10}\hldef{))}
+\hlkwd{matplot}\hldef{(}\hlnum{0}\hlopt{:}\hlnum{10}\hldef{, S.post[,}\hlnum{1}\hlopt{:}\hlnum{1000}\hldef{],} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Time"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Survivorship"}\hldef{,}
+        \hlkwc{col}\hldef{=}\hlkwd{rgb}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.5}\hldef{,}\hlnum{1}\hldef{,}\hlnum{0.02}\hldef{))}
+\hlkwd{lines}\hldef{(}\hlnum{0}\hlopt{:}\hlnum{10}\hldef{,} \hlkwd{rowMeans}\hldef{(S.post),} \hlkwc{col}\hldef{=}\hlsng{"royalblue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{3}\hldef{)}
+\hlkwd{lines}\hldef{(}\hlnum{0}\hlopt{:}\hlnum{10}\hldef{, phi}\hlopt{^}\hldef{(}\hlnum{0}\hlopt{:}\hlnum{10}\hldef{),} \hlkwc{col}\hldef{=}\hlsng{"cadetblue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{3}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlnum{6}\hldef{,} \hlnum{1}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Posterior sample"}\hldef{,} \hlsng{"Posterior mean"}\hldef{,} \hlsng{"Actual"}\hldef{),}
+       \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlkwd{rgb}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0.5}\hldef{,}\hlnum{1}\hldef{,}\hlnum{0.2}\hldef{),} \hlsng{"royalblue"}\hldef{,} \hlsng{"cadetblue"}\hldef{),} \hlkwc{lty}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{lwd}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{3}\hldef{,}\hlnum{3}\hldef{))}
 \end{alltt}
 \end{kframe}
 
@@ -942,12 +950,12 @@ for(i in 1:n) {
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-dtime-tcovs.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"surv-dtime-tcovs.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model{
 
@@ -1010,10 +1018,10 @@ for(i in 1:n) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{6}\hlstd{,} \hlopt{-}\hlnum{4}\hlstd{,} \hlopt{-}\hlnum{3}\hlstd{)} \hlcom{## log-hazard. Not covariates}
-\hlstd{lambda} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0)}   \hlcom{## Cause-specific hazard}
-\hlstd{pi} \hlkwb{<-} \hlstd{lambda} \hlopt{/} \hlstd{(}\hlnum{1}\hlopt{+}\hlkwd{sum}\hlstd{(lambda))}
-\hlstd{pi[}\hlnum{4}\hlstd{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hlstd{(pi)}     \hlcom{## Probability of surviving t to t+1}
+\hldef{beta0} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlopt{-}\hlnum{6}\hldef{,} \hlopt{-}\hlnum{4}\hldef{,} \hlopt{-}\hlnum{3}\hldef{)} \hlcom{## log-hazard. No covariates}
+\hldef{lambda} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0)}   \hlcom{## Cause-specific hazard}
+\hldef{pi} \hlkwb{<-} \hldef{lambda} \hlopt{/} \hldef{(}\hlnum{1}\hlopt{+}\hlkwd{sum}\hldef{(lambda))}
+\hldef{pi[}\hlnum{4}\hldef{]} \hlkwb{<-} \hlnum{1}\hlopt{-}\hlkwd{sum}\hldef{(pi)}     \hlcom{## Probability of surviving t to t+1}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1023,10 +1031,10 @@ for(i in 1:n) {
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nDeer} \hlkwb{<-} \hlnum{100}
-\hlstd{nDays} \hlkwb{<-} \hlnum{100}
-\hlstd{z} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{, nDeer, nDays)}
-\hlstd{z[,}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlnum{4}  \hlcom{## Everyone starts in state 4 (alive)}
+\hldef{nDeer} \hlkwb{<-} \hlnum{100}
+\hldef{nDays} \hlkwb{<-} \hlnum{100}
+\hldef{z} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{, nDeer, nDays)}
+\hldef{z[,}\hlnum{1}\hldef{]} \hlkwb{<-} \hlnum{4}  \hlcom{## Everyone starts in state 4 (alive)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1042,9 +1050,9 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{Phi} \hlkwb{<-} \hlkwd{diag}\hlstd{(}\hlnum{4}\hlstd{)}
-\hlkwd{rownames}\hlstd{(Phi)} \hlkwb{<-} \hlkwd{colnames}\hlstd{(Phi)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"cougar"}\hlstd{,} \hlstr{"bear"}\hlstd{,} \hlstr{"wolf"}\hlstd{,} \hlstr{"alive"}\hlstd{)}
-\hlstd{Phi[}\hlnum{4}\hlstd{,]} \hlkwb{<-} \hlstd{pi}
+\hldef{Phi} \hlkwb{<-} \hlkwd{diag}\hldef{(}\hlnum{4}\hldef{)}
+\hlkwd{rownames}\hldef{(Phi)} \hlkwb{<-} \hlkwd{colnames}\hldef{(Phi)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"cougar"}\hldef{,} \hlsng{"bear"}\hldef{,} \hlsng{"wolf"}\hldef{,} \hlsng{"alive"}\hldef{)}
+\hldef{Phi[}\hlnum{4}\hldef{,]} \hlkwb{<-} \hldef{pi}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1064,11 +1072,11 @@ alive  & 0.002      & 0.017 & 0.047 & 0.934  \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nDeer) \{}
-    \hlkwa{for}\hlstd{(t} \hlkwa{in} \hlnum{2}\hlopt{:}\hlstd{nDays) \{}
-        \hlstd{z[i,t]} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{rmultinom}\hlstd{(}\hlkwc{n}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{size}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{prob}\hlstd{=Phi[z[i,t}\hlopt{-}\hlnum{1}\hlstd{],])}\hlopt{==}\hlnum{1}\hlstd{)}
-    \hlstd{\}}
-\hlstd{\}}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nDeer) \{}
+    \hlkwa{for}\hldef{(t} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{nDays) \{}
+        \hldef{z[i,t]} \hlkwb{<-} \hlkwd{which}\hldef{(}\hlkwd{rmultinom}\hldef{(}\hlkwc{n}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{size}\hldef{=}\hlnum{1}\hldef{,} \hlkwc{prob}\hldef{=Phi[z[i,t}\hlopt{-}\hlnum{1}\hldef{],])}\hlopt{==}\hlnum{1}\hldef{)}
+    \hldef{\}}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1083,13 +1091,13 @@ alive  & 0.002      & 0.017 & 0.047 & 0.934  \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{writeLines}\hlstd{(}\hlkwd{readLines}\hlstd{(}\hlstr{"surv-dtime-comp-risks.jag"}\hlstd{))}
+\hlkwd{writeLines}\hldef{(}\hlkwd{readLines}\hldef{(}\hlsng{"surv-dtime-comp-risks.jag"}\hldef{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \vspace{-6pt}
 \begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model{
 
@@ -1121,18 +1129,16 @@ for(i in 1:n) {
 
 
 
-
-
 \begin{frame}[fragile]
   \frametitle{JAGS}
   Data
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{Phi.data} \hlkwb{<-} \hlkwd{diag}\hlstd{(}\hlnum{4}\hlstd{)}
-\hlstd{Phi.data[}\hlnum{4}\hlstd{,]} \hlkwb{<-} \hlnum{NA}
-\hlstd{jd.comp.risk} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{z}\hlstd{=z,} \hlkwc{n}\hlstd{=nDeer,} \hlkwc{first}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,}\hlkwd{nrow}\hlstd{(z)),} \hlkwc{maxTime}\hlstd{=}\hlkwd{ncol}\hlstd{(z),}
-                     \hlkwc{nRisks}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{Phi}\hlstd{=Phi.data)}
+\hldef{Phi.data} \hlkwb{<-} \hlkwd{diag}\hldef{(}\hlnum{4}\hldef{)}
+\hldef{Phi.data[}\hlnum{4}\hldef{,]} \hlkwb{<-} \hlnum{NA}
+\hldef{jd.comp.risk} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=z,} \hlkwc{n}\hldef{=nDeer,} \hlkwc{first}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,}\hlkwd{nrow}\hldef{(z)),} \hlkwc{maxTime}\hldef{=}\hlkwd{ncol}\hldef{(z),}
+                     \hlkwc{nRisks}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{Phi}\hldef{=Phi.data)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1141,8 +1147,8 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{ji.comp.risk} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{log}\hlstd{(}\hlkwd{runif}\hlstd{(}\hlnum{3}\hlstd{)))}
-\hlstd{jp.comp.risk} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"pi"}\hlstd{)}
+\hldef{ji.comp.risk} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{beta0}\hldef{=}\hlkwd{log}\hldef{(}\hlkwd{runif}\hldef{(}\hlnum{3}\hldef{)))}
+\hldef{jp.comp.risk} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"pi"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
