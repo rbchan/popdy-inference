@@ -1,16 +1,19 @@
-## ----install-load,include=FALSE-----------------------------------------------
-if(!require(remotes))
-    install.packages("remotes")
-library(remotes)
-if(!require(openpopscr)) {
-    install_github("r-glennie/openpopscr", build = TRUE,
-                   build_opts = c("--no-resave-data", "--no-manual"),
-                   build_vignettes = TRUE)
-}
-library(openpopscr)
-if(!require(secr))
-    install.packages("secr")
-library(secr)
+## ----install-load,include=FALSE,eval=FALSE------------------------------------
+## if(!require(remotes))
+##     install.packages("remotes")
+## library(remotes)
+## install.packages("marked")
+## library(marked)
+## install.packages("igraph")
+## if(!require(openpopscr)) {
+##     install_github("r-glennie/openpopscr", build = TRUE,
+##                    build_opts = c("--no-resave-data", "--no-manual"),
+##                    build_vignettes = TRUE)
+## }
+## library(openpopscr)
+## if(!require(secr))
+##     install.packages("secr")
+## library(secr)
 
 
 ## ----sim-norobust,size='footnotesize',echo=-1---------------------------------
@@ -44,9 +47,9 @@ z[,1:7]
 y[,1:7]
 
 
-## ----install-marked,include=FALSE---------------------------------------------
-if(!require(marked)) install.packages("marked")
-library(marked)
+## ----install-marked,include=FALSE,eval=FALSE----------------------------------
+## if(!require(marked)) install.packages("marked")
+## library(marked)
 
 
 ## ----marked-data,size='footnotesize'------------------------------------------
@@ -70,7 +73,7 @@ predict(fm0)
 ## ----jags-nonsp0,size='scriptsize',eval=FALSE---------------------------------
 ## writeLines(readLines("CJS-nonspatial.jag"))
 
-## ----jags-nonsp,size='scriptsize',background='lightblue',comment='',echo=FALSE----
+## ----jags-nonsp,size='scriptsize',background='beige',comment='',echo=FALSE----
 writeLines(readLines("CJS-nonspatial.jag"))
 
 
@@ -194,7 +197,7 @@ mod$get_par("phi", k = 1, m=1)
 ## ----jags-sp0,size='tiny',eval=FALSE------------------------------------------
 ## writeLines(readLines("CJS-spatial.jag"))
 
-## ----jags-sp,size='tiny',background='lightblue',comment='',echo=FALSE---------
+## ----jags-sp,size='tiny',background='beige',comment='',echo=FALSE-------------
 writeLines(readLines("CJS-spatial.jag"))
 
 
@@ -290,7 +293,7 @@ points(x, pch=3)
 ## ----jags-sp-move0,size='tiny',eval=FALSE-------------------------------------
 ## writeLines(readLines("CJS-spatial-move.jag"))
 
-## ----jags-sp-move,size='tiny',background='lightblue',comment='',echo=FALSE----
+## ----jags-sp-move,size='tiny',background='beige',comment='',echo=FALSE--------
 writeLines(readLines("CJS-spatial-move.jag"))
 
 
