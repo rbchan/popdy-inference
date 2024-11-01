@@ -21,6 +21,7 @@
 
 - Leave as much time as possible for homework on Thursdays
 
+- Remember the American Oystercatcher data (on GDrive)
 
 ## For 2024
 
