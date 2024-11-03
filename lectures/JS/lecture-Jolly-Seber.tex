@@ -456,6 +456,86 @@
 \end{frame}
 
 
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of non-spatial JS model}
+  Format the capture histories for RMark.
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{y.bern.nonsp} \hlkwb{<-} \hlkwd{ifelse}\hldef{(}\hlkwd{apply}\hldef{(y.bern,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{3}\hldef{,}\hlnum{4}\hldef{), sum)}\hlopt{>}\hlnum{0}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
+\hldef{y.bern.nonsp.mat} \hlkwb{<-} \hlkwd{matrix}\hldef{(y.bern.nonsp,} \hlkwc{nrow}\hldef{=}\hlkwd{nrow}\hldef{(y.bern.nonsp))}
+\hldef{y.bern.ch} \hlkwb{<-} \hlkwd{apply}\hldef{(y.bern.nonsp.mat,} \hlnum{1}\hldef{, paste,} \hlkwc{collapse}\hldef{=}\hlsng{""}\hldef{)}
+\hldef{ch.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{ch}\hldef{=y.bern.ch)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Format the time interval information to distinguish primary sampling periods from secondary periods. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{intervals} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{, K}\hlopt{*}\hldef{T}\hlopt{-}\hlnum{1}\hldef{)}
+\hldef{intervals[}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=K,} \hlkwc{to}\hldef{=K}\hlopt{*}\hldef{T}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{by}\hldef{=K)]} \hlkwb{<-} \hlnum{1}
+\hldef{intervals}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+  \pause
+  \vfill
+  Fit the Robust Design model without temporary emigration. 
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{mark1} \hlkwb{<-} \hlkwd{mark}\hldef{(}\hlkwc{data}\hldef{=ch.data,} \hlkwc{model}\hldef{=}\hlsng{"Robust"}\hldef{,} \hlkwc{model.parameters}\hldef{=}\hlkwd{list}\hldef{(}
+                \hlkwc{f0}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{),} \hlkwc{S}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{),}
+                \hlkwc{GammaDoublePrime}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{fixed}\hldef{=}\hlnum{0}\hldef{),}
+                \hlkwc{GammaPrime}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{fixed}\hldef{=}\hlnum{0}\hldef{),}
+                \hlkwc{p}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{share}\hldef{=}\hlnum{TRUE}\hldef{)),}
+              \hlkwc{time.intervals}\hldef{=intervals,} \hlkwc{silent}\hldef{=}\hlnum{TRUE}\hldef{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of non-spatial JS model}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{mark1}\hlopt{$}\hldef{results}\hlopt{$}\hldef{real}
+\end{alltt}
+\begin{verbatim}
+##                      estimate        se       lcl       ucl fixed note
+## S g1 c1 a0 t1       0.6218040 0.0402283 0.5403929 0.6968833           
+## p g1 s1 t1          0.6544172 0.0241780 0.6056282 0.7001588           
+## f0 g1 a0 s1 t0      0.1010123 0.3109896 0.0050080 2.0374188           
+## Gamma'' g1 c1 a0 t1 0.0000000 0.0000000 0.0000000 0.0000000 Fixed
+\end{verbatim}
+\begin{alltt}
+\hldef{mark1}\hlopt{$}\hldef{results}\hlopt{$}\hldef{derived}
+\end{alltt}
+\begin{verbatim}
+## $`N Population Size`
+##    estimate        se      lcl      ucl
+## 1  18.10101 0.3109896 18.00501 20.03742
+## 2  21.10101 0.3109896 21.00501 23.03742
+## 3  19.10101 0.3109896 19.00501 21.03742
+## 4  17.10101 0.3109896 17.00501 19.03742
+## 5  17.10101 0.3109896 17.00501 19.03742
+## 6  14.10101 0.3109896 14.00501 16.03742
+## 7  13.10101 0.3109896 13.00501 15.03742
+## 8  14.10101 0.3109896 14.00501 16.03742
+## 9  10.10101 0.3109896 10.00501 12.03742
+## 10 13.10101 0.3109896 13.00501 15.03742
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
 
 
 \begin{frame}[fragile]
