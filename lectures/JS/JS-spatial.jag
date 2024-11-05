@@ -1,14 +1,14 @@
 model {
 phi ~ dunif(0,1)      ## Survival
-gamma ~ dunif(0, 5)   ## Per-capita recruitment rate
+beta ~ dunif(0, 5)    ## Per-capita recruitment rate
 p0 ~ dunif(0,1)       ## Baseline capture probability
 sigma ~ dunif(0, 2)   ## Scale parameter of capture function
 psi ~ dunif(0,1)    
 for(t in 1:T) {
-  N[t] <- sum(z[,t])      ## Abundance
-  ER[t] <- N[t]*gamma     ## Expected number of recruits in year t
+  N[t] <- sum(z[,t])     ## Abundance
+  ER[t] <- N[t]*beta     ## Expected number of recruits in year t
   totalAvail[t] <- sum(recruitable[,t])  ## nAvailable to be recruited
-  gammaPrime[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
+  alpha[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
 for(i in 1:M) {
   z[i,1] ~ dbern(psi)              ## Alive/dead state in year 1
   recruitable[i,1] <- 1 - z[i,1]   ## Recruitable next year if not recruited yet
@@ -19,7 +19,7 @@ for(i in 1:M) {
     p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))                   ## Cap prob
     y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }                      ## Data in year 1
   for(t in 2:T) {
-    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1]) ## Alive/dead state 
+    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*alpha[t-1]) ## Alive/dead state 
     died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)                 ## Did this guy die?
     recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)            ## Or was it recruited?
     recruitable[i,t] <- recruitable[i,t-1]*(1-z[i,t])

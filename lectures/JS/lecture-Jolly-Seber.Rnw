@@ -113,12 +113,12 @@ knit_theme$set("edit-kwrite")
 %   Survival and recruitment (local population dynamics)
 %   \begin{gather*}
 %     S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
-%     R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%     R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \beta)
 %   \end{gather*}
 %   \pause \vfill
 %   % {Recruitment}
 %   % \[
-%   %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%   %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \beta)
 %   % \]
 %   % \pause \vfill
 %   Movement (emigration and immigration)
@@ -205,7 +205,7 @@ knit_theme$set("edit-kwrite")
     z_{i,t} \sim
     \begin{cases}
       \mbox{Bernoulli}(z_{i,t-1}\phi) & \quad \text{if previously recruited} \\
-      \mbox{Bernoulli}(\gamma'_t) & \quad \text{if not yet recruited} 
+      \mbox{Bernoulli}(\alpha_t) & \quad \text{if not yet recruited} 
     \end{cases}
   \]
   \vfill
@@ -238,7 +238,7 @@ K <- 3       # 3 secondary sampling occasion
 lambda <- 25 # Expected value of abundance in year 1
 M <- 500     # Easiest way to simulate data is using data augmentation
 phi <- 0.7   # Apparent survival
-gamma <- 0.3 # Per-capital recruitment rate
+beta <- 0.3 # Per-capital recruitment rate
 p0 <- 0.4    # Baseline capture prob
 sigma <- 0.1 # Scale parameter of encounter rate function
 @
@@ -275,12 +275,12 @@ recruitable[,1] <- 1-z[,1]
 N <- integer(T)
 N[1] <- sum(z[,1])
 for(t in 2:T) {
-    ER <- N[t-1]*gamma # expected number of recruits
+    ER <- N[t-1]*beta # expected number of recruits
     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
-    gammaPrime <- ER/prevA
-    if(gammaPrime > 1) stop("M isn't big enough")
+    alpha <- ER/prevA
+    if(alpha > 1) stop("M isn't big enough")
     z[,t] <- rbinom(M, 1, (1-recruitable[,t-1])*z[,t-1]*phi +
-                          recruitable[,t-1]*gammaPrime)
+                          recruitable[,t-1]*alpha)
     recruitable[,t] <- recruitable[,t-1]*(1-z[,t])
     N[t] <- sum(z[,t])  }
 @
@@ -375,51 +375,51 @@ str(y)
 \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{Likelihood analysis of non-spatial JS model}
-  Format the capture histories for RMark.
-<<rmark-ch,size='scriptsize'>>=
-y.bern.nonsp <- ifelse(apply(y.bern, c(1,3,4), sum)>0, 1, 0)
-y.bern.nonsp.mat <- matrix(y.bern.nonsp, nrow=nrow(y.bern.nonsp))
-y.bern.ch <- apply(y.bern.nonsp.mat, 1, paste, collapse="")
-ch.data <- data.frame(ch=y.bern.ch)
-@
-  \pause
-  \vfill
-  Format the time interval information to distinguish primary sampling periods from secondary periods. 
-<<rmark-intervals,size='scriptsize'>>=
-intervals <- rep(0, K*T-1)
-intervals[seq(from=K, to=K*T-1, by=K)] <- 1
-intervals
-@
-  \pause
-  \vfill
-  Fit the Robust Design model without temporary emigration. 
-<<rmark-rd,size='scriptsize',warning=FALSE,message=FALSE,results='hide'>>=
-mark1 <- mark(data=ch.data, model="Robust", model.parameters=list(
-                f0=list(formula=~1), S=list(formula=~1),
-                GammaPrime=list(formula=~1, fixed=0),
-                GammaDoublePrime=list(formula=~1, fixed=0),
-                p=list(formula=~1, share=TRUE)),
-              time.intervals=intervals, silent=TRUE)
-@   
-\end{frame}
+%% \begin{frame}[fragile]
+%%   \frametitle{Likelihood analysis of non-spatial JS model}
+%%   Format the capture histories for RMark.
+%% <<rmark-ch,size='scriptsize'>>=
+%% y.bern.nonsp <- ifelse(apply(y.bern, c(1,3,4), sum)>0, 1, 0)
+%% y.bern.nonsp.mat <- matrix(y.bern.nonsp, nrow=nrow(y.bern.nonsp))
+%% y.bern.ch <- apply(y.bern.nonsp.mat, 1, paste, collapse="")
+%% ch.data <- data.frame(ch=y.bern.ch)
+%% @
+%%   \pause
+%%   \vfill
+%%   Format the time interval information to distinguish primary sampling periods from secondary periods. 
+%% <<rmark-intervals,size='scriptsize'>>=
+%% intervals <- rep(0, K*T-1)
+%% intervals[seq(from=K, to=K*T-1, by=K)] <- 1
+%% intervals
+%% @
+%%   \pause
+%%   \vfill
+%%   Fit the Robust Design model without temporary emigration. 
+%% <<rmark-rd,size='scriptsize',warning=FALSE,message=FALSE,results='hide'>>=
+%% mark1 <- mark(data=ch.data, model="Robust", model.parameters=list(
+%%                 f0=list(formula=~1), S=list(formula=~1),
+%%                 GammaPrime=list(formula=~1, fixed=0),
+%%                 GammaDoublePrime=list(formula=~1, fixed=0),
+%%                 p=list(formula=~1, share=TRUE)),
+%%               time.intervals=intervals, silent=TRUE)
+%% @   
+%% \end{frame}
+
+
+%% \begin{frame}[fragile]
+%%   \frametitle{Likelihood analysis of non-spatial JS model}
+%% <<rmark-rd-est,size='scriptsize'>>=
+%% mark1$results$real
+%% mark1$results$derived
+%% @   
+%% \end{frame}
 
 
 \begin{frame}[fragile]
-  \frametitle{Likelihood analysis of non-spatial JS model}
-<<rmark-rd-est,size='scriptsize'>>=
-mark1$results$real
-mark1$results$derived
-@   
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Likelihood analysis of spatial JS model}
-Begin by making a mask in `secr'
+  \frametitle{Likelihood analysis using {\tt openCR}}
+Begin by making a mask
 <<mask,size='scriptsize',out.width="60%",fig.align="center",results='hide',message=FALSE>>=
-library(openpopscr)
+library(openCR)
 trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
 traps <- read.traps(data=trap.df, detector="proximity")
 mask <- make.mask(traps=traps, buffer=250)
@@ -430,7 +430,7 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial JS model}
-Format for `secr' (with robust design)
+Format capture histories' (with robust design)
 <<JS-model-new,size='scriptsize'>>=
 y.secr <- y.bern
 year <- rep(slice.index(y.bern, 4), y.secr)  ## Primary period
@@ -442,15 +442,51 @@ caps <- data.frame(session=1,
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
 @
 \vfill
-Then format for `openpopscr'
-<<format-openpop,size='scriptsize'>>=
-js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
-@ 
+Indicate the number of primary periods between each sampling occasion.
+<<rmark-intervals,size='scriptsize'>>=
+timeintervals <- rep(0, K*T-1)
+timeintervals[seq(from=K, to=K*T-1, by=K)] <- 1
+timeintervals
+intervals(capthist) <- timeintervals ## Add to capthist
+@
 \end{frame}
 
 
 \begin{frame}[fragile]
-  \frametitle{Likelihood analysis}
+  \frametitle{Likelihood analysis of non-spatial JS model}
+  Fit the non-spatial Jolly-Seber model
+<<js-mod-fit-opencr-nonsp, size="footnotesize">>=
+fm.nonsp <- openCR.fit(capthist, type="JSSAf",
+                       model=list(f~1, phi~1, p~1))
+derived.pars <- derived(fm.nonsp)$est[,c("f","phi","lambda","N")]
+print(derived.pars, digits=2)
+@ 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial JS model}
+  Fit the spatial Jolly-Seber model using {\tt openCR}
+<<js-mod-fit-opencr, size="footnotesize",eval=FALSE>>=
+fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
+                    model=list(f~1, phi~1, p~1), mask=mask)
+@
+\centering %\alert
+Takes a long time to run! \\
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial JS model}
+Format data for `openpopscr'
+<<format-openpop,size='scriptsize'>>=
+library(openpopscr)
+js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
+@ 
 Create the model object and then fit it
 <<js-mod-fit,size='scriptsize',results='hide',cache=TRUE,eval=TRUE,warning=FALSE,message=FALSE>>=
 start <- get_start_values(js.data, model = "JsModel")
@@ -527,13 +563,13 @@ jags.data1 <- list(y=yz, M=M, x=x, J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 <<zi,size='scriptsize'>>=
 zi <- matrix(0, M, T)
 zi[1:nrow(y),] <- 1
-ji1 <- function() list(phi=0.01, gamma=0.001, z=zi)
-jp1 <- c("phi", "gamma", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
+ji1 <- function() list(phi=0.01, beta=0.001, z=zi)
+jp1 <- c("phi", "beta", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
 @
 \pause
 \vfill
   {\normalsize Fit the model}
-<<jags-run,size='scriptsize',results='hide',cache=TRUE>>=
+<<jags-run,size='scriptsize',results='hide',message=FALSE,cache=TRUE>>=
 library(jagsUI)
 jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
                                  parameters.to.save=jp1,
@@ -563,7 +599,7 @@ abline(v=M, lwd=3, col="blue")
 \begin{frame}[fragile]
   \frametitle{Posterior distributions}
 <<jc1,out.width='60%',fig.align='center',size='scriptsize'>>=
-plot(jags.post.samples1[,c("phi", "gamma", "p0", "sigma")])
+plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
 @
 % \begin{center}
 %   \fbox{\includegraphics[width=0.7\textwidth]{Open-JS-jc1}}
@@ -797,11 +833,11 @@ legend(1, 30, c("Actual", "Estimated"),
 % T <- 10      # years/primary periods
 % K <- 3       # 3 secondary sampling occasion
 % ## Is it necessary to be far from equilibrium to detect density-dependence?
-% ## Equilibrium here is where (1-phi) == gamma, where gamma is function of N
+% ## Equilibrium here is where (1-phi) == beta, where beta is function of N
 % N0 <- 10     # Abundance in year 1
 % M <- 500     # Easiest way to simulate data is using data augmentation
 % phi <- 0.7   # Apparent survival
-% ##gamma <- 0.3 # Per-capital recruitment rate
+% ##beta <- 0.3 # Per-capital recruitment rate
 % nu0 <- 2
 % nu1 <- 0.05
 % p0 <- 0.4
@@ -839,14 +875,14 @@ legend(1, 30, c("Actual", "Estimated"),
 % recruitable[(N0+1):M,1] <- 1
 % for(t in 2:T) {
 %     prevN <- sum(z2[,t-1]) # number alive at t-1
-%     gamma <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
-%     ER <- prevN*gamma # expected number of recruits
+%     beta <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
+%     ER <- prevN*beta # expected number of recruits
 %     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
-%     gammaPrime <- ER/prevA
-%     if(gammaPrime > 1)
+%     alpha <- ER/prevA
+%     if(alpha > 1)
 %         stop("M isn't big enough")
 %     for(i in 1:M) {
-%         z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
+%         z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*alpha)
 %         recruitable[i,t] <- 1 - max(z2[i,1:(t)]) # to be recruited
 %         died[i,t] <- z2[i,t-1]==1 & z2[i,t]==0
 %         recruited[i,t] <- z2[i,t]==1 & z2[i,t-1]==0
@@ -1039,8 +1075,8 @@ legend(1, 30, c("Actual", "Estimated"),
     \item We could have movement just like we did with CJS models
     \item Lots of tricks for speeding up MCMC
     \begin{itemize}
-      \item Replace \inr{ER[t] <- N[t]*gamma} with \inr{ER[t] <- EN[t]*gamma} where \inr{EN} is the expected value of $N$.
-      \item Repalce \inr{recruitable[i,t-1]*gammaPrime[t-1]} with \inr{Erecruitable[i,t-1]*gammaPrime[t-1]}, which again is expected value rather than the realized value
+      \item Replace \inr{ER[t] <- N[t]*beta} with \inr{ER[t] <- EN[t]*beta} where \inr{EN} is the expected value of $N$.
+      \item Repalce \inr{recruitable[i,t-1]*alpha[t-1]} with \inr{Erecruitable[i,t-1]*alpha[t-1]}, which again is expected value rather than the realized value
       \item These tricks result in approximations, but they should be very close to desired inferences. 
     \end{itemize}
   \end{itemize}

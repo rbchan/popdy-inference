@@ -158,12 +158,12 @@
 %   Survival and recruitment (local population dynamics)
 %   \begin{gather*}
 %     S_{s,t} \sim \mbox{Binomial}(N_{s,t-1}, \phi) \\
-%     R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%     R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \beta)
 %   \end{gather*}
 %   \pause \vfill
 %   % {Recruitment}
 %   % \[
-%   %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \gamma)
+%   %   R_{s,t} \sim \mbox{Poisson}(N_{s,t-1} \beta)
 %   % \]
 %   % \pause \vfill
 %   Movement (emigration and immigration)
@@ -250,7 +250,7 @@
     z_{i,t} \sim
     \begin{cases}
       \mbox{Bernoulli}(z_{i,t-1}\phi) & \quad \text{if previously recruited} \\
-      \mbox{Bernoulli}(\gamma'_t) & \quad \text{if not yet recruited} 
+      \mbox{Bernoulli}(\alpha_t) & \quad \text{if not yet recruited} 
     \end{cases}
   \]
   \vfill
@@ -285,7 +285,7 @@
 \hldef{lambda} \hlkwb{<-} \hlnum{25} \hlcom{# Expected value of abundance in year 1}
 \hldef{M} \hlkwb{<-} \hlnum{500}     \hlcom{# Easiest way to simulate data is using data augmentation}
 \hldef{phi} \hlkwb{<-} \hlnum{0.7}   \hlcom{# Apparent survival}
-\hldef{gamma} \hlkwb{<-} \hlnum{0.3} \hlcom{# Per-capital recruitment rate}
+\hldef{beta} \hlkwb{<-} \hlnum{0.3} \hlcom{# Per-capital recruitment rate}
 \hldef{p0} \hlkwb{<-} \hlnum{0.4}    \hlcom{# Baseline capture prob}
 \hldef{sigma} \hlkwb{<-} \hlnum{0.1} \hlcom{# Scale parameter of encounter rate function}
 \end{alltt}
@@ -330,12 +330,12 @@
 \hldef{N} \hlkwb{<-} \hlkwd{integer}\hldef{(T)}
 \hldef{N[}\hlnum{1}\hldef{]} \hlkwb{<-} \hlkwd{sum}\hldef{(z[,}\hlnum{1}\hldef{])}
 \hlkwa{for}\hldef{(t} \hlkwa{in} \hlnum{2}\hlopt{:}\hldef{T) \{}
-    \hldef{ER} \hlkwb{<-} \hldef{N[t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{gamma} \hlcom{# expected number of recruits}
+    \hldef{ER} \hlkwb{<-} \hldef{N[t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{beta} \hlcom{# expected number of recruits}
     \hldef{prevA} \hlkwb{<-} \hlkwd{sum}\hldef{(recruitable[,t}\hlopt{-}\hlnum{1}\hldef{])} \hlcom{# Number available to be recruited}
-    \hldef{gammaPrime} \hlkwb{<-} \hldef{ER}\hlopt{/}\hldef{prevA}
-    \hlkwa{if}\hldef{(gammaPrime} \hlopt{>} \hlnum{1}\hldef{)} \hlkwd{stop}\hldef{(}\hlsng{"M isn't big enough"}\hldef{)}
+    \hldef{alpha} \hlkwb{<-} \hldef{ER}\hlopt{/}\hldef{prevA}
+    \hlkwa{if}\hldef{(alpha} \hlopt{>} \hlnum{1}\hldef{)} \hlkwd{stop}\hldef{(}\hlsng{"M isn't big enough"}\hldef{)}
     \hldef{z[,t]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(M,} \hlnum{1}\hldef{, (}\hlnum{1}\hlopt{-}\hldef{recruitable[,t}\hlopt{-}\hlnum{1}\hldef{])}\hlopt{*}\hldef{z[,t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{phi} \hlopt{+}
-                          \hldef{recruitable[,t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{gammaPrime)}
+                          \hldef{recruitable[,t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{alpha)}
     \hldef{recruitable[,t]} \hlkwb{<-} \hldef{recruitable[,t}\hlopt{-}\hlnum{1}\hldef{]}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{z[,t])}
     \hldef{N[t]} \hlkwb{<-} \hlkwd{sum}\hldef{(z[,t])  \}}
 \end{alltt}
@@ -456,95 +456,53 @@
 \end{frame}
 
 
-\begin{frame}[fragile]
-  \frametitle{Likelihood analysis of non-spatial JS model}
-  Format the capture histories for RMark.
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{y.bern.nonsp} \hlkwb{<-} \hlkwd{ifelse}\hldef{(}\hlkwd{apply}\hldef{(y.bern,} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{3}\hldef{,}\hlnum{4}\hldef{), sum)}\hlopt{>}\hlnum{0}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}
-\hldef{y.bern.nonsp.mat} \hlkwb{<-} \hlkwd{matrix}\hldef{(y.bern.nonsp,} \hlkwc{nrow}\hldef{=}\hlkwd{nrow}\hldef{(y.bern.nonsp))}
-\hldef{y.bern.ch} \hlkwb{<-} \hlkwd{apply}\hldef{(y.bern.nonsp.mat,} \hlnum{1}\hldef{, paste,} \hlkwc{collapse}\hldef{=}\hlsng{""}\hldef{)}
-\hldef{ch.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{ch}\hldef{=y.bern.ch)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Format the time interval information to distinguish primary sampling periods from secondary periods. 
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{intervals} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{, K}\hlopt{*}\hldef{T}\hlopt{-}\hlnum{1}\hldef{)}
-\hldef{intervals[}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=K,} \hlkwc{to}\hldef{=K}\hlopt{*}\hldef{T}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{by}\hldef{=K)]} \hlkwb{<-} \hlnum{1}
-\hldef{intervals}
-\end{alltt}
-\begin{verbatim}
-##  [1] 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-  \pause
-  \vfill
-  Fit the Robust Design model without temporary emigration. 
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{mark1} \hlkwb{<-} \hlkwd{mark}\hldef{(}\hlkwc{data}\hldef{=ch.data,} \hlkwc{model}\hldef{=}\hlsng{"Robust"}\hldef{,} \hlkwc{model.parameters}\hldef{=}\hlkwd{list}\hldef{(}
-                \hlkwc{f0}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{),} \hlkwc{S}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{),}
-                \hlkwc{GammaDoublePrime}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{fixed}\hldef{=}\hlnum{0}\hldef{),}
-                \hlkwc{GammaPrime}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{fixed}\hldef{=}\hlnum{0}\hldef{),}
-                \hlkwc{p}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{formula}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{share}\hldef{=}\hlnum{TRUE}\hldef{)),}
-              \hlkwc{time.intervals}\hldef{=intervals,} \hlkwc{silent}\hldef{=}\hlnum{TRUE}\hldef{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{frame}
+%% \begin{frame}[fragile]
+%%   \frametitle{Likelihood analysis of non-spatial JS model}
+%%   Format the capture histories for RMark.
+%% <<rmark-ch,size='scriptsize'>>=
+%% y.bern.nonsp <- ifelse(apply(y.bern, c(1,3,4), sum)>0, 1, 0)
+%% y.bern.nonsp.mat <- matrix(y.bern.nonsp, nrow=nrow(y.bern.nonsp))
+%% y.bern.ch <- apply(y.bern.nonsp.mat, 1, paste, collapse="")
+%% ch.data <- data.frame(ch=y.bern.ch)
+%% @
+%%   \pause
+%%   \vfill
+%%   Format the time interval information to distinguish primary sampling periods from secondary periods. 
+%% <<rmark-intervals,size='scriptsize'>>=
+%% intervals <- rep(0, K*T-1)
+%% intervals[seq(from=K, to=K*T-1, by=K)] <- 1
+%% intervals
+%% @
+%%   \pause
+%%   \vfill
+%%   Fit the Robust Design model without temporary emigration. 
+%% <<rmark-rd,size='scriptsize',warning=FALSE,message=FALSE,results='hide'>>=
+%% mark1 <- mark(data=ch.data, model="Robust", model.parameters=list(
+%%                 f0=list(formula=~1), S=list(formula=~1),
+%%                 GammaPrime=list(formula=~1, fixed=0),
+%%                 GammaDoublePrime=list(formula=~1, fixed=0),
+%%                 p=list(formula=~1, share=TRUE)),
+%%               time.intervals=intervals, silent=TRUE)
+%% @   
+%% \end{frame}
+
+
+%% \begin{frame}[fragile]
+%%   \frametitle{Likelihood analysis of non-spatial JS model}
+%% <<rmark-rd-est,size='scriptsize'>>=
+%% mark1$results$real
+%% mark1$results$derived
+%% @   
+%% \end{frame}
 
 
 \begin{frame}[fragile]
-  \frametitle{Likelihood analysis of non-spatial JS model}
+  \frametitle{Likelihood analysis using {\tt openCR}}
+Begin by making a mask
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{mark1}\hlopt{$}\hldef{results}\hlopt{$}\hldef{real}
-\end{alltt}
-\begin{verbatim}
-##                      estimate        se       lcl       ucl fixed note
-## S g1 c1 a0 t1       0.6218040 0.0402283 0.5403929 0.6968833           
-## p g1 s1 t1          0.6544172 0.0241780 0.6056282 0.7001588           
-## f0 g1 a0 s1 t0      0.1010123 0.3109896 0.0050080 2.0374188           
-## Gamma'' g1 c1 a0 t1 0.0000000 0.0000000 0.0000000 0.0000000 Fixed
-\end{verbatim}
-\begin{alltt}
-\hldef{mark1}\hlopt{$}\hldef{results}\hlopt{$}\hldef{derived}
-\end{alltt}
-\begin{verbatim}
-## $`N Population Size`
-##    estimate        se      lcl      ucl
-## 1  18.10101 0.3109896 18.00501 20.03742
-## 2  21.10101 0.3109896 21.00501 23.03742
-## 3  19.10101 0.3109896 19.00501 21.03742
-## 4  17.10101 0.3109896 17.00501 19.03742
-## 5  17.10101 0.3109896 17.00501 19.03742
-## 6  14.10101 0.3109896 14.00501 16.03742
-## 7  13.10101 0.3109896 13.00501 15.03742
-## 8  14.10101 0.3109896 14.00501 16.03742
-## 9  10.10101 0.3109896 10.00501 12.03742
-## 10 13.10101 0.3109896 13.00501 15.03742
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Likelihood analysis of spatial JS model}
-Begin by making a mask in `secr'
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hldef{(openpopscr)}
+\hlkwd{library}\hldef{(openCR)}
 \hldef{trap.df} \hlkwb{<-} \hlkwd{data.frame}\hldef{(x}\hlopt{*}\hlnum{1000}\hldef{);} \hlkwd{colnames}\hldef{(trap.df)} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"x"}\hldef{,}\hlsng{"y"}\hldef{)}
 \hldef{traps} \hlkwb{<-} \hlkwd{read.traps}\hldef{(}\hlkwc{data}\hldef{=trap.df,} \hlkwc{detector}\hldef{=}\hlsng{"proximity"}\hldef{)}
 \hldef{mask} \hlkwb{<-} \hlkwd{make.mask}\hldef{(}\hlkwc{traps}\hldef{=traps,} \hlkwc{buffer}\hldef{=}\hlnum{250}\hldef{)}
@@ -563,7 +521,7 @@ Begin by making a mask in `secr'
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial JS model}
-Format for `secr' (with robust design)
+Format capture histories' (with robust design)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -579,11 +537,19 @@ Format for `secr' (with robust design)
 \end{kframe}
 \end{knitrout}
 \vfill
-Then format for `openpopscr'
+Indicate the number of primary periods between each sampling occasion.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{js.data} \hlkwb{<-} \hldef{ScrData}\hlopt{$}\hlkwd{new}\hldef{(capthist, mask,} \hlkwc{primary}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hlopt{:}\hldef{T,} \hlkwc{each}\hldef{=K))}
+\hldef{timeintervals} \hlkwb{<-} \hlkwd{rep}\hldef{(}\hlnum{0}\hldef{, K}\hlopt{*}\hldef{T}\hlopt{-}\hlnum{1}\hldef{)}
+\hldef{timeintervals[}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=K,} \hlkwc{to}\hldef{=K}\hlopt{*}\hldef{T}\hlopt{-}\hlnum{1}\hldef{,} \hlkwc{by}\hldef{=K)]} \hlkwb{<-} \hlnum{1}
+\hldef{timeintervals}
+\end{alltt}
+\begin{verbatim}
+##  [1] 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0
+\end{verbatim}
+\begin{alltt}
+\hlkwd{intervals}\hldef{(capthist)} \hlkwb{<-} \hldef{timeintervals} \hlcom{## Add to capthist}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -591,7 +557,65 @@ Then format for `openpopscr'
 
 
 \begin{frame}[fragile]
-  \frametitle{Likelihood analysis}
+  \frametitle{Likelihood analysis of non-spatial JS model}
+  Fit the non-spatial Jolly-Seber model
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{fm.nonsp} \hlkwb{<-} \hlkwd{openCR.fit}\hldef{(capthist,} \hlkwc{type}\hldef{=}\hlsng{"JSSAf"}\hldef{,}
+                       \hlkwc{model}\hldef{=}\hlkwd{list}\hldef{(f}\hlopt{~}\hlnum{1}\hldef{, phi}\hlopt{~}\hlnum{1}\hldef{, p}\hlopt{~}\hlnum{1}\hldef{))}
+\hldef{derived.pars} \hlkwb{<-} \hlkwd{derived}\hldef{(fm.nonsp)}\hlopt{$}\hldef{est[,}\hlkwd{c}\hldef{(}\hlsng{"f"}\hldef{,}\hlsng{"phi"}\hldef{,}\hlsng{"lambda"}\hldef{,}\hlsng{"N"}\hldef{)]}
+\hlkwd{print}\hldef{(derived.pars,} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
+\end{alltt}
+\begin{verbatim}
+##       f  phi lambda  N
+## 1  0.34 0.62   0.96 19
+## 2  0.34 0.62   0.96 19
+## 3  0.34 0.62   0.96 18
+## 4  0.34 0.62   0.96 17
+## 5  0.34 0.62   0.96 17
+## 6  0.34 0.62   0.96 16
+## 7  0.34 0.62   0.96 15
+## 8  0.34 0.62   0.96 15
+## 9  0.34 0.62   0.96 14
+## 10   NA   NA     NA 14
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial JS model}
+  Fit the spatial Jolly-Seber model using {\tt openCR}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hldef{fm.sp} \hlkwb{<-} \hlkwd{openCR.fit}\hldef{(capthist,} \hlkwc{type}\hldef{=}\hlsng{"JSSAsecrf"}\hldef{,}
+                    \hlkwc{model}\hldef{=}\hlkwd{list}\hldef{(f}\hlopt{~}\hlnum{1}\hldef{, phi}\hlopt{~}\hlnum{1}\hldef{, p}\hlopt{~}\hlnum{1}\hldef{),} \hlkwc{mask}\hldef{=mask)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\centering %\alert
+Takes a long time to run! \\
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Likelihood analysis of spatial JS model}
+Format data for `openpopscr'
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hldef{(openpopscr)}
+\hldef{js.data} \hlkwb{<-} \hldef{ScrData}\hlopt{$}\hlkwd{new}\hldef{(capthist, mask,} \hlkwc{primary}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hlopt{:}\hldef{T,} \hlkwc{each}\hldef{=K))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 Create the model object and then fit it
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -692,15 +716,15 @@ Back-transform
 \begin{verbatim}
 model {
 phi ~ dunif(0,1)      ## Survival
-gamma ~ dunif(0, 5)   ## Per-capita recruitment rate
+beta ~ dunif(0, 5)    ## Per-capita recruitment rate
 p0 ~ dunif(0,1)       ## Baseline capture probability
 sigma ~ dunif(0, 2)   ## Scale parameter of capture function
 psi ~ dunif(0,1)    
 for(t in 1:T) {
-  N[t] <- sum(z[,t])      ## Abundance
-  ER[t] <- N[t]*gamma     ## Expected number of recruits in year t
+  N[t] <- sum(z[,t])     ## Abundance
+  ER[t] <- N[t]*beta     ## Expected number of recruits in year t
   totalAvail[t] <- sum(recruitable[,t])  ## nAvailable to be recruited
-  gammaPrime[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
+  alpha[t] <- ER[t]/totalAvail[t] } ## Pr(recruited in year t|available)
 for(i in 1:M) {
   z[i,1] ~ dbern(psi)              ## Alive/dead state in year 1
   recruitable[i,1] <- 1 - z[i,1]   ## Recruitable next year if not recruited yet
@@ -711,7 +735,7 @@ for(i in 1:M) {
     p[i,j] <- p0*exp(-d[i,j]^2/(2*sigma^2))                   ## Cap prob
     y[i,j,1] ~ dbin(z[i,1]*p[i,j], K)  }                      ## Data in year 1
   for(t in 2:T) {
-    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*gammaPrime[t-1]) ## Alive/dead state 
+    z[i,t] ~ dbern(z[i,t-1]*phi + recruitable[i,t-1]*alpha[t-1]) ## Alive/dead state 
     died[i,t] <- (z[i,t-1]==1) && (z[i,t]==0)                 ## Did this guy die?
     recruited[i,t] <- (z[i,t-1]==0) && (z[i,t]==1)            ## Or was it recruited?
     recruitable[i,t] <- recruitable[i,t-1]*(1-z[i,t])
@@ -755,8 +779,8 @@ Ntot <- sum(everAlive)                     ## Super-population size
 \begin{alltt}
 \hldef{zi} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{0}\hldef{, M, T)}
 \hldef{zi[}\hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(y),]} \hlkwb{<-} \hlnum{1}
-\hldef{ji1} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{phi}\hldef{=}\hlnum{0.01}\hldef{,} \hlkwc{gamma}\hldef{=}\hlnum{0.001}\hldef{,} \hlkwc{z}\hldef{=zi)}
-\hldef{jp1} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"phi"}\hldef{,} \hlsng{"gamma"}\hldef{,} \hlsng{"p0"}\hldef{,} \hlsng{"sigma"}\hldef{,} \hlsng{"N"}\hldef{,} \hlsng{"Deaths"}\hldef{,} \hlsng{"Recruits"}\hldef{,} \hlsng{"Ntot"}\hldef{)}
+\hldef{ji1} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{phi}\hldef{=}\hlnum{0.01}\hldef{,} \hlkwc{beta}\hldef{=}\hlnum{0.001}\hldef{,} \hlkwc{z}\hldef{=zi)}
+\hldef{jp1} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"phi"}\hldef{,} \hlsng{"beta"}\hldef{,} \hlsng{"p0"}\hldef{,} \hlsng{"sigma"}\hldef{,} \hlsng{"N"}\hldef{,} \hlsng{"Deaths"}\hldef{,} \hlsng{"Recruits"}\hldef{,} \hlsng{"Ntot"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -766,12 +790,12 @@ Ntot <- sum(everAlive)                     ## Super-population size
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples1} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data1,} \hlkwc{inits}\hlstd{=ji1,}
-                                 \hlkwc{parameters.to.save}\hlstd{=jp1,}
-                                 \hlkwc{model.file}\hlstd{=}\hlstr{"JS-spatial.jag"}\hlstd{,}
-                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples1} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data1,} \hlkwc{inits}\hldef{=ji1,}
+                                 \hlkwc{parameters.to.save}\hldef{=jp1,}
+                                 \hlkwc{model.file}\hldef{=}\hlsng{"JS-spatial.jag"}\hldef{,}
+                                 \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                 \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -809,7 +833,7 @@ Ntot <- sum(everAlive)                     ## Super-population size
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(jags.post.samples1[,}\hlkwd{c}\hldef{(}\hlsng{"phi"}\hldef{,} \hlsng{"gamma"}\hldef{,} \hlsng{"p0"}\hldef{,} \hlsng{"sigma"}\hldef{)])}
+\hlkwd{plot}\hldef{(jags.post.samples1[,}\hlkwd{c}\hldef{(}\hlsng{"phi"}\hldef{,} \hlsng{"beta"}\hldef{,} \hlsng{"p0"}\hldef{,} \hlsng{"sigma"}\hldef{)])}
 \end{alltt}
 \end{kframe}
 
@@ -1068,11 +1092,11 @@ Ntot <- sum(everAlive)                     ## Super-population size
 % T <- 10      # years/primary periods
 % K <- 3       # 3 secondary sampling occasion
 % ## Is it necessary to be far from equilibrium to detect density-dependence?
-% ## Equilibrium here is where (1-phi) == gamma, where gamma is function of N
+% ## Equilibrium here is where (1-phi) == beta, where beta is function of N
 % N0 <- 10     # Abundance in year 1
 % M <- 500     # Easiest way to simulate data is using data augmentation
 % phi <- 0.7   # Apparent survival
-% ##gamma <- 0.3 # Per-capital recruitment rate
+% ##beta <- 0.3 # Per-capital recruitment rate
 % nu0 <- 2
 % nu1 <- 0.05
 % p0 <- 0.4
@@ -1110,14 +1134,14 @@ Ntot <- sum(everAlive)                     ## Super-population size
 % recruitable[(N0+1):M,1] <- 1
 % for(t in 2:T) {
 %     prevN <- sum(z2[,t-1]) # number alive at t-1
-%     gamma <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
-%     ER <- prevN*gamma # expected number of recruits
+%     beta <- nu0*exp(-nu1*prevN) ## Density dependent recruitment rate
+%     ER <- prevN*beta # expected number of recruits
 %     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
-%     gammaPrime <- ER/prevA
-%     if(gammaPrime > 1)
+%     alpha <- ER/prevA
+%     if(alpha > 1)
 %         stop("M isn't big enough")
 %     for(i in 1:M) {
-%         z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*gammaPrime)
+%         z2[i,t] <- rbinom(1, 1, z2[i,t-1]*phi + recruitable[i,t-1]*alpha)
 %         recruitable[i,t] <- 1 - max(z2[i,1:(t)]) # to be recruited
 %         died[i,t] <- z2[i,t-1]==1 & z2[i,t]==0
 %         recruited[i,t] <- z2[i,t]==1 & z2[i,t-1]==0
@@ -1310,8 +1334,8 @@ Ntot <- sum(everAlive)                     ## Super-population size
     \item We could have movement just like we did with CJS models
     \item Lots of tricks for speeding up MCMC
     \begin{itemize}
-      \item Replace \inr{ER[t] <- N[t]*gamma} with \inr{ER[t] <- EN[t]*gamma} where \inr{EN} is the expected value of $N$.
-      \item Repalce \inr{recruitable[i,t-1]*gammaPrime[t-1]} with \inr{Erecruitable[i,t-1]*gammaPrime[t-1]}, which again is expected value rather than the realized value
+      \item Replace \inr{ER[t] <- N[t]*beta} with \inr{ER[t] <- EN[t]*beta} where \inr{EN} is the expected value of $N$.
+      \item Repalce \inr{recruitable[i,t-1]*alpha[t-1]} with \inr{Erecruitable[i,t-1]*alpha[t-1]}, which again is expected value rather than the realized value
       \item These tricks result in approximations, but they should be very close to desired inferences. 
     \end{itemize}
   \end{itemize}
