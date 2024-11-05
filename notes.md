@@ -23,6 +23,9 @@
 
 - Remember the American Oystercatcher data (on GDrive)
 
+- Add lecture on movement models
+
+
 ## For 2024
 
 - Tell professors not to send their students until they're good with R

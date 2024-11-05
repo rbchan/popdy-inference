@@ -4,7 +4,7 @@ K <- 3       # 3 secondary sampling occasion
 lambda <- 25 # Expected value of abundance in year 1
 M <- 500     # Easiest way to simulate data is using data augmentation
 phi <- 0.7   # Apparent survival
-gamma <- 0.3 # Per-capital recruitment rate
+beta <- 0.3 # Per-capital recruitment rate
 p0 <- 0.4    # Baseline capture prob
 sigma <- 0.1 # Scale parameter of encounter rate function
 
@@ -31,12 +31,12 @@ recruitable[,1] <- 1-z[,1]
 N <- integer(T)
 N[1] <- sum(z[,1])
 for(t in 2:T) {
-    ER <- N[t-1]*gamma # expected number of recruits
+    ER <- N[t-1]*beta # expected number of recruits
     prevA <- sum(recruitable[,t-1]) # Number available to be recruited
-    gammaPrime <- ER/prevA
-    if(gammaPrime > 1) stop("M isn't big enough")
+    alpha <- ER/prevA
+    if(alpha > 1) stop("M isn't big enough")
     z[,t] <- rbinom(M, 1, (1-recruitable[,t-1])*z[,t-1]*phi +
-                          recruitable[,t-1]*gammaPrime)
+                          recruitable[,t-1]*alpha)
     recruitable[,t] <- recruitable[,t-1]*(1-z[,t])
     N[t] <- sum(z[,t])  }
 
@@ -76,7 +76,7 @@ str(y)
 
 
 ## ----mask,size='scriptsize',out.width="60%",fig.align="center",results='hide',message=FALSE----
-library(openpopscr)
+library(openCR)
 trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
 traps <- read.traps(data=trap.df, detector="proximity")
 mask <- make.mask(traps=traps, buffer=250)
@@ -94,7 +94,27 @@ caps <- data.frame(session=1,
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
 
 
+## ----rmark-intervals,size='scriptsize'----------------------------------------
+timeintervals <- rep(0, K*T-1)
+timeintervals[seq(from=K, to=K*T-1, by=K)] <- 1
+timeintervals
+intervals(capthist) <- timeintervals ## Add to capthist
+
+
+## ----js-mod-fit-opencr-nonsp, size="footnotesize"-----------------------------
+fm.nonsp <- openCR.fit(capthist, type="JSSAf",
+                       model=list(f~1, phi~1, p~1))
+derived.pars <- derived(fm.nonsp)$est[,c("f","phi","lambda","N")]
+print(derived.pars, digits=2)
+
+
+## ----js-mod-fit-opencr, size="footnotesize",eval=FALSE------------------------
+## fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
+##                     model=list(f~1, phi~1, p~1), mask=mask)
+
+
 ## ----format-openpop,size='scriptsize'-----------------------------------------
+library(openpopscr)
 js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
 
 
@@ -105,12 +125,16 @@ mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
 mod$fit()
 
 
-## ----cjs-mod-est,size='scriptsize',eval=FALSE---------------------------------
-## mod$get_par("lambda0", k = 1, j = 1)
-## mod$get_par("sigma", k = 1, j = 1)
-## mod$get_par("D")                 ## Superpopulation density
-## mod$get_par("beta", k = 1, m=1)  ## Proportion of superpop alive in year 1
-## mod$get_par("phi", k = 1, m=1)   ## Survival
+## ----js-mod-est,size='tiny',eval=TRUE-----------------------------------------
+mod$get_par("lambda0", k = 1, j = 1) ## Baseline capture probability
+mod$get_par("sigma", k = 1, j = 1)   ## Scale parameter of the detection function
+mod$get_par("D")                     ## Superpopulation density
+mod$get_par("beta", k = 1, m=1)      ## Per-capita recruitment
+mod$get_par("phi", k = 1, m=1)       ## Survival
+
+
+## ----js-density,size='small'--------------------------------------------------
+mod$estimates()$D
 
 
 ## ----jagsmod1,size='tiny',comment='',echo=FALSE,background='lightblue'--------
@@ -132,11 +156,11 @@ jags.data1 <- list(y=yz, M=M, x=x, J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 ## ----zi,size='scriptsize'-----------------------------------------------------
 zi <- matrix(0, M, T)
 zi[1:nrow(y),] <- 1
-ji1 <- function() list(phi=0.01, gamma=0.001, z=zi)
-jp1 <- c("phi", "gamma", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
+ji1 <- function() list(phi=0.01, beta=0.001, z=zi)
+jp1 <- c("phi", "beta", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
 
 
-## ----jags-run,size='scriptsize',results='hide',cache=TRUE---------------------
+## ----jags-run,size='scriptsize',results='hide',message=FALSE,cache=TRUE-------
 library(jagsUI)
 jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
                                  parameters.to.save=jp1,
@@ -152,7 +176,7 @@ abline(v=M, lwd=3, col="blue")
 
 
 ## ----jc1,out.width='60%',fig.align='center',size='scriptsize'-----------------
-plot(jags.post.samples1[,c("phi", "gamma", "p0", "sigma")])
+plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
 
 
 ## ----jcN1-4,include=FALSE,echo=FALSE------------------------------------------
