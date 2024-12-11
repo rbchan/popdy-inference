@@ -2,6 +2,10 @@
 
 ## For 2025
 
+- Add lecture on multi-state CMR?
+
+- Create tree conceptual diagram to organize all the models
+
 - Email profs with syllabi and recommendations
 
 - Make homework due by Monday night instead of Monday morning
