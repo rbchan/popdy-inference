@@ -2,6 +2,8 @@
 
 ## For 2025
 
+- Might need 3 days for presentations if class size is large
+
 - Add lecture on multi-state CMR?
 
 - Create tree conceptual diagram to organize all the models
