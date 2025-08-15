@@ -131,8 +131,8 @@ knit_theme$set("edit-kwrite")
         \item predictor variable
         \item explanatory variable
         \item independent variable
-        \item covariate
-        \item exposure
+        \item covariate, exposure, etc\dots
+        %% \item exposure
       \end{itemize}
     \end{column}
   \end{columns}
@@ -143,7 +143,10 @@ knit_theme$set("edit-kwrite")
   We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
   \pause
   \vfill
-  A residual is $\varepsilon_i=y_i-\mu_i$. $\sigma^2$ is the variance of the residuals.
+  A residual is $\varepsilon_i=y_i-\mu_i$.
+  \pause
+  \vfill
+  $\sigma^2$ is the variance of the residuals.
 \end{frame}
 
 
@@ -1188,8 +1191,8 @@ plot(js.glm)
       \inr{predict} to get the fitted line.
     \item Fit the logistic regression model in JAGS. Use
       $\mathrm{Normal}(0, var=10)$ priors for the regression
-      coefficients. Note that, unlike linear regression, there is no
-      $\sigma^2$ parameter.
+      coefficients. %Note that, unlike linear regression, there is no
+      %$\sigma^2$ parameter.
     \item Compare and intepret the estimates of $\beta_0$ and
       $\beta_1$ from the classical analysis and the Bayesian analysis.
     % \item Fit 4 Poisson regression models to the Canada Warbler
@@ -1200,7 +1203,7 @@ plot(js.glm)
     %   lowest AIC, and create a graph depicting the estimated
     %   relationships. 
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM Monday.
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Monday.
 \end{frame}
 
 

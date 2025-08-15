@@ -1,6 +1,6 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-stats-basics")
-## rnw2pdf("lecture-stats-basics", tangle=TRUE)
+# rnw2pdf("lecture-stats-basics")
+# rnw2pdf("lecture-stats-basics", tangle=TRUE)
 
 
 
@@ -11,7 +11,7 @@ mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)   ## y
 
 
 ## ----slr-viz,echo=FALSE-------------------------------------------------------
-plot(width, mass, xlim=c(0,1))
+plot(width, mass, xlim=c(0,1), cex.lab=1.3)
 abline(lm(mass~width))
 
 
@@ -25,7 +25,7 @@ lm(mass~width)
 
 ## ----lm-jd,size='footnotesize'------------------------------------------------
 jd.lm <- list(x=width, y=mass, n=length(mass))
-ji.lm <- function() c(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
+ji.lm <- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
 jp.lm <- c("beta0", "beta1", "sigmaSq")
 
 
@@ -89,27 +89,6 @@ pred.elev <- predict(fm1, newdata=pred.data, se=TRUE)
 ## ----grouse-pred-plot,fig.width=7,fig.height=5,out.width="0.85\\textwidth",fig.align='center',size='scriptsize'----
 plot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))
 lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
-
-
-## ----logit-p,size='tiny'------------------------------------------------------
-beta0 <- 5
-beta1 <- -0.08
-elevation <- 100
-(logit.p <- beta0 + beta1*elevation)
-
-
-## ----inv-logit,size='tiny'----------------------------------------------------
-p <- exp(logit.p)/(1+exp(logit.p))
-p
-
-
-## ----plogis,size='tiny'-------------------------------------------------------
-plogis(logit.p)
-
-
-## ----logit,size='tiny'--------------------------------------------------------
-log(p/(1-p))
-qlogis(p)
 
 
 ## ----nologit,fig.show='hide',fig.width=6,fig.height=4,size='scriptsize'-------
@@ -223,7 +202,7 @@ y <- rpois(n=n, lambda=lam)
 
 
 ## ----pois-fit,size='small',eval=FALSE-----------------------------------------
-## (poisreg1 <- glm(y ~ x, family=poisson(link="log")))
+# (poisreg1 <- glm(y ~ x, family=poisson(link="log")))
 
 
 ## ----glm-jag,size="scriptsize",comment="",echo=FALSE,background='beige'-------
@@ -232,7 +211,7 @@ y <- rpois(n=n, lambda=lam)
 
 ## ----glm-jd-------------------------------------------------------------------
 jd.glm <- list(x=x, y=y, n=length(y))
-ji.glm <- function() c(beta0=rnorm(1), beta1=rnorm(1))
+ji.glm <- function() list(beta0=rnorm(1), beta1=rnorm(1))
 jp.glm <- c("beta0", "beta1")
 
 
