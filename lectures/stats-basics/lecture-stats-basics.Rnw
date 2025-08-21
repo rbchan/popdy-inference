@@ -1184,7 +1184,8 @@ plot(js.glm)
     \item Simulate logistic regression data according to
       $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
       + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
-      covariate using \inr{x <- rnorm(100)}.
+      covariate using \inr{x <- rnorm(n=100)}. Note that you will need
+      to use the \inr{rbinom} function to simulate Bernoulli outcomes.
     \item Fit a logistic regression model to the simulated data ($y$
       and $x$) using the \inr{glm} function. Create a figure showing
       $x$ and $y$ with the fitted regression line. Use
