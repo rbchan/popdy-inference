@@ -143,6 +143,25 @@ if(!require(jagsUI))
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Assumptions}
+  Assumptions of the basic single-season occupancy models:
+  \begin{itemize}
+    \item[]
+    \item Population closure
+    \begin{itemize}
+      \item Occupancy state (presence/absence) contstant over time
+    \end{itemize}
+    \item Statistical independence
+    \begin{itemize}
+      \item Occupancy state at one site has no impact on occupancy of other sites
+      \item Detections are independent, conditional on occupancy state    
+    \end{itemize}
+    \item Variation in $\psi$ and $p$ described by covariates
+  \end{itemize}
+\end{frame}
+
+
 \section{Simulation}
 
 
@@ -258,7 +277,7 @@ help("unmarked")
 \vfill
 Documentation (vignettes) %\\
   \vspace{-12pt}
-<<un-vig>>=
+<<un-vig,eval=FALSE>>=
 vignette(package="unmarked")
 ## vignette("spp-dist")
 @
