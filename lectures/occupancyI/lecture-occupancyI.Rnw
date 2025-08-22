@@ -36,6 +36,12 @@ rnw2pdf("lecture-occupancyI", tangle=TRUE)
 knit_theme$set("edit-kwrite")
 @
 
+<<install,include=FALSE,message=FALSE>>=
+if(!require(unmarked))
+  install.packages("unmarked")
+if(!require(jagsUI))
+  install.packages("jagsUI")
+@ 
 
 
 %% New command for inline code that isn't to be evaluated
@@ -567,7 +573,7 @@ plot(jags.post.samples[,jags.pars])
       analyses. Compare point estimates and 95\% CIs. Describe any
       differences you see in the estimates.
   \end{enumerate}
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00am on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00pm on Monday. 
 \end{frame}
 
 

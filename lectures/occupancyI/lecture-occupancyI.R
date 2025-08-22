@@ -1,8 +1,15 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-occupancyI")
-## rnw2pdf("lecture-occupancyI", tangle=TRUE)
+# rnw2pdf("lecture-occupancyI")
+# rnw2pdf("lecture-occupancyI", tangle=TRUE)
 
 
+
+
+## ----install,include=FALSE,message=FALSE--------------------------------------
+if(!require(unmarked))
+  install.packages("unmarked")
+if(!require(jagsUI))
+  install.packages("jagsUI")
 
 
 ## ----sim-nocov1,size='footnotesize'-------------------------------------------
@@ -44,7 +51,7 @@ library(unmarked)
 
 
 ## ----un-help,eval=FALSE-------------------------------------------------------
-## help("unmarked")
+# help("unmarked")
 
 
 ## ----un-vig-------------------------------------------------------------------
@@ -100,7 +107,7 @@ psi.cond.estimate
 quantile(sites.occupied.post, prob=c(0.025, 0.975))
 
 
-## ----bugs,size='scriptsize',comment='',echo=FALSE-----------------------------
+## ----bugs,size='scriptsize',comment='',echo=FALSE,background='beige'----------
 writeLines(readLines("occupancy-model.jag"))
 
 
@@ -129,9 +136,9 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 
 
 ## ----bugs-sum,size='scriptsize'-----------------------------------------------
-summary(jags.post.samples)
+summary(jags.post.samples[,jags.pars])
 
 
 ## ----bugs-plot,size='footnotesize',out.width="0.7\\textwidth",fig.align='center'----
-plot(jags.post.samples)
+plot(jags.post.samples[,jags.pars])
 
