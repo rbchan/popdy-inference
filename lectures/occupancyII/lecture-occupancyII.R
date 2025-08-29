@@ -1,16 +1,17 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-occupancyII")
-## rnw2pdf("lecture-occupancyII", tangle=TRUE)
+# rnw2pdf("lecture-occupancyII")
+# rnw2pdf("lecture-occupancyII", tangle=TRUE)
 
 
 
 
 ## ----sim-cov1,size='scriptsize'-----------------------------------------------
-nSites <- 100; nVisits <- 4; set.seed(83) ## Make it reproducible
-x1 <- rnorm(nSites,0,0.5); x2 <- rnorm(nSites,100,10) ## Continuous covs
+nSites <- 100; nVisits <- 4; set.seed(83) # Make it reproducible
+x1 <- rnorm(nSites,0,0.5)  # Site covariate (continuous)
+x2 <- rnorm(nSites,100,10) # Another continuous site covariate
 w <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits, replace=T),
-            nrow=nSites, ncol=nVisits)
-wHot <- ifelse(w=="Hot", 1, 0)              ## Dummy variable
+            nrow=nSites, ncol=nVisits) # Categorical obs covar
+wHot <- ifelse(w=="Hot", 1, 0)         # Dummy variable
 
 
 ## ----nsim-cov2,size='scriptsize'----------------------------------------------
@@ -24,8 +25,7 @@ p <- plogis(alpha0 + alpha1*x1 + alpha2*wHot)
 z <- rbinom(nSites, size=1, psi)            ## pres/absence
 y <- matrix(NA, nrow=nSites, ncol=nVisits)
 for(i in 1:nSites) {
-    y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p[i,])
-}
+    y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p[i,]) }
 
 
 ## ----sim-nocov-dat,size='scriptsize'------------------------------------------
@@ -56,18 +56,15 @@ summary(umf)
 ## ----umf-zcov,size='footnotesize'---------------------------------------------
 mean.x1 <- mean(x1); mean.x2 <- mean(x2)
 sd.x1 <- sd(x1); sd.x2 <- sd(x2)
-siteCovs(umf)$x1s <- (x1-mean.x1)/sd.x1
-siteCovs(umf)$x2s <- (x2-mean.x2)/sd.x2
+x1s <- (x1-mean.x1)/sd.x1
+x2s <- (x2-mean.x2)/sd.x2
+siteCovs(umf)$x1s <- x1s
+siteCovs(umf)$x2s <- x2s
 
 
-## ----un-fit,size='tiny'-------------------------------------------------------
+## ----un-fit,size='scriptsize'-------------------------------------------------
 fm <- occu(~x1s+w ~x1s+x2s, umf)    ## Notice standardized covariates
 fm
-
-
-## ----un-compare,size='tiny'---------------------------------------------------
-rbind('Occupancy coefs (beta)'=c(beta0, beta1, beta2),
-      'Detection coefs (alpha)'=c(alpha0, alpha1, alpha2))
 
 
 ## ----preddat,size='footnotesize'----------------------------------------------
@@ -114,16 +111,16 @@ par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue", ylim=0:1,
      xlab="x1", lwd=2)
 lines(Predicted ~ x1, p.pred, col="orange", lwd=2)
-legend(-3, 0.3, c("Occupancy (psi)", "Detection (p)"), lty=c(1, 1), col=c("blue", "orange"), lwd=2)
+legend(-1.5, 0.3, c("Occupancy (psi)", "Detection (p)"), lty=c(1, 1), col=c("blue", "orange"),
+       lwd=2, cex=1.3)
 
 
-## ----bugs,size='scriptsize',echo=FALSE,background='lightblue',comment=''------
+## ----bugs,size='scriptsize',echo=FALSE,background='beige',comment=''----------
 writeLines(readLines("occupancy-model-covs.jag"))
 
 
 ## ----bugs-data,size='small'---------------------------------------------------
-jags.data <- list(y=y, x1=(x1-mean(x1))/sd(x1),
-                  x2=(x2-mean(x2))/sd(x2), wHot=wHot,
+jags.data <- list(y=y, x1=x1s, x2=x2s, wHot=wHot,
                   nSites=nSites, nOccasions=nVisits)
 
 
@@ -135,7 +132,8 @@ jags.inits <- function() {
 
 ## ----bugs-pars,size='small'---------------------------------------------------
 jags.pars <- c("beta0", "beta1", "beta2",
-               "alpha0", "alpha1", "alpha2", "sitesOccupied")
+               "alpha0", "alpha1", "alpha2",
+               "sitesOccupied")
 
 
 ## ----bugs-mcmc,size='scriptsize',message=FALSE,cache=FALSE--------------------
@@ -177,12 +175,12 @@ for(i in 1:n.iter) {
 
 
 ## ----psi-pred1,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200----
-plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 
 
 ## ----psi-pred-post,size='scriptsize',fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=FALSE,dpi=200----
-plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
     lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
@@ -190,7 +188,7 @@ for(i in 1:n.iter) {
 
 
 ## ----psi-pred-post-meanCI,size='tiny',fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=FALSE,dpi=200----
-plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1s",
+plot(pred.data$x1, psi.post.pred[1,], type="l", xlab="x1",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
     lines(pred.data$x1, psi.post.pred[i,], col=gray(0.8))
