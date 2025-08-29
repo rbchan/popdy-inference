@@ -1,5 +1,10 @@
 # Notes for the future
 
+## For 2026
+
+- Quiz students before day 1
+  * Can you import CAWA data and extract columns 2-5
+
 ## For 2025
 
 - Might need 3 days for presentations if class size is large
