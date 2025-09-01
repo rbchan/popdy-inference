@@ -384,8 +384,9 @@ fm
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
   Create a data frame with prediction covariates. We'll let elevation
-  vary while holding the other two covariates constant. %Important that we 
-  %use the standardized version of the continuous covariates in th.
+  vary while holding the other two covariates constant. \\
+  Important that we predict using the standardized covariates. We can
+  still graph on the original scales.
 <<preddat,size='footnotesize'>>=
 pred.data <- data.frame(elev_s=seq(from=-3, to=3, length=50),
                         forest_s=0, temp='Hot') # Standardized
@@ -786,9 +787,10 @@ lines(pred.data$elev, pred.post.upper, col="blue", lty=2)
     %     \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
     %     \item Site covs: \texttt{Elevation, Wind, Noise}
     %   \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse
-      data ({\tt grouse\_data.csv}). You can choose which covariates
-      to include in the models.  
+    \item Fit an occupancy model in `unmarked' to the Ruffed Grouse
+      data ({\tt grouse\_data.csv}). Use all three covariates, with
+      elevation and forest cover affecting occupancy and day of the
+      year affecting detection probability.
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{grouse1, grouse2, grouse3}
@@ -798,8 +800,8 @@ lines(pred.data$elev, pred.post.upper, col="blue", lty=2)
     \item Make one prediction graph for occupancy and one for
       detection.  
     \item Create the same graphs as above, but using Bayesian methods.
-    \item Compare the likelihood and Bayesian predictions. Are they
-      similar?   
+    %% \item Compare the likelihood and Bayesian predictions. Are they
+    %%   similar?   
     \end{enumerate}
     \vfill
     Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00pm on Tuesday. 
