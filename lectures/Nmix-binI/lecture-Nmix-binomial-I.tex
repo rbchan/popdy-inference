@@ -48,8 +48,6 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\let\hlstd\hldef
-\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -474,16 +472,15 @@ Observed abundance \\
 ## Call:
 ## pcount(formula = ~1 ~ 1, data = umf, K = 100)
 ## 
-## Abundance (log-scale):
+## Abundance:
 ##  Estimate    SE    z P(>|z|)
 ##     0.428 0.324 1.32   0.187
 ## 
-## Detection (logit-scale):
+## Detection:
 ##  Estimate    SE     z  P(>|z|)
 ##      -1.8 0.384 -4.69 2.74e-06
 ## 
-## AIC: 459.6769 
-## Number of sites: 100
+## AIC: 459.6769
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -526,19 +523,18 @@ at each site because there aren't covariates:
 ## Call:
 ## pcount(formula = ~temp ~ forest, data = umf, K = 100)
 ## 
-## Abundance (log-scale):
+## Abundance:
 ##             Estimate    SE      z  P(>|z|)
 ## (Intercept)   -0.326 0.366 -0.891 0.372706
 ## forestMixed   -0.326 0.461 -0.706 0.480137
 ## forestPine     1.207 0.336  3.595 0.000324
 ## 
-## Detection (logit-scale):
+## Detection:
 ##             Estimate    SE     z  P(>|z|)
 ## (Intercept)    -1.96 0.313 -6.26 3.79e-10
 ## temp            1.18 0.205  5.73 9.83e-09
 ## 
-## AIC: 373.6761 
-## Number of sites: 100
+## AIC: 373.6761
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1108,16 +1104,16 @@ totalAbundance <- sum(N)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(temp.pred, p.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{, n.iter,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)) \{}  \hlcom{## Thin by 10}
-    \hlkwd{lines}\hlstd{(temp.pred, p.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))  \}}
-\hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.post.pred)}
-\hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hldef{(temp.pred, p.post.pred[}\hlnum{1}\hldef{,],} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Temperature (standardized)"}\hldef{,}
+     \hlkwc{ylab}\hldef{=}\hlsng{"Detection probability"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlkwd{seq}\hldef{(}\hlnum{1}\hldef{, n.iter,} \hlkwc{by}\hldef{=}\hlnum{10}\hldef{)) \{}  \hlcom{## Thin by 10}
+    \hlkwd{lines}\hldef{(temp.pred, p.post.pred[i,],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))  \}}
+\hldef{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(p.post.pred)}
+\hldef{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(p.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
+\hldef{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(p.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.mean,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.lower,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.upper,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1371,7 +1367,7 @@ totalAbundance <- sum(N)
       Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Tuesday.
 \end{frame}
 
 
