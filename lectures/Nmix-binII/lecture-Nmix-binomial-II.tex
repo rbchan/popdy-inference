@@ -48,8 +48,6 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\let\hlstd\hldef
-\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -400,12 +398,12 @@ Uh oh, missing values differ among models.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm1} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmE.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm2} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm3} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm4} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm5} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlstd{elevation.s, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{fm6} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlnum{1}\hlstd{, grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{)}
+\hldef{fm1} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmE.s}\hlopt{+}\hldef{utmN.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm2} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmN.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm3} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm4} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmN.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm5} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~} \hldef{elevation.s, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{fm6} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~} \hlnum{1}\hldef{, grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -740,14 +738,14 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.data1} \hlkwb{<-} \hlstd{jags.data}
-\hlstd{jags.data1}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{)} \hlcom{## Include all covariates}
-\hlstd{jm1} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data1,} \hlkwc{inits}\hlstd{=jags.inits,}
-                  \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,}
-                  \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.data1} \hlkwb{<-} \hldef{jags.data}
+\hldef{jags.data1}\hlopt{$}\hldef{modswitch} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{1}\hldef{,}\hlnum{1}\hldef{,}\hlnum{1}\hldef{)} \hlcom{## Include all covariates}
+\hldef{jm1} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data1,} \hlkwc{inits}\hldef{=jags.inits,}
+                  \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                  \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse.jag"}\hldef{,}
+                  \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                  \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -758,12 +756,12 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data2} \hlkwb{<-} \hlstd{jags.data; jags.data2}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{)}
-\hlstd{jm2} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data2,} \hlkwc{inits}\hlstd{=jags.inits,}
-                  \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,}
-                  \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.data2} \hlkwb{<-} \hldef{jags.data; jags.data2}\hlopt{$}\hldef{modswitch} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{0}\hldef{,}\hlnum{1}\hldef{,}\hlnum{1}\hldef{)}
+\hldef{jm2} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data2,} \hlkwc{inits}\hldef{=jags.inits,}
+                  \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                  \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse.jag"}\hldef{,}
+                  \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                  \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -778,10 +776,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data3} \hlkwb{<-} \hlstd{jags.data; jags.data3}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{)}
-\hlstd{jm3} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data3,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.data3} \hlkwb{<-} \hldef{jags.data; jags.data3}\hlopt{$}\hldef{modswitch} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0}\hldef{,}\hlnum{1}\hldef{)}
+\hldef{jm3} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data3,} \hlkwc{inits}\hldef{=jags.inits,} \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                  \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse.jag"}\hldef{,} \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                  \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -790,10 +788,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data4} \hlkwb{<-} \hlstd{jags.data; jags.data4}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{)}
-\hlstd{jm4} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data4,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.data4} \hlkwb{<-} \hldef{jags.data; jags.data4}\hlopt{$}\hldef{modswitch} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{0}\hldef{,}\hlnum{1}\hldef{,}\hlnum{0}\hldef{)}
+\hldef{jm4} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data4,} \hlkwc{inits}\hldef{=jags.inits,} \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                  \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse.jag"}\hldef{,} \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                  \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -802,10 +800,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data5} \hlkwb{<-} \hlstd{jags.data; jags.data5}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{)}
-\hlstd{jm5} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data5,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.data5} \hlkwb{<-} \hldef{jags.data; jags.data5}\hlopt{$}\hldef{modswitch} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{1}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0}\hldef{)}
+\hldef{jm5} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data5,} \hlkwc{inits}\hldef{=jags.inits,} \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                  \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse.jag"}\hldef{,} \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                  \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -814,10 +812,10 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data6} \hlkwb{<-} \hlstd{jags.data; jags.data6}\hlopt{$}\hlstd{modswitch} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{)}
-\hlstd{jm6} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data6,} \hlkwc{inits}\hlstd{=jags.inits,} \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                  \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse.jag"}\hlstd{,} \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                  \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.data6} \hlkwb{<-} \hldef{jags.data; jags.data6}\hlopt{$}\hldef{modswitch} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0}\hldef{)}
+\hldef{jm6} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data6,} \hlkwc{inits}\hldef{=jags.inits,} \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                  \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse.jag"}\hldef{,} \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                  \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -884,7 +882,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \hldef{(waic1} \hlkwb{<-} \hlkwd{waic}\hldef{(jm1))}
 \end{alltt}
 \begin{verbatim}
-## [1] 125.5645
+## [1] 124.5963
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -894,7 +892,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \hldef{(waic2} \hlkwb{<-} \hlkwd{waic}\hldef{(jm2))}
 \end{alltt}
 \begin{verbatim}
-## [1] 123.2067
+## [1] 124.8125
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -904,7 +902,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \hldef{(waic3} \hlkwb{<-} \hlkwd{waic}\hldef{(jm3))}
 \end{alltt}
 \begin{verbatim}
-## [1] 137.0568
+## [1] 118.1807
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -916,7 +914,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \hldef{(waic4} \hlkwb{<-} \hlkwd{waic}\hldef{(jm4))}
 \end{alltt}
 \begin{verbatim}
-## [1] 143.8135
+## [1] 150.4383
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -926,7 +924,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \hldef{(waic5} \hlkwb{<-} \hlkwd{waic}\hldef{(jm5))}
 \end{alltt}
 \begin{verbatim}
-## [1] 146.7478
+## [1] 151.1954
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -936,7 +934,7 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \hldef{(waic6} \hlkwb{<-} \hlkwd{waic}\hldef{(jm6))}
 \end{alltt}
 \begin{verbatim}
-## [1] 140.2578
+## [1] 160.7646
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -971,13 +969,13 @@ $p(y_i|N_i,p)p(N_i|\lambda)$ or $p(y_i|p)$, rather than just
 \toprule
   & WAIC & delta\\
 \midrule
-Model 2 & 123.21 & 0.00\\
-Model 1 & 125.56 & 2.36\\
-Model 3 & 137.06 & 13.85\\
-Model 4 & 143.81 & 20.61\\
-Model 5 & 146.75 & 23.54\\
+Model 3 & 118.18 & 0.00\\
+Model 1 & 124.60 & 6.42\\
+Model 2 & 124.81 & 6.63\\
+Model 4 & 150.44 & 32.26\\
+Model 5 & 151.20 & 33.01\\
 \addlinespace
-Model 6 & 146.75 & 23.54\\
+Model 6 & 151.20 & 33.01\\
 \bottomrule
 \end{tabular}
 
@@ -1200,14 +1198,12 @@ No sign of obvious outliers or other problems.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fitstat} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fm}\hlstd{) \{} \hlcom{## Sum of squared-residuals}
-    \hlkwd{return}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwc{SSE}\hlstd{=}\hlkwd{sum}\hlstd{(}\hlkwd{residuals}\hlstd{(fm)}\hlopt{^}\hlnum{2}\hlstd{,} \hlkwc{na.rm}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
-\hlstd{\}}
-\hlstd{pb} \hlkwb{<-} \hlkwd{parboot}\hlstd{(fm2,} \hlkwc{statistic}\hlstd{=fitstat,} \hlkwc{nsim}\hlstd{=}\hlnum{200}\hlstd{,} \hlkwc{ncores}\hlstd{=}\hlnum{3}\hlstd{);} \hlkwd{plot}\hlstd{(pb)}
+\hldef{fitstat} \hlkwb{<-} \hlkwa{function}\hldef{(}\hlkwc{fm}\hldef{) \{} \hlcom{## Sum of squared-residuals}
+    \hlkwd{return}\hldef{(}\hlkwd{c}\hldef{(}\hlkwc{SSE}\hldef{=}\hlkwd{sum}\hldef{(}\hlkwd{residuals}\hldef{(fm)}\hlopt{^}\hlnum{2}\hldef{,} \hlkwc{na.rm}\hldef{=}\hlnum{TRUE}\hldef{)))}
+\hldef{\}}
+\hldef{pb} \hlkwb{<-} \hlkwd{parboot}\hldef{(fm2,} \hlkwc{statistic}\hldef{=fitstat,} \hlkwc{nsim}\hldef{=}\hlnum{200}\hldef{,} \hlkwc{ncores}\hldef{=}\hlnum{3}\hldef{);} \hlkwd{plot}\hldef{(pb)}
 \end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Running parametric bootstrap in parallel on 3 cores.}}\end{kframe}
+\end{kframe}
 
 {\centering \includegraphics[width=0.7\linewidth]{figure/parboot-1} 
 
@@ -1232,11 +1228,11 @@ No sign of obvious outliers or other problems.
 ## 
 ## Parametric Bootstrap Statistics:
 ##       t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B > t0)
-## SSE 23.2           1.38             5.19        0.373
+## SSE 23.2            1.9             5.79        0.353
 ## 
 ## t_B quantiles:
-##      0% 2.5% 25% 50% 75% 97.5% 100%
-## SSE 7.7   13  18  21  25    32   36
+##       0% 2.5% 25% 50% 75% 97.5% 100%
+## [1,] 9.8   12  17  20  26    33   40
 ## 
 ## t0 = Original statistic computed from data
 ## t_B = Vector of bootstrap samples
@@ -1259,7 +1255,7 @@ These results suggest that model \inr{fm2} fits the data well.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(fm.nb} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"NB"}\hlstd{))}
+\hldef{(fm.nb} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmN.s,} \hlkwc{data}\hldef{=grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{,} \hlkwc{mixture}\hldef{=}\hlsng{"NB"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1297,7 +1293,7 @@ These results suggest that model \inr{fm2} fits the data well.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{(fm.zip} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~} \hlstd{elevation.s}\hlopt{+}\hlstd{utmN.s,} \hlkwc{data}\hlstd{=grouse.umf,} \hlkwc{K}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{mixture}\hlstd{=}\hlstr{"ZIP"}\hlstd{))}
+\hldef{(fm.zip} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~} \hldef{elevation.s}\hlopt{+}\hldef{utmN.s,} \hlkwc{data}\hldef{=grouse.umf,} \hlkwc{K}\hldef{=}\hlnum{50}\hldef{,} \hlkwc{mixture}\hldef{=}\hlsng{"ZIP"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1439,11 +1435,11 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jm} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                 \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"SSE"}\hlstd{,} \hlstr{"SSE.new"}\hlstd{),}
-                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-grouse2.jag"}\hlstd{,}
-                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jm} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
+                 \hlkwc{parameters.to.save}\hldef{=}\hlkwd{c}\hldef{(jags.pars,} \hlsng{"SSE"}\hldef{,} \hlsng{"SSE.new"}\hldef{),}
+                 \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-grouse2.jag"}\hldef{,}
+                 \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                 \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
