@@ -858,25 +858,26 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
   Create a self-contained R script or Rmarkdown file
   to do the following:
   \vfill
-  \begin{enumerate}
+%  \begin{enumerate}
 %    \small
     \footnotesize
-    \item Using the simulated data, compare the prior and posterior
+    %    \item
+    Using the simulated data, compare the prior and posterior
       predictive distributions of $\lambda$ for each of the 3 forest
       types. Hint: because forest type is categorical (not
       continuous), you can visualize the prior and posterior
-      predictive distributions as histograms for each forest type.  
-    \item Fit a binomial $N$-mixture model to the Canada warbler data
-      using `unmarked' and JAGS. The data include: 
-      \begin{itemize}
-        \footnotesize
-        \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-        \item Site covs: \texttt{Elevation, Wind, Noise}
-      \end{itemize}
-    \item Graph the predictions of $\lambda$ over the 
-      elevation range, along with 95\% CIs for both the likelihood-based and  
-      Bayesian models.  
-  \end{enumerate}
+      predictive distributions as histograms for each forest type.  \\
+    %% \item Fit a binomial $N$-mixture model to the Canada warbler data
+    %%   using `unmarked' and JAGS. The data include: 
+    %%   \begin{itemize}
+    %%     \footnotesize
+    %%     \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
+    %%     \item Site covs: \texttt{Elevation, Wind, Noise}
+    %%   \end{itemize}
+    %% \item Graph the predictions of $\lambda$ over the 
+    %%   elevation range, along with 95\% CIs for both the likelihood-based and  
+    %%   Bayesian models.  
+%  \end{enumerate}
   \vfill
   Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Tuesday.
 \end{frame}
