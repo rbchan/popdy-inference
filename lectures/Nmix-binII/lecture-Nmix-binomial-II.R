@@ -1,6 +1,6 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-Nmix-binomial-II")
-## rnw2pdf("lecture-Nmix-binomial-II", tangle=TRUE)
+# rnw2pdf("lecture-Nmix-binomial-II")
+# rnw2pdf("lecture-Nmix-binomial-II", tangle=TRUE)
 
 
 
@@ -258,7 +258,7 @@ for(i in 1:nSites) {
 }
 
 
-## ----resid2,fig.width=9,out.width='60%',fig.align='center'--------------------
+## ----resid2,fig.width=9,out.width='60%',fig.align='center',fig.keep='first'----
 plot(fm2)
 
 

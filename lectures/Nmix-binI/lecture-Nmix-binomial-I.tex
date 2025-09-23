@@ -13,10 +13,10 @@
 
 \definecolor{fgcolor}{rgb}{0, 0, 0}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.69,0.494,0}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
+\newcommand{\hlsng}[1]{\textcolor[rgb]{0.749,0.012,0.012}{#1}}%
 \newcommand{\hlcom}[1]{\textcolor[rgb]{0.514,0.506,0.514}{\textit{#1}}}%
 \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hldef}[1]{\textcolor[rgb]{0,0,0}{#1}}%
 \newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0.341,0.682}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
@@ -202,11 +202,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{nSites} \hlkwb{<-} \hlnum{100}
-\hlstd{nVisits} \hlkwb{<-} \hlnum{4}
-\hlkwd{set.seed}\hlstd{(}\hlnum{3439}\hlstd{)}                         \hlcom{# Make it reproducible}
-\hlstd{lambda1} \hlkwb{<-} \hlnum{2.6}                         \hlcom{# Expected value of N at each site}
-\hlstd{N1} \hlkwb{<-} \hlkwd{rpois}\hlstd{(}\hlkwc{n}\hlstd{=nSites,} \hlkwc{lambda}\hlstd{=lambda1)}  \hlcom{# Realized values}
+\hldef{nSites} \hlkwb{<-} \hlnum{100}
+\hldef{nVisits} \hlkwb{<-} \hlnum{4}
+\hlkwd{set.seed}\hldef{(}\hlnum{3439}\hldef{)}                         \hlcom{# Make it reproducible}
+\hldef{lambda1} \hlkwb{<-} \hlnum{2.6}                         \hlcom{# Expected value of N at each site}
+\hldef{N1} \hlkwb{<-} \hlkwd{rpois}\hldef{(}\hlkwc{n}\hldef{=nSites,} \hlkwc{lambda}\hldef{=lambda1)}  \hlcom{# Realized values}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -217,11 +217,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p1} \hlkwb{<-} \hlnum{0.3}
-\hlstd{y1} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y1[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=N1[i],} \hlkwc{prob}\hlstd{=p1)}
-\hlstd{\}}
+\hldef{p1} \hlkwb{<-} \hlnum{0.3}
+\hldef{y1} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y1[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nVisits,} \hlkwc{size}\hldef{=N1[i],} \hlkwc{prob}\hldef{=p1)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -232,7 +232,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{cbind}\hlstd{(y1, N1)[}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,]}
+\hlkwd{cbind}\hldef{(y1, N1)[}\hlnum{1}\hlopt{:}\hlnum{5}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##              N1
@@ -260,10 +260,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{forest} \hlkwb{<-} \hlkwd{factor}\hlstd{(}\hlkwd{sample}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Pine"}\hlstd{), nSites,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{))}
-\hlstd{forestMixed} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(forest}\hlopt{==}\hlstr{"Mixed"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}        \hlcom{## Dummy}
-\hlstd{forestPine} \hlkwb{<-} \hlkwd{ifelse}\hlstd{(forest}\hlopt{==}\hlstr{"Pine"}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{)}          \hlcom{## Dummy}
-\hlstd{temp} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(nSites}\hlopt{*}\hlstd{nVisits),} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
+\hldef{forest} \hlkwb{<-} \hlkwd{factor}\hldef{(}\hlkwd{sample}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Hardwood"}\hldef{,} \hlsng{"Mixed"}\hldef{,} \hlsng{"Pine"}\hldef{), nSites,} \hlkwc{replace}\hldef{=}\hlnum{TRUE}\hldef{))}
+\hldef{forestMixed} \hlkwb{<-} \hlkwd{ifelse}\hldef{(forest}\hlopt{==}\hlsng{"Mixed"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}        \hlcom{## Dummy}
+\hldef{forestPine} \hlkwb{<-} \hlkwd{ifelse}\hldef{(forest}\hlopt{==}\hlsng{"Pine"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}          \hlcom{## Dummy}
+\hldef{temp} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{rnorm}\hldef{(nSites}\hlopt{*}\hldef{nVisits),} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -274,10 +274,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{beta0} \hlkwb{<-} \hlnum{0}\hlstd{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hlstd{; beta2} \hlkwb{<-} \hlnum{1}
-\hlstd{lambda2} \hlkwb{<-} \hlkwd{exp}\hlstd{(beta0} \hlopt{+} \hlstd{beta1}\hlopt{*}\hlstd{forestMixed} \hlopt{+} \hlstd{beta2}\hlopt{*}\hlstd{forestPine)}
-\hlstd{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{2}\hlstd{; alpha1} \hlkwb{<-} \hlnum{1}
-\hlstd{p2} \hlkwb{<-} \hlkwd{plogis}\hlstd{(alpha0} \hlopt{+} \hlstd{alpha1}\hlopt{*}\hlstd{temp)}
+\hldef{beta0} \hlkwb{<-} \hlnum{0}\hldef{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hldef{; beta2} \hlkwb{<-} \hlnum{1}
+\hldef{lambda2} \hlkwb{<-} \hlkwd{exp}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{forestMixed} \hlopt{+} \hldef{beta2}\hlopt{*}\hldef{forestPine)}
+\hldef{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{2}\hldef{; alpha1} \hlkwb{<-} \hlnum{1}
+\hldef{p2} \hlkwb{<-} \hlkwd{plogis}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{temp)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -288,11 +288,11 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N2} \hlkwb{<-} \hlkwd{rpois}\hlstd{(nSites,} \hlkwc{lambda}\hlstd{=lambda2)}         \hlcom{## local abundance }
-\hlstd{y2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=nSites,} \hlkwc{ncol}\hlstd{=nVisits)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{nSites) \{}
-    \hlstd{y2[i,]} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(nVisits,} \hlkwc{size}\hlstd{=N2[i],} \hlkwc{prob}\hlstd{=p2[i,])}
-\hlstd{\}}
+\hldef{N2} \hlkwb{<-} \hlkwd{rpois}\hldef{(nSites,} \hlkwc{lambda}\hldef{=lambda2)}         \hlcom{## local abundance }
+\hldef{y2} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{nSites) \{}
+    \hldef{y2[i,]} \hlkwb{<-} \hlkwd{rbinom}\hldef{(nVisits,} \hlkwc{size}\hldef{=N2[i],} \hlkwc{prob}\hldef{=p2[i,])}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -312,7 +312,7 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hlstd{,]}
+\hldef{y2[}\hlnum{1}\hlopt{:}\hlnum{19}\hldef{,]}
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
@@ -349,8 +349,8 @@
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{# Max count at each site}
-\hlstd{maxCounts} \hlkwb{<-} \hlkwd{apply}\hlstd{(y2,} \hlnum{1}\hlstd{, max)}
-\hlkwd{table}\hlstd{(maxCounts)}
+\hldef{maxCounts} \hlkwb{<-} \hlkwd{apply}\hldef{(y2,} \hlnum{1}\hldef{, max)}
+\hlkwd{table}\hldef{(maxCounts)}
 \end{alltt}
 \begin{verbatim}
 ## maxCounts
@@ -373,8 +373,8 @@ Observed abundance \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{naiveAbund} \hlkwb{<-} \hlkwd{sum}\hlstd{(maxCounts)}
-\hlstd{naiveAbund}
+\hldef{naiveAbund} \hlkwb{<-} \hlkwd{sum}\hldef{(maxCounts)}
+\hldef{naiveAbund}
 \end{alltt}
 \begin{verbatim}
 ## [1] 60
@@ -410,7 +410,7 @@ Observed abundance \\
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{siteCovs}\hlstd{=}\hlkwd{data.frame}\hlstd{(forest),} \hlkwc{obsCovs}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{temp}\hlstd{=temp))}
+\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFramePCount}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(forest),} \hlkwc{obsCovs}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{temp}\hldef{=temp))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -418,7 +418,7 @@ Observed abundance \\
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(umf)}
+\hlkwd{summary}\hldef{(umf)}
 \end{alltt}
 \begin{verbatim}
 ## unmarkedFrame Object
@@ -464,8 +464,8 @@ Observed abundance \\
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm0} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hlstd{, umf,} \hlkwc{K}\hlstd{=}\hlnum{100}\hlstd{)}
-\hlstd{fm0}
+\hldef{fm0} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hlnum{1} \hlopt{~}\hlnum{1}\hldef{, umf,} \hlkwc{K}\hldef{=}\hlnum{100}\hldef{)}
+\hldef{fm0}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -491,7 +491,7 @@ at each site because there aren't covariates:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{backTransform}\hlstd{(fm0,} \hlkwc{type}\hlstd{=}\hlstr{"state"}\hlstd{)}
+\hlkwd{backTransform}\hldef{(fm0,} \hlkwc{type}\hldef{=}\hlsng{"state"}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ## Backtransformed linear combination(s) of Abundance estimate(s)
@@ -515,8 +515,8 @@ at each site because there aren't covariates:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~}\hlstd{forest, umf,} \hlkwc{K}\hlstd{=}\hlnum{100}\hlstd{)}
-\hlstd{fm}
+\hldef{fm} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~}\hldef{forest, umf,} \hlkwc{K}\hldef{=}\hlnum{100}\hldef{)}
+\hldef{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -544,7 +544,7 @@ Compare to actual parameter values:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{beta0}\hlstd{=beta0,} \hlkwc{beta1}\hlstd{=beta1,} \hlkwc{beta2}\hlstd{=beta2);} \hlkwd{c}\hlstd{(}\hlkwc{alpha0}\hlstd{=alpha0,} \hlkwc{alpha1}\hlstd{=alpha1)}
+\hlkwd{c}\hldef{(}\hlkwc{beta0}\hldef{=beta0,} \hlkwc{beta1}\hldef{=beta1,} \hlkwc{beta2}\hldef{=beta2);} \hlkwd{c}\hldef{(}\hlkwc{alpha0}\hldef{=alpha0,} \hlkwc{alpha1}\hldef{=alpha1)}
 \end{alltt}
 \begin{verbatim}
 ## beta0 beta1 beta2 
@@ -569,7 +569,7 @@ Compare to actual parameter values:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{round}\hlstd{(}\hlkwd{coef}\hlstd{(fm),} \hlkwc{digits}\hlstd{=}\hlnum{4}\hlstd{)}
+\hlkwd{round}\hldef{(}\hlkwd{coef}\hldef{(fm),} \hlkwc{digits}\hldef{=}\hlnum{4}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##         lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) 
@@ -584,8 +584,8 @@ Compare to actual parameter values:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm.test} \hlkwb{<-} \hlkwd{pcount}\hlstd{(}\hlopt{~}\hlstd{temp} \hlopt{~}\hlstd{forest, umf,} \hlkwc{K}\hlstd{=}\hlnum{150}\hlstd{)}
-\hlkwd{round}\hlstd{(}\hlkwd{coef}\hlstd{(fm.test),} \hlkwc{digits}\hlstd{=}\hlnum{4}\hlstd{)}
+\hldef{fm.test} \hlkwb{<-} \hlkwd{pcount}\hldef{(}\hlopt{~}\hldef{temp} \hlopt{~}\hldef{forest, umf,} \hlkwc{K}\hldef{=}\hlnum{150}\hldef{)}
+\hlkwd{round}\hldef{(}\hlkwd{coef}\hldef{(fm.test),} \hlkwc{digits}\hldef{=}\hlnum{4}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##         lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) 
@@ -607,8 +607,8 @@ If the estimates do change, increase $K$ until they stabilize.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{re} \hlkwb{<-} \hlkwd{ranef}\hlstd{(fm)}
-\hlkwd{plot}\hlstd{(re,} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{3}\hlstd{),} \hlkwc{subset}\hlstd{=site}\hlopt{%in%}\hlnum{1}\hlopt{:}\hlnum{12}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1}\hlstd{,} \hlnum{11}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{5}\hlstd{)}
+\hldef{re} \hlkwb{<-} \hlkwd{ranef}\hldef{(fm)}
+\hlkwd{plot}\hldef{(re,} \hlkwc{layout}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{4}\hldef{,}\hlnum{3}\hldef{),} \hlkwc{subset}\hldef{=site}\hlopt{%in%}\hlnum{1}\hlopt{:}\hlnum{12}\hldef{,} \hlkwc{xlim}\hldef{=}\hlkwd{c}\hldef{(}\hlopt{-}\hlnum{1}\hldef{,} \hlnum{11}\hldef{),} \hlkwc{lwd}\hldef{=}\hlnum{5}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -630,8 +630,8 @@ If the estimates do change, increase $K$ until they stabilize.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{N.total.post} \hlkwb{<-} \hlkwd{predict}\hlstd{(re,} \hlkwc{func}\hlstd{=sum,} \hlkwc{nsim}\hlstd{=}\hlnum{1000}\hlstd{)}
-\hlkwd{hist}\hlstd{(N.total.post,} \hlkwc{freq}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"N total"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Probability"}\hlstd{)}
+\hldef{N.total.post} \hlkwb{<-} \hlkwd{predict}\hldef{(re,} \hlkwc{func}\hldef{=sum,} \hlkwc{nsim}\hldef{=}\hlnum{1000}\hldef{)}
+\hlkwd{hist}\hldef{(N.total.post,} \hlkwc{freq}\hldef{=}\hlnum{FALSE}\hldef{,} \hlkwc{main}\hldef{=}\hlsng{""}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"N total"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Probability"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -645,7 +645,7 @@ Estimate of total abundance in sampled area, with 95\% CI:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{c}\hlstd{(}\hlkwc{Estimate}\hlstd{=}\hlkwd{mean}\hlstd{(N.total.post),} \hlkwd{quantile}\hlstd{(N.total.post,} \hlkwc{prob}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.025}\hlstd{,} \hlnum{0.975}\hlstd{)))}
+\hlkwd{c}\hldef{(}\hlkwc{Estimate}\hldef{=}\hlkwd{mean}\hldef{(N.total.post),} \hlkwd{quantile}\hldef{(N.total.post,} \hlkwc{prob}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0.025}\hldef{,} \hlnum{0.975}\hldef{)))}
 \end{alltt}
 \begin{verbatim}
 ## Estimate     2.5%    97.5% 
@@ -668,8 +668,8 @@ Estimate of total abundance in sampled area, with 95\% CI:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{forest}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"Hardwood"}\hlstd{,} \hlstr{"Mixed"}\hlstd{,} \hlstr{"Pine"}\hlstd{),}
-                        \hlkwc{temp}\hlstd{=}\hlnum{0}\hlstd{)}
+\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{forest}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"Hardwood"}\hldef{,} \hlsng{"Mixed"}\hldef{,} \hlsng{"Pine"}\hldef{),}
+                        \hlkwc{temp}\hldef{=}\hlnum{0}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -680,8 +680,8 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hlstd{(fm,} \hlkwc{newdata}\hlstd{=pred.data,}
-                       \hlkwc{type}\hlstd{=}\hlstr{'state'}\hlstd{,} \hlkwc{append}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{lambda.pred} \hlkwb{<-} \hlkwd{predict}\hldef{(fm,} \hlkwc{newdata}\hldef{=pred.data,}
+                       \hlkwc{type}\hldef{=}\hlsng{'state'}\hldef{,} \hlkwc{append}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -692,7 +692,7 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{print}\hlstd{(}\hlkwd{head}\hlstd{(lambda.pred),} \hlkwc{digits}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(lambda.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##   Predicted   SE lower upper   forest temp
@@ -725,10 +725,10 @@ Get predictions of $\lambda$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{bpx} \hlkwb{<-} \hlkwd{barplot}\hlstd{(lambda.pred}\hlopt{$}\hlstd{Predicted,} \hlkwc{ylab}\hlstd{=}\hlstr{"Expected value of abundance"}\hlstd{,} \hlcom{#col="blue",}
-               \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{3.5}\hlstd{),} \hlkwc{names}\hlstd{=lambda.pred}\hlopt{$}\hlstd{forest,} \hlkwc{xlab}\hlstd{=}\hlstr{"Forest type"}\hlstd{);} \hlkwd{box}\hlstd{()}
-\hlkwd{arrows}\hlstd{(bpx, lambda.pred}\hlopt{$}\hlstd{Predicted, bpx, lambda.pred}\hlopt{$}\hlstd{Predicted}\hlopt{+}\hlstd{lambda.pred}\hlopt{$}\hlstd{SE,}
-       \hlkwc{angle}\hlstd{=}\hlnum{90}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{0.1}\hlstd{)}
+\hldef{bpx} \hlkwb{<-} \hlkwd{barplot}\hldef{(lambda.pred}\hlopt{$}\hldef{Predicted,} \hlkwc{ylab}\hldef{=}\hlsng{"Expected value of abundance"}\hldef{,} \hlcom{#col="blue",}
+               \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,}\hlnum{3.5}\hldef{),} \hlkwc{names}\hldef{=lambda.pred}\hlopt{$}\hldef{forest,} \hlkwc{xlab}\hldef{=}\hlsng{"Forest type"}\hldef{);} \hlkwd{box}\hldef{()}
+\hlkwd{arrows}\hldef{(bpx, lambda.pred}\hlopt{$}\hldef{Predicted, bpx, lambda.pred}\hlopt{$}\hldef{Predicted}\hlopt{+}\hldef{lambda.pred}\hlopt{$}\hldef{SE,}
+       \hlkwc{angle}\hldef{=}\hlnum{90}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{0.1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -808,7 +808,7 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data0} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\hldef{jags.data0} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nOccasions}\hldef{=nVisits)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -818,7 +818,7 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits0} \hlkwb{<-} \hlkwa{function}\hlstd{()} \hlkwd{list}\hlstd{(}\hlkwc{lambda}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{p}\hlstd{=}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{N}\hlstd{=maxCounts)}
+\hldef{jags.inits0} \hlkwb{<-} \hlkwa{function}\hldef{()} \hlkwd{list}\hldef{(}\hlkwc{lambda}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{p}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{N}\hldef{=maxCounts)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -829,11 +829,11 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags0.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data0,} \hlkwc{inits}\hlstd{=jags.inits0,}
-                                 \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"lambda"}\hlstd{,} \hlstr{"p"}\hlstd{),}
-                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model.jag"}\hlstd{,}
-                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags0.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data0,} \hlkwc{inits}\hldef{=jags.inits0,}
+                                 \hlkwc{parameters.to.save}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"lambda"}\hldef{,} \hlsng{"p"}\hldef{),}
+                                 \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model.jag"}\hldef{,}
+                                 \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                 \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -887,10 +887,10 @@ totalAbundance <- sum(N)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=y2,} \hlkwc{temp}\hlstd{=temp,}
-                  \hlkwc{forestMixed}\hlstd{=forestMixed,}
-                  \hlkwc{forestPine}\hlstd{=forestPine,}
-                  \hlkwc{nSites}\hlstd{=nSites,} \hlkwc{nOccasions}\hlstd{=nVisits)}
+\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y2,} \hlkwc{temp}\hldef{=temp,}
+                  \hlkwc{forestMixed}\hldef{=forestMixed,}
+                  \hlkwc{forestPine}\hldef{=forestPine,}
+                  \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nOccasions}\hldef{=nVisits)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -901,9 +901,9 @@ totalAbundance <- sum(N)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.inits} \hlkwb{<-} \hlkwa{function}\hlstd{() \{}
-    \hlkwd{list}\hlstd{(}\hlkwc{beta0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{alpha0}\hlstd{=}\hlkwd{rnorm}\hlstd{(}\hlnum{1}\hlstd{),} \hlkwc{N}\hlstd{=maxCounts)}
-\hlstd{\}}
+\hldef{jags.inits} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
+    \hlkwd{list}\hldef{(}\hlkwc{beta0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{alpha0}\hldef{=}\hlkwd{rnorm}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{N}\hldef{=maxCounts)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -914,8 +914,8 @@ totalAbundance <- sum(N)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.pars} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"beta0"}\hlstd{,} \hlstr{"beta1"}\hlstd{,} \hlstr{"beta2"}\hlstd{,}
-               \hlstr{"alpha0"}\hlstd{,} \hlstr{"alpha1"}\hlstd{,} \hlstr{"totalAbundance"}\hlstd{)}
+\hldef{jags.pars} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"beta0"}\hldef{,} \hlsng{"beta1"}\hldef{,} \hlsng{"beta2"}\hldef{,}
+               \hlsng{"alpha0"}\hldef{,} \hlsng{"alpha1"}\hldef{,} \hlsng{"totalAbundance"}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -931,13 +931,13 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
                                 \hlcom{## Monitor each "N[i]" }
-                                \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jags.pars,} \hlstr{"N"}\hlstd{),}
-                                \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
-                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+                                \hlkwc{parameters.to.save}\hldef{=}\hlkwd{c}\hldef{(jags.pars,} \hlsng{"N"}\hldef{),}
+                                \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-covs.jag"}\hldef{,}
+                                \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -950,11 +950,11 @@ totalAbundance <- sum(N)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.post.samples[,jags.pars])}
+\hlkwd{summary}\hldef{(jags.post.samples[,jags.pars])}
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -990,7 +990,7 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,}\hlkwd{paste0}\hlstd{(}\hlstr{"N["}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,} \hlstr{"]"}\hlstd{)])}
+\hlkwd{plot}\hldef{(jags.post.samples[,}\hlkwd{paste0}\hldef{(}\hlsng{"N["}\hldef{,} \hlnum{1}\hlopt{:}\hlnum{4}\hldef{,} \hlsng{"]"}\hldef{)])}
 \end{alltt}
 \end{kframe}
 
@@ -1009,7 +1009,7 @@ totalAbundance <- sum(N)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.samples[,jags.pars[}\hlnum{1}\hlopt{:}\hlnum{3}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1028,7 +1028,7 @@ totalAbundance <- sum(N)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(jags.post.samples[,jags.pars[}\hlnum{4}\hlopt{:}\hlnum{5}\hlstd{]])}
+\hlkwd{plot}\hldef{(jags.post.samples[,jags.pars[}\hlnum{4}\hlopt{:}\hlnum{5}\hldef{]])}
 \end{alltt}
 \end{kframe}
 
@@ -1051,8 +1051,8 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.post.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"alpha0"}\hlstd{,}\hlstr{"alpha1"}\hlstd{)])}
-\hlkwd{head}\hlstd{(p.coef.post,} \hlkwc{n}\hlstd{=}\hlnum{4}\hlstd{)}
+\hldef{p.coef.post} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.post.samples[,}\hlkwd{c}\hldef{(}\hlsng{"alpha0"}\hldef{,}\hlsng{"alpha1"}\hldef{)])}
+\hlkwd{head}\hldef{(p.coef.post,} \hlkwc{n}\hldef{=}\hlnum{4}\hldef{)}
 \end{alltt}
 \begin{verbatim}
 ##         alpha0   alpha1
@@ -1071,9 +1071,9 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n.iter} \hlkwb{<-} \hlkwd{nrow}\hlstd{(p.coef.post)}
-\hlstd{temp.pred} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{3}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{50}\hlstd{)}
-\hlstd{p.post.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{length}\hlstd{(temp.pred))}
+\hldef{n.iter} \hlkwb{<-} \hlkwd{nrow}\hldef{(p.coef.post)}
+\hldef{temp.pred} \hlkwb{<-} \hlkwd{seq}\hldef{(}\hlopt{-}\hlnum{3}\hldef{,} \hlnum{3}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{50}\hldef{)}
+\hldef{p.post.pred} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=n.iter,} \hlkwc{ncol}\hldef{=}\hlkwd{length}\hldef{(temp.pred))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1085,10 +1085,10 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
-    \hlstd{p.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(p.coef.post[i,}\hlstr{"alpha0"}\hlstd{]} \hlopt{+}
-                              \hlstd{p.coef.post[i,}\hlstr{"alpha1"}\hlstd{]}\hlopt{*}\hlstd{temp.pred)}
-\hlstd{\}}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.iter) \{}
+    \hldef{p.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hldef{(p.coef.post[i,}\hlsng{"alpha0"}\hldef{]} \hlopt{+}
+                              \hldef{p.coef.post[i,}\hlsng{"alpha1"}\hldef{]}\hlopt{*}\hldef{temp.pred)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1104,16 +1104,16 @@ totalAbundance <- sum(N)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(temp.pred, p.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{, n.iter,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)) \{}  \hlcom{## Thin by 10}
-    \hlkwd{lines}\hlstd{(temp.pred, p.post.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))  \}}
-\hlstd{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.post.pred)}
-\hlstd{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\hlstd{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.post.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.lower,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.upper,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lty}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hldef{(temp.pred, p.post.pred[}\hlnum{1}\hldef{,],} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Temperature (standardized)"}\hldef{,}
+     \hlkwc{ylab}\hldef{=}\hlsng{"Detection probability"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlkwd{seq}\hldef{(}\hlnum{1}\hldef{, n.iter,} \hlkwc{by}\hldef{=}\hlnum{10}\hldef{)) \{}  \hlcom{## Thin by 10}
+    \hlkwd{lines}\hldef{(temp.pred, p.post.pred[i,],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))  \}}
+\hldef{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(p.post.pred)}
+\hldef{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(p.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
+\hldef{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(p.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.mean,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.lower,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.upper,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1171,8 +1171,8 @@ totalAbundance <- sum(N)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.data2} \hlkwb{<-} \hlstd{jags.data}
-\hlstd{jags.data2}\hlopt{$}\hlstd{y[]} \hlkwb{<-} \hlnum{NA}     \hlcom{# Replace data with missing values}
+\hldef{jags.data2} \hlkwb{<-} \hldef{jags.data}
+\hldef{jags.data2}\hlopt{$}\hldef{y[]} \hlkwb{<-} \hlnum{NA}     \hlcom{# Replace data with missing values}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1182,11 +1182,11 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.prior.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data2,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                 \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                                 \hlkwc{model.file}\hlstd{=}\hlstr{"Nmix-model-covs.jag"}\hlstd{,}
-                                 \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                 \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.prior.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data2,} \hlkwc{inits}\hldef{=jags.inits,}
+                                 \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                                 \hlkwc{model.file}\hldef{=}\hlsng{"Nmix-model-covs.jag"}\hldef{,}
+                                 \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                 \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1200,7 +1200,7 @@ totalAbundance <- sum(N)
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{summary}\hlstd{(jags.prior.samples)}
+\hlkwd{summary}\hldef{(jags.prior.samples)}
 \end{alltt}
 \begin{verbatim}
 ## 
@@ -1246,12 +1246,12 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{p.coef.prior} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(jags.prior.samples[,}\hlkwd{c}\hlstd{(}\hlstr{"alpha0"}\hlstd{,}\hlstr{"alpha1"}\hlstd{)])}
-\hlstd{p.prior.pred} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlnum{NA}\hlstd{,} \hlkwc{nrow}\hlstd{=n.iter,} \hlkwc{ncol}\hlstd{=}\hlkwd{length}\hlstd{(temp.pred))}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n.iter) \{}
-    \hlstd{p.prior.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hlstd{(p.coef.prior[i,}\hlstr{"alpha0"}\hlstd{]} \hlopt{+}
-                               \hlstd{p.coef.prior[i,}\hlstr{"alpha1"}\hlstd{]}\hlopt{*}\hlstd{temp.pred)}
-\hlstd{\}}
+\hldef{p.coef.prior} \hlkwb{<-} \hlkwd{as.matrix}\hldef{(jags.prior.samples[,}\hlkwd{c}\hldef{(}\hlsng{"alpha0"}\hldef{,}\hlsng{"alpha1"}\hldef{)])}
+\hldef{p.prior.pred} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlnum{NA}\hldef{,} \hlkwc{nrow}\hldef{=n.iter,} \hlkwc{ncol}\hldef{=}\hlkwd{length}\hldef{(temp.pred))}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.iter) \{}
+    \hldef{p.prior.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hldef{(p.coef.prior[i,}\hlsng{"alpha0"}\hldef{]} \hlopt{+}
+                               \hldef{p.coef.prior[i,}\hlsng{"alpha1"}\hldef{]}\hlopt{*}\hldef{temp.pred)}
+\hldef{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1267,9 +1267,9 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{pred.prior.mean} \hlkwb{<-} \hlkwd{colMeans}\hlstd{(p.prior.pred)}
-\hlstd{pred.prior.lower} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.prior.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.025}\hlstd{)}
-\hlstd{pred.prior.upper} \hlkwb{<-} \hlkwd{apply}\hlstd{(p.prior.pred,} \hlnum{2}\hlstd{, quantile,} \hlkwc{prob}\hlstd{=}\hlnum{0.975}\hlstd{)}
+\hldef{pred.prior.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(p.prior.pred)}
+\hldef{pred.prior.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(p.prior.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
+\hldef{pred.prior.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(p.prior.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1279,20 +1279,20 @@ totalAbundance <- sum(N)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(temp.pred, p.post.pred[}\hlnum{1}\hlstd{,],} \hlkwc{type}\hlstd{=}\hlstr{"n"}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Temperature (standardized)"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Detection probability"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{1.3}\hlstd{),} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))}
-\hlkwd{polygon}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(temp.pred,} \hlkwd{rev}\hlstd{(temp.pred)),}
-        \hlkwc{y}\hlstd{=}\hlkwd{c}\hlstd{(pred.post.lower,} \hlkwd{rev}\hlstd{(pred.post.upper)),}
-        \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0.5}\hlstd{),} \hlkwc{border}\hlstd{=}\hlnum{NA}\hlstd{)}                   \hlcom{# Post CI}
-\hlkwd{polygon}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{c}\hlstd{(temp.pred,} \hlkwd{rev}\hlstd{(temp.pred)),}
-        \hlkwc{y}\hlstd{=}\hlkwd{c}\hlstd{(pred.prior.lower,} \hlkwd{rev}\hlstd{(pred.prior.upper)),}
-        \hlkwc{col}\hlstd{=}\hlkwd{rgb}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0.5}\hlstd{),} \hlkwc{border}\hlstd{=}\hlnum{NA}\hlstd{)}                   \hlcom{# Prior CI}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlkwd{seq}\hlstd{(}\hlnum{1}\hlstd{, n.iter,} \hlkwc{by}\hlstd{=}\hlnum{100}\hlstd{)) \{}  \hlcom{## Thin by 100}
-    \hlkwd{lines}\hlstd{(temp.pred, p.prior.pred[i,],} \hlkwc{col}\hlstd{=}\hlkwd{gray}\hlstd{(}\hlnum{0.8}\hlstd{))  \}} \hlcom{# Prior preds}
-\hlkwd{lines}\hlstd{(temp.pred, pred.post.mean,} \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{lines}\hlstd{(temp.pred, pred.prior.mean,} \hlkwc{col}\hlstd{=}\hlstr{"darkgreen"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlkwd{legend}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,} \hlnum{1.3}\hlstd{,} \hlkwd{c}\hlstd{(}\hlstr{"Prior mean"}\hlstd{,} \hlstr{"Prior samples"}\hlstd{,} \hlstr{"Posterior mean"}\hlstd{),}
-       \hlkwc{col}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"darkgreen"}\hlstd{,} \hlstr{"grey"}\hlstd{,} \hlstr{"blue"}\hlstd{),} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlkwd{plot}\hldef{(temp.pred, p.post.pred[}\hlnum{1}\hldef{,],} \hlkwc{type}\hldef{=}\hlsng{"n"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Temperature (standardized)"}\hldef{,}
+     \hlkwc{ylab}\hldef{=}\hlsng{"Detection probability"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1.3}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
+\hlkwd{polygon}\hldef{(}\hlkwc{x}\hldef{=}\hlkwd{c}\hldef{(temp.pred,} \hlkwd{rev}\hldef{(temp.pred)),}
+        \hlkwc{y}\hldef{=}\hlkwd{c}\hldef{(pred.post.lower,} \hlkwd{rev}\hldef{(pred.post.upper)),}
+        \hlkwc{col}\hldef{=}\hlkwd{rgb}\hldef{(}\hlnum{0}\hldef{,}\hlnum{0}\hldef{,}\hlnum{1}\hldef{,}\hlnum{0.5}\hldef{),} \hlkwc{border}\hldef{=}\hlnum{NA}\hldef{)}                   \hlcom{# Post CI}
+\hlkwd{polygon}\hldef{(}\hlkwc{x}\hldef{=}\hlkwd{c}\hldef{(temp.pred,} \hlkwd{rev}\hldef{(temp.pred)),}
+        \hlkwc{y}\hldef{=}\hlkwd{c}\hldef{(pred.prior.lower,} \hlkwd{rev}\hldef{(pred.prior.upper)),}
+        \hlkwc{col}\hldef{=}\hlkwd{rgb}\hldef{(}\hlnum{0}\hldef{,}\hlnum{1}\hldef{,}\hlnum{0}\hldef{,}\hlnum{0.5}\hldef{),} \hlkwc{border}\hldef{=}\hlnum{NA}\hldef{)}                   \hlcom{# Prior CI}
+\hlkwa{for}\hldef{(i} \hlkwa{in} \hlkwd{seq}\hldef{(}\hlnum{1}\hldef{, n.iter,} \hlkwc{by}\hldef{=}\hlnum{100}\hldef{)) \{}  \hlcom{## Thin by 100}
+    \hlkwd{lines}\hldef{(temp.pred, p.prior.pred[i,],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))  \}} \hlcom{# Prior preds}
+\hlkwd{lines}\hldef{(temp.pred, pred.post.mean,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(temp.pred, pred.prior.mean,} \hlkwc{col}\hldef{=}\hlsng{"darkgreen"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{legend}\hldef{(}\hlopt{-}\hlnum{3}\hldef{,} \hlnum{1.3}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Prior mean"}\hldef{,} \hlsng{"Prior samples"}\hldef{,} \hlsng{"Posterior mean"}\hldef{),}
+       \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"darkgreen"}\hldef{,} \hlsng{"grey"}\hldef{,} \hlsng{"blue"}\hldef{),} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1367,7 +1367,7 @@ totalAbundance <- sum(N)
       Bayesian models.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday. 
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Tuesday.
 \end{frame}
 
 

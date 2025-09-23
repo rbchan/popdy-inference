@@ -190,7 +190,7 @@ t(rmultinom(n=1, size=N, prob=pi))
     \item Can be applied to data from many sampling designs, simply by
       changing how the $\pi$ probabilities are computed. %\\
     \item Precision is typically better than binomial $N$-mixture
-      models because there's more information in the data
+      models because there's more information in the data.
   \end{itemize}
   \pause
   \vfill
@@ -562,9 +562,8 @@ legend(-3, 20, c("Multinomial N-mix model", "Lowess smooth"), lwd=2, col=c("blac
 
 \begin{frame}
   \frametitle{Bayesian multinomial $N$-mixture models}
-  There are several equivalent formulations of the multinomial, some
-  of which that we can exploit to fit the model in JAGS. \\
-  
+  There are several equivalent formulations of the multinomial that
+  can be used to fit the model. \\  
   \begin{itemize}
     \item Conditional-on-$N$, missing $y_{iK}$ (Not possible in JAGS)
     \item Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
@@ -1266,7 +1265,7 @@ print(summary(jags.post.doub)$quantiles, digits=3)
       and $p_2$ to compute the $\pi$ probabilities.  
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00 AM on Monday.
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00pm on Tuesday.
 \end{frame}
 
 

@@ -209,9 +209,12 @@
   % $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ \\
   % $y_{ij}$ -- binary detection/non-detection data
   \vfill
-  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates \\
+  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates. \\
+  \pause \hspace{12pt} Examples: elevation, forest cover, distance to water. \\
+  \pause
   \vspace{12pt}
-  $\color{Bittersweet} w$ is an observation covariate
+  $\color{Bittersweet} w$ is an observation covariate. \\
+  \pause \hspace{12pt} Examples: time of day, observer, wind.
 \end{frame}
 
 
@@ -236,12 +239,13 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{nSites} \hlkwb{<-} \hlnum{100}\hldef{; nVisits} \hlkwb{<-} \hlnum{4}\hldef{;} \hlkwd{set.seed}\hldef{(}\hlnum{83}\hldef{)} \hlcom{# Make it reproducible}
-\hldef{x1} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites,}\hlnum{0}\hldef{,}\hlnum{0.5}\hldef{)}  \hlcom{# Site covariate (continuous)}
-\hldef{x2} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites,}\hlnum{100}\hldef{,}\hlnum{10}\hldef{)} \hlcom{# Another continuous site covariate}
-\hldef{w} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{sample}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Cold"}\hldef{,} \hlsng{"Hot"}\hldef{),} \hlkwc{size}\hldef{=nSites}\hlopt{*}\hldef{nVisits,} \hlkwc{replace}\hldef{=T),}
-            \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)} \hlcom{# Categorical obs covar}
-\hldef{wHot} \hlkwb{<-} \hlkwd{ifelse}\hldef{(w}\hlopt{==}\hlsng{"Hot"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}         \hlcom{# Dummy variable}
+\hldef{nSites} \hlkwb{<-} \hlnum{200}\hldef{; nVisits} \hlkwb{<-} \hlnum{4}\hldef{;} \hlkwd{set.seed}\hldef{(}\hlnum{83}\hldef{)} \hlcom{# Make it reproducible}
+\hldef{elev} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites,}\hlnum{5000}\hldef{,}\hlnum{500}\hldef{)} \hlcom{# Site covariate (continuous)}
+\hldef{forest} \hlkwb{<-} \hlkwd{rnorm}\hldef{(nSites,}\hlnum{100}\hldef{,}\hlnum{10}\hldef{)} \hlcom{# Another continuous site covariate}
+\hldef{temp} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{sample}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"Cold"}\hldef{,} \hlsng{"Hot"}\hldef{),} \hlkwc{size}\hldef{=nSites}\hlopt{*}\hldef{nVisits,}
+                      \hlkwc{replace}\hldef{=}\hlnum{TRUE}\hldef{),}
+               \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=nVisits)} \hlcom{# Categorical obs covar}
+\hldef{tempHot} \hlkwb{<-} \hlkwd{ifelse}\hldef{(temp}\hlopt{==}\hlsng{"Hot"}\hldef{,} \hlnum{1}\hldef{,} \hlnum{0}\hldef{)}      \hlcom{# Dummy variable}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -249,10 +253,10 @@
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{beta0} \hlkwb{<-} \hlnum{0}\hldef{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{1}\hldef{; beta2} \hlkwb{<-} \hlnum{0}
-\hldef{psi} \hlkwb{<-} \hlkwd{plogis}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{x1} \hlopt{+} \hldef{beta2}\hlopt{*}\hldef{x2)}
-\hldef{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{0.5}\hldef{; alpha1} \hlkwb{<-} \hlnum{1}\hldef{; alpha2} \hlkwb{<-} \hlnum{2}
-\hldef{p} \hlkwb{<-} \hlkwd{plogis}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{x1} \hlopt{+} \hldef{alpha2}\hlopt{*}\hldef{wHot)}
+\hldef{beta0} \hlkwb{<-} \hlnum{5}\hldef{; beta1} \hlkwb{<-} \hlopt{-}\hlnum{0.001}\hldef{; beta2} \hlkwb{<-} \hlnum{0}
+\hldef{psi} \hlkwb{<-} \hlkwd{plogis}\hldef{(beta0} \hlopt{+} \hldef{beta1}\hlopt{*}\hldef{elev} \hlopt{+} \hldef{beta2}\hlopt{*}\hldef{forest)}
+\hldef{alpha0} \hlkwb{<-} \hlopt{-}\hlnum{6.5}\hldef{; alpha1} \hlkwb{<-} \hlnum{0.001}\hldef{; alpha2} \hlkwb{<-} \hlnum{2}
+\hldef{p} \hlkwb{<-} \hlkwd{plogis}\hldef{(alpha0} \hlopt{+} \hldef{alpha1}\hlopt{*}\hldef{elev} \hlopt{+} \hldef{alpha2}\hlopt{*}\hldef{tempHot)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -274,6 +278,26 @@
 
 
 \begin{frame}[fragile]
+  \frametitle{Prediction in `unmarked'}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/sim-sitch-1} 
+
+}
+
+
+\end{knitrout}
+%\pause
+\footnotesize
+\centering
+Expect problems if you ignore imperfect detection in this case \\
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
   \frametitle{Simulated data}
   \begin{columns}
     \begin{column}{0.4\textwidth}
@@ -287,24 +311,24 @@
 \end{alltt}
 \begin{verbatim}
 ##       [,1] [,2] [,3] [,4]
-##  [1,]    1    1    1    0
-##  [2,]    1    0    0    1
-##  [3,]    0    0    1    1
-##  [4,]    1    1    0    1
+##  [1,]    0    1    1    1
+##  [2,]    1    0    1    1
+##  [3,]    0    0    0    1
+##  [4,]    0    0    0    0
 ##  [5,]    0    0    0    0
-##  [6,]    0    0    0    0
+##  [6,]    0    0    0    1
 ##  [7,]    0    0    0    0
-##  [8,]    1    1    1    1
+##  [8,]    0    0    0    0
 ##  [9,]    0    0    0    0
 ## [10,]    0    0    0    0
-## [11,]    0    0    0    0
-## [12,]    1    1    0    1
+## [11,]    1    0    1    1
+## [12,]    0    0    0    0
 ## [13,]    0    0    0    0
 ## [14,]    0    0    0    0
 ## [15,]    0    0    0    0
 ## [16,]    0    0    0    0
-## [17,]    1    0    1    1
-## [18,]    1    1    1    0
+## [17,]    0    0    0    0
+## [18,]    0    0    0    1
 ## [19,]    0    0    0    0
 ## [20,]    0    0    0    0
 \end{verbatim}
@@ -315,7 +339,7 @@
     \pause
 %    \scriptsize
     {\centering Summary stats \\}
-    \vspace{24pt}
+%    \vspace{24pt}
   Detections at each site \\
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
@@ -325,8 +349,8 @@
 \end{alltt}
 \begin{verbatim}
 ## siteDets
-##  0  1  2  3  4 
-## 52  6 15 22  5
+##   0   1   2   3   4 
+## 127  34  19  18   2
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -341,11 +365,23 @@ Proportion of sites known to be occupied \\
 \hldef{naiveOccupancy}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.48
+## [1] 0.365
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 
+%    \vspace{12pt}
+    {\centering Actual occupancy \\}
+\begin{knitrout}\scriptsize
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{sum}\hldef{(z)} \hlopt{/} \hldef{nSites}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.44
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
   \end{column}
   \end{columns}
 \end{frame}
@@ -375,13 +411,13 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(x1,x2),} \hlkwc{obsCovs}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{w}\hldef{=w))}
+\hldef{umf} \hlkwb{<-} \hlkwd{unmarkedFrameOccu}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{siteCovs}\hldef{=}\hlkwd{data.frame}\hldef{(elev,forest),} \hlkwc{obsCovs}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{temp}\hldef{=temp))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \pause
 %\vfill
-%Reformat $w$ as a factor: %, but it's formatted as a matrix of
+%Reformat $temp$ as a factor: %, but it's formatted as a matrix of
 %characters, we have to reformat it:
 %Summary
 \begin{knitrout}\tiny
@@ -392,28 +428,28 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{verbatim}
 ## unmarkedFrame Object
 ## 
-## 100 sites
+## 200 sites
 ## Maximum number of observations per site: 4 
 ## Mean number of observations per site: 4 
-## Sites with at least one detection: 48 
+## Sites with at least one detection: 73 
 ## 
 ## Tabulation of y observations:
 ##   0   1 
-## 278 122 
+## 666 134 
 ## 
 ## Site-level covariates:
-##        x1                 x2        
-##  Min.   :-1.19272   Min.   : 68.38  
-##  1st Qu.:-0.26889   1st Qu.: 95.43  
-##  Median : 0.12981   Median : 99.59  
-##  Mean   : 0.07007   Mean   :100.26  
-##  3rd Qu.: 0.37525   3rd Qu.:107.57  
-##  Max.   : 1.25305   Max.   :123.12  
+##       elev          forest      
+##  Min.   :3419   Min.   : 69.24  
+##  1st Qu.:4768   1st Qu.: 94.01  
+##  Median :5040   Median :100.14  
+##  Mean   :5042   Mean   :100.14  
+##  3rd Qu.:5376   3rd Qu.:107.03  
+##  Max.   :6253   Max.   :128.59  
 ## 
 ## Observation-level covariates:
-##     w      
-##  Cold:200  
-##  Hot :200
+##    temp    
+##  Cold:424  
+##  Hot :376
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -432,12 +468,12 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{mean.x1} \hlkwb{<-} \hlkwd{mean}\hldef{(x1); mean.x2} \hlkwb{<-} \hlkwd{mean}\hldef{(x2)}
-\hldef{sd.x1} \hlkwb{<-} \hlkwd{sd}\hldef{(x1); sd.x2} \hlkwb{<-} \hlkwd{sd}\hldef{(x2)}
-\hldef{x1s} \hlkwb{<-} \hldef{(x1}\hlopt{-}\hldef{mean.x1)}\hlopt{/}\hldef{sd.x1}
-\hldef{x2s} \hlkwb{<-} \hldef{(x2}\hlopt{-}\hldef{mean.x2)}\hlopt{/}\hldef{sd.x2}
-\hlkwd{siteCovs}\hldef{(umf)}\hlopt{$}\hldef{x1s} \hlkwb{<-} \hldef{x1s}
-\hlkwd{siteCovs}\hldef{(umf)}\hlopt{$}\hldef{x2s} \hlkwb{<-} \hldef{x2s}
+\hldef{mean.elev} \hlkwb{<-} \hlkwd{mean}\hldef{(elev); mean.forest} \hlkwb{<-} \hlkwd{mean}\hldef{(forest)}
+\hldef{sd.elev} \hlkwb{<-} \hlkwd{sd}\hldef{(elev); sd.forest} \hlkwb{<-} \hlkwd{sd}\hldef{(forest)}
+\hldef{elev_s} \hlkwb{<-} \hldef{(elev}\hlopt{-}\hldef{mean.elev)}\hlopt{/}\hldef{sd.elev}
+\hldef{forest_s} \hlkwb{<-} \hldef{(forest}\hlopt{-}\hldef{mean.forest)}\hlopt{/}\hldef{sd.forest}
+\hlkwd{siteCovs}\hldef{(umf)}\hlopt{$}\hldef{elev_s} \hlkwb{<-} \hldef{elev_s}
+\hlkwd{siteCovs}\hldef{(umf)}\hlopt{$}\hldef{forest_s} \hlkwb{<-} \hldef{forest_s}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -467,28 +503,27 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{fm} \hlkwb{<-} \hlkwd{occu}\hldef{(}\hlopt{~}\hldef{x1s}\hlopt{+}\hldef{w} \hlopt{~}\hldef{x1s}\hlopt{+}\hldef{x2s, umf)}    \hlcom{## Notice standardized covariates}
+\hldef{fm} \hlkwb{<-} \hlkwd{occu}\hldef{(}\hlopt{~}\hldef{elev_s}\hlopt{+}\hldef{temp} \hlopt{~}\hldef{elev_s}\hlopt{+}\hldef{forest_s, umf)} \hlcom{# Standardized covariates}
 \hldef{fm}
 \end{alltt}
 \begin{verbatim}
 ## 
 ## Call:
-## occu(formula = ~x1s + w ~ x1s + x2s, data = umf)
+## occu(formula = ~elev_s + temp ~ elev_s + forest_s, data = umf)
 ## 
-## Occupancy (logit-scale):
+## Occupancy:
 ##             Estimate    SE      z P(>|z|)
-## (Intercept)  -0.0236 0.214 -0.110  0.9122
-## x1s          -0.4991 0.236 -2.115  0.0345
-## x2s           0.1580 0.214  0.738  0.4606
+## (Intercept)   -0.284 0.177 -1.605  0.1084
+## elev_s        -0.436 0.184 -2.377  0.0174
+## forest_s       0.126 0.168  0.751  0.4526
 ## 
-## Detection (logit-scale):
+## Detection:
 ##             Estimate    SE     z  P(>|z|)
-## (Intercept)   -0.311 0.217 -1.43 1.52e-01
-## x1s            0.510 0.195  2.61 8.96e-03
-## wHot           2.104 0.365  5.76 8.17e-09
+## (Intercept)   -1.207 0.203 -5.96 2.56e-09
+## elev_s         0.569 0.133  4.27 1.97e-05
+## tempHot        1.634 0.261  6.25 4.03e-10
 ## 
-## AIC: 352.8098 
-## Number of sites: 100
+## AIC: 596.8205
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -508,16 +543,17 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 
 \begin{frame}[fragile]
   \frametitle{Prediction in `unmarked'}
-  Create a data frame with prediction covariates. We'll let $x_1$
-  vary while holding the other two covariates constant. Important that we 
-  use the standardized version of the continuous covariates.
+  Create a data frame with prediction covariates. We'll let elevation
+  vary while holding the other two covariates constant. \\
+  Important that we predict using the standardized covariates. We can
+  still graph on the original scales.
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{x1s}\hldef{=}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=}\hlopt{-}\hlnum{3}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{50}\hldef{),}
-                        \hlkwc{x2s}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{w}\hldef{=}\hlsng{'Hot'}\hldef{)}
-\hldef{pred.data}\hlopt{$}\hldef{x1} \hlkwb{<-} \hldef{pred.data}\hlopt{$}\hldef{x1s}\hlopt{*}\hldef{sd.x1}\hlopt{+}\hldef{mean.x1} \hlcom{## Back-transform x1s}
-\hldef{pred.data}\hlopt{$}\hldef{x2} \hlkwb{<-} \hldef{pred.data}\hlopt{$}\hldef{x2s}\hlopt{*}\hldef{sd.x2}\hlopt{+}\hldef{mean.x2} \hlcom{## Back-transform x2s}
+\hldef{pred.data} \hlkwb{<-} \hlkwd{data.frame}\hldef{(}\hlkwc{elev_s}\hldef{=}\hlkwd{seq}\hldef{(}\hlkwc{from}\hldef{=}\hlopt{-}\hlnum{3}\hldef{,} \hlkwc{to}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{length}\hldef{=}\hlnum{50}\hldef{),}
+                        \hlkwc{forest_s}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{temp}\hldef{=}\hlsng{'Hot'}\hldef{)} \hlcom{# Standardized}
+\hldef{pred.data}\hlopt{$}\hldef{elev} \hlkwb{<-} \hldef{pred.data}\hlopt{$}\hldef{elev_s}\hlopt{*}\hldef{sd.elev}\hlopt{+}\hldef{mean.elev} \hlcom{# Orig scale}
+\hldef{pred.data}\hlopt{$}\hldef{forest} \hlkwb{<-} \hldef{pred.data}\hlopt{$}\hldef{forest_s}\hlopt{*}\hldef{sd.forest}\hlopt{+}\hldef{mean.forest}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -557,13 +593,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(psi.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted   SE lower upper  x1s x2s   w   x1  x2
-## 1      0.81 0.11  0.50  0.95 -3.0   0 Hot -1.5 100
-## 2      0.80 0.11  0.50  0.94 -2.9   0 Hot -1.4 100
-## 3      0.79 0.11  0.50  0.94 -2.8   0 Hot -1.4 100
-## 4      0.78 0.11  0.49  0.93 -2.6   0 Hot -1.3 100
-## 5      0.77 0.11  0.49  0.92 -2.5   0 Hot -1.2 100
-## 6      0.76 0.11  0.49  0.92 -2.4   0 Hot -1.2 100
+##   Predicted   SE lower upper elev_s forest_s temp elev forest
+## 1      0.74 0.12  0.46  0.90   -3.0        0  Hot 3489    100
+## 2      0.73 0.12  0.46  0.89   -2.9        0  Hot 3552    100
+## 3      0.71 0.11  0.45  0.88   -2.8        0  Hot 3616    100
+## 4      0.70 0.11  0.45  0.87   -2.6        0  Hot 3679    100
+## 5      0.69 0.11  0.45  0.86   -2.5        0  Hot 3743    100
+## 6      0.68 0.11  0.45  0.85   -2.4        0  Hot 3806    100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -576,13 +612,13 @@ Get predictions of $p$ for each row of prediction data.
 \hlkwd{print}\hldef{(}\hlkwd{head}\hldef{(p.pred),} \hlkwc{digits}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-##   Predicted   SE lower upper  x1s x2s   w   x1  x2
-## 1      0.57 0.14  0.30  0.80 -3.0   0 Hot -1.5 100
-## 2      0.58 0.13  0.32  0.80 -2.9   0 Hot -1.4 100
-## 3      0.60 0.13  0.35  0.80 -2.8   0 Hot -1.4 100
-## 4      0.61 0.12  0.37  0.81 -2.6   0 Hot -1.3 100
-## 5      0.63 0.11  0.39  0.81 -2.5   0 Hot -1.2 100
-## 6      0.64 0.11  0.42  0.81 -2.4   0 Hot -1.2 100
+##   Predicted    SE lower upper elev_s forest_s temp elev forest
+## 1      0.22 0.073  0.11  0.39   -3.0        0  Hot 3489    100
+## 2      0.23 0.073  0.12  0.40   -2.9        0  Hot 3552    100
+## 3      0.24 0.073  0.13  0.41   -2.8        0  Hot 3616    100
+## 4      0.26 0.073  0.14  0.42   -2.6        0  Hot 3679    100
+## 5      0.27 0.073  0.15  0.43   -2.5        0  Hot 3743    100
+## 6      0.28 0.073  0.16  0.44   -2.4        0  Hot 3806    100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -594,13 +630,13 @@ Get predictions of $p$ for each row of prediction data.
 
 
 \begin{frame}[fragile]
-  \frametitle{Standardized covariate}
+  \frametitle{Standardized elevation}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{x1s, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,}
-     \hlkwc{xlab}\hldef{=}\hlsng{"Standardized covariate (x1s)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
-\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{x1s, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{);} \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{x1s, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{elev_s, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Elevation (standardized)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{elev_s, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{);} \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{elev_s, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -616,13 +652,13 @@ Get predictions of $p$ for each row of prediction data.
 
 
 \begin{frame}[fragile]
-  \frametitle{Covariate on original scale}
+  \frametitle{Elevation on original scale}
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,}
-     \hlkwc{xlab}\hldef{=}\hlsng{"Original scale covariate (x1)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
-\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{);} \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{elev, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,}
+     \hlkwc{xlab}\hldef{=}\hlsng{"Elevation (original scale)"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{)}
+\hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{elev, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{);} \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{elev, psi.pred,} \hlkwc{col}\hldef{=}\hlsng{"grey"}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -636,16 +672,33 @@ Get predictions of $p$ for each row of prediction data.
 
 
 
+\begin{frame}[fragile]
+  \frametitle{Estimated vs actual occupancy}
+\begin{knitrout}\tiny
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}
+
+{\centering \includegraphics[width=0.9\linewidth]{figure/psi-actual-est-1} 
+
+}
+
+
+\end{knitrout}
+\end{frame}
+
+
+
+
+
 
 % \begin{frame}[fragile]
 %   \frametitle{Prediction in `unmarked'}
 % <<pred-p1,fig.width=7,fig.height=5,size='tiny',out.width='80%',fig.align='center',echo=-1>>=
 % par(mai=c(0.9,0.9,0.1,0.1))  
-% plot(Predicted ~ x1s, p.pred, type="l", ylab="Detection probability", col="purple",
-%      xlab="Original scale covariate (x1)", ylim=0:1, xaxt="n")
-% axis(side=1, at=x1s.ticks, labels=round(x1s.ticks*sd(x1)+mean(x1),1)) ## Backtransform x1s
-% lines(lower ~ x1s, p.pred, col="grey")
-% lines(upper ~ x1s, p.pred, col="grey")
+% plot(Predicted ~ elev_s, p.pred, type="l", ylab="Detection probability", col="purple",
+%      xlab="Original scale covariate (elev)", ylim=0:1, xaxt="n")
+% axis(side=1, at=elev_s.ticks, labels=round(elev_s.ticks*sd(elev)+mean(elev),1)) ## Backtransform elev_s
+% lines(lower ~ elev_s, p.pred, col="grey")
+% lines(upper ~ elev_s, p.pred, col="grey")
 % @   
 % \end{frame}
 
@@ -653,37 +706,11 @@ Get predictions of $p$ for each row of prediction data.
 % \begin{frame}[fragile]
 %   \frametitle{Prediction in `unmarked'}
 % <<pred-plot1,fig.width=7,fig.height=5.5,size='scriptsize',out.width='80%',fig.align='center'>>=
-% plot(Predicted ~ x1, psi.pred, type="l", ylab="Probability", col="blue")
-% ## lines(Predicted ~ x1, p.pred, col="grey")
+% plot(Predicted ~ elev, psi.pred, type="l", ylab="Probability", col="blue")
+% ## lines(Predicted ~ elev, p.pred, col="grey")
 % legend(-3, 0.75, c("psi", ""), lty=c(1, NA), col=c("blue", NA))
 % @   
 % \end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Prediction in `unmarked'}
-\begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{x1, psi.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Probability"}\hldef{,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{,}
-     \hlkwc{xlab}\hldef{=}\hlsng{"x1"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
-\hlkwd{lines}\hldef{(Predicted} \hlopt{~} \hldef{x1, p.pred,} \hlkwc{col}\hldef{=}\hlsng{"orange"}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
-\hlkwd{legend}\hldef{(}\hlopt{-}\hlnum{1.5}\hldef{,} \hlnum{0.3}\hldef{,} \hlkwd{c}\hldef{(}\hlsng{"Occupancy (psi)"}\hldef{,} \hlsng{"Detection (p)"}\hldef{),} \hlkwc{lty}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{1}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{c}\hldef{(}\hlsng{"blue"}\hldef{,} \hlsng{"orange"}\hldef{),}
-       \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{cex}\hldef{=}\hlnum{1.3}\hldef{)}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\linewidth]{figure/pred-plot2-1} 
-
-}
-
-
-\end{knitrout}
-%\pause
-\footnotesize
-\centering
-Major problems if you ignore imperfect detection in this case \\
-\end{frame}
 
 
 
@@ -755,10 +782,10 @@ alpha1 ~ dnorm(0, 0.5)
 alpha2 ~ dnorm(0, 0.5)
 
 for(i in 1:nSites) {
-  logit(psi[i]) <- beta0 + beta1*x1[i] + beta2*x2[i]
+  logit(psi[i]) <- beta0 + beta1*elev[i] + beta2*forest[i]
   z[i] ~ dbern(psi[i])            # Latent presence/absence
   for(j in 1:nOccasions) {
-    logit(p[i,j]) <- alpha0 + alpha1*x1[i] + alpha2*wHot[i,j]
+    logit(p[i,j]) <- alpha0 + alpha1*elev[i] + alpha2*tempHot[i,j]
     y[i,j] ~ dbern(z[i]*p[i,j])   # Data
   }
 }
@@ -784,7 +811,8 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\small
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{x1}\hldef{=x1s,} \hlkwc{x2}\hldef{=x2s,} \hlkwc{wHot}\hldef{=wHot,}
+\hldef{jags.data} \hlkwb{<-} \hlkwd{list}\hldef{(}\hlkwc{y}\hldef{=y,} \hlkwc{elev}\hldef{=elev_s,} \hlkwc{forest}\hldef{=forest_s,}
+                  \hlkwc{tempHot}\hldef{=tempHot,}
                   \hlkwc{nSites}\hldef{=nSites,} \hlkwc{nOccasions}\hldef{=nVisits)}
 \end{alltt}
 \end{kframe}
@@ -844,7 +872,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.037 minutes.
+## MCMC took 0.025 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -869,27 +897,27 @@ sitesOccupied <- sum(z)
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##                    Mean     SD Naive SE Time-series SE
-## alpha0         -0.26914 0.2135 0.002756       0.005381
-## alpha1          0.49913 0.1908 0.002463       0.004038
-## alpha2          1.99823 0.3482 0.004495       0.009214
-## beta0          -0.01505 0.2151 0.002777       0.003597
-## beta1          -0.53200 0.2458 0.003173       0.004934
-## beta2           0.16682 0.2210 0.002854       0.003620
-## deviance      222.01755 8.2574 0.106603       0.150209
-## sitesOccupied  49.60950 1.3475 0.017396       0.024891
+##                   Mean      SD Naive SE Time-series SE
+## alpha0         -1.1758  0.2025 0.002614       0.006870
+## alpha1          0.5708  0.1327 0.001713       0.002627
+## alpha2          1.5701  0.2600 0.003357       0.008402
+## beta0          -0.2661  0.1799 0.002322       0.004214
+## beta1          -0.4524  0.1845 0.002382       0.004110
+## beta2           0.1274  0.1697 0.002191       0.003356
+## deviance      396.8458 17.2814 0.223103       0.448637
+## sitesOccupied  87.2630  4.9410 0.063789       0.131797
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##                   2.5%       25%       50%      75%     97.5%
-## alpha0         -0.6920  -0.41247  -0.26462  -0.1225   0.15099
-## alpha1          0.1322   0.36710   0.49489   0.6275   0.88459
-## alpha2          1.3163   1.76663   1.99315   2.2274   2.69170
-## beta0          -0.4343  -0.16327  -0.01771   0.1299   0.41113
-## beta1          -1.0529  -0.68947  -0.52150  -0.3643  -0.07513
-## beta2          -0.2737   0.02489   0.16755   0.3148   0.60205
-## deviance      210.7703 215.77769 220.64195 226.7527 241.24989
-## sitesOccupied  48.0000  49.00000  49.00000  50.0000  53.00000
+##                   2.5%       25%      50%      75%     97.5%
+## alpha0         -1.5882  -1.31176  -1.1687  -1.0374  -0.79310
+## alpha1          0.3135   0.48103   0.5686   0.6602   0.83408
+## alpha2          1.0809   1.39620   1.5602   1.7415   2.08105
+## beta0          -0.6196  -0.38486  -0.2694  -0.1491   0.09678
+## beta1          -0.8329  -0.57251  -0.4456  -0.3232  -0.10507
+## beta2          -0.1998   0.01353   0.1274   0.2396   0.47156
+## deviance      367.3163 384.73433 395.5927 407.7031 433.75572
+## sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -964,11 +992,11 @@ sitesOccupied <- sum(z)
 \hlkwd{head}\hldef{(psi.coef.post,} \hlkwc{n}\hldef{=}\hlnum{4}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-##            beta0      beta1       beta2
-## [1,]  0.09274697 -0.2716474  0.15535692
-## [2,] -0.19173696 -0.6637521 -0.05146374
-## [3,]  0.14213546 -0.6215908  0.14574879
-## [4,]  0.16840311 -0.9722204  0.27184547
+##            beta0       beta1       beta2
+## [1,] -0.50241972 -0.26606916 -0.00358777
+## [2,] -0.06971611 -0.42945708 -0.13100297
+## [3,] -0.18686091 -0.04623989  0.09095983
+## [4,] -0.34570094 -0.30938459  0.32173537
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -993,7 +1021,7 @@ sitesOccupied <- sum(z)
 \begin{alltt}
 \hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.iter) \{}
     \hldef{psi.post.pred[i,]} \hlkwb{<-} \hlkwd{plogis}\hldef{(psi.coef.post[i,}\hlsng{"beta0"}\hldef{]} \hlopt{+}
-                                \hldef{psi.coef.post[i,}\hlsng{"beta1"}\hldef{]}\hlopt{*}\hldef{pred.data}\hlopt{$}\hldef{x1s)}
+                                \hldef{psi.coef.post[i,}\hlsng{"beta1"}\hldef{]}\hlopt{*}\hldef{pred.data}\hlopt{$}\hldef{elev_s)}
 \hldef{\}}
 \end{alltt}
 \end{kframe}
@@ -1008,7 +1036,7 @@ sitesOccupied <- sum(z)
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(pred.data}\hlopt{$}\hldef{x1, psi.post.pred[}\hlnum{1}\hldef{,],} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"x1"}\hldef{,}
+\hlkwd{plot}\hldef{(pred.data}\hlopt{$}\hldef{elev, psi.post.pred[}\hlnum{1}\hldef{,],} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{xlab}\hldef{=}\hlsng{"Elevation"}\hldef{,}
      \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlkwd{c}\hldef{(}\hlnum{0}\hldef{,} \hlnum{1}\hldef{),} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
 \end{alltt}
 \end{kframe}
@@ -1030,7 +1058,7 @@ sitesOccupied <- sum(z)
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hldef{n.iter) \{}
-    \hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, psi.post.pred[i,],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
+    \hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{elev, psi.post.pred[i,],} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.8}\hldef{))}
 \hldef{\}}
 \end{alltt}
 \end{kframe}
@@ -1056,9 +1084,9 @@ sitesOccupied <- sum(z)
 \hldef{pred.post.mean} \hlkwb{<-} \hlkwd{colMeans}\hldef{(psi.post.pred)}
 \hldef{pred.post.lower} \hlkwb{<-} \hlkwd{apply}\hldef{(psi.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.025}\hldef{)}
 \hldef{pred.post.upper} \hlkwb{<-} \hlkwd{apply}\hldef{(psi.post.pred,} \hlnum{2}\hldef{, quantile,} \hlkwc{prob}\hldef{=}\hlnum{0.975}\hldef{)}
-\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, pred.post.mean,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
-\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, pred.post.lower,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
-\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{x1, pred.post.upper,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{elev, pred.post.mean,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{)}
+\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{elev, pred.post.lower,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
+\hlkwd{lines}\hldef{(pred.data}\hlopt{$}\hldef{elev, pred.post.upper,} \hlkwc{col}\hldef{=}\hlsng{"blue"}\hldef{,} \hlkwc{lty}\hldef{=}\hlnum{2}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -1127,9 +1155,10 @@ sitesOccupied <- sum(z)
     %     \item Response: \texttt{cawa1, cawa2, cawa3, cawa4}
     %     \item Site covs: \texttt{Elevation, Wind, Noise}
     %   \end{itemize}
-    \item Fit 3 covariate models in `unmarked' to the Ruffed Grouse
-      data ({\tt grouse\_data.csv}). You can choose which covariates
-      to include in the models.  
+    \item Fit an occupancy model in `unmarked' to the Ruffed Grouse
+      data ({\tt grouse\_data.csv}). Use all three covariates, with
+      elevation and forest cover affecting occupancy and day of the
+      year affecting detection probability.
       \begin{itemize}
         \footnotesize
         \item Response: \texttt{grouse1, grouse2, grouse3}
@@ -1139,8 +1168,8 @@ sitesOccupied <- sum(z)
     \item Make one prediction graph for occupancy and one for
       detection.  
     \item Create the same graphs as above, but using Bayesian methods.
-    \item Compare the likelihood and Bayesian predictions. Are they
-      similar?   
+    %% \item Compare the likelihood and Bayesian predictions. Are they
+    %%   similar?   
     \end{enumerate}
     \vfill
     Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00pm on Tuesday. 

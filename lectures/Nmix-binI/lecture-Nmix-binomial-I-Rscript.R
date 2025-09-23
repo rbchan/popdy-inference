@@ -1,6 +1,6 @@
 ## ----buildit,include=FALSE,eval=FALSE---------------------------------------------------
-## rnw2pdf("lecture-Nmix-binomial-I")
-## rnw2pdf("lecture-Nmix-binomial-I", tangle=TRUE)
+# rnw2pdf("lecture-Nmix-binomial-I")
+# rnw2pdf("lecture-Nmix-binomial-I", tangle=TRUE)
 
 
 

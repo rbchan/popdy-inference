@@ -4,6 +4,9 @@
 
 - Quiz students before day 1
   * Can you import CAWA data and extract columns 2-5
+  
+- Less model selection, more causal inference
+
 
 ## For 2025
 
