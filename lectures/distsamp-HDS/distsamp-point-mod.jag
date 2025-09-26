@@ -1,8 +1,9 @@
 model {
 
-lambda.intercept ~ dunif(0, 20)
-beta0 <- log(lambda.intercept)
-beta1 ~ dnorm(0, 0.5)
+# lambda.intercept ~ dunif(0, 20)
+# beta0 <- log(lambda.intercept)
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
 
 alpha0 ~ dnorm(0, 0.1)
 alpha1 ~ dnorm(0, 0.1)
