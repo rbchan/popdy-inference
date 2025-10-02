@@ -1,6 +1,6 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-distsamp-HDS")
-## rnw2pdf("lecture-distsamp-HDS", tangle=TRUE)
+# rnw2pdf("lecture-distsamp-HDS")
+# rnw2pdf("lecture-distsamp-HDS", tangle=TRUE)
 
 
 
@@ -157,10 +157,6 @@ fm4 <- distsamp(~noise ~elevation, umf4, keyfun="halfnorm")   # half-normal
 fm4
 
 
-## ----un-compare-pt,size='tiny'------------------------------------------------
-c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-
-
 ## ----preddat,size='footnotesize'----------------------------------------------
 pred.data <- data.frame(noise=seq(-3, 3, by=0.5))
 
@@ -208,7 +204,7 @@ plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
      col="red", lwd=2, ylim=c(0,1), las=1)
 
 
-## ----bugs-pt,size='tiny',echo=FALSE,comment='',background='lightblue'---------
+## ----bugs-pt,size='tiny',echo=FALSE,comment='',background='beige'-------------
 writeLines(readLines("distsamp-point-mod.jag"))
 
 
@@ -223,7 +219,7 @@ jags.data.pt <- list(y=y4, n=rowSums(y4), area=diff(area),
 
 ## ----bugs-inits-pt,size='footnotesize'----------------------------------------
 jags.inits.pt <- function() {
-    list(lambda.intercept=runif(1), alpha0=rnorm(1, 5),
+    list(beta0=rnorm(1), alpha0=rnorm(1, 5),
          N=rowSums(y4)+rpois(nrow(y4), 2))
 }
 
@@ -348,7 +344,7 @@ fm
 c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 
 
-## ----bugs-line,size='tiny',echo=FALSE,comment='',background='lightblue'-------
+## ----bugs-line,size='tiny',echo=FALSE,comment='',background='beige'-----------
 writeLines(readLines("distsamp-line-mod.jag"))
 
 
@@ -363,7 +359,7 @@ jags.data.line <- list(y=y2, n=rowSums(y2),
 
 ## ----bugs-inits,size='footnotesize'-------------------------------------------
 jags.inits.line <- function() {
-    list(lambda.intercept=runif(1), alpha0=rnorm(1, 5),
+    list(beta0=rnorm(1), alpha0=rnorm(1, 5),
          N=rowSums(y2)+rpois(nrow(y2), 2))
 }
 

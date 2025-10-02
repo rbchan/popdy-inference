@@ -397,15 +397,15 @@ gp <- function(x) g(x)*pdf(x)
   \small
   State model (with Poisson assumption)
   \begin{gather*}
-    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} w_{i1}} +
-    \beta_2 {\color{blue} w_{i2}} + \cdots \\
+    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {w_{i1}} +
+    \beta_2 {w_{i2}} + \cdots \\
     N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
   \pause
   Observation model
   \begin{gather*}
-    \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {\color{blue} w_{i1}}
-    + \alpha_2 {\color{blue} w_{i3}} + \cdots \\
+    \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {w_{i1}}
+    + \alpha_2 {w_{i3}} + \cdots \\
     \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
 %    \pi(b_1, \dots, b_{J+1}, x, \sigma_i))
     \pi(x, \sigma_i))
@@ -418,7 +418,7 @@ gp <- function(x) g(x)*pdf(x)
   $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ \\
   $\pi(x,\sigma_i)$ -- Function computing multinomial cell probs \\
   $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) \\
-  $\color{blue} w_1$, $\color{blue} w_2$, $\color{blue} w_3$ -- site covariates %\hfill %\\
+  $w_1$, $w_2$, $w_3$ -- site covariates %\hfill %\\
 \end{frame}
 
 
@@ -664,13 +664,13 @@ summary(umf4)
 fm4 <- distsamp(~noise ~elevation, umf4, keyfun="halfnorm")   # half-normal
 fm4
 @
-\pause
-\vfill
-Compare to actual parameter values:
-\vspace{-6pt}
-<<un-compare-pt,size='tiny'>>=
-c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
-@ 
+% \pause
+% \vfill
+% Compare to actual parameter values:
+% \vspace{-6pt}
+% <<un-compare-pt,size='tiny'>>=
+% c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+% @ 
 \end{frame}
 
 
