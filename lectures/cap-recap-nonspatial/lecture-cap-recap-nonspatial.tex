@@ -1113,7 +1113,7 @@ Estimates of $p$ and $n_0$ (called $f_0$ in MARK)
 \begin{verbatim}
 ##               estimate         se        lcl        ucl fixed note
 ## p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
-## f0 g1 a0 t1 42.6208680 16.7216970 20.3020010 89.4758280
+## f0 g1 a0 t1 42.6208600 16.7216950 20.3019960 89.4758170
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1128,7 +1128,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate      se    lcl      ucl
-## 1 96.62087 16.7217 74.302 143.4758
+## 1 96.62086 16.7217 74.302 143.4758
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1258,10 +1258,10 @@ Estimates of $p$ and $\pi$, the proportion of individuals in group 2.
 \end{alltt}
 \begin{verbatim}
 ##              estimate        se       lcl        ucl fixed note
-## pi g1 m1    0.6554419 0.1938704 0.2612437  0.9109758           
-## p g1 t1 m1  0.3985716 0.1171103 0.2027864  0.6332370           
-## p g1 t1 m2  0.8435083 0.1105444 0.5107921  0.9653087           
-## f0 g1 a0 t1 7.6766958 5.7418276 2.0786066 28.3515200
+## pi g1 m1    0.6554419 0.1938701 0.2612441  0.9109756           
+## p g1 t1 m1  0.3985716 0.1171102 0.2027867  0.6332366           
+## p g1 t1 m2  0.8435083 0.1105443 0.5107926  0.9653086           
+## f0 g1 a0 t1 7.6766948 5.7418195 2.0786092 28.3514780
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1276,7 +1276,7 @@ Estimate of $N$
 \begin{verbatim}
 ## $`N Population Size`
 ##   estimate       se      lcl      ucl
-## 1  94.6767 5.741828 89.07861 115.3515
+## 1 94.67669 5.741819 89.07861 115.3515
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1419,17 +1419,13 @@ We also need to augment the \inr{prevcap} object. \\
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-\pause
-\vfill
-And we need a covariate indicating time (occasion). \\
-%\vspace{-6pt}
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hldef{occasion.aug} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{as.character}\hldef{(}\hlnum{1}\hlopt{:}\hldef{J), M, J,} \hlkwc{byrow}\hldef{=}\hlnum{TRUE}\hldef{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+%% \pause
+%% \vfill
+%% And we need a covariate indicating time (occasion). \\
+%% %\vspace{-6pt}
+%% <<un-occ,size='scriptsize'>>=
+%% occasion.aug <- matrix(as.character(1:J), M, J, byrow=TRUE)
+%% @ 
 \end{frame}
 
 
@@ -1971,10 +1967,10 @@ N <- sum(z)
       \end{itemize}
     \item Create a table reporting point estimates and 95\% CIs for
       $N$ for each model fit in RMark and JAGS. Which model has the
-      lowest AICc? 
+      lowest AICc (RMark only)? 
   \end{enumerate}
   \vfill
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 8:00am on Monday.
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 10:00pm on Monday.
 \end{frame}
 
 
