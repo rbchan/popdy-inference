@@ -262,7 +262,8 @@ knit_theme$set("edit-kwrite")
   \begin{gather*}
     N \sim \mathrm{Pois}(\lambda) \\
     \bsi \sim \mathrm{Unif}(\cal S) \\
-    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    %% p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J  \\
+    p_{ij} = g_0\exp\left(\frac{-\|\bsi - \bxj\|^2}{2\sigma^2}\right)  \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
   \end{gather*}
   \pause
@@ -1190,7 +1191,8 @@ AIC(fm.M0, fm.Mt, fm.Mb)
   \begin{gather*}
     \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
+    %% p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
+    p_{ij} = g_0\exp\left(\frac{-\|\bsi-\bxj\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
   \end{gather*}
@@ -1475,7 +1477,7 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
       for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
   \end{enumerate}
   \vfill
-  Upload your work to ELC by 8:00am on Monday. 
+  Upload your work to ELC by 5:00pm on Tuesday. 
 \end{frame}
 
 
