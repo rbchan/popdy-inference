@@ -1471,7 +1471,8 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
     \item Import the bear data formatted for `secr' and fit a model
       where $g_0$ varies among the 8 occasions. Use `secr' to
       determine what an appropriate buffer should be.
-    \item Import the bear data formatted for JAGS and tabulate the
+    \item Import the bear data formatted for JAGS (using the command
+      \inr{load("jags\_bear\_data.gzip")}) and tabulate the 
       capture frequencies and the number of spatial recapture. Fit the
       same model in JAGS that you fit in secr. Compare estimates and 95\% CIs
       for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
