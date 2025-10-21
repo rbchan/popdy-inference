@@ -15,6 +15,8 @@
 
 - Add spatial prediction to occupancy/Nmix lectures
 
+- Find an album for each work session:
+  * Survival -> Bob Marley's Survival
 
 
 ## For 2025
