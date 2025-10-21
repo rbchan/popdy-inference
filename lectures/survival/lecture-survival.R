@@ -74,7 +74,7 @@ legend(350, 1, paste("x =", c(-2, 0, 2)), lty=1, col=1:3)
 
 
 ## ----exp-jag,eval=FALSE-------------------------------------------------------
-## writeLines(readLines("surv-exp.jag"))
+# writeLines(readLines("surv-exp.jag"))
 
 ## ----exp-jag2,size='footnotesize',background='beige',comment='',echo=FALSE----
 writeLines(readLines("surv-exp.jag"))
@@ -146,7 +146,7 @@ z[1:15,]
 
 
 ## ----jags-surv-dtime,eval=FALSE-----------------------------------------------
-## writeLines(readLines("surv-dtime.jag"))
+# writeLines(readLines("surv-dtime.jag"))
 
 ## ----jags-surv-dtime2,background='beige',comment='',echo=FALSE----------------
 writeLines(readLines("surv-dtime.jag"))
@@ -186,7 +186,7 @@ legend(6, 1, c("Posterior sample", "Posterior mean", "Actual"),
 
 
 ## ----jags-surv-dtime-tcovs,eval=FALSE-----------------------------------------
-## writeLines(readLines("surv-dtime-tcovs.jag"))
+# writeLines(readLines("surv-dtime-tcovs.jag"))
 
 ## ----jags-surv-dtime2-tcovs,background='beige',comment='',echo=FALSE----------
 writeLines(readLines("surv-dtime-tcovs.jag"))
@@ -222,7 +222,7 @@ for(i in 1:nDeer) {
 
 
 ## ----jags-surv-dtime-comp-risk,size='scriptsize',eval=FALSE-------------------
-## writeLines(readLines("surv-dtime-comp-risks.jag"))
+# writeLines(readLines("surv-dtime-comp-risks.jag"))
 
 
 ## ----jags-surv-dtime2-comp-risk,size='scriptsize',background='beige',comment='',echo=FALSE----

@@ -7,6 +7,15 @@
   
 - Less model selection, more causal inference
 
+- Do survival before dynamic occupancy/Nmix
+  * Some students need it for projects
+  * Consider moving dynamic occupancy into end of static occupancy lectures
+  
+- Maybe skip either multinomial Nmix or HDS, depending on what the students need for their research. 
+
+- Add spatial prediction to occupancy/Nmix lectures
+
+
 
 ## For 2025
 
