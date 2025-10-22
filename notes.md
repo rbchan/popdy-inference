@@ -13,6 +13,8 @@
   
 - Maybe skip either multinomial Nmix or HDS, depending on what the students need for their research. 
 
+- Save GOF/modsel for after dynamic models
+
 - Add spatial prediction to occupancy/Nmix lectures
 
 - Find an album for each work session:
