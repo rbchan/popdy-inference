@@ -1532,11 +1532,14 @@ N <- sum(z)  ## Realized value of N
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hldef{ji.SCR0} \hlkwb{<-} \hlkwa{function}\hldef{() \{}
-    \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,M),} \hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),}
-         \hlkwc{s}\hldef{=}\hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(M),} \hlkwd{runif}\hldef{(M)),}
-         \hlkwc{g0}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{sigma}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.05}\hldef{,} \hlnum{0.1}\hldef{)) \}}
+  \hldef{si} \hlkwb{<-} \hlkwd{cbind}\hldef{(}\hlkwd{runif}\hldef{(M),} \hlkwd{runif}\hldef{(M))}
+  \hlkwa{for}\hldef{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hldef{(y)) \{}
+    \hldef{traps_with_dets_i} \hlkwb{<-} \hlkwd{rowSums}\hldef{(y[i,,]}\hlopt{>}\hlnum{0}\hldef{)}
+    \hldef{si[i,]} \hlkwb{<-} \hlkwd{colMeans}\hldef{(x[traps_with_dets_i,,}\hlkwc{drop}\hldef{=}\hlnum{FALSE}\hldef{])}
+  \hldef{\}}
+  \hlkwd{list}\hldef{(}\hlkwc{z}\hldef{=}\hlkwd{rep}\hldef{(}\hlnum{1}\hldef{,M),} \hlkwc{psi}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{s}\hldef{=si,}
+       \hlkwc{g0}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{),} \hlkwc{sigma}\hldef{=}\hlkwd{runif}\hldef{(}\hlnum{1}\hldef{,} \hlnum{0.05}\hldef{,} \hlnum{0.1}\hldef{)) \}}
 \hldef{jp.SCR0} \hlkwb{<-} \hlkwd{c}\hldef{(}\hlsng{"g0"}\hldef{,} \hlsng{"sigma"}\hldef{,} \hlsng{"EN"}\hldef{,} \hlsng{"N"}\hldef{)}
-\hlkwd{library}\hldef{(jagsUI)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1885,14 +1888,14 @@ MCMC
   following: 
   \vfill
   \begin{enumerate}
-    \item Import the bear data formatted for `secr' and fit a model
-      where $g_0$ varies among the 8 occasions. Use `secr' to
-      determine what an appropriate buffer should be.
+    \item Import the bear data formatted for `secr' and fit the null
+      model and a model where $g_0$ varies among the 8 occasions. Use
+      `secr' to determine what an appropriate buffer should be.
     \item Import the bear data formatted for JAGS (using the command
       \inr{load("jags\_bear\_data.gzip")}) and tabulate the 
       capture frequencies and the number of spatial recapture. Fit the
-      same model in JAGS that you fit in secr. Compare estimates and 95\% CIs
-      for $g_{0,t}$, $\sigma$, $E(N)$ and $N$.  
+      null model in JAGS. Using the null models `secr' and JAGS,
+      compare estimates and 95\% CIs for $g_{0}$, $\sigma$, $E(N)$ and $N$.
   \end{enumerate}
   \vfill
   Upload your work to ELC by 5:00pm on Tuesday. 

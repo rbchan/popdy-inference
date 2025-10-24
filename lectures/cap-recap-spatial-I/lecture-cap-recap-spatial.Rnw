@@ -1245,11 +1245,15 @@ jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
 \vfill
   Inits and parameters
   \vspace{-6pt}
-<<ji-M0-aug,size='scriptsize',message=FALSE,report=FALSE>>=
+<<ji-M0-aug,size='scriptsize',message=FALSE,report=FALSE,echo=1:2>>=
 ji.SCR0 <- function() {
-    list(z=rep(1,M), psi=runif(1),
-         s=cbind(runif(M), runif(M)),
-         g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
+  si <- cbind(runif(M), runif(M))
+  for(i in 1:nrow(y)) {
+    traps_with_dets_i <- rowSums(y[i,,]>0)
+    si[i,] <- colMeans(x[traps_with_dets_i,,drop=FALSE])
+  }
+  list(z=rep(1,M), psi=runif(1), s=si,
+       g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
 jp.SCR0 <- c("g0", "sigma", "EN", "N")
 library(jagsUI)
 @
@@ -1474,8 +1478,9 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
     \item Import the bear data formatted for JAGS (using the command
       \inr{load("jags\_bear\_data.gzip")}) and tabulate the 
       capture frequencies and the number of spatial recapture. Fit the
-      null model in JAGS. Using the null models `secr' and JAGS,
-      compare estimates and 95\% CIs for $g_{0}$, $\sigma$, $E(N)$ and $N$.
+      model with occasion-specific $g_0$ in JAGS, and
+      compare estimates and 95\% CIs for $g_{0}$, $\sigma$, $E(N)$ and
+      $N$ with the results from secr. 
   \end{enumerate}
   \vfill
   Upload your work to ELC by 5:00pm on Tuesday. 
