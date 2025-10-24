@@ -317,7 +317,7 @@ library(marked)
   We can fit CJS models in R with the `RMark' or `marked'
   packages. We'll use `marked', which requires the capture histories
   to be formatted as a character vector named \inr{ch}. 
-<<marked-data,size='footnotesize'>>=
+<<marked-data,size='footnotesize',message=FALSE,report=FALSE>>=
 library(marked)
 y.marked <- ifelse(is.na(y), 0, y)
 cap.histories <- data.frame(
@@ -565,7 +565,10 @@ If you're on Windows, you might have to install Rtools first. \\
 
 \end{frame}
 
-
+<<include=FALSE>>=
+library(secr)
+library(openpopscr)
+@ 
 
 \begin{frame}[fragile]
   \frametitle{Likelihood analysis of spatial CJS model}

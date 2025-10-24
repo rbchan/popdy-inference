@@ -48,8 +48,6 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\let\hlstd\hldef
-\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -552,13 +550,13 @@ for(i in 1:n) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples.nonsp} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.nonsp,}
-                                      \hlkwc{inits}\hlstd{=jags.inits.nonsp,}
-                                      \hlkwc{parameters.to.save}\hlstd{=jags.pars.nonsp,}
-                                      \hlkwc{model.file}\hlstd{=}\hlstr{"CJS-nonspatial.jag"}\hlstd{,}
-                                      \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                      \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples.nonsp} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data.nonsp,}
+                                      \hlkwc{inits}\hldef{=jags.inits.nonsp,}
+                                      \hlkwc{parameters.to.save}\hldef{=jags.pars.nonsp,}
+                                      \hlkwc{model.file}\hldef{=}\hlsng{"CJS-nonspatial.jag"}\hldef{,}
+                                      \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                      \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -801,10 +799,10 @@ Create the model object and then fit it
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{mod} \hlkwb{<-} \hlstd{CjsModel}\hlopt{$}\hlkwd{new}\hlstd{(}\hlkwd{list}\hlstd{(lambda0}\hlopt{~}\hlnum{1}\hlstd{, sigma}\hlopt{~}\hlnum{1}\hlstd{, phi}\hlopt{~}\hlnum{1}\hlstd{), cjs.data,}
-                    \hlkwc{start}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{lambda0}\hlstd{=}\hlnum{1.5}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlnum{50}\hlstd{,} \hlkwc{phi}\hlstd{=}\hlnum{0.5}\hlstd{))}
-\hlstd{mod}\hlopt{$}\hlkwd{fit}\hlstd{()}
-\hlstd{mod}
+\hldef{mod} \hlkwb{<-} \hldef{CjsModel}\hlopt{$}\hlkwd{new}\hldef{(}\hlkwd{list}\hldef{(lambda0}\hlopt{~}\hlnum{1}\hldef{, sigma}\hlopt{~}\hlnum{1}\hldef{, phi}\hlopt{~}\hlnum{1}\hldef{), cjs.data,}
+                    \hlkwc{start}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{lambda0}\hldef{=}\hlnum{1.5}\hldef{,} \hlkwc{sigma}\hldef{=}\hlnum{50}\hldef{,} \hlkwc{phi}\hldef{=}\hlnum{0.5}\hldef{))}
+\hldef{mod}\hlopt{$}\hlkwd{fit}\hldef{()}
+\hldef{mod}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -929,12 +927,12 @@ for(i in 1:n) {      ## Loop over individuals
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.samples.sp} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data.sp,}
-                                   \hlkwc{inits}\hlstd{=jags.inits.sp,}
-                                   \hlkwc{parameters.to.save}\hlstd{=jags.pars.sp,}
-                                   \hlkwc{model.file}\hlstd{=}\hlstr{"CJS-spatial.jag"}\hlstd{,}
-                                   \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                   \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.post.samples.sp} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data.sp,}
+                                   \hlkwc{inits}\hldef{=jags.inits.sp,}
+                                   \hlkwc{parameters.to.save}\hldef{=jags.pars.sp,}
+                                   \hlkwc{model.file}\hldef{=}\hlsng{"CJS-spatial.jag"}\hldef{,}
+                                   \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                   \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1215,13 +1213,13 @@ for(i in 1:n) {
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jps.sp.move} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jd.sp.move,}
-                          \hlkwc{inits}\hlstd{=ji.sp.move,}
-                          \hlkwc{parameters.to.save}\hlstd{=}
-                              \hlkwd{c}\hlstd{(jp.sp.move, jp.s1x, jp.s1y, jp.z1),}
-                          \hlkwc{model.file}\hlstd{=}\hlstr{"CJS-spatial-move.jag"}\hlstd{,}
-                          \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                          \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jps.sp.move} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jd.sp.move,}
+                          \hlkwc{inits}\hldef{=ji.sp.move,}
+                          \hlkwc{parameters.to.save}\hldef{=}
+                              \hlkwd{c}\hldef{(jp.sp.move, jp.s1x, jp.s1y, jp.z1),}
+                          \hlkwc{model.file}\hldef{=}\hlsng{"CJS-spatial-move.jag"}\hldef{,}
+                          \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                          \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
