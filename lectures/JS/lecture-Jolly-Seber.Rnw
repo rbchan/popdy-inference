@@ -474,6 +474,12 @@ fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
 @
 \centering %\alert
 Takes a long time to run! \\
+\pause
+\vfill
+Parameter estimates on the natural scale:
+<<js-mod-fit-opencr-pred,eval=FALSE>>=
+predict(fm.sp)
+@ 
 \end{frame}
 
 
@@ -534,7 +540,7 @@ mod$estimates()$D
 %  \tiny \fbox{\parbox{\linewidth}{\verbatiminput{JS-spatial.jag}}}
 %  \tiny {\parbox{\linewidth}{\pagecolor{ProcessBlue}\verbatiminput{JS-spatial.jag}}}
   \tiny
-<<jagsmod1,size='tiny',comment='',echo=FALSE,background='lightblue'>>=
+<<jagsmod1,size='tiny',comment='',echo=FALSE,background='beige'>>=
 writeLines(readLines("JS-spatial.jag"))
 @ 
 \end{frame}

@@ -109,8 +109,12 @@ print(derived.pars, digits=2)
 
 
 ## ----js-mod-fit-opencr, size="footnotesize",eval=FALSE------------------------
-## fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
-##                     model=list(f~1, phi~1, p~1), mask=mask)
+# fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
+#                     model=list(f~1, phi~1, p~1), mask=mask)
+
+
+## ----js-mod-fit-opencr-pred,eval=FALSE----------------------------------------
+# predict(fm.sp)
 
 
 ## ----format-openpop,size='scriptsize'-----------------------------------------
@@ -137,7 +141,7 @@ mod$get_par("phi", k = 1, m=1)       ## Survival
 mod$estimates()$D
 
 
-## ----jagsmod1,size='tiny',comment='',echo=FALSE,background='lightblue'--------
+## ----jagsmod1,size='tiny',comment='',echo=FALSE,background='beige'------------
 writeLines(readLines("JS-spatial.jag"))
 
 

@@ -48,8 +48,6 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\let\hlstd\hldef
-\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -599,6 +597,16 @@ Indicate the number of primary periods between each sampling occasion.
 \end{knitrout}
 \centering %\alert
 Takes a long time to run! \\
+\pause
+\vfill
+Parameter estimates on the natural scale:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{predict}\hldef{(fm.sp)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \end{frame}
 
 
@@ -620,10 +628,10 @@ Create the model object and then fit it
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{start} \hlkwb{<-} \hlkwd{get_start_values}\hlstd{(js.data,} \hlkwc{model} \hlstd{=} \hlstr{"JsModel"}\hlstd{)}
-\hlstd{mod} \hlkwb{<-} \hlstd{JsModel}\hlopt{$}\hlkwd{new}\hlstd{(}\hlkwd{list}\hlstd{(lambda0}\hlopt{~}\hlnum{1}\hlstd{, sigma}\hlopt{~}\hlnum{1}\hlstd{, D}\hlopt{~}\hlnum{1}\hlstd{, phi}\hlopt{~}\hlnum{1}\hlstd{, beta}\hlopt{~}\hlnum{1}\hlstd{), js.data,}
-                   \hlkwc{start}\hlstd{=start)}
-\hlstd{mod}\hlopt{$}\hlkwd{fit}\hlstd{()}
+\hldef{start} \hlkwb{<-} \hlkwd{get_start_values}\hldef{(js.data,} \hlkwc{model} \hldef{=} \hlsng{"JsModel"}\hldef{)}
+\hldef{mod} \hlkwb{<-} \hldef{JsModel}\hlopt{$}\hlkwd{new}\hldef{(}\hlkwd{list}\hldef{(lambda0}\hlopt{~}\hlnum{1}\hldef{, sigma}\hlopt{~}\hlnum{1}\hldef{, D}\hlopt{~}\hlnum{1}\hldef{, phi}\hlopt{~}\hlnum{1}\hldef{, beta}\hlopt{~}\hlnum{1}\hldef{), js.data,}
+                   \hlkwc{start}\hldef{=start)}
+\hldef{mod}\hlopt{$}\hlkwd{fit}\hldef{()}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -646,13 +654,13 @@ Back-transform
 \hldef{mod}\hlopt{$}\hlkwd{get_par}\hldef{(}\hlsng{"D"}\hldef{)}                     \hlcom{## Superpopulation density}
 \end{alltt}
 \begin{verbatim}
-## [1] 96.00797
+## [1] 96.00778
 \end{verbatim}
 \begin{alltt}
 \hldef{mod}\hlopt{$}\hlkwd{get_par}\hldef{(}\hlsng{"beta"}\hldef{,} \hlkwc{k} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{m}\hldef{=}\hlnum{1}\hldef{)}      \hlcom{## Per-capita recruitment}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.2811347
+## [1] 0.2811346
 \end{verbatim}
 \begin{alltt}
 \hldef{mod}\hlopt{$}\hlkwd{get_par}\hldef{(}\hlsng{"phi"}\hldef{,} \hlkwc{k} \hldef{=} \hlnum{1}\hldef{,} \hlkwc{m}\hldef{=}\hlnum{1}\hldef{)}       \hlcom{## Survival}
@@ -675,16 +683,16 @@ Back-transform
 \end{alltt}
 \begin{verbatim}
 ##    Estimate       SE      LCL      UCL
-## 1  26.99117 6.592624 17.04979 42.72918
-## 2  25.22347 4.412889 18.03533 35.27651
-## 3  24.07377 3.582891 18.06686 32.07786
-## 4  23.32600 3.441197 17.54839 31.00584
-## 5  22.83966 3.534214 16.95278 30.77077
-## 6  22.52335 3.663363 16.47433 30.79343
-## 7  22.31762 3.770463 16.13495 30.86939
-## 8  22.18381 3.847131 15.90660 30.93820
-## 9  22.09679 3.898544 15.75686 30.98765
-## 10 22.04018 3.931822 15.66004 31.01970
+## 1  26.99111 6.592619 17.04974 42.72910
+## 2  25.22342 4.412884 18.03529 35.27644
+## 3  24.07372 3.582886 18.06683 32.07780
+## 4  23.32596 3.441191 17.54835 31.00578
+## 5  22.83962 3.534208 16.95275 30.77071
+## 6  22.52331 3.663356 16.47430 30.79337
+## 7  22.31758 3.770457 16.13492 30.86934
+## 8  22.18377 3.847125 15.90657 30.93815
+## 9  22.09675 3.898538 15.75683 30.98759
+## 10 22.04015 3.931815 15.66001 31.01965
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -712,7 +720,7 @@ Back-transform
 %  \tiny {\parbox{\linewidth}{\pagecolor{ProcessBlue}\verbatiminput{JS-spatial.jag}}}
   \tiny
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 phi ~ dunif(0,1)      ## Survival
