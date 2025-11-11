@@ -144,7 +144,7 @@ knit_theme$set("edit-kwrite")
 
 
 \begin{frame}
-  \frametitle{\large Closed population model ($N$ known hypothetically) }
+  \frametitle{\large Closed population model}
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
@@ -594,7 +594,7 @@ plot(dsurf.r/pix.area, col=terrain.colors(100), zlim=c(0,0.18),
   Contour map for the Empirical Bayes posterior distribution of the
   activity center for individual 1. 
 <<fxi,eval=TRUE,size='scriptsize',out.width='65%',fig.align='center'>>=
-fxi.contour(fm.elev, i=1)
+fxiContour(fm.elev, i=1)
 @   
 \end{frame}
 
@@ -660,7 +660,7 @@ region.N(fm.elev)
 <<bugs-SCR-elev-R,size='tiny',eval=FALSE>>=
 writeLines(readLines("SCR-elev-v1.jag"))
 @
-<<bugs-SCR-elev,size='tiny',echo=FALSE,background='lightblue',comment=''>>=
+<<bugs-SCR-elev,size='tiny',echo=FALSE,background='beige',comment=''>>=
 writeLines(readLines("SCR-elev-v1.jag"))
 @
 \end{frame}
@@ -704,7 +704,7 @@ writeLines(readLines("SCR-elev-v1.jag"))
 <<bugs-SCR-elev-v2-R,size='tiny',eval=FALSE>>=
 writeLines(readLines("SCR-elev-v2.jag"))
 @
-<<bugs-SCR-elev-v2,size='tiny',echo=FALSE,comment='',background='lightblue'>>=
+<<bugs-SCR-elev-v2,size='tiny',echo=FALSE,comment='',background='beige'>>=
 writeLines(readLines("SCR-elev-v2.jag"))
 @
 \end{frame}

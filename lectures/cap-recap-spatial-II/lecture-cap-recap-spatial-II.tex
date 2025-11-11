@@ -48,8 +48,6 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\let\hlstd\hldef
-\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -187,7 +185,7 @@
 
 
 \begin{frame}
-  \frametitle{\large Closed population model ($N$ known hypothetically) }
+  \frametitle{\large Closed population model}
   \footnotesize
   State model (a spatial point process model) %\\
   \begin{gather*}
@@ -709,9 +707,9 @@ inside its pixel.
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fm.elev} \hlkwb{<-} \hlkwd{secr.fit}\hlstd{(sch,} \hlkwc{model}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{D}\hlstd{=}\hlopt{~}\hlstd{elevation,} \hlkwc{g0}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{,} \hlkwc{sigma}\hlstd{=}\hlopt{~}\hlnum{1}\hlstd{),}
-                    \hlkwc{mask}\hlstd{=mask,} \hlkwc{trace}\hlstd{=}\hlnum{FALSE}\hlstd{)}  \hlcom{## Don't use 'buffer'}
-\hlkwd{coef}\hlstd{(fm.elev)}
+\hldef{fm.elev} \hlkwb{<-} \hlkwd{secr.fit}\hldef{(sch,} \hlkwc{model}\hldef{=}\hlkwd{list}\hldef{(}\hlkwc{D}\hldef{=}\hlopt{~}\hldef{elevation,} \hlkwc{g0}\hldef{=}\hlopt{~}\hlnum{1}\hldef{,} \hlkwc{sigma}\hldef{=}\hlopt{~}\hlnum{1}\hldef{),}
+                    \hlkwc{mask}\hldef{=mask,} \hlkwc{trace}\hldef{=}\hlnum{FALSE}\hldef{)}  \hlcom{## Don't use 'buffer'}
+\hlkwd{coef}\hldef{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
 ##                   beta    SE.beta        lcl        ucl
@@ -731,10 +729,10 @@ Estimates on original scale (at average covariate values).
 \hlkwd{predict}\hldef{(fm.elev)}
 \end{alltt}
 \begin{verbatim}
-##        link  estimate SE.estimate        lcl        ucl
-## D       log  1.414252   0.1967067  1.0782035  1.8550375
-## g0    logit  0.235421   0.0384633  0.1684336  0.3188351
-## sigma   log 49.848252   3.2720450 43.8366152 56.6843093
+##        link   estimate SE.estimate        lcl        ucl
+## D       log  0.5712491   0.1350596  0.3616658  0.9022848
+## g0    logit  0.2354210   0.0384633  0.1684336  0.3188351
+## sigma   log 49.8482523   3.2720450 43.8366152 56.6843093
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -771,7 +769,7 @@ Estimates on original scale (at average covariate values).
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{fxi.contour}\hldef{(fm.elev,} \hlkwc{i}\hldef{=}\hlnum{1}\hldef{)}
+\hlkwd{fxiContour}\hldef{(fm.elev,} \hlkwc{i}\hldef{=}\hlnum{1}\hldef{)}
 \end{alltt}
 \end{kframe}
 
@@ -800,8 +798,8 @@ Estimates on original scale (at average covariate values).
 \end{alltt}
 \begin{verbatim}
 ##     estimate SE.estimate      lcl      ucl  n
-## E.N 87.35370   12.228402 66.48162 114.7786 59
-## R.N 93.53552    7.885437 81.20121 112.7224 59
+## E.N  87.3537   12.228402 66.48162 114.7786 59
+## R.N  87.3537    7.885437 75.60648 107.4108 59
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -859,7 +857,7 @@ Estimates on original scale (at average covariate values).
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 beta0 ~ dnorm(0, 0.1)
@@ -940,7 +938,7 @@ N <- sum(z)
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 psi ~ dunif(0, 1)  ## Can't put prior on psi *and* beta0
@@ -1094,11 +1092,11 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
-    \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
-    \hlkwc{parameters.to.save}\hlstd{=jp.SCR.elev,} \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
-    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.SCR.elev} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}
+    \hlkwc{data}\hldef{=jags.data.SCR.elev,} \hlkwc{inits}\hldef{=ji.SCR.elev,}
+    \hlkwc{parameters.to.save}\hldef{=jp.SCR.elev,} \hlkwc{model.file}\hldef{=}\hlsng{"SCR-elev-v2.jag"}\hldef{,}
+    \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{1000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1116,7 +1114,7 @@ MCMC
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:1000
+## Iterations = 101:1100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 1000 
@@ -1268,11 +1266,11 @@ MCMC
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{jags.post.SCR.elev.sz} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
-    \hlkwc{data}\hlstd{=jags.data.SCR.elev,} \hlkwc{inits}\hlstd{=ji.SCR.elev,}
-    \hlkwc{parameters.to.save}\hlstd{=}\hlkwd{c}\hlstd{(jp.SCR.elev,}\hlstr{"s"}\hlstd{,}\hlstr{"z"}\hlstd{),}
-    \hlkwc{model.file}\hlstd{=}\hlstr{"SCR-elev-v2.jag"}\hlstd{,}
-    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{1000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hldef{jags.post.SCR.elev.sz} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}
+    \hlkwc{data}\hldef{=jags.data.SCR.elev,} \hlkwc{inits}\hldef{=ji.SCR.elev,}
+    \hlkwc{parameters.to.save}\hldef{=}\hlkwd{c}\hldef{(jp.SCR.elev,}\hlsng{"s"}\hldef{,}\hlsng{"z"}\hldef{),}
+    \hlkwc{model.file}\hldef{=}\hlsng{"SCR-elev-v2.jag"}\hldef{,}
+    \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{1000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}

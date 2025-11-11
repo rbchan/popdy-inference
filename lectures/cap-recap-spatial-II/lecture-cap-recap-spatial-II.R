@@ -1,6 +1,6 @@
 ## ----buildit,include=FALSE,eval=FALSE-----------------------------------------
-## rnw2pdf("lecture-cap-recap-spatial-II")
-## rnw2pdf("lecture-cap-recap-spatial-II", tangle=TRUE)
+# rnw2pdf("lecture-cap-recap-spatial-II")
+# rnw2pdf("lecture-cap-recap-spatial-II", tangle=TRUE)
 
 
 
@@ -145,7 +145,7 @@ plot(dsurf.r/pix.area, col=terrain.colors(100), zlim=c(0,0.18),
 
 
 ## ----fxi,eval=TRUE,size='scriptsize',out.width='65%',fig.align='center'-------
-fxi.contour(fm.elev, i=1)
+fxiContour(fm.elev, i=1)
 
 
 ## ----regionN-M0,size='small'--------------------------------------------------
@@ -153,16 +153,16 @@ region.N(fm.elev)
 
 
 ## ----bugs-SCR-elev-R,size='tiny',eval=FALSE-----------------------------------
-## writeLines(readLines("SCR-elev-v1.jag"))
+# writeLines(readLines("SCR-elev-v1.jag"))
 
-## ----bugs-SCR-elev,size='tiny',echo=FALSE,background='lightblue',comment=''----
+## ----bugs-SCR-elev,size='tiny',echo=FALSE,background='beige',comment=''-------
 writeLines(readLines("SCR-elev-v1.jag"))
 
 
 ## ----bugs-SCR-elev-v2-R,size='tiny',eval=FALSE--------------------------------
-## writeLines(readLines("SCR-elev-v2.jag"))
+# writeLines(readLines("SCR-elev-v2.jag"))
 
-## ----bugs-SCR-elev-v2,size='tiny',echo=FALSE,comment='',background='lightblue'----
+## ----bugs-SCR-elev-v2,size='tiny',echo=FALSE,comment='',background='beige'----
 writeLines(readLines("SCR-elev-v2.jag"))
 
 
