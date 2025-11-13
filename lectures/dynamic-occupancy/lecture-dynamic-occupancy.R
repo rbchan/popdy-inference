@@ -88,7 +88,7 @@ legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
 ## ----bugs0,size='tiny',results='hide'-----------------------------------------
 writeLines(readLines("dynocc-model.jag"))
 
-## ----bugs,size='tiny',echo=FALSE,comment='',background='lightblue'------------
+## ----bugs,size='tiny',echo=FALSE,comment='',background='beige'----------------
 writeLines(readLines("dynocc-model.jag"))
 
 
@@ -186,7 +186,7 @@ gamma.pred <- predict(fm2, newdata=pred.data,
 
 
 ## ----pred-gamma1,fig.height=5.5,size='tiny',out.width='80%',fig.align='center'----
-plot(Predicted ~ temp, gamma.pred, type="l", ylab="Occurrence probability",
+plot(Predicted ~ temp, gamma.pred, type="l", ylab="Colonization probability",
      xlab="Standardized temperature", ylim=0:1, lwd=2) 
 lines(lower ~ temp, gamma.pred, col=gray(0.6))
 lines(upper ~ temp, gamma.pred, col=gray(0.6))
@@ -195,7 +195,7 @@ lines(upper ~ temp, gamma.pred, col=gray(0.6))
 ## ----bugs-cov0,size='tiny',results='hide'-------------------------------------
 writeLines(readLines("dynocc-model-covars.jag"))
 
-## ----bugs-cov,size='tiny',echo=FALSE,comment='',background='lightblue'--------
+## ----bugs-cov,size='tiny',echo=FALSE,comment='',background='beige'------------
 writeLines(readLines("dynocc-model-covars.jag"))
 
 

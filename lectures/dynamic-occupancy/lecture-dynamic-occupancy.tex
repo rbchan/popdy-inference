@@ -48,8 +48,6 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\let\hlstd\hldef
-\let\hlstr\hlsng
 \usepackage{alltt}
 %\documentclass[color=usenames,dvipsnames,handout]{beamer}
 
@@ -432,23 +430,24 @@ Notice the new argument \inr{numPrimary}:
 ## colext(psiformula = ~1, gammaformula = ~1, epsilonformula = ~1, 
 ##     pformula = ~1, data = umf)
 ## 
-## Initial:
+## Initial (logit-scale):
 ##  Estimate    SE      z P(>|z|)
 ##    -0.113 0.367 -0.309   0.758
 ## 
-## Colonization:
+## Colonization (logit-scale):
 ##  Estimate  SE     z P(>|z|)
 ##     -1.33 0.2 -6.66 2.7e-11
 ## 
-## Extinction:
+## Extinction (logit-scale):
 ##  Estimate    SE     z P(>|z|)
 ##    -0.642 0.315 -2.04  0.0417
 ## 
-## Detection:
+## Detection (logit-scale):
 ##  Estimate    SE     z  P(>|z|)
 ##     -1.36 0.146 -9.33 1.03e-20
 ## 
-## AIC: 1626.916
+## AIC: 1626.912 
+## Number of sites: 100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -469,25 +468,25 @@ Notice the new argument \inr{numPrimary}:
 \hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"psi"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.4717304
+## [1] 0.4717369
 \end{verbatim}
 \begin{alltt}
 \hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"col"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.209229
+## [1] 0.2092232
 \end{verbatim}
 \begin{alltt}
 \hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"ext"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.3447256
+## [1] 0.3447102
 \end{verbatim}
 \begin{alltt}
 \hlkwd{coef}\hldef{(}\hlkwd{backTransform}\hldef{(fm,} \hlkwc{type}\hldef{=}\hlsng{"det"}\hldef{))}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.204274
+## [1] 0.2042704
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -576,7 +575,7 @@ Notice the new argument \inr{numPrimary}:
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -660,12 +659,12 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}\hlkwc{data}\hlstd{=jags.data,} \hlkwc{inits}\hlstd{=jags.inits,}
-                                \hlkwc{parameters.to.save}\hlstd{=jags.pars,}
-                                \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model.jag"}\hlstd{,}
-                                \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,}
-                                \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}\hlkwc{data}\hldef{=jags.data,} \hlkwc{inits}\hldef{=jags.inits,}
+                                \hlkwc{parameters.to.save}\hldef{=jags.pars,}
+                                \hlkwc{model.file}\hldef{=}\hlsng{"dynocc-model.jag"}\hldef{,}
+                                \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,}
+                                \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -682,7 +681,7 @@ for(k in 1:K) {
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
@@ -926,25 +925,26 @@ Notice the new arguments \inr{numPrimary} and \inr{yearlySiteCovs}:
 ## colext(psiformula = ~elevation, gammaformula = ~temp, epsilonformula = ~1, 
 ##     pformula = ~1, data = umf2)
 ## 
-## Initial:
+## Initial (logit-scale):
 ##             Estimate    SE     z  P(>|z|)
 ## (Intercept)    -1.99 0.449 -4.43 9.27e-06
 ## elevation       1.04 0.500  2.09 3.70e-02
 ## 
-## Colonization:
+## Colonization (logit-scale):
 ##             Estimate    SE      z  P(>|z|)
 ## (Intercept)    -1.90 0.185 -10.24 1.34e-24
 ## temp           -0.72 0.209  -3.44 5.88e-04
 ## 
-## Extinction:
+## Extinction (logit-scale):
 ##  Estimate    SE     z P(>|z|)
 ##    -0.977 0.314 -3.11 0.00188
 ## 
-## Detection:
+## Detection (logit-scale):
 ##  Estimate    SE     z  P(>|z|)
 ##     -1.25 0.139 -9.02 1.81e-19
 ## 
-## AIC: 1351.403
+## AIC: 1351.396 
+## Number of sites: 100
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -994,7 +994,7 @@ Get predictions of $\gamma$ for each row of prediction data.
 \begin{knitrout}\tiny
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Occurrence probability"}\hldef{,}
+\hlkwd{plot}\hldef{(Predicted} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{type}\hldef{=}\hlsng{"l"}\hldef{,} \hlkwc{ylab}\hldef{=}\hlsng{"Colonization probability"}\hldef{,}
      \hlkwc{xlab}\hldef{=}\hlsng{"Standardized temperature"}\hldef{,} \hlkwc{ylim}\hldef{=}\hlnum{0}\hlopt{:}\hlnum{1}\hldef{,} \hlkwc{lwd}\hldef{=}\hlnum{2}\hldef{)}
 \hlkwd{lines}\hldef{(lower} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.6}\hldef{))}
 \hlkwd{lines}\hldef{(upper} \hlopt{~} \hldef{temp, gamma.pred,} \hlkwc{col}\hldef{=}\hlkwd{gray}\hldef{(}\hlnum{0.6}\hldef{))}
@@ -1040,7 +1040,7 @@ Get predictions of $\gamma$ for each row of prediction data.
 \end{kframe}
 \end{knitrout}
 \begin{knitrout}\tiny
-\definecolor{shadecolor}{rgb}{0.678, 0.847, 0.902}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.961, 0.961, 0.863}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 model {
 
@@ -1128,12 +1128,12 @@ for(k in 1:K) {
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{library}\hlstd{(jagsUI)}
-\hlstd{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hlstd{(}
-    \hlkwc{data}\hlstd{=jags.data.covs,} \hlkwc{inits}\hlstd{=jags.inits.covs,}
-    \hlkwc{parameters.to.save}\hlstd{=jags.pars.covs,}
-    \hlkwc{model.file}\hlstd{=}\hlstr{"dynocc-model-covars.jag"}\hlstd{,}
-    \hlkwc{n.chains}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{n.adapt}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{n.burnin}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{n.iter}\hlstd{=}\hlnum{2000}\hlstd{,} \hlkwc{parallel}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hldef{(jagsUI)}
+\hldef{jags.post.samples.covs} \hlkwb{<-} \hlkwd{jags.basic}\hldef{(}
+    \hlkwc{data}\hldef{=jags.data.covs,} \hlkwc{inits}\hldef{=jags.inits.covs,}
+    \hlkwc{parameters.to.save}\hldef{=jags.pars.covs,}
+    \hlkwc{model.file}\hldef{=}\hlsng{"dynocc-model-covars.jag"}\hldef{,}
+    \hlkwc{n.chains}\hldef{=}\hlnum{3}\hldef{,} \hlkwc{n.adapt}\hldef{=}\hlnum{100}\hldef{,} \hlkwc{n.burnin}\hldef{=}\hlnum{0}\hldef{,} \hlkwc{n.iter}\hldef{=}\hlnum{2000}\hldef{,} \hlkwc{parallel}\hldef{=}\hlnum{TRUE}\hldef{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -1150,7 +1150,7 @@ for(k in 1:K) {
 \end{alltt}
 \begin{verbatim}
 ## 
-## Iterations = 1:2000
+## Iterations = 101:2100
 ## Thinning interval = 1 
 ## Number of chains = 3 
 ## Sample size per chain = 2000 
