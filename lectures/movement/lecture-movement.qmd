@@ -1,0 +1,57 @@
+---
+title: "Movement models"
+author: "Richard Chandler"
+date: "2025-11-18"
+format: revealjs
+description: |
+  Random walks
+engine: knitr
+---
+
+
+# Overview
+
+## Movement models
+
+::: {.incremental}
+
+- Random walks
+  * Simple random walk
+  * Correlated random walk
+  * Biased random walk
+  * PDE
+
+:::
+
+. . .
+
+- Point process models
+  * Step-selection models
+
+
+# Random walks
+
+## Simple random walk
+
+```{r}
+#| label: rw-simple
+#| echo: TRUE
+#| out.height: 1600px
+#| out.width: 1600px
+#| fig.align: center
+#| attr-source: 'style="font-size: 0.7em;"'
+
+T <- 50
+s <- matrix(NA, nrow=T, ncol=2)
+s[1,] <- c(0.5,0.5)
+for(t in 2:T) {
+  ## The two lines below are equivalent
+  ## s[t,] <- rnorm(n=2, mean=s[t-1,], sd=0.1)
+  s[t,] <- s[t-1,] + rnorm(n=2, mean=c(0,0), sd=0.05)
+}
+
+plot(s, asp=1, xlim=c(0,1), ylim=c(0,1))
+arrows(s[1:49,1], s[1:49,2],
+       s[2:50,1], s[2:50,2], length=0.1, col="blue")
+
+```
