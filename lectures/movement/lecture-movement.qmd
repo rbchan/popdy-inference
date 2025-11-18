@@ -8,6 +8,58 @@ description: |
 engine: knitr
 ---
 
+::: {.hidden}
+$$
+ \def\RR{{\bf R}}
+ \def\bold#1{{\bf #1}}
+ \newcommand{\calS}[0]{\mathcal{S}}
+ \newcommand{\bS}[0]{{\bf S}}
+ \newcommand{\bs}[0]{{\bm s}}
+ \newcommand{\bsi}[0]{{\bm s}_i}
+ \newcommand{\bsit}[0]{{\bm s}_{it}}
+\newcommand{\bsitp}[0]{{\bm s}_{it-1}}
+\newcommand{\bu}[0]{{\bm u}}
+\newcommand{\bui}[0]{{\bm u}_i}
+\newcommand{\buit}[0]{{\bm u}_{it}}
+\newcommand{\buikt}[0]{{\bm u}_{ikt}}
+\newcommand{\but}[0]{{\bm u}_t}
+\newcommand{\butp}[0]{{\bm u}_{t+1}}
+\newcommand{\butm}[0]{{\bm u}_{t-1}}
+\newcommand{\calT}[0]{\mathcal{T}}
+\newcommand{\bZ}[0]{{\bf Z}}
+\newcommand{\bz}[0]{{\bm z}}
+\newcommand{\bzt}[0]{{\bm z}_t}
+\newcommand{\zit}[0]{z_{it}}
+\newcommand{\zitp}[0]{z_{it-1}}
+\newcommand{\bzi}[0]{{\bm z}_i}
+\newcommand{\bzit}[0]{{\bm z}_{it}}
+\newcommand{\bzitp}[0]{{\bm z}_{it-1}}
+\newcommand{\beps}[0]{{\bm \varepsilon}_t}
+\newcommand{\bvt}[0]{{\bm v}_t}
+\newcommand{\bx}[0]{{\bm x}}
+\newcommand{\bxj}[0]{{\bm x}_j}
+\newcommand{\Rtwo}[0]{{\mathbb R}^2}
+\newcommand{\bSig}[0]{{\bm \Sigma}}
+\newcommand{\bI}[0]{{\bf I}}
+\newcommand{\bzero}[0]{{\bm 0}}
+\newcommand{\bbeta}[0]{{\bm \beta}}
+\newcommand{\balpha}[0]{{\bm \alpha}}
+\newcommand{\ugammat}[0]{\breve{\gamma}_t}
+\newcommand{\bPhi}[0]{{\bf \Phi}}
+\newcommand{\bPhit}[0]{{\bf \Phi}_t}
+\newcommand{\bPsi}[0]{{\bf \Psi}}
+\newcommand{\bPsit}[0]{{\bf \Psi}_t}
+\newcommand{\bH}[0]{{\bf H}}
+\newcommand{\bHt}[0]{{\bf H}_t}
+\newcommand{\bP}[0]{{\bf P}}
+\newcommand{\bPt}[0]{{\bf P}_t}
+\newcommand{\bQ}[0]{{\bf Q}}
+\newcommand{\bQt}[0]{{\bf Q}_t}
+\newcommand{\ds}[0]{\, \mathrm{d}\bs}
+ 
+$$
+:::
+
 
 # Overview
 
@@ -33,6 +85,10 @@ engine: knitr
 
 ## Simple random walk
 
+
+
+## Simple random walk simulation
+
 ```{r}
 #| label: rw-simple
 #| echo: TRUE
@@ -55,3 +111,27 @@ arrows(s[1:49,1], s[1:49,2],
        s[2:50,1], s[2:50,2], length=0.1, col="blue")
 
 ```
+
+## Biased random walk
+
+\begin{equation}
+  {\bf u_{t+1}} = {\bf u_t} + {\bf B}({\bf u_{t}}-{\bf s}) + {\bf \epsilon}
+  \label{eq:brwalk}
+\end{equation}
+
+
+
+## Correlated random walk
+
+$$
+\begin{equation}
+  {\bf R} = \gamma
+  \begin{pmatrix}
+    \cos(\theta) & -\sin(\theta) \\
+    \sin(\theta) & \cos(\theta) 
+  \end{pmatrix}
+  \label{eq:crw-rotmat}
+\end{equation}
+where $\theta \in [-\pi,\pi]$ is the expected turn angle, and
+$\gamma \in [0,1]$ dampens the persistence. 
+$$
