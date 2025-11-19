@@ -55,7 +55,7 @@ Speaker notes go here.
 ## Simple random walk
 
 $$
-  {\boldsymbol u_{t+1}} = \but + {\boldsymbol \varepsilon}
+  {\boldsymbol u_{t+1}} = \but + \beps
 $$
 
 where
@@ -72,7 +72,7 @@ $$
 
 <br>
 
-::: {.column width="49%"}
+::: {.column width="50%"}
 
 ```{r}
 #| label: rw-simple-code
@@ -84,24 +84,26 @@ u <- matrix(NA, nrow=T, ncol=2)
 u[1,] <- c(0.5,0.5)
 for(t in 2:T) {
   u[t,] <- u[t-1,] + rnorm(n=2, mean=c(0,0), sd=0.05)
-  # Equivalent to line above
+  ## Equivalent to line above
   ## u[t,] <- rnorm(n=2, mean=u[t-1,], sd=0.1)  
 }
 ```
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="45%"}
 
 ```{r}
 #| label: rw-simple-plot
 #| echo: TRUE
-#| fig-width: 7
+#| fig-width: 6
+#| fig-height: 6
 #| fig.align: center
 plot(u, asp=1, xlim=c(0,1), ylim=c(0,1),
      xlab="", ylab="")
 arrows(u[1:49,1], u[1:49,2],
-       u[2:50,1], u[2:50,2], length=0.1, col="blue")
+       u[2:50,1], u[2:50,2], length=0.1,
+       col="blue")
 
 ```
 
@@ -112,24 +114,31 @@ arrows(u[1:49,1], u[1:49,2],
 
 ## Biased random walk
 
+
 \begin{equation}
-  {\boldsymbol u_{t+1}} = \but + {\bf B}({\bf u_{t}}-{\bf s}) + \beps
+  {\boldsymbol u_{t+1}} = \but + {\bf B}(\but-{\boldsymbol s}) + \beps
   \label{eq:brwalk}
 \end{equation}
 
 
+
+
 ## Correlated random walk
 
-$$
 \begin{equation}
+  \butp = \but + {\bf R}(\but-{\boldsymbol u}_{t-1}) + \beps
+  \label{eq:crwalk}
+\end{equation}
+
+where
+
+$$
   {\bf R} = \gamma
   \begin{pmatrix}
     \cos(\theta) & -\sin(\theta) \\
     \sin(\theta) & \cos(\theta) 
   \end{pmatrix}
-  \label{eq:crw-rotmat}
-\end{equation}
 $$
-where $\theta \in [-\pi,\pi]$ is the expected turn angle, and
-$\gamma \in [0,1]$ dampens the persistence. 
+with $\theta \in [-\pi,\pi]$ being the expected turn angle, and
+$\gamma \in [0,1]$ dampening the persistence. 
 
