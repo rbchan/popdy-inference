@@ -5,7 +5,7 @@ date: "2025-11-18"
 format: 
   revealjs:
     theme: default
-    embed-resources: true
+    embed-resources: false
 description: |
   Random walks
 engine: knitr
@@ -66,39 +66,45 @@ $$
 
 ## Simple random walk simulation {.smaller}
 
-<br>
+<!-- <br> -->
 
 :::: {.columns}
 
+<!-- <br> -->
+
+
+::: {.column width="45%"}
+
 <br>
 
-::: {.column width="50%"}
 
-```{r}
-#| label: rw-simple-code
-#| echo: TRUE
-#| attr-source: 'style="font-size: 0.9em;"'
+```{r, echo=-1}
+#| label: rw-simple
+#| attr-source: 'style="font-size: 0.85em;"'
 
+set.seed(4887730)
 T <- 50
 u <- matrix(NA, nrow=T, ncol=2)
 u[1,] <- c(0.5,0.5)
 for(t in 2:T) {
-  u[t,] <- u[t-1,] + rnorm(n=2, mean=c(0,0), sd=0.05)
-  ## Equivalent to line above
-  ## u[t,] <- rnorm(n=2, mean=u[t-1,], sd=0.1)  
+  epsilon <- rnorm(n=2, mean=c(0,0), sd=0.05)
+  u[t,] <- u[t-1,] + epsilon
+  ## Equivalent to two lines above
+  ## u[t,] <- rnorm(n=2, mean=u[t-1,], sd=0.05)  
 }
 ```
 
-:::
+<br>
 
-::: {.column width="45%"}
 
-```{r}
-#| label: rw-simple-plot
-#| echo: TRUE
-#| fig-width: 6
-#| fig-height: 6
-#| fig.align: center
+```{r, echo=-1}
+#| label: fig-rw-simple
+#| attr-source: 'style="font-size: 0.85em;"'
+#| fig-width: 7
+#| fig-height: 7
+#| fig.show: hide
+
+par(mai=c(0.7,0.7,0.1,0.1))
 plot(u, asp=1, xlim=c(0,1), ylim=c(0,1),
      xlab="", ylab="")
 arrows(u[1:49,1], u[1:49,2],
@@ -106,6 +112,27 @@ arrows(u[1:49,1], u[1:49,2],
        col="blue")
 
 ```
+
+:::
+
+::: {.column width="54%"}
+
+<!-- ```{r} -->
+<!-- #| label: rw-simple-plot -->
+<!-- #| echo: FALSE -->
+<!-- #| include: FALSE -->
+<!-- #| fig-width: 6 -->
+<!-- #| fig-height: 6 -->
+<!-- #| fig.align: center -->
+<!-- ## plot(u, asp=1, xlim=c(0,1), ylim=c(0,1), -->
+<!-- ##      xlab="", ylab="") -->
+<!-- ## arrows(u[1:49,1], u[1:49,2], -->
+<!-- ##        u[2:50,1], u[2:50,2], length=0.1, -->
+<!-- ##        col="blue") -->
+
+<!-- ``` -->
+
+![](lecture-movement_files/figure-revealjs/fig-rw-simple-1.png){fig-align="top" width="100%"}
 
 :::
 
