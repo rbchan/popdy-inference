@@ -117,21 +117,6 @@ arrows(u[1:49,1], u[1:49,2],
 
 ::: {.column width="54%"}
 
-<!-- ```{r} -->
-<!-- #| label: rw-simple-plot -->
-<!-- #| echo: FALSE -->
-<!-- #| include: FALSE -->
-<!-- #| fig-width: 6 -->
-<!-- #| fig-height: 6 -->
-<!-- #| fig.align: center -->
-<!-- ## plot(u, asp=1, xlim=c(0,1), ylim=c(0,1), -->
-<!-- ##      xlab="", ylab="") -->
-<!-- ## arrows(u[1:49,1], u[1:49,2], -->
-<!-- ##        u[2:50,1], u[2:50,2], length=0.1, -->
-<!-- ##        col="blue") -->
-
-<!-- ``` -->
-
 ![](lecture-movement_files/figure-revealjs/fig-rw-simple-1.png){fig-align="top" width="100%"}
 
 :::
@@ -146,6 +131,84 @@ arrows(u[1:49,1], u[1:49,2],
   {\boldsymbol u_{t+1}} = \but + {\bf B}(\but-{\boldsymbol s}) + \beps
   \label{eq:brwalk}
 \end{equation}
+
+where, typically
+
+$$
+\begin{equation}
+  {\bf B}	= 
+  \begin{pmatrix}
+    \rho & 0 \\
+    0    & \rho
+  \end{pmatrix}
+\end{equation}
+$$
+
+with $\rho \in [0,1]$
+
+## Biased random walk simulation
+
+
+<!-- <br> -->
+
+:::: {.columns}
+
+<!-- <br> -->
+
+
+::: {.column width="45%"}
+
+<br>
+
+
+```{r, echo=-1}
+#| label: brw-simple
+#| attr-source: 'style="font-size: 0.85em;"'
+
+set.seed(4887730)
+T <- 50
+u <- matrix(NA, nrow=T, ncol=2)
+u[1,] <- c(0.5,0.5)
+s <- c(0.5,0.5)
+rho <- 0.1           ## Bias towards activity center
+B <- diag(rho,2)
+for(t in 2:T) {
+  epsilon <- rnorm(n=2, mean=c(0,0), sd=0.05)
+  u[t,] <- u[t-1,] + B%*%(s-u[t-1,]) + epsilon
+}
+```
+
+<br>
+
+
+```{r, echo=-(1:2)}
+#| label: fig-brw-simple
+#| attr-source: 'style="font-size: 0.85em;"'
+#| fig-width: 7
+#| fig-height: 7
+#| fig.show: hide
+
+##| output-location: column
+par(mai=c(0.7,0.7,0.1,0.1))
+plot(u, asp=1, xlim=c(0,1), ylim=c(0,1),
+     xlab="", ylab="")
+points(s[1], s[2], pch=16, col=rgb(0,0,1,0.5), cex=2.5)
+arrows(u[1:49,1], u[1:49,2],
+       u[2:50,1], u[2:50,2], length=0.1,
+       col="blue")
+
+```
+
+:::
+
+::: {.column width="54%"}
+
+![](lecture-movement_files/figure-revealjs/fig-brw-simple-1.png){width="100%"}
+
+
+:::
+
+::::
 
 
 
@@ -169,3 +232,44 @@ $$
 with $\theta \in [-\pi,\pi]$ being the expected turn angle, and
 $\gamma \in [0,1]$ dampening the persistence. 
 
+
+
+## Biased random walk simulation
+
+
+
+
+```{r, echo=-1}
+#| label: fig-crw-simple
+#| attr-source: 'style="font-size: 0.85em;"'
+#| fig-width: 7
+#| fig-height: 7
+#| output-location: column
+
+set.seed(4887730)
+T <- 50
+u <- matrix(NA, nrow=T, ncol=2)
+u[1,] <- c(0.5,0.5)
+u[2,] <- rnorm(2, u[1,], sd=0.05)
+gamma <- 0.8      ## Damping of correlated walk
+theta <- 0        ## Correlation (-pi,pi)
+R <- gamma*matrix(c(cos(theta),sin(theta),-sin(theta),cos(theta)),
+                  nrow=2, ncol=2)
+for(t in 3:T) {
+  epsilon <- rnorm(n=2, mean=c(0,0), sd=0.05)
+  u[t,] <- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) + epsilon
+}
+par(mai=c(0.7,0.7,0.1,0.1))
+plot(u, asp=1, xlim=c(0,1), ylim=c(0,1),
+     xlab="", ylab="")
+arrows(u[1:49,1], u[1:49,2],
+       u[2:50,1], u[2:50,2], length=0.1,
+       col="blue")
+
+```
+
+
+
+
+
+# Point process models
