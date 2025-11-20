@@ -20,6 +20,7 @@
 - Find an album for each work session:
   * Survival -> Bob Marley's Survival
 
+- Add detail about the presentation to the final project description
 
 ## For 2025
 
