@@ -6,6 +6,10 @@ format:
   revealjs:
     theme: default
     embed-resources: false
+    toc: true
+    toc-depth: 2
+    toc-title: Outline
+    code-fold: false
 description: |
   Random walks
 engine: knitr
@@ -81,13 +85,15 @@ $$
 ```{r, echo=-1}
 #| label: rw-simple
 #| attr-source: 'style="font-size: 0.85em;"'
+#| code-block-bg: true
 
 set.seed(4887730)
+sigma <- 0.05
 T <- 50
 u <- matrix(NA, nrow=T, ncol=2)
 u[1,] <- c(0.5,0.5)
 for(t in 2:T) {
-  epsilon <- rnorm(n=2, mean=c(0,0), sd=0.05)
+  epsilon <- rnorm(n=2, mean=c(0,0), sd=sigma)
   u[t,] <- u[t-1,] + epsilon
   ## Equivalent to two lines above
   ## u[t,] <- rnorm(n=2, mean=u[t-1,], sd=0.05)  
@@ -166,14 +172,15 @@ with $\rho \in [0,1]$
 #| attr-source: 'style="font-size: 0.85em;"'
 
 set.seed(4887730)
+sigma <- 0.05
+rho <- 0.1           # Bias towards activity center
 T <- 50
 u <- matrix(NA, nrow=T, ncol=2)
 u[1,] <- c(0.5,0.5)
 s <- c(0.5,0.5)
-rho <- 0.1           ## Bias towards activity center
 B <- diag(rho,2)
 for(t in 2:T) {
-  epsilon <- rnorm(n=2, mean=c(0,0), sd=0.05)
+  epsilon <- rnorm(n=2, mean=c(0,0), sd=sigma)
   u[t,] <- u[t-1,] + B%*%(s-u[t-1,]) + epsilon
 }
 ```
@@ -234,9 +241,7 @@ $\gamma \in [0,1]$ dampening the persistence.
 
 
 
-## Biased random walk simulation
-
-
+## Correlated random walk simulation
 
 
 ```{r, echo=-1}
@@ -247,16 +252,17 @@ $\gamma \in [0,1]$ dampening the persistence.
 #| output-location: column
 
 set.seed(4887730)
+sigma <- 0.05
+gamma <- 0.8      ## Damping of correlated walk
+theta <- 0        ## Correlation (-pi,pi)
 T <- 50
 u <- matrix(NA, nrow=T, ncol=2)
 u[1,] <- c(0.5,0.5)
 u[2,] <- rnorm(2, u[1,], sd=0.05)
-gamma <- 0.8      ## Damping of correlated walk
-theta <- 0        ## Correlation (-pi,pi)
 R <- gamma*matrix(c(cos(theta),sin(theta),-sin(theta),cos(theta)),
                   nrow=2, ncol=2)
 for(t in 3:T) {
-  epsilon <- rnorm(n=2, mean=c(0,0), sd=0.05)
+  epsilon <- rnorm(n=2, mean=c(0,0), sd=sigma)
   u[t,] <- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) + epsilon
 }
 par(mai=c(0.7,0.7,0.1,0.1))
@@ -269,7 +275,47 @@ arrows(u[1:49,1], u[1:49,2],
 ```
 
 
+## Random walks along environmental gradients
 
+
+\begin{equation}
+  \butp = \but + {\bf D}\nabla x(\but) + \beps
+  \label{eq:erwalk}
+\end{equation}
+where $\bf D = \alpha {\bf I}$ is a $2\times2$ matrix describing the
+effect of the gradient in the environment ($\nabla x$) at location
+$\but$. 
+
+Positive values of $\alpha$ describe the scenario in which the
+organism tends to move in the direction of the gradient. If
+$\alpha=0$, the individual will ignore the environment as it follows a
+simple random walk.
+
+
+## Environment
+
+```{r}
+set.seed(430)
+library(terra)
+delta <- 0.025                          ## Resolution
+grid0 <- seq(delta/2, 1-delta/2, delta)    
+grid <- cbind(rep(grid0, each=length(grid0)), rep(grid0, times=length(grid0)))
+distmat <- as.matrix(dist(grid))        ## Distance b/w grid points
+npixels <- nrow(distmat)
+V <- exp(-0.1*distmat)                  ## Covariance
+R <- chol(V)
+X <- t(R) %*% rnorm(npixels)            ## Gaussian random field
+Xr <- rasterFromXYZ(cbind(grid, X),     ## Convert to raster
+    crs="+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs")
+terr <- terrain(Xr, opt=c("slope","aspect"))  ## Slope and aspect
+vfieldU <- terr$slope * sin(terr$aspect)      ## x-coord of arrow head
+vfieldV <- terr$slope * cos(terr$aspect)      ## y-coord of arrow head
+vfieldData <- cbind(as.data.frame(Xr, xy=TRUE), v1=values(vfieldU), v2=values(vfieldV))
+names(vfieldData) <- c("s1","s2","X","v1","v2")
+```
+
+
+## Simulating random walks along environmental gradients
 
 
 # Point process models
