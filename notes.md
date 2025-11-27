@@ -22,6 +22,8 @@
 
 - Add detail about the presentation to the final project description
 
+- Convert to quarto?
+
 ## For 2025
 
 - Might need 3 days for presentations if class size is large
