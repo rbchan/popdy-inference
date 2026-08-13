@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Richard Chandler">
 
-<title>Inference for models of Fish and Wildlife Population Dynamics</title>
+<title>Course Schedule – Inference for models of Fish and Wildlife Population Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -70,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -91,11 +119,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./IPD-syllabus.html"> 
+    <a class="nav-link active" href="./IPD-syllabus.html" aria-current="page"> 
 <span class="menu-text">Syllabus</span></a>
   </li>  
   <li class="nav-item">
@@ -120,6 +148,15 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#course-description" id="toc-course-description" class="nav-link active" data-scroll-target="#course-description">Course Description</a></li>
   <li><a href="#course-objectives-and-learning-outcomes" id="toc-course-objectives-and-learning-outcomes" class="nav-link" data-scroll-target="#course-objectives-and-learning-outcomes">Course Objectives and Learning Outcomes</a></li>
+  <li><a href="#textbooks" id="toc-textbooks" class="nav-link" data-scroll-target="#textbooks">Textbooks</a></li>
+  <li><a href="#grading" id="toc-grading" class="nav-link" data-scroll-target="#grading">Grading</a></li>
+  <li><a href="#attendance" id="toc-attendance" class="nav-link" data-scroll-target="#attendance">Attendance</a></li>
+  <li><a href="#academic-honesty" id="toc-academic-honesty" class="nav-link" data-scroll-target="#academic-honesty">Academic Honesty</a></li>
+  <li><a href="#generative-ai" id="toc-generative-ai" class="nav-link" data-scroll-target="#generative-ai">Generative AI</a></li>
+  <li><a href="#academic-coaching" id="toc-academic-coaching" class="nav-link" data-scroll-target="#academic-coaching">Academic Coaching</a></li>
+  <li><a href="#accommodations-for-disabilities" id="toc-accommodations-for-disabilities" class="nav-link" data-scroll-target="#accommodations-for-disabilities">Accommodations for Disabilities</a></li>
+  <li><a href="#uga-well-being-resources" id="toc-uga-well-being-resources" class="nav-link" data-scroll-target="#uga-well-being-resources">UGA Well-Being Resources</a></li>
+  <li><a href="#tentative-course-outline" id="toc-tentative-course-outline" class="nav-link" data-scroll-target="#tentative-course-outline">Tentative Course Outline</a></li>
   </ul>
 </nav>
     </div>
@@ -128,28 +165,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Inference for models of Fish and Wildlife Population Dynamics</h1>
-<p class="subtitle lead">WILD/FISH 8390</p>
+<h1 class="title">Course Schedule</h1>
 </div>
 
 
-<div class="quarto-title-meta-author">
-  <div class="quarto-title-meta-heading">Author</div>
-  <div class="quarto-title-meta-heading">Affiliation</div>
-  
-    <div class="quarto-title-meta-contents">
-    <p class="author">Richard Chandler </p>
-  </div>
-  <div class="quarto-title-meta-contents">
-        <p class="affiliation">
-            Warnell School of Forestry and Natural Resources, University of Georgia
-          </p>
-      </div>
-  </div>
 
 <div class="quarto-title-meta">
 
-      
+    
   
     
   </div>
@@ -159,13 +182,319 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="course-description" class="level2">
-<h2 class="anchored" data-anchor-id="course-description">Course Description</h2>
+<p>Inference for Models of Fish and Wildlife Population Dynamics</p>
+<p>WILD(FISH) 8390 Lecture: Tues, Thurs 12:45–2:00 PM, Fall 2025 Room 4-516, Warnell</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td></td>
+<td style="text-align: center;"><strong>Instructor</strong></td>
+<td></td>
+<td style="text-align: center;"><strong>Teaching Assistant</strong></td>
+</tr>
+<tr class="even">
+<td></td>
+<td style="text-align: center;">Dr.&nbsp;Richard Chandler</td>
+<td></td>
+<td style="text-align: center;">Jen Brown</td>
+</tr>
+<tr class="odd">
+<td>Office room:</td>
+<td style="text-align: center;">3-407</td>
+<td></td>
+<td style="text-align: center;">4-219</td>
+</tr>
+<tr class="even">
+<td>Email:</td>
+<td style="text-align: center;">rchandler@warnell.uga.edu</td>
+<td></td>
+<td style="text-align: center;">jennifer.brown1@uga.edu</td>
+</tr>
+<tr class="odd">
+<td>Office hours:</td>
+<td style="text-align: center;">Thur 2:00–3:00</td>
+<td></td>
+<td style="text-align: center;">Fri 11:30–1:30</td>
+</tr>
+</tbody>
+</table>
+<section id="course-description" class="level1 unnumbered">
+<h1 class="unnumbered">Course Description</h1>
 <p>Recently developed statistical tools make it possible to fit models of population dynamics to field data while accounting for observation error. This course will explain how to use these tools for statistical inference and prediction about animal population parameters including abundance, occupancy, survival, recruitment, and dispersal.</p>
 </section>
-<section id="course-objectives-and-learning-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="course-objectives-and-learning-outcomes">Course Objectives and Learning Outcomes</h2>
+<section id="course-objectives-and-learning-outcomes" class="level1 unnumbered">
+<h1 class="unnumbered">Course Objectives and Learning Outcomes</h1>
 <p>By the end of the course, students will know how to (1) design studies of wildlife population dynamics, (2) fit statistical models to data collected in the field, (3) interpret results, and (4) make predictions useful for informing conservation decisions.</p>
+</section>
+<section id="textbooks" class="level1 unnumbered">
+<h1 class="unnumbered">Textbooks</h1>
+<ul>
+<li><p>(AHM1) Kéry, M. and J.A. Royle. 2016. Applied Hierarchical Modeling in Ecology: Analysis of Distribution, Abundance and Species Richness in R and BUGS : Volume 1: Prelude and Static Models. Academic Press. <a href="https://www.sciencedirect.com/book/9780128013786/applied-hierarchical-modeling-in-ecology"><span style="color: blue">eBook</span></a>.</p></li>
+<li><p>(AHM2) Kéry, M. and J.A. Royle. 2020. Applied Hierarchical Modeling in Ecology: Analysis of Distribution, Abundance and Species Richness in R and BUGS : Volume 2: Dynamic and Advanced Models. Academic Press. <a href="https://www.sciencedirect.com/book/9780128237687/applied-hierarchical-modeling-in-ecology-analysis-of-distribution-abundance-and-species-richness-in-r-and-bugs"><span style="color: blue">eBook</span></a>.</p></li>
+<li><p>(SCR) Royle, J.A., R.B. Chandler, R. Sollmann, and B. Gardner. 2013. Spatial Capture-Recapture. Academic Press. Download chapters of the eBook from the UGA library <a href="https://www-sciencedirect-com.proxy-remote.galib.uga.edu/book/9780124059399/spatial-capture-recapture"><span style="color: blue">eBook</span></a>.</p></li>
+</ul>
+</section>
+<section id="grading" class="level1 unnumbered">
+<h1 class="unnumbered">Grading</h1>
+<div class="center">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">Quantity</th>
+<th style="text-align: right;">Grade percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Weekly assignments<span class="math inline">\(^*\)</span></td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">45%</td>
+</tr>
+<tr class="even">
+<td>Final presentation</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">20%</td>
+</tr>
+<tr class="odd">
+<td>Final paper<span class="math inline">\(^{*}\)</span></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">30%</td>
+</tr>
+<tr class="even">
+<td>Class participation</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">5%</td>
+</tr>
+</tbody>
+</table>
+<p><br>
+<span class="math inline">\(^*\)</span>Late assignments will be penalized 3 points/day, up to a maximum of 50 points off.<br>
+</p>
+</div>
+<p>The plus/minus grading system will be used, according to UGA policy, and assigned following this plus/minus grading scale: A = <span class="math inline">\(&gt;\)</span><!-- -->93-100, A- = <span class="math inline">\(&gt;\)</span><!-- -->90-93, B+ = <span class="math inline">\(&gt;\)</span><!-- -->87-90, B = <span class="math inline">\(&gt;\)</span><!-- -->83-87, B- = <span class="math inline">\(&gt;\)</span><!-- -->80-83, C+ = <span class="math inline">\(&gt;\)</span><!-- -->77-80, C = <span class="math inline">\(&gt;\)</span><!-- -->73-77, C-= <span class="math inline">\(&gt;\)</span><!-- -->70-73, D = 60-70, F = <span class="math inline">\(&lt;\)</span><!-- -->60.</p>
+</section>
+<section id="attendance" class="level1 unnumbered">
+<h1 class="unnumbered">Attendance</h1>
+<p>Attendance is optional, but it will be difficult to succeed if you don’t participate in lectures.</p>
+</section>
+<section id="academic-honesty" class="level1 unnumbered">
+<h1 class="unnumbered">Academic Honesty</h1>
+<p>As a University of Georgia student, you have agreed to abide by the UGA academic honesty policy. UGA Student Honor code: “I will be academically honest in all of my academic work and will not tolerate academic dishonesty of others”. A Culture of Honesty, the University’s policy and procedures for handling cases of suspected dishonesty, can be found at <a href="https://honesty.uga.edu/">here</a>. You are responsible for informing yourself about the university’s standards before performing any academic work. Lack of knowledge of the academic honesty policy is not a reasonable explanation for a violation. Please ask if you have questions related to course assignments and the academic honesty policy. Any form of possible academic dishonesty will be reported to the UGA Office of the Vice President for Instruction.</p>
+</section>
+<section id="generative-ai" class="level1 unnumbered">
+<h1 class="unnumbered">Generative AI</h1>
+<p>Artificial intelligence (AI) tools, like chatGPT and other generative AI chatbots, can be useful for improving text and computer code. However, they can also hinder learning if used to generate answers and bypass critical thinking. Students must disclose the use of generative AI for completing assignments, including the final paper. If a student decides to use generative AI, it can only be used to improve text and code written by the student. AI tools cannot be used to create answers by inputting assignment questions into prompts. Students must report the prompts provided to AI tools, along with the original text (or code) and the final text. Prompts and output can be disclosed by providing a link to the AI chat.</p>
+</section>
+<section id="academic-coaching" class="level1 unnumbered">
+<h1 class="unnumbered">Academic Coaching</h1>
+<p>Assistance with time management, test and performance anxiety, notetaking, motivation, text comprehension, test preparation, and other barriers to success at UGA. <a href="https://dae.uga.edu/services/academic-coaching/">Link</a> for the Office of Academic Enhancement.</p>
+</section>
+<section id="accommodations-for-disabilities" class="level1 unnumbered">
+<h1 class="unnumbered">Accommodations for Disabilities</h1>
+<p>If you require a disability-required accommodation, it is essential that you register with the <a href="https://drc.uga.edu">Disability Resource Center</a> (Clark Howell Hall; 706-542-8719) and notify me of your eligibility for reasonable accommodations. We can then plan how best to coordinate your accommodations. Please note that accommodations cannot be provided retroactively.</p>
+</section>
+<section id="uga-well-being-resources" class="level1 unnumbered">
+<h1 class="unnumbered">UGA Well-Being Resources</h1>
+<p>UGA Well-being Resources promote student success by cultivating a culture that supports a more active, healthy, and engaged student community. Anyone needing assistance is encouraged to contact Student Care &amp; Outreach (SCO) in the Division of Student Affairs at 706-542-8479 or visit <a href="sco.uga.edu" class="uri">sco.uga.edu</a>. Student Care &amp; Outreach helps students navigate difficult circumstances by connecting them with the most appropriate resources or services. They also administer the Embark@UGA program which supports students experiencing, or who have experienced, homelessness, foster care, or housing insecurity.</p>
+<p>UGA provides both clinical and non-clinical options to support student well-being and mental health, any time, any place. Whether on campus, or studying from home or abroad, UGA Well-being Resources are here to help.</p>
+<p>Student Care and Outreach: <a href="sco.uga.edu" class="uri">sco.uga.edu</a></p>
+<p>University Health Center: <a href="healthcenter.uga.edu" class="uri">healthcenter.uga.edu</a></p>
+<p>Counseling &amp; Psychiatric Services: <a href="caps.uga.edu" class="uri">caps.uga.edu</a> or CAPS 24/7 crisis support 706-542-2273</p>
+<p>Health Promotion/ Fontaine Center: <a href="healthpromotion.uga.edu" class="uri">healthpromotion.uga.edu</a></p>
+<p>Accessibility and Testing: <a href="accessibility.uga.edu" class="uri">accessibility.uga.edu</a></p>
+<p>Additional information, including free digital well-being resources, can be accessed through the UGA app or by visiting <a href="https://well-being.uga.edu" class="uri">https://well-being.uga.edu</a>.</p>
+</section>
+<section id="tentative-course-outline" class="level1 unnumbered">
+<h1 class="unnumbered">Tentative Course Outline</h1>
+<div class="center">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 40%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Date</strong></th>
+<th style="text-align: left;"><strong>Lecture</strong></th>
+<th style="text-align: left;"><strong>Reading</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td colspan="3" style="text-align: left;">PART 1 – BACKGROUND</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aug 14</td>
+<td style="text-align: left;">Introduction</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aug 19</td>
+<td style="text-align: left;">Linear models</td>
+<td style="text-align: left;">AHM1 Foreword, Preface, Chapter 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aug 21</td>
+<td style="text-align: left;">Generalized linear models</td>
+<td style="text-align: left;">AHM1 Chapter 3</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: left;">PART 2 – STATIC MODELS</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Aug 26</td>
+<td style="text-align: left;">Occupancy models</td>
+<td style="text-align: left;">AHM1 Ch 4 and Ch 10 (pp 551–564)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aug 28</td>
+<td style="text-align: left;">Occupancy models</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sept 2</td>
+<td style="text-align: left;">Occupancy models</td>
+<td style="text-align: left;">AHM1 Chapter 10 (pp 564–600)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sept 4</td>
+<td style="text-align: left;">Occupancy models</td>
+<td style="text-align: left;">AHM1 Chapter 10 (pp 591–600)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sept 9</td>
+<td style="text-align: left;">Binomial <span class="math inline">\(N\)</span>-mixture models</td>
+<td style="text-align: left;">AHM1 Chapter 6 (pp 219–228)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sept 11</td>
+<td style="text-align: left;">Prior predictive checks</td>
+<td style="text-align: left;">AHM1 Chapter 6 (pp 229–245)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sept 16</td>
+<td style="text-align: left;">Model selection</td>
+<td style="text-align: left;">AHM1 Chapter 6 (pp 245–254)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sept 18</td>
+<td style="text-align: left;">Goodness-of-fit</td>
+<td style="text-align: left;">AHM1 Chapter 6 (pp 254–312)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sept 23</td>
+<td style="text-align: left;">Multinomial <span class="math inline">\(N\)</span>-mixture models</td>
+<td style="text-align: left;">AHM1 Chapter 7 (pp 313–334)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sept 25</td>
+<td style="text-align: left;">Multinomial <span class="math inline">\(N\)</span>-mixture models</td>
+<td style="text-align: left;">AHM1 Chapter 7 (pp 334–391)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sept 30</td>
+<td style="text-align: left;">Hierarchical distance sampling</td>
+<td style="text-align: left;">AHM1 Chapter 8 (pp 426–460)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oct 2</td>
+<td style="text-align: left;">Conventional distance sampling</td>
+<td style="text-align: left;">AHM1 Chapter 8 (pp 393–426)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oct 7</td>
+<td style="text-align: left;">Non-spatial capture-recapture</td>
+<td style="text-align: left;">SCR Chapters 1–4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oct 9</td>
+<td style="text-align: left;">Spatial capture-recapture</td>
+<td style="text-align: left;">SCR Chapter 5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oct 14</td>
+<td style="text-align: left;">Spatial capture-recapture</td>
+<td style="text-align: left;">SCR Chapter 7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oct 16</td>
+<td style="text-align: left;">Spatial capture-recapture</td>
+<td style="text-align: left;">SCR Chapters 9</td>
+</tr>
+<tr class="even">
+<td colspan="3" style="text-align: left;">PART 3 – DYNAMIC MODELS</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oct 21</td>
+<td style="text-align: left;">Dynamic occupancy models</td>
+<td style="text-align: left;">AHM2 Ch4 (Due: first draft)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oct 23</td>
+<td style="text-align: left;">Dynamic <span class="math inline">\(N\)</span>-mixture models</td>
+<td style="text-align: left;">AHM2 Chapter 2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oct 28</td>
+<td style="text-align: left;">Survival models</td>
+<td style="text-align: left;">AHM2 Chapter 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oct 30</td>
+<td style="text-align: left;">Cormack-Jolly-Seber models</td>
+<td style="text-align: left;">SCR Chapter 16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nov 4</td>
+<td style="text-align: left;">Jolly-Seber models</td>
+<td style="text-align: left;">SCR Chapter 16 (Due: peer review)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nov 6</td>
+<td style="text-align: left;">Jolly-Seber models</td>
+<td style="text-align: left;">SCR Chapter 16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nov 11</td>
+<td style="text-align: left;">Dynamic spatial capture-recapture models</td>
+<td style="text-align: left;">SCR Chapter 16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nov 13</td>
+<td style="text-align: left;">Dynamic spatial capture-recapture models</td>
+<td style="text-align: left;">SCR Chapter 16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nov 18</td>
+<td style="text-align: left;">Dynamic spatial capture-recapture models</td>
+<td style="text-align: left;">SCR Ch 16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nov 20</td>
+<td style="text-align: left;">Student presentation</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nov 25</td>
+<td style="text-align: left;">Student presentations</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nov 27</td>
+<td style="text-align: left;">Thanksgiving Break</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dec 2</td>
+<td style="text-align: left;">No class (Friday schedule)</td>
+<td style="text-align: left;">Due: Final paper</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The course syllabus is a general plan for the course; deviations announced to the class by the instructor may be necessary.</p>
 
 
 </section>
