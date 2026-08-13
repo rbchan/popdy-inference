@@ -1,0 +1,17 @@
+{
+  "hash": "56b48b099d60670a0aa3cc5b32ae7dd3",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Assignment 2 KEY -- stats basics\"\noutput: pdf_document\n---\n\n\n\n\n\n\n\n## Problem 1\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nbeta0 <- -1\nbeta1 <- 1\nn <- 100\nx <- rnorm(n)\np <- plogis(beta0 + beta1*x)\ny <- rbinom(n=n, size=1, prob=p)\ndata1 <- data.frame(y=y, x=x)\n```\n:::\n\n\n\n\n## Problem 2\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nfm2 <- glm(y ~ x, family=binomial, data=data1)\nsummary(fm2)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n\nCall:\nglm(formula = y ~ x, family = binomial, data = data1)\n\nCoefficients:\n            Estimate Std. Error z value Pr(>|z|)    \n(Intercept)  -0.9883     0.2378  -4.156 3.24e-05 ***\nx             0.7291     0.2681   2.719  0.00655 ** \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 116.65  on 99  degrees of freedom\nResidual deviance: 108.06  on 98  degrees of freedom\nAIC: 112.06\n\nNumber of Fisher Scoring iterations: 4\n```\n\n\n:::\n:::\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npredData2 <- data.frame(x=seq(from=min(x), to=max(x), length=50))\npred2 <- predict(fm2, type=\"response\", newdata=predData2, se.fit=TRUE)\nplot(x, y)\nlines(predData2$x, pred2$fit)\n```\n\n::: {.cell-output-display}\n![](KEY-stats-basics_files/figure-html/q2-2-1.png){width=672}\n:::\n:::\n\n\n\n\n## Problem 3\n\n\n::: {.cell}\n\n```{.r .cell-code}\ncawa.data <- read.csv(\"cawa_data_glm.csv\", row.names=1)\ncawa.data$year <- factor(cawa.data$year)\nfm3.1 <- glm(abundance ~ elevation, family=poisson, data=cawa.data)\nfm3.2 <- glm(abundance ~ year, family=poisson, data=cawa.data)\nfm3.3 <- glm(abundance ~ elevation*year, family=poisson, data=cawa.data)\nfm3.4 <- glm(abundance ~ (elevation+I(elevation^2))*year, family=poisson,\n             data=cawa.data)\nAIC(fm3.1, fm3.2, fm3.3, fm3.4)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n      df      AIC\nfm3.1  2 2924.612\nfm3.2  7 3170.598\nfm3.3 14 2869.096\nfm3.4 21 2416.499\n```\n\n\n:::\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nelev.seq <- seq(min(cawa.data$elev), max(cawa.data$elev), length=20)\nn.years <- nlevels(cawa.data$year)\nyear.seq <- levels(cawa.data$year)\npred.data3 <- data.frame(elevation=rep(elev.seq, times=n.years),\n                         year=rep(year.seq, each=length(elev.seq)))\npred <- predict(fm3.4, newdata=pred.data3, type=\"response\", se=TRUE)\npred.data3$fit <- pred$fit\nplot(abundance ~ elevation, data=cawa.data)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2014\", col=1)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2015\", col=2)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2016\", col=3)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2017\", col=4)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2018\", col=5)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2019\", col=6)\nlines(fit ~ elevation, data=pred.data3, subset=year==\"2020\", col=7)\nlegend(900, 15, as.character(2014:2020), lty=1, col=1:7)\n```\n\n::: {.cell-output-display}\n![](KEY-stats-basics_files/figure-html/q3-2-1.png){width=672}\n:::\n:::\n\n",
+    "supporting": [
+      "KEY-stats-basics_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
