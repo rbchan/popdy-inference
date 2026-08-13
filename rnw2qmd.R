@@ -37,6 +37,12 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   content <- gsub("\\\\begin\\{enumerate\\}", "", content)
   content <- gsub("\\\\end\\{enumerate\\}", "", content)
   content <- gsub("\\\\item\\s*", "* ", content)
+
+  # 6. Clean up sections
+  content <- gsub("\\\\section\\{(.*?)\\}", "# \\1", content) # Fallback for title-less frames
+
+  # 7. Columns
+  
   
   # Write out the new .qmd file
   writeLines(content, output_file)
