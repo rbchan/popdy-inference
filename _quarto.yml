@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: docs/
+
+website:
+  title: "Applied Population Dynamics"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: schedule.qmd
+        text: Schedule
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+  revealjs:
+    theme: simple
+    slide-number: true
+    chalkboard: true
+#    scrollable: true
+
+execute:
+  freeze: auto
