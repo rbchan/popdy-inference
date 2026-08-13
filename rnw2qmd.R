@@ -23,7 +23,7 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   ## content <- gsub("\\\\begin\\{frame\\}\\{(.*?)\\}", "## \\1", content)
   ## content <- gsub("\\\\begin\\{frame\\}", "## Slide", content) # Fallback for title-less frames
   content <- gsub("\\\\begin\\{frame\\}", "", content) # Fallback for title-less frames
-  content <- gsub("\\\\frametitle\\}\\{(.*?)\\}", "## \\1", content) # Fallback for title-less frames
+  content <- gsub("\\\\frametitle\\{(.*?)\\}", "## \\1", content) # Fallback for title-less frames
   content <- gsub("\\\\end\\{frame\\}", "", content)
   
   # 4. Convert Sweave code chunks <<options>>= ... @ to ```{r, options} ... ```
