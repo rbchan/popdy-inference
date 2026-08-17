@@ -1,80 +1,63 @@
 ---
-title: "Converted Presentation"
-format: revealjs
+# title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    pagetitle: "Lecture 1 -- Overview"
+    slide-number: true
+    toc: false
+    margin: 0.1
+lang: en
 ---
 
 
+# Overview {visibility="hidden"}
 
 
-[plain]
-  \LARGE
-%  \maketitle
-  \centering
-  {\huge %\bf
-    Lecture 1 -- Overview} \\
-  {\color{default} \rule{\textwidth}{0.1pt}}
-  \vfill
-  \large
-  WILD(FISH) 8390 \\
-%  Estimation of Fish and Wildlife Population Parameters \\
-  Inference for Models of Fish and Wildlife Population Dynamics \\
-  \vfill
-  Richard Chandler \\
-  University of Georgia
+## {content-align="center" style="font-size: 110%;"}
+
+<center>
+
+**Inference for Models of Fish and Wildlife Population Dynamics**
+
+::: {style="font-size: 90%;"}
+
+WILD(FISH) 8390
+
+Richard Chandler
+
+:::
+
+</center>
 
 
 
 
 ## Overview
 
-
-[plain]
-  ## Today's Topics
-  \Large
-  \only<1>{\tableofcontents}
-  \only<2 | handout:0>{\tableofcontents[currentsection]}
-
-
-
-
-[fragile]
-  ## Overview
-  {\Large Themes}
+Themes
   
-    * <1-> We need models to:
-      [<1->]
-        * Evaluate hypotheses
-        * Make predictions
-        * Forecast future outcomes
-        * Inform management decisions
-      
-    * <2-> Until recently, population models were mainly used in theoretical settings
-    * <3-> New statistical tools let us confront population models with data
-    * <4-> Hierarchical models make it possible to learn about
-      ``hidden'' population dynamics by modeling %the observation
-      %processes
-      % data conditional on
-      population processes observed with error
-  %   * <5-> Before we even collect our data, we should:
-  %     
-  %       * Write down hypotheses about the processes that are likely to give 
-  %         rise to our observations
-  %       * Formalize these processes as statistical models
-  %     
-  
+- We need models to:
+  * Evaluate hypotheses
+  * Make predictions
+  * Forecast future outcomes
+  * Inform management decisions
+- Until recently, population models were mainly used in theoretical settings
+- New statistical tools let us confront population models with data
+- Hierarchical models make it possible to learn about ``hidden''
+  population dynamics by modeling population processes observed with
+  error 
 
 
 
 
+## Classical models of population dynamics
+
+Classical models of population dynamics provide a critical for
+developing custom models for specific populations and applications.  
 
 
-  ## Classical models of population dynamics
-  Classical models of population dynamics provide a critical reference
-  for developing custom models for specific populations and
-  applications. \\
-  \pause
-  \vfill
-  A working knowledge of the following models is important:
+A working knowledge of the following models is important:
   
     * Exponential growth
     * Logistic growth
@@ -82,243 +65,165 @@ format: revealjs
     * Metapopulation models
   
 
+## Classical statistical models
 
+Classical statistical models are equally important.
 
-
-  ## Classical statistical models
-  Classical statistical models are equally important. \\
-  \pause
-  \vfill
-  You should be familiar with:
+You should be familiar with:
   
-    * Linear models (including the various *NOVAs)
-    * Generalized linear models (eg, logistic regression)
-    * Generalized linear mixed effects models
+- Linear models (including the various *NOVAs)
+- Generalized linear models (eg, logistic regression)
+- Generalized linear mixed effects models
   
+::: {.fragment}
+<center>
+How do we bridge the gap between theoretical models and statistical 
+models? 
+</center>
+:::
+
+
+# Examples {visibility="hidden"}
+
+
+## Example I -- Chiricahua Leopard Frogs
+
+::: {.columns}
+::: {.column width="50%"}
+Sites are discrete habitat patches
+
+Surrounding landscape is suitable for movement but not reproduction
+
+Data are binary detection data
+
+![](figs/lich.png){width="100%"}
+:::
+::: {.column width="50%"}
+![](figs/lich-dist.jpg)
+:::
+:::
 
 
 
 
 
-  \LARGE 
-  \centering
-  How do we bridge the gap between theoretical models and statistical 
-  models?  \\
+## Metapopulation ecology
+
+::: {.columns}
+::: {.column width="60%"}
+Large body of theory.
+
+One branch of metapopulation theory focuses on distance-dependent
+colonization and extinction processes.
+
+If we know the patch coordinates and we have data from multiple sites
+      and multiple time periods, we can fit the models.
+:::
+::: {.column width="40%"}
+![](figs/HanskiBookCover.png)
+:::
+:::
 
 
+## Recovery Plan
 
-## Examples
-
-
-\subsection{Chiricahua Leopard Frogs}
-
-
-
-  ## Example I -- Chiricahua Leopard Frogs
-  \begin{columns}
-    \setlength\fboxsep{0pt}
-    \begin{column}{0.5\textwidth}
-      \small
-      \vbox to .8\textheight{
-        Sites are discrete habitat patches \\
-        \vfill
-        Surrounding landscape is suitable for movement but not
-        reproduction \\
-        \vfill
-        Data are binary detection data \\
-        \vfill
-        \fbox{\includegraphics[width=\textwidth]{figs/lich}}
-      }
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \fbox{\includegraphics[width=\textwidth]{figs/lich-dist}}
-    \end{column}
-  \end{columns}
+![](figs/lich-recovery-plan.png)
 
 
 
 
+## Extinction risk
 
-  ## Metapopulation ecology
-  \begin{columns}
-    \setlength\fboxsep{0pt}
-    \begin{column}{0.6\textwidth}
-      \small
-      \vbox to 0.7\textheight{
-        Large body of theory \\
-        % \pause
-        \vfill
-        \uncover<2->{One branch of metapopulation theory focuses on
-          distance-dependent colonization and extinction processes} \\
-        % \pause
-        \vfill
-        \uncover<3->{If we know the patch coordinates and we have data from
-          multiple sites and multiple time periods, we can fit the
-          models} \\
-      }
-    \end{column}
-    \begin{column}{0.4\textwidth}
-      \fbox{\includegraphics[width=\textwidth]{figs/HanskiBookCover}}
-    \end{column}
-  \end{columns}
+Management options 
 
-
-
-
-
-  ## Recovery Plan
-  \begin{columns}
-    \wide
-    \includegraphics[width=\textwidth]{figs/lich-recovery-plan}
-  \end{columns}
-
-
-
-
-% 
-%   ## Estimated extinction risk\footnote{\scriptsize Howell et al. (2020, Ecological Applications)}
-%   \begin{columns}
-%     \begin{column}{0.6\textwidth}
-%       %[<+->]
-%       * <1-> Metapopulation models fit to the detection
-%         data 
-%       * []
-%       * <2-> Extinction probability estimated to be 2\% by 2100
-%       * []
-%       * <3-> What can be done about it?
-%         
-%         * <4-> Control predators
-%         * <4-> Increase hydroperiod in existing wetlands
-%         * <4-> Create new wetlands\dots
-% %        * <6-> \dots but where?
-%         
-%       
-%     \end{column}
-%     \begin{column}{0.38\textwidth}
-%       \begin{center}
-% %        \includegraphics[width=0.4\textwidth]{figs/extinction3}
-%         \includegraphics[width=\textwidth]{figs/proj-ext-JAPPL}
-%       \end{center}
-%     \end{column}
-%   \end{columns}  
-% 
-
-
-
-
-
-  ## Extinction risk
-  \small
-   Management options 
-    \small
-     * <1-> Control predators
-     * <1-> Increase hydroperiod in existing wetlands
-     * <1-> Create new wetlands\dots
-%        * <6-> \dots but where?
+- Control predators
+- Increase hydroperiod in existing wetlands
+- Create new wetlands\dots
    
-   % \pause
-   \vfill
-    Metapopulation models fitted to detected data predicted extinction
+Metapopulation models fitted to detected data predicted extinction
     risk to be 4\% after 50 years. Restoring just 1 pond, reduced the
-    risk to 2.5\%.   \\
-%       * []
-%       * <3-> What can be done about it?
-%         
-%         * <4-> Control predators
-%         * <4-> Increase hydroperiod in existing wetlands
-%         * <4-> Create new wetlands\dots
-% %        * <6-> \dots but where?
-  \vfill
-  \centering
-  \includegraphics[width=0.7\textwidth]{figs/lich-forecasts} \\
+    risk to 2.5\%. 
+
+![](figs/lich-forecasts.PNG)
+
+
+
+
+## Colonization Probability Maps
+
+![](figs/colMap1-9nohill.png){fig-align="center" width="70%"}
+
+
+
+
+## Example II -- Central Georgia Black Bears
+
+
+::: .columns
+::: {.column width="50%"}
+
+Genetically isolated population near Macon
+
+Impacts of hunting had not been evaluated
+
+Studied using noninvasive genetic mark-recapture
+
+Hair snares and genotyping yielded individual-level encounter histories
+:::
+::: {.column width="50%"}
+![](figs/GA_bear_map.png)
+:::
+:::
 
 
 
 
 
-  ## Colonization Probability Maps
-  \begin{center}
-    \includegraphics[width=0.7\textwidth]{figs/colMap1-9nohill}
-  \end{center}
+
+## Harvest theory
+
+
+::: .columns
+::: {.column width="60%"}
+Theory goes back about a century.
+
+Much of it focuses on the importance of density dependence.
+
+Think back to ``maximum sustainable yield''.
+:::
+::: {.column width="40%"}
+![](figs/GetzHaightBookCover.png)
+:::
+:::
 
 
 
 
 
-\subsection{Central Georgia Black Bears}
+## Central Georgia Black Bears
 
+Female-based population model revealed population growth. ^[Hooker et al. (2020, Journal of Wildlife Management)]
 
-
-  ## Example II -- Central Georgia Black Bears
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \vbox to 0.6\textheight{
-        Genetically isolated population near Macon \\
-        \vfill
-        Impacts of hunting had not been evaluated \\
-        \vfill
-        Studied using noninvasive genetic mark-recapture \\
-        \vfill
-        Hair snares and genotyping yielded individual-level encounter
-        histories \\
-      }
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[width=\textwidth]{figs/GA_bear_map} \\
-    \end{column}
-  \end{columns}
+![](figs/fig-5_abundance.png)
 
 
 
 
+## Central Georgia Black Bears
 
-  ## Harvest theory
-  \begin{columns}
-    \setlength\fboxsep{0pt}
-    \begin{column}{0.6\textwidth}
-      \small
-      \vbox to 0.6\textheight{
-        \uncover<1->{Theory goes back about a century.} \\
-        \vfill
-        \uncover<2->{Much of it focuses on the importance of density dependence.} \\
-        \vfill
-        \uncover<3->{Think back to ``maximum sustainable yield''.}
-      }
-    \end{column}
-    \begin{column}{0.4\textwidth}
-      \fbox{\includegraphics[width=\textwidth]{figs/GetzHaightBookCover}}
-    \end{column}
-  \end{columns}
+Population regulated by density-dependent recruitment 
+
+<center>
+![](figs/fig-3_dd-recruitment.png)
+</center>
 
 
 
+## Central Georgia Black Bears
 
+ Extinction risk low unless harvest increases by >10 females/year
 
-  ## Central Georgia Black Bears
-  Female-based population model revealed population
-  growth. \\%\footnote{Hooker et al. (2020, Journal of Wildlife Management)} \\
-  \centering
-  \includegraphics[width=0.9\textwidth,trim=0mm 0mm 0mm 10mm,clip]{figs/fig-5_abundance} \\
-
-
-
-
-  ## Central Georgia Black Bears
-  Population regulated by density-dependent recruitment \\
-  \vfill
-  \centering
-  \includegraphics[width=0.7\textwidth]{figs/fig-3_dd-recruitment} \\
-
-
-
-
-  ## Central Georgia Black Bears
-  Extinction risk low unless harvest increases by $>$10 females/year \\
-  \vfill
-  \centering
-  \includegraphics[width=0.45\textwidth,trim=0mm 0mm 0mm 40mm,clip]{figs/fig-6_forecasts_h0-h20} \\
-
-
+![](figs/fig-6_forecasts_h0-h20.png){fig-align="center" width="40%"}
 
 
 
@@ -326,67 +231,57 @@ format: revealjs
 
 
 
-  ## Books
-  \begin{columns}
-    \begin{column}{0.33\textwidth}
-      \centering
-      AHM vol I\\
-      \includegraphics[width=\textwidth]{figs/KeryRoyleBookCover} \\
-    \end{column}
-    \begin{column}{0.33\textwidth}
-      \centering
-      AHM vol II\\
-      \includegraphics[width=\textwidth]{figs/KeryRoyleBookCoverV2} \\
-    \end{column}
-    \begin{column}{0.33\textwidth}
-      \centering
-      SCR \\
-      \includegraphics[width=\textwidth,trim=21mm 0mm 21mm 0mm,clip]{figs/SCRcover} \\
-    \end{column} 
-  \end{columns} 
+## Books
+
+::: .columns
+::: {.column width="33%"}
+AHM vol I
+
+![](figs/KeryRoyleBookCover.jpg)
+:::
+::: {.column width="33%"}
+AHM vol II
+
+![width=\textwidth]{figs/KeryRoyleBookCoverV2.jpg} \\
+:::
+::: {.column width="33%"}
+SCR
+![](figs/SCRcover.jpeg)
+:::
+:::
 
 
 
 
-  ## Recommended reading
-  \begin{columns}[c]
-    \setlength\fboxsep{0pt}
-    \begin{column}{0.5\textwidth}
-      \centering
-      \includegraphics[height=6cm]{figs/RoyleDorazioBookCover} \\
-    \end{column}
-    \hfill
-    \begin{column}{0.5\textwidth}
-      \centering
-      \includegraphics[height=6cm]{figs/McElreathBookCover} \\
-    \end{column}
-  \end{columns}
+## Recommended reading
+
+::: .columns
+::: {.column width="50%"}
+![](figs/RoyleDorazioBookCover.png)
+:::
+::: {.column width="50%"}
+![](figs/McElreathBookCover.png)
+:::
+:::
 
 
+
+
+# Assignment {visibility="hidden"}
 
 
 ## Assignment
 
 
+Read: Applied Hierarchical Modeling (AHM vol I) chapter 1 
 
-  ## Assignment
-  \large
-  Read: \\ Applied Hierarchical Modeling (AHM vol I) chapter 1 \\
-  \vfill
-  Install: \href{https://sourceforge.net/projects/mcmc-jags/files/}{\jags},
-  \href{https://www.r-project.org/}{\R}, and the following packages:
+<br>
+
+Install: [JAGS](https://sourceforge.net/projects/mcmc-jags/files/), 
+  [R](https://www.r-project.org/), and the following packages:
+
+- unmarked
+- rjags
+- jagsUI
   
-    \tt
-    * unmarked
-    * rjags
-    * jagsUI
-  
-  % \vfill
-  % Write code to fit a linear model in R and JAGS. 
-
-
-
-
-
-
 
