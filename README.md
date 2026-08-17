@@ -1,6 +1,8 @@
 # popdy-inference
 A course on statistical inference for models of population dynamics. The course is aimed at wildlife ecology graduate students at UGA. 
 
+Slides can be found on the [course website](https://rbchan.github.io/popdy-inference/)
+
 ## Course objectives
 Students will learn how to fit statistical models to field data and draw inferences on the processes governing spatial and temporal variation in occupancy and abundance. Focus will be on occupancy data, count data, distance sampling data, mark-recapture data, and telemetry data. Hierarchical statistical models will be used for inference.
 
@@ -12,15 +14,6 @@ Class meetings will consist of a mixture of lectures and computer exercises.
 
 ## Assignments
 Students will analyze their own data, write up their results, and present their findings at the end of the semester. Two rounds of peer review will be involved. Weekly computer problems will also be assigned. 
-
-## Building the PDF slides
-Lecture slides created using [LaTeX](https://www.latex-project.org/), [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)), and [knitr](https://yihui.org/knitr/). To build the PDFs, open [R](https://www.r-project.org/) and navigate to a lecture directory, such as `lectures/Nmix-binII` and issue the following commands:
-
-```
-library(knitr)
-knit("lecture-Nmix-binomial-II.Rnw")
-```
-This will produce a [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)) `.tex` file that you can compile as you would any other [LaTeX](https://www.latex-project.org/) file. 
 
 
 ## History
