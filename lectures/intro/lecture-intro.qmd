@@ -1,5 +1,4 @@
 ---
-# title: "Converted Presentation"
 format:
   revealjs:
     theme: default
@@ -32,10 +31,33 @@ Richard Chandler
 
 
 
-
 ## Overview
 
 Themes
+
+- We need models to:
+  * Evaluate hypotheses
+  * Make predictions
+  * Forecast future outcomes
+  * Inform management decisions
+
+- Until recently, population models were mainly used in theoretical settings
+  * New statistical tools let us confront population models with data
+  * Hierarchical models make it possible to learn about ``hidden''
+  population dynamics by modeling population processes observed with
+  error.
+
+
+## Classical models of population dynamics
+
+Classical models of population dynamics provide a critical reference
+  for developing custom models for specific populations and applications.
+
+A working knowledge of the following models is important:
+  - Exponential growth
+  - Logistic growth
+  - Age/stage-structured matrix models
+  - Metapopulation models
   
 - We need models to:
   * Evaluate hypotheses
@@ -49,30 +71,17 @@ Themes
   error 
 
 
+Classical statistical models are equally important.
 
-
-## Classical models of population dynamics
-
-Classical models of population dynamics provide a critical for
-developing custom models for specific populations and applications.  
-
-
-A working knowledge of the following models is important:
-  
-    * Exponential growth
-    * Logistic growth
-    * Age/stage-structured matrix models
-    * Metapopulation models
-  
 
 ## Classical statistical models
 
-Classical statistical models are equally important.
-
 You should be familiar with:
-  
-- Linear models (including the various *NOVAs)
+
+- Linear models (including the various -NOVAs)
+
 - Generalized linear models (eg, logistic regression)
+
 - Generalized linear mixed effects models
   
 ::: {.fragment}
@@ -85,8 +94,29 @@ models?
 
 # Examples {visibility="hidden"}
 
-
 ## Example I -- Chiricahua Leopard Frogs
+
+::: columns
+::: {.column width='50%'}
+
+Sites are discrete habitat patches
+
+Surrounding landscape is suitable for movement but not reproduction
+
+Data are binary detection data
+
+![](figs/lich.png)
+
+:::
+::: {.column width='50%'}
+
+![](figs/lich-dist.jpg})
+
+:::
+:::
+
+
+## Example I -- Chiricahua Leopard Frog Sites
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -100,9 +130,6 @@ Data are binary detection data
 :::
 ::: {.column width="50%"}
 ![](figs/lich-dist.jpg)
-:::
-:::
-
 
 
 
@@ -128,8 +155,6 @@ If we know the patch coordinates and we have data from multiple sites
 ## Recovery Plan
 
 ![](figs/lich-recovery-plan.png)
-
-
 
 
 ## Extinction risk
@@ -177,19 +202,18 @@ Hair snares and genotyping yielded individual-level encounter histories
 
 
 
-
-
-
 ## Harvest theory
 
 
 ::: .columns
 ::: {.column width="60%"}
+
 Theory goes back about a century.
 
 Much of it focuses on the importance of density dependence.
 
 Think back to ``maximum sustainable yield''.
+
 :::
 ::: {.column width="40%"}
 ![](figs/GetzHaightBookCover.png)
@@ -197,19 +221,53 @@ Think back to ``maximum sustainable yield''.
 :::
 
 
+:::
+::: {.column width='50%'}
+
+![](figs/GetzHaightBookCover.png})
+
+:::
+:::
 
 
 
-## Central Georgia Black Bears
 
-Female-based population model revealed population growth. ^[Hooker et al. (2020, Journal of Wildlife Management)]
+## Example II -- Central Georgia Black Bear Study Design
+
+::: columns
+::: {.column width='50%'}
+
+Genetically isolated population near Macon 
+
+Impacts of hunting had not been evaluated 
+
+Studied using noninvasive genetic mark-recapture 
+
+Hair snares and genotyping yielded individual-level encounter histories 
+
+:::
+::: {.column width='50%'}
+
+![](figs/GA_bear_map.png)
+
+:::
+:::
+
+
+
+
+## Central Georgia Black Bear Abundance
+
+Female-based population model revealed population growth.^[Hooker et al. (2020, Journal of Wildlife Management)]
 
 ![](figs/fig-5_abundance.png)
 
 
 
 
-## Central Georgia Black Bears
+
+## Central Georgia Black Bear Recruitment
+
 
 Population regulated by density-dependent recruitment 
 
@@ -218,16 +276,16 @@ Population regulated by density-dependent recruitment
 </center>
 
 
+## Central Georgia Black Bear Extinction Risk
 
-## Central Georgia Black Bears
-
- Extinction risk low unless harvest increases by >10 females/year
+Extinction risk low unless harvest increases by >10 females/year
 
 ![](figs/fig-6_forecasts_h0-h20.png){fig-align="center" width="40%"}
 
 
 
-## Syllabus
+# Syllabus {visibility="hidden"}
+
 
 
 
@@ -242,7 +300,7 @@ AHM vol I
 ::: {.column width="33%"}
 AHM vol II
 
-![width=\textwidth]{figs/KeryRoyleBookCoverV2.jpg} \\
+![width=\textwidth]{figs/KeryRoyleBookCoverV2.jpg}
 :::
 ::: {.column width="33%"}
 SCR
@@ -265,13 +323,10 @@ SCR
 :::
 
 
-
-
 # Assignment {visibility="hidden"}
 
 
 ## Assignment
-
 
 Read: Applied Hierarchical Modeling (AHM vol I) chapter 1 
 
@@ -284,4 +339,3 @@ Install: [JAGS](https://sourceforge.net/projects/mcmc-jags/files/),
 - rjags
 - jagsUI
   
-
