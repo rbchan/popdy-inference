@@ -36,42 +36,52 @@ Richard Chandler
 
 
 
-# Linear models
+# Linear models {visibility="hidden"}
 
 
 ## Today's Topics
 
+- Linear models
+  * Classical
+  * Bayesian
+
+<br>
+
+- Generalized linear models
+  * Classical
+  * Bayesian
 
 
-## Linear models
+## Linear models {style="font-size: 90%;"}
 
 All ANOVAs and fixed-effects regression models are linear models.
+
+<br>
 
 You must understand linear models before you can apply more advanced
 models such as GLMs, GAMS, hierarchical models etc...
 
 <center>
-![](figure/Rencher_Schaal_book.jpg){height="250"}
-![](figure/Hocking_book.jpg){height="250"}
+![](figure/Rencher_Schaal_book.jpg){height="350"}
+![](figure/Hocking_book.jpg){height="350"}
 </center>
+
 
 
 ## Simple linear regression {.smaller}
 
 Simple linear regression is the most basic linear model.
-$$%% y_i = \beta_0 + \beta_1 x_i + \varepsilon_i \qquad \qquad
-    %% \varepsilon_i \sim \mathrm{Norm}(0, \sigma^2)
+$$
     \mu_i = \beta_0 + \beta_1 x_i \qquad \qquad
-    y_i \sim \mathrm{Norm}(\mu_i, \sigma^2)$$
+    y_i \sim \mathrm{Norm}(\mu_i, \sigma^2)
+$$
 
 ::: {.columns}
 ::: {.column width="50%"}
 $y$ is variously called:
 
 - response variable
-
 - outcome variable
-
 - dependent variable
 :::
 
@@ -80,15 +90,14 @@ $y$ is variously called:
 It's worse for $x$
 
 - predictor variable
-
 - explanatory variable
-
 - independent variable
-
 - covariate, exposure, etc...
 
 :::
 :::
+
+
 
 We observe $x$ and $y$. The expected value of $y_i$ is $\mu_i$.\
 
@@ -103,6 +112,42 @@ the residuals.
 ## Simple linear regression example
 
 Suppose your data look like this:
+
+::: {style="font-size: 80%;"}
+```{r}
+#| label: slr-data
+#| echo: true
+width <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)  ## x
+mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)   ## y
+```
+:::
+
+
+::: {.columns}
+::: {.column width='50%'}
+```{r}
+#| label: slr-viz
+#| echo: false
+#| fig-width: 7
+#| fig-height: 7
+#| out-width: "5in"
+plot(width, mass, xlim=c(0,1), cex.lab=1.3)
+abline(lm(mass~width))
+```
+:::
+
+::: {.column width='50%'}
+::: {.fragment}
+<br>
+Classical inference is easy:
+```{r}
+#| label: slr-fit
+#| size: 'scriptsize'
+lm(mass~width)
+```
+:::
+:::
+:::
 
 
 
@@ -138,6 +183,7 @@ The model is in a text file named `lm.jag`\
 
 ```{r}
 #| eval: false
+#| echo: true
 model {
 
     # Priors
@@ -157,7 +203,11 @@ model {
 
 Now, put the data in a list and pick some initial values
 
-
+```{r}
+jd.lm <- list(x=width, y=mass, n=length(mass))
+ji.lm <- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
+jp.lm <- c("beta0", "beta1", "sigmaSq")
+```
 
 ## Simple (Bayesian) linear regression
 
@@ -169,10 +219,10 @@ Use MCMC to draw posterior samples:
 
 A more general depiction of linear models:
 
-$$\begin{gathered}
+$$
   \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
   y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
-\end{gathered}$$
+$$
 
 where the $\beta$'s are coefficients, and the $x$ values are predictor
 variables (or dummy variables for categorical predictors).
@@ -182,9 +232,13 @@ variables (or dummy variables for categorical predictors).
 ## Interpreting the $\beta$'s
 
 You must be able to interpret the $\beta$ coefficients for *any model*
-that you fit to your data. A linear model might have dozens of
+that you fit to your data. 
+
+A linear model might have dozens of
 continuous and categorical predictors variables, with dozens of
-associated $\beta$ coefficients. Linear models can also include
+associated $\beta$ coefficients. 
+
+Linear models can also include
 polynomial terms and interactions.
 
 
