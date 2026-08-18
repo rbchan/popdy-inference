@@ -32,7 +32,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#section",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "",
-    "text": "Statistical modeling basics\n\n\n\n\n\nWILD(FISH) 8390"
+    "text": "Statistical modeling basics\n\n\n\n\n\n\n\n\n\nWILD(FISH) 8390"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#todays-topics",
@@ -88,7 +88,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Bayesian linear regression – inference",
-    "text": "Bayesian linear regression – inference\nUse MCMC to draw posterior samples:\n\nlibrary(jagsUI)  \njs.lm &lt;- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,\n                    model.file=\"lm.jag\", n.chains=1, n.iter=1000)\n\n\n\nSummarize the posterior samples:\n\nround(summary(js.lm)$quant, 2)\n\n          2.5%   25%  50%  75% 97.5%\nbeta0    -0.58 -0.16 0.03 0.20  0.58\nbeta1    -0.28  0.31 0.55 0.83  1.39\ndeviance -2.70 -0.97 0.85 3.66 10.80\nsigmaSq   0.03  0.05 0.08 0.12  0.29"
+    "text": "Bayesian linear regression – inference\nUse MCMC to draw posterior samples:\n\nlibrary(jagsUI)  \njs.lm &lt;- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,\n                    model.file=\"lm.jag\", n.chains=1, n.iter=1000)\n\n\n\nSummarize the posterior samples:\n\nround(summary(js.lm)$quant, 2)\n\n          2.5%   25%  50%  75% 97.5%\nbeta0    -0.61 -0.17 0.05 0.22  0.70\nbeta1    -0.34  0.29 0.55 0.83  1.42\ndeviance -2.53 -0.94 1.30 4.33 14.24\nsigmaSq   0.03  0.06 0.08 0.14  0.47"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference-1",
@@ -133,102 +133,116 @@
     "text": "Interpreting \\(\\beta\\)’s for categorical explanatory variables\n\n\n\nlm(mass~species)\n\n\nCall:\nlm(formula = mass ~ species)\n\nCoefficients:\n(Intercept)     species2     species3     species4  \n    10.2147       0.9994      -1.3335       0.6294"
   },
   {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-data",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-data",
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Ruffed grouse data",
-    "text": "Ruffed grouse data"
+    "section": "Ruffed grouse",
+    "text": "Ruffed grouse"
   },
   {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-data-1",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-data-1",
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-survey-design",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-survey-design",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Ruffed grouse data",
-    "text": "Ruffed grouse data"
+    "section": "Ruffed grouse survey design",
+    "text": "Ruffed grouse survey design"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#grouse-data",
     "href": "lectures/stats-basics/lecture-stats-basics.html#grouse-data",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Grouse data",
-    "text": "Grouse data\nFit a linear model to the abundance data"
+    "text": "Grouse data\n\ngrouse.data &lt;- read.csv(\"grouse_data_glm.csv\", row.names=1)\ngrouse.data$route &lt;- factor(grouse.data$route)\ngrouse.data$utmZone &lt;- factor(grouse.data$utmZone)\nhead(grouse.data)\n\n       abundance presence route   utmE    utmN utmZone elevation\n101_1          0        0   101 760582 3873068     16S    574.68\n101_10         0        0   101 760582 3873068     16S    574.68\n101_2          0        0   101 760582 3873068     16S    574.68\n101_3          0        0   101 760582 3873068     16S    574.68\n101_4          0        0   101 760582 3873068     16S    574.68\n101_5          0        0   101 760582 3873068     16S    574.68"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#grouse-regression",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#grouse-regression",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Grouse regression",
+    "text": "Grouse regression\n\nfm1 &lt;- lm(abundance ~ elevation, grouse.data)\nsummary(fm1)\n\n\nCall:\nlm(formula = abundance ~ elevation, data = grouse.data)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-0.04734 -0.03984 -0.03718 -0.02733  1.96076 \n\nCoefficients:\n              Estimate Std. Error t value Pr(&gt;|t|)  \n(Intercept)  6.415e-02  3.329e-02   1.927   0.0545 .\nelevation   -4.327e-05  4.697e-05  -0.921   0.3573  \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.2093 on 577 degrees of freedom\nMultiple R-squared:  0.001469,  Adjusted R-squared:  -0.0002616 \nF-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#grouse-prediction",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#grouse-prediction",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Grouse prediction",
+    "text": "Grouse prediction\n\nelev.min &lt;- min(grouse.data$elevation)\nelev.max &lt;- max(grouse.data$elevation)\nseq.length &lt;- 20 ## Determines how smooth the function looks in GLMs \nelev.seq &lt;- seq(from=elev.min, to=elev.max, length.out=seq.length)\npred.data &lt;- data.frame(elevation=elev.seq)\npred.elev &lt;- predict(fm1, newdata=pred.data, se=TRUE)\nplot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))\nlines(elev.seq, pred.elev$fit, col=\"blue\", lwd=2)"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#generalized-linear-models-glms",
     "href": "lectures/stats-basics/lecture-stats-basics.html#generalized-linear-models-glms",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Generalized linear models (GLMs)",
-    "text": "Generalized linear models (GLMs)\n\nThe residuals don’t have to be normally distributed.\nThe response variable can be binary, integer, strictly-positive, etc...\nThe variance is not assumed to be constant.\nUseful for manipulative experiments or observational studies, just like linear models."
+    "text": "Generalized linear models (GLMs)\n\nThe residuals don’t have to be normally distributed.\n\nThe response variable can be binary, integer, strictly-positive, etc...\n\nThe variance is not assumed to be constant.\n\nUseful for manipulative experiments or observational studies, just like linear models."
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#from-linear-to-generalized-linear",
     "href": "lectures/stats-basics/lecture-stats-basics.html#from-linear-to-generalized-linear",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "From linear to generalized linear",
-    "text": "From linear to generalized linear\nLinear model\n\\[\n\\begin{gathered}\n    \\mu_i = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n    y_i \\sim \\mathrm{Normal}(\\mu_i, \\sigma^2)  \n\\end{gathered}\n\\]\nGeneralized Linear model\n\\[\n\\begin{gathered}\n    g(\\mu_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n    y_i \\sim f(\\mu_i)\n\\end{gathered}\n\\]\nwhere\n\\(g\\) is a link function, such as the log or logit link\n\\(f\\) is a probability distribution such as the binomial or Poisson"
+    "text": "From linear to generalized linear\nLinear model\n\\[\n    \\mu_i = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n    y_i \\sim \\mathrm{Normal}(\\mu_i, \\sigma^2)  \n\\]\n\nGeneralized Linear model\n\\[\n    g(\\mu_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n    y_i \\sim f(\\mu_i)\n\\]\nwhere\n\\(g\\) is a link function, such as the log or logit link\n\\(f\\) is a probability distribution such as the binomial or Poisson"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#link-functions",
     "href": "lectures/stats-basics/lecture-stats-basics.html#link-functions",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Link functions",
-    "text": "Link functions\nAn inverse link function (\\(g^{-1}\\)) transforms values from the \\((-\\infty,\\infty)\\) scale to the scale of interest, such as \\((0,1)\\) for probabilities.\n\nThe link function (\\(g\\)) does the reverse."
+    "text": "Link functions\nAn inverse link function (\\(g^{-1}\\)) transforms values from the \\((-\\infty,\\infty)\\) scale to the scale of interest, such as \\((0,1)\\) for probabilities.\nThe link function (\\(g\\)) does the reverse.\n\n\n\n\nDistribution\nlink name\nlink equation\ninverse link equation\n\n\n\n\nBinomial\nlogit\n\\(\\log(\\frac{p}{1-p})\\)\n\\(\\frac{\\mu}{1 + \\exp(\\mu)}\\)\n\n\nPoisson\nlog\n\\(\\log(\\lambda)\\)\n\\(\\exp(\\mu)\\)"
   },
   {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#link-functions-1",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#link-functions-1",
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#link-functions-in-r",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#link-functions-in-r",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Link functions",
-    "text": "Link functions\n\n\n\nDistribution\nlink name\nlink equation\ninverse link equation\n\n\n\n\nBinomial\nlogit\n\\(\\log(\\frac{p}{1-p})\\)\n\\(\\frac{\\mu}{1 + \\exp(\\mu)}\\)\n\n\nPoisson\nlog\n\\(\\log(\\lambda)\\)\n\\(\\exp(\\mu)\\)\n\n\n\n\n\n\n\nDistribution\nlink name\nlink in R\ninv link in R\n\n\n\n\nBinomial\nlogit\nqlogis\nplogis\n\n\nPoisson\nlog\nlog\nexp"
+    "section": "Link functions in R",
+    "text": "Link functions in R\n\n\n\nDistribution\nlink name\nlink in R\ninv link in R\n\n\n\n\nBinomial\nlogit\nqlogis\nplogis\n\n\nPoisson\nlog\nlog\nexp"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#logit-link-example",
     "href": "lectures/stats-basics/lecture-stats-basics.html#logit-link-example",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Logit link example",
-    "text": "Logit link example"
+    "text": "Logit link example\n\nplot(function(x) 5 + -0.08*x, from=0, to=100,\n     xlab=\"Elevation\", ylab=\"logit(prob of occurrence)\")"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#logit-link-example-1",
     "href": "lectures/stats-basics/lecture-stats-basics.html#logit-link-example-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Logit link example",
-    "text": "Logit link example"
+    "text": "Logit link example\n\nplot(function(x) plogis(5 + -0.08*x), from=0, to=100,\n     xlab=\"Elevation\", ylab=\"Probability of occurrence\")"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-1",
     "href": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Logistic Regression",
-    "text": "Logistic Regression\nLogistic regression is a specific type of GLM in which the response variable follows a binomial distribution and the link function is the logit.\n\nIt would be better to call it “binomial regression” since other link functions (e.g. the probit) can be used\n\nAppropriate when the response is binary or a count with an upper limit Examples:\n\nPresence/absence studies\nSurvival studies\nDisease prevalence studies"
+    "text": "Logistic Regression\nLogistic regression is a specific type of GLM in which the response variable follows a binomial distribution and the link function is the logit.\n\n\nIt would be better to call it “binomial regression” since other link functions (e.g. the probit) can be used.\n\n\n\nAppropriate when the response is binary or a count with an upper limit Examples:\n\nPresence/absence studies\nSurvival studies\nDisease prevalence studies"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-2",
     "href": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Logistic Regression",
-    "text": "Logistic Regression\n$$\n\\[\\begin{gathered}\n      \\mathrm{logit}(p_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots \\\\\n      y_i \\sim \\mathrm{Binomial}(N, p_i)\n  \n\\end{gathered}\\]\n$$\nwhere:\n\n\\(N\\) is the number of “trials” (e.g. coin flips)\n\\(p_i\\) is the probability of success for sample unit \\(i\\)"
+    "text": "Logistic Regression\n\\[\n      \\mathrm{logit}(p_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots \\\\\n      y_i \\sim \\mathrm{Binomial}(N, p_i)\n\\]\n\nwhere:\n\n\\(N\\) is the number of “trials” (e.g. coin flips)\n\\(p_i\\) is the probability of success for sample unit \\(i\\)"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-fair-coin",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-fair-coin",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Binomial distribution – fair coin",
+    "text": "Binomial distribution – fair coin"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-warped-coin",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-warped-coin",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Binomial distribution – warped coin",
+    "text": "Binomial distribution – warped coin"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution",
     "href": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Binomial distribution",
-    "text": "Binomial distribution"
-  },
-  {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-1",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-1",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Binomial distribution",
-    "text": "Binomial distribution"
-  },
-  {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-2",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution-2",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Binomial Distribution",
-    "text": "Binomial Distribution\nProperties\n\nThe expected value of \\(y\\) is \\(Np\\)\nThe variance is \\(Np(1-p)\\)\n\nBernoulli distribution\n\nThe Bernoulli distribution is a binomial distribution with a single trial (\\(N=1\\))\nLogistic regression is usually done in this context, such that the response variable is 0/1 or No/Yes or Bad/Good, etc\\(\\dots\\)"
+    "text": "Binomial distribution\nProperties\n\nThe expected value of \\(y\\) is \\(Np\\)\nThe variance is \\(Np(1-p)\\)\n\nBernoulli distribution\n\nThe Bernoulli distribution is a binomial distribution with a single trial (\\(N=1\\))\nLogistic regression is usually done in this context, such that the response variable is 0/1 or No/Yes or Bad/Good, etc\\(\\dots\\)"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-example",
@@ -249,7 +263,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#poisson-regression-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Poisson Regression",
-    "text": "Poisson Regression\n$$\n\\[\\begin{gathered}\n      \\mathrm{log}(\\lambda_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n      y_i \\sim \\mathrm{Poisson}(\\lambda_i)\n  \n\\end{gathered}\\]\n$$\nwhere:\n\\(\\lambda_i\\) is the expected value of \\(y_i\\)"
+    "text": "Poisson Regression\n\\[\n      \\mathrm{log}(\\lambda_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n      y_i \\sim \\mathrm{Poisson}(\\lambda_i)\n\\]\nwhere:\n\\(\\lambda_i\\) is the expected value of \\(y_i\\)"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#poisson-regression-2",

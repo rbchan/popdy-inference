@@ -203,8 +203,12 @@
 <p><strong>Statistical modeling basics</strong></p>
 </div>
 </center>
-
-<img data-src="lecture-stats-basics_files/figure-revealjs/slr-viz-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%" alt="Simple linear regression"><center>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/slr-viz-1.png" class="quarto-figure quarto-figure-center" style="width:40.0%" alt="Simple linear regression"></p>
+</figure>
+</div>
+<center>
 <div style="font-size: 90%;">
 <p>WILD(FISH) 8390</p>
 </div>
@@ -291,7 +295,7 @@
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lecture-stats-basics_files/figure-revealjs/slr-viz-1.png" style="width:5in"></p>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/slr-viz-1.png" style="width:4in"></p>
 </figure>
 </div>
 </div>
@@ -373,10 +377,10 @@ Coefficients:
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(js.lm)<span class="sc">$</span>quant, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          2.5%   25%  50%  75% 97.5%
-beta0    -0.58 -0.16 0.03 0.20  0.58
-beta1    -0.28  0.31 0.55 0.83  1.39
-deviance -2.70 -0.97 0.85 3.66 10.80
-sigmaSq   0.03  0.05 0.08 0.12  0.29</code></pre>
+beta0    -0.61 -0.17 0.05 0.22  0.70
+beta1    -0.34  0.29 0.55 0.83  1.42
+deviance -2.53 -0.94 1.30 4.33 14.24
+sigmaSq   0.03  0.06 0.08 0.14  0.47</code></pre>
 </div>
 </div>
 </div>
@@ -386,9 +390,15 @@ sigmaSq   0.03  0.05 0.08 0.12  0.29</code></pre>
 <p>View the posterior samples</p>
 <div class="cell" data-layout-align="center" data-fig-heigth="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">plot</span>(js.lm[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/lm-jags-plot-1.png" class="quarto-figure quarto-figure-center" style="width:7in"></p>
+</figure>
 </div>
-<img data-src="lecture-stats-basics_files/figure-revealjs/lm-jags-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:10in"></section>
+</div>
+</div>
+</section>
 <section id="linear-models-2" class="slide level2">
 <h2>Linear models</h2>
 <p>A more general depiction of linear models:</p>
@@ -456,61 +466,125 @@ Coefficients:
 </div>
 </div></div>
 </section>
-<section id="ruffed-grouse-data" class="slide level2">
-<h2>Ruffed grouse data</h2>
-
-<img data-src="figs/RUGR.jpg" style="width:100.0%" class="r-stretch"></section>
-<section id="ruffed-grouse-data-1" class="slide level2">
-<h2>Ruffed grouse data</h2>
-<p><embed data-src="figs/grouse_map_locs.pdf" style="width:100.0%"></p>
+<section id="ruffed-grouse" class="slide level2">
+<h2>Ruffed grouse</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/RUGR.jpg" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="ruffed-grouse-survey-design" class="slide level2">
+<h2>Ruffed grouse survey design</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/grouse_map_locs.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
+</figure>
+</div>
 </section>
 <section id="grouse-data" class="slide level2">
 <h2>Grouse data</h2>
-<p>Fit a linear model to the abundance data</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>grouse.data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"grouse_data_glm.csv"</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span>
+<span id="cb11-2"><a></a>grouse.data<span class="sc">$</span>route <span class="ot">&lt;-</span> <span class="fu">factor</span>(grouse.data<span class="sc">$</span>route)</span>
+<span id="cb11-3"><a></a>grouse.data<span class="sc">$</span>utmZone <span class="ot">&lt;-</span> <span class="fu">factor</span>(grouse.data<span class="sc">$</span>utmZone)</span>
+<span id="cb11-4"><a></a><span class="fu">head</span>(grouse.data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       abundance presence route   utmE    utmN utmZone elevation
+101_1          0        0   101 760582 3873068     16S    574.68
+101_10         0        0   101 760582 3873068     16S    574.68
+101_2          0        0   101 760582 3873068     16S    574.68
+101_3          0        0   101 760582 3873068     16S    574.68
+101_4          0        0   101 760582 3873068     16S    574.68
+101_5          0        0   101 760582 3873068     16S    574.68</code></pre>
+</div>
+</div>
+</section>
+<section id="grouse-regression" class="slide level2">
+<h2>Grouse regression</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>fm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(abundance <span class="sc">~</span> elevation, grouse.data)</span>
+<span id="cb13-2"><a></a><span class="fu">summary</span>(fm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = abundance ~ elevation, data = grouse.data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.04734 -0.03984 -0.03718 -0.02733  1.96076 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  6.415e-02  3.329e-02   1.927   0.0545 .
+elevation   -4.327e-05  4.697e-05  -0.921   0.3573  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.2093 on 577 degrees of freedom
+Multiple R-squared:  0.001469,  Adjusted R-squared:  -0.0002616 
+F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573</code></pre>
+</div>
+</div>
+</section>
+<section id="grouse-prediction" class="slide level2" style="font-size: 90%;">
+<h2>Grouse prediction</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" data-code-line-numbers="1,2,3,4,5|6|7,8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>elev.min <span class="ot">&lt;-</span> <span class="fu">min</span>(grouse.data<span class="sc">$</span>elevation)</span>
+<span id="cb15-2"><a></a>elev.max <span class="ot">&lt;-</span> <span class="fu">max</span>(grouse.data<span class="sc">$</span>elevation)</span>
+<span id="cb15-3"><a></a>seq.length <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="do">## Determines how smooth the function looks in GLMs </span></span>
+<span id="cb15-4"><a></a>elev.seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from=</span>elev.min, <span class="at">to=</span>elev.max, <span class="at">length.out=</span>seq.length)</span>
+<span id="cb15-5"><a></a>pred.data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">elevation=</span>elev.seq)</span>
+<span id="cb15-6"><a></a>pred.elev <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm1, <span class="at">newdata=</span>pred.data, <span class="at">se=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-7"><a></a><span class="fu">plot</span>(abundance <span class="sc">~</span> elevation, <span class="at">data=</span>grouse.data, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span>
+<span id="cb15-8"><a></a><span class="fu">lines</span>(elev.seq, pred.elev<span class="sc">$</span>fit, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell fragment" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" style="width:4in"></p>
+</figure>
+</div>
+</div>
+</div>
 </section></section>
 <section>
-<section id="generalized-linear-models" class="title-slide slide level1 center">
-<h1>Generalized linear models</h1>
 
-</section>
-<section id="generalized-linear-models-glms" class="slide level2">
+<section id="generalized-linear-models-glms" class="slide level2" style="font-size: 90%;">
 <h2>Generalized linear models (GLMs)</h2>
-<ul>
-<li><p>The residuals don’t have to be normally distributed.</p></li>
-<li><p>The response variable can be binary, integer, strictly-positive, etc...</p></li>
-<li><p>The variance is not assumed to be constant.</p></li>
-<li><p>Useful for manipulative experiments or observational studies, just like linear models.</p></li>
-</ul>
+<p><br></p>
+<p>The residuals don’t have to be normally distributed.</p>
+<p><br></p>
+<p>The response variable can be binary, integer, strictly-positive, etc...</p>
+<p><br></p>
+<p>The variance is not assumed to be constant.</p>
+<p><br></p>
+<p>Useful for manipulative experiments or observational studies, just like linear models.</p>
 </section>
-<section id="from-linear-to-generalized-linear" class="slide level2">
+<section id="from-linear-to-generalized-linear" class="slide level2" style="font-size: 90%;">
 <h2>From linear to generalized linear</h2>
 <p>Linear model</p>
 <p><span class="math display">\[
-\begin{gathered}
     \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)  
-\end{gathered}
 \]</span></p>
+<div class="fragment">
 <p>Generalized Linear model</p>
 <p><span class="math display">\[
-\begin{gathered}
     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim f(\mu_i)
-\end{gathered}
 \]</span></p>
 <p>where<br>
 <span class="math inline">\(g\)</span> is a link function, such as the log or logit link<br>
 <span class="math inline">\(f\)</span> is a probability distribution such as the binomial or Poisson</p>
+</div>
 </section>
-<section id="link-functions" class="slide level2">
+<section id="link-functions" class="slide level2" style="font-size: 90%;">
 <h2>Link functions</h2>
-<p>An inverse link function (<span class="math inline">\(g^{-1}\)</span>) transforms values from the <span class="math inline">\((-\infty,\infty)\)</span> scale to the scale of interest, such as <span class="math inline">\((0,1)\)</span> for probabilities.<br>
-</p>
-<p>The link function (<span class="math inline">\(g\)</span>) does the reverse.<br>
-</p>
-</section>
-<section id="link-functions-1" class="slide level2">
-<h2>Link functions</h2>
+<p>An inverse link function (<span class="math inline">\(g^{-1}\)</span>) transforms values from the <span class="math inline">\((-\infty,\infty)\)</span> scale to the scale of interest, such as <span class="math inline">\((0,1)\)</span> for probabilities.</p>
+<p>The link function (<span class="math inline">\(g\)</span>) does the reverse.</p>
+<p><br></p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -535,7 +609,9 @@ Coefficients:
 </tr>
 </tbody>
 </table>
-<p><br></p>
+</section>
+<section id="link-functions-in-r" class="slide level2">
+<h2>Link functions in R</h2>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -563,54 +639,92 @@ Coefficients:
 </section>
 <section id="logit-link-example" class="slide level2">
 <h2>Logit link example</h2>
-<p><embed data-src="figure/nologit-1.pdf"><br>
-</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="dv">5</span> <span class="sc">+</span> <span class="sc">-</span><span class="fl">0.08</span><span class="sc">*</span>x, <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>,</span>
+<span id="cb16-2"><a></a>     <span class="at">xlab=</span><span class="st">"Elevation"</span>, <span class="at">ylab=</span><span class="st">"logit(prob of occurrence)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/nologit-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="logit-link-example-1" class="slide level2">
 <h2>Logit link example</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">plogis</span>(<span class="dv">5</span> <span class="sc">+</span> <span class="sc">-</span><span class="fl">0.08</span><span class="sc">*</span>x), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>,</span>
+<span id="cb17-2"><a></a>     <span class="at">xlab=</span><span class="st">"Elevation"</span>, <span class="at">ylab=</span><span class="st">"Probability of occurrence"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/logit-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="logistic-regression" class="title-slide slide level1 center">
 <h1>Logistic regression</h1>
 
 </section>
-<section id="logistic-regression-1" class="slide level2">
+<section id="logistic-regression-1" class="slide level2" style="font-size: 80%;">
 <h2>Logistic Regression</h2>
-<p>Logistic regression is a specific type of GLM in which the response variable follows a binomial distribution and the link function is the logit.<br>
-</p>
-<p>It would be better to call it “binomial regression” since other link functions (e.g.&nbsp;the probit) can be used<br>
-</p>
+<p>Logistic regression is a specific type of GLM in which the response variable follows a binomial distribution and the link function is the logit.</p>
+<div class="fragment">
+<p><br></p>
+<p>It would be better to call it “binomial regression” since other link functions (e.g.&nbsp;the probit) can be used.</p>
+</div>
+<div class="fragment">
+<p><br></p>
 <p>Appropriate when the response is binary or a count with an upper limit Examples:</p>
 <ul>
 <li><p>Presence/absence studies</p></li>
 <li><p>Survival studies</p></li>
 <li><p>Disease prevalence studies</p></li>
 </ul>
+</div>
 </section>
 <section id="logistic-regression-2" class="slide level2">
 <h2>Logistic Regression</h2>
-$$
-<span class="math display">\[\begin{gathered}
+<p><span class="math display">\[
       \mathrm{logit}(p_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
       y_i \sim \mathrm{Binomial}(N, p_i)
-  
-\end{gathered}\]</span>
-<p>$$</p>
+\]</span></p>
+<p><br></p>
 <p>where:<br>
 </p>
 <p><span class="math inline">\(N\)</span> is the number of “trials” (e.g.&nbsp;coin flips)<br>
 <span class="math inline">\(p_i\)</span> is the probability of success for sample unit <span class="math inline">\(i\)</span></p>
 </section>
+<section id="binomial-distribution-fair-coin" class="slide level2 smaller">
+<h2>Binomial distribution – fair coin</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/fair-coin-1.png" class="quarto-figure quarto-figure-center" style="width:6in"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="binomial-distribution-warped-coin" class="slide level2 smaller">
+<h2>Binomial distribution – warped coin</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/warped-coin-1.png" class="quarto-figure quarto-figure-center" style="width:6in"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="binomial-distribution" class="slide level2">
 <h2>Binomial distribution</h2>
-<p><embed data-src="figure/binom1-1.pdf" style="width:90.0%"></p>
-</section>
-<section id="binomial-distribution-1" class="slide level2">
-<h2>Binomial distribution</h2>
-<p><embed data-src="figure/binom2-1.pdf" style="width:90.0%"></p>
-</section>
-<section id="binomial-distribution-2" class="slide level2">
-<h2>Binomial Distribution</h2>
 <p>Properties</p>
 <ul>
 <li><p>The expected value of <span class="math inline">\(y\)</span> is <span class="math inline">\(Np\)</span></p></li>
@@ -647,13 +761,10 @@ $$
 </section>
 <section id="poisson-regression-1" class="slide level2">
 <h2>Poisson Regression</h2>
-$$
-<span class="math display">\[\begin{gathered}
+<p><span class="math display">\[
       \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
       y_i \sim \mathrm{Poisson}(\lambda_i)
-  
-\end{gathered}\]</span>
-<p>$$</p>
+\]</span></p>
 <p>where:<br>
 <span class="math inline">\(\lambda_i\)</span> is the expected value of <span class="math inline">\(y_i\)</span><br>
 </p>

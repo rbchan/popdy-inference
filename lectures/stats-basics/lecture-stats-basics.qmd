@@ -6,6 +6,9 @@ format:
     slide-number: true
     toc: false
     margin: 0.1
+    auto-stretch: false
+    fig-width: 7
+    fig-height: 7
 lang: en
 ---
 
@@ -23,7 +26,7 @@ lang: en
 </center>
 
 
-![](lecture-stats-basics_files/figure-revealjs/slr-viz-1.png){width="80%" fig-align="center" fig-alt="Simple linear regression"}
+![](lecture-stats-basics_files/figure-revealjs/slr-viz-1.png){width="40%" fig-align="center" fig-alt="Simple linear regression"}
 
 
 <center>
@@ -139,7 +142,7 @@ mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)   ## y
 #| echo: false
 #| fig-width: 7
 #| fig-height: 7
-#| out-width: "5in"
+#| out-width: "4in"
 plot(width, mass, xlim=c(0,1), cex.lab=1.3)
 abline(lm(mass~width))
 ```
@@ -268,7 +271,7 @@ View the posterior samples
 #| echo: true
 #| fig-width: 10
 #| fig-heigth: 12
-#| out-width: "10in"
+#| out-width: "7in"
 #| fig-align: center
 plot(js.lm[,1:2])
 
@@ -379,60 +382,105 @@ arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
 
 
 
-## Ruffed grouse data
+## Ruffed grouse
 
-![](figs/RUGR.jpg){width="100%"}
+![](figs/RUGR.jpg){width="80%" fig-align="center"}
 
 
 
-## Ruffed grouse data
+## Ruffed grouse survey design
 
-![](figs/grouse_map_locs.pdf){width="100%"}
+![](figs/grouse_map_locs.png){width="70%" fig-align="center"}
 
 
 
 ## Grouse data
 
-Fit a linear model to the abundance data
+
+```{r}
+#| label: grouse-data
+#| echo: true
+grouse.data <- read.csv("grouse_data_glm.csv", row.names=1)
+grouse.data$route <- factor(grouse.data$route)
+grouse.data$utmZone <- factor(grouse.data$utmZone)
+head(grouse.data)
+```
+
+## Grouse regression
+
+```{r}
+#| label: grouse-lm
+#| echo: true
+fm1 <- lm(abundance ~ elevation, grouse.data)
+summary(fm1)
+
+```
 
 
-# Generalized linear models
+## Grouse prediction {style="font-size: 90%;"}
+
+
+```{r}
+#| echo: true
+#| out-width: "4in"
+#| fig-align: "center"
+#| output-location: "fragment"
+#| code-line-numbers: "1,2,3,4,5|6|7,8"
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data <- data.frame(elevation=elev.seq)
+pred.elev <- predict(fm1, newdata=pred.data, se=TRUE)
+plot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))
+lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
+```
 
 
 
-## Generalized linear models (GLMs)
 
-- The residuals don't have to be normally distributed.
 
-- The response variable can be binary, integer, strictly-positive,
-  etc\...
-
-- The variance is not assumed to be constant.
-
-- Useful for manipulative experiments or observational studies, just
-  like linear models.
+# Generalized linear models {visibility="hidden"}
 
 
 
-## From linear to generalized linear
+## Generalized linear models (GLMs) {style="font-size: 90%;"}
+
+<br>
+
+The residuals don't have to be normally distributed.
+
+<br>
+
+The response variable can be binary, integer, strictly-positive, etc\...
+
+<br>
+
+The variance is not assumed to be constant.
+
+<br>
+
+Useful for manipulative experiments or observational studies, just like linear models.
+
+
+
+## From linear to generalized linear {style="font-size: 90%;"}
 
 Linear model 
 
 $$
-\begin{gathered}
     \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)  
-\end{gathered}
 $$ 
 
+
+. . .
 
 Generalized Linear model 
 
 $$
-\begin{gathered}
     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
     y_i \sim f(\mu_i)
-\end{gathered}
 $$ 
 
 
@@ -442,24 +490,24 @@ $f$ is a probability distribution such as the binomial or Poisson
 
 
 
-## Link functions
+## Link functions {style="font-size: 90%;"}
 
 An inverse link function ($g^{-1}$) transforms values from the
 $(-\infty,\infty)$ scale to the scale of interest, such as $(0,1)$ for
-probabilities.\
+probabilities.
 
-The link function ($g$) does the reverse.\
+The link function ($g$) does the reverse.
 
-
-
-## Link functions
+<br>
 
   Distribution   link name        link equation          inverse link equation
   -------------- --------------- ----------------------- -----------------------------
   Binomial       logit            $\log(\frac{p}{1-p})$   $\frac{\mu}{1 + \exp(\mu)}$
   Poisson        log                 $\log(\lambda)$              $\exp(\mu)$
 
-<br>
+
+
+## Link functions in R
 
 
   Distribution   link name    link in **R**   inv link in **R**
@@ -471,25 +519,45 @@ The link function ($g$) does the reverse.\
 
 ## Logit link example
 
-
-![](figure/nologit-1.pdf){width="\\textwidth"}\
-
-
+```{r}
+#| echo: true
+#| label: nologit
+#| fig-height: 5
+#| fig-align: center
+plot(function(x) 5 + -0.08*x, from=0, to=100,
+     xlab="Elevation", ylab="logit(prob of occurrence)")
+```
 
 ## Logit link example
 
+```{r}
+#| echo: true
+#| label: logit
+#| fig-height: 5
+#| fig-align: center
+plot(function(x) plogis(5 + -0.08*x), from=0, to=100,
+     xlab="Elevation", ylab="Probability of occurrence")
+```
 
 # Logistic regression
 
 
-## Logistic Regression
+## Logistic Regression {style="font-size: 80%;"}
 
 Logistic regression is a specific type of GLM in which the response
 variable follows a binomial distribution and the link function is the
-logit.\
+logit.
+
+. . .
+
+<br>
 
 It would be better to call it "binomial regression" since other link
-functions (e.g. the probit) can be used\
+functions (e.g. the probit) can be used.
+
+. . .
+
+<br>
 
 Appropriate when the response is binary or a count with an upper limit
 Examples:
@@ -505,12 +573,11 @@ Examples:
 ## Logistic Regression
 
 $$
-\begin{gathered}
       \mathrm{logit}(p_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
       y_i \sim \mathrm{Binomial}(N, p_i)
-  
-\end{gathered}
 $$ 
+
+<br>
 
 where:\
 
@@ -519,21 +586,35 @@ $p_i$ is the probability of success for sample unit $i$
 
 
 
+## Binomial distribution -- fair coin {.smaller}
+
+```{r}
+#| label: fair-coin
+#| fig-align: center
+#| out-width: "6in"
+plot(0:5, dbinom(0:5, 5, 0.5), type="h",
+     xlab="Number of 'successes'", ylab="Probability",
+     lend="butt", lwd=5, col="blue", ylim=c(0,0.6),
+     main="Binomial(N=5, p=0.5)")
+```
+
+
+## Binomial distribution -- warped coin {.smaller}
+
+```{r}
+#| label: warped-coin
+#| fig-align: center
+#| out-width: "6in"
+plot(0:5, dbinom(0:5, 5, 0.9), type="h",
+     xlab="Number of 'successes'", ylab="Probability",
+     lend="butt", lwd=5, col="blue", ylim=c(0,0.6),
+     main="Binomial(N=5, p=0.9)")
+```
+
+
+
+
 ## Binomial distribution
-
-
-![](figure/binom1-1.pdf){width="90%"}
-
-
-
-## Binomial distribution
-
-
-![](figure/binom2-1.pdf){width="90%"}
-
-
-
-## Binomial Distribution
 
 Properties
 
@@ -576,11 +657,8 @@ $$
 ## Poisson Regression
 
 $$
-\begin{gathered}
       \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
       y_i \sim \mathrm{Poisson}(\lambda_i)
-  
-\end{gathered}
 $$ 
 
 where:\
