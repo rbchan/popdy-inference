@@ -593,9 +593,9 @@ $p_i$ is the probability of success for sample unit $i$
 #| fig-align: center
 #| out-width: "6in"
 plot(0:5, dbinom(0:5, 5, 0.5), type="h",
-     xlab="Number of 'successes'", ylab="Probability",
+     xlab="Number of successes (heads)", ylab="Probability",
      lend="butt", lwd=5, col="blue", ylim=c(0,0.6),
-     main="Binomial(N=5, p=0.5)")
+     main="Binomial(N=5, p=0.5)", cex.lab=1.3)
 ```
 
 
@@ -606,9 +606,9 @@ plot(0:5, dbinom(0:5, 5, 0.5), type="h",
 #| fig-align: center
 #| out-width: "6in"
 plot(0:5, dbinom(0:5, 5, 0.9), type="h",
-     xlab="Number of 'successes'", ylab="Probability",
+     xlab="Number of successes (heads)", ylab="Probability",
      lend="butt", lwd=5, col="blue", ylim=c(0,0.6),
-     main="Binomial(N=5, p=0.9)")
+     main="Binomial(N=5, p=0.9)", cex.lab=1.3)
 ```
 
 
@@ -621,6 +621,8 @@ Properties
 - The expected value of $y$ is $Np$
 
 - The variance is $Np(1-p)$
+
+. . .
 
 Bernoulli distribution
 
@@ -648,7 +650,50 @@ $$
 
 
 
-## Logistic regression example
+## Logistic regression example {.smaller}
+
+Fit the model
+
+```{r}
+#| echo: true
+#| label: grouse-logistic
+logitreg1 <- glm(presence ~ elevation, data=grouse.data, family=binomial(link="logit"))
+logitreg1
+```
+. . .
+
+<br>
+
+Predict
+
+```{r}
+#| echo: true
+#| label: grouse-pred
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data.lr <- data.frame(elevation=elev.seq)
+pred.elev <- predict(logitreg1, newdata=pred.data.lr, type="link", se=TRUE)
+```
+
+
+## Logistic regression example {.smaller}
+
+Predictions and standard errors. Notice that we predict on the link
+scale, and then back-transform after adding the SE.
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| out-width: "4.5in"
+#| output-location: fragment
+plot(presence ~ elevation, data=grouse.data, ylim=c(0,1), xlab="Elevation", ylab="Presence", cex.lab=1.3)
+lines(elev.seq, plogis(pred.elev$fit), col="blue", lwd=2)
+lines(elev.seq, plogis(pred.elev$fit+pred.elev$se.fit), col="blue", lwd=1, lty=2)
+lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2)
+```
+
 
 
 # Poisson regression
@@ -666,7 +711,7 @@ $\lambda_i$ is the expected value of $y_i$\
 
 
 
-## Poisson regression
+## Poisson regression {style="font-size: 80%;"}
 
 Useful for:
 
@@ -675,6 +720,10 @@ Useful for:
 - Number of events in time intervals
 
 - Other types of integer data
+
+. . .
+
+<br>
 
 Properties
 
@@ -688,41 +737,105 @@ Properties
 
 ## Poisson distribution
 
+```{r}
+#| label: pois
+#| include: false
+x <- 0:25
+plot(x, dpois(x, lambda=1), type="h", lwd=5, col="blue", lend="butt",
+     xlab="Abundance", ylab="Probability",
+     main=expression(paste("Poisson(", lambda, "= 1)", sep="")), cex.lab=1.5 )
+plot(x, dpois(x, lambda=5), type="h", lwd=5, col="blue", lend="butt",
+     xlab="Abundance", ylab="Probability",
+     main=expression(paste("Poisson(", lambda, "= 5)", sep="")), cex.lab=1.5 )
+plot(x, dpois(x, lambda=10), type="h", lwd=5, col="blue", lend="butt",
+     xlab="Abundance", ylab="Probability",
+     main=expression(paste("Poisson(", lambda, "= 10)", sep="")), cex.lab=1.5 )
+```
+
+![](lecture-stats-basics_files/figure-revealjs/pois-1.png){fig-align="center" width="5.5in"}
+
+## Poisson distribution
+
+
+![](lecture-stats-basics_files/figure-revealjs/pois-2.png){fig-align="center" width="5.5in"}
+
+## Poisson distribution
+
+![](lecture-stats-basics_files/figure-revealjs/pois-3.png){fig-align="center" width="5.5in"}
+
+
+
+## Log link example
+
+```{r}
+#| label: nolog-link
+#| echo: true
+#| fig-align: center
+#| fig-height: 5
+plot(function(x) 5 + -0.08*x, from=0, to=100,
+     xlab="Elevation", ylab="log(Expected abundance)")
+```
+
 
 ## Log link example
 
 
-![image](figure/nolog-1.pdf){width="80%"}
+```{r}
+#| label: log-link
+#| echo: true
+#| fig-align: center
+#| fig-height: 5
+plot(function(x) exp(5 + -0.08*x), from=0, to=100,
+     xlab="Elevation", ylab="Expected abundance")
+```
 
 
 
-## Log link example
-
-
-![](figure/log-1.pdf){width="80%"}
-
-## Poisson regression simulation
+## Poisson regression simulation {style="font-size: 70%;"}
 
 First, create a covariate:
 
+```{r}
+#| echo: true
+n <- 100  
+x <- rnorm(n)
+```
 
-Next, pick values for the coefficients and compute $\lambda_i =
-  E(y_i)$:
+. . .
 
+Next, pick values for the coefficients and compute $\lambda_i = E(y_i)$:
+
+```{r}
+#| echo: true
+beta0 <- -1
+beta1 <- 1
+lam <- exp(beta0 + beta1*x)
+```
+. . .
 
 Now, simulate the response variable $y$:
 
+```{r}
+#| echo: true
+y <- rpois(n=n, lambda=lam)
+```
+. . .
 
 Finally, fit the model:
 
+```{r}
+#| echo: true
+(poisreg1 <- glm(y ~ x, family=poisson(link="log")))
+```
 
 
-## Simple (Bayesian) Poisson regression
+## Bayesian Poisson regression {style="font-size: 80%;"}
 
-The model is in a text file named `glm.jag`\
+The model is in a text file named `glm.jag`
 
 ```{r}
 #| eval: false
+#| echo: true
 model {
 
     # Priors
@@ -738,14 +851,63 @@ model {
 }
 ```
 
-Now, put the data in a list and pick some initial values
+. . .
+
+<br>
+
+Put the data in a list and pick some initial values
+
+``` {r}
+#| echo: true
+jd.glm <- list(x=x, y=y, n=length(y))
+ji.glm <- function() list(beta0=rnorm(1), beta1=rnorm(1))
+jp.glm <- c("beta0", "beta1")
+```
 
 
 
-
-### Simple (Bayesian) Poisson regression
+## Bayesian Poisson regression
 
 Use MCMC to draw posterior samples:
+
+```{r}
+#| echo: true
+#| results: hide
+library(jagsUI)  
+js.glm <- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,
+                     model.file="glm.jag", n.chains=2, n.iter=1000)
+```
+<br>
+
+::: {.fragment}
+
+Summarize the posterior samples:
+
+```{r}
+#| label: glm-jags-sum
+#| echo: true
+round(summary(js.glm)$quant, 2)
+```
+
+:::
+
+
+
+
+## Bayesian Poisson regression -- inference {style="font-size: 90%;"}
+
+View the posterior samples
+
+```{r}
+#| label: glm-jags-plot
+#| echo: true
+#| fig-width: 10
+#| fig-heigth: 12
+#| out-width: "7in"
+#| fig-align: center
+plot(js.glm[,1:2])
+
+```
 
 
 ## Assignment {.smaller}
@@ -774,7 +936,7 @@ the following:
 4.  Compare and intepret the estimates of $\beta_0$ and $\beta_1$ from
     the classical analysis and the Bayesian analysis.
 
-Upload your `.R` or `.Rmd` file to ELC by 5:00 PM Tuesday.
+Upload your `.R` or `.Rmd` or `.qmd` file to ELC by 5:00 PM Tuesday.
 
 
 

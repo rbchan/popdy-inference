@@ -88,7 +88,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Bayesian linear regression – inference",
-    "text": "Bayesian linear regression – inference\nUse MCMC to draw posterior samples:\n\nlibrary(jagsUI)  \njs.lm &lt;- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,\n                    model.file=\"lm.jag\", n.chains=1, n.iter=1000)\n\n\n\nSummarize the posterior samples:\n\nround(summary(js.lm)$quant, 2)\n\n          2.5%   25%  50%  75% 97.5%\nbeta0    -0.61 -0.17 0.05 0.22  0.70\nbeta1    -0.34  0.29 0.55 0.83  1.42\ndeviance -2.53 -0.94 1.30 4.33 14.24\nsigmaSq   0.03  0.06 0.08 0.14  0.47"
+    "text": "Bayesian linear regression – inference\nUse MCMC to draw posterior samples:\n\nlibrary(jagsUI)  \njs.lm &lt;- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,\n                    model.file=\"lm.jag\", n.chains=1, n.iter=1000)\n\n\n\nSummarize the posterior samples:\n\nround(summary(js.lm)$quant, 2)\n\n          2.5%   25%  50%  75% 97.5%\nbeta0    -0.52 -0.15 0.04 0.21  0.63\nbeta1    -0.32  0.27 0.52 0.80  1.32\ndeviance -2.58 -0.97 0.95 3.41  9.35\nsigmaSq   0.03  0.05 0.08 0.12  0.26"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference-1",
@@ -242,7 +242,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#binomial-distribution",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Binomial distribution",
-    "text": "Binomial distribution\nProperties\n\nThe expected value of \\(y\\) is \\(Np\\)\nThe variance is \\(Np(1-p)\\)\n\nBernoulli distribution\n\nThe Bernoulli distribution is a binomial distribution with a single trial (\\(N=1\\))\nLogistic regression is usually done in this context, such that the response variable is 0/1 or No/Yes or Bad/Good, etc\\(\\dots\\)"
+    "text": "Binomial distribution\nProperties\n\nThe expected value of \\(y\\) is \\(Np\\)\nThe variance is \\(Np(1-p)\\)\n\n\nBernoulli distribution\n\nThe Bernoulli distribution is a binomial distribution with a single trial (\\(N=1\\))\nLogistic regression is usually done in this context, such that the response variable is 0/1 or No/Yes or Bad/Good, etc\\(\\dots\\)"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-example",
@@ -256,7 +256,14 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-example-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Logistic regression example",
-    "text": "Logistic regression example"
+    "text": "Logistic regression example\nFit the model\n\nlogitreg1 &lt;- glm(presence ~ elevation, data=grouse.data, family=binomial(link=\"logit\"))\nlogitreg1\n\n\nCall:  glm(formula = presence ~ elevation, family = binomial(link = \"logit\"), \n    data = grouse.data)\n\nCoefficients:\n(Intercept)    elevation  \n -3.0451857   -0.0006727  \n\nDegrees of Freedom: 578 Total (i.e. Null);  577 Residual\nNull Deviance:      153.5 \nResidual Deviance: 153.2    AIC: 157.2\n\n\n\n\nPredict\n\nelev.min &lt;- min(grouse.data$elevation)\nelev.max &lt;- max(grouse.data$elevation)\nseq.length &lt;- 20 ## Determines how smooth the function looks in GLMs \nelev.seq &lt;- seq(from=elev.min, to=elev.max, length.out=seq.length)\npred.data.lr &lt;- data.frame(elevation=elev.seq)\npred.elev &lt;- predict(logitreg1, newdata=pred.data.lr, type=\"link\", se=TRUE)"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-example-2",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#logistic-regression-example-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Logistic regression example",
+    "text": "Logistic regression example\nPredictions and standard errors. Notice that we predict on the link scale, and then back-transform after adding the SE.\n\nplot(presence ~ elevation, data=grouse.data, ylim=c(0,1), xlab=\"Elevation\", ylab=\"Presence\", cex.lab=1.3)\nlines(elev.seq, plogis(pred.elev$fit), col=\"blue\", lwd=2)\nlines(elev.seq, plogis(pred.elev$fit+pred.elev$se.fit), col=\"blue\", lwd=1, lty=2)\nlines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col=\"blue\", lwd=1, lty=2)"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#poisson-regression-1",
@@ -270,7 +277,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#poisson-regression-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Poisson regression",
-    "text": "Poisson regression\nUseful for:\n\nCount data\nNumber of events in time intervals\nOther types of integer data\n\nProperties\n\nThe expected value of \\(y\\) (\\(\\lambda\\)) is equal to the variance\nThis is an assumption of the Poisson model\nLike all assumptions, it can be relaxed if you have enough data"
+    "text": "Poisson regression\nUseful for:\n\nCount data\nNumber of events in time intervals\nOther types of integer data\n\n\n\nProperties\n\nThe expected value of \\(y\\) (\\(\\lambda\\)) is equal to the variance\nThis is an assumption of the Poisson model\nLike all assumptions, it can be relaxed if you have enough data"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#poisson-distribution",
@@ -280,39 +287,67 @@
     "text": "Poisson distribution"
   },
   {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#poisson-distribution-1",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#poisson-distribution-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Poisson distribution",
+    "text": "Poisson distribution"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#poisson-distribution-2",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#poisson-distribution-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Poisson distribution",
+    "text": "Poisson distribution"
+  },
+  {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#log-link-example",
     "href": "lectures/stats-basics/lecture-stats-basics.html#log-link-example",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Log link example",
-    "text": "Log link example\n\n\n\nimage"
+    "text": "Log link example\n\nplot(function(x) 5 + -0.08*x, from=0, to=100,\n     xlab=\"Elevation\", ylab=\"log(Expected abundance)\")"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#log-link-example-1",
     "href": "lectures/stats-basics/lecture-stats-basics.html#log-link-example-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Log link example",
-    "text": "Log link example"
+    "text": "Log link example\n\nplot(function(x) exp(5 + -0.08*x), from=0, to=100,\n     xlab=\"Elevation\", ylab=\"Expected abundance\")"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#poisson-regression-simulation",
     "href": "lectures/stats-basics/lecture-stats-basics.html#poisson-regression-simulation",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Poisson regression simulation",
-    "text": "Poisson regression simulation\nFirst, create a covariate:\nNext, pick values for the coefficients and compute \\(\\lambda_i =\n  E(y_i)\\):\nNow, simulate the response variable \\(y\\):\nFinally, fit the model:"
+    "text": "Poisson regression simulation\nFirst, create a covariate:\n\nn &lt;- 100  \nx &lt;- rnorm(n)\n\n\nNext, pick values for the coefficients and compute \\(\\lambda_i = E(y_i)\\):\n\nbeta0 &lt;- -1\nbeta1 &lt;- 1\nlam &lt;- exp(beta0 + beta1*x)\n\n\n\nNow, simulate the response variable \\(y\\):\n\ny &lt;- rpois(n=n, lambda=lam)\n\n\n\nFinally, fit the model:\n\n(poisreg1 &lt;- glm(y ~ x, family=poisson(link=\"log\")))\n\n\nCall:  glm(formula = y ~ x, family = poisson(link = \"log\"))\n\nCoefficients:\n(Intercept)            x  \n     -1.080        1.172  \n\nDegrees of Freedom: 99 Total (i.e. Null);  98 Residual\nNull Deviance:      307.4 \nResidual Deviance: 87.7     AIC: 179.6"
   },
   {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#simple-bayesian-poisson-regression",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#simple-bayesian-poisson-regression",
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-poisson-regression",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-poisson-regression",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Simple (Bayesian) Poisson regression",
-    "text": "Simple (Bayesian) Poisson regression\nThe model is in a text file named glm.jag\n\nNow, put the data in a list and pick some initial values\nSimple (Bayesian) Poisson regression\nUse MCMC to draw posterior samples:"
+    "section": "Bayesian Poisson regression",
+    "text": "Bayesian Poisson regression\nThe model is in a text file named glm.jag\n\nmodel {\n\n    # Priors\n    beta0 ~ dnorm(0, 0.1) ## Normal prior with mean=0, variance=10\n    beta1 ~ dnorm(0, 0.1)\n\n    ## Model for the data\n    for(i in 1:n) {\n      lambda[i] &lt;- exp(beta0 + beta1*x[i])\n      y[i] ~ dpois(lambda[i])\n    }\n\n}\n\n\n\nPut the data in a list and pick some initial values\n\njd.glm &lt;- list(x=x, y=y, n=length(y))\nji.glm &lt;- function() list(beta0=rnorm(1), beta1=rnorm(1))\njp.glm &lt;- c(\"beta0\", \"beta1\")"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-poisson-regression-1",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-poisson-regression-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian Poisson regression",
+    "text": "Bayesian Poisson regression\nUse MCMC to draw posterior samples:\n\nlibrary(jagsUI)  \njs.glm &lt;- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,\n                     model.file=\"glm.jag\", n.chains=2, n.iter=1000)\n\n\n\nSummarize the posterior samples:\n\nround(summary(js.glm)$quant, 2)\n\n           2.5%    25%    50%    75%  97.5%\nbeta0     -1.51  -1.22  -1.04  -0.91  -0.58\nbeta1      0.96   1.10   1.16   1.23   1.33\ndeviance 175.66 176.38 177.34 178.88 187.97"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-poisson-regression-inference",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-poisson-regression-inference",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian Poisson regression – inference",
+    "text": "Bayesian Poisson regression – inference\nView the posterior samples\n\nplot(js.glm[,1:2])"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#assignment",
     "href": "lectures/stats-basics/lecture-stats-basics.html#assignment",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assignment",
-    "text": "Assignment\nCreate a self-contained R script (or better yet an Rmarkdown file) to do the following:\n\nSimulate logistic regression data according to \\(y_i \\sim \\mathrm{Bern}(p_i)\\) and \\(\\mathrm{logit}(p_i) = \\beta_0\n      + \\beta_1 x_i\\) with \\(\\beta_0=-1\\) and \\(\\beta_1=1\\). Generate the covariate using x &lt;- rnorm(n=100). Note that you will need to use the rbinom function to simulate Bernoulli outcomes.\nFit a logistic regression model to the simulated data (\\(y\\) and \\(x\\)) using the glm function. Create a figure showing \\(x\\) and \\(y\\) with the fitted regression line. Use predict to get the fitted line.\nFit the logistic regression model in JAGS. Use \\(\\mathrm{Normal}(0, var=10)\\) priors for the regression coefficients.\nCompare and intepret the estimates of \\(\\beta_0\\) and \\(\\beta_1\\) from the classical analysis and the Bayesian analysis.\n\nUpload your .R or .Rmd file to ELC by 5:00 PM Tuesday."
+    "text": "Assignment\nCreate a self-contained R script (or better yet an Rmarkdown file) to do the following:\n\nSimulate logistic regression data according to \\(y_i \\sim \\mathrm{Bern}(p_i)\\) and \\(\\mathrm{logit}(p_i) = \\beta_0\n      + \\beta_1 x_i\\) with \\(\\beta_0=-1\\) and \\(\\beta_1=1\\). Generate the covariate using x &lt;- rnorm(n=100). Note that you will need to use the rbinom function to simulate Bernoulli outcomes.\nFit a logistic regression model to the simulated data (\\(y\\) and \\(x\\)) using the glm function. Create a figure showing \\(x\\) and \\(y\\) with the fitted regression line. Use predict to get the fitted line.\nFit the logistic regression model in JAGS. Use \\(\\mathrm{Normal}(0, var=10)\\) priors for the regression coefficients.\nCompare and intepret the estimates of \\(\\beta_0\\) and \\(\\beta_1\\) from the classical analysis and the Bayesian analysis.\n\nUpload your .R or .Rmd or .qmd file to ELC by 5:00 PM Tuesday."
   },
   {
     "objectID": "schedule.html",

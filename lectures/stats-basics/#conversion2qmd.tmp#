@@ -1,0 +1,1158 @@
+---
+title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    slide-number: true
+lang: en
+---
+
+
+
+% This would affect all code boxes. Not a good idea.
+% \setlength\fboxsep{0pt}
+
+
+
+[]
+  \LARGE
+%  \maketitle
+  \centering
+  {\huge Lecture 2 -- Refresher of basic statistical models} \\
+  {\color{default} \rule{\textwidth}{0.1pt}}
+  \vfill
+  \large
+  WILD(FISH) 8390 \\
+  % Estimation of Fish and Wildlife Population Parameters \\
+  Inference for Models of Fish and Wildlife \\ Population Dynamics \\
+  \vfill
+  \large
+  Richard Chandler \\
+  University of Georgia \\
+
+
+
+
+
+# Linear models
+
+
+[]
+  ## Today's Topics
+  \Large
+  \only<1>{\tableofcontents}%[]}
+  \only<2 | handout:0>{\tableofcontents[]}%,hideallsubsections]}
+
+
+
+
+
+
+  ## Linear models
+%  \small
+  All ANOVAs and fixed-effects regression models are linear models. \\
+  \vspace{12pt}
+  You must understand linear models before you can apply more advanced
+  models such as GLMs, GAMS, hierarchical models etc\dots  
+  \vfill
+  \centering
+  ![](figure/Rencher_Schaal_book) \hspace{1cm}
+  ![](figure/Hocking_book) \\
+
+
+
+
+  ## Simple linear regression
+  Simple linear regression is the most basic linear model.
+  \[]
+  \vspace{-6pt}
+  \pause
+  ::: columns[]
+    ::: {.column width='50%'}
+      $y$ is variously called:
+      
+        * response variable
+        * outcome variable
+        * dependent variable
+      
+    :::
+    \pause
+    ::: {.column width='50%'}
+      It's worse for $x$
+      
+        * predictor variable
+        * explanatory variable
+        * independent variable
+        * covariate, exposure, etc\dots
+        %% * exposure
+      
+    :::
+  :::
+  \pause
+  \vfill
+  We observe $x$ and $y$. The expected value of $y_i$ is $\mu_i$. \\
+  \vfill
+  We'd like to estimate $\beta_0$ and $\beta_1$, called the ``coefficients''. \\
+  \pause
+  \vfill
+  A residual is $\varepsilon_i=y_i-\mu_i$.
+  \pause
+  \vfill
+  $\sigma^2$ is the variance of the residuals.
+
+
+
+
+% []
+%   ## Probability distributions
+%   Check out Heather Gaya's Shiny App: \\
+%   \vfill
+%   \centering
+%   % Highlighting gets messed up if on 1 line
+%   \href{ 
+%     https://insects.shinyapps.io/Probability_Dists/
+%   }{
+%     \large
+%     \color{blue}
+%     {https://insects.shinyapps.io/Probability\_Dists/} 
+%   } \\
+%   \vfill
+%   ![](figs/probDists) \\
+% 
+
+
+
+
+
+
+[]
+  ## Simple linear regression example
+  Suppose your data look like this:
+```{r, slr-data,size='tiny'}
+width <- c(0.30, 0.91, 0.89, 0.24, 0.77, 0.56, 0.59, 0.92, 0.81, 0.59)  ## x
+mass <- c(0.08, 0.59, 0.18, 0.17, 0.42, 0.71, 0.49, 0.75, 0.46, 0.04)   ## y
+@   
+::: columns
+  ::: {.column width='50%'}
+```{r, slr-viz,echo=FALSE}
+plot(width, mass, xlim=c(0,1), cex.lab=1.3)
+abline(lm(mass~width))
+@     
+  :::
+  \pause
+  ::: {.column width='50%'}
+    Classical inference is easy:
+```{r, slr-fit,size='scriptsize'}
+lm(mass~width)
+@ 
+  :::
+:::
+
+
+
+
+  ## Bayesian inference with JAGS
+  We will use JAGS and the R packages `rjags' and `jagsUI'.
+  JAGS can be downloaded here:  \\
+  \centering
+  \vfill
+  \href{
+    https://sourceforge.net/projects/mcmc-jags/files/}{
+    \large
+    \color{blue}
+    https://sourceforge.net/projects/mcmc-jags/files/
+  } \\
+  \pause
+  \vfill
+  \flushleft
+  The basic steps of Bayesian analysis with JAGS are:
+  %[]
+    * Write a model in the BUGS language in a text file
+    * Put data in a named list
+    * Create a function to generate random initial values
+    * Specify the parameters you want to monitor
+    * Use MCMC to draw posterior samples
+    * Use posterior samples for inference and prediction
+  
+
+
+
+
+
+
+[]
+  ## Simple (Bayesian) linear regression
+  \small
+  The model is in a text file named {\tt lm.jag} \\
+```{r, lm-jag,size="scriptsize",comment="",echo=FALSE,background='beige'}
+  writeLines(readLines("lm.jag"))
+@
+\pause
+\vfill
+Now, put the data in a list and pick some initial values
+```{r, lm-jd,size='footnotesize'}
+jd.lm <- list(x=width, y=mass, n=length(mass))
+ji.lm <- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
+jp.lm <- c("beta0", "beta1", "sigmaSq")
+@ 
+
+
+
+[]
+  ## Simple (Bayesian) linear regression
+  Use MCMC to draw posterior samples:
+```{r, lm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE}
+library(jagsUI)  
+js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
+                    model.file="lm.jag", n.chains=1, n.iter=1000)
+@ 
+\pause
+::: columns
+  ::: {.column width='50%'}
+    Summarize the posterior samples:
+```{r, lm-jags-sum,size='scriptsize'}
+round(summary(js.lm)$quant, 2)
+@
+\pause
+  :::
+  ::: {.column width='50%'}
+```{r, lm-jags-viz,echo=FALSE}
+plot(js.lm)
+@     
+  :::
+:::
+
+
+
+
+
+
+  ## Linear models
+    A more general depiction of linear models:
+
+%% \[]
+
+\begin{gather*}
+  \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+  y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+\end{gather*}
+
+where the $\beta$'s are coefficients, and the $x$ values are predictor
+variables (or dummy variables for categorical predictors). %\pause
+%% The residuals are assumed to be normally distributed:
+
+%% \[]
+
+%% \pause
+
+%% \vfill %\vspace{0.5cm}
+
+% {\bf This equation is often expressed in matrix notation as:}
+
+% \[]
+
+% where $\bf X$ is a \alert{design matrix} and $\bm{\beta}$ is a
+% vector of coefficients. %\pause More on matrix notation later\dots
+%% %% Linear models can also be written this way:
+%% \begin{gather*}
+%%   \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+%%   y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+%% \end{gather*}
+
+
+
+
+
+
+
+  ## Interpreting the $\beta$'s
+You must be able to interpret the $\beta$
+coefficients for {\it any model} that you fit to your data.
+\pause
+\vfill
+A linear model might have dozens of continuous and categorical
+predictors variables, with dozens of associated $\beta$ coefficients.
+\pause
+\vfill
+%% Key points for interpretting $\beta$'s:
+%% 
+%%   * For continuous explano
+%% 
+Linear models can also include polynomial terms and interactions. 
+
+
+
+[]
+  ## Interpreting the $\beta$'s
+  \small 
+  The intercept $\beta_0$ is the expected value of $y$, when all $x=0$. \\
+  \pause
+  \vfill
+  If $x_1$ is a {\bf continuous} explanatory variable: %, $\beta$ is
+  
+    * $\beta_1$ can usually be interpreted as a \textit{slope}
+      parameter.
+    * In this case, $\beta_1$ is the
+      change in $y$ resulting from a 1 unit change in $x_1$ (while
+      holding the other predictors constant).
+  
+\pause
+\vfill
+%```{r, linmod,include=FALSE}
+%set.seed(3400)  
+%width <- runif(100, 0, 50)  
+%mass <- rnorm(100, 10 + 1*width, 5)
+%plot(width, mass)
+%abline(lm(mass~width))
+%@
+\centering
+::: columns
+  ::: {.column width='50%'}
+```{r, linmod-out,size='tiny'}
+lm(mass~width)
+@ 
+  :::
+  ::: {.column width='50%'}
+%  ![](figure/linmod-1) \\
+  ![](figure/slr-viz-1) \\
+  :::
+:::
+
+
+
+
+
+[]
+  ## \small Interpreting $\beta$'s for categorical explanatory variables
+  Things are more complicated for {\bf categorical} explanatory
+  variables (i.e., factors) because they must be converted to dummy
+  variables.
+  \pause
+  \vfill
+  There are many ways of creating dummy variables.
+  \pause
+  \vfill
+%  For a {\bf categorical} explanatory variable %, $\beta$ is
+  In \R, the default method for creating dummy variables from
+  unordered factors works like this:
+  % unordered factors is called \inr{"contr.treatment"}
+  
+    * One level of the factor is treated as a \alert{reference level}.
+    * The reference level is associated with the intercept.
+    * The $\beta$ coefficients for the other levels of the factor
+      are differences from the reference level.
+  
+%   \pause
+%   \vfill
+%   The default method corresponds to:
+% ```{r, contr-trt,size='small'}
+% options(contrasts=c("contr.treatment","contr.poly"))
+% @
+
+
+
+
+
+
+[]
+  ## \small Interpreting $\beta$'s for categorical explanatory variables
+\small 
+```{r, linmod-xc,include=FALSE}
+set.seed(3400)  
+species <- gl(4, 25) 
+mass <- rnorm(100, model.matrix(~species)%*%c(10,1,-1,2), 5)
+ym <- tapply(mass, species, mean)
+yse <- sqrt(sum(resid(lm(mass~species))^2)/96)/sqrt(25)
+bpx <- barplot(ym, ylim=c(0, 15), xlab="Species",
+               ylab="Group mean", cex.lab=1.3)
+arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
+@
+\centering
+%::: columns
+%  ::: {.column width='50%'}
+```{r, linmod-xc-out,size='tiny'}
+lm(mass~species)
+@ 
+%  :::
+%  ::: {.column width='50%'}
+  ![](figure/linmod-xc-1) \\
+%  :::
+%:::
+
+
+
+
+
+
+% []
+%   ## \small Interpretting $\beta$'s for categorical explantory variables
+%   Another common method for creating dummy variables results in
+%   $\beta$'s that can be interpretted as the $\alpha$'s from the
+%   additive models that we saw earlier in the class.
+%   \pause
+%   \vfill
+%   With this method:
+%   
+%     * The $\beta$ associated with each level of the factor is the
+%       difference from the intercept
+%     * The intercept can be interpetted as the grand mean if the
+%       continuous variables have been centered
+%     * One of the levels of the factor will not be displayed
+%       because it is redundant when the intercept is estimated
+%   
+%   \pause
+%   \vfill
+%   This method corresponds to:
+% ```{r, contr-sum,size='small',eval=FALSE}
+% options(contrasts=c("contr.sum","contr.poly"))
+% @
+% 
+
+
+
+% \subsection{Example}
+
+
+
+
+  ## Ruffed grouse data
+  \centering
+  ![](figs/RUGR)
+
+
+
+
+
+  ## Ruffed grouse data
+  \centering
+  ![](figs/grouse_map_locs)
+
+
+
+
+
+[]
+  ## Ruffed grouse data
+  \small
+  Import the data and convert \inr{route} and \inr{utmZone} to
+  factors. 
+```{r, read-grouse,size='tiny'}
+grouse.data <- read.csv("grouse_data_glm.csv", row.names=1)
+grouse.data$route <- factor(grouse.data$route)
+grouse.data$utmZone <- factor(grouse.data$utmZone)
+str(grouse.data)
+@   
+
+
+
+
+[]
+  ## Grouse data
+  Fit a linear model to the abundance data
+```{r, grouse-fm1,size='scriptsize'}
+fm1 <- lm(abundance ~ elevation, grouse.data)
+summary(fm1)
+@   
+
+
+
+
+
+[]
+  ## Grouse data
+  Predict grouse abundance at a sequence of elevations for
+  each region (east or west side) of the study area. \\
+  \vfill
+  First, create a new \inr{data.frame} with the explanatory values of
+  interest.
+```{r, grouse-pred-dat,size='scriptsize'}
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data <- data.frame(elevation=elev.seq)
+@
+\pause
+\vfill
+  Now get the predictions.
+```{r, grouse-pred,size='scriptsize'}
+pred.elev <- predict(fm1, newdata=pred.data, se=TRUE)
+@ 
+
+
+
+
+[]
+  ## Grouse data
+```{r, grouse-pred-plot,fig.width=7,fig.height=5,out.width="0.85\\textwidth",fig.align='center',size='scriptsize'}
+plot(abundance ~ elevation, data=grouse.data, ylim=c(0,2))
+lines(elev.seq, pred.elev$fit, col="blue", lwd=2)
+@ 
+
+
+
+
+
+
+
+%% 
+%%   ## In-class exercise
+%%   
+%%     * Fit the following model to the grouse data
+%%       \begin{gather*}
+%%         \mu_i = \beta_0 + \beta_1\mathrm{ELEV}_i + \beta_2\mathrm{UtmZone17S}\\
+%%         y_i \sim \mathrm{Norm}(\mu_i,\sigma^2)
+%%       \end{gather*}
+%%     * Predict and graph the expected value of abundance ($\mu$)
+%%       over a range of elevations for both UTM zones. Use the same
+%%       sequence of elevations as we used in the previous examples.
+%% %    * Simulate a new response variable $y$ using the fitted model
+%%   
+%% 
+
+
+
+
+
+
+# Generalized linear models
+
+
+
+[]
+  ## Outline
+  \Large
+  \tableofcontents[]
+
+
+
+
+
+
+  ## Generalized linear models (GLMs)
+  \large
+  \uncover<1->{Benefits of generalized linear models:}
+  %[]
+    * <2-> The residuals don't have to be normally distributed.
+    * <3-> The response variable can be binary, integer,
+      strictly-positive, etc...
+    * <4-> The variance is not assumed to be constant.
+    * <5-> Useful for manipulative experiments or observational
+      studies, just like linear models.
+  
+  \vfill
+  \uncover<6->{
+  {Examples}
+  
+    * Presence-absence studies
+    * Studies of survival
+    * Seed germination studies
+  
+  }
+
+
+
+
+%% 
+%%   ## Two important GLMs
+%%   {Logistic regression \\}
+%%   
+%%     * The response variable is usually binary and modeled with a
+%%       binomial distribution.
+%%     * The probability of success is usually a logit-linear
+%%       model.
+%%   
+%%   \pause
+%%   \vfill
+%%   {Poisson regression \\}
+%%   
+%%     * The response variable is a non-negative integer modeled with
+%%       a Poisson distribution.
+%%     * The expected count is usually modeled with a log-linear
+%%       model.
+%%   
+%%   \vfill
+%% 
+
+
+
+
+  ## From linear to generalized linear
+  {Linear model}
+  \begin{gather*}
+    \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+    y_i \sim \mathrm{Normal}(\mu_i, \sigma^2)
+  \end{gather*}
+  \pause
+  \vfill
+  {Generalized Linear model}
+  \begin{gather*}
+    g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+    y_i \sim f(\mu_i)
+  \end{gather*}
+  \pause
+  {where} \\
+  $g$ is a link function, such as the log or logit link \\
+  \pause
+  $f$ is a probability distribution such as the binomial or Poisson
+%  that determines (usually) the variance %(there is no $\sigma^2$ parameter!)
+
+
+
+%% 
+%%   ## Alternative representations
+%%   {This:}
+%%   \begin{gather*}
+%%     g(\mu_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+%%     y_i \sim f(\mu_i)
+%%   \end{gather*}
+%%   \pause
+%%   {Is the same as this:}
+%%   \begin{gather*}
+%%     \mu_i = g^{-1}(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip}) \\
+%%     y_i \sim f(\mu_i)
+%%   \end{gather*}
+%%   % \pause
+%%   % {\bf Is the same as this:}
+%%   % \begin{gather*}
+%%   %   g(\mu_i) = {\bf X}{\bm \beta} \\
+%%   %   y_i \sim f(\mu_i)
+%%   % \end{gather*}
+%% 
+
+
+
+  ## Link functions
+%  []
+%    * An inverse link function ($g^{-1}$) transforms values from the $(-\infty,\infty)$
+  scale to the scale of interest, such as $(0,1)$ for probabilities.  \\
+  \pause
+  \vfill
+%    * The link function ($g$) does the reverse. \\
+%    * %  \pause
+%  \vfill
+%  The two link functions that you will see most often are the
+%      ``logit'' and ``log'' links.
+%  
+
+
+
+
+  ## Link functions
+  \centering
+  \begin{tabular}{llcc}
+    \hline
+    Distribution & link name\footnote{\scriptsize These are the most common link functions, but others are available} & link equation             & inverse link equation       \\
+    \hline
+%    Normal       & identity  & $\mu$                     & ${\bf X}{\bm \beta}$  \\
+%                 &           &                           &                             \\
+    %% Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\exp({\bf  X}{\bm \beta})}{1 + \exp({\bf X}{\bm \beta})}$                        \\
+    %%              &           &                           &                             \\
+    %% Poisson      & log       & $\log(\lambda)$               & $\exp({\bf X}{\bm \beta})$  \\
+    Binomial     & logit     & $\log(\frac{p}{1-p})$ & $\frac{\mu}{1 + \exp(\mu)}$                        \\
+                 &           &                           &                             \\
+    Poisson      & log       & $\log(\lambda)$               & $\exp(\mu)$  \\
+    \hline
+  \end{tabular}
+
+\pause
+\vfill
+
+\begin{tabular}{llcc}
+    \hline
+    Distribution & link name & link in {\bf R}  & inv link in {\bf R}       \\
+    \hline
+    Binomial     & logit     & {\tt qlogis} & {\tt plogis}                        \\
+                 &           &                           &                             \\
+    Poisson      & log       & {\tt log}    & {\tt exp}  \\
+    \hline
+  \end{tabular}
+
+
+
+
+
+
+
+%% []
+%%   ## Logit link example
+%%   \vspace{-5pt}
+%%   \scriptsize
+%% ```{r, logit-p,size='tiny'}
+%% beta0 <- 5
+%% beta1 <- -0.08
+%% elevation <- 100
+%% (logit.p <- beta0 + beta1*elevation)
+%% @
+%% \pause
+%% {How do we convert \Sexpr{logit.p} to a probability? \pause Use the
+%%   inverse-link: \\}
+%% ```{r, inv-logit,size='tiny'}
+%% p <- exp(logit.p)/(1+exp(logit.p))
+%% p
+%% @
+%% \pause
+%% {Same as:}
+%% ```{r, plogis,size='tiny'}
+%% plogis(logit.p)
+%% @
+%% \pause
+%% {To go back, use the link function itself:}
+%% ```{r, logit,size='tiny'}
+%% log(p/(1-p))
+%% qlogis(p)
+%% @
+%% 
+
+
+
+[]
+  ## Logit link example
+```{r, nologit,fig.show='hide',fig.width=6,fig.height=4,size='scriptsize'}
+plot(function(x) 5 + -0.08*x, from=0, to=100,
+     xlab="Elevation", ylab="logit(prob of occurrence)")
+@
+%\begin{center}
+\centering
+  ![](figure/nologit-1) \\
+%\end{center}
+
+
+
+
+
+[]
+  ## Logit link example
+```{r, logit2,fig.show='hide',fig.width=6,fig.height=4,size='scriptsize'}
+plot(function(x) plogis(5 + -0.08*x), from=0, to=100,
+     xlab="Elevation", ylab="Probability of occurrence")
+@
+%\begin{center}
+\centering
+  ![](figure/logit2-1) \\
+%\end{center}
+
+
+
+
+
+
+# Logistic regression
+
+
+
+  ## Logistic Regression
+%  %[]
+%    * <1->
+  Logistic regression is a specific type of GLM in which the
+      response variable follows a binomial distribution and the link
+      function is the logit. \\
+  \pause
+  \vfill
+%    * <2->
+  It would be better to call it ``binomial regression'' since other
+      link functions (e.g. the probit) can be used \\
+%    * <3->
+  \pause
+  \vfill
+  Appropriate when the response is binary or a count with an
+  upper limit
+%    * <4->
+  \pause
+  \vfill
+  {Examples:}
+      
+        \normalsize
+        * Presence/absence studies
+        * Survival studies
+        * Disease prevalence studies
+      
+%  
+
+
+
+
+%[]
+%  ## Logistic Regression
+```{r, simFrogs,echo=FALSE,results='hide'}
+set.seed(43340)
+n <- 30
+elev <- round(runif(n, 0, 500))
+habitat <- gl(3, 10, labels=c("Oak", "Maple", "Pine"))
+beta0 <- -1
+beta1 <- 0.01
+mu <- plogis(beta0 + beta1*elev)
+summary(mu)
+y <- rbinom(n, 1, mu)
+frogData <- data.frame(presence=y,
+                       abundance=rpois(n, exp(beta0 + beta1*elev)),
+                       elevation=elev, habitat)
+glm1 <- glm(presence ~ elev+habitat, family=binomial(link="logit"), data=frogData)
+summary(glm1)
+anova(glm1)
+@
+%
+
+
+
+
+  ## Logistic Regression
+    \begin{gather*}
+      \mathrm{logit}(p_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+      y_i \sim \mathrm{Binomial}(N, p_i)
+  \end{gather*}
+  \pause
+  {where: \\}
+  $N$ is the number of ``trials'' (e.g. coin flips) \\
+  $p_i$ is the probability of success for sample unit $i$
+
+
+
+
+[]
+  ## Binomial distribution% - fair coin}
+  \vspace{-0.4cm}
+  \note{Have students flip coins}
+\begin{center}
+```{r, binom1,echo=FALSE,fig.width=7,fig.height=6,out.width="0.9\\textwidth"}
+plot(0:5, dbinom(0:5, 5, 0.5), type="h",
+     xlab="Number of 'successes'", ylab="Probability",
+     lend="butt", lwd=5, col="blue", ylim=c(0,0.6),
+     main="Binomial(N=5, p=0.5)")
+@
+\end{center}
+\vfill
+
+
+
+
+[]
+  ## Binomial distribution% - warped coin}
+  \vspace{-0.4cm}
+\begin{center}
+```{r, binom2,echo=FALSE,fig.width=7,fig.height=6,out.width="0.9\\textwidth"}
+plot(0:5, dbinom(0:5, 5, 0.9), type="h",
+     xlab="Number of 'successes'", ylab="Probability",
+     lend="butt", lwd=5, col="blue", ylim=c(0,0.6),
+     main="Binomial(N=5, p=0.9)")
+@
+\end{center}
+
+
+
+
+
+
+  ## Binomial Distribution
+  {Properties}
+  
+    * The expected value of $y$ is $Np$
+    * The variance is $Np(1-p)$
+  
+  \pause
+  \vfill
+  {Bernoulli distribution}
+  
+    * The Bernoulli distribution is a binomial distribution with a
+      single trial ($N=1$)
+%    * Think of it as a single coin flip
+    * Logistic regression is usually done in this context, such
+      that the response variable is 0/1 or No/Yes or Bad/Good, etc$\dots$
+  
+
+
+
+% # The {\tt glm function}
+
+%\subsubsection{Example}
+
+
+
+
+
+  ## Logistic regression example
+  
+  * How could we fit the following model to the grouse data?
+    \begin{gather*}
+      \mathrm{logit}(p_i) = \beta_0 + \beta_1\mathrm{ELEV}_i \\
+      y_i \sim \mathrm{Bern}(p_i)
+    \end{gather*}
+  * How can we predict and graph occurrence probability ($p$) over a range of
+    elevations?
+  
+
+
+
+
+[]
+## Logistic regression example
+```{r, logitreg,size='scriptsize'}
+logitreg1 <- glm(presence ~ elevation, data=grouse.data,
+                 family=binomial(link="logit"))
+logitreg1
+@   
+
+
+
+
+[]
+  ## Logistic regression example
+  Predict grouse occurrence probability at a sequence of elevations. \\ 
+  \vfill
+  First, create a new \inr{data.frame} with the explanatory values of
+  interest.
+```{r, grouse-lrpred-dat,size='scriptsize'}
+elev.min <- min(grouse.data$elevation)
+elev.max <- max(grouse.data$elevation)
+seq.length <- 20 ## Determines how smooth the function looks in GLMs 
+elev.seq <- seq(from=elev.min, to=elev.max, length.out=seq.length)
+pred.data.lr <- data.frame(elevation=elev.seq)
+@
+\pause
+\vfill
+  Now get the predictions.
+```{r, grouse-lrpred,size='scriptsize'}
+pred.elev <- predict(logitreg1, newdata=pred.data.lr, type="link",
+                     se=TRUE)
+@ 
+
+
+
+
+[]
+  ## Logistic regression example
+  \small
+  Predictions and standard error interval. We add $\pm 1$ SE on
+    the logit scale, and then transform to the probability scale.
+```{r, grouse-lrpred-plot,fig.width=7,fig.height=5,out.width="0.75\\textwidth",fig.align='center',size='tiny'}
+plot(presence ~ elevation, data=grouse.data, ylim=c(0,1))
+lines(elev.seq, plogis(pred.elev$fit), col="blue", lwd=2)
+lines(elev.seq, plogis(pred.elev$fit+pred.elev$se.fit), col="blue", lwd=1, lty=2)
+lines(elev.seq, plogis(pred.elev$fit-pred.elev$se.fit), col="blue", lwd=1, lty=2)
+@ 
+
+
+
+
+
+# Poisson regression
+
+
+
+
+  ## Poisson Regression
+  \Large
+    \begin{gather*}
+      \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} \\
+      y_i \sim \mathrm{Poisson}(\lambda_i)
+  \end{gather*}
+  \pause
+  {where: \\}
+  $\lambda_i$ is the expected value of $y_i$ \\
+
+
+
+
+
+  ## Poisson regression
+  \large
+  {Useful for:}
+  
+    * Count data
+    * Number of events in time intervals
+    * Other types of integer data
+  
+  \pause
+  \vfill
+  {Properties}
+  
+    * The expected value of $y$ ($\lambda$) is equal to the variance
+    * This is an assumption of the Poisson model
+    * Like all assumptions, it can be relaxed if you have enough data
+  
+
+
+
+
+
+[]
+  ## Poisson distribution
+```{r, pois1,fig.show='hide',echo=FALSE}
+x <- 0:25
+plot(x, dpois(x, lambda=1), type="h", lwd=5, col="blue", lend="butt",
+     xlab="Response variable", ylab="Probability",
+     main=expression(paste("Poisson(", lambda, "= 1)", sep="")), cex.lab=1.5 )
+@
+```{r, pois2,fig.show='hide',echo=FALSE}
+plot(x, dpois(x, lambda=5), type="h", lwd=5, col="blue", lend="butt",
+     xlab="Response variable", ylab="Probability",
+     main=expression(paste("Poisson(", lambda, "= 5)", sep="")), cex.lab=1.5 )
+@
+```{r, pois3,fig.show='hide',echo=FALSE}
+plot(x, dpois(x, lambda=10), type="h", lwd=5, col="blue", lend="butt",
+     xlab="Response variable", ylab="Probability",
+     main=expression(paste("Poisson(", lambda, "= 10)", sep="")), cex.lab=1.5 )
+@
+\begin{center}
+  \only<1>{![](figure/pois1-1})
+  \only<2 | handout:0>{![](figure/pois2-1})
+  \only<3 | handout:0>{![](figure/pois3-1})
+\end{center}
+
+
+
+
+
+
+
+
+
+
+[]
+  ## Log link example
+  \footnotesize
+```{r, nolog,fig.show='hide',fig.width=7,fig.height=5,size='footnotesize'}
+plot(function(x) 5 + -0.08*x, from=0, to=100,
+     xlab="Elevation", ylab="log(Expected abundance)")
+@
+\begin{center}
+  ![](figure/nolog-1)
+\end{center}
+
+
+
+
+
+[]
+  ## Log link example
+  \footnotesize
+```{r, log,fig.show='hide',fig.width=7,fig.height=5,size='footnotesize'}
+plot(function(x) exp(5 + -0.08*x), from=0, to=100,
+     xlab="Elevation", ylab="Expected abundance")
+@
+\begin{center}
+  ![](figure/log-1)
+\end{center}
+
+
+
+
+
+
+[]
+  ## Poisson regression simulation
+  \small
+  First, create a covariate:
+```{r, pois-cov}
+n <- 100  
+x <- rnorm(n)
+@   
+  Next, pick values for the coefficients and compute $\lambda_i =
+  E(y_i)$:
+```{r, pois-lam}
+beta0 <- -1
+beta1 <- 1
+lam <- exp(beta0 + beta1*x)
+@   
+Now, simulate the response variable $y$:
+```{r, pois-y}
+y <- rpois(n=n, lambda=lam)
+@ 
+Finally, fit the model:
+```{r, pois-fit,size='small',eval=FALSE}
+(poisreg1 <- glm(y ~ x, family=poisson(link="log")))
+@ 
+
+
+
+
+[]
+  ## Simple (Bayesian) Poisson regression
+  \small
+  The model is in a text file named {\tt glm.jag} \\
+```{r, glm-jag,size="scriptsize",comment="",echo=FALSE,background='beige'}
+  writeLines(readLines("glm.jag"))
+@
+\pause
+\vfill
+Now, put the data in a list and pick some initial values
+```{r, glm-jd}
+jd.glm <- list(x=x, y=y, n=length(y))
+ji.glm <- function() list(beta0=rnorm(1), beta1=rnorm(1))
+jp.glm <- c("beta0", "beta1")
+@ 
+
+
+
+[]
+  ## Simple (Bayesian) Poisson regression
+  Use MCMC to draw posterior samples:
+```{r, glm-jags,size='scriptsize',results='hide',warning=FALSE,cache=FALSE}
+library(jagsUI)  
+js.glm <- jags.basic(data=jd.glm, inits=ji.glm, parameters.to.save=jp.glm,
+                     model.file="glm.jag", n.chains=2, n.iter=1000)
+@ 
+\pause
+::: columns
+  ::: {.column width='50%'}
+    Summarize the posterior samples:
+```{r, glm-jags-sum,size='tiny'}
+round(summary(js.glm)$quant, 2)
+@
+\pause
+  :::
+  ::: {.column width='50%'}
+```{r, glm-jags-viz,echo=FALSE}
+plot(js.glm)
+@     
+  :::
+:::
+
+
+
+
+
+
+
+
+  ## Assignment
+  \small
+  % \scriptsize
+  Create a self-contained R script (or better yet an Rmarkdown file)
+  to do the following:
+  
+    \small
+    % \footnotesize
+    % \scriptsize
+    * Simulate logistic regression data according to
+      $y_i \sim \mathrm{Bern}(p_i)$ and $\mathrm{logit}(p_i) = \beta_0
+      + \beta_1 x_i$ with $\beta_0=-1$ and $\beta_1=1$. Generate the
+      covariate using \inr{x <- rnorm(n=100)}. Note that you will need
+      to use the \inr{rbinom} function to simulate Bernoulli outcomes.
+    * Fit a logistic regression model to the simulated data ($y$
+      and $x$) using the \inr{glm} function. Create a figure showing
+      $x$ and $y$ with the fitted regression line. Use
+      \inr{predict} to get the fitted line.
+    * Fit the logistic regression model in JAGS. Use
+      $\mathrm{Normal}(0, var=10)$ priors for the regression
+      coefficients. %Note that, unlike linear regression, there is no
+      %$\sigma^2$ parameter.
+    * Compare and intepret the estimates of $\beta_0$ and
+      $\beta_1$ from the classical analysis and the Bayesian analysis.
+    % * Fit 4 Poisson regression models to the Canada Warbler
+    %   data. Try to explain as much variation in abundance as you can
+    %   using the two explanatory variables: {\tt elevation} and
+    %   {\tt year}. You can use quadratic effects and
+    %   interactions. Interpret the estimates from the model with the 
+    %   lowest AIC, and create a graph depicting the estimated
+    %   relationships. 
+  
+  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM Monday.
+
+
+
+
+
+
+
+

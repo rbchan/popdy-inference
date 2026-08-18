@@ -377,10 +377,10 @@ Coefficients:
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(js.lm)<span class="sc">$</span>quant, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          2.5%   25%  50%  75% 97.5%
-beta0    -0.61 -0.17 0.05 0.22  0.70
-beta1    -0.34  0.29 0.55 0.83  1.42
-deviance -2.53 -0.94 1.30 4.33 14.24
-sigmaSq   0.03  0.06 0.08 0.14  0.47</code></pre>
+beta0    -0.52 -0.15 0.04 0.21  0.63
+beta1    -0.32  0.27 0.52 0.80  1.32
+deviance -2.58 -0.97 0.95 3.41  9.35
+sigmaSq   0.03  0.05 0.08 0.12  0.26</code></pre>
 </div>
 </div>
 </div>
@@ -730,11 +730,13 @@ F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573</code></pre>
 <li><p>The expected value of <span class="math inline">\(y\)</span> is <span class="math inline">\(Np\)</span></p></li>
 <li><p>The variance is <span class="math inline">\(Np(1-p)\)</span></p></li>
 </ul>
+<div class="fragment">
 <p>Bernoulli distribution</p>
 <ul>
 <li><p>The Bernoulli distribution is a binomial distribution with a single trial (<span class="math inline">\(N=1\)</span>)</p></li>
 <li><p>Logistic regression is usually done in this context, such that the response variable is 0/1 or No/Yes or Bad/Good, etc<span class="math inline">\(\dots\)</span></p></li>
 </ul>
+</div>
 </section>
 <section id="logistic-regression-example" class="slide level2">
 <h2>Logistic regression example</h2>
@@ -751,8 +753,57 @@ F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573</code></pre>
 <li>How can we predict and graph occurrence probability (<span class="math inline">\(p\)</span>) over a range of elevations?</li>
 </ol>
 </section>
-<section id="logistic-regression-example-1" class="slide level2">
+<section id="logistic-regression-example-1" class="slide level2 smaller">
 <h2>Logistic regression example</h2>
+<p>Fit the model</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>logitreg1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(presence <span class="sc">~</span> elevation, <span class="at">data=</span>grouse.data, <span class="at">family=</span><span class="fu">binomial</span>(<span class="at">link=</span><span class="st">"logit"</span>))</span>
+<span id="cb18-2"><a></a>logitreg1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm(formula = presence ~ elevation, family = binomial(link = "logit"), 
+    data = grouse.data)
+
+Coefficients:
+(Intercept)    elevation  
+ -3.0451857   -0.0006727  
+
+Degrees of Freedom: 578 Total (i.e. Null);  577 Residual
+Null Deviance:      153.5 
+Residual Deviance: 153.2    AIC: 157.2</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>Predict</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>elev.min <span class="ot">&lt;-</span> <span class="fu">min</span>(grouse.data<span class="sc">$</span>elevation)</span>
+<span id="cb20-2"><a></a>elev.max <span class="ot">&lt;-</span> <span class="fu">max</span>(grouse.data<span class="sc">$</span>elevation)</span>
+<span id="cb20-3"><a></a>seq.length <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="do">## Determines how smooth the function looks in GLMs </span></span>
+<span id="cb20-4"><a></a>elev.seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from=</span>elev.min, <span class="at">to=</span>elev.max, <span class="at">length.out=</span>seq.length)</span>
+<span id="cb20-5"><a></a>pred.data.lr <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">elevation=</span>elev.seq)</span>
+<span id="cb20-6"><a></a>pred.elev <span class="ot">&lt;-</span> <span class="fu">predict</span>(logitreg1, <span class="at">newdata=</span>pred.data.lr, <span class="at">type=</span><span class="st">"link"</span>, <span class="at">se=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="logistic-regression-example-2" class="slide level2 smaller">
+<h2>Logistic regression example</h2>
+<p>Predictions and standard errors. Notice that we predict on the link scale, and then back-transform after adding the SE.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">plot</span>(presence <span class="sc">~</span> elevation, <span class="at">data=</span>grouse.data, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">xlab=</span><span class="st">"Elevation"</span>, <span class="at">ylab=</span><span class="st">"Presence"</span>, <span class="at">cex.lab=</span><span class="fl">1.3</span>)</span>
+<span id="cb21-2"><a></a><span class="fu">lines</span>(elev.seq, <span class="fu">plogis</span>(pred.elev<span class="sc">$</span>fit), <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb21-3"><a></a><span class="fu">lines</span>(elev.seq, <span class="fu">plogis</span>(pred.elev<span class="sc">$</span>fit<span class="sc">+</span>pred.elev<span class="sc">$</span>se.fit), <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb21-4"><a></a><span class="fu">lines</span>(elev.seq, <span class="fu">plogis</span>(pred.elev<span class="sc">$</span>fit<span class="sc">-</span>pred.elev<span class="sc">$</span>se.fit), <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">1</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell fragment" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" style="width:4.5in"></p>
+</figure>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="poisson-regression" class="title-slide slide level1 center">
@@ -769,7 +820,7 @@ F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573</code></pre>
 <span class="math inline">\(\lambda_i\)</span> is the expected value of <span class="math inline">\(y_i\)</span><br>
 </p>
 </section>
-<section id="poisson-regression-2" class="slide level2">
+<section id="poisson-regression-2" class="slide level2" style="font-size: 80%;">
 <h2>Poisson regression</h2>
 <p>Useful for:</p>
 <ul>
@@ -777,44 +828,171 @@ F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573</code></pre>
 <li><p>Number of events in time intervals</p></li>
 <li><p>Other types of integer data</p></li>
 </ul>
+<div class="fragment">
+<p><br></p>
 <p>Properties</p>
 <ul>
 <li><p>The expected value of <span class="math inline">\(y\)</span> (<span class="math inline">\(\lambda\)</span>) is equal to the variance</p></li>
 <li><p>This is an assumption of the Poisson model</p></li>
 <li><p>Like all assumptions, it can be relaxed if you have enough data</p></li>
 </ul>
+</div>
 </section>
 <section id="poisson-distribution" class="slide level2">
 <h2>Poisson distribution</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/pois-1.png" class="quarto-figure quarto-figure-center" style="width:5.5in"></p>
+</figure>
+</div>
+</section>
+<section id="poisson-distribution-1" class="slide level2">
+<h2>Poisson distribution</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/pois-2.png" class="quarto-figure quarto-figure-center" style="width:5.5in"></p>
+</figure>
+</div>
+</section>
+<section id="poisson-distribution-2" class="slide level2">
+<h2>Poisson distribution</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/pois-3.png" class="quarto-figure quarto-figure-center" style="width:5.5in"></p>
+</figure>
+</div>
 </section>
 <section id="log-link-example" class="slide level2">
 <h2>Log link example</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="dv">5</span> <span class="sc">+</span> <span class="sc">-</span><span class="fl">0.08</span><span class="sc">*</span>x, <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>,</span>
+<span id="cb22-2"><a></a>     <span class="at">xlab=</span><span class="st">"Elevation"</span>, <span class="at">ylab=</span><span class="st">"log(Expected abundance)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><embed data-src="figure/nolog-1.pdf" style="width:80.0%"></p>
-<figcaption>image</figcaption>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/nolog-link-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
 </figure>
+</div>
+</div>
 </div>
 </section>
 <section id="log-link-example-1" class="slide level2">
 <h2>Log link example</h2>
-<p><embed data-src="figure/log-1.pdf" style="width:80.0%"></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="dv">5</span> <span class="sc">+</span> <span class="sc">-</span><span class="fl">0.08</span><span class="sc">*</span>x), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>,</span>
+<span id="cb23-2"><a></a>     <span class="at">xlab=</span><span class="st">"Elevation"</span>, <span class="at">ylab=</span><span class="st">"Expected abundance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/log-link-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="poisson-regression-simulation" class="slide level2">
+<section id="poisson-regression-simulation" class="slide level2" style="font-size: 70%;">
 <h2>Poisson regression simulation</h2>
 <p>First, create a covariate:</p>
-<p>Next, pick values for the coefficients and compute <span class="math inline">\(\lambda_i =
-  E(y_i)\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>n <span class="ot">&lt;-</span> <span class="dv">100</span>  </span>
+<span id="cb24-2"><a></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<p>Next, pick values for the coefficients and compute <span class="math inline">\(\lambda_i = E(y_i)\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>beta0 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb25-2"><a></a>beta1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb25-3"><a></a>lam <span class="ot">&lt;-</span> <span class="fu">exp</span>(beta0 <span class="sc">+</span> beta1<span class="sc">*</span>x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div class="fragment">
 <p>Now, simulate the response variable <span class="math inline">\(y\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>y <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n=</span>n, <span class="at">lambda=</span>lam)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div class="fragment">
 <p>Finally, fit the model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>(poisreg1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x, <span class="at">family=</span><span class="fu">poisson</span>(<span class="at">link=</span><span class="st">"log"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:  glm(formula = y ~ x, family = poisson(link = "log"))
+
+Coefficients:
+(Intercept)            x  
+     -1.080        1.172  
+
+Degrees of Freedom: 99 Total (i.e. Null);  98 Residual
+Null Deviance:      307.4 
+Residual Deviance: 87.7     AIC: 179.6</code></pre>
+</div>
+</div>
+</div>
 </section>
-<section id="simple-bayesian-poisson-regression" class="slide level2">
-<h2>Simple (Bayesian) Poisson regression</h2>
-<p>The model is in a text file named <code>glm.jag</code><br>
-</p>
-<p>Now, put the data in a list and pick some initial values</p>
-<h3 id="simple-bayesian-poisson-regression-1">Simple (Bayesian) Poisson regression</h3>
+<section id="bayesian-poisson-regression" class="slide level2" style="font-size: 80%;">
+<h2>Bayesian Poisson regression</h2>
+<p>The model is in a text file named <code>glm.jag</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>model {</span>
+<span id="cb29-2"><a></a></span>
+<span id="cb29-3"><a></a>    <span class="co"># Priors</span></span>
+<span id="cb29-4"><a></a>    beta0 <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="fl">0.1</span>) <span class="do">## Normal prior with mean=0, variance=10</span></span>
+<span id="cb29-5"><a></a>    beta1 <span class="sc">~</span> <span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="fl">0.1</span>)</span>
+<span id="cb29-6"><a></a></span>
+<span id="cb29-7"><a></a>    <span class="do">## Model for the data</span></span>
+<span id="cb29-8"><a></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb29-9"><a></a>      lambda[i] <span class="ot">&lt;-</span> <span class="fu">exp</span>(beta0 <span class="sc">+</span> beta1<span class="sc">*</span>x[i])</span>
+<span id="cb29-10"><a></a>      y[i] <span class="sc">~</span> <span class="fu">dpois</span>(lambda[i])</span>
+<span id="cb29-11"><a></a>    }</span>
+<span id="cb29-12"><a></a></span>
+<span id="cb29-13"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>Put the data in a list and pick some initial values</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>jd.glm <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">n=</span><span class="fu">length</span>(y))</span>
+<span id="cb30-2"><a></a>ji.glm <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">beta1=</span><span class="fu">rnorm</span>(<span class="dv">1</span>))</span>
+<span id="cb30-3"><a></a>jp.glm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="bayesian-poisson-regression-1" class="slide level2">
+<h2>Bayesian Poisson regression</h2>
 <p>Use MCMC to draw posterior samples:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">library</span>(jagsUI)  </span>
+<span id="cb31-2"><a></a>js.glm <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd.glm, <span class="at">inits=</span>ji.glm, <span class="at">parameters.to.save=</span>jp.glm,</span>
+<span id="cb31-3"><a></a>                     <span class="at">model.file=</span><span class="st">"glm.jag"</span>, <span class="at">n.chains=</span><span class="dv">2</span>, <span class="at">n.iter=</span><span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Summarize the posterior samples:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(js.glm)<span class="sc">$</span>quant, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           2.5%    25%    50%    75%  97.5%
+beta0     -1.51  -1.22  -1.04  -0.91  -0.58
+beta1      0.96   1.10   1.16   1.23   1.33
+deviance 175.66 176.38 177.34 178.88 187.97</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="bayesian-poisson-regression-inference" class="slide level2" style="font-size: 90%;">
+<h2>Bayesian Poisson regression – inference</h2>
+<p>View the posterior samples</p>
+<div class="cell" data-layout-align="center" data-fig-heigth="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">plot</span>(js.glm[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/glm-jags-plot-1.png" class="quarto-figure quarto-figure-center" style="width:7in"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="assignment" class="slide level2 smaller">
 <h2>Assignment</h2>
@@ -826,7 +1004,7 @@ F-statistic: 0.8488 on 1 and 577 DF,  p-value: 0.3573</code></pre>
 <li><p>Fit the logistic regression model in JAGS. Use <span class="math inline">\(\mathrm{Normal}(0, var=10)\)</span> priors for the regression coefficients.</p></li>
 <li><p>Compare and intepret the estimates of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> from the classical analysis and the Bayesian analysis.</p></li>
 </ol>
-<p>Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00 PM Tuesday.</p>
+<p>Upload your <code>.R</code> or <code>.Rmd</code> or <code>.qmd</code> file to ELC by 5:00 PM Tuesday.</p>
 
 
 </section></section>
