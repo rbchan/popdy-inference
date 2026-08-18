@@ -13,13 +13,19 @@ lang: en
 # Overview section {visibility="hidden"}
 
 
-## <!-- {content-align="center" style="font-size: 110%;"} -->
+## {.center content-align="center"}
 
 <center>
 
-**Inference for Models of Fish and\n Wildlife Population Dynamics**
+::: {style="font-size: 140%;"}
 
-::: {style="font-size: 90%;"}
+**Inference for Models of Fish and Wildlife Population Dynamics**
+
+:::
+
+<br>
+
+::: {style="font-size: 100%;"}
 
 WILD(FISH) 8390
 
@@ -31,38 +37,49 @@ Richard Chandler
 
 
 
-## Overview
+
+## Overview {style="font-size: 100%;"}
 
 We need models to:
 
+::: {.columns}
+::: {.column width="40%"}
 - Evaluate hypotheses
 - Make predictions
+:::
+::: {.column width="60%"}
 - Forecast future outcomes
 - Inform management decisions
+:::
+:::
 
+::: {.fragment}
 Until recently, population models were mainly used in theoretical
 settings.
+:::
 
-- New statistical tools let us confront population models with data
-- Hierarchical models make it possible to learn about `hidden` population dynamics by modeling population processes observed with error.
-
-
+<!-- Hierarchical models make it possible to learn about "hidden" population dynamics by modeling population processes observed with error. -->
 
 
 
-## Classical models of population dynamics
 
-Classical models of population dynamics provide a critical reference
-for developing custom models for specific populations and applications.
 
+## Classical models of population dynamics {style="font-size: 90%;"}
+
+
+<!-- Classical models of population dynamics provide a critical reference -->
+<!-- for developing custom models for specific populations and applications. -->
+
+::: {.fragment}
 A working knowledge of the following models is important:
 
 - Exponential growth
 - Logistic growth
 - Age/stage-structured matrix models
 - Metapopulation models
-  
-Classical statistical models are equally important.
+:::
+
+<!-- Classical statistical models are equally important. -->
 
 
 ## Classical statistical models
@@ -73,35 +90,36 @@ You should be familiar with:
 - Generalized linear models (eg, logistic regression)
 - Generalized linear mixed effects models
   
+
+<br>
+
 <center>
 
-::: {.fragment}
-
-How do we bridge the gap between theoretical models and statistical 
-models? 
+::: {.fragment style="font-size: 130%;"}
+How do we bridge the gap between theoretical models and statistical models? 
 :::
 
 </center>
 
 # Examples {visibility="hidden"}
 
-## Example I -- Chiricahua Leopard Frogs {.smaller}
+## Example I -- Chiricahua Leopard Frogs
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="60%"}
 
-Sites are discrete habitat patches
+Sites are discrete habitat patches.
 
-Surrounding landscape is suitable for movement but not reproduction
+Surrounding landscape is suitable for movement but not reproduction.
 
-Data are binary detection data
+Data are binary detection data.
 
-![](figs/lich.png)
+![](figs/lich.png){width="65%" fig-align="center"}
 
 :::
-::: {.column width="50%"}
+::: {.column width="40%"}
 
-![](figs/lich-dist.jpg)
+![](figs/lich-dist.jpg){width="100%"}
 
 :::
 :::
@@ -113,19 +131,23 @@ Data are binary detection data
 
 ::: {.columns}
 
-::: {.column width="60%"}
+::: {.column width="70%"}
 
 Large body of theory.
 
+<br>
+
 One branch of metapopulation theory focuses on distance-dependent
 colonization and extinction processes.
+
+<br>
 
 If we know the patch coordinates and we have data from multiple sites
 and multiple time periods, we can fit the models. 
 
 :::
 
-::: {.column width="40%"}
+::: {.column width="30%"}
 ![](figs/HanskiBookCover.png)
 :::
 
@@ -137,44 +159,45 @@ and multiple time periods, we can fit the models.
 ![](figs/lich-recovery-plan.png)
 
 
-## Extinction risk
+## Avoiding extinction
+
+::: {style="font-size: 90%;"}
 
 Management options 
 
 - Control predators
 - Increase hydroperiod in existing wetlands
 - Create new wetlands\dots
-   
-Metapopulation models fitted to detected data predicted extinction
-risk to be 4% after 50 years. Restoring just 1 pond, reduced the risk
-to 2.5%.
 
-![](figs/lich-forecasts.PNG){width="40%" fig-align="center"}
+::: {.fragment}
+Restoring just 1 pond, reduced the risk from 4% to 2.5%.
 
+![](figs/lich-forecasts.PNG){width="50%" fig-align="center"}
+:::
 
-
+:::
 
 ## Colonization Probability Maps
 
-![](figs/colMap1-9nohill.png){fig-align="center" width="70%"}
+![](figs/colMap-animation2.gif){width="50%" fig-align="center"}
 
 
 
 
-## Example II -- Central Georgia Black Bears
+## Example II -- Central Georgia Black Bears {style="font-size: 90%;"}
 
 
 ::: {.columns}
 
-::: {.column width="60%"}
+::: {.column width="60%" .r-stretch-text}
 
-Genetically isolated population near Macon
+Genetically isolated population near Macon.
 
-Impacts of hunting had not been evaluated
+Impacts of hunting had not been evaluated.
 
-Studied using noninvasive genetic mark-recapture
+Studied using noninvasive genetic mark-recapture.
 
-Hair snares and genotyping yielded individual-level encounter histories
+Hair snares and genotyping yielded individual-level encounter histories.
 :::
 
 ::: {.column width="40%"}
@@ -189,17 +212,21 @@ Hair snares and genotyping yielded individual-level encounter histories
 
 ::: {.columns}
 
-::: {.column width="70%"}
+::: {.column width="60%"}
 
 Theory goes back about a century.
 
+<br>
+
 Much of it focuses on the importance of density dependence.
+
+<br>
 
 Think back to "maximum sustainable yield".
 
 :::
 
-::: {.column width="30%"}
+::: {.column width="40%"}
 ![](figs/GetzHaightBookCover.png)
 :::
 
@@ -209,9 +236,9 @@ Think back to "maximum sustainable yield".
 
 
 
-## Central Georgia Black Bear Abundance
+## Central Georgia Black Bear Abundance  {style="font-size: 90%;"}
 
-Female-based population model revealed population growth.
+<!-- Female-based population model revealed population growth. -->
 
 <!-- ^[Hooker et al. (2020, Journal of Wildlife Management)] -->
 
@@ -221,25 +248,34 @@ Female-based population model revealed population growth.
 
 
 
-## Central Georgia Black Bear Recruitment
+## Central Georgia Black Bear Recruitment {style="font-size: 90%;"}
 
 
-Population regulated by density-dependent recruitment 
+<!-- Population regulated by density-dependent recruitment  -->
 
 
 ![](figs/fig-3_dd-recruitment.png){fig-align="center" width="50%"}
 
 
 
-## Central Georgia Black Bear Extinction Risk
+## Central Georgia Black Bear Extinction Risk {style="font-size: 90%;"}
 
-Extinction risk low unless harvest increases by 10 females/year
+<!-- Extinction risk low unless harvest increases by 10 females/year -->
 
 ![](figs/fig-6_forecasts_h0-h20.png){fig-align="center" width="40%"}
+ 
+<!-- <div style="width: 300px; height: 200px; overflow: hidden;"> -->
+<!--   <img src="figs/fig-6_forecasts_h0-h20.png" style="margin-top: -50px; margin-left: -20px;"> -->
+<!-- </div> -->
 
 
 
-# Syllabus {visibility="hidden"}
+# Syllabus 
+
+
+<div class="iframe-container">
+<iframe src="../../IPD-syllabus.pdf" width="50%" height="550px" style="display: block; margin: 0 auto;"></iframe> 
+</div>
 
 
 

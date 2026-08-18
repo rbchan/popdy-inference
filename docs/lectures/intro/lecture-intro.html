@@ -130,34 +130,44 @@
 
 <section>
 
-<section id="section" class="slide level2">
-<h2><!-- {content-align="center" style="font-size: 110%;"} --></h2>
+<section id="section" class="slide level2 center" data-content-align="center">
+<h2></h2>
 <center>
-<p><strong>Inference for Models of Fish andWildlife Population Dynamics</strong></p>
-<div style="font-size: 90%;">
+<div style="font-size: 140%;">
+<p><strong>Inference for Models of Fish and Wildlife Population Dynamics</strong></p>
+</div>
+<p><br></p>
+<div style="font-size: 100%;">
 <p>WILD(FISH) 8390</p>
 <p>Richard Chandler</p>
 </div>
 </center>
 </section>
-<section id="overview" class="slide level2">
+<section id="overview" class="slide level2" style="font-size: 100%;">
 <h2>Overview</h2>
 <p>We need models to:</p>
+<div class="columns">
+<div class="column" style="width:40%;">
 <ul>
 <li>Evaluate hypotheses</li>
 <li>Make predictions</li>
+</ul>
+</div><div class="column" style="width:60%;">
+<ul>
 <li>Forecast future outcomes</li>
 <li>Inform management decisions</li>
 </ul>
+</div></div>
+<div class="fragment">
 <p>Until recently, population models were mainly used in theoretical settings.</p>
-<ul>
-<li>New statistical tools let us confront population models with data</li>
-<li>Hierarchical models make it possible to learn about <code>hidden</code> population dynamics by modeling population processes observed with error.</li>
-</ul>
+</div>
+<!-- Hierarchical models make it possible to learn about "hidden" population dynamics by modeling population processes observed with error. -->
 </section>
-<section id="classical-models-of-population-dynamics" class="slide level2">
+<section id="classical-models-of-population-dynamics" class="slide level2" style="font-size: 90%;">
 <h2>Classical models of population dynamics</h2>
-<p>Classical models of population dynamics provide a critical reference for developing custom models for specific populations and applications.</p>
+<!-- Classical models of population dynamics provide a critical reference -->
+<!-- for developing custom models for specific populations and applications. -->
+<div class="fragment">
 <p>A working knowledge of the following models is important:</p>
 <ul>
 <li>Exponential growth</li>
@@ -165,7 +175,8 @@
 <li>Age/stage-structured matrix models</li>
 <li>Metapopulation models</li>
 </ul>
-<p>Classical statistical models are equally important.</p>
+</div>
+<!-- Classical statistical models are equally important. -->
 </section>
 <section id="classical-statistical-models" class="slide level2">
 <h2>Classical statistical models</h2>
@@ -175,34 +186,41 @@
 <li>Generalized linear models (eg, logistic regression)</li>
 <li>Generalized linear mixed effects models</li>
 </ul>
+<p><br></p>
 <center>
-<div class="fragment">
+<div class="fragment" style="font-size: 130%;">
 <p>How do we bridge the gap between theoretical models and statistical models?</p>
 </div>
 </center>
 </section></section>
 <section>
 
-<section id="example-i-chiricahua-leopard-frogs" class="slide level2 smaller">
+<section id="example-i-chiricahua-leopard-frogs" class="slide level2">
 <h2>Example I – Chiricahua Leopard Frogs</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
-<p>Sites are discrete habitat patches</p>
-<p>Surrounding landscape is suitable for movement but not reproduction</p>
-<p>Data are binary detection data</p>
-<p><img data-src="figs/lich.png"></p>
-</div><div class="column" style="width:50%;">
-<p><img data-src="figs/lich-dist.jpg"></p>
+<div class="column" style="width:60%;">
+<p>Sites are discrete habitat patches.</p>
+<p>Surrounding landscape is suitable for movement but not reproduction.</p>
+<p>Data are binary detection data.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/lich.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<p><img data-src="figs/lich-dist.jpg" style="width:100.0%"></p>
 </div></div>
 </section>
 <section id="metapopulation-ecology" class="slide level2">
 <h2>Metapopulation ecology</h2>
 <div class="columns">
-<div class="column" style="width:60%;">
+<div class="column" style="width:70%;">
 <p>Large body of theory.</p>
+<p><br></p>
 <p>One branch of metapopulation theory focuses on distance-dependent colonization and extinction processes.</p>
+<p><br></p>
 <p>If we know the patch coordinates and we have data from multiple sites and multiple time periods, we can fit the models.</p>
-</div><div class="column" style="width:40%;">
+</div><div class="column" style="width:30%;">
 <p><img data-src="figs/HanskiBookCover.png"></p>
 </div></div>
 </section>
@@ -210,29 +228,37 @@
 <h2>Recovery Plan</h2>
 
 <img data-src="figs/lich-recovery-plan.png" class="r-stretch"></section>
-<section id="extinction-risk" class="slide level2">
-<h2>Extinction risk</h2>
+<section id="avoiding-extinction" class="slide level2">
+<h2>Avoiding extinction</h2>
+<div style="font-size: 90%;">
 <p>Management options</p>
 <ul>
 <li>Control predators</li>
 <li>Increase hydroperiod in existing wetlands</li>
 <li>Create new wetlands</li>
 </ul>
-<p>Metapopulation models fitted to detected data predicted extinction risk to be 4% after 50 years. Restoring just 1 pond, reduced the risk to 2.5%.</p>
-
-<img data-src="figs/lich-forecasts.PNG" class="quarto-figure quarto-figure-center r-stretch" style="width:40.0%"></section>
+<div class="fragment">
+<p>Restoring just 1 pond, reduced the risk from 4% to 2.5%.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/lich-forecasts.PNG" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="colonization-probability-maps" class="slide level2">
 <h2>Colonization Probability Maps</h2>
 
-<img data-src="figs/colMap1-9nohill.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
-<section id="example-ii-central-georgia-black-bears" class="slide level2">
+<img data-src="figs/colMap-animation2.gif" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<section id="example-ii-central-georgia-black-bears" class="slide level2" style="font-size: 90%;">
 <h2>Example II – Central Georgia Black Bears</h2>
 <div class="columns">
-<div class="column" style="width:60%;">
-<p>Genetically isolated population near Macon</p>
-<p>Impacts of hunting had not been evaluated</p>
-<p>Studied using noninvasive genetic mark-recapture</p>
-<p>Hair snares and genotyping yielded individual-level encounter histories</p>
+<div class="column r-stretch-text" style="width:60%;">
+<p>Genetically isolated population near Macon.</p>
+<p>Impacts of hunting had not been evaluated.</p>
+<p>Studied using noninvasive genetic mark-recapture.</p>
+<p>Hair snares and genotyping yielded individual-level encounter histories.</p>
 </div><div class="column" style="width:40%;">
 <p><img data-src="figs/GA_bear_map.png"></p>
 </div></div>
@@ -240,32 +266,43 @@
 <section id="harvest-theory" class="slide level2">
 <h2>Harvest theory</h2>
 <div class="columns">
-<div class="column" style="width:70%;">
+<div class="column" style="width:60%;">
 <p>Theory goes back about a century.</p>
+<p><br></p>
 <p>Much of it focuses on the importance of density dependence.</p>
+<p><br></p>
 <p>Think back to “maximum sustainable yield”.</p>
-</div><div class="column" style="width:30%;">
+</div><div class="column" style="width:40%;">
 <p><img data-src="figs/GetzHaightBookCover.png"></p>
 </div></div>
 </section>
-<section id="central-georgia-black-bear-abundance" class="slide level2">
+<section id="central-georgia-black-bear-abundance" class="slide level2" style="font-size: 90%;">
 <h2>Central Georgia Black Bear Abundance</h2>
-<p>Female-based population model revealed population growth.</p>
+<!-- Female-based population model revealed population growth. -->
 <!-- ^[Hooker et al. (2020, Journal of Wildlife Management)] -->
 
 <img data-src="figs/fig-5_abundance.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section id="central-georgia-black-bear-recruitment" class="slide level2">
+<section id="central-georgia-black-bear-recruitment" class="slide level2" style="font-size: 90%;">
 <h2>Central Georgia Black Bear Recruitment</h2>
-<p>Population regulated by density-dependent recruitment</p>
+<!-- Population regulated by density-dependent recruitment  -->
 
 <img data-src="figs/fig-3_dd-recruitment.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
-<section id="central-georgia-black-bear-extinction-risk" class="slide level2">
+<section id="central-georgia-black-bear-extinction-risk" class="slide level2" style="font-size: 90%;">
 <h2>Central Georgia Black Bear Extinction Risk</h2>
-<p>Extinction risk low unless harvest increases by 10 females/year</p>
+<!-- Extinction risk low unless harvest increases by 10 females/year -->
 
+<!-- <div style="width: 300px; height: 200px; overflow: hidden;"> -->
+<!--   <img src="figs/fig-6_forecasts_h0-h20.png" style="margin-top: -50px; margin-left: -20px;"> -->
+<!-- </div> -->
 <img data-src="figs/fig-6_forecasts_h0-h20.png" class="quarto-figure quarto-figure-center r-stretch" style="width:40.0%"></section></section>
 <section>
-
+<section id="syllabus" class="title-slide slide level1 center">
+<h1>Syllabus</h1>
+<div class="iframe-container">
+<iframe src="../../IPD-syllabus.pdf" width="50%" height="550px" style="display: block; margin: 0 auto;">
+</iframe>
+</div>
+</section>
 <section id="books" class="slide level2">
 <h2>Books</h2>
 <div class="columns">
