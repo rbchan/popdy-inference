@@ -130,32 +130,29 @@
 
 <section>
 
-<section id="section" class="slide level2" data-content-align="center" style="font-size: 110%;">
-<h2></h2>
+<section id="section" class="slide level2">
+<h2><!-- {content-align="center" style="font-size: 110%;"} --></h2>
 <center>
-<p><strong>Inference for Models of Fish and Wildlife Population Dynamics</strong></p>
+<p><strong>Inference for Models of Fish andWildlife Population Dynamics</strong></p>
 <div style="font-size: 90%;">
 <p>WILD(FISH) 8390</p>
 <p>Richard Chandler</p>
 </div>
 </center>
 </section>
-<section id="overview-1" class="slide level2">
+<section id="overview" class="slide level2">
 <h2>Overview</h2>
-<p>Themes</p>
-<ul>
-<li>We need models to:
+<p>We need models to:</p>
 <ul>
 <li>Evaluate hypotheses</li>
 <li>Make predictions</li>
 <li>Forecast future outcomes</li>
 <li>Inform management decisions</li>
-</ul></li>
-<li>Until recently, population models were mainly used in theoretical settings
+</ul>
+<p>Until recently, population models were mainly used in theoretical settings.</p>
 <ul>
 <li>New statistical tools let us confront population models with data</li>
-<li>Hierarchical models make it possible to learn about “hidden” population dynamics by modeling population processes observed with error.</li>
-</ul></li>
+<li>Hierarchical models make it possible to learn about <code>hidden</code> population dynamics by modeling population processes observed with error.</li>
 </ul>
 </section>
 <section id="classical-models-of-population-dynamics" class="slide level2">
@@ -174,19 +171,19 @@
 <h2>Classical statistical models</h2>
 <p>You should be familiar with:</p>
 <ul>
-<li><p>Linear models (including the various -NOVAs)</p></li>
-<li><p>Generalized linear models (eg, logistic regression)</p></li>
-<li><p>Generalized linear mixed effects models</p></li>
+<li>Linear models (including the various ANOVAs)</li>
+<li>Generalized linear models (eg, logistic regression)</li>
+<li>Generalized linear mixed effects models</li>
 </ul>
-<div class="fragment">
 <center>
-How do we bridge the gap between theoretical models and statistical models?
-</center>
+<div class="fragment">
+<p>How do we bridge the gap between theoretical models and statistical models?</p>
 </div>
+</center>
 </section></section>
 <section>
 
-<section id="example-i-chiricahua-leopard-frogs" class="slide level2">
+<section id="example-i-chiricahua-leopard-frogs" class="slide level2 smaller">
 <h2>Example I – Chiricahua Leopard Frogs</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -223,7 +220,7 @@ How do we bridge the gap between theoretical models and statistical models?
 </ul>
 <p>Metapopulation models fitted to detected data predicted extinction risk to be 4% after 50 years. Restoring just 1 pond, reduced the risk to 2.5%.</p>
 
-<img data-src="figs/lich-forecasts.PNG" class="r-stretch"></section>
+<img data-src="figs/lich-forecasts.PNG" class="quarto-figure quarto-figure-center r-stretch" style="width:40.0%"></section>
 <section id="colonization-probability-maps" class="slide level2">
 <h2>Colonization Probability Maps</h2>
 
@@ -231,41 +228,40 @@ How do we bridge the gap between theoretical models and statistical models?
 <section id="example-ii-central-georgia-black-bears" class="slide level2">
 <h2>Example II – Central Georgia Black Bears</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:60%;">
 <p>Genetically isolated population near Macon</p>
 <p>Impacts of hunting had not been evaluated</p>
 <p>Studied using noninvasive genetic mark-recapture</p>
 <p>Hair snares and genotyping yielded individual-level encounter histories</p>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:40%;">
 <p><img data-src="figs/GA_bear_map.png"></p>
 </div></div>
 </section>
 <section id="harvest-theory" class="slide level2">
 <h2>Harvest theory</h2>
 <div class="columns">
-<div class="column" style="width:60%;">
+<div class="column" style="width:70%;">
 <p>Theory goes back about a century.</p>
 <p>Much of it focuses on the importance of density dependence.</p>
-<p>Think back to ``maximum sustainable yield’’.</p>
-</div><div class="column" style="width:40%;">
+<p>Think back to “maximum sustainable yield”.</p>
+</div><div class="column" style="width:30%;">
 <p><img data-src="figs/GetzHaightBookCover.png"></p>
 </div></div>
 </section>
 <section id="central-georgia-black-bear-abundance" class="slide level2">
 <h2>Central Georgia Black Bear Abundance</h2>
-<p>Female-based population model revealed population growth.<sup>1</sup></p>
-<p><img data-src="figs/fig-5_abundance.png"></p>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>Hooker et al.&nbsp;(2020, Journal of Wildlife Management)</p></li></ol></aside></section>
+<p>Female-based population model revealed population growth.</p>
+<!-- ^[Hooker et al. (2020, Journal of Wildlife Management)] -->
+
+<img data-src="figs/fig-5_abundance.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="central-georgia-black-bear-recruitment" class="slide level2">
 <h2>Central Georgia Black Bear Recruitment</h2>
 <p>Population regulated by density-dependent recruitment</p>
-<center>
-<img data-src="figs/fig-3_dd-recruitment.png">
-</center>
-</section>
+
+<img data-src="figs/fig-3_dd-recruitment.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
 <section id="central-georgia-black-bear-extinction-risk" class="slide level2">
 <h2>Central Georgia Black Bear Extinction Risk</h2>
-<p>Extinction risk low unless harvest increases by &gt;10 females/year</p>
+<p>Extinction risk low unless harvest increases by 10 females/year</p>
 
 <img data-src="figs/fig-6_forecasts_h0-h20.png" class="quarto-figure quarto-figure-center r-stretch" style="width:40.0%"></section></section>
 <section>
@@ -275,27 +271,28 @@ How do we bridge the gap between theoretical models and statistical models?
 <div class="columns">
 <div class="column" style="width:33%;">
 <p>AHM vol I</p>
-<p><img data-src="figs/KeryRoyleBookCover.jpg"></p>
+<p><img data-src="figs/KeryRoyleBookCover.jpg" height="350"></p>
 </div><div class="column" style="width:33%;">
 <p>AHM vol II</p>
-<p><img data-src="figs/KeryRoyleBookCoverV2.jpg"></p>
+<p><img data-src="figs/KeryRoyleBookCoverV2.jpg" height="350"></p>
 </div><div class="column" style="width:33%;">
-<p>SCR <img data-src="figs/SCRcover.jpeg"></p>
+<p>SCR</p>
+<p><img data-src="figs/SCRcover.jpeg" height="350"></p>
 </div></div>
 </section>
 <section id="recommended-reading" class="slide level2">
 <h2>Recommended reading</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p><img data-src="figs/RoyleDorazioBookCover.png"></p>
+<p><img data-src="figs/RoyleDorazioBookCover.png" height="500"></p>
 </div><div class="column" style="width:50%;">
-<p><img data-src="figs/McElreathBookCover.png"></p>
+<p><img data-src="figs/McElreathBookCover.png" height="500"></p>
 </div></div>
 </section></section>
 <section>
 
-<section id="assignment-1" class="slide level2">
-<h2>Assignment</h2>
+<section id="for-thursday" class="slide level2">
+<h2>For Thursday</h2>
 <p>Read: Applied Hierarchical Modeling (AHM vol I) chapter 1</p>
 <p><br></p>
 <p>Install: <a href="https://sourceforge.net/projects/mcmc-jags/files/">JAGS</a>, <a href="https://www.r-project.org/">R</a>, and the following packages:</p>
@@ -307,7 +304,6 @@ How do we bridge the gap between theoretical models and statistical models?
 
 
 </section></section>
-
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

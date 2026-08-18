@@ -10,14 +10,14 @@ lang: en
 ---
 
 
-# Overview {visibility="hidden"}
+# Overview section {visibility="hidden"}
 
 
-## {content-align="center" style="font-size: 110%;"}
+## <!-- {content-align="center" style="font-size: 110%;"} -->
 
 <center>
 
-**Inference for Models of Fish and Wildlife Population Dynamics**
+**Inference for Models of Fish and\n Wildlife Population Dynamics**
 
 ::: {style="font-size: 90%;"}
 
@@ -33,24 +33,27 @@ Richard Chandler
 
 ## Overview
 
-Themes
+We need models to:
 
-- We need models to:
-  * Evaluate hypotheses
-  * Make predictions
-  * Forecast future outcomes
-  * Inform management decisions
+- Evaluate hypotheses
+- Make predictions
+- Forecast future outcomes
+- Inform management decisions
 
-- Until recently, population models were mainly used in theoretical settings
-  * New statistical tools let us confront population models with data
-  * Hierarchical models make it possible to learn about "hidden" population dynamics by modeling population processes observed with error.
+Until recently, population models were mainly used in theoretical
+settings.
+
+- New statistical tools let us confront population models with data
+- Hierarchical models make it possible to learn about `hidden` population dynamics by modeling population processes observed with error.
+
+
 
 
 
 ## Classical models of population dynamics
 
 Classical models of population dynamics provide a critical reference
-  for developing custom models for specific populations and applications.
+for developing custom models for specific populations and applications.
 
 A working knowledge of the following models is important:
 
@@ -62,31 +65,30 @@ A working knowledge of the following models is important:
 Classical statistical models are equally important.
 
 
-
 ## Classical statistical models
 
 You should be familiar with:
 
-- Linear models (including the various -NOVAs)
-
+- Linear models (including the various ANOVAs)
 - Generalized linear models (eg, logistic regression)
-
 - Generalized linear mixed effects models
   
-::: {.fragment}
 <center>
+
+::: {.fragment}
+
 How do we bridge the gap between theoretical models and statistical 
 models? 
-</center>
 :::
 
+</center>
 
 # Examples {visibility="hidden"}
 
-## Example I -- Chiricahua Leopard Frogs
+## Example I -- Chiricahua Leopard Frogs {.smaller}
 
 ::: {.columns}
-::: {.column width='50%'}
+::: {.column width="50%"}
 
 Sites are discrete habitat patches
 
@@ -97,7 +99,7 @@ Data are binary detection data
 ![](figs/lich.png)
 
 :::
-::: {.column width='50%'}
+::: {.column width="50%"}
 
 ![](figs/lich-dist.jpg)
 
@@ -110,18 +112,23 @@ Data are binary detection data
 ## Metapopulation ecology
 
 ::: {.columns}
+
 ::: {.column width="60%"}
+
 Large body of theory.
 
 One branch of metapopulation theory focuses on distance-dependent
 colonization and extinction processes.
 
 If we know the patch coordinates and we have data from multiple sites
-      and multiple time periods, we can fit the models.
+and multiple time periods, we can fit the models. 
+
 :::
+
 ::: {.column width="40%"}
 ![](figs/HanskiBookCover.png)
 :::
+
 :::
 
 
@@ -139,10 +146,10 @@ Management options
 - Create new wetlands\dots
    
 Metapopulation models fitted to detected data predicted extinction
-    risk to be 4\% after 50 years. Restoring just 1 pond, reduced the
-    risk to 2.5\%. 
+risk to be 4% after 50 years. Restoring just 1 pond, reduced the risk
+to 2.5%.
 
-![](figs/lich-forecasts.PNG)
+![](figs/lich-forecasts.PNG){width="40%" fig-align="center"}
 
 
 
@@ -158,7 +165,8 @@ Metapopulation models fitted to detected data predicted extinction
 
 
 ::: {.columns}
-::: {.column width="50%"}
+
+::: {.column width="60%"}
 
 Genetically isolated population near Macon
 
@@ -168,29 +176,33 @@ Studied using noninvasive genetic mark-recapture
 
 Hair snares and genotyping yielded individual-level encounter histories
 :::
-::: {.column width="50%"}
+
+::: {.column width="40%"}
 ![](figs/GA_bear_map.png)
 :::
+
 :::
 
 
 
 ## Harvest theory
 
-
 ::: {.columns}
-::: {.column width="60%"}
+
+::: {.column width="70%"}
 
 Theory goes back about a century.
 
 Much of it focuses on the importance of density dependence.
 
-Think back to ``maximum sustainable yield''.
+Think back to "maximum sustainable yield".
 
 :::
-::: {.column width="40%"}
+
+::: {.column width="30%"}
 ![](figs/GetzHaightBookCover.png)
 :::
+
 :::
 
 
@@ -199,9 +211,11 @@ Think back to ``maximum sustainable yield''.
 
 ## Central Georgia Black Bear Abundance
 
-Female-based population model revealed population growth.^[Hooker et al. (2020, Journal of Wildlife Management)]
+Female-based population model revealed population growth.
 
-![](figs/fig-5_abundance.png)
+<!-- ^[Hooker et al. (2020, Journal of Wildlife Management)] -->
+
+![](figs/fig-5_abundance.png){width="60%" fig-align="center"}
 
 
 
@@ -212,14 +226,14 @@ Female-based population model revealed population growth.^[Hooker et al. (2020, 
 
 Population regulated by density-dependent recruitment 
 
-<center>
-![](figs/fig-3_dd-recruitment.png)
-</center>
+
+![](figs/fig-3_dd-recruitment.png){fig-align="center" width="50%"}
+
 
 
 ## Central Georgia Black Bear Extinction Risk
 
-Extinction risk low unless harvest increases by >10 females/year
+Extinction risk low unless harvest increases by 10 females/year
 
 ![](figs/fig-6_forecasts_h0-h20.png){fig-align="center" width="40%"}
 
@@ -233,20 +247,25 @@ Extinction risk low unless harvest increases by >10 females/year
 ## Books
 
 ::: {.columns}
+
 ::: {.column width="33%"}
 AHM vol I
 
-![](figs/KeryRoyleBookCover.jpg)
+![](figs/KeryRoyleBookCover.jpg){height="350"}
 :::
+
 ::: {.column width="33%"}
 AHM vol II
 
-![](figs/KeryRoyleBookCoverV2.jpg)
+![](figs/KeryRoyleBookCoverV2.jpg){height="350"}
 :::
+
 ::: {.column width="33%"}
 SCR
-![](figs/SCRcover.jpeg)
+
+![](figs/SCRcover.jpeg){height="350"}
 :::
+
 :::
 
 
@@ -255,19 +274,22 @@ SCR
 ## Recommended reading
 
 ::: {.columns}
+
 ::: {.column width="50%"}
-![](figs/RoyleDorazioBookCover.png)
+![](figs/RoyleDorazioBookCover.png){height="500"}
 :::
+
 ::: {.column width="50%"}
-![](figs/McElreathBookCover.png)
+![](figs/McElreathBookCover.png){height="500"}
 :::
+
 :::
 
 
 # Assignment {visibility="hidden"}
 
 
-## Assignment
+## For Thursday
 
 Read: Applied Hierarchical Modeling (AHM vol I) chapter 1 
 
