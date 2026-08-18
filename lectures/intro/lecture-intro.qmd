@@ -16,25 +16,22 @@ lang: en
 ## {.center content-align="center"}
 
 <center>
-
-::: {style="font-size: 140%;"}
-
+::: {.center style="font-size: 130%;"}
 **Inference for Models of Fish and Wildlife Population Dynamics**
-
 :::
+</center>
 
-<br>
 
-::: {style="font-size: 100%;"}
+![](figs/colMap1-9nohill.png){width="70%" fig-align="center" fig-alt="Colonization maps"}
 
+
+<center>
+::: {style="font-size: 80%;"}
 WILD(FISH) 8390
 
 Richard Chandler
-
 :::
-
 </center>
-
 
 
 
@@ -84,7 +81,7 @@ A working knowledge of the following models is important:
 
 ## Classical statistical models
 
-You should be familiar with:
+You should also be familiar with:
 
 - Linear models (including the various ANOVAs)
 - Generalized linear models (eg, logistic regression)
@@ -95,8 +92,8 @@ You should be familiar with:
 
 <center>
 
-::: {.fragment style="font-size: 130%;"}
-How do we bridge the gap between theoretical models and statistical models? 
+::: {.fragment style="font-size: 130%; color: royalblue;"}
+How do we bridge the gap between theoretical models and statistical models?
 :::
 
 </center>
@@ -108,11 +105,13 @@ How do we bridge the gap between theoretical models and statistical models?
 ::: {.columns}
 ::: {.column width="60%"}
 
+::: {style="font-size:90%;"}
 Sites are discrete habitat patches.
 
 Surrounding landscape is suitable for movement but not reproduction.
 
 Data are binary detection data.
+:::
 
 ![](figs/lich.png){width="65%" fig-align="center"}
 
@@ -133,17 +132,16 @@ Data are binary detection data.
 
 ::: {.column width="70%"}
 
-Large body of theory.
-
-<br>
 
 One branch of metapopulation theory focuses on distance-dependent
 colonization and extinction processes.
 
 <br>
 
+::: {.fragment}
 If we know the patch coordinates and we have data from multiple sites
 and multiple time periods, we can fit the models. 
+:::
 
 :::
 
@@ -161,7 +159,7 @@ and multiple time periods, we can fit the models.
 
 ## Avoiding extinction
 
-::: {style="font-size: 90%;"}
+::: {style="font-size: 85%;"}
 
 Management options 
 
@@ -172,7 +170,7 @@ Management options
 ::: {.fragment}
 Restoring just 1 pond, reduced the risk from 4% to 2.5%.
 
-![](figs/lich-forecasts.PNG){width="50%" fig-align="center"}
+![](figs/lich-forecasts.PNG){width="45%" fig-align="center"}
 :::
 
 :::
@@ -193,11 +191,18 @@ Restoring just 1 pond, reduced the risk from 4% to 2.5%.
 
 Genetically isolated population near Macon.
 
+::: {.fragment}
 Impacts of hunting had not been evaluated.
+:::
 
+::: {.fragment}
 Studied using noninvasive genetic mark-recapture.
+:::
 
+::: {.fragment}
 Hair snares and genotyping yielded individual-level encounter histories.
+:::
+
 :::
 
 ::: {.column width="40%"}
@@ -222,11 +227,11 @@ Much of it focuses on the importance of density dependence.
 
 <br>
 
-Think back to "maximum sustainable yield".
+Think back to "maximum sustainable yield."
 
 :::
 
-::: {.column width="40%"}
+::: {.column width="35%"}
 ![](figs/GetzHaightBookCover.png)
 :::
 
