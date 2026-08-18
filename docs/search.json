@@ -32,7 +32,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#section",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "",
-    "text": "Lecture 2  Refresher of basic statistical models\n\n\n\n\n\nWILD(FISH) 8390\nRichard Chandler"
+    "text": "Statistical modeling basics\n\n\n\n\n\nWILD(FISH) 8390"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#todays-topics",
@@ -53,7 +53,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#simple-linear-regression",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Simple linear regression",
-    "text": "Simple linear regression\nSimple linear regression is the most basic linear model. \\[\n    \\mu_i = \\beta_0 + \\beta_1 x_i \\qquad \\qquad\n    y_i \\sim \\mathrm{Norm}(\\mu_i, \\sigma^2)\n\\]\n\n\n\\(y\\) is variously called:\n\nresponse variable\noutcome variable\ndependent variable\n\n\nIt’s worse for \\(x\\)\n\npredictor variable\nexplanatory variable\nindependent variable\ncovariate, exposure, etc…\n\n\nWe observe \\(x\\) and \\(y\\). The expected value of \\(y_i\\) is \\(\\mu_i\\).\n\nWe’d like to estimate \\(\\beta_0\\) and \\(\\beta_1\\), called the “coefficients”.\n\nA residual is \\(\\varepsilon_i=y_i-\\mu_i\\). \\(\\sigma^2\\) is the variance of the residuals."
+    "text": "Simple linear regression\nSimple linear regression is the most basic linear model. \\[\n    \\mu_i = \\beta_0 + \\beta_1 x_i \\qquad \\qquad\n    y_i \\sim \\mathrm{Norm}(\\mu_i, \\sigma^2)\n\\]\n\n\n\n\\(y\\) is variously called:\n\nresponse variable\noutcome variable\ndependent variable\n\n\n\n\nIt’s worse for \\(x\\)\n\npredictor variable\nexplanatory variable\nindependent variable\ncovariate, exposure, etc…\n\n\n\n\nWe observe \\(x\\) and \\(y\\). The expected value of \\(y_i\\) is \\(\\mu_i\\).\n\nWe’d like to estimate \\(\\beta_0\\) and \\(\\beta_1\\), called the “coefficients”.\n\nA residual is \\(\\varepsilon_i=y_i-\\mu_i\\).\n\\(\\sigma^2\\) is the variance of the residuals."
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#simple-linear-regression-example",
@@ -70,18 +70,32 @@
     "text": "Bayesian inference with JAGS\nWe will use JAGS and the R packages ‘rjags’ and ‘jagsUI’. JAGS can be downloaded here.\n\nThe basic steps of Bayesian analysis with JAGS are:\n\nWrite a model in the BUGS language in a text file\nPut data in a named list\nCreate a function to generate random initial values\nSpecify the parameters you want to monitor\nUse MCMC to draw posterior samples\nUse posterior samples for inference and prediction"
   },
   {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#simple-bayesian-linear-regression",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#simple-bayesian-linear-regression",
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-jags-model",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-jags-model",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Simple (Bayesian) linear regression",
-    "text": "Simple (Bayesian) linear regression\nThe model is in a text file named lm.jag\n\n\nmodel {\n\n    # Priors\n    ## dnorm arguments: mean and precision (1/variance)\n    beta0 ~ dnorm(0, 0.1)  ## Prior on intercept  \n    beta1 ~ dnorm(0, 0.1)  ## Prior on slope\n    sigmaSq ~ dunif(0, 2)  ## Prior on residual variance\n\n    # Model for the data\n    for(i in 1:n) {\n      mu[i] &lt;- beta0 + beta1*x[i]\n      y[i] ~ dnorm(mu[i], 1/sigmaSq)\n    }\n\n}\n\nNow, put the data in a list and pick some initial values"
+    "section": "Bayesian linear regression – JAGS model",
+    "text": "Bayesian linear regression – JAGS model\nThe model is in a text file named lm.jag\n\n\nmodel {\n\n    # Priors\n    ## dnorm arguments: mean and precision (1/variance)\n    beta0 ~ dnorm(0, 0.1)  ## Prior on intercept  \n    beta1 ~ dnorm(0, 0.1)  ## Prior on slope\n    sigmaSq ~ dunif(0, 2)  ## Prior on residual variance\n\n    # Model for the data\n    for(i in 1:n) {\n      mu[i] &lt;- beta0 + beta1*x[i]\n      y[i] ~ dnorm(mu[i], 1/sigmaSq)\n    }\n\n}"
   },
   {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#simple-bayesian-linear-regression-1",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#simple-bayesian-linear-regression-1",
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-data-inits-etc",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-data-inits-etc",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Simple (Bayesian) linear regression",
-    "text": "Simple (Bayesian) linear regression\nUse MCMC to draw posterior samples:"
+    "section": "Bayesian linear regression – data, inits, etc",
+    "text": "Bayesian linear regression – data, inits, etc\nPut the data in a list and generate random initial values\n\njd.lm &lt;- list(x=width, y=mass, n=length(mass))                       # Data\nji.lm &lt;- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))  # Initial values\njp.lm &lt;- c(\"beta0\", \"beta1\", \"sigmaSq\")                              # Parameters"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian linear regression – inference",
+    "text": "Bayesian linear regression – inference\nUse MCMC to draw posterior samples:\n\nlibrary(jagsUI)  \njs.lm &lt;- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,\n                    model.file=\"lm.jag\", n.chains=1, n.iter=1000)\n\n\n\nSummarize the posterior samples:\n\nround(summary(js.lm)$quant, 2)\n\n          2.5%   25%  50%  75% 97.5%\nbeta0    -0.58 -0.16 0.03 0.20  0.58\nbeta1    -0.28  0.31 0.55 0.83  1.39\ndeviance -2.70 -0.97 0.85 3.66 10.80\nsigmaSq   0.03  0.05 0.08 0.12  0.29"
+  },
+  {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference-1",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#bayesian-linear-regression-inference-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian linear regression – inference",
+    "text": "Bayesian linear regression – inference\nView the posterior samples\n\nplot(js.lm[,1:2])"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#linear-models-2",
@@ -91,18 +105,18 @@
     "text": "Linear models\nA more general depiction of linear models:\n\\[\n  \\mu_i = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots + \\beta_p x_{ip} \\\\\n  y_i \\sim \\mathrm{Normal}(\\mu_i, \\sigma^2)\n\\]\nwhere the \\(\\beta\\)’s are coefficients, and the \\(x\\) values are predictor variables (or dummy variables for categorical predictors)."
   },
   {
+    "objectID": "lectures/stats-basics/lecture-stats-basics.html#interpreting-the-beta-coefficients",
+    "href": "lectures/stats-basics/lecture-stats-basics.html#interpreting-the-beta-coefficients",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Interpreting the \\(\\beta\\) coefficients",
+    "text": "Interpreting the \\(\\beta\\) coefficients\nYou need to be able to interpret the \\(\\beta\\) coefficients for any model that you fit to your data.\n\nA linear model might have dozens of continuous and categorical predictors variables, with dozens of associated \\(\\beta\\) coefficients.\n\nLinear models can also include polynomial terms and interactions."
+  },
+  {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#interpreting-the-betas",
     "href": "lectures/stats-basics/lecture-stats-basics.html#interpreting-the-betas",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Interpreting the \\(\\beta\\)’s",
-    "text": "Interpreting the \\(\\beta\\)’s\nYou must be able to interpret the \\(\\beta\\) coefficients for any model that you fit to your data.\nA linear model might have dozens of continuous and categorical predictors variables, with dozens of associated \\(\\beta\\) coefficients.\nLinear models can also include polynomial terms and interactions."
-  },
-  {
-    "objectID": "lectures/stats-basics/lecture-stats-basics.html#interpreting-the-betas-1",
-    "href": "lectures/stats-basics/lecture-stats-basics.html#interpreting-the-betas-1",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Interpreting the \\(\\beta\\)’s",
-    "text": "Interpreting the \\(\\beta\\)’s\nThe intercept \\(\\beta_0\\) is the expected value of \\(y\\), when all \\(x=0\\).\nIf \\(x_1\\) is a continuous explanatory variable:\n\n\\(\\beta_1\\) can usually be interpreted as a slope parameter.\nIn this case, \\(\\beta_1\\) is the change in \\(y\\) resulting from a 1 unit change in \\(x_1\\) (while holding the other predictors constant)."
+    "text": "Interpreting the \\(\\beta\\)’s\nThe intercept (\\(\\beta_0\\)) is the expected value of \\(y\\), when all \\(x=0\\).\n\n\n\nIf \\(x_1\\) is a continuous explanatory variable:\n\n\\(\\beta_1\\) can usually be interpreted as a slope parameter.\nIn this case, \\(\\beta_1\\) is the change in \\(y\\) resulting from a 1 unit change in \\(x_1\\) (while holding the other predictors constant)."
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#interpreting-betas-for-categorical-explanatory-variables",
@@ -116,7 +130,7 @@
     "href": "lectures/stats-basics/lecture-stats-basics.html#interpreting-betas-for-categorical-explanatory-variables-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Interpreting \\(\\beta\\)’s for categorical explanatory variables",
-    "text": "Interpreting \\(\\beta\\)’s for categorical explanatory variables"
+    "text": "Interpreting \\(\\beta\\)’s for categorical explanatory variables\n\n\n\nlm(mass~species)\n\n\nCall:\nlm(formula = mass ~ species)\n\nCoefficients:\n(Intercept)     species2     species3     species4  \n    10.2147       0.9994      -1.3335       0.6294"
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#ruffed-grouse-data",

@@ -200,14 +200,13 @@
 <h2></h2>
 <center>
 <div class="center" style="font-size: 140%;">
-<p><strong>Lecture 2 <br> Refresher of basic statistical models</strong></p>
+<p><strong>Statistical modeling basics</strong></p>
 </div>
 </center>
-<!-- ![](figs/colMap1-9nohill.png){width="70%" fig-align="center" fig-alt="Colonization maps"} -->
-<center>
+
+<img data-src="lecture-stats-basics_files/figure-revealjs/slr-viz-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%" alt="Simple linear regression"><center>
 <div style="font-size: 90%;">
 <p>WILD(FISH) 8390</p>
-<p>Richard Chandler</p>
 </div>
 </center>
 </section></section>
@@ -236,8 +235,9 @@
 <p>All ANOVAs and fixed-effects regression models are linear models.</p>
 <p><br></p>
 <p>You must understand linear models before you can apply more advanced models such as GLMs, GAMS, hierarchical models etc…</p>
+<p><br></p>
 <center>
-<img data-src="figure/Rencher_Schaal_book.jpg" height="350"> <img data-src="figure/Hocking_book.jpg" height="350">
+<img data-src="figure/Rencher_Schaal_book.jpg" height="300"> <img data-src="figure/Hocking_book.jpg" height="300">
 </center>
 </section>
 <section id="simple-linear-regression" class="slide level2 smaller">
@@ -248,13 +248,16 @@
 \]</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
+<div class="fragment">
 <p><span class="math inline">\(y\)</span> is variously called:</p>
 <ul>
 <li>response variable</li>
 <li>outcome variable</li>
 <li>dependent variable</li>
 </ul>
+</div>
 </div><div class="column" style="width:50%;">
+<div class="fragment">
 <p>It’s worse for <span class="math inline">\(x\)</span></p>
 <ul>
 <li>predictor variable</li>
@@ -262,12 +265,16 @@
 <li>independent variable</li>
 <li>covariate, exposure, etc…</li>
 </ul>
+</div>
 </div></div>
+<div class="fragment">
 <p>We observe <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. The expected value of <span class="math inline">\(y_i\)</span> is <span class="math inline">\(\mu_i\)</span>.<br>
 </p>
 <p>We’d like to estimate <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, called the “coefficients”.<br>
 </p>
-<p>A residual is <span class="math inline">\(\varepsilon_i=y_i-\mu_i\)</span>. <span class="math inline">\(\sigma^2\)</span> is the variance of the residuals.</p>
+<p>A residual is <span class="math inline">\(\varepsilon_i=y_i-\mu_i\)</span>.</p>
+<p><span class="math inline">\(\sigma^2\)</span> is the variance of the residuals.</p>
+</div>
 </section>
 <section id="simple-linear-regression-example" class="slide level2">
 <h2>Simple linear regression example</h2>
@@ -320,8 +327,8 @@ Coefficients:
 <li><p>Use posterior samples for inference and prediction</p></li>
 </ol>
 </section>
-<section id="simple-bayesian-linear-regression" class="slide level2">
-<h2>Simple (Bayesian) linear regression</h2>
+<section id="bayesian-linear-regression-jags-model" class="slide level2" style="font-size: 90%;">
+<h2>Bayesian linear regression – JAGS model</h2>
 <p>The model is in a text file named <code>lm.jag</code><br>
 </p>
 <div class="cell">
@@ -341,12 +348,47 @@ Coefficients:
 <span id="cb3-14"><a></a></span>
 <span id="cb3-15"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Now, put the data in a list and pick some initial values</p>
 </section>
-<section id="simple-bayesian-linear-regression-1" class="slide level2">
-<h2>Simple (Bayesian) linear regression</h2>
+<section id="bayesian-linear-regression-data-inits-etc" class="slide level2" style="font-size: 80%;">
+<h2>Bayesian linear regression – data, inits, etc</h2>
+<p>Put the data in a list and generate random initial values</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>jd.lm <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x=</span>width, <span class="at">y=</span>mass, <span class="at">n=</span><span class="fu">length</span>(mass))                       <span class="co"># Data</span></span>
+<span id="cb4-2"><a></a>ji.lm <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">beta1=</span><span class="dv">0</span>, <span class="at">sigmaSq=</span><span class="fu">runif</span>(<span class="dv">1</span>))  <span class="co"># Initial values</span></span>
+<span id="cb4-3"><a></a>jp.lm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>, <span class="st">"sigmaSq"</span>)                              <span class="co"># Parameters</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="bayesian-linear-regression-inference" class="slide level2" style="font-size: 90%;">
+<h2>Bayesian linear regression – inference</h2>
 <p>Use MCMC to draw posterior samples:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">library</span>(jagsUI)  </span>
+<span id="cb5-2"><a></a>js.lm <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd.lm, <span class="at">inits=</span>ji.lm, <span class="at">parameters.to.save=</span>jp.lm,</span>
+<span id="cb5-3"><a></a>                    <span class="at">model.file=</span><span class="st">"lm.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Summarize the posterior samples:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(js.lm)<span class="sc">$</span>quant, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          2.5%   25%  50%  75% 97.5%
+beta0    -0.58 -0.16 0.03 0.20  0.58
+beta1    -0.28  0.31 0.55 0.83  1.39
+deviance -2.70 -0.97 0.85 3.66 10.80
+sigmaSq   0.03  0.05 0.08 0.12  0.29</code></pre>
+</div>
+</div>
+</div>
 </section>
+<section id="bayesian-linear-regression-inference-1" class="slide level2" style="font-size: 90%;">
+<h2>Bayesian linear regression – inference</h2>
+<p>View the posterior samples</p>
+<div class="cell" data-layout-align="center" data-fig-heigth="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">plot</span>(js.lm[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="lecture-stats-basics_files/figure-revealjs/lm-jags-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:10in"></section>
 <section id="linear-models-2" class="slide level2">
 <h2>Linear models</h2>
 <p>A more general depiction of linear models:</p>
@@ -356,22 +398,28 @@ Coefficients:
 \]</span></p>
 <p>where the <span class="math inline">\(\beta\)</span>’s are coefficients, and the <span class="math inline">\(x\)</span> values are predictor variables (or dummy variables for categorical predictors).</p>
 </section>
-<section id="interpreting-the-betas" class="slide level2">
-<h2>Interpreting the <span class="math inline">\(\beta\)</span>’s</h2>
-<p>You must be able to interpret the <span class="math inline">\(\beta\)</span> coefficients for <em>any model</em> that you fit to your data.</p>
+<section id="interpreting-the-beta-coefficients" class="slide level2">
+<h2>Interpreting the <span class="math inline">\(\beta\)</span> coefficients</h2>
+<p>You need to be able to interpret the <span class="math inline">\(\beta\)</span> coefficients for <em>any model</em> that you fit to your data.</p>
+<p><br></p>
 <p>A linear model might have dozens of continuous and categorical predictors variables, with dozens of associated <span class="math inline">\(\beta\)</span> coefficients.</p>
+<p><br></p>
 <p>Linear models can also include polynomial terms and interactions.</p>
 </section>
-<section id="interpreting-the-betas-1" class="slide level2">
+<section id="interpreting-the-betas" class="slide level2">
 <h2>Interpreting the <span class="math inline">\(\beta\)</span>’s</h2>
-<p>The intercept <span class="math inline">\(\beta_0\)</span> is the expected value of <span class="math inline">\(y\)</span>, when all <span class="math inline">\(x=0\)</span>.<br>
-If <span class="math inline">\(x_1\)</span> is a <strong>continuous</strong> explanatory variable:</p>
+<p>The intercept (<span class="math inline">\(\beta_0\)</span>) is the expected value of <span class="math inline">\(y\)</span>, when all <span class="math inline">\(x=0\)</span>.<br>
+</p>
+<div class="fragment">
+<p><br></p>
+<p>If <span class="math inline">\(x_1\)</span> is a <strong>continuous</strong> explanatory variable:</p>
 <ul>
 <li><p><span class="math inline">\(\beta_1\)</span> can usually be interpreted as a <em>slope</em> parameter.</p></li>
 <li><p>In this case, <span class="math inline">\(\beta_1\)</span> is the change in <span class="math inline">\(y\)</span> resulting from a 1 unit change in <span class="math inline">\(x_1\)</span> (while holding the other predictors constant).</p></li>
 </ul>
+</div>
 </section>
-<section id="interpreting-betas-for-categorical-explanatory-variables" class="slide level2">
+<section id="interpreting-betas-for-categorical-explanatory-variables" class="slide level2" style="font-size: 90%;">
 <h2>Interpreting <span class="math inline">\(\beta\)</span>’s for categorical explanatory variables</h2>
 <p>Things are more complicated for <strong>categorical</strong> explanatory variables (i.e., factors) because they must be converted to dummy variables. There are many ways of creating dummy variables. In <code>R</code>, the default method for creating dummy variables from unordered factors works like this:</p>
 <ul>
@@ -380,8 +428,33 @@ If <span class="math inline">\(x_1\)</span> is a <strong>continuous</strong> exp
 <li><p>The <span class="math inline">\(\beta\)</span> coefficients for the other levels of the factor are differences from the reference level.</p></li>
 </ul>
 </section>
-<section id="interpreting-betas-for-categorical-explanatory-variables-1" class="slide level2">
+<section id="interpreting-betas-for-categorical-explanatory-variables-1" class="slide level2" style="font-size: 90%;">
 <h2>Interpreting <span class="math inline">\(\beta\)</span>’s for categorical explanatory variables</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">lm</span>(mass<span class="sc">~</span>species)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mass ~ species)
+
+Coefficients:
+(Intercept)     species2     species3     species4  
+    10.2147       0.9994      -1.3335       0.6294  </code></pre>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-stats-basics_files/figure-revealjs/mass-species-bar-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 </section>
 <section id="ruffed-grouse-data" class="slide level2">
 <h2>Ruffed grouse data</h2>

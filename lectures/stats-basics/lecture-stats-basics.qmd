@@ -18,19 +18,17 @@ lang: en
 
 <center>
 ::: {.center style="font-size: 140%;"}
-**Lecture 2 <br> Refresher of basic statistical models**
+**Statistical modeling basics**
 :::
 </center>
 
 
-<!-- ![](figs/colMap1-9nohill.png){width="70%" fig-align="center" fig-alt="Colonization maps"} -->
+![](lecture-stats-basics_files/figure-revealjs/slr-viz-1.png){width="80%" fig-align="center" fig-alt="Simple linear regression"}
 
 
 <center>
 ::: {style="font-size: 90%;"}
 WILD(FISH) 8390
-
-Richard Chandler
 :::
 </center>
 
@@ -61,9 +59,11 @@ All ANOVAs and fixed-effects regression models are linear models.
 You must understand linear models before you can apply more advanced
 models such as GLMs, GAMS, hierarchical models etc...
 
+<br>
+
 <center>
-![](figure/Rencher_Schaal_book.jpg){height="350"}
-![](figure/Hocking_book.jpg){height="350"}
+![](figure/Rencher_Schaal_book.jpg){height="300"}
+![](figure/Hocking_book.jpg){height="300"}
 </center>
 
 
@@ -78,34 +78,43 @@ $$
 
 ::: {.columns}
 ::: {.column width="50%"}
+::: {.fragment}
+
 $y$ is variously called:
 
 - response variable
 - outcome variable
 - dependent variable
 :::
+:::
+
 
 ::: {.column width="50%"}
 
+::: {.fragment}
 It's worse for $x$
 
 - predictor variable
 - explanatory variable
 - independent variable
 - covariate, exposure, etc...
+:::
 
 :::
 :::
 
-
+::: {.fragment}
 
 We observe $x$ and $y$. The expected value of $y_i$ is $\mu_i$.\
 
 We'd like to estimate $\beta_0$ and $\beta_1$, called the
 "coefficients".\
 
-A residual is $\varepsilon_i=y_i-\mu_i$. $\sigma^2$ is the variance of
-the residuals.
+A residual is $\varepsilon_i=y_i-\mu_i$. 
+
+$\sigma^2$ is the variance of the residuals.
+
+:::
 
 
 
@@ -176,10 +185,9 @@ The basic steps of Bayesian analysis with JAGS are:
 
 
 
-## Simple (Bayesian) linear regression
+## Bayesian linear regression -- JAGS model {style="font-size: 90%;"}
 
 The model is in a text file named `lm.jag`\
-
 
 ```{r}
 #| eval: false
@@ -201,18 +209,70 @@ model {
 }
 ```
 
-Now, put the data in a list and pick some initial values
+
+
+
+## Bayesian linear regression -- data, inits, etc {style="font-size: 80%;"}
+
+Put the data in a list and generate random initial values
 
 ```{r}
-jd.lm <- list(x=width, y=mass, n=length(mass))
-ji.lm <- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))
-jp.lm <- c("beta0", "beta1", "sigmaSq")
+#| echo: true
+jd.lm <- list(x=width, y=mass, n=length(mass))                       # Data
+ji.lm <- function() list(beta0=rnorm(1), beta1=0, sigmaSq=runif(1))  # Initial values
+jp.lm <- c("beta0", "beta1", "sigmaSq")                              # Parameters
 ```
 
-## Simple (Bayesian) linear regression
+
+
+
+## Bayesian linear regression -- inference {style="font-size: 90%;"}
 
 Use MCMC to draw posterior samples:
 
+```{r}
+#| echo: true
+#| message: false
+#| results: hide
+library(jagsUI)  
+js.lm <- jags.basic(data=jd.lm, inits=ji.lm, parameters.to.save=jp.lm,
+                    model.file="lm.jag", n.chains=1, n.iter=1000)
+```
+
+
+<br>
+
+::: {.fragment}
+
+Summarize the posterior samples:
+
+
+```{r}
+#| label: lm-jags-sum
+#| echo: true
+round(summary(js.lm)$quant, 2)
+
+```
+
+:::
+
+
+
+
+## Bayesian linear regression -- inference {style="font-size: 90%;"}
+
+View the posterior samples
+
+```{r}
+#| label: lm-jags-plot
+#| echo: true
+#| fig-width: 10
+#| fig-heigth: 12
+#| out-width: "10in"
+#| fig-align: center
+plot(js.lm[,1:2])
+
+```
 
 
 ## Linear models
@@ -229,23 +289,30 @@ variables (or dummy variables for categorical predictors).
 
 
 
-## Interpreting the $\beta$'s
+## Interpreting the $\beta$ coefficients
 
-You must be able to interpret the $\beta$ coefficients for *any model*
+You need to be able to interpret the $\beta$ coefficients for *any model* 
 that you fit to your data. 
 
-A linear model might have dozens of
-continuous and categorical predictors variables, with dozens of
-associated $\beta$ coefficients. 
+<br>
 
-Linear models can also include
-polynomial terms and interactions.
+A linear model might have dozens of continuous and categorical
+predictors variables, with dozens of associated $\beta$ coefficients.
+
+<br>
+
+Linear models can also include polynomial terms and interactions. 
 
 
 
 ## Interpreting the $\beta$'s
 
-The intercept $\beta_0$ is the expected value of $y$, when all $x=0$.\
+The intercept ($\beta_0$) is the expected value of $y$, when all $x=0$.\
+
+. . .
+
+<br>
+
 If $x_1$ is a **continuous** explanatory variable:
 
 - $\beta_1$ can usually be interpreted as a *slope* parameter.
@@ -256,7 +323,7 @@ If $x_1$ is a **continuous** explanatory variable:
 
 
 
-## Interpreting $\beta$'s for categorical explanatory variables
+## Interpreting $\beta$'s for categorical explanatory variables {style="font-size: 90%;"}
 
 Things are more complicated for **categorical** explanatory variables
 (i.e., factors) because they must be converted to dummy variables. There
@@ -272,8 +339,43 @@ for creating dummy variables from unordered factors works like this:
 
 
 
-## Interpreting $\beta$'s for categorical explanatory variables
+## Interpreting $\beta$'s for categorical explanatory variables {style="font-size: 90%;"}
 
+```{r}
+#| include: false
+set.seed(3400)
+species <- gl(4, 25) 
+mass <- rnorm(100, model.matrix(~species)%*%c(10,1,-1,2), 5)
+ym <- tapply(mass, species, mean)
+yse <- sqrt(sum(resid(lm(mass~species))^2)/96)/sqrt(25)
+```
+
+::: {.columns}
+
+::: {.column width="60%"}
+```{r}
+#| label: mass-species-lm
+#| echo: true
+lm(mass~species)
+```
+:::
+
+::: {.column width="40%"}
+
+```{r}
+#| label: mass-species-bar
+#| fig-width: 7
+#| fig-height: 7
+#| out-width: "100%"
+bpx <- barplot(ym, ylim=c(0, 15), xlab="Species",
+               ylab="Group mean", cex.lab=1.3)
+arrows(bpx, ym, bpx, ym+yse, angle=90, code=3, length=0.05)
+```
+
+:::
+
+
+:::
 
 
 
