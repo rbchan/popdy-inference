@@ -9,7 +9,7 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   
   ## 1. Strip the LaTeX preamble up to \begin{document}
   ## Inject a basic Quarto Revealjs YAML header
-  yaml_header <- "---\ntitle: \"Converted Presentation\"\nformat:\n  revealjs:\n    theme: default\n    slide-number: true\nlang: en\n---\n\n"
+  yaml_header <- "---\n## title: \"Converted Presentation\"\nformat:\n  revealjs:\n    theme: default\n    pagetitle: 'Dog'\n    slide-number: true\nlang: en\n---\n\n"
   if (grepl("\\\\begin\\{document\\}", content)) {
     content <- sub("(?s).*?\\\\begin\\{document\\}", yaml_header, content, perl = TRUE)
   } else {
@@ -20,7 +20,7 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   content <- gsub("\\\\end\\{document\\}", "", content)
   
   ## 3. Convert \begin{frame}{Slide Title} to markdown header '## Slide Title'
-  ## content <- gsub("\\\\begin\\{frame\\}\\{(.*?)\\}", "## \\1", content)
+  content <- gsub("\\\\begin\\{frame\\}\\[(.*?)\\]", "", content)
   ## content <- gsub("\\\\begin\\{frame\\}", "## Slide", content) # Fallback for title-less frames
   content <- gsub("\\\\begin\\{frame\\}", "", content) # Fallback for title-less frames
   content <- gsub("\\\\frametitle\\{(.*?)\\}", "## \\1", content) # Fallback for title-less frames
@@ -30,6 +30,7 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   content <- gsub("<<(.*?)>>=", "```\\{r, \\1\\}", content)
   # Replace isolated '@' on their own line with standard markdown backticks
   content <- gsub("(?m)^\\s*@\\s*\\$", "```", content, perl = TRUE)
+  content <- gsub("@", "```", content)
   
   ## 5. Clean up standard list environments
   content <- gsub("\\\\begin\\{itemize\\}", "", content)
@@ -50,11 +51,35 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   ## 8. Graphics
   content <- gsub("\\\\fbox\\{", "", content)
   content <- gsub("\\\\includegraphics", "", content)
-  content <- gsub("\\[(.*?)\\]", "\\[\\]", content)
-  content <- gsub("\\[\\]\\{(.*?)\\}", "\\!\\[\\](\\1)", content)
-  
+#  content <- gsub("\\[(.*?)\\]", "\\[\\]", content)
+#  content <- gsub("\\[\\]\\{(.*?)\\}", "\\!\\[\\](\\1)", content)
+
+  ## 9. Misc
+  content <- gsub("\\\\vfill", "", content)
+  content <- gsub("\\\\hfill", "", content)
+  content <- gsub("\\\\pause", "", content)
+  content <- gsub("\\\\huge", "", content)
+  content <- gsub("\\\\LARGE", "", content)
+  content <- gsub("\\\\Large", "", content)
+  content <- gsub("\\\\large", "", content)
+  content <- gsub("\\\\normalsize", "", content)
+  content <- gsub("\\\\centering", "", content)
+  content <- gsub("\\\\begin\\{center\\}", "<center>", content)
+  content <- gsub("\\\\end\\{center\\}", "</center>", content)
+  content <- gsub("\\\\begin\\{align*\\}", "$$", content)
+  content <- gsub("\\\\end\\{align*\\}", "$$", content)
+  content <- gsub("\\\\vspace\\{(.*?)\\}", "", content) 
+  content <- gsub("\\\\textbf\\{(.*?)\\}", "** \\1 **", content) 
+  content <- gsub("\\\\textit\\{(.*?)\\}", "* \\1 *", content) 
+  content <- gsub("\\\\tableofcontents", "", content)
+  content <- gsub("^\\[\\]", "", content, perl=TRUE)
+  content <- gsub("^\\s*\\[\\s*\\]\\s*$", "", content, perl=TRUE)
+  content <- gsub("\\\\$", "", content)
   
   # Write out the new .qmd file
   writeLines(content, output_file)
   message("Success! Converted file saved to: ", output_file)
 }
+
+
+### TODO: inr, ```r argument```
