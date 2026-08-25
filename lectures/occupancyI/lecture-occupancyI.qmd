@@ -3,28 +3,29 @@
 format:
   revealjs:
     theme: default
-    pagetitle: 'Dog'
+    pagetitle: 'Occupancy Models Part I'
     slide-number: true
 lang: en
 ---
 
 
 
+## {content-align="center" style="font-size: 160%;"}
 
+<br>
+
+<center>
+
+Occupancy models:<br>simulation and fitting
+
+<br>
   
-  { Lecture 3 -- Occupancy models: simulation and fitting}
-  {\color{default} \rule{\textwidth}{0.1pt}}
-  
-  
-  WILD(FISH) 8390 \\
-%  Estimation of Fish and Wildlife Population Parameters
-  Inference for Models of Fish and Wildlife Population Dynamics
-  
+::: {style="font-size: 70%;"}
+WILD(FISH) 8390<br>
+Inference for Models of Fish and Wildlife Population Dynamics
+:::
 
-
-
-
-
+</center>
 
 
 # Motivation {visibility="hidden"}
@@ -33,7 +34,16 @@ lang: en
 
 
 ## Outline
-  
+
+- Motivation
+
+- Simulation
+
+- Classical analysis with 'unmarked'
+
+- Bayesian analysis with 'JAGS'
+
+
 
 ## Motivation
 
@@ -43,14 +53,19 @@ We often want to do logistic regression, but the data are subject to measurement
 Specifically, wildlife data are often fraught with false negatives (ie, the species was there but we didn't detect it).
   
   
-Ignoring this source of measurement error can result in misleading inferences.
-  * Occupancy will be under-estimated
-  * Habitat associations may be incorrect
-  
+Ignoring this source of measurement error can result in misleading inferences. 
+
+- Occupancy will be under-estimated
+
+- Habitat associations may be incorrect
+
+
 
 ## Accounting for detection probability
 
-  The model for the state process is the same as logistic regression:
+::: {style="font-size: 75%;"}
+
+The model for the state process is the same as logistic regression:
 
 $$
   \begin{gather*}
@@ -69,30 +84,30 @@ $$
 $$
 
   
-Definitions
-  $\psi_i$ -- probability that the species occurs at site $i$ 
-  $z_i$ -- binary presence/absence variable at site $i$ 
-  $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ 
-  $y_{ij}$ -- binary detection/non-detection data
+- $\psi_i$ -- probability that the species occurs at site $i$
+- $z_i$ -- binary presence/absence variable at site $i$
+- $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$
+- $y_{ij}$ -- binary detection/non-detection data
 
 
+:::
 
 
- ## Assumptions
+## Assumptions
 
 Assumptions of the basic single-season occupancy models:
   
-    * []
-    * Population closure
+- Population closure
     
-      * Occupancy state (presence/absence) constant over time
+- Occupancy state (presence/absence) constant over time
     
-    * Statistical independence
+- Statistical independence
     
-      * Occupancy state at one site has no impact on occupancy of other sites
-      * Detections are independent, conditional on occupancy state 
+- Occupancy state at one site has no impact on occupancy of other sites
+ 
+- Detections are independent, conditional on occupancy state 
     
-    * Variation in $\psi$ and $p$ described by covariates
+- Variation in $\psi$ and $p$ described by covariates
   
 
 
@@ -100,93 +115,99 @@ Assumptions of the basic single-season occupancy models:
 # Simulation {visibility="hidden"}
 
 
-
-
-## Outline
-  
-
 ## Simulation
 
-Simplest case with no covariates: 
-  
+::: {style="font-size: 75%;"}
 
-  * Specify the parameters and dimensions
+Simplest case with no covariates: 
+
+- Specify the parameters and dimensions
+
 ```{r}
 #| label: sim-nocov1
+#| echo: true
 psi <- 0.5       ## Occurrence probability
 p <- 0.2         ## Detection probability
 nSites <- 20
 nVisits <- 4
 ```
-  * Now, simulate presence-absence
+
+- Now, simulate presence-absence
+
 ```{r}
 #| label: sim-nocov2
+#| echo: true
 set.seed(3439)    ## Just to make it reproducible
 z <- rbinom(nSites, size=1, psi) ## pres/absence
-``` 
+```
 
-  * Simulate observations
+- Simulate observations
+
 ```{r}
 #| label: sim-nocov3
+#| echo: true
 y <- matrix(NA, nrow=nSites, ncol=nVisits)
 for(i in 1:nSites) {
     y[] <- rbinom(nVisits, size=1, prob=z[]*p)
 }
-```   
+```
 
-
-
+:::
 
 
 ## Simulated data
 
-::: columns
-::: {.column width='50%'}
+::: {.columns style="font-size: 80%;"}
+::: {.column width='40%'}
 
-     Observations
+Observations
+
 ```{r}
 #| label: sim-nocov-dat
+#| echo: true
 y
 ``` 
+
 :::
-::: {.column width='50%'}
+
+::: {.column width='60%'}
     
-Summary stats
+<center>Summary stats</center>
 
 Detections at each site
 
 ```{r}
 #| label: sim-nocov-ss1
+#| echo: true
 siteDets <- rowSums(y) # Dets at each site
 table(siteDets)        # Frequency
 ```
-
 
 Proportion of sites known to be occupied
 
 ```{r}
 #| label: sim-nocov-ss2
+#| echo: true
 naiveOccupancy <- sum(siteDets>0)/nSites
 naiveOccupancy 
 ```
+
 :::
 :::
 
 
 
 
-# Model fitting {visibility="hidden"}
+# Model fitting
+ 
 
-
-## Outline
-  
-
-## R package `unmarked'
+## R package 'unmarked'
   
 Install and load the package 
   
 ```{r}
 #| label: un-install
+#| echo: true
 #| message: false
 ## install.packages("unmarked")  
 library(unmarked)
@@ -197,6 +218,7 @@ Documentation (help files)
   
 ```{r}
 #| label: un-help
+#| echo: true
 #| eval: false
 help("unmarked")
 ```
@@ -205,6 +227,7 @@ Documentation (vignettes)
   
 ```{r}
 #| label: un-vig
+#| echo: true
 #| eval: false
 vignette(package="unmarked")
 ## vignette("spp-dist")
@@ -214,7 +237,7 @@ vignette(package="unmarked")
 
 
 
-## R package `unmarked'
+## R package 'unmarked'
 
 Unlike standard model fitting functions such as `lm` and `glm` 
 that require data to be in `data.frames`, data for `unmarked'
@@ -222,18 +245,20 @@ has to be formatted in an `unmarkedFrame`.
 
 ```{r}
 #| label: un-umf
+#| echo: true
 umf <- unmarkedFrameOccu(y=y)
 summary(umf)
 ```
 
 
-## R package `unmarked'
+## R package 'unmarked'
 
 
 Fit the single-season occupancy model
 
 ```{r}
 #| label: un-fit
+#| echo: true
 fm <- occu(~1 ~1, umf)
 summary(fm)
 ```
@@ -241,12 +266,13 @@ summary(fm)
 Estimates obtained using maximum likelihood
 
 
-## R package `unmarked'
+## R package 'unmarked'
 
 Occupancy estimate ($\hat{\psi}$)
 
 ```{r}
 #| label: un-back1
+#| echo: true
 backTransform(fm, type="state")
 ```
 
@@ -255,41 +281,40 @@ Detection probability estimate ($\hat{p}$)
 
 ```{r}
 #| label: un-back2
+#| echo: true
 backTransform(fm, type="det")
 ```
 
 
 ## Two types of occupancy estimates
 
-* Unconditional occupancy $\psi=\Pr(z=1)$
+::: {style="font-size: 70%;"}
 
-* The estimate $\hat{\psi}$ that we computed earlier can be
-        thought of as a prediction that we could use for a new
-        site or a new time period
+Unconditional occupancy $\psi=\Pr(z=1)$
+
+- The estimate $\hat{\psi}$ that we computed earlier can be thought of as a prediction that we could use for a new site or a new time period
     
-* Conditional occupancy $\psi^* = \Pr(z_i=1|y_{i})$
+Conditional occupancy $\psi^* = \Pr(z_i=1|y_{i})$
     
-* Conditional occupancy estimates only apply to sites in the
-        sample, at the time of sampling
+- Conditional occupancy estimates only apply to sites in the sample, at the time of sampling 
 
-* In `unmarked', conditional occupancy is computed using
-        Empirical Bayes methods, with the `ranef` and `bup`
-        functions. In JAGS, full Bayesian inference is used instead. 
+- In 'unmarked', conditional occupancy is computed using Empirical Bayes methods, with the `ranef` and `bup` functions. In JAGS, full Bayesian inference is used instead. 
 
-* Conditional occupancy estimates can be used to answer
-        questions like: 
+- Conditional occupancy estimates can be used to answer questions like: 
         
-          * Which sites were occupied?
-          * How many sites were occupied?
+  * Which sites were occupied?
+  * How many sites were occupied?
 
 ```{r}
 #| label: bup
+#| echo: true
 ## Posterior probs Pr(z_i=1 | y_i)       
 z.post <- ranef(fm)
 ## Extract posterior means
 psi.conditional <-  bup(z.post, stat="mean") 
 ```
-  
+
+:::
 
 
 ## Occupancy estimates
@@ -305,11 +330,13 @@ round(data.frame(y=y, psi.unconditional=predict(fm, type="state")[],
 
 ## Occupancy estimates
 
-  How many sites were occupied? 
+How many sites were occupied? 
 
-  We can answer this using posterior prediction.
+We can answer this using posterior prediction.
+
 ```{r}
 #| label: bup-hist
+#| echo: true
 #| fig.height: 5
 #| out.width: "70%"
 #| fig.align: 'center'
@@ -327,9 +354,10 @@ abline(v=sum(z), col="red") ## Actual number occupied
 
 ## Occupancy estimates
 
-  The posterior median (or mean or mode) can be used as a point estimate:
+The posterior median (or mean or mode) can be used as a point estimate:
 
 ```{r}
+#| echo: true
 #| label: post-mean-eb
 psi.cond.estimate <- median(sites.occupied.post)
 psi.cond.estimate
@@ -338,6 +366,7 @@ psi.cond.estimate
 Quantiles can be used for the 95\% confidence interval:
 
 ```{r}
+#| echo: true
 #| label: post-ci-eb
 quantile(sites.occupied.post, prob=c(0.025, 0.975))
 ```
@@ -360,20 +389,21 @@ Ultimately, we want the posterior distribution of the model parameters. We'll us
 A reminder...
   
 The basic steps of a Bayesian analysis with JAGS are:
-  * Write a model in the BUGS language in a text file
-  * Put data in a named list
-  * Create a function to generate random initial values
-  * Specify the parameters you want to monitor
-  * Use MCMC to draw posterior samples
-  * Use posterior samples for inference and prediction
-  
+
+* Write a model in the BUGS language in a text file
+* Put data in a named list
+* Create a function to generate random initial values
+* Specify the parameters you want to monitor
+* Use MCMC to draw posterior samples
+* Use posterior samples for inference and prediction
 
 ## The BUGS language
 
-The BUGS model file: {\tt occupancy-model.jag}
+The BUGS model file: `occupancy-model.jag`
 
 ```{r}
 #| label: bugs
+#| echo: true
 #| comment: ''
 #| background: 'beige'
 writeLines(readLines("occupancy-model.jag"))
@@ -388,27 +418,31 @@ Put data in a named list
   
 ```{r}
 #| label: bugs-data
+#| echo: true
 jags.data <- list(y=y, nSites=nSites, nOccasions=nVisits)
 ```
 
+<br>
 
 Initial values
   
 ```{r}
 #| label: bugs-inits
+#| echo: true
 jags.inits <- function() {
     list(psi=runif(1), p=runif(1), z=rep(1, nSites))
 }
 ``` 
 
+<br>
 
 Parameters to monitor
   
 ```{r}
 #| label: bugs-pars
+#| echo: true
 jags.pars <- c("psi", "p", "sitesOccupied")
 ``` 
-
 
 
 
@@ -419,6 +453,7 @@ posterior samples using 3 Markov chains run in parallel.
 
 ```{r}
 #| label: bugs-mcmc
+#| echo: true
 #| warning: false
 #| results: 'hide'
 #| cache: false
@@ -436,6 +471,7 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 
 ```{r}
 #| label: bugs-sum
+#| echo: true
 summary(jags.post.samples[,1:4])
 ``` 
 
@@ -445,6 +481,7 @@ summary(jags.post.samples[,1:4])
 
 ```{r}
 #| label: bugs-plot
+#| echo: true
 #| out.width: "70%"
 #| fig.align: 'center'
 plot(jags.post.samples[,1:4])
@@ -457,22 +494,25 @@ plot(jags.post.samples[,1:4])
 
 ## Assignment
 
+
+::: {style="font-size: 70%;"}
+
 Create a self-contained R script or Rmarkdown file to do the
 following: 
   
-- Import the Canada Warbler data (`"cawa\_data\_2017\_occu.csv"`) and compute basic summary stats like we did earlier. 
-  * Data are ``point count data'' from North Carolina
+- Import the Canada Warbler data (`"cawa_data_2017_occu.csv"`) and compute basic summary stats like we did earlier. 
+  * Data are "point count data" from North Carolina
   * Each 10-min survey was divided into 4, 2.5-min intervals 
     
-- Fit the single-season (static) occupancy model using `unmarked' and `JAGS'. 
+- Fit the single-season (static) occupancy model using 'unmarked' and 'JAGS'. 
 
-- Create a `data.frame` to compare the estimates of $\psi$, $p$, and
-      ``nSitesOccupied'' from the two analyses. Compare point
-      estimates and 95\% CIs. Describe any differences you see in the
-      estimates. 
+- Create a `data.frame` to compare the estimates of $\psi$, $p$, and "nSitesOccupied" from the two analyses. Compare point estimates and 95\% CIs. Describe any differences you see in the estimates. 
+
+:::
+
   
 <center>
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00pm on Monday. 
+  Upload your `.R` or `.Rmd` file to ELC by 5:00pm on Monday. 
 </center>
 
 

@@ -32,21 +32,21 @@
     "href": "lectures/occupancyI/lecture-occupancyI.html#outline",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Outline",
-    "text": "Outline"
+    "text": "Outline\n\nMotivation\nSimulation\nClassical analysis with ‘unmarked’\nBayesian analysis with ‘JAGS’"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#motivation-1",
     "href": "lectures/occupancyI/lecture-occupancyI.html#motivation-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Motivation",
-    "text": "Motivation\nWe often want to do logistic regression, but the data are subject to measurement error.\nSpecifically, wildlife data are often fraught with false negatives (ie, the species was there but we didn’t detect it).\nIgnoring this source of measurement error can result in misleading inferences. * Occupancy will be under-estimated * Habitat associations may be incorrect"
+    "text": "Motivation\nWe often want to do logistic regression, but the data are subject to measurement error.\nSpecifically, wildlife data are often fraught with false negatives (ie, the species was there but we didn’t detect it).\nIgnoring this source of measurement error can result in misleading inferences.\n\nOccupancy will be under-estimated\nHabitat associations may be incorrect"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#accounting-for-detection-probability",
     "href": "lectures/occupancyI/lecture-occupancyI.html#accounting-for-detection-probability",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Accounting for detection probability",
-    "text": "Accounting for detection probability\nThe model for the state process is the same as logistic regression:\n\\[\n  \\begin{gather*}\n    \\mathrm{logit}(\\psi_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots \\\\\n    z_i \\sim \\mathrm{Bern}(\\psi_i)\n  \\end{gather*}\n\\]\nModel for the observation process conditional on the state process:\n\\[\n\\begin{gather*}\n    \\mathrm{logit}(p_{ij}) = \\alpha_0 + \\alpha_1 x_{ij1} + \\alpha_2 x_{ij2} + \\cdots \\\\\n    y_{ij} \\sim \\mathrm{Bern}(z_i\\times p_{ij})\n  \\end{gather*}\n\\]\nDefinitions \\(\\psi_i\\) – probability that the species occurs at site \\(i\\) \\(z_i\\) – binary presence/absence variable at site \\(i\\) \\(p_{ij}\\) – probability of detecting the species at site \\(i\\) on occasion \\(j\\) \\(y_{ij}\\) – binary detection/non-detection data\n## Assumptions\nAssumptions of the basic single-season occupancy models:\n* []\n* Population closure\n\n  * Occupancy state (presence/absence) constant over time\n\n* Statistical independence\n\n  * Occupancy state at one site has no impact on occupancy of other sites\n  * Detections are independent, conditional on occupancy state \n\n* Variation in $\\psi$ and $p$ described by covariates"
+    "text": "Accounting for detection probability\n\nThe model for the state process is the same as logistic regression:\n\\[\n  \\begin{gather*}\n    \\mathrm{logit}(\\psi_i) = \\beta_0 + \\beta_1 x_{i1} + \\beta_2 x_{i2} + \\cdots \\\\\n    z_i \\sim \\mathrm{Bern}(\\psi_i)\n  \\end{gather*}\n\\]\nModel for the observation process conditional on the state process:\n\\[\n\\begin{gather*}\n    \\mathrm{logit}(p_{ij}) = \\alpha_0 + \\alpha_1 x_{ij1} + \\alpha_2 x_{ij2} + \\cdots \\\\\n    y_{ij} \\sim \\mathrm{Bern}(z_i\\times p_{ij})\n  \\end{gather*}\n\\]\n\n\\(\\psi_i\\) – probability that the species occurs at site \\(i\\)\n\\(z_i\\) – binary presence/absence variable at site \\(i\\)\n\\(p_{ij}\\) – probability of detecting the species at site \\(i\\) on occasion \\(j\\)\n\\(y_{ij}\\) – binary detection/non-detection data"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#outline-1",
@@ -60,14 +60,14 @@
     "href": "lectures/occupancyI/lecture-occupancyI.html#simulation-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Simulation",
-    "text": "Simulation\nSimplest case with no covariates:\n\nSpecify the parameters and dimensions\n\n\nNow, simulate presence-absence\n\n\nSimulate observations"
+    "text": "Simulation\n\nSimplest case with no covariates:\n\nSpecify the parameters and dimensions\n\n\npsi &lt;- 0.5       ## Occurrence probability\np &lt;- 0.2         ## Detection probability\nnSites &lt;- 20\nnVisits &lt;- 4\n\n\nNow, simulate presence-absence\n\n\nset.seed(3439)    ## Just to make it reproducible\nz &lt;- rbinom(nSites, size=1, psi) ## pres/absence\n\n\nSimulate observations\n\n\ny &lt;- matrix(NA, nrow=nSites, ncol=nVisits)\nfor(i in 1:nSites) {\n    y[] &lt;- rbinom(nVisits, size=1, prob=z[]*p)\n}"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#simulated-data",
     "href": "lectures/occupancyI/lecture-occupancyI.html#simulated-data",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Simulated data",
-    "text": "Simulated data\n\n\n Observations\n\n\n      [,1] [,2] [,3] [,4]\n [1,]    0    0    0    0\n [2,]    0    0    0    0\n [3,]    0    0    0    0\n [4,]    0    0    0    0\n [5,]    0    0    0    0\n [6,]    0    0    0    0\n [7,]    0    0    0    0\n [8,]    0    0    0    0\n [9,]    0    0    0    0\n[10,]    0    0    0    0\n[11,]    0    0    0    0\n[12,]    0    0    0    0\n[13,]    0    0    0    0\n[14,]    0    0    0    0\n[15,]    0    0    0    0\n[16,]    0    0    0    0\n[17,]    0    0    0    0\n[18,]    0    0    0    0\n[19,]    0    0    0    0\n[20,]    0    0    0    0\n\n\n\nSummary stats\nDetections at each site\n\n\nsiteDets\n 0 \n20 \n\n\nProportion of sites known to be occupied\n\n\n[1] 0"
+    "text": "Simulated data\n\n\nObservations\n\ny\n\n      [,1] [,2] [,3] [,4]\n [1,]    0    0    0    0\n [2,]    0    0    0    0\n [3,]    0    0    0    0\n [4,]    0    0    0    0\n [5,]    0    0    0    0\n [6,]    0    0    0    0\n [7,]    0    0    0    0\n [8,]    0    0    0    0\n [9,]    0    0    0    0\n[10,]    0    0    0    0\n[11,]    0    0    0    0\n[12,]    0    0    0    0\n[13,]    0    0    0    0\n[14,]    0    0    0    0\n[15,]    0    0    0    0\n[16,]    0    0    0    0\n[17,]    0    0    0    0\n[18,]    0    0    0    0\n[19,]    0    0    0    0\n[20,]    0    0    0    0\n\n\n\n\nSummary stats\n\nDetections at each site\n\nsiteDets &lt;- rowSums(y) # Dets at each site\ntable(siteDets)        # Frequency\n\nsiteDets\n 0 \n20 \n\n\nProportion of sites known to be occupied\n\nnaiveOccupancy &lt;- sum(siteDets&gt;0)/nSites\nnaiveOccupancy \n\n[1] 0"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#outline-2",
@@ -80,36 +80,36 @@
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked",
     "href": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "R package `unmarked’",
-    "text": "R package `unmarked’\nInstall and load the package\nDocumentation (help files)\nDocumentation (vignettes)"
+    "section": "R package ‘unmarked’",
+    "text": "R package ‘unmarked’\nInstall and load the package\n\n## install.packages(\"unmarked\")  \nlibrary(unmarked)\n\nDocumentation (help files)\n\nhelp(\"unmarked\")\n\nDocumentation (vignettes)\n\nvignette(package=\"unmarked\")\n## vignette(\"spp-dist\")"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked-1",
     "href": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "R package `unmarked’",
-    "text": "R package `unmarked’\nUnlike standard model fitting functions such as lm and glm that require data to be in data.frames, data for unmarked' has to be formatted in anunmarkedFrame`.\n\n\nunmarkedFrame Object\n\n20 sites\nMaximum number of observations per site: 4 \nMean number of observations per site: 4 \nSites with at least one detection: 0 \n\nTabulation of y observations:\n 0 \n80"
+    "section": "R package ‘unmarked’",
+    "text": "R package ‘unmarked’\nUnlike standard model fitting functions such as lm and glm that require data to be in data.frames, data for unmarked' has to be formatted in anunmarkedFrame`.\n\numf &lt;- unmarkedFrameOccu(y=y)\nsummary(umf)\n\nunmarkedFrame Object\n\n20 sites\nMaximum number of observations per site: 4 \nMean number of observations per site: 4 \nSites with at least one detection: 0 \n\nTabulation of y observations:\n 0 \n80"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked-2",
     "href": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "R package `unmarked’",
-    "text": "R package `unmarked’\nFit the single-season occupancy model\n\n\n\nCall:\noccu(formula = ~1 ~ 1, data = umf)\n\nOccupancy (logit-scale):\n Estimate    SE         z P(&gt;|z|)\n    -14.6 21305 -0.000685   0.999\n\nDetection (logit-scale):\n Estimate    SE         z P(&gt;|z|)\n    -7.67 21961 -0.000349       1\n\nAIC: 4 \nNumber of sites: 20\n\n\nEstimates obtained using maximum likelihood"
+    "section": "R package ‘unmarked’",
+    "text": "R package ‘unmarked’\nFit the single-season occupancy model\n\nfm &lt;- occu(~1 ~1, umf)\nsummary(fm)\n\n\nCall:\noccu(formula = ~1 ~ 1, data = umf)\n\nOccupancy (logit-scale):\n Estimate    SE         z P(&gt;|z|)\n    -14.6 21305 -0.000685   0.999\n\nDetection (logit-scale):\n Estimate    SE         z P(&gt;|z|)\n    -7.67 21961 -0.000349       1\n\nAIC: 4 \nNumber of sites: 20\n\n\nEstimates obtained using maximum likelihood"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked-3",
     "href": "lectures/occupancyI/lecture-occupancyI.html#r-package-unmarked-3",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "R package `unmarked’",
-    "text": "R package `unmarked’\nOccupancy estimate (\\(\\hat{\\psi}\\))\n\n\nBacktransformed linear combination(s) of Occupancy estimate(s)\n\n Estimate      SE LinComb (Intercept)\n 4.63e-07 0.00986   -14.6           1\n\nTransformation: logistic \n\n\nDetection probability estimate (\\(\\hat{p}\\))\n\n\nBacktransformed linear combination(s) of Detection estimate(s)\n\n Estimate   SE LinComb (Intercept)\n 0.000466 10.2   -7.67           1\n\nTransformation: logistic"
+    "section": "R package ‘unmarked’",
+    "text": "R package ‘unmarked’\nOccupancy estimate (\\(\\hat{\\psi}\\))\n\nbackTransform(fm, type=\"state\")\n\nBacktransformed linear combination(s) of Occupancy estimate(s)\n\n Estimate      SE LinComb (Intercept)\n 4.63e-07 0.00986   -14.6           1\n\nTransformation: logistic \n\n\nDetection probability estimate (\\(\\hat{p}\\))\n\nbackTransform(fm, type=\"det\")\n\nBacktransformed linear combination(s) of Detection estimate(s)\n\n Estimate   SE LinComb (Intercept)\n 0.000466 10.2   -7.67           1\n\nTransformation: logistic"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#two-types-of-occupancy-estimates",
     "href": "lectures/occupancyI/lecture-occupancyI.html#two-types-of-occupancy-estimates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Two types of occupancy estimates",
-    "text": "Two types of occupancy estimates\n\nUnconditional occupancy \\(\\psi=\\Pr(z=1)\\)\nThe estimate \\(\\hat{\\psi}\\) that we computed earlier can be thought of as a prediction that we could use for a new site or a new time period\nConditional occupancy \\(\\psi^* = \\Pr(z_i=1|y_{i})\\)\nConditional occupancy estimates only apply to sites in the sample, at the time of sampling\nIn unmarked', conditional occupancy is computed using         Empirical Bayes methods, with theranefandbup` functions. In JAGS, full Bayesian inference is used instead.\nConditional occupancy estimates can be used to answer questions like:\n    * Which sites were occupied?\n    * How many sites were occupied?"
+    "text": "Two types of occupancy estimates\n\nUnconditional occupancy \\(\\psi=\\Pr(z=1)\\)\n\nThe estimate \\(\\hat{\\psi}\\) that we computed earlier can be thought of as a prediction that we could use for a new site or a new time period\n\nConditional occupancy \\(\\psi^* = \\Pr(z_i=1|y_{i})\\)\n\nConditional occupancy estimates only apply to sites in the sample, at the time of sampling\nIn ‘unmarked’, conditional occupancy is computed using Empirical Bayes methods, with the ranef and bup functions. In JAGS, full Bayesian inference is used instead.\nConditional occupancy estimates can be used to answer questions like:\n\nWhich sites were occupied?\nHow many sites were occupied?\n\n\n\n## Posterior probs Pr(z_i=1 | y_i)       \nz.post &lt;- ranef(fm)\n## Extract posterior means\npsi.conditional &lt;-  bup(z.post, stat=\"mean\")"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#occupancy-estimates",
@@ -123,14 +123,14 @@
     "href": "lectures/occupancyI/lecture-occupancyI.html#occupancy-estimates-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Occupancy estimates",
-    "text": "Occupancy estimates\nHow many sites were occupied?\nWe can answer this using posterior prediction."
+    "text": "Occupancy estimates\nHow many sites were occupied?\nWe can answer this using posterior prediction.\n\nnsim &lt;- 1000\nsites.occupied.post &lt;- predict(z.post, func=sum, nsim=nsim)\npar(mai=c(0.9,0.9,0.1,0.1))\nplot(table(sites.occupied.post)/nsim, lwd=5, xlab=\"Sites occupied\",\n    ylab=\"Empirical Bayes posterior probability\")\nabline(v=sum(z), col=\"red\") ## Actual number occupied"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#occupancy-estimates-2",
     "href": "lectures/occupancyI/lecture-occupancyI.html#occupancy-estimates-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Occupancy estimates",
-    "text": "Occupancy estimates\nThe posterior median (or mean or mode) can be used as a point estimate:\n\n\n[1] 0\n\n\nQuantiles can be used for the 95% confidence interval:\n\n\n 2.5% 97.5% \n    0     0"
+    "text": "Occupancy estimates\nThe posterior median (or mean or mode) can be used as a point estimate:\n\npsi.cond.estimate &lt;- median(sites.occupied.post)\npsi.cond.estimate\n\n[1] 0\n\n\nQuantiles can be used for the 95% confidence interval:\n\nquantile(sites.occupied.post, prob=c(0.025, 0.975))\n\n 2.5% 97.5% \n    0     0"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#bayesian-methods",
@@ -144,49 +144,49 @@
     "href": "lectures/occupancyI/lecture-occupancyI.html#jags-and-the-jagsui-package",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "JAGS and the jagsUI package",
-    "text": "JAGS and the jagsUI package\nA reminder…\nThe basic steps of a Bayesian analysis with JAGS are: * Write a model in the BUGS language in a text file * Put data in a named list * Create a function to generate random initial values * Specify the parameters you want to monitor * Use MCMC to draw posterior samples * Use posterior samples for inference and prediction"
+    "text": "JAGS and the jagsUI package\nA reminder…\nThe basic steps of a Bayesian analysis with JAGS are:\n\nWrite a model in the BUGS language in a text file\nPut data in a named list\nCreate a function to generate random initial values\nSpecify the parameters you want to monitor\nUse MCMC to draw posterior samples\nUse posterior samples for inference and prediction"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#the-bugs-language",
     "href": "lectures/occupancyI/lecture-occupancyI.html#the-bugs-language",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "The BUGS language",
-    "text": "The BUGS language\nThe BUGS model file: {}\n\n\nmodel {\n\npsi ~ dunif(0,1)            # Prior for occupancy parameter\np ~ dunif(0,1)              # Prior for detection probability\n\nfor(i in 1:nSites) {\n  z[i] ~ dbern(psi)         # Latent presence/absence\n  for(j in 1:nOccasions) {\n    y[i,j] ~ dbern(z[i]*p)  # Model for the data\n  }\n}\n\nsitesOccupied &lt;- sum(z)     # Total number of sites occupied\n\n}"
+    "text": "The BUGS language\nThe BUGS model file: occupancy-model.jag\n\nwriteLines(readLines(\"occupancy-model.jag\"))\n\nmodel {\n\npsi ~ dunif(0,1)            # Prior for occupancy parameter\np ~ dunif(0,1)              # Prior for detection probability\n\nfor(i in 1:nSites) {\n  z[i] ~ dbern(psi)         # Latent presence/absence\n  for(j in 1:nOccasions) {\n    y[i,j] ~ dbern(z[i]*p)  # Model for the data\n  }\n}\n\nsitesOccupied &lt;- sum(z)     # Total number of sites occupied\n\n}"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#data-inits-and-parameters",
     "href": "lectures/occupancyI/lecture-occupancyI.html#data-inits-and-parameters",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Data, inits, and parameters",
-    "text": "Data, inits, and parameters\nPut data in a named list\nInitial values\nParameters to monitor"
+    "text": "Data, inits, and parameters\nPut data in a named list\n\njags.data &lt;- list(y=y, nSites=nSites, nOccasions=nVisits)\n\n\nInitial values\n\njags.inits &lt;- function() {\n    list(psi=runif(1), p=runif(1), z=rep(1, nSites))\n}\n\n\nParameters to monitor\n\njags.pars &lt;- c(\"psi\", \"p\", \"sitesOccupied\")"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#mcmc",
     "href": "lectures/occupancyI/lecture-occupancyI.html#mcmc",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "MCMC",
-    "text": "MCMC\nThis function will compile the model, run adaptive MCMC, and then draw posterior samples using 3 Markov chains run in parallel."
+    "text": "MCMC\nThis function will compile the model, run adaptive MCMC, and then draw posterior samples using 3 Markov chains run in parallel.\n\n## install.packages(\"jagsUI\")\nlibrary(jagsUI)\njags.post.samples &lt;- jags.basic(data=jags.data, inits=jags.inits,\n                                parameters.to.save=jags.pars,\n                                model.file=\"occupancy-model.jag\",\n                                n.chains=3, n.adapt=100, n.burnin=0,\n                                n.iter=2000, parallel=TRUE)"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#summarize-output",
     "href": "lectures/occupancyI/lecture-occupancyI.html#summarize-output",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Summarize output",
-    "text": "Summarize output\n\n\n\nIterations = 101:2100\nThinning interval = 1 \nNumber of chains = 3 \nSample size per chain = 2000 \n\n1. Empirical mean and standard deviation for each variable,\n   plus standard error of the mean:\n\n                Mean     SD Naive SE Time-series SE\ndeviance      0.8324 1.5492 0.020000        0.04832\np             0.3118 0.3093 0.003993        0.01293\npsi           0.1603 0.2100 0.002711        0.01583\nsitesOccupied 2.5653 4.4207 0.057072        0.33810\n\n2. Quantiles for each variable:\n\n                  2.5%     25%    50%    75%   97.5%\ndeviance      0.000000 0.00000 0.0000 1.0588  5.3920\np             0.002431 0.03926 0.1851 0.5617  0.9517\npsi           0.001886 0.02606 0.0693 0.2002  0.7902\nsitesOccupied 0.000000 0.00000 0.0000 3.0000 16.0000"
+    "text": "Summarize output\n\nsummary(jags.post.samples[,1:4])\n\n\nIterations = 101:2100\nThinning interval = 1 \nNumber of chains = 3 \nSample size per chain = 2000 \n\n1. Empirical mean and standard deviation for each variable,\n   plus standard error of the mean:\n\n                Mean     SD Naive SE Time-series SE\ndeviance      0.8324 1.5492 0.020000        0.04832\np             0.3118 0.3093 0.003993        0.01293\npsi           0.1603 0.2100 0.002711        0.01583\nsitesOccupied 2.5653 4.4207 0.057072        0.33810\n\n2. Quantiles for each variable:\n\n                  2.5%     25%    50%    75%   97.5%\ndeviance      0.000000 0.00000 0.0000 1.0588  5.3920\np             0.002431 0.03926 0.1851 0.5617  0.9517\npsi           0.001886 0.02606 0.0693 0.2002  0.7902\nsitesOccupied 0.000000 0.00000 0.0000 3.0000 16.0000"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#traceplots-and-density-plots",
     "href": "lectures/occupancyI/lecture-occupancyI.html#traceplots-and-density-plots",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Traceplots and density plots",
-    "text": "Traceplots and density plots"
+    "text": "Traceplots and density plots\n\nplot(jags.post.samples[,1:4])"
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#assignment-1",
     "href": "lectures/occupancyI/lecture-occupancyI.html#assignment-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assignment",
-    "text": "Assignment\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nImport the Canada Warbler data (\"cawa\\_data\\_2017\\_occu.csv\") and compute basic summary stats like we did earlier.\n\nData are ``point count data’’ from North Carolina\nEach 10-min survey was divided into 4, 2.5-min intervals\n\nFit the single-season (static) occupancy model using unmarked' andJAGS’.\nCreate a data.frame to compare the estimates of \\(\\psi\\), \\(p\\), and ``nSitesOccupied’’ from the two analyses. Compare point estimates and 95% CIs. Describe any differences you see in the estimates.\n\n\nUpload your {} or {} file to ELC by 5:00pm on Monday."
+    "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nImport the Canada Warbler data (\"cawa_data_2017_occu.csv\") and compute basic summary stats like we did earlier.\n\nData are “point count data” from North Carolina\nEach 10-min survey was divided into 4, 2.5-min intervals\n\nFit the single-season (static) occupancy model using ‘unmarked’ and ‘JAGS’.\nCreate a data.frame to compare the estimates of \\(\\psi\\), \\(p\\), and “nSitesOccupied” from the two analyses. Compare point estimates and 95% CIs. Describe any differences you see in the estimates.\n\n\n\nUpload your .R or .Rmd file to ELC by 5:00pm on Monday."
   },
   {
     "objectID": "lectures/stats-basics/lecture-stats-basics.html#section",
@@ -663,5 +663,19 @@
     "title": "Inference for models of Fish and Wildlife Population Dynamics",
     "section": "Lectures",
     "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\nWeek 2 - Occupancy models\n\nLecture 3\n\n\n\n\nStatic models\n\n\nDynamic models"
+  },
+  {
+    "objectID": "lectures/occupancyI/lecture-occupancyI.html#section",
+    "href": "lectures/occupancyI/lecture-occupancyI.html#section",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "",
+    "text": "Occupancy models:simulation and fitting\n\n\nWILD(FISH) 8390 Inference for Models of Fish and Wildlife Population Dynamics"
+  },
+  {
+    "objectID": "lectures/occupancyI/lecture-occupancyI.html#assumptions",
+    "href": "lectures/occupancyI/lecture-occupancyI.html#assumptions",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Assumptions",
+    "text": "Assumptions\nAssumptions of the basic single-season occupancy models:\n\nPopulation closure\nOccupancy state (presence/absence) constant over time\nStatistical independence\nOccupancy state at one site has no impact on occupancy of other sites\nDetections are independent, conditional on occupancy state\nVariation in \\(\\psi\\) and \\(p\\) described by covariates"
   }
 ]
