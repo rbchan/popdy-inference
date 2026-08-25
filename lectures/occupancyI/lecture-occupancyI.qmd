@@ -139,7 +139,10 @@ $$
 ## Assumptions
 
 Assumptions of the basic single-season occupancy models:
-  
+
+
+::: {.incremental}
+
 - Population closure
     
 - Occupancy state (presence/absence) constant over time
@@ -152,6 +155,8 @@ Assumptions of the basic single-season occupancy models:
     
 - Variation in $\psi$ and $p$ described by covariates
   
+:::
+
 
 
 
@@ -328,6 +333,9 @@ summary(fm)
 
 ## R package 'unmarked'
 
+::: {style="font-size: 95%;"}
+
+
 Occupancy estimate ($\hat{\psi}$)
 
 ```{r}
@@ -348,23 +356,24 @@ backTransform(fm, type="det")
 
 :::
 
+:::
+
 
 ## Two types of occupancy estimates
 
-::: {style="font-size: 65%;"}
+::: {style="font-size: 75%;"}
 
 1. Expected occupancy $\psi=\Pr(z=1)$
 
 - The estimate $\hat{\psi}$ that we computed earlier can be thought of as a prediction that we could use for a new site or a new time period.
 
+<br>
 
 ::: {.fragment}
 
 2. Realized occupancy $\psi^* = \Pr(z_i=1|y_{i})$
     
 - Realized occupancy estimates only apply to sites in the sample, at the time of sampling.
-
-- In 'unmarked', realized occupancy is computed using Empirical Bayes methods, with the `ranef` and `bup` functions. In JAGS, full Bayesian inference is used instead. 
 
 - Realized occupancy estimates can be used to answer questions like: 
         
@@ -373,8 +382,17 @@ backTransform(fm, type="det")
 
 :::
 
-::: {.fragment}
 
+
+:::
+
+
+
+## Realized occupancy in 'unmarked'
+
+In 'unmarked', realized occupancy is computed using Empirical Bayes methods, with the `ranef` and `bup` functions. In JAGS, full Bayesian inference is used instead. 
+
+<br>
 
 ```{r}
 #| label: bup
@@ -385,15 +403,13 @@ z.post <- ranef(fm)
 psi_realized <-  bup(z.post, stat="mean") 
 ```
 
-:::
-
-:::
 
 
 ## Occupancy estimates
 
 ```{r}
 #| label: psi-zpm
+#| echo: true
 round(data.frame(y=y, psi_expected=predict(fm, type="state")[,1],
                  psi_realized), 3)
 ```
@@ -494,9 +510,17 @@ The basic steps of a Bayesian analysis with JAGS are:
 * Use MCMC to draw posterior samples
 * Use posterior samples for inference and prediction
 
-## The BUGS language
 
-The BUGS model file: `occupancy-model.jag`
+
+## The BUGS language <!-- {background="beige"} -->
+
+
+
+The BUGS model file: `occupancy-model.jag`.
+
+<br>
+
+::: {style="font-size: 90%;"}
 
 ```{r}
 #| label: bugs
@@ -506,7 +530,7 @@ The BUGS model file: `occupancy-model.jag`
 writeLines(readLines("occupancy-model.jag"))
 ``` 
 
-
+:::
 
 
 ## Data, inits, and parameters
@@ -545,15 +569,21 @@ jags.pars <- c("psi", "p", "sitesOccupied")
 
 ## MCMC
 
+::: {style="font-size: 90%;"}
+
 This function will compile the model, run adaptive MCMC, and then draw
 posterior samples using 3 Markov chains run in parallel.
+
+:::
+
+<br>
 
 ```{r}
 #| label: bugs-mcmc
 #| echo: true
 #| warning: false
 #| results: 'hide'
-#| cache: false
+#| cache: true
 ## install.packages("jagsUI")
 library(jagsUI)
 library(coda)
@@ -609,7 +639,7 @@ following:
 <br>
   
 <center>
-  Upload your `.R` or `.Rmd` file to ELC by 5:00pm on Monday. 
+  Upload your `.R`, `.Rmd`, or `.qmd` file to ELC by 5:00pm on Tuesday. 
 </center>
 
 :::
