@@ -95,6 +95,7 @@
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../../custom.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -218,13 +219,21 @@
 </section>
 <section id="motivation-1" class="slide level2">
 <h2>Motivation</h2>
+<div style="font-size: 90%;">
 <p>We often want to do logistic regression, but the data are subject to measurement error.</p>
+<p><br></p>
+<div class="fragment">
 <p>Specifically, wildlife data are often fraught with false negatives (ie, the species was there but we didn’t detect it).</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Ignoring this source of measurement error can result in misleading inferences.</p>
 <ul>
 <li><p>Occupancy will be under-estimated</p></li>
 <li><p>Habitat associations may be incorrect</p></li>
 </ul>
+</div>
+</div>
 </section>
 <section id="accounting-for-detection-probability" class="slide level2">
 <h2>Accounting for detection probability</h2>
@@ -236,6 +245,7 @@
     z_i \sim \mathrm{Bern}(\psi_i)
   \end{gather*}
 \]</span></p>
+<div class="fragment">
 <p>Model for the observation process conditional on the state process:</p>
 <p><span class="math display">\[
 \begin{gather*}
@@ -247,6 +257,25 @@
 <li><span class="math inline">\(\psi_i\)</span> – probability that the species occurs at site <span class="math inline">\(i\)</span></li>
 <li><span class="math inline">\(z_i\)</span> – binary presence/absence variable at site <span class="math inline">\(i\)</span></li>
 <li><span class="math inline">\(p_{ij}\)</span> – probability of detecting the species at site <span class="math inline">\(i\)</span> on occasion <span class="math inline">\(j\)</span></li>
+<li><span class="math inline">\(y_{ij}\)</span> – binary detection/non-detection data</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="occupancy-model-without-covariates" class="slide level2">
+<h2>Occupancy model without covariates</h2>
+<p><br></p>
+<p><span class="math display">\[
+  \begin{gather*}
+    z_i \sim \mathrm{Bern}(\psi) \\
+    y_{ij} \sim \mathrm{Bern}(z_i\times p)
+  \end{gather*}
+\]</span></p>
+<div style="font-size: 90%;">
+<ul>
+<li><span class="math inline">\(\psi\)</span> – probability that the species occurs at site <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(z_i\)</span> – binary presence/absence variable at site <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(p\)</span> – probability of detecting the species at site <span class="math inline">\(i\)</span> on occasion <span class="math inline">\(j\)</span></li>
 <li><span class="math inline">\(y_{ij}\)</span> – binary detection/non-detection data</li>
 </ul>
 </div>
@@ -265,34 +294,37 @@
 </section></section>
 <section>
 
-<section id="simulation-1" class="slide level2">
-<h2>Simulation</h2>
+<section id="simulation-with-no-covariates" class="slide level2">
+<h2>Simulation with no covariates</h2>
 <div style="font-size: 75%;">
-<p>Simplest case with no covariates:</p>
-<ul>
+<ol type="1">
 <li>Specify the parameters and dimensions</li>
-</ul>
+</ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>psi <span class="ot">&lt;-</span> <span class="fl">0.5</span>       <span class="do">## Occurrence probability</span></span>
-<span id="cb1-2"><a></a>p <span class="ot">&lt;-</span> <span class="fl">0.2</span>         <span class="do">## Detection probability</span></span>
-<span id="cb1-3"><a></a>nSites <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb1-2"><a></a>p <span class="ot">&lt;-</span> <span class="fl">0.3</span>         <span class="do">## Detection probability</span></span>
+<span id="cb1-3"><a></a>nSites <span class="ot">&lt;-</span> <span class="dv">40</span></span>
 <span id="cb1-4"><a></a>nVisits <span class="ot">&lt;-</span> <span class="dv">4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<ul>
-<li>Now, simulate presence-absence</li>
-</ul>
+<div class="fragment">
+<ol start="2" type="1">
+<li>Simulate presence-absence</li>
+</ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">3439</span>)    <span class="do">## Just to make it reproducible</span></span>
 <span id="cb2-2"><a></a>z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(nSites, <span class="at">size=</span><span class="dv">1</span>, psi) <span class="do">## pres/absence</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<ul>
+</div>
+<div class="fragment">
+<ol start="3" type="1">
 <li>Simulate observations</li>
-</ul>
+</ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>y <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>nSites, <span class="at">ncol=</span>nVisits)</span>
 <span id="cb3-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
-<span id="cb3-3"><a></a>    y[] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(nVisits, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>z[]<span class="sc">*</span>p)</span>
+<span id="cb3-3"><a></a>    y[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(nVisits, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>z[i]<span class="sc">*</span>p)</span>
 <span id="cb3-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </section>
@@ -302,32 +334,29 @@
 <div class="column" style="width:40%;">
 <p>Observations</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>y[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      [,1] [,2] [,3] [,4]
- [1,]    0    0    0    0
+ [1,]    0    1    1    0
  [2,]    0    0    0    0
- [3,]    0    0    0    0
+ [3,]    1    0    1    0
  [4,]    0    0    0    0
  [5,]    0    0    0    0
  [6,]    0    0    0    0
- [7,]    0    0    0    0
+ [7,]    0    1    0    0
  [8,]    0    0    0    0
- [9,]    0    0    0    0
-[10,]    0    0    0    0
+ [9,]    0    0    1    1
+[10,]    0    1    0    0
 [11,]    0    0    0    0
 [12,]    0    0    0    0
 [13,]    0    0    0    0
 [14,]    0    0    0    0
-[15,]    0    0    0    0
-[16,]    0    0    0    0
-[17,]    0    0    0    0
-[18,]    0    0    0    0
-[19,]    0    0    0    0
-[20,]    0    0    0    0</code></pre>
+[15,]    0    0    0    0</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:60%;">
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:55%;">
 <center>
 Summary stats
 </center>
@@ -337,16 +366,17 @@ Summary stats
 <span id="cb6-2"><a></a><span class="fu">table</span>(siteDets)        <span class="co"># Frequency</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>siteDets
- 0 
-20 </code></pre>
+ 0  1  2  3 
+27  5  7  1 </code></pre>
 </div>
 </div>
+<p><br></p>
 <p>Proportion of sites known to be occupied</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>naiveOccupancy <span class="ot">&lt;-</span> <span class="fu">sum</span>(siteDets<span class="sc">&gt;</span><span class="dv">0</span>)<span class="sc">/</span>nSites</span>
 <span id="cb8-2"><a></a>naiveOccupancy </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
+<pre><code>[1] 0.325</code></pre>
 </div>
 </div>
 </div></div>
@@ -363,10 +393,12 @@ Summary stats
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="do">## install.packages("unmarked")  </span></span>
 <span id="cb10-2"><a></a><span class="fu">library</span>(unmarked)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
 <p>Documentation (help files)</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">help</span>(<span class="st">"unmarked"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
 <p>Documentation (vignettes)</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">vignette</span>(<span class="at">package=</span><span class="st">"unmarked"</span>)</span>
@@ -375,21 +407,24 @@ Summary stats
 </section>
 <section id="r-package-unmarked-1" class="slide level2">
 <h2>R package ‘unmarked’</h2>
-<p>Unlike standard model fitting functions such as <code>lm</code> and <code>glm</code> that require data to be in <code>data.frames</code>, data for <code>unmarked' has to be formatted in an</code>unmarkedFrame`.</p>
+<div style="font-size: 90%;">
+<p>Unlike standard model fitting functions such as <code>lm</code> and <code>glm</code> that require data to be in <code>data.frames</code>, data for ‘unmarked’ has to be formatted in an <code>unmarkedFrame</code>.</p>
+</div>
+<p><br></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFrameOccu</span>(<span class="at">y=</span>y)</span>
 <span id="cb13-2"><a></a><span class="fu">summary</span>(umf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>unmarkedFrame Object
 
-20 sites
+40 sites
 Maximum number of observations per site: 4 
 Mean number of observations per site: 4 
-Sites with at least one detection: 0 
+Sites with at least one detection: 13 
 
 Tabulation of y observations:
- 0 
-80 </code></pre>
+  0   1 
+138  22 </code></pre>
 </div>
 </div>
 </section>
@@ -405,18 +440,18 @@ Call:
 occu(formula = ~1 ~ 1, data = umf)
 
 Occupancy (logit-scale):
- Estimate    SE         z P(&gt;|z|)
-    -14.6 21305 -0.000685   0.999
+ Estimate    SE      z P(&gt;|z|)
+   -0.413 0.423 -0.978   0.328
 
 Detection (logit-scale):
- Estimate    SE         z P(&gt;|z|)
-    -7.67 21961 -0.000349       1
+ Estimate    SE     z P(&gt;|z|)
+   -0.639 0.364 -1.76  0.0787
 
-AIC: 4 
-Number of sites: 20</code></pre>
+AIC: 121.3701 
+Number of sites: 40</code></pre>
 </div>
 </div>
-<p>Estimates obtained using maximum likelihood</p>
+<!-- Estimates obtained using maximum likelihood -->
 </section>
 <section id="r-package-unmarked-3" class="slide level2">
 <h2>R package ‘unmarked’</h2>
@@ -426,47 +461,57 @@ Number of sites: 20</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>Backtransformed linear combination(s) of Occupancy estimate(s)
 
- Estimate      SE LinComb (Intercept)
- 4.63e-07 0.00986   -14.6           1
+ Estimate    SE LinComb (Intercept)
+    0.398 0.101  -0.413           1
 
 Transformation: logistic </code></pre>
 </div>
 </div>
+<div class="fragment">
 <p>Detection probability estimate (<span class="math inline">\(\hat{p}\)</span>)</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">backTransform</span>(fm, <span class="at">type=</span><span class="st">"det"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Backtransformed linear combination(s) of Detection estimate(s)
 
- Estimate   SE LinComb (Intercept)
- 0.000466 10.2   -7.67           1
+ Estimate     SE LinComb (Intercept)
+    0.345 0.0822  -0.639           1
 
 Transformation: logistic </code></pre>
+</div>
 </div>
 </div>
 </section>
 <section id="two-types-of-occupancy-estimates" class="slide level2">
 <h2>Two types of occupancy estimates</h2>
-<div style="font-size: 70%;">
-<p>Unconditional occupancy <span class="math inline">\(\psi=\Pr(z=1)\)</span></p>
+<div style="font-size: 65%;">
+<ol type="1">
+<li>Expected occupancy <span class="math inline">\(\psi=\Pr(z=1)\)</span></li>
+</ol>
 <ul>
-<li>The estimate <span class="math inline">\(\hat{\psi}\)</span> that we computed earlier can be thought of as a prediction that we could use for a new site or a new time period</li>
+<li>The estimate <span class="math inline">\(\hat{\psi}\)</span> that we computed earlier can be thought of as a prediction that we could use for a new site or a new time period.</li>
 </ul>
-<p>Conditional occupancy <span class="math inline">\(\psi^* = \Pr(z_i=1|y_{i})\)</span></p>
+<div class="fragment">
+<ol start="2" type="1">
+<li>Realized occupancy <span class="math inline">\(\psi^* = \Pr(z_i=1|y_{i})\)</span></li>
+</ol>
 <ul>
-<li><p>Conditional occupancy estimates only apply to sites in the sample, at the time of sampling</p></li>
-<li><p>In ‘unmarked’, conditional occupancy is computed using Empirical Bayes methods, with the <code>ranef</code> and <code>bup</code> functions. In JAGS, full Bayesian inference is used instead.</p></li>
-<li><p>Conditional occupancy estimates can be used to answer questions like:</p>
+<li><p>Realized occupancy estimates only apply to sites in the sample, at the time of sampling.</p></li>
+<li><p>In ‘unmarked’, realized occupancy is computed using Empirical Bayes methods, with the <code>ranef</code> and <code>bup</code> functions. In JAGS, full Bayesian inference is used instead.</p></li>
+<li><p>Realized occupancy estimates can be used to answer questions like:</p>
 <ul>
 <li>Which sites were occupied?</li>
 <li>How many sites were occupied?</li>
 </ul></li>
 </ul>
+</div>
+<div class="fragment">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="do">## Posterior probs Pr(z_i=1 | y_i)       </span></span>
 <span id="cb21-2"><a></a>z.post <span class="ot">&lt;-</span> <span class="fu">ranef</span>(fm)</span>
 <span id="cb21-3"><a></a><span class="do">## Extract posterior means</span></span>
-<span id="cb21-4"><a></a>psi.conditional <span class="ot">&lt;-</span>  <span class="fu">bup</span>(z.post, <span class="at">stat=</span><span class="st">"mean"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-4"><a></a>psi_realized <span class="ot">&lt;-</span>  <span class="fu">bup</span>(z.post, <span class="at">stat=</span><span class="st">"mean"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </section>
@@ -474,55 +519,56 @@ Transformation: logistic </code></pre>
 <h2>Occupancy estimates</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>   y.1 y.2 y.3 y.4 psi.unconditional.Predicted psi.unconditional.SE
-1    0   0   0   0                           0                 0.01
-2    0   0   0   0                           0                 0.01
-3    0   0   0   0                           0                 0.01
-4    0   0   0   0                           0                 0.01
-5    0   0   0   0                           0                 0.01
-6    0   0   0   0                           0                 0.01
-7    0   0   0   0                           0                 0.01
-8    0   0   0   0                           0                 0.01
-9    0   0   0   0                           0                 0.01
-10   0   0   0   0                           0                 0.01
-11   0   0   0   0                           0                 0.01
-12   0   0   0   0                           0                 0.01
-13   0   0   0   0                           0                 0.01
-14   0   0   0   0                           0                 0.01
-15   0   0   0   0                           0                 0.01
-16   0   0   0   0                           0                 0.01
-17   0   0   0   0                           0                 0.01
-18   0   0   0   0                           0                 0.01
-19   0   0   0   0                           0                 0.01
-20   0   0   0   0                           0                 0.01
-   psi.unconditional.lower psi.unconditional.upper psi.conditional
-1                        0                       1               0
-2                        0                       1               0
-3                        0                       1               0
-4                        0                       1               0
-5                        0                       1               0
-6                        0                       1               0
-7                        0                       1               0
-8                        0                       1               0
-9                        0                       1               0
-10                       0                       1               0
-11                       0                       1               0
-12                       0                       1               0
-13                       0                       1               0
-14                       0                       1               0
-15                       0                       1               0
-16                       0                       1               0
-17                       0                       1               0
-18                       0                       1               0
-19                       0                       1               0
-20                       0                       1               0</code></pre>
+<pre><code>   y.1 y.2 y.3 y.4 psi_expected psi_realized
+1    0   1   1   0        0.398        1.000
+2    0   0   0   0        0.398        0.108
+3    1   0   1   0        0.398        1.000
+4    0   0   0   0        0.398        0.108
+5    0   0   0   0        0.398        0.108
+6    0   0   0   0        0.398        0.108
+7    0   1   0   0        0.398        1.000
+8    0   0   0   0        0.398        0.108
+9    0   0   1   1        0.398        1.000
+10   0   1   0   0        0.398        1.000
+11   0   0   0   0        0.398        0.108
+12   0   0   0   0        0.398        0.108
+13   0   0   0   0        0.398        0.108
+14   0   0   0   0        0.398        0.108
+15   0   0   0   0        0.398        0.108
+16   0   1   0   1        0.398        1.000
+17   0   0   0   0        0.398        0.108
+18   1   1   0   0        0.398        1.000
+19   0   0   0   0        0.398        0.108
+20   1   0   0   0        0.398        1.000
+21   0   0   0   0        0.398        0.108
+22   0   0   0   0        0.398        0.108
+23   0   0   0   0        0.398        0.108
+24   1   0   0   0        0.398        1.000
+25   0   0   0   0        0.398        0.108
+26   0   0   0   0        0.398        0.108
+27   0   1   1   0        0.398        1.000
+28   0   0   0   0        0.398        0.108
+29   0   0   0   0        0.398        0.108
+30   0   0   0   0        0.398        0.108
+31   0   1   1   0        0.398        1.000
+32   1   0   0   0        0.398        1.000
+33   0   0   0   0        0.398        0.108
+34   0   0   0   0        0.398        0.108
+35   0   0   0   0        0.398        0.108
+36   1   1   1   0        0.398        1.000
+37   0   0   0   0        0.398        0.108
+38   0   0   0   0        0.398        0.108
+39   0   0   0   0        0.398        0.108
+40   0   0   0   0        0.398        0.108</code></pre>
 </div>
 </div>
 </section>
 <section id="occupancy-estimates-1" class="slide level2">
 <h2>Occupancy estimates</h2>
+<div style="font-size: 80%;">
 <p>How many sites were occupied?</p>
 <p>We can answer this using posterior prediction.</p>
+</div>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>nsim <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
 <span id="cb23-2"><a></a>sites.occupied.post <span class="ot">&lt;-</span> <span class="fu">predict</span>(z.post, <span class="at">func=</span>sum, <span class="at">nsim=</span>nsim)</span>
@@ -535,33 +581,43 @@ Transformation: logistic </code></pre>
 <img data-src="lecture-occupancyI_files/figure-revealjs/bup-hist-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="occupancy-estimates-2" class="slide level2">
 <h2>Occupancy estimates</h2>
+<div style="font-size: 80%;">
 <p>The posterior median (or mean or mode) can be used as a point estimate:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>psi.cond.estimate <span class="ot">&lt;-</span> <span class="fu">median</span>(sites.occupied.post)</span>
-<span id="cb24-2"><a></a>psi.cond.estimate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>psi.realized.estimate <span class="ot">&lt;-</span> <span class="fu">median</span>(sites.occupied.post)</span>
+<span id="cb24-2"><a></a>psi.realized.estimate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
+<pre><code>[1] 16</code></pre>
 </div>
 </div>
+<p><br></p>
+<div class="fragment">
 <p>Quantiles can be used for the 95% confidence interval:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="fu">quantile</span>(sites.occupied.post, <span class="at">prob=</span><span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> 2.5% 97.5% 
-    0     0 </code></pre>
+<pre><code>  2.5%  97.5% 
+13.000 19.025 </code></pre>
+</div>
+</div>
 </div>
 </div>
 </section>
 <section id="bayesian-methods" class="slide level2">
 <h2>Bayesian methods</h2>
+<div style="font-size: 80%;">
 <p>Bayesian methods incorporate prior distributions into inferences.</p>
+<p><br></p>
 <p>We often have prior information, and it’s easy to use.</p>
+<p><br></p>
 <p>If we don’t have prior information, we can use vague priors and obtain similar inferences as likelihood-based methods.</p>
+<p><br></p>
 <p>Ultimately, we want the posterior distribution of the model parameters. We’ll use MCMC to obtain samples from this distribution.</p>
+</div>
 </section>
 <section id="jags-and-the-jagsui-package" class="slide level2">
 <h2>JAGS and the jagsUI package</h2>
-<p>A reminder…</p>
+<!-- A reminder... -->
 <p>The basic steps of a Bayesian analysis with JAGS are:</p>
 <ul>
 <li>Write a model in the BUGS language in a text file</li>
@@ -576,7 +632,6 @@ Transformation: logistic </code></pre>
 <h2>The BUGS language</h2>
 <p>The BUGS model file: <code>occupancy-model.jag</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(<span class="st">"occupancy-model.jag"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
 
@@ -600,38 +655,39 @@ sitesOccupied &lt;- sum(z)     # Total number of sites occupied
 <h2>Data, inits, and parameters</h2>
 <p>Put data in a named list</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>jags.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">nSites=</span>nSites, <span class="at">nOccasions=</span>nVisits)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>jags.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">nSites=</span>nSites, <span class="at">nOccasions=</span>nVisits)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><br></p>
 <p>Initial values</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>jags.inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb31-2"><a></a>    <span class="fu">list</span>(<span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">p=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>, nSites))</span>
-<span id="cb31-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>jags.inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb30-2"><a></a>    <span class="fu">list</span>(<span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">p=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>, nSites))</span>
+<span id="cb30-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><br></p>
 <p>Parameters to monitor</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>jags.pars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"psi"</span>, <span class="st">"p"</span>, <span class="st">"sitesOccupied"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>jags.pars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"psi"</span>, <span class="st">"p"</span>, <span class="st">"sitesOccupied"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="mcmc" class="slide level2">
 <h2>MCMC</h2>
 <p>This function will compile the model, run adaptive MCMC, and then draw posterior samples using 3 Markov chains run in parallel.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="do">## install.packages("jagsUI")</span></span>
-<span id="cb33-2"><a></a><span class="fu">library</span>(jagsUI)</span>
-<span id="cb33-3"><a></a>jags.post.samples <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data, <span class="at">inits=</span>jags.inits,</span>
-<span id="cb33-4"><a></a>                                <span class="at">parameters.to.save=</span>jags.pars,</span>
-<span id="cb33-5"><a></a>                                <span class="at">model.file=</span><span class="st">"occupancy-model.jag"</span>,</span>
-<span id="cb33-6"><a></a>                                <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb33-7"><a></a>                                <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="do">## install.packages("jagsUI")</span></span>
+<span id="cb32-2"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb32-3"><a></a><span class="fu">library</span>(coda)</span>
+<span id="cb32-4"><a></a>jags.post.samples <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data, <span class="at">inits=</span>jags.inits,</span>
+<span id="cb32-5"><a></a>                                <span class="at">parameters.to.save=</span>jags.pars,</span>
+<span id="cb32-6"><a></a>                                <span class="at">model.file=</span><span class="st">"occupancy-model.jag"</span>,</span>
+<span id="cb32-7"><a></a>                                <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb32-8"><a></a>                                <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="summarize-output" class="slide level2">
 <h2>Summarize output</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">summary</span>(jags.post.samples[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">summary</span>(jags.post.samples)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Iterations = 101:2100
@@ -642,26 +698,24 @@ Sample size per chain = 2000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-                Mean     SD Naive SE Time-series SE
-deviance      0.8324 1.5492 0.020000        0.04832
-p             0.3118 0.3093 0.003993        0.01293
-psi           0.1603 0.2100 0.002711        0.01583
-sitesOccupied 2.5653 4.4207 0.057072        0.33810
+                 Mean      SD Naive SE Time-series SE
+p              0.3417 0.08161 0.001054       0.002405
+psi            0.4258 0.11192 0.001445       0.003522
+sitesOccupied 16.9030 3.49771 0.045155       0.127358
 
 2. Quantiles for each variable:
 
-                  2.5%     25%    50%    75%   97.5%
-deviance      0.000000 0.00000 0.0000 1.0588  5.3920
-p             0.002431 0.03926 0.1851 0.5617  0.9517
-psi           0.001886 0.02606 0.0693 0.2002  0.7902
-sitesOccupied 0.000000 0.00000 0.0000 3.0000 16.0000</code></pre>
+                 2.5%     25%     50%     75%   97.5%
+p              0.1879  0.2841  0.3404  0.3964  0.5066
+psi            0.2416  0.3470  0.4130  0.4900  0.6893
+sitesOccupied 13.0000 14.0000 16.0000 18.0000 26.0000</code></pre>
 </div>
 </div>
 </section>
 <section id="traceplots-and-density-plots" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">plot</span>(jags.post.samples[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">plot</span>(jags.post.samples)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-occupancyI_files/figure-revealjs/bugs-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section></section>
@@ -669,21 +723,24 @@ sitesOccupied 0.000000 0.00000 0.0000 3.0000 16.0000</code></pre>
 
 <section id="assignment-1" class="slide level2">
 <h2>Assignment</h2>
-<div style="font-size: 70%;">
+<div style="font-size: 75%;">
 <p>Create a self-contained R script or Rmarkdown file to do the following:</p>
-<ul>
-<li><p>Import the Canada Warbler data (<code>"cawa_data_2017_occu.csv"</code>) and compute basic summary stats like we did earlier.</p>
+<ol type="1">
+<li>Import the Canada Warbler data (<code>"cawa_data_2017_occu.csv"</code>) and compute basic summary stats like we did earlier.</li>
+</ol>
 <ul>
 <li>Data are “point count data” from North Carolina</li>
 <li>Each 10-min survey was divided into 4, 2.5-min intervals</li>
-</ul></li>
+</ul>
+<ol start="2" type="1">
 <li><p>Fit the single-season (static) occupancy model using ‘unmarked’ and ‘JAGS’.</p></li>
 <li><p>Create a <code>data.frame</code> to compare the estimates of <span class="math inline">\(\psi\)</span>, <span class="math inline">\(p\)</span>, and “nSitesOccupied” from the two analyses. Compare point estimates and 95% CIs. Describe any differences you see in the estimates.</p></li>
-</ul>
-</div>
+</ol>
+<p><br></p>
 <center>
 Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00pm on Monday.
 </center>
+</div>
 
 
 </section></section>
