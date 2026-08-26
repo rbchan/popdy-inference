@@ -63,6 +63,8 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   content <- gsub("\\\\Large", "", content)
   content <- gsub("\\\\large", "", content)
   content <- gsub("\\\\normalsize", "", content)
+  content <- gsub("\\\\footnotesizesize", "", content)
+  content <- gsub("\\\\small", "", content)
   content <- gsub("\\\\centering", "", content)
   content <- gsub("\\\\begin\\{center\\}", "<center>", content)
   content <- gsub("\\\\end\\{center\\}", "</center>", content)
@@ -74,7 +76,7 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   content <- gsub("\\\\tableofcontents", "", content)
   content <- gsub("^\\[\\]", "", content, perl=TRUE)
   content <- gsub("^\\s*\\[\\s*\\]\\s*$", "", content, perl=TRUE)
-  content <- gsub("\\\\$", "", content)
+  content <- gsub("\\\\", "<br>", content, fixed=TRUE)
   
   # Write out the new .qmd file
   writeLines(content, output_file)

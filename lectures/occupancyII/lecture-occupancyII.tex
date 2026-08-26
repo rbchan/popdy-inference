@@ -511,19 +511,20 @@ Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}:
 ## Call:
 ## occu(formula = ~elev_s + temp ~ elev_s + forest_s, data = umf)
 ## 
-## Occupancy:
+## Occupancy (logit-scale):
 ##             Estimate    SE      z P(>|z|)
 ## (Intercept)   -0.284 0.177 -1.605  0.1084
 ## elev_s        -0.436 0.184 -2.377  0.0174
 ## forest_s       0.126 0.168  0.751  0.4526
 ## 
-## Detection:
+## Detection (logit-scale):
 ##             Estimate    SE     z  P(>|z|)
 ## (Intercept)   -1.207 0.203 -5.96 2.56e-09
 ## elev_s         0.569 0.133  4.27 1.97e-05
 ## tempHot        1.634 0.261  6.25 4.03e-10
 ## 
-## AIC: 596.8205
+## AIC: 596.8205 
+## Number of sites: 200
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -872,7 +873,7 @@ sitesOccupied <- sum(z)
 ## 
 ## Parallel processing completed.
 ## 
-## MCMC took 0.025 minutes.
+## MCMC took 0.07 minutes.
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -897,27 +898,25 @@ sitesOccupied <- sum(z)
 ## 1. Empirical mean and standard deviation for each variable,
 ##    plus standard error of the mean:
 ## 
-##                   Mean      SD Naive SE Time-series SE
-## alpha0         -1.1758  0.2025 0.002614       0.006870
-## alpha1          0.5708  0.1327 0.001713       0.002627
-## alpha2          1.5701  0.2600 0.003357       0.008402
-## beta0          -0.2661  0.1799 0.002322       0.004214
-## beta1          -0.4524  0.1845 0.002382       0.004110
-## beta2           0.1274  0.1697 0.002191       0.003356
-## deviance      396.8458 17.2814 0.223103       0.448637
-## sitesOccupied  87.2630  4.9410 0.063789       0.131797
+##                  Mean     SD Naive SE Time-series SE
+## alpha0        -1.1665 0.2020 0.002608       0.006444
+## alpha1         0.5660 0.1356 0.001751       0.002778
+## alpha2         1.5460 0.2562 0.003308       0.007300
+## beta0         -0.2605 0.1813 0.002341       0.004201
+## beta1         -0.4481 0.1914 0.002471       0.004197
+## beta2          0.1315 0.1699 0.002193       0.003329
+## sitesOccupied 87.4655 5.0831 0.065622       0.140707
 ## 
 ## 2. Quantiles for each variable:
 ## 
-##                   2.5%       25%      50%      75%     97.5%
-## alpha0         -1.5882  -1.31176  -1.1687  -1.0374  -0.79310
-## alpha1          0.3135   0.48103   0.5686   0.6602   0.83408
-## alpha2          1.0809   1.39620   1.5602   1.7415   2.08105
-## beta0          -0.6196  -0.38486  -0.2694  -0.1491   0.09678
-## beta1          -0.8329  -0.57251  -0.4456  -0.3232  -0.10507
-## beta2          -0.1998   0.01353   0.1274   0.2396   0.47156
-## deviance      367.3163 384.73433 395.5927 407.7031 433.75572
-## sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000
+##                  2.5%      25%     50%     75%    97.5%
+## alpha0        -1.5695 -1.30153 -1.1630 -1.0304 -0.77441
+## alpha1         0.2994  0.47222  0.5642  0.6561  0.83835
+## alpha2         1.0521  1.37589  1.5479  1.7147  2.05739
+## beta0         -0.6090 -0.38581 -0.2620 -0.1393  0.10470
+## beta1         -0.8449 -0.57349 -0.4386 -0.3149 -0.09501
+## beta2         -0.2035  0.01856  0.1292  0.2455  0.46913
+## sitesOccupied 79.0000 84.00000 87.0000 91.0000 98.00000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -952,13 +951,9 @@ sitesOccupied <- sum(z)
 \begin{alltt}
 \hlkwd{plot}\hldef{(jags.post.samples[,}\hlkwd{c}\hldef{(}\hlnum{4}\hlopt{:}\hlnum{6}\hldef{,}\hlnum{8}\hldef{)])}
 \end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.7\textwidth]{figure/bugs-plot2-1} 
-
-}
 
 
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in (function (cond) : error in evaluating the argument 'x' in selecting a method for function 'plot': subscript out of bounds}}\end{kframe}
 \end{knitrout}
 \end{frame}
 
@@ -992,11 +987,11 @@ sitesOccupied <- sum(z)
 \hlkwd{head}\hldef{(psi.coef.post,} \hlkwc{n}\hldef{=}\hlnum{4}\hldef{)}
 \end{alltt}
 \begin{verbatim}
-##            beta0       beta1       beta2
-## [1,] -0.50241972 -0.26606916 -0.00358777
-## [2,] -0.06971611 -0.42945708 -0.13100297
-## [3,] -0.18686091 -0.04623989  0.09095983
-## [4,] -0.34570094 -0.30938459  0.32173537
+##            beta0      beta1       beta2
+## [1,]  0.03917272 -0.6438042  0.01456167
+## [2,] -0.05849979 -0.4680823 -0.01976281
+## [3,]  0.14814125 -0.4031580 -0.05574820
+## [4,] -0.10849216 -0.5924015  0.05711385
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
