@@ -27,10 +27,71 @@ rnw2qmd <- function(input_file, output_file = NULL) {
   content <- gsub("\\\\end\\{frame\\}", "", content)
   
   ## 4. Convert Sweave code chunks <<options>>= ... @ to ```{r, options} ... ```
-  content <- gsub("<<(.*?)>>=", "```\\{r, \\1\\}", content)
-  # Replace isolated '@' on their own line with standard markdown backticks
-  content <- gsub("(?m)^\\s*@\\s*\\$", "```", content, perl = TRUE)
-  content <- gsub("@", "```", content)
+  ## content <- gsub("<<(.*?)>>=", "```\\{r, \\1\\}", content)
+  ## # Replace isolated '@' on their own line with standard markdown backticks
+  ## content <- gsub("(?m)^\\s*@\\s*\\$", "```", content, perl = TRUE)
+  ## content <- gsub("@", "```", content)
+
+  # 4. Parse and translate Sweave chunks to Quarto chunks
+  lines <- unlist(strsplit(content, "\n", fixed = TRUE))
+  in_chunk <- FALSE
+  new_lines <- c()
+  
+  for (line in lines) {
+    # Match Sweave block start: <<label, option=value>>=
+    ## if (!in_chunk && grepl("^\\s*<<", line) && grepl(">>=\\s*$", line)) {
+    if (!in_chunk && grepl("<<", line) && grepl(">>", line)) {
+        ## browser()
+      in_chunk <- TRUE
+      
+      # Extract text inside << >>
+      ## match_header <- regexec("^\\s*<<(.*)>>=\\s*$", line)
+      match_header <- regexec("<<(.*)>>", line)
+      header_content <- regmatches(line, match_header)[[1]]
+      
+      # Split by commas and trim whitespace
+      opts <- unlist(strsplit(header_content[2], ",", fixed = TRUE))
+      opts <- trimws(opts)
+      
+      label <- NULL
+      quarto_opts <- c()
+      
+      for (i in seq_along(opts)) {
+        opt <- opts[i]
+        if (!grepl("=", opt, fixed = TRUE)) {
+          if (i == 1) label <- opt # First nameless option is the label
+        } else {
+          kv <- unlist(strsplit(opt, "=", fixed = TRUE))
+          key <- trimws(kv[1])
+          val <- trimws(kv[2])
+          # Convert booleans to lowercase for YAML compatibility
+          if (tolower(val) == "true") val <- "true"
+          if (tolower(val) == "false") val <- "false"
+          quarto_opts <- c(quarto_opts, paste0("#| ", key, ": ", val))
+        }
+      }
+      
+      new_lines <- c(new_lines, "```{r}")
+      if (!is.null(label) && label != "") {
+        new_lines <- c(new_lines, paste0("#| label: ", label))
+      }
+      if (length(quarto_opts) > 0) {
+        new_lines <- c(new_lines, quarto_opts)
+      }
+      
+    ## } else if (in_chunk && grepl("^\\s*@\\s*\\$", line)) {
+    } else if (in_chunk && grepl("@", line)) {
+      # End of Sweave block: @
+      in_chunk <- FALSE
+      new_lines <- c(new_lines, "```")
+    } else {
+      # Document content or code body
+      new_lines <- c(new_lines, line)
+    }
+  }
+  
+  content <- paste(new_lines, collapse = "\n")
+  
   
   ## 5. Clean up standard list environments
   content <- gsub("\\\\begin\\{itemize\\}", "", content)
