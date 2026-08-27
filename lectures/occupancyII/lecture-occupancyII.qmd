@@ -15,11 +15,18 @@ lang: en
 
 ## {content-align="center" style="font-size: 160%;"}
 
+<center>
 
-Occupancy models: covariates and prediction} <br>
-  
+Occupancy models:<br>covariates and prediction 
+
+<br>
+
+::: {style="font-size: 80%;"}
 WILD(FISH) 8390 <br>
 Inference for Models of Fish and Wildlife Population Dynamics <br>
+:::
+
+</center>
   
 
 # Overview {visibility="hidden"}
@@ -29,55 +36,68 @@ Inference for Models of Fish and Wildlife Population Dynamics <br>
 
 ## Overview
 
-We almost always have covariates, which are also called explanatory variables, predictors, independent variables, etc\dots <br> 
+::: {style="font-size: 90%;"}
+
+<!-- We almost always have covariates, which are also called explanatory variables, predictors, independent variables, etc\dots <br>  -->
   
   
 Explaining variation in occupancy and detection probability with covariates is central to reliable prediction and scientific investigation. <br>
-  
-  
+
+<br>
+
+::: {.fragment}
 In static occupancy models, there are two types of covariates:
   
 - [Site covariates]{style="color: blue;"} vary among sites
       but not among occasions.
-- [Observation covariates]{style="color: Bittersweet;"} may vary among
+- [Observation covariates]{style="color: Coral;"} may vary among
       sites and occasions
-  
-In both cases, covariates can be continuous or categorical. <br>
-  
-  
-Observation covariates cannot be used to describe variation in occupancy because occupancy is assumed to be <br> constant over time. <br> 
+:::
 
+<br>
 
+::: {.fragment}
+In both cases, covariates can be continuous or categorical.
+:::
+  
+::: {.fragment}
+Observation covariates [cannot](style="color: red;") be used to describe variation in occupancy because occupancy is assumed to be constant over time. <br> 
+:::
+
+:::
 
 ## Covariates
 
+::: {style="font-size: 90%;"}
 
 State model
 $$
+  \small
   \begin{gather*}
     \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
-    \beta_2 {\color{blue} x_{i2}} + \cdots <br>
+    \beta_2 {\color{blue} x_{i2}} + \cdots \\
     z_i \sim \mathrm{Bern}(\psi_i)
   \end{gather*}
 $$
-  
+
 Observation model
 $$
-\begin{gather*}
+  \small
+  \begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{Bittersweet} w_{ij}} + \cdots <br>
+    + \alpha_2 {\color{Coral} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
   \end{gather*}
 $$
 
-  $\color{blue} x_1$ and $\color{blue} x_2$ are site covariates. <br>
-   Examples: elevation, forest cover, distance to water. <br>
+$\color{blue} x_1$ and $\color{blue} x_2$ are site covariates. <br>
+Examples: elevation, forest cover, distance to water.
   
   
-  $\color{Bittersweet} w$ is an observation covariate. <br>
-   Examples: time of day, observer, wind.
+$\color{Coral} w$ is an observation covariate. <br>
+Examples: time of day, observer, wind.
 
-
+:::
 
 # Simulation {visibility="hidden"}
 
@@ -85,11 +105,13 @@ $$
 
 ## Simulation
 
+::: {style="font-size: 80%;"}
+
 Two continuous covariates and one categorical covariate with 2 levels.
   
-Covariates
 ```{r}
 #| label: sim-cov1
+#| echo: true
 nSites <- 200; nVisits <- 4; set.seed(83) # Make it reproducible
 elev <- rnorm(nSites,5000,500) # Site covariate (continuous)
 forest <- rnorm(nSites,100,10) # Another continuous site covariate
@@ -99,25 +121,31 @@ temp <- matrix(sample(c("Cold", "Hot"), size=nSites*nVisits,
 tempHot <- ifelse(temp=="Hot", 1, 0)      # Dummy variable
 ```
 
+::: {.fragment}
 Coefficients, $\psi$, and $p$
 ```{r}
 #| label: sim-cov2
+#| echo: true
 beta0 <- 5; beta1 <- -0.001; beta2 <- 0
 psi <- plogis(beta0 + beta1*elev + beta2*forest)
 alpha0 <- -6.5; alpha1 <- 0.001; alpha2 <- 2
 p <- plogis(alpha0 + alpha1*elev + alpha2*tempHot)
 ```
+:::
 
-
+::: {.fragment}
 Simulate occupancy and detection data
 ```{r}
 #| label: sim-cov3
+#| echo: true
 z <- rbinom(nSites, size=1, psi)            ## pres/absence
 y <- matrix(NA, nrow=nSites, ncol=nVisits)
 for(i in 1:nSites) {
     y[i,] <- rbinom(nVisits, size=1, prob=z[i]*p[i,]) }
 ```
+:::
 
+:::
 
 
 
@@ -143,29 +171,36 @@ legend(5000, 1, c("Occupancy (psi)", "Detection (p)"), lty=c(1, 1),
 
 
 
-Expect problems if you ignore imperfect detection in this case <br>
-
+Expect problems if you ignore imperfect detection in this case. <br>
 
 
 
 
 ## Simulated data
 
-::: columns
-::: {.column width='50%'}
+::: {.columns}
+::: {.column width='40%'}
   Observations
 
 ```{r}
 #| label: sim-nocov-dat
+#| echo: true
 y[1:20,]
 ``` 
+
 :::
-::: {.column width='50%'}
-    
+::: {.column width='5%'}
+:::
+::: {.column width='55%'}
+
+::: {style="font-size: 80%;"}
+
 Summary stats <br>
 
 Detections at each site <br>
+
 ```{r}
+#| echo: true
 #| label: sim-nocov-ss1
 siteDets <- rowSums(y) # Dets at each site
 table(siteDets)        # Frequency
@@ -174,6 +209,7 @@ table(siteDets)        # Frequency
 Proportion of sites known to be occupied <br>
 ```{r}
 #| label: sim-nocov-ss2
+#| echo: true
 naiveOccupancy <- sum(siteDets>0)/nSites
 naiveOccupancy 
 ```
@@ -185,13 +221,14 @@ library(unmarked)
 Actual occupancy <br>
 ```{r}
 #| label: sim-z
+#| echo: true
 sum(z) / nSites
 ```
 
 :::
 :::
 
-
+:::
 
 
 # Prediction {visibility="hidden"}
@@ -207,28 +244,36 @@ sum(z) / nSites
 ## Prepare data in 'unmarked'
 
 
-Notice the two new arguments \inr{siteCovs} and \inr{obsCovs}: 
-```{r, un-umf,size='tiny',warning=FALSE}
-umf <- unmarkedFrameOccu(y=y, siteCovs=data.frame(elev,forest), obsCovs=list(temp=temp))
+Notice the two new arguments `siteCovs` and `obsCovs`: 
+```{r}
+#| label: un-umf
+#| echo: true
+#| warning: false
+umf <- unmarkedFrameOccu(y=y, siteCovs=data.frame(elev,forest),
+                         obsCovs=list(temp=temp))
 ```
 
 
-```{r, wfac,size='tiny'}
+```{r}
+#| label: wfac
+#| echo: true
 summary(umf)
-``` 
-
-
-
+```
 
 
 ## Standardizing
 
-It's almost always a good idea to standardize \alert{continuous} covariates. <br>
+::: {style="font-size: 90%;"}
+
+
+It's almost always a good idea to standardize [continuous]{style="color: red;"} covariates. <br>
   
 Standardizing involves subtracting the mean and then dividing by the standard deviation. <br>
   
 
-```{r, umf-zcov,size='footnotesize'}
+```{r}
+#| label: umf-zcov
+#| echo: true
 mean.elev <- mean(elev); mean.forest <- mean(forest)
 sd.elev <- sd(elev); sd.forest <- sd(forest)
 elev_s <- (elev-mean.elev)/sd.elev
@@ -237,89 +282,120 @@ siteCovs(umf)$elev_s <- elev_s
 siteCovs(umf)$forest_s <- forest_s
 ```
 
-
 Standardizing makes it easier to find the maximum likelihood estimates (MLEs) and it facilitates comparison of estimates.  <br> 
   
 We just have to remember to back-transform covariates when graphing predictions.
 
 
-
+:::
 
 
 ## Fit the model
 
-```{r, un-fit}
+```{r}
+#| label: un-fit
+#| echo: true
 fm <- occu(~elev_s+temp ~elev_s+forest_s, umf) # Standardized covariates
 fm
 ```
 
 
 
-## Prediction in `unmarked'
+## Prediction in 'unmarked'
+
+::: {style="font-size: 90%;"}
+
 
 Create a data frame with prediction covariates. We'll let elevation
-  vary while holding the other two covariates constant. <br>
-  Important that we predict using the standardized covariates. We can
-  still graph on the original scales.
+  vary while holding the other two covariates constant. 
 
-```{r, preddat}
+Important that we predict using the standardized covariates. We can
+still graph on the original scales.
+
+::: {.fragment}
+```{r}
+#| label: preddat
+#| echo: true
 pred.data <- data.frame(elev_s=seq(from=-3, to=3, length=50),
                         forest_s=0, temp='Hot') # Standardized
 pred.data$elev <- pred.data$elev_s*sd.elev+mean.elev # Orig scale
 pred.data$forest <- pred.data$forest_s*sd.forest+mean.forest 
 ```
+:::
 
 
+::: {.fragment}
 Get predictions of $\psi$ for each row of prediction data.
-```{r, predpsi}
+```{r}
+#| label: predpsi
+#| echo: true
 psi.pred <- predict(fm, newdata=pred.data,
                     type='state', append=TRUE)
 ```
+:::
 
 
+::: {.fragment}
 Get predictions of $p$ for each row of prediction data.
-```{r, predp}
+```{r}
+#| label: predp
+#| echo: true
 p.pred <- predict(fm, newdata=pred.data,
                   type='det', append=TRUE)
 ```
+:::
+
+:::
 
 
+## Prediction in 'unmarked'
 
-
-## Prediction in `unmarked'
 
 View $\psi$ predictions
-```{r, psi-head}
+```{r}
+#| label: psi-head
+#| echo: true
 print(head(psi.pred), digits=2)
 ```
 
 
 View $p$ predictions
-```{r, p-head}
+```{r}
+#| label: p-head
+#| echo: true
 print(head(p.pred), digits=2)
 ```
 
 
 ## Standardized elevation
 
-```{r, pred-psi1,fig.width=7,fig.height=5,out.width='80%',fig.align='center',echo=-1}
+```{r}
+#| label: pred-psi1
+#| fig-width: 7
+#| fig-height: 5
+#| out-width: '80%'
+#| fig-align: 'center'
+## #| echo: "[-1]"
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(Predicted ~ elev_s, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Elevation (standardized)", ylim=0:1) 
+plot(Predicted ~ elev_s, psi.pred, type="l", ylab="Occurrence probability",
+     col="blue", xlab="Elevation (standardized)", ylim=0:1) 
 lines(lower ~ elev_s, psi.pred, col="grey"); lines(upper ~ elev_s, psi.pred, col="grey")
 ```
 
 
 
-
-
-
 ## Elevation on original scale
 
-```{r, pred-psi1s,fig.width=7,fig.height=5,out.width='80%',fig.align='center',echo=-1}
+```{r}
+#| label: pred-psi1s
+#| fig-width: 7
+#| fig-height: 5
+#| out-width: '80%'
+#| fig-align: 'center'
+## #| echo: "[-1]"
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(Predicted ~ elev, psi.pred, type="l", ylab="Occurrence probability", col="blue",
-     xlab="Elevation (original scale)", ylim=0:1)
+plot(Predicted ~ elev, psi.pred, type="l", ylab="Occurrence probability",
+     col="blue", xlab="Elevation (original scale)", ylim=0:1)
 lines(lower ~ elev, psi.pred, col="grey"); lines(upper ~ elev, psi.pred, col="grey")
 ```
 
@@ -349,9 +425,11 @@ legend(5800, 1, c("Actual", "Estimated"), lwd=c(2,1), col=c("black", "blue"))
 
 ## The BUGS model
 
-```{r, bugs,echo=FALSE,background='beige',comment=''}
+```{r}
+#| label: bugs
+#| comment: ''
 writeLines(readLines("occupancy-model-covs.jag"))
-``` 
+```
 
 
 
@@ -361,7 +439,9 @@ writeLines(readLines("occupancy-model-covs.jag"))
 
 Put data in a named list
   
-```{r, bugs-data}
+```{r}
+#| label: bugs-data
+#| echo: true
 jags.data <- list(y=y, elev=elev_s, forest=forest_s,
                   tempHot=tempHot,
                   nSites=nSites, nOccasions=nVisits)
@@ -370,72 +450,90 @@ jags.data <- list(y=y, elev=elev_s, forest=forest_s,
 
 Initial values
   
-```{r, bugs-inits}
+```{r}
+#| label: bugs-inits
+#| echo: true
 jags.inits <- function() {
     list(beta0=rnorm(1), alpha0=rnorm(1), z=rep(1, nSites))
 }
-``` 
+```
 
 
 Parameters to monitor
   
-```{r, bugs-pars}
+```{r}
+#| label: bugs-pars
+#| echo: true
 jags.pars <- c("beta0", "beta1", "beta2",
                "alpha0", "alpha1", "alpha2",
                "sitesOccupied")
-``` 
-
-
-
+```
 
 
 
 ## MCMC
 
-```{r, bugs-mcmc,message=FALSE,cache=FALSE}
+```{r}
+#| label: bugs-mcmc
+#| echo: true
+#| message: false
+#| cache: false
 library(jagsUI)
 jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
                                 parameters.to.save=jags.pars,
                                 model.file="occupancy-model-covs.jag",
                                 n.chains=3, n.adapt=100, n.burnin=0,
                                 n.iter=2000, parallel=TRUE)
-``` 
-
+```
 
 ## Summarize output
 
-```{r, bugs-sum}
+```{r}
+#| label: bugs-sum
+#| echo: true
 summary(jags.post.samples)
-``` 
+```
 
 
 ## Traceplots and density plots
 
-```{r, bugs-plot1,out.width="70%",fig.align='center'}
+```{r}
+#| label: bugs-plot1
+#| out-width: "70%"
+#| fig-align: 'center'
 plot(jags.post.samples[,1:3])
-``` 
+```
 
 
 
 ## Traceplots and density plots
 
-```{r, bugs-plot2,out.width="70%",fig.align='center'}
+```{r}
+#| label: bugs-plot2
+#| out-width: "70%"
+#| fig-width: 5
+#| fig-height: 6
+#| fig-align: 'center'
 plot(jags.post.samples[,c(4:6,8)])
-``` 
+```
 
 
 
 ## Bayesian prediction
 
-Every MCMC iteration represents a sample from the posterior distribution. <br>
+Every MCMC iteration represents a sample from the posterior distribution.
+
+<br>
   
+Each sample of the occupancy and detection coefficients can be used to make a prediction.
   
-Each sample of the occupancy and detection coefficients can be used to make a prediction. <br>
+<br>
   
-  
-The collection of predictions can be used to summarize the posterior  predictive distribution. <br>
-  
-We will look at the distribution of prediction lines. <br>  
+The collection of predictions can be used to summarize the posterior  predictive distribution.
+
+<br>
+
+We will look at the distribution of prediction lines.
 
 
 
@@ -443,26 +541,32 @@ We will look at the distribution of prediction lines. <br>
 ## Bayesian prediction
 
 First, extract the $\psi$ coefficients
-```{r, psi-coefs}
+```{r}
+#| label: psi-coefs
+#| echo: true
 psi.coef.post <- as.matrix(jags.post.samples[,c("beta0","beta1","beta2")])
 head(psi.coef.post, n=4)
 ```
-  
+
 Create prediction matrix, one row for each MCMC iteration.
 
-```{r, psi-predmat}
+```{r}
+#| label: psi-predmat
+#| echo: true
 n.iter <- nrow(psi.coef.post)  
 psi.post.pred <- matrix(NA, nrow=n.iter, ncol=nrow(pred.data))
 ```
-  
+
 Predict $\psi$ for each MCMC iteration.
 
-```{r, psi-pred-bayes}
+```{r}
+#| label: psi-pred-bayes
+#| echo: true
 for(i in 1:n.iter) {
     psi.post.pred[i,] <- plogis(psi.coef.post[i,"beta0"] +
                                 psi.coef.post[i,"beta1"]*pred.data$elev_s)
 }
-``` 
+```
 
 
 
@@ -470,7 +574,14 @@ for(i in 1:n.iter) {
 ## Bayesian prediction
 
 Prediction line for first posterior sample
-```{r, psi-pred1,fig.align='center',out.width='80%',fig.height=5,dev='png',dpi=200}
+```{r}
+#| label: psi-pred1
+#| echo: true
+#| fig-align: 'center'
+#| out-width: '80%'
+#| fig-height: 5
+#| dev: 'png'
+#| dpi: 200
 plot(pred.data$elev, psi.post.pred[1,], type="l", xlab="Elevation",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 ```
@@ -479,13 +590,20 @@ plot(pred.data$elev, psi.post.pred[1,], type="l", xlab="Elevation",
 ## Bayesian prediction
 
 All samples from the posterior predictive distribution
-```{r, psi-pred-post,fig.align='center',out.width='80%',fig.height=5,echo=-1,dev='png',cache=FALSE,dpi=200}
+```{r,echo=-1}
+#| label: psi-pred-post
+#| fig-align: 'center'
+#| out-width: '80%'
+#| fig-height: 5
+#| dev: 'png'
+#| dpi: 200
+#| cache: false
 plot(pred.data$elev, psi.post.pred[1,], type="l", xlab="elev",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
     lines(pred.data$elev, psi.post.pred[i,], col=gray(0.8))
 }
-``` 
+```
 
 
 
@@ -493,7 +611,13 @@ for(i in 1:n.iter) {
 ## Bayesian prediction
 
 Now with posterior mean and 95\% CI
-```{r, psi-pred-post-meanCI,fig.align='center',out.width='80%',fig.height=5,echo=-(1:2),dev='png',cache=FALSE,dpi=200}
+```{r,echo=-(1:2)}
+#| label: psi-pred-post-meanCI
+#| fig-align: 'center'
+#| out-width: '80%'
+#| fig-height: 5
+#| dpi: 200
+#| cache: false
 plot(pred.data$elev, psi.post.pred[1,], type="l", xlab="elev",
      ylab="Occurrence probability", ylim=c(0, 1), col=gray(0.8))
 for(i in 1:n.iter) {
@@ -512,33 +636,29 @@ lines(pred.data$elev, pred.post.upper, col="blue", lty=2)
 
 ## Summary of static occupancy models
 
+::: {style="font-size: 80%;"}
 
 Assumptions are made explicit by the model description, but it's worth emphasizing that: 
 
 *  Occupancy is assumed to remain constant at each site during the sampling period
-* The definition of a `site' is critical, but can difficult in
-   some situations, such as in camera studies.
+* The definition of a 'site' is critical, but can difficult in some situations, such as in camera studies.
 * Abundance is assumed to be unimportant
-* Observations are assumed to be independent, conditional
-      on latent variables and covariates
-  
-  
-    These assumptions can be relaxed if we have enough data. 
-  
+* Observations are assumed to be independent, conditional on latent variables and covariates
+
+These assumptions can be relaxed if we have enough data. 
+
 * Dynamic occupancy models
-    
-      * Occupancy evolves as a function of local colonization
-        and extinction
-    
+
+* Occupancy evolves as a function of local colonization and extinction
+
 * $N$-mixture models
-    
-      * Focus is on local abundance, rather than presence/absence
-    
-  
-  
+
+* Focus is on local abundance, rather than presence/absence
+
+
 We'll talk more about design issues later
 
-
+:::
 
 
 # Assignment {visibility="hidden"}
@@ -547,28 +667,21 @@ We'll talk more about design issues later
 
 ## Assignment
 
+::: {style="font-size: 80%;"}
+
 Create a self-contained R script or Rmarkdown file to do the following:
-  
-1. Fit an occupancy model in `unmarked' to the Ruffed Grouse
-      data (`"grouse_data.csv"`). Use all three covariates, with
-      elevation and forest cover affecting occupancy and day of the
-      year affecting detection probability.
+
+1. Fit an occupancy model in 'unmarked' to the Ruffed Grouse data (`"grouse_data.csv"`). Use all three covariates, with elevation and forest cover affecting occupancy and day of the year affecting detection probability.
+  * Response: `grouse1, grouse2, grouse3`
+  * Site covs: Elevation (`elev`), forest cover (`fc`)
+  * Obs cov: Day of the year (`doy.1, doy.2, doy.3`)
       
-        * Response: `grouse1, grouse2, grouse3`
-        * Site covs: Elevation (`elev`), forest cover (`fc`)
-        * Obs cov: Day of the year (`doy.1, doy.2, doy.3`)
-      
-2. Make one prediction graph for occupancy and one for
-      detection.
+2. Make one prediction graph for occupancy and one for detection.
+
 3. Create the same graphs as above, but using Bayesian methods.
     
-    
+<center>
     Upload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday. 
+</center>
 
-
-
-
-
-
-
-
+:::
