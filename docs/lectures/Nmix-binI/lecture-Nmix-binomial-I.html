@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.26">
+
+  <title>Inference for Models of Fish and Wildlife Population Dynamics – Binomial &lt;em&gt;N&lt;/em&gt;-mixture models:&lt;br&gt;simulation, fitting, and prediction</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../../custom.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+
+<section id="section" class="slide level2" data-content-align="center" style="font-size: 160%;">
+<h2></h2>
+<p>Binomial <span class="math inline">\(N\)</span>-mixture models: <br> simulation, fitting, and prediction</p>
+<p>WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
+</section>
+<section>
+<section id="overview" class="title-slide slide level1 center">
+<h1>Overview</h1>
+
+</section>
+<section id="overview-1" class="slide level2">
+<h2>Overview</h2>
+<p>We’re often more interested in abundance than occupancy. <br></p>
+<p>Even if you’re interested in occupancy, you get it for free by modeling abundance. <br></p>
+<p>Occupancy isn’t useful if all sites are occupied. <br></p>
+<p>Binomial <span class="math inline">\(N\)</span>-mixture models are useful for studying spatial variation in abundance if we have repeated count data, instead of repeated detection data.</p>
+</section>
+<section id="binomial-n-mixture-model" class="slide level2">
+<h2>Binomial <span class="math inline">\(N\)</span>-mixture model</h2>
+<p>State model (with Poisson assumption) <span class="math display">\[\begin{gather*}
+    \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
+    \beta_2 {\color{blue} x_{i2}} + \cdots &lt;br&gt;
+    N_i \sim \mathrm{Poisson}(\lambda_i)
+  \end{gather*}\]</span></p>
+<p>Observation model <span class="math display">\[\begin{gather*}
+    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
+    + \alpha_2 {\color{Purple} w_{ij}} + \cdots &lt;br&gt;
+    y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
+  \end{gather*}\]</span></p>
+<p>Definitions <br> <span class="math inline">\(\lambda_i\)</span> – Expected value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(N_i\)</span> – Realized value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(p_{ij}\)</span> – Probability of detecting at site <span class="math inline">\(i\)</span> on occasion <span class="math inline">\(j\)</span> <br> <span class="math inline">\(y_{ij}\)</span> – Count data <br> <span class="math inline">\(\color{blue} x_1\)</span> and <span class="math inline">\(\color{blue} x_2\)</span> – site covariates <br> <span class="math inline">\(\color{Purple} w\)</span> – observation covariate</p>
+</section></section>
+<section>
+<section id="simulation" class="title-slide slide level1 center">
+<h1>Simulation</h1>
+
+</section>
+<section id="simulation-no-covariates" class="slide level2">
+<h2>Simulation – No covariates</h2>
+<p>Detection probability and data</p>
+<p>Data and latent abundance</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             N1
+[1,] 2 2 1 0  3
+[2,] 0 0 0 0  1
+[3,] 2 1 2 2  6
+[4,] 0 0 0 0  1
+[5,] 0 0 0 0  0</code></pre>
+</div>
+</div>
+</section>
+<section id="simulation-covariates" class="slide level2">
+<h2>Simulation – Covariates</h2>
+<p>Coefficients, <span class="math inline">\(\lambda\)</span>, and <span class="math inline">\(p\)</span></p>
+<p>Simulate occupancy and detection data</p>
+</section>
+<section id="simulated-data" class="slide level2">
+<h2>Simulated data</h2>
+<p>::: columns ::: {.column width=‘50%’}</p>
+<pre><code>  Observations</code></pre>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1] [,2] [,3] [,4]
+ [1,]    1    1    0    0
+ [2,]    0    0    3    2
+ [3,]    0    1    0    0
+ [4,]    0    1    0    0
+ [5,]    0    0    0    0
+ [6,]    0    0    0    1
+ [7,]    0    0    0    0
+ [8,]    0    2    0    0
+ [9,]    0    1    0    1
+[10,]    0    1    0    0
+[11,]    0    0    0    1
+[12,]    0    0    1    0
+[13,]    0    0    0    0
+[14,]    0    0    0    0
+[15,]    0    0    0    0
+[16,]    0    0    0    0
+[17,]    0    0    0    0
+[18,]    0    0    0    0
+[19,]    0    0    1    0</code></pre>
+</div>
+</div>
+<p>::: ::: {.column width=‘50%’}</p>
+<pre><code>{ Summary stats &lt;br&gt;}</code></pre>
+<p>Detections at each site <br></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>maxCounts
+ 0  1  2  3 
+55 33  9  3 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.45</code></pre>
+</div>
+</div>
+<p>Observed abundance</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 60</code></pre>
+</div>
+</div>
+<p>::: :::</p>
+</section></section>
+<section>
+<section id="prediction" class="title-slide slide level1 center">
+<h1>Prediction</h1>
+
+</section>
+<section id="prepare-data-in-unmarked" class="slide level2">
+<h2>Prepare data in ‘unmarked’</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>unmarkedFrame Object
+
+100 sites
+Maximum number of observations per site: 4 
+Mean number of observations per site: 4 
+Sites with at least one detection: 45 
+
+Tabulation of y observations:
+  0   1   2   3 
+332  52  13   3 
+
+Site-level covariates:
+      forest  
+ Hardwood:31  
+ Mixed   :32  
+ Pine    :37  
+
+Observation-level covariates:
+      temp          
+ Min.   :-3.229012  
+ 1st Qu.:-0.603218  
+ Median :-0.019813  
+ Mean   :-0.001029  
+ 3rd Qu.: 0.663820  
+ Max.   : 3.001200  </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-the-model-without-covariates" class="slide level2">
+<h2>Fit the model – without covariates</h2>
+<p><code>pcount</code> is similar to <code>occu</code>, but there’s a new argument (<code>K</code>) that should be an integer much greater than the highest possible value of local abundance.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+pcount(formula = ~1 ~ 1, data = umf, K = 100)
+
+Abundance (log-scale):
+ Estimate    SE    z P(&gt;|z|)
+    0.428 0.324 1.32   0.187
+
+Detection (logit-scale):
+ Estimate    SE     z  P(&gt;|z|)
+     -1.8 0.384 -4.69 2.74e-06
+
+AIC: 459.6769 
+Number of sites: 100</code></pre>
+</div>
+</div>
+<p>We can use <code>backTransform</code> to obtain estimate of average abundance at each site because there aren’t covariates:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Backtransformed linear combination(s) of Abundance estimate(s)
+
+ Estimate    SE LinComb (Intercept)
+     1.53 0.498   0.428           1
+
+Transformation: exp </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-the-model-with-covariates" class="slide level2">
+<h2>Fit the model – with covariates</h2>
+<p>Detection depends on <code>temp</code>. Abundance depends on <code>forest</code>.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+pcount(formula = ~temp ~ forest, data = umf, K = 100)
+
+Abundance (log-scale):
+            Estimate    SE      z  P(&gt;|z|)
+(Intercept)   -0.326 0.366 -0.891 0.372706
+forestMixed   -0.326 0.461 -0.706 0.480137
+forestPine     1.207 0.336  3.595 0.000324
+
+Detection (logit-scale):
+            Estimate    SE     z  P(&gt;|z|)
+(Intercept)    -1.96 0.313 -6.26 3.79e-10
+temp            1.18 0.205  5.73 9.83e-09
+
+AIC: 373.6761 
+Number of sites: 100</code></pre>
+</div>
+</div>
+<p>Compare to actual parameter values:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>beta0 beta1 beta2 
+    0    -1     1 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>alpha0 alpha1 
+    -2      1 </code></pre>
+</div>
+</div>
+</section>
+<section id="make-sure-k-is-high-enough" class="slide level2">
+<h2>Make sure <span class="math inline">\(K\)</span> is high enough</h2>
+<p>Estimates should not change when you increase <span class="math inline">\(K\)</span>.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>        lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) 
+         -0.3260          -0.3258           1.2073          -1.9615           1.1760 </code></pre>
+</div>
+</div>
+<p>Looks good:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>        lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) 
+         -0.3260          -0.3258           1.2073          -1.9615           1.1760 </code></pre>
+</div>
+</div>
+<p>If the estimates do change, increase <span class="math inline">\(K\)</span> until they stabilize.</p>
+</section>
+<section id="empirical-bayes-site-level-abundance" class="slide level2">
+<h2>Empirical Bayes – Site-level abundance</h2>
+
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/ranef-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<section id="total-abundance-in-surveyed-region" class="slide level2">
+<h2>Total abundance (in surveyed region)</h2>
+
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/Ntotal-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><p>Estimate of total abundance in sampled area, with 95% CI:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimate     2.5%    97.5% 
+ 128.402  113.000  144.000 </code></pre>
+</div>
+</div>
+</section>
+<section id="prediction-in-unmarked" class="slide level2">
+<h2>Prediction in `unmarked’</h2>
+<p>Create <code>data.frame</code> with prediction covariates.</p>
+<p>Get predictions of <span class="math inline">\(\lambda\)</span> for each row of prediction data.</p>
+<p>View <span class="math inline">\(\lambda\)</span> predictions</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>  Predicted   SE lower upper   forest temp
+1      0.72 0.26  0.35   1.5 Hardwood    0
+2      0.52 0.22  0.23   1.2    Mixed    0
+3      2.41 0.64  1.44   4.0     Pine    0</code></pre>
+</div>
+</div>
+</section>
+<section id="prediction-in-unmarked-1" class="slide level2">
+<h2>Prediction in `unmarked’</h2>
+
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<section id="the-bugs-model-without-covariates" class="slide level2">
+<h2>The BUGS model – without covariates</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+lambda ~ dunif(0, 20)          # Expected value of abundance
+p ~ dunif(0, 1)                # Detection probability
+
+for(i in 1:nSites) {
+  N[i] ~ dpois(lambda)         # Latent local abundance
+  for(j in 1:nOccasions) {
+    y[i,j] ~ dbin(p, N[i])     # Data
+  }
+}
+
+totalAbundance &lt;- sum(N)
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="data-inits-and-parameters" class="slide level2">
+<h2>Data, inits, and parameters</h2>
+<p>Put data in a named list</p>
+<p>Initial values</p>
+<p>Run it</p>
+</section>
+<section id="the-bugs-model-with-covariates" class="slide level2">
+<h2>The BUGS model – with covariates</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+# Priors for occupancy coefficients
+beta0 ~ dnorm(0, 0.5)  # variance=1/0.5
+beta1 ~ dnorm(0, 0.5)
+beta2 ~ dnorm(0, 0.5)
+
+# Priors for detection coefficients
+alpha0 ~ dnorm(0, 0.5)  
+alpha1 ~ dnorm(0, 0.5)
+
+for(i in 1:nSites) {
+  log(lambda[i]) &lt;- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]
+  N[i] ~ dpois(lambda[i])         # Latent local abundance
+  for(j in 1:nOccasions) {
+    logit(p[i,j]) &lt;- alpha0 + alpha1*temp[i,j]
+    y[i,j] ~ dbin(p[i,j], N[i])   # Data
+  }
+}
+
+totalAbundance &lt;- sum(N)
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="data-inits-and-parameters-1" class="slide level2">
+<h2>Data, inits, and parameters</h2>
+<p>Put data in a named list</p>
+<p>Initial values</p>
+<p>Parameters to monitor</p>
+</section>
+<section id="mcmc" class="slide level2">
+<h2>MCMC</h2>
+</section>
+<section id="summarize-output" class="slide level2">
+<h2>Summarize output</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Iterations = 101:2100
+Thinning interval = 1 
+Number of chains = 3 
+Sample size per chain = 2000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+                   Mean      SD Naive SE Time-series SE
+beta0           -0.3929  0.3311 0.004274        0.03587
+beta1           -0.4117  0.4693 0.006059        0.04957
+beta2            1.1824  0.3124 0.004033        0.02593
+alpha0          -1.8476  0.3007 0.003882        0.06867
+alpha1           1.1899  0.1791 0.002313        0.02768
+totalAbundance 121.1325 21.5948 0.278787        4.08153
+
+2. Quantiles for each variable:
+
+                  2.5%      25%      50%       75%    97.5%
+beta0          -1.0624  -0.6132  -0.3849  -0.15200   0.1964
+beta1          -1.3734  -0.7373  -0.3883  -0.05767   0.3914
+beta2           0.6067   0.9652   1.1756   1.38706   1.8294
+alpha0         -2.3059  -2.0827  -1.8788  -1.65230  -1.1511
+alpha1          0.8120   1.0763   1.1949   1.31499   1.4999
+totalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000</code></pre>
+</div>
+</div>
+</section>
+<section id="local-abundance" class="slide level2">
+<h2>Local abundance</h2>
+
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/localN-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+<section id="traceplots-and-density-plots" class="slide level2">
+<h2>Traceplots and density plots</h2>
+
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/bugs-plot1-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="traceplots-and-density-plots-1" class="slide level2">
+<h2>Traceplots and density plots</h2>
+
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/bugs-plot2-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="bayesian-prediction" class="slide level2">
+<h2>Bayesian prediction</h2>
+<p>First, extract the <span class="math inline">\(p\)</span> coefficients</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>        alpha0    alpha1
+[1,] -1.168063 0.8492890
+[2,] -1.159962 0.8759836
+[3,] -1.175225 0.8804013
+[4,] -1.161900 0.8326993</code></pre>
+</div>
+</div>
+<p>Create prediction matrix, one row for each MCMC iteration.</p>
+<p>Predict <span class="math inline">\(p\)</span> for each MCMC iteration.</p>
+</section>
+<section id="bayesian-prediction-1" class="slide level2">
+<h2>Bayesian prediction</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">plot</span>(temp.pred, p.post.pred[<span class="dv">1</span>,], <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"Temperature (standardized)"</span>,</span>
+<span id="cb22-2"><a></a>     <span class="at">ylab=</span><span class="st">"Detection probability"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))</span>
+<span id="cb22-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">1</span>, n.iter, <span class="at">by=</span><span class="dv">10</span>)) {  <span class="do">## Thin by 10</span></span>
+<span id="cb22-4"><a></a>    <span class="fu">lines</span>(temp.pred, p.post.pred[i,], <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))  }</span>
+<span id="cb22-5"><a></a>pred.post.mean <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(p.post.pred)</span>
+<span id="cb22-6"><a></a>pred.post.lower <span class="ot">&lt;-</span> <span class="fu">apply</span>(p.post.pred, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span>
+<span id="cb22-7"><a></a>pred.post.upper <span class="ot">&lt;-</span> <span class="fu">apply</span>(p.post.pred, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
+<span id="cb22-8"><a></a><span class="fu">lines</span>(temp.pred, pred.post.mean, <span class="at">col=</span><span class="st">"blue"</span>)</span>
+<span id="cb22-9"><a></a><span class="fu">lines</span>(temp.pred, pred.post.lower, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb22-10"><a></a><span class="fu">lines</span>(temp.pred, pred.post.upper, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/psi-pred-post-meanCI-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+<section id="prior-sensitivity" class="slide level2">
+<h2>Prior sensitivity</h2>
+<p>Questions * What are the implied priors on <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(p\)</span>? * What would be the consequence of changing the priors?</p>
+<p>[Prior predictive checks] can help us answer these questions. <br></p>
+<p>Prior prediction can be acheived by replacing the data with missing values <br></p>
+</section>
+<section id="prior-sampling" class="slide level2">
+<h2>Prior sampling</h2>
+<p>Replace data with missing values</p>
+<p>Fit model (Really, we’re just sampling from the prior)</p>
+</section>
+<section id="prior-summary" class="slide level2">
+<h2>Prior summary</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Iterations = 1:2000
+Thinning interval = 1 
+Number of chains = 3 
+Sample size per chain = 2000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+                     Mean       SD Naive SE Time-series SE
+alpha0           0.007463    1.421  0.01834        0.01834
+alpha1           0.024058    1.421  0.01834        0.01834
+beta0            0.020227    1.428  0.01843        0.01843
+beta1           -0.028018    1.407  0.01817        0.01849
+beta2            0.004004    1.385  0.01788        0.01741
+totalAbundance 656.964833 3695.473 47.70835       54.55638
+
+2. Quantiles for each variable:
+
+                 2.5%     25%        50%      75%    97.5%
+alpha0         -2.817 -0.9272  7.988e-06   0.9552    2.810
+alpha1         -2.774 -0.9289  1.398e-02   0.9771    2.907
+beta0          -2.820 -0.9271  1.605e-02   0.9904    2.796
+beta1          -2.762 -0.9652 -5.384e-02   0.9541    2.794
+beta2          -2.680 -0.9270 -1.162e-02   0.9524    2.716
+totalAbundance  5.000 50.0000  1.440e+02 437.0000 4136.425</code></pre>
+</div>
+</div>
+</section>
+<section id="prior-prediction" class="slide level2">
+<h2>Prior prediction</h2>
+<p>Push the prior samples through the model to predict <span class="math inline">\(p\)</span></p>
+</section>
+<section id="bayesian-prediction-2" class="slide level2">
+<h2>Bayesian prediction</h2>
+<p>Compute prior mean and 95% CI for <span class="math inline">\(p\)</span> predictions</p>
+<p>Show credible regions using shaded polygons. Include a few prior prediction lines.</p>
+</section>
+<section id="prior-and-posterior-prediction" class="slide level2">
+<h2>Prior and posterior prediction</h2>
+<p>![]{prior-post-pred-2-1}</p>
+</section>
+<section id="prior-predictive-recap" class="slide level2">
+<h2>Prior predictive recap</h2>
+<p>There are two common strategies for specifying priors: * Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods. * Use priors that reflect available information.</p>
+<p>The second approach can be used even if there isn’t much prior information available. Priors can allow for the possibility of being ``surprised’’ by the data, but without putting most of the prior weight on extreme values. <br></p>
+<p>Often, highly diffuse priors on the link scale result in most of the prior weight being on extreme values on the natural scale. <br></p>
+<p>Prior predictive checks can be used to assess this possibility, and should be a standard component of Bayesian analysis. <br></p>
+</section></section>
+<section>
+<section id="assignment" class="title-slide slide level1 center">
+<h1>Assignment</h1>
+
+</section>
+<section id="assignment-1" class="slide level2">
+<h2>Assignment</h2>
+<p>Create a self-contained R script or Rmarkdown/Quarto file to do the following:</p>
+<p>Using the simulated data, compare the prior and posterior predictive distributions of <span class="math inline">\(\lambda\)</span> for each of the 3 forest types. Hint: because forest type is categorical (not continuous), you can visualize the prior and posterior predictive distributions as histograms for each forest type. <br></p>
+<p>Upload your <code>.R</code>, <code>.Rmd</code>, or <code>.qmd</code> file to ELC by 5:00 PM on Tuesday.</p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

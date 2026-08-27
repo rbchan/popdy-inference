@@ -350,6 +350,384 @@
     "text": "Assignment\nCreate a self-contained R script (or better yet an Rmarkdown file) to do the following:\n\nSimulate logistic regression data according to \\(y_i \\sim \\mathrm{Bern}(p_i)\\) and \\(\\mathrm{logit}(p_i) = \\beta_0\n      + \\beta_1 x_i\\) with \\(\\beta_0=-1\\) and \\(\\beta_1=1\\). Generate the covariate using x &lt;- rnorm(n=100). Note that you will need to use the rbinom function to simulate Bernoulli outcomes.\nFit a logistic regression model to the simulated data (\\(y\\) and \\(x\\)) using the glm function. Create a figure showing \\(x\\) and \\(y\\) with the fitted regression line. Use predict to get the fitted line.\nFit the logistic regression model in JAGS. Use \\(\\mathrm{Normal}(0, var=10)\\) priors for the regression coefficients.\nCompare and intepret the estimates of \\(\\beta_0\\) and \\(\\beta_1\\) from the classical analysis and the Bayesian analysis.\n\nUpload your .R or .Rmd or .qmd file to ELC by 5:00 PM Tuesday."
   },
   {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#section",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#section",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "",
+    "text": "Binomial \\(N\\)-mixture models:  simulation, fitting, and prediction\nWILD(FISH) 8390  Inference for Models of Fish and Wildlife Population Dynamics"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#overview-1",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#overview-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Overview",
+    "text": "Overview\nWe’re often more interested in abundance than occupancy. \nEven if you’re interested in occupancy, you get it for free by modeling abundance. \nOccupancy isn’t useful if all sites are occupied. \nBinomial \\(N\\)-mixture models are useful for studying spatial variation in abundance if we have repeated count data, instead of repeated detection data."
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#binomial-n-mixture-model",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#binomial-n-mixture-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Binomial \\(N\\)-mixture model",
+    "text": "Binomial \\(N\\)-mixture model\nState model (with Poisson assumption) \\[\\begin{gather*}\n    \\mathrm{log}(\\lambda_i) = \\beta_0 + \\beta_1 {\\color{blue} x_{i1}} +\n    \\beta_2 {\\color{blue} x_{i2}} + \\cdots &lt;br&gt;\n    N_i \\sim \\mathrm{Poisson}(\\lambda_i)\n  \\end{gather*}\\]\nObservation model \\[\\begin{gather*}\n    \\mathrm{logit}(p_{ij}) = \\alpha_0 + \\alpha_1 {\\color{blue} x_{i1}}\n    + \\alpha_2 {\\color{Purple} w_{ij}} + \\cdots &lt;br&gt;\n    y_{ij} \\sim \\mathrm{Binomial}(N_i, p_{ij})\n  \\end{gather*}\\]\nDefinitions  \\(\\lambda_i\\) – Expected value of abundance at site \\(i\\)  \\(N_i\\) – Realized value of abundance at site \\(i\\)  \\(p_{ij}\\) – Probability of detecting at site \\(i\\) on occasion \\(j\\)  \\(y_{ij}\\) – Count data  \\(\\color{blue} x_1\\) and \\(\\color{blue} x_2\\) – site covariates  \\(\\color{Purple} w\\) – observation covariate"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#simulation-no-covariates",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#simulation-no-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulation – No covariates",
+    "text": "Simulation – No covariates\nDetection probability and data\nData and latent abundance\n\n\n             N1\n[1,] 2 2 1 0  3\n[2,] 0 0 0 0  1\n[3,] 2 1 2 2  6\n[4,] 0 0 0 0  1\n[5,] 0 0 0 0  0"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#simulation-covariates",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#simulation-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulation – Covariates",
+    "text": "Simulation – Covariates\nCoefficients, \\(\\lambda\\), and \\(p\\)\nSimulate occupancy and detection data"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#simulated-data",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#simulated-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulated data",
+    "text": "Simulated data\n::: columns ::: {.column width=‘50%’}\n  Observations\n\n\n      [,1] [,2] [,3] [,4]\n [1,]    1    1    0    0\n [2,]    0    0    3    2\n [3,]    0    1    0    0\n [4,]    0    1    0    0\n [5,]    0    0    0    0\n [6,]    0    0    0    1\n [7,]    0    0    0    0\n [8,]    0    2    0    0\n [9,]    0    1    0    1\n[10,]    0    1    0    0\n[11,]    0    0    0    1\n[12,]    0    0    1    0\n[13,]    0    0    0    0\n[14,]    0    0    0    0\n[15,]    0    0    0    0\n[16,]    0    0    0    0\n[17,]    0    0    0    0\n[18,]    0    0    0    0\n[19,]    0    0    1    0\n\n\n::: ::: {.column width=‘50%’}\n{ Summary stats &lt;br&gt;}\nDetections at each site \n\n\nmaxCounts\n 0  1  2  3 \n55 33  9  3 \n\n\n\n\n[1] 0.45\n\n\nObserved abundance\n\n\n[1] 60\n\n\n::: :::"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prepare-data-in-unmarked",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prepare-data-in-unmarked",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prepare data in ‘unmarked’",
+    "text": "Prepare data in ‘unmarked’\n\n\nunmarkedFrame Object\n\n100 sites\nMaximum number of observations per site: 4 \nMean number of observations per site: 4 \nSites with at least one detection: 45 \n\nTabulation of y observations:\n  0   1   2   3 \n332  52  13   3 \n\nSite-level covariates:\n      forest  \n Hardwood:31  \n Mixed   :32  \n Pine    :37  \n\nObservation-level covariates:\n      temp          \n Min.   :-3.229012  \n 1st Qu.:-0.603218  \n Median :-0.019813  \n Mean   :-0.001029  \n 3rd Qu.: 0.663820  \n Max.   : 3.001200"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#fit-the-model-without-covariates",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#fit-the-model-without-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Fit the model – without covariates",
+    "text": "Fit the model – without covariates\npcount is similar to occu, but there’s a new argument (K) that should be an integer much greater than the highest possible value of local abundance.\n\n\n\nCall:\npcount(formula = ~1 ~ 1, data = umf, K = 100)\n\nAbundance (log-scale):\n Estimate    SE    z P(&gt;|z|)\n    0.428 0.324 1.32   0.187\n\nDetection (logit-scale):\n Estimate    SE     z  P(&gt;|z|)\n     -1.8 0.384 -4.69 2.74e-06\n\nAIC: 459.6769 \nNumber of sites: 100\n\n\nWe can use backTransform to obtain estimate of average abundance at each site because there aren’t covariates:\n\n\nBacktransformed linear combination(s) of Abundance estimate(s)\n\n Estimate    SE LinComb (Intercept)\n     1.53 0.498   0.428           1\n\nTransformation: exp"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#fit-the-model-with-covariates",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#fit-the-model-with-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Fit the model – with covariates",
+    "text": "Fit the model – with covariates\nDetection depends on temp. Abundance depends on forest.\n\n\n\nCall:\npcount(formula = ~temp ~ forest, data = umf, K = 100)\n\nAbundance (log-scale):\n            Estimate    SE      z  P(&gt;|z|)\n(Intercept)   -0.326 0.366 -0.891 0.372706\nforestMixed   -0.326 0.461 -0.706 0.480137\nforestPine     1.207 0.336  3.595 0.000324\n\nDetection (logit-scale):\n            Estimate    SE     z  P(&gt;|z|)\n(Intercept)    -1.96 0.313 -6.26 3.79e-10\ntemp            1.18 0.205  5.73 9.83e-09\n\nAIC: 373.6761 \nNumber of sites: 100\n\n\nCompare to actual parameter values:\n\n\nbeta0 beta1 beta2 \n    0    -1     1 \n\n\nalpha0 alpha1 \n    -2      1"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#make-sure-k-is-high-enough",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#make-sure-k-is-high-enough",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Make sure \\(K\\) is high enough",
+    "text": "Make sure \\(K\\) is high enough\nEstimates should not change when you increase \\(K\\).\n\n\n        lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) \n         -0.3260          -0.3258           1.2073          -1.9615           1.1760 \n\n\nLooks good:\n\n\n        lam(Int) lam(forestMixed)  lam(forestPine)           p(Int)          p(temp) \n         -0.3260          -0.3258           1.2073          -1.9615           1.1760 \n\n\nIf the estimates do change, increase \\(K\\) until they stabilize."
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#empirical-bayes-site-level-abundance",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#empirical-bayes-site-level-abundance",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Empirical Bayes – Site-level abundance",
+    "text": "Empirical Bayes – Site-level abundance"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#total-abundance-in-surveyed-region",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#total-abundance-in-surveyed-region",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Total abundance (in surveyed region)",
+    "text": "Total abundance (in surveyed region)\n\nEstimate of total abundance in sampled area, with 95% CI:\n\n\nEstimate     2.5%    97.5% \n 128.402  113.000  144.000"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prediction-in-unmarked",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prediction-in-unmarked",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prediction in `unmarked’",
+    "text": "Prediction in `unmarked’\nCreate data.frame with prediction covariates.\nGet predictions of \\(\\lambda\\) for each row of prediction data.\nView \\(\\lambda\\) predictions\n\n\n  Predicted   SE lower upper   forest temp\n1      0.72 0.26  0.35   1.5 Hardwood    0\n2      0.52 0.22  0.23   1.2    Mixed    0\n3      2.41 0.64  1.44   4.0     Pine    0"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prediction-in-unmarked-1",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prediction-in-unmarked-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prediction in `unmarked’",
+    "text": "Prediction in `unmarked’"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#the-bugs-model-without-covariates",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#the-bugs-model-without-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "The BUGS model – without covariates",
+    "text": "The BUGS model – without covariates\n\n\nmodel {\n\nlambda ~ dunif(0, 20)          # Expected value of abundance\np ~ dunif(0, 1)                # Detection probability\n\nfor(i in 1:nSites) {\n  N[i] ~ dpois(lambda)         # Latent local abundance\n  for(j in 1:nOccasions) {\n    y[i,j] ~ dbin(p, N[i])     # Data\n  }\n}\n\ntotalAbundance &lt;- sum(N)\n\n}"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#data-inits-and-parameters",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#data-inits-and-parameters",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data, inits, and parameters",
+    "text": "Data, inits, and parameters\nPut data in a named list\nInitial values\nRun it"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#the-bugs-model-with-covariates",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#the-bugs-model-with-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "The BUGS model – with covariates",
+    "text": "The BUGS model – with covariates\n\n\nmodel {\n\n# Priors for occupancy coefficients\nbeta0 ~ dnorm(0, 0.5)  # variance=1/0.5\nbeta1 ~ dnorm(0, 0.5)\nbeta2 ~ dnorm(0, 0.5)\n\n# Priors for detection coefficients\nalpha0 ~ dnorm(0, 0.5)  \nalpha1 ~ dnorm(0, 0.5)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]\n  N[i] ~ dpois(lambda[i])         # Latent local abundance\n  for(j in 1:nOccasions) {\n    logit(p[i,j]) &lt;- alpha0 + alpha1*temp[i,j]\n    y[i,j] ~ dbin(p[i,j], N[i])   # Data\n  }\n}\n\ntotalAbundance &lt;- sum(N)\n\n}"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#data-inits-and-parameters-1",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#data-inits-and-parameters-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data, inits, and parameters",
+    "text": "Data, inits, and parameters\nPut data in a named list\nInitial values\nParameters to monitor"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#mcmc",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#mcmc",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC",
+    "text": "MCMC"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#summarize-output",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#summarize-output",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Summarize output",
+    "text": "Summarize output\n\n\n\nIterations = 101:2100\nThinning interval = 1 \nNumber of chains = 3 \nSample size per chain = 2000 \n\n1. Empirical mean and standard deviation for each variable,\n   plus standard error of the mean:\n\n                   Mean      SD Naive SE Time-series SE\nbeta0           -0.3929  0.3311 0.004274        0.03587\nbeta1           -0.4117  0.4693 0.006059        0.04957\nbeta2            1.1824  0.3124 0.004033        0.02593\nalpha0          -1.8476  0.3007 0.003882        0.06867\nalpha1           1.1899  0.1791 0.002313        0.02768\ntotalAbundance 121.1325 21.5948 0.278787        4.08153\n\n2. Quantiles for each variable:\n\n                  2.5%      25%      50%       75%    97.5%\nbeta0          -1.0624  -0.6132  -0.3849  -0.15200   0.1964\nbeta1          -1.3734  -0.7373  -0.3883  -0.05767   0.3914\nbeta2           0.6067   0.9652   1.1756   1.38706   1.8294\nalpha0         -2.3059  -2.0827  -1.8788  -1.65230  -1.1511\nalpha1          0.8120   1.0763   1.1949   1.31499   1.4999\ntotalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#local-abundance",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#local-abundance",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Local abundance",
+    "text": "Local abundance"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#traceplots-and-density-plots",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#traceplots-and-density-plots",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Traceplots and density plots",
+    "text": "Traceplots and density plots"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#traceplots-and-density-plots-1",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#traceplots-and-density-plots-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Traceplots and density plots",
+    "text": "Traceplots and density plots"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian prediction",
+    "text": "Bayesian prediction\nFirst, extract the \\(p\\) coefficients\n\n\n        alpha0    alpha1\n[1,] -1.168063 0.8492890\n[2,] -1.159962 0.8759836\n[3,] -1.175225 0.8804013\n[4,] -1.161900 0.8326993\n\n\nCreate prediction matrix, one row for each MCMC iteration.\nPredict \\(p\\) for each MCMC iteration."
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction-1",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian prediction",
+    "text": "Bayesian prediction\n\nplot(temp.pred, p.post.pred[1,], type=\"l\", xlab=\"Temperature (standardized)\",\n     ylab=\"Detection probability\", ylim=c(0, 1), col=gray(0.8))\nfor(i in seq(1, n.iter, by=10)) {  ## Thin by 10\n    lines(temp.pred, p.post.pred[i,], col=gray(0.8))  }\npred.post.mean &lt;- colMeans(p.post.pred)\npred.post.lower &lt;- apply(p.post.pred, 2, quantile, prob=0.025)\npred.post.upper &lt;- apply(p.post.pred, 2, quantile, prob=0.975)\nlines(temp.pred, pred.post.mean, col=\"blue\")\nlines(temp.pred, pred.post.lower, col=\"blue\", lty=2)\nlines(temp.pred, pred.post.upper, col=\"blue\", lty=2)"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sensitivity",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sensitivity",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prior sensitivity",
+    "text": "Prior sensitivity\nQuestions * What are the implied priors on \\(\\lambda\\) and \\(p\\)? * What would be the consequence of changing the priors?\n[Prior predictive checks] can help us answer these questions. \nPrior prediction can be acheived by replacing the data with missing values"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sampling",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sampling",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prior sampling",
+    "text": "Prior sampling\nReplace data with missing values\nFit model (Really, we’re just sampling from the prior)"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-summary",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-summary",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prior summary",
+    "text": "Prior summary\n\n\n\nIterations = 1:2000\nThinning interval = 1 \nNumber of chains = 3 \nSample size per chain = 2000 \n\n1. Empirical mean and standard deviation for each variable,\n   plus standard error of the mean:\n\n                     Mean       SD Naive SE Time-series SE\nalpha0           0.007463    1.421  0.01834        0.01834\nalpha1           0.024058    1.421  0.01834        0.01834\nbeta0            0.020227    1.428  0.01843        0.01843\nbeta1           -0.028018    1.407  0.01817        0.01849\nbeta2            0.004004    1.385  0.01788        0.01741\ntotalAbundance 656.964833 3695.473 47.70835       54.55638\n\n2. Quantiles for each variable:\n\n                 2.5%     25%        50%      75%    97.5%\nalpha0         -2.817 -0.9272  7.988e-06   0.9552    2.810\nalpha1         -2.774 -0.9289  1.398e-02   0.9771    2.907\nbeta0          -2.820 -0.9271  1.605e-02   0.9904    2.796\nbeta1          -2.762 -0.9652 -5.384e-02   0.9541    2.794\nbeta2          -2.680 -0.9270 -1.162e-02   0.9524    2.716\ntotalAbundance  5.000 50.0000  1.440e+02 437.0000 4136.425"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-prediction",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-prediction",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prior prediction",
+    "text": "Prior prediction\nPush the prior samples through the model to predict \\(p\\)"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction-2",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian prediction",
+    "text": "Bayesian prediction\nCompute prior mean and 95% CI for \\(p\\) predictions\nShow credible regions using shaded polygons. Include a few prior prediction lines."
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-and-posterior-prediction",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-and-posterior-prediction",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prior and posterior prediction",
+    "text": "Prior and posterior prediction\n![]{prior-post-pred-2-1}"
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-predictive-recap",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-predictive-recap",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prior predictive recap",
+    "text": "Prior predictive recap\nThere are two common strategies for specifying priors: * Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods. * Use priors that reflect available information.\nThe second approach can be used even if there isn’t much prior information available. Priors can allow for the possibility of being ``surprised’’ by the data, but without putting most of the prior weight on extreme values. \nOften, highly diffuse priors on the link scale result in most of the prior weight being on extreme values on the natural scale. \nPrior predictive checks can be used to assess this possibility, and should be a standard component of Bayesian analysis."
+  },
+  {
+    "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#assignment-1",
+    "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#assignment-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Assignment",
+    "text": "Assignment\nCreate a self-contained R script or Rmarkdown/Quarto file to do the following:\nUsing the simulated data, compare the prior and posterior predictive distributions of \\(\\lambda\\) for each of the 3 forest types. Hint: because forest type is categorical (not continuous), you can visualize the prior and posterior predictive distributions as histograms for each forest type. \nUpload your .R, .Rmd, or .qmd file to ELC by 5:00 PM on Tuesday."
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#section",
+    "href": "lectures/intro/lecture-intro.html#section",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "",
+    "text": "Inference for Models of Fish and Wildlife Population Dynamics\n\n\n\n\n\nWILD(FISH) 8390\nRichard Chandler"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#overview",
+    "href": "lectures/intro/lecture-intro.html#overview",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Overview",
+    "text": "Overview\nWe need models to:\n\n\n\nEvaluate hypotheses\nMake predictions\n\n\n\nForecast future outcomes\nInform management decisions\n\n\n\nUntil recently, population models were mainly used in theoretical settings."
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#classical-models-of-population-dynamics",
+    "href": "lectures/intro/lecture-intro.html#classical-models-of-population-dynamics",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Classical models of population dynamics",
+    "text": "Classical models of population dynamics\n\n\n\nA working knowledge of the following models is important:\n\nExponential growth\nLogistic growth\nAge/stage-structured matrix models\nMetapopulation models"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#classical-statistical-models",
+    "href": "lectures/intro/lecture-intro.html#classical-statistical-models",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Classical statistical models",
+    "text": "Classical statistical models\nYou should also be familiar with:\n\nLinear models (including the various ANOVAs)\nGeneralized linear models (eg, logistic regression)\nGeneralized linear mixed effects models\n\n\n\n\nHow do we bridge the gap between theoretical models and statistical models?"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#example-i-chiricahua-leopard-frogs",
+    "href": "lectures/intro/lecture-intro.html#example-i-chiricahua-leopard-frogs",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Example I – Chiricahua Leopard Frogs",
+    "text": "Example I – Chiricahua Leopard Frogs\n\n\n\nSites are discrete habitat patches.\nSurrounding landscape is suitable for movement but not reproduction.\nData are binary detection data."
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#metapopulation-ecology",
+    "href": "lectures/intro/lecture-intro.html#metapopulation-ecology",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Metapopulation ecology",
+    "text": "Metapopulation ecology\n\n\nOne branch of metapopulation theory focuses on distance-dependent colonization and extinction processes.\n\n\nIf we know the patch coordinates and we have data from multiple sites and multiple time periods, we can fit the models."
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#recovery-plan",
+    "href": "lectures/intro/lecture-intro.html#recovery-plan",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Recovery Plan",
+    "text": "Recovery Plan"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#avoiding-extinction",
+    "href": "lectures/intro/lecture-intro.html#avoiding-extinction",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Avoiding extinction",
+    "text": "Avoiding extinction\n\nManagement options\n\nControl predators\nIncrease hydroperiod in existing wetlands\nCreate new wetlands\n\n\nRestoring just 1 pond, reduced the risk from 4% to 2.5%."
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#colonization-probability-maps",
+    "href": "lectures/intro/lecture-intro.html#colonization-probability-maps",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Colonization Probability Maps",
+    "text": "Colonization Probability Maps"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#example-ii-central-georgia-black-bears",
+    "href": "lectures/intro/lecture-intro.html#example-ii-central-georgia-black-bears",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Example II – Central Georgia Black Bears",
+    "text": "Example II – Central Georgia Black Bears\n\n\nGenetically isolated population near Macon.\n\nImpacts of hunting had not been evaluated.\n\n\nStudied using noninvasive genetic mark-recapture.\n\n\nHair snares and genotyping yielded individual-level encounter histories."
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#harvest-theory",
+    "href": "lectures/intro/lecture-intro.html#harvest-theory",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Harvest theory",
+    "text": "Harvest theory\n\n\nTheory goes back about a century.\n\nMuch of it focuses on the importance of density dependence.\n\nThink back to “maximum sustainable yield.”"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#central-georgia-black-bear-abundance",
+    "href": "lectures/intro/lecture-intro.html#central-georgia-black-bear-abundance",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Central Georgia Black Bear Abundance",
+    "text": "Central Georgia Black Bear Abundance"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#central-georgia-black-bear-recruitment",
+    "href": "lectures/intro/lecture-intro.html#central-georgia-black-bear-recruitment",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Central Georgia Black Bear Recruitment",
+    "text": "Central Georgia Black Bear Recruitment"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#central-georgia-black-bear-extinction-risk",
+    "href": "lectures/intro/lecture-intro.html#central-georgia-black-bear-extinction-risk",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Central Georgia Black Bear Extinction Risk",
+    "text": "Central Georgia Black Bear Extinction Risk"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#books",
+    "href": "lectures/intro/lecture-intro.html#books",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Books",
+    "text": "Books\n\n\nAHM vol I\n\n\nAHM vol II\n\n\nSCR"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#recommended-reading",
+    "href": "lectures/intro/lecture-intro.html#recommended-reading",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Recommended reading",
+    "text": "Recommended reading"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#syllabus-1",
+    "href": "lectures/intro/lecture-intro.html#syllabus-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Syllabus",
+    "text": "Syllabus"
+  },
+  {
+    "objectID": "lectures/intro/lecture-intro.html#for-thursday",
+    "href": "lectures/intro/lecture-intro.html#for-thursday",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "For Thursday",
+    "text": "For Thursday\nRead: Applied Hierarchical Modeling (AHM vol I) chapter 1\n\nInstall: JAGS, R, and the following packages:\n\nunmarked\nrjags\njagsUI"
+  },
+  {
+    "objectID": "schedule.html",
+    "href": "schedule.html",
+    "title": "Course Schedule",
+    "section": "",
+    "text": "Lecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\n\nLecture 3"
+  },
+  {
+    "objectID": "schedule.html#week-1---classical-statistical-models",
+    "href": "schedule.html#week-1---classical-statistical-models",
+    "title": "Course Schedule",
+    "section": "",
+    "text": "Lecture 1 - Introduction\nLecture 2 - Linear and generalized linear models"
+  },
+  {
+    "objectID": "schedule.html#week-2---occupancy-models",
+    "href": "schedule.html#week-2---occupancy-models",
+    "title": "Course Schedule",
+    "section": "",
+    "text": "Lecture 3"
+  },
+  {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#section",
     "href": "lectures/occupancyI/lecture-occupancyI.html#section",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
@@ -523,153 +901,6 @@
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assignment",
     "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nImport the Canada Warbler data (\"cawa_data_2017_occu.csv\") and compute basic summary stats like we did earlier.\n\n\nData are “point count data” from North Carolina\nEach 10-min survey was divided into 4, 2.5-min intervals\n\n\nFit the single-season (static) occupancy model using ‘unmarked’ and ‘JAGS’.\nCreate a data.frame to compare the estimates of \\(\\psi\\), \\(p\\), and “nSitesOccupied” from the two analyses. Compare point estimates and 95% CIs. Describe any differences you see in the estimates.\n\n\n\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday."
-  },
-  {
-    "objectID": "schedule.html",
-    "href": "schedule.html",
-    "title": "Course Schedule",
-    "section": "",
-    "text": "Lecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\n\nLecture 3"
-  },
-  {
-    "objectID": "schedule.html#week-1---classical-statistical-models",
-    "href": "schedule.html#week-1---classical-statistical-models",
-    "title": "Course Schedule",
-    "section": "",
-    "text": "Lecture 1 - Introduction\nLecture 2 - Linear and generalized linear models"
-  },
-  {
-    "objectID": "schedule.html#week-2---occupancy-models",
-    "href": "schedule.html#week-2---occupancy-models",
-    "title": "Course Schedule",
-    "section": "",
-    "text": "Lecture 3"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#section",
-    "href": "lectures/intro/lecture-intro.html#section",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "",
-    "text": "Inference for Models of Fish and Wildlife Population Dynamics\n\n\n\n\n\nWILD(FISH) 8390\nRichard Chandler"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#overview",
-    "href": "lectures/intro/lecture-intro.html#overview",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Overview",
-    "text": "Overview\nWe need models to:\n\n\n\nEvaluate hypotheses\nMake predictions\n\n\n\nForecast future outcomes\nInform management decisions\n\n\n\nUntil recently, population models were mainly used in theoretical settings."
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#classical-models-of-population-dynamics",
-    "href": "lectures/intro/lecture-intro.html#classical-models-of-population-dynamics",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Classical models of population dynamics",
-    "text": "Classical models of population dynamics\n\n\n\nA working knowledge of the following models is important:\n\nExponential growth\nLogistic growth\nAge/stage-structured matrix models\nMetapopulation models"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#classical-statistical-models",
-    "href": "lectures/intro/lecture-intro.html#classical-statistical-models",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Classical statistical models",
-    "text": "Classical statistical models\nYou should also be familiar with:\n\nLinear models (including the various ANOVAs)\nGeneralized linear models (eg, logistic regression)\nGeneralized linear mixed effects models\n\n\n\n\nHow do we bridge the gap between theoretical models and statistical models?"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#example-i-chiricahua-leopard-frogs",
-    "href": "lectures/intro/lecture-intro.html#example-i-chiricahua-leopard-frogs",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Example I – Chiricahua Leopard Frogs",
-    "text": "Example I – Chiricahua Leopard Frogs\n\n\n\nSites are discrete habitat patches.\nSurrounding landscape is suitable for movement but not reproduction.\nData are binary detection data."
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#metapopulation-ecology",
-    "href": "lectures/intro/lecture-intro.html#metapopulation-ecology",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Metapopulation ecology",
-    "text": "Metapopulation ecology\n\n\nOne branch of metapopulation theory focuses on distance-dependent colonization and extinction processes.\n\n\nIf we know the patch coordinates and we have data from multiple sites and multiple time periods, we can fit the models."
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#recovery-plan",
-    "href": "lectures/intro/lecture-intro.html#recovery-plan",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Recovery Plan",
-    "text": "Recovery Plan"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#avoiding-extinction",
-    "href": "lectures/intro/lecture-intro.html#avoiding-extinction",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Avoiding extinction",
-    "text": "Avoiding extinction\n\nManagement options\n\nControl predators\nIncrease hydroperiod in existing wetlands\nCreate new wetlands\n\n\nRestoring just 1 pond, reduced the risk from 4% to 2.5%."
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#colonization-probability-maps",
-    "href": "lectures/intro/lecture-intro.html#colonization-probability-maps",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Colonization Probability Maps",
-    "text": "Colonization Probability Maps"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#example-ii-central-georgia-black-bears",
-    "href": "lectures/intro/lecture-intro.html#example-ii-central-georgia-black-bears",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Example II – Central Georgia Black Bears",
-    "text": "Example II – Central Georgia Black Bears\n\n\nGenetically isolated population near Macon.\n\nImpacts of hunting had not been evaluated.\n\n\nStudied using noninvasive genetic mark-recapture.\n\n\nHair snares and genotyping yielded individual-level encounter histories."
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#harvest-theory",
-    "href": "lectures/intro/lecture-intro.html#harvest-theory",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Harvest theory",
-    "text": "Harvest theory\n\n\nTheory goes back about a century.\n\nMuch of it focuses on the importance of density dependence.\n\nThink back to “maximum sustainable yield.”"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#central-georgia-black-bear-abundance",
-    "href": "lectures/intro/lecture-intro.html#central-georgia-black-bear-abundance",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Central Georgia Black Bear Abundance",
-    "text": "Central Georgia Black Bear Abundance"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#central-georgia-black-bear-recruitment",
-    "href": "lectures/intro/lecture-intro.html#central-georgia-black-bear-recruitment",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Central Georgia Black Bear Recruitment",
-    "text": "Central Georgia Black Bear Recruitment"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#central-georgia-black-bear-extinction-risk",
-    "href": "lectures/intro/lecture-intro.html#central-georgia-black-bear-extinction-risk",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Central Georgia Black Bear Extinction Risk",
-    "text": "Central Georgia Black Bear Extinction Risk"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#books",
-    "href": "lectures/intro/lecture-intro.html#books",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Books",
-    "text": "Books\n\n\nAHM vol I\n\n\nAHM vol II\n\n\nSCR"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#recommended-reading",
-    "href": "lectures/intro/lecture-intro.html#recommended-reading",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Recommended reading",
-    "text": "Recommended reading"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#syllabus-1",
-    "href": "lectures/intro/lecture-intro.html#syllabus-1",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Syllabus",
-    "text": "Syllabus"
-  },
-  {
-    "objectID": "lectures/intro/lecture-intro.html#for-thursday",
-    "href": "lectures/intro/lecture-intro.html#for-thursday",
-    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "For Thursday",
-    "text": "For Thursday\nRead: Applied Hierarchical Modeling (AHM vol I) chapter 1\n\nInstall: JAGS, R, and the following packages:\n\nunmarked\nrjags\njagsUI"
   },
   {
     "objectID": "lectures/occupancyII/lecture-occupancyII.html#section",

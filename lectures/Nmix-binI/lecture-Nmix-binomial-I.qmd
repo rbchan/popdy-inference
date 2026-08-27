@@ -119,11 +119,6 @@ cbind(y1, N1)[1:5,]
 
 ## Simulation -- Covariates
   
-%  Two continuous covariates and one categorical covariate with 2 levels
-%  
-%  [<+->]
-%  * Covariates
-  
 ```{r}
 #| label: sim-cov1
 #| size: 'scriptsize'
@@ -132,7 +127,7 @@ forestMixed <- ifelse(forest=="Mixed", 1, 0)        ## Dummy
 forestPine <- ifelse(forest=="Pine", 1, 0)          ## Dummy
 temp <- matrix(rnorm(nSites*nVisits), nrow=nSites, ncol=nVisits)
 ```
-% * 
+
   Coefficients, $\lambda$, and $p$
   
 ```{r}
@@ -143,7 +138,7 @@ lambda2 <- exp(beta0 + beta1*forestMixed + beta2*forestPine)
 alpha0 <- -2; alpha1 <- 1
 p2 <- plogis(alpha0 + alpha1*temp)
 ```
-% * 
+
   Simulate occupancy and detection data
   
 ```{r}
@@ -155,19 +150,15 @@ for(i in 1:nSites) {
     y2[i,] <- rbinom(nVisits, size=N2[i], prob=p2[i,])
 }
 ```
-%
 
 
 
-
-
-
-  ## Simulated data
+## Simulated data
   ::: columns
     ::: {.column width='50%'}
       
       Observations
-%      \tiny
+
 ```{r}
 #| label: sim-nocov-dat
 #| size: 'scriptsize'
@@ -176,7 +167,7 @@ y2[1:19,]
   :::
   ::: {.column width='50%'}
     
-%    \scriptsize
+
     { Summary stats <br>}
     
   Detections at each site <br>
@@ -188,18 +179,15 @@ maxCounts <- apply(y2, 1, max)
 table(maxCounts)              
 ```
 
-% 
-% 
-% Proportion of sites known to be occupied <br>
 ```{r}
 #| label: sim-nocov-ss2
 #| size: 'scriptsize'
-% naiveOccupancy <- sum(maxCounts>0)/nSites
-% naiveOccupancy 
+naiveOccupancy <- sum(maxCounts>0)/nSites
+naiveOccupancy 
 ```
 
 
-Observed abundance <br>
+Observed abundance
 ```{r}
 #| label: sim-nocov-ss3
 #| size: 'scriptsize'
@@ -211,8 +199,8 @@ naiveAbund
 #| include: false
 library(unmarked)
 ```
-  :::
-  :::
+:::
+:::
 
 
 
@@ -222,19 +210,7 @@ library(unmarked)
 
 
 
-  ## Outline
-  
-  [currentsection]
-
-
-
-
-\subsection{Likelihood-based methods}
-
-
-
-
-  ## Prepare data in `unmarked'
+## Prepare data in 'unmarked'
   
 ```{r}
 #| label: un-umf
@@ -251,13 +227,10 @@ summary(umf)
 
 
 
+## Fit the model -- without covariates
 
-
-
-  ## Fit the model -- without covariates
-  \footnotesize
-  \inr{pcount} is similar to \inr{occu}, but there's a new argument
-  (\texttt{K}) that should be an integer much 
+`pcount` is similar to `occu`, but there's a new argument
+  (`K`) that should be an integer much 
   greater than the highest possible value of local abundance. 
 ```{r}
 #| label: un-fit0
@@ -267,8 +240,8 @@ fm0
 ```
 
 
-We can use \inr{backTransform} to obtain estimate of average abundance
-at each site because there aren't covariates:  
+We can use `backTransform` to obtain estimate of average abundance
+at each site because there aren't covariates:
 ```{r}
 #| label: back
 #| size: 'tiny'
@@ -280,9 +253,9 @@ backTransform(fm0, type="state")
 
 
 
-  ## Fit the model -- with covariates
-  \footnotesize
-  Detection depends on {\tt temp}. Abundance depends on {\tt forest}.
+## Fit the model -- with covariates
+
+Detection depends on `temp`. Abundance depends on `forest`.
 ```{r}
 #| label: un-fit
 #| size: 'tiny'
@@ -303,15 +276,15 @@ c(beta0=beta0, beta1=beta1, beta2=beta2); c(alpha0=alpha0, alpha1=alpha1)
 
 
 
-  ## Make sure $K$ is high enough
-%  ::: columns
-%    ::: {.column width='50%'}
+## Make sure $K$ is high enough
+
 ```{r}
 #| label: width90
 #| include: false
 oo <- options(width=90)
 ```
-  Estimates should not change when you increase $K$.
+
+Estimates should not change when you increase $K$.
   
 ```{r}
 #| label: coef
@@ -320,7 +293,7 @@ round(coef(fm), digits=4)
 ```
 
 
-  Looks good:
+Looks good:
   
 ```{r}
 #| label: upK
@@ -331,14 +304,11 @@ round(coef(fm.test), digits=4)
 
 
 If the estimates do change, increase $K$ until they stabilize.
-%    :::
-%  :::
 
 
 
+##  Empirical Bayes -- Site-level abundance
 
-
-  ##  Empirical Bayes -- Site-level abundance
 ```{r}
 #| label: ranef
 #| size: 'scriptsize'
@@ -353,10 +323,8 @@ plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 
 
 
+## Total abundance (in surveyed region)
 
-
-  ## Total abundance (in surveyed region)
-  \footnotesize
 ```{r}
 #| label: Ntotal
 #| size: 'tiny'
@@ -379,9 +347,9 @@ c(Estimate=mean(N.total.post), quantile(N.total.post, prob=c(0.025, 0.975)))
 
 
 
-  ## Prediction in `unmarked'
+## Prediction in `unmarked'
   
-  Create \texttt{data.frame} with prediction covariates. 
+Create `data.frame` with prediction covariates. 
   
 ```{r}
 #| label: preddat
@@ -401,7 +369,7 @@ lambda.pred <- predict(fm, newdata=pred.data,
 ```
 
 
-  View $\lambda$ predictions
+View $\lambda$ predictions
   
 ```{r}
 #| label: psi-head
@@ -412,24 +380,10 @@ print(head(lambda.pred), digits=2)
 
 
 
-% 
-%   ## Prediction in `unmarked'
-%   
-%   View $\lambda$ predictions
-```{r}
-#| label: psi-head
-#| size: 'footnotesize'
-% print(head(lambda.pred), digits=2)
-```
-% 
 
 
+## Prediction in `unmarked'
 
-
-
-
-
-  ## Prediction in `unmarked'
 ```{r}
 #| label: pred-psi1
 #| fig.width: 7
@@ -445,40 +399,8 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
 
 
 
+## The BUGS model -- without covariates
 
-
-
-
-
-%% 
-%%   ## In-class exercise
-%%   % 
-%%   % 
-%%   %   * Predict
-%%   %   
-%%   
-%%   Graph $p$ as a function of temperature. Include 95\% confidence intervals. <br>
-%% 
-
-
-
-
-\subsection{Bayesian methods: posterior prediction}
-
-
-
-
-  ## Outline
-  
-  [currentsection,currentsubsection]
-
-
-
-
-
-
-
-  ## The BUGS model -- without covariates
 ```{r}
 #| label: bugs0
 #| size: 'scriptsize'
@@ -487,18 +409,16 @@ arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
 #| background: 'beige'
 writeLines(readLines("Nmix-model.jag"))
 ```
+
 ```{r}
 #| label: jagsUI0
 #| include: false
 library(jagsUI)
 ```
 
+## Data, inits, and parameters
 
-
-
-
-  ## Data, inits, and parameters
-  Put data in a named list
+Put data in a named list
   
 ```{r}
 #| label: bugs-data0
@@ -506,7 +426,7 @@ library(jagsUI)
 jags.data0 <- list(y=y2, nSites=nSites, nOccasions=nVisits)
 ```
   
-  Initial values
+Initial values
   
 ```{r}
 #| label: bugs-inits0
@@ -515,15 +435,13 @@ jags.inits0 <- function() list(lambda=runif(1), p=runif(1), N=maxCounts)
 ```
   
   
-  Run it
+Run it
   
 ```{r}
 #| label: bugs-pars0
-#| size: 'scriptsize'
 #| results: 'hide'
 #| message: false
-#| results: 'hide'
-#| cache: true
+#| cache: false
 jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
                                  parameters.to.save=c("lambda", "p"), 
                                  model.file="Nmix-model.jag",
@@ -532,11 +450,7 @@ jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
 ```
 
 
-
-
-
-
-  ## The BUGS model -- with covariates
+## The BUGS model -- with covariates
 ```{r}
 #| label: bugs
 #| size: 'scriptsize'
@@ -552,13 +466,9 @@ library(jagsUI)
 ```
 
 
+## Data, inits, and parameters
 
-
-
-
-
-  ## Data, inits, and parameters
-  Put data in a named list
+Put data in a named list
   
 ```{r}
 #| label: bugs-data
@@ -570,7 +480,8 @@ jags.data <- list(y=y2, temp=temp,
 ```
 
 
-  Initial values
+
+Initial values
   
 ```{r}
 #| label: bugs-inits
@@ -580,8 +491,7 @@ jags.inits <- function() {
 }
 ```
 
-
-  Parameters to monitor
+Parameters to monitor
   
 ```{r}
 #| label: bugs-pars
@@ -594,9 +504,7 @@ jags.pars <- c("beta0", "beta1", "beta2",
 
 
 
-
-
-  ## MCMC
+## MCMC
   
 ```{r}
 #| label: bugs-mcmc
@@ -615,9 +523,7 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 
 
 
-
-
-  ## Summarize output
+## Summarize output
 ```{r}
 #| label: bugs-sum
 #| size: 'tiny'
@@ -626,8 +532,7 @@ summary(jags.post.samples[,jags.pars])
 
 
 
-
-  ## Local abundance
+## Local abundance
 ```{r}
 #| label: localN
 #| out.width: '70%'
@@ -637,10 +542,8 @@ plot(jags.post.samples[,paste0("N[", 1:4, "]")])
 ```
 
 
+## Traceplots and density plots
 
-
-
-  ## Traceplots and density plots
 ```{r}
 #| label: bugs-plot1
 #| size: 'footnotesize'
@@ -650,10 +553,8 @@ plot(jags.post.samples[,jags.pars[1:3]])
 ```
 
 
+## Traceplots and density plots
 
-
-
-  ## Traceplots and density plots
 ```{r}
 #| label: bugs-plot2
 #| size: 'footnotesize'
@@ -662,14 +563,9 @@ plot(jags.post.samples[,jags.pars[1:3]])
 plot(jags.post.samples[,jags.pars[4:5]])
 ```
 
-
-
-
-
-
-  ## Bayesian prediction
+## Bayesian prediction
   
-  First, extract the $p$ coefficients
+First, extract the $p$ coefficients
   
 ```{r}
 #| label: psi-coefs
@@ -678,10 +574,8 @@ p.coef.post <- as.matrix(jags.post.samples[,c("alpha0","alpha1")])
 head(p.coef.post, n=4)
 ```
   
+Create prediction matrix, one row for each MCMC iteration.
   
-  Create prediction matrix, one row for each MCMC iteration.
-  
-%  Columns represent covariate values. 
 ```{r}
 #| label: p-predmat
 #| size: 'scriptsize'
@@ -690,10 +584,9 @@ temp.pred <- seq(-3, 3, length=50)
 p.post.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
 ```
   
+Predict $p$ for each MCMC iteration.
   
-  Predict $p$ for each MCMC iteration.
-  
-%  using covariate values from \inr{pred.data}. 
+
 ```{r}
 #| label: psi-pred-bayes
 #| size: 'scriptsize'
@@ -705,21 +598,14 @@ for(i in 1:n.iter) {
 
 
 
+## Bayesian prediction
 
-
-
-
-  ## Bayesian prediction
-%  Now with posterior mean and 95\% CI
-```{r}
+```{r, echo=-1}
 #| label: psi-pred-post-meanCI
-#| size: 'tiny'
 #| fig.align: 'center'
 #| out.width: '70%'
 #| fig.height: 5
-#| echo: -(1)
-#| dev: 'png'
-#| cache: true
+#| cache: false
 #| dpi: 200
 par(mai=c(0.9,0.9,0.1,0.1))  
 plot(temp.pred, p.post.pred[1,], type="l", xlab="Temperature (standardized)",
@@ -735,48 +621,20 @@ lines(temp.pred, pred.post.upper, col="blue", lty=2)
 ```
 
 
+## Prior sensitivity
 
-
-
-
-\subsection{Bayesian methods: prior prediction}
-
-
-
-
-  ## Outline
+Questions
+  * What are the implied priors on $\lambda$ and $p$?
+  * What would be the consequence of changing the priors?
   
-  [currentsection,currentsubsection]
+  [Prior predictive checks] can help us answer these questions. <br>
 
-
-
-
-
-
-
-
-  ## Prior sensitivity
-  Questions
-  
-    * What are the implied priors on $\lambda$ and $p$?
-    * What would be the consequence of changing the priors?
-  
-  
-  
-  \alert{Prior predictive checks} can help us answer these questions. <br>
-  
-  
   Prior prediction can be acheived by replacing the data with missing values <br>
 
 
+## Prior sampling
 
-
-
-
-
-
-  ## Prior sampling
-  Replace data with missing values
+Replace data with missing values
   
 ```{r}
 #| label: bugs-data2
@@ -785,8 +643,8 @@ jags.data2 <- jags.data
 jags.data2$y[] <- NA     # Replace data with missing values
 ```
   
-  
-  Fit model (Really, we're just sampling from the prior)
+Fit model (Really, we're just sampling from the prior)
+
 ```{r}
 #| label: bugs-mcmc-prior
 #| size: 'scriptsize'
@@ -801,11 +659,8 @@ jags.prior.samples <- jags.basic(data=jags.data2, inits=jags.inits,
 ```
 
 
+## Prior summary
 
-
-
-
-  ## Prior summary
 ```{r}
 #| label: summary-prior
 #| size: 'tiny'
@@ -814,14 +669,10 @@ summary(jags.prior.samples)
 
 
 
+## Prior prediction
 
+Push the prior samples through the model to predict $p$
 
-
-
-
-  ## Prior prediction
-  
-  Push the prior samples through the model to predict $p$
 ```{r}
 #| label: psi-coefs-prior
 #| size: 'scriptsize'
@@ -833,14 +684,9 @@ for(i in 1:n.iter) {
 }
 ```
 
+## Bayesian prediction
 
-
-
-
-
-
-  ## Bayesian prediction
-  Compute prior mean and 95\% CI for $p$ predictions
+Compute prior mean and 95\% CI for $p$ predictions
 ```{r}
 #| label: prior-post-pred-1
 #| size: 'scriptsize'
@@ -849,8 +695,8 @@ pred.prior.lower <- apply(p.prior.pred, 2, quantile, prob=0.025)
 pred.prior.upper <- apply(p.prior.pred, 2, quantile, prob=0.975)
 ```
   
-  
-  Show credible regions using shaded polygons. Include a few prior prediction lines.
+Show credible regions using shaded polygons. Include a few prior prediction lines.
+
 ```{r}
 #| label: prior-post-pred-2
 #| size: 'scriptsize'
@@ -875,39 +721,30 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
 ```
 
 
+## Prior and posterior prediction
+  
+![]{prior-post-pred-2-1}
 
 
+## Prior predictive recap
 
-  ## Prior and posterior prediction
+There are two common strategies for specifying priors:
+  * Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods.
+  * Use priors that reflect available information.
   
   
-  [width=0.9\textwidth]{figure/prior-post-pred-2-1}  <br>
-
-
-
-
-
-  ## Prior predictive recap
-  There are two common strategies for specifying priors:
-  
-    * Use uniform/flat priors to obtain results that will often be
-      similar to likelihood-based methods.
-    * Use priors that reflect available information.
+The second approach can be used even if there isn't much prior
+information available. Priors can allow for the
+possibility of being ``surprised'' by the data, but without
+putting most of the prior weight on extreme values. <br>
   
   
-  
-  The second approach can be used even if there isn't much prior
-  information available. Priors can allow for the
-  possibility of being ``surprised'' by the data, but without
-  putting most of the prior weight on extreme values. <br>
+Often, highly diffuse priors on the link scale result in most of the
+prior weight being on extreme values on the natural scale. <br>
   
   
-  Often, highly diffuse priors on the link scale result in most of the
-  prior weight being on extreme values on the natural scale. <br>
-  
-  
-  Prior predictive checks can be used to assess this possibility, and
-  should be a standard component of Bayesian analysis. <br>
+Prior predictive checks can be used to assess this possibility, and
+should be a standard component of Bayesian analysis. <br>
 
 
 
@@ -915,36 +752,18 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
 # Assignment
 
 
+## Assignment
 
-
-
-  ## Assignment
-  % 
-  \footnotesize
-  Create a self-contained R script or Rmarkdown file
+  Create a self-contained R script or Rmarkdown/Quarto file
   to do the following:
   
-%  
-%    
-    \footnotesize
-    %    * Using the simulated data, compare the prior and posterior
+Using the simulated data, compare the prior and posterior
       predictive distributions of $\lambda$ for each of the 3 forest
       types. Hint: because forest type is categorical (not
       continuous), you can visualize the prior and posterior
       predictive distributions as histograms for each forest type.  <br>
-    %% * Fit a binomial $N$-mixture model to the Canada warbler data
-    %%   using `unmarked' and JAGS. The data include: 
-    %%   
-    %%     \footnotesize
-    %%     * Response: \texttt{cawa1, cawa2, cawa3, cawa4}
-    %%     * Site covs: \texttt{Elevation, Wind, Noise}
-    %%   
-    %% * Graph the predictions of $\lambda$ over the 
-    %%   elevation range, along with 95\% CIs for both the likelihood-based and  
-    %%   Bayesian models.  
-%  
   
-  Upload your {\tt .R} or {\tt .Rmd} file to ELC by 5:00 PM on Tuesday.
+  Upload your `.R`, `.Rmd`, or `.qmd` file to ELC by 5:00 PM on Tuesday.
 
 
 
