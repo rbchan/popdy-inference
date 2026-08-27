@@ -231,7 +231,7 @@
 </section>
 <section id="covariates" class="slide level2">
 <h2>Covariates</h2>
-<div style="font-size: 90%;">
+<div style="font-size: 80%;">
 <p>State model <span class="math display">\[
   \small
   \begin{gather*}
@@ -256,7 +256,7 @@
 
 <section id="simulation-1" class="slide level2">
 <h2>Simulation</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 78%;">
 <p>Two continuous covariates and one categorical covariate with 2 levels.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>nSites <span class="ot">&lt;-</span> <span class="dv">200</span>; nVisits <span class="ot">&lt;-</span> <span class="dv">4</span>; <span class="fu">set.seed</span>(<span class="dv">83</span>) <span class="co"># Make it reproducible</span></span>
@@ -282,7 +282,8 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(nSites, <span class="at">size=</span><span class="dv">1</span>, psi)            <span class="do">## pres/absence</span></span>
 <span id="cb3-2"><a></a>y <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>nSites, <span class="at">ncol=</span>nVisits)</span>
 <span id="cb3-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
-<span id="cb3-4"><a></a>    y[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(nVisits, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>z[i]<span class="sc">*</span>p[i,]) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-4"><a></a>    y[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(nVisits, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>z[i]<span class="sc">*</span>p[i,])</span>
+<span id="cb3-5"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -290,7 +291,7 @@
 <section id="prediction-in-unmarked" class="slide level2">
 <h2>Prediction in ‘unmarked’</h2>
 
-<img data-src="lecture-occupancyII_files/figure-revealjs/sim-sitch-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"><p>Expect problems if you ignore imperfect detection in this case. <br></p>
+<img data-src="lecture-occupancyII_files/figure-revealjs/sim-sitch-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p>Expect problems if you ignore imperfect detection in this case. <br></p>
 </section>
 <section id="simulated-data" class="slide level2">
 <h2>Simulated data</h2>
@@ -365,6 +366,7 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFrameOccu</span>(<span class="at">y=</span>y, <span class="at">siteCovs=</span><span class="fu">data.frame</span>(elev,forest),</span>
 <span id="cb12-2"><a></a>                         <span class="at">obsCovs=</span><span class="fu">list</span>(<span class="at">temp=</span>temp))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">summary</span>(umf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -394,12 +396,13 @@ Observation-level covariates:
  Hot :376  </code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="standardizing" class="slide level2">
 <h2>Standardizing</h2>
-<div style="font-size: 90%;">
-<p>It’s almost always a good idea to standardize <span style="color: red;">continuous</span> covariates. <br></p>
-<p>Standardizing involves subtracting the mean and then dividing by the standard deviation. <br></p>
+<div style="font-size: 80%;">
+<p>It’s almost always a good idea to standardize <span style="color: red;">continuous</span> covariates.</p>
+<p>Standardizing involves subtracting the mean and then dividing by the standard deviation.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>mean.elev <span class="ot">&lt;-</span> <span class="fu">mean</span>(elev); mean.forest <span class="ot">&lt;-</span> <span class="fu">mean</span>(forest)</span>
 <span id="cb15-2"><a></a>sd.elev <span class="ot">&lt;-</span> <span class="fu">sd</span>(elev); sd.forest <span class="ot">&lt;-</span> <span class="fu">sd</span>(forest)</span>
@@ -408,8 +411,10 @@ Observation-level covariates:
 <span id="cb15-5"><a></a><span class="fu">siteCovs</span>(umf)<span class="sc">$</span>elev_s <span class="ot">&lt;-</span> elev_s</span>
 <span id="cb15-6"><a></a><span class="fu">siteCovs</span>(umf)<span class="sc">$</span>forest_s <span class="ot">&lt;-</span> forest_s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <p>Standardizing makes it easier to find the maximum likelihood estimates (MLEs) and it facilitates comparison of estimates. <br></p>
 <p>We just have to remember to back-transform covariates when graphing predictions.</p>
+</div>
 </div>
 </section>
 <section id="fit-the-model" class="slide level2">
@@ -472,47 +477,74 @@ Number of sites: 200</code></pre>
 <h2>Prediction in ‘unmarked’</h2>
 <p>View <span class="math inline">\(\psi\)</span> predictions</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">print</span>(<span class="fu">head</span>(psi.pred), <span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">print</span>(<span class="fu">head</span>(psi.pred, <span class="at">n=</span><span class="dv">4</span>), <span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Predicted   SE lower upper elev_s forest_s temp elev forest
 1      0.74 0.12  0.46  0.90   -3.0        0  Hot 3489    100
 2      0.73 0.12  0.46  0.89   -2.9        0  Hot 3552    100
 3      0.71 0.11  0.45  0.88   -2.8        0  Hot 3616    100
-4      0.70 0.11  0.45  0.87   -2.6        0  Hot 3679    100
-5      0.69 0.11  0.45  0.86   -2.5        0  Hot 3743    100
-6      0.68 0.11  0.45  0.85   -2.4        0  Hot 3806    100</code></pre>
+4      0.70 0.11  0.45  0.87   -2.6        0  Hot 3679    100</code></pre>
 </div>
 </div>
 <p>View <span class="math inline">\(p\)</span> predictions</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">print</span>(<span class="fu">head</span>(p.pred), <span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">print</span>(<span class="fu">head</span>(p.pred, <span class="at">n=</span><span class="dv">4</span>), <span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Predicted    SE lower upper elev_s forest_s temp elev forest
 1      0.22 0.073  0.11  0.39   -3.0        0  Hot 3489    100
 2      0.23 0.073  0.12  0.40   -2.9        0  Hot 3552    100
 3      0.24 0.073  0.13  0.41   -2.8        0  Hot 3616    100
-4      0.26 0.073  0.14  0.42   -2.6        0  Hot 3679    100
-5      0.27 0.073  0.15  0.43   -2.5        0  Hot 3743    100
-6      0.28 0.073  0.16  0.44   -2.4        0  Hot 3806    100</code></pre>
+4      0.26 0.073  0.14  0.42   -2.6        0  Hot 3679    100</code></pre>
 </div>
 </div>
 </section>
 <section id="standardized-elevation" class="slide level2">
 <h2>Standardized elevation</h2>
-
-<img data-src="lecture-occupancyII_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<div style="font-size: 80%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">par</span>(<span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>))  </span>
+<span id="cb25-2"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> elev_s, psi.pred, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Occurrence probability"</span>,</span>
+<span id="cb25-3"><a></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">xlab=</span><span class="st">"Elevation (standardized)"</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) </span>
+<span id="cb25-4"><a></a><span class="fu">lines</span>(lower <span class="sc">~</span> elev_s, psi.pred, <span class="at">col=</span><span class="st">"grey"</span>); <span class="fu">lines</span>(upper <span class="sc">~</span> elev_s, psi.pred, <span class="at">col=</span><span class="st">"grey"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-occupancyII_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
 <section id="elevation-on-original-scale" class="slide level2">
 <h2>Elevation on original scale</h2>
-
-<img data-src="lecture-occupancyII_files/figure-revealjs/pred-psi1s-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<div style="font-size: 80%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="fu">par</span>(<span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.9</span>,<span class="fl">0.9</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>))  </span>
+<span id="cb26-2"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> elev, psi.pred, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Occurrence probability"</span>,</span>
+<span id="cb26-3"><a></a>     <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">xlab=</span><span class="st">"Elevation (original scale)"</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb26-4"><a></a><span class="fu">lines</span>(lower <span class="sc">~</span> elev, psi.pred, <span class="at">col=</span><span class="st">"grey"</span>); <span class="fu">lines</span>(upper <span class="sc">~</span> elev, psi.pred, <span class="at">col=</span><span class="st">"grey"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-occupancyII_files/figure-revealjs/pred-psi1s-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
 <section id="estimated-vs-actual-occupancy" class="slide level2">
 <h2>Estimated vs actual occupancy</h2>
 
 <!-- \subsection{Bayesian methods} -->
-<img data-src="lecture-occupancyII_files/figure-revealjs/psi-actual-est-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
+<img data-src="lecture-occupancyII_files/figure-revealjs/psi-actual-est-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="the-bugs-model" class="slide level2">
 <h2>The BUGS model</h2>
-<div class="cell">
+<center>
+<a href="occupancy-model-covs.jag">occupancy-model-covs.jag</a>
+</center>
+<div class="cell" data-code-block-height="650px">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
 
@@ -545,32 +577,32 @@ sitesOccupied &lt;- sum(z)
 <h2>Data, inits, and parameters</h2>
 <p>Put data in a named list</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>jags.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">elev=</span>elev_s, <span class="at">forest=</span>forest_s,</span>
-<span id="cb26-2"><a></a>                  <span class="at">tempHot=</span>tempHot,</span>
-<span id="cb26-3"><a></a>                  <span class="at">nSites=</span>nSites, <span class="at">nOccasions=</span>nVisits)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>jags.data <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">elev=</span>elev_s, <span class="at">forest=</span>forest_s,</span>
+<span id="cb28-2"><a></a>                  <span class="at">tempHot=</span>tempHot,</span>
+<span id="cb28-3"><a></a>                  <span class="at">nSites=</span>nSites, <span class="at">nOccasions=</span>nVisits)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Initial values</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>jags.inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb27-2"><a></a>    <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>, nSites))</span>
-<span id="cb27-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>jags.inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb29-2"><a></a>    <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>, nSites))</span>
+<span id="cb29-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Parameters to monitor</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>jags.pars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>, <span class="st">"beta2"</span>,</span>
-<span id="cb28-2"><a></a>               <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"alpha2"</span>,</span>
-<span id="cb28-3"><a></a>               <span class="st">"sitesOccupied"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>jags.pars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>, <span class="st">"beta2"</span>,</span>
+<span id="cb30-2"><a></a>               <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"alpha2"</span>,</span>
+<span id="cb30-3"><a></a>               <span class="st">"sitesOccupied"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="mcmc" class="slide level2">
 <h2>MCMC</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">library</span>(jagsUI)</span>
-<span id="cb29-2"><a></a>jags.post.samples <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data, <span class="at">inits=</span>jags.inits,</span>
-<span id="cb29-3"><a></a>                                <span class="at">parameters.to.save=</span>jags.pars,</span>
-<span id="cb29-4"><a></a>                                <span class="at">model.file=</span><span class="st">"occupancy-model-covs.jag"</span>,</span>
-<span id="cb29-5"><a></a>                                <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb29-6"><a></a>                                <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">library</span>(jagsUI); <span class="fu">library</span>(coda)</span>
+<span id="cb31-2"><a></a>jags.post.samples <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data, <span class="at">inits=</span>jags.inits,</span>
+<span id="cb31-3"><a></a>                                <span class="at">parameters.to.save=</span>jags.pars,</span>
+<span id="cb31-4"><a></a>                                <span class="at">model.file=</span><span class="st">"occupancy-model-covs.jag"</span>,</span>
+<span id="cb31-5"><a></a>                                <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb31-6"><a></a>                                <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Processing function input....... 
@@ -581,14 +613,14 @@ Beginning parallel processing using 3 cores. Console output will be suppressed.
 
 Parallel processing completed.
 
-MCMC took 0.036 minutes.</code></pre>
+MCMC took 0.072 minutes.</code></pre>
 </div>
 </div>
 </section>
 <section id="summarize-output" class="slide level2">
 <h2>Summarize output</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">summary</span>(jags.post.samples)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">summary</span>(jags.post.samples)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Iterations = 101:2100
@@ -599,27 +631,25 @@ Sample size per chain = 2000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-                  Mean      SD Naive SE Time-series SE
-alpha0         -1.1758  0.2025 0.002614       0.006870
-alpha1          0.5708  0.1327 0.001713       0.002627
-alpha2          1.5701  0.2600 0.003357       0.008402
-beta0          -0.2661  0.1799 0.002322       0.004214
-beta1          -0.4524  0.1845 0.002382       0.004110
-beta2           0.1274  0.1697 0.002191       0.003356
-deviance      396.8458 17.2814 0.223103       0.448637
-sitesOccupied  87.2630  4.9410 0.063789       0.131797
+                 Mean     SD Naive SE Time-series SE
+alpha0        -1.1665 0.2020 0.002608       0.006444
+alpha1         0.5660 0.1356 0.001751       0.002778
+alpha2         1.5460 0.2562 0.003308       0.007300
+beta0         -0.2605 0.1813 0.002341       0.004201
+beta1         -0.4481 0.1914 0.002471       0.004197
+beta2          0.1315 0.1699 0.002193       0.003329
+sitesOccupied 87.4655 5.0831 0.065622       0.140707
 
 2. Quantiles for each variable:
 
-                  2.5%       25%      50%      75%     97.5%
-alpha0         -1.5882  -1.31176  -1.1687  -1.0374  -0.79310
-alpha1          0.3135   0.48103   0.5686   0.6602   0.83408
-alpha2          1.0809   1.39620   1.5602   1.7415   2.08105
-beta0          -0.6196  -0.38486  -0.2694  -0.1491   0.09678
-beta1          -0.8329  -0.57251  -0.4456  -0.3232  -0.10507
-beta2          -0.1998   0.01353   0.1274   0.2396   0.47156
-deviance      367.3163 384.73433 395.5927 407.7031 433.75572
-sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000</code></pre>
+                 2.5%      25%     50%     75%    97.5%
+alpha0        -1.5695 -1.30153 -1.1630 -1.0304 -0.77441
+alpha1         0.2994  0.47222  0.5642  0.6561  0.83835
+alpha2         1.0521  1.37589  1.5479  1.7147  2.05739
+beta0         -0.6090 -0.38581 -0.2620 -0.1393  0.10470
+beta1         -0.8449 -0.57349 -0.4386 -0.3149 -0.09501
+beta2         -0.2035  0.01856  0.1292  0.2455  0.46913
+sitesOccupied 79.0000 84.00000 87.0000 91.0000 98.00000</code></pre>
 </div>
 </div>
 </section>
@@ -643,37 +673,43 @@ sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000</code></pre>
 </section>
 <section id="bayesian-prediction-1" class="slide level2">
 <h2>Bayesian prediction</h2>
+<div style="font-size: 80%;">
 <p>First, extract the <span class="math inline">\(\psi\)</span> coefficients</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>psi.coef.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples[,<span class="fu">c</span>(<span class="st">"beta0"</span>,<span class="st">"beta1"</span>,<span class="st">"beta2"</span>)])</span>
-<span id="cb33-2"><a></a><span class="fu">head</span>(psi.coef.post, <span class="at">n=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>psi.coef.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples[,<span class="fu">c</span>(<span class="st">"beta0"</span>,<span class="st">"beta1"</span>,<span class="st">"beta2"</span>)])</span>
+<span id="cb35-2"><a></a><span class="fu">head</span>(psi.coef.post, <span class="at">n=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           beta0       beta1       beta2
-[1,] -0.50241972 -0.26606916 -0.00358777
-[2,] -0.06971611 -0.42945708 -0.13100297
-[3,] -0.18686091 -0.04623989  0.09095983
-[4,] -0.34570094 -0.30938459  0.32173537</code></pre>
+<pre><code>           beta0      beta1       beta2
+[1,]  0.03917272 -0.6438042  0.01456167
+[2,] -0.05849979 -0.4680823 -0.01976281
+[3,]  0.14814125 -0.4031580 -0.05574820
+[4,] -0.10849216 -0.5924015  0.05711385</code></pre>
 </div>
 </div>
+<div class="fragment">
 <p>Create prediction matrix, one row for each MCMC iteration.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>n.iter <span class="ot">&lt;-</span> <span class="fu">nrow</span>(psi.coef.post)  </span>
-<span id="cb35-2"><a></a>psi.post.pred <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>n.iter, <span class="at">ncol=</span><span class="fu">nrow</span>(pred.data))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>n.iter <span class="ot">&lt;-</span> <span class="fu">nrow</span>(psi.coef.post)  </span>
+<span id="cb37-2"><a></a>psi.post.pred <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>n.iter, <span class="at">ncol=</span><span class="fu">nrow</span>(pred.data))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
+<div class="fragment">
 <p>Predict <span class="math inline">\(\psi\)</span> for each MCMC iteration.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.iter) {</span>
-<span id="cb36-2"><a></a>    psi.post.pred[i,] <span class="ot">&lt;-</span> <span class="fu">plogis</span>(psi.coef.post[i,<span class="st">"beta0"</span>] <span class="sc">+</span></span>
-<span id="cb36-3"><a></a>                                psi.coef.post[i,<span class="st">"beta1"</span>]<span class="sc">*</span>pred.data<span class="sc">$</span>elev_s)</span>
-<span id="cb36-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.iter) {</span>
+<span id="cb38-2"><a></a>    psi.post.pred[i,] <span class="ot">&lt;-</span> <span class="fu">plogis</span>(psi.coef.post[i,<span class="st">"beta0"</span>] <span class="sc">+</span></span>
+<span id="cb38-3"><a></a>                                psi.coef.post[i,<span class="st">"beta1"</span>]<span class="sc">*</span>pred.data<span class="sc">$</span>elev_s)</span>
+<span id="cb38-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </div>
 </section>
 <section id="bayesian-prediction-2" class="slide level2">
 <h2>Bayesian prediction</h2>
 <p>Prediction line for first posterior sample</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">plot</span>(pred.data<span class="sc">$</span>elev, psi.post.pred[<span class="dv">1</span>,], <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"Elevation"</span>,</span>
-<span id="cb37-2"><a></a>     <span class="at">ylab=</span><span class="st">"Occurrence probability"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">plot</span>(pred.data<span class="sc">$</span>elev, psi.post.pred[<span class="dv">1</span>,], <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"Elevation"</span>,</span>
+<span id="cb39-2"><a></a>     <span class="at">ylab=</span><span class="st">"Occurrence probability"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-occupancyII_files/figure-revealjs/psi-pred1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
@@ -681,9 +717,9 @@ sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000</code></pre>
 <h2>Bayesian prediction</h2>
 <p>All samples from the posterior predictive distribution</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.iter) {</span>
-<span id="cb38-2"><a></a>    <span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, psi.post.pred[i,], <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))</span>
-<span id="cb38-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.iter) {</span>
+<span id="cb40-2"><a></a>    <span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, psi.post.pred[i,], <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))</span>
+<span id="cb40-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-occupancyII_files/figure-revealjs/psi-pred-post-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
@@ -691,18 +727,18 @@ sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000</code></pre>
 <h2>Bayesian prediction</h2>
 <p>Now with posterior mean and 95% CI</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>pred.post.mean <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(psi.post.pred)</span>
-<span id="cb39-2"><a></a>pred.post.lower <span class="ot">&lt;-</span> <span class="fu">apply</span>(psi.post.pred, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span>
-<span id="cb39-3"><a></a>pred.post.upper <span class="ot">&lt;-</span> <span class="fu">apply</span>(psi.post.pred, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
-<span id="cb39-4"><a></a><span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, pred.post.mean, <span class="at">col=</span><span class="st">"blue"</span>)</span>
-<span id="cb39-5"><a></a><span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, pred.post.lower, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
-<span id="cb39-6"><a></a><span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, pred.post.upper, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>pred.post.mean <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(psi.post.pred)</span>
+<span id="cb41-2"><a></a>pred.post.lower <span class="ot">&lt;-</span> <span class="fu">apply</span>(psi.post.pred, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span>
+<span id="cb41-3"><a></a>pred.post.upper <span class="ot">&lt;-</span> <span class="fu">apply</span>(psi.post.pred, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
+<span id="cb41-4"><a></a><span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, pred.post.mean, <span class="at">col=</span><span class="st">"blue"</span>)</span>
+<span id="cb41-5"><a></a><span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, pred.post.lower, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb41-6"><a></a><span class="fu">lines</span>(pred.data<span class="sc">$</span>elev, pred.post.upper, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-occupancyII_files/figure-revealjs/psi-pred-post-meanCI-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="summary-of-static-occupancy-models" class="slide level2">
 <h2>Summary of static occupancy models</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 65%;">
 <p>Assumptions are made explicit by the model description, but it’s worth emphasizing that:</p>
 <ul>
 <li>Occupancy is assumed to remain constant at each site during the sampling period</li>
@@ -710,6 +746,7 @@ sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000</code></pre>
 <li>Abundance is assumed to be unimportant</li>
 <li>Observations are assumed to be independent, conditional on latent variables and covariates</li>
 </ul>
+<div class="fragment">
 <p>These assumptions can be relaxed if we have enough data.</p>
 <ul>
 <li><p>Dynamic occupancy models</p></li>
@@ -717,15 +754,18 @@ sitesOccupied  79.0000  84.00000  87.0000  90.0000  98.00000</code></pre>
 <li><p><span class="math inline">\(N\)</span>-mixture models</p></li>
 <li><p>Focus is on local abundance, rather than presence/absence</p></li>
 </ul>
+</div>
+<div class="fragment">
 <p>We’ll talk more about design issues later</p>
+</div>
 </div>
 </section></section>
 <section>
 
 <section id="assignment-1" class="slide level2">
 <h2>Assignment</h2>
-<div style="font-size: 80%;">
-<p>Create a self-contained R script or Rmarkdown file to do the following:</p>
+<div style="font-size: 75%;">
+<p>Create a self-contained R script or Rmarkdown/Quarto file to do the following:</p>
 <ol type="1">
 <li>Fit an occupancy model in ‘unmarked’ to the Ruffed Grouse data (<code>"grouse_data.csv"</code>). Use all three covariates, with elevation and forest cover affecting occupancy and day of the year affecting detection probability.</li>
 </ol>
