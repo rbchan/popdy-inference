@@ -6,75 +6,87 @@ format:
     pagetitle: 'Binomial *N*-mixture models:<br>simulation, fitting, and prediction'
     slide-number: true
     css: ../../custom.css
+    echo: true
 lang: en
 ---
 
 
 ## {content-align="center" style="font-size: 160%;"}
 
-
+<center>
 Binomial $N$-mixture models: <br> simulation, fitting, and prediction
 
-  
+<br>
+
+::: {style="font-size: 80%;"}
 WILD(FISH) 8390 <br>
 Inference for Models of Fish and Wildlife Population Dynamics <br>
+:::
+
+<center>
   
 
 
 
-# Overview
-
-
-
+# Overview {visibility="hidden"}
 
 
 
 ## Overview
 
-We're often more interested in abundance than occupancy. <br>
-  
-  
-  Even if you're interested in occupancy, you get it for free by modeling abundance. <br>
-  
-  
-  Occupancy isn't useful if all sites are occupied. <br>
-  
-  
-  Binomial $N$-mixture models are useful for studying spatial
-  variation in abundance if we have repeated count data, instead of
-  repeated detection data.
+::: {style="font-size: 85%;"}
 
+We're often more interested in abundance than occupancy.
 
+<br>
 
+Even if you're interested in occupancy, you get it for free by modeling abundance. 
 
+<br>
+
+Occupancy isn't useful if all sites are occupied. 
+
+<br>
+
+Binomial $N$-mixture models are useful for studying spatial variation in abundance if we have repeated count data, instead of repeated detection data.
+
+:::
 
 
 ## Binomial $N$-mixture model
-  
-  State model (with Poisson assumption)
-  \begin{gather*}
+
+::: {style="font-size: 75%;"}
+
+State model (with Poisson assumption)
+$$
+\begin{gather*}
     \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} +
-    \beta_2 {\color{blue} x_{i2}} + \cdots <br>
+    \beta_2 {\color{blue} x_{i2}} + \cdots \\
     N_i \sim \mathrm{Poisson}(\lambda_i)
   \end{gather*}
+$$
   
-  
-  Observation model
-  \begin{gather*}
+Observation model
+$$
+\begin{gather*}
     \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}}
-    + \alpha_2 {\color{Purple} w_{ij}} + \cdots <br>
+    + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
     y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
-  \end{gather*}
+\end{gather*}
+$$
   
   
   
-  Definitions <br>
+Definitions <br>
   $\lambda_i$ -- Expected value of abundance at site $i$ <br>
   $N_i$ -- Realized value of abundance at site $i$ <br>
   $p_{ij}$ -- Probability of detecting \alert{an individual} at site $i$ on occasion $j$ <br>
   $y_{ij}$ -- Count data <br>
   $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates <br>
   $\color{Purple} w$ -- observation covariate
+
+:::
+
 
 
 
@@ -85,9 +97,10 @@ We're often more interested in abundance than occupancy. <br>
 
 ## Simulation -- No covariates
   
+::: {style="font-size: 80%;"}
+
 ```{r}
 #| label: sim-nocov1
-#| size: 'scriptsize'
 nSites <- 100
 nVisits <- 4
 set.seed(3439)                         # Make it reproducible
@@ -98,7 +111,6 @@ N1 <- rpois(n=nSites, lambda=lambda1)  # Realized values
   Detection probability and data
 ```{r}
 #| label: sim-nocov2
-#| size: 'scriptsize'
 p1 <- 0.3
 y1 <- matrix(NA, nrow=nSites, ncol=nVisits)
 for(i in 1:nSites) {
@@ -110,26 +122,26 @@ for(i in 1:nSites) {
 Data and latent abundance
 ```{r}
 #| label: N1y1
-#| size: 'scriptsize'
 cbind(y1, N1)[1:5,]
 ```
 
-
+:::
 
 
 ## Simulation -- Covariates
   
+::: {style="font-size: 90%;"}
+
 ```{r}
 #| label: sim-cov1
-#| size: 'scriptsize'
 forest <- factor(sample(c("Hardwood", "Mixed", "Pine"), nSites, replace=TRUE))
 forestMixed <- ifelse(forest=="Mixed", 1, 0)        ## Dummy
 forestPine <- ifelse(forest=="Pine", 1, 0)          ## Dummy
 temp <- matrix(rnorm(nSites*nVisits), nrow=nSites, ncol=nVisits)
 ```
+<br>
 
-  Coefficients, $\lambda$, and $p$
-  
+Coefficients, $\lambda$, and $p$
 ```{r}
 #| label: nsim-cov2
 #| size: 'scriptsize'
@@ -138,9 +150,9 @@ lambda2 <- exp(beta0 + beta1*forestMixed + beta2*forestPine)
 alpha0 <- -2; alpha1 <- 1
 p2 <- plogis(alpha0 + alpha1*temp)
 ```
+<br>
 
-  Simulate occupancy and detection data
-  
+Simulate occupancy and detection data
 ```{r}
 #| label: sim-cov3
 #| size: 'scriptsize'
@@ -151,29 +163,31 @@ for(i in 1:nSites) {
 }
 ```
 
-
+:::
 
 ## Simulated data
-  ::: columns
-    ::: {.column width='50%'}
-      
-      Observations
 
+::: {style="font-size: 90%;"}
+
+::: {.columns}
+::: {.column width='40%'}
+      
+Observations
 ```{r}
 #| label: sim-nocov-dat
-#| size: 'scriptsize'
 y2[1:19,]
 ```
-  :::
-  ::: {.column width='50%'}
-    
+:::
+::: {.column width='5%'}
+:::
+::: {.column width='55%'}
 
-    { Summary stats <br>}
+
+Summary stats
     
-  Detections at each site <br>
+Detections at each site
 ```{r}
 #| label: sim-nocov-ss1
-#| size: 'scriptsize'
 # Max count at each site
 maxCounts <- apply(y2, 1, max) 
 table(maxCounts)              
@@ -181,7 +195,6 @@ table(maxCounts)
 
 ```{r}
 #| label: sim-nocov-ss2
-#| size: 'scriptsize'
 naiveOccupancy <- sum(maxCounts>0)/nSites
 naiveOccupancy 
 ```
@@ -190,7 +203,6 @@ naiveOccupancy
 Observed abundance
 ```{r}
 #| label: sim-nocov-ss3
-#| size: 'scriptsize'
 naiveAbund <- sum(maxCounts)
 naiveAbund
 ```
@@ -202,7 +214,7 @@ library(unmarked)
 :::
 :::
 
-
+:::
 
 
 # Prediction
@@ -214,31 +226,22 @@ library(unmarked)
   
 ```{r}
 #| label: un-umf
-#| size: 'tiny'
 umf <- unmarkedFramePCount(y=y2, siteCovs=data.frame(forest), obsCovs=list(temp=temp))
-```
-
-```{r}
-#| label: wfac
-#| size: 'tiny'
 summary(umf)
 ```
 
 
 
-
 ## Fit the model -- without covariates
 
-`pcount` is similar to `occu`, but there's a new argument
-  (`K`) that should be an integer much 
-  greater than the highest possible value of local abundance. 
+::: {style="font-size: 80%;"}
+
+`pcount` is similar to `occu`, but there's a new argument (`K`) that should be an integer much greater than the highest possible value of local abundance. 
 ```{r}
 #| label: un-fit0
-#| size: 'tiny'
 fm0 <- pcount(~1 ~1, umf, K=100)    
 fm0
 ```
-
 
 We can use `backTransform` to obtain estimate of average abundance
 at each site because there aren't covariates:
@@ -249,29 +252,29 @@ backTransform(fm0, type="state")
 ```
 
 
-
+:::
 
 
 
 ## Fit the model -- with covariates
 
+::: {style="font-size: 80%;"}
+
 Detection depends on `temp`. Abundance depends on `forest`.
 ```{r}
 #| label: un-fit
-#| size: 'tiny'
 fm <- pcount(~temp ~forest, umf, K=100)    
 fm
 ```
 
-
+::: .fragment
 Compare to actual parameter values:
 ```{r}
 #| label: un-compare
-#| size: 'tiny'
 c(beta0=beta0, beta1=beta1, beta2=beta2); c(alpha0=alpha0, alpha1=alpha1)
 ```
-
-
+:::
+:::
 
 
 
@@ -283,12 +286,12 @@ c(beta0=beta0, beta1=beta1, beta2=beta2); c(alpha0=alpha0, alpha1=alpha1)
 #| include: false
 oo <- options(width=90)
 ```
+::: {style="font-size: 90%;"}
 
 Estimates should not change when you increase $K$.
   
 ```{r}
 #| label: coef
-#| size: 'tiny'
 round(coef(fm), digits=4)
 ```
 
@@ -297,7 +300,6 @@ Looks good:
   
 ```{r}
 #| label: upK
-#| size: 'tiny'
 fm.test <- pcount(~temp ~forest, umf, K=150)    
 round(coef(fm.test), digits=4)
 ```
@@ -305,16 +307,16 @@ round(coef(fm.test), digits=4)
 
 If the estimates do change, increase $K$ until they stabilize.
 
+:::
 
 
 ##  Empirical Bayes -- Site-level abundance
 
 ```{r}
 #| label: ranef
-#| size: 'scriptsize'
-#| out.width: '80%'
-#| fig.align: 'center'
-#| fig.width: 9
+#| out-width: '80%'
+#| fig-align: 'center'
+#| fig-width: 9
 re <- ranef(fm)
 plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 ```
@@ -327,8 +329,7 @@ plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 
 ```{r}
 #| label: Ntotal
-#| size: 'tiny'
-#| out.width: '50%'
+#| out.width: '40%'
 #| fig.align: 'center'
 N.total.post <- predict(re, func=sum, nsim=1000)
 hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
@@ -339,9 +340,6 @@ Estimate of total abundance in sampled area, with 95\% CI:
 #| size: 'tiny'
 c(Estimate=mean(N.total.post), quantile(N.total.post, prob=c(0.025, 0.975)))
 ```
-
-
-
 
 
 
@@ -433,7 +431,7 @@ Initial values
 #| size: 'scriptsize'
 jags.inits0 <- function() list(lambda=runif(1), p=runif(1), N=maxCounts)
 ```
-  
+
   
 Run it
   
@@ -526,7 +524,6 @@ jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
 ## Summarize output
 ```{r}
 #| label: bugs-sum
-#| size: 'tiny'
 summary(jags.post.samples[,jags.pars])
 ```
 
@@ -535,9 +532,10 @@ summary(jags.post.samples[,jags.pars])
 ## Local abundance
 ```{r}
 #| label: localN
-#| out.width: '70%'
-#| fig.align: 'center'
-#| size: 'scriptsize'
+#| out-width: '70%'
+#| fig-align: 'center'
+#| fig-height: 7
+#| fig-width: 10
 plot(jags.post.samples[,paste0("N[", 1:4, "]")])
 ```
 
@@ -546,9 +544,9 @@ plot(jags.post.samples[,paste0("N[", 1:4, "]")])
 
 ```{r}
 #| label: bugs-plot1
-#| size: 'footnotesize'
-#| out.width: "0.7<br>textwidth"
-#| fig.align: 'center'
+#| out-width: "70%"
+#| fig-align: 'center'
+#| fig-width: 10
 plot(jags.post.samples[,jags.pars[1:3]])
 ```
 
@@ -557,14 +555,16 @@ plot(jags.post.samples[,jags.pars[1:3]])
 
 ```{r}
 #| label: bugs-plot2
-#| size: 'footnotesize'
-#| out.width: "0.7<br>textwidth"
-#| fig.align: 'center'
+#| out-width: "70%"
+#| fig-align: 'center'
+#| fig-width: 10
 plot(jags.post.samples[,jags.pars[4:5]])
 ```
 
 ## Bayesian prediction
   
+::: {style="font-size: 80%;"}
+
 First, extract the $p$ coefficients
   
 ```{r}
@@ -596,6 +596,7 @@ for(i in 1:n.iter) {
 }
 ```
 
+:::
 
 
 ## Bayesian prediction
@@ -623,13 +624,13 @@ lines(temp.pred, pred.post.upper, col="blue", lty=2)
 
 ## Prior sensitivity
 
-Questions
-  * What are the implied priors on $\lambda$ and $p$?
-  * What would be the consequence of changing the priors?
-  
-  [Prior predictive checks] can help us answer these questions. <br>
+Questions:
+  - What are the implied priors on $\lambda$ and $p$?
+  - What would be the consequence of changing the priors?
 
-  Prior prediction can be acheived by replacing the data with missing values <br>
+[Prior predictive checks] can help us answer these questions.
+
+Prior prediction can be acheived by replacing the data with missing values.
 
 
 ## Prior sampling
@@ -638,7 +639,6 @@ Replace data with missing values
   
 ```{r}
 #| label: bugs-data2
-#| size: 'small'
 jags.data2 <- jags.data
 jags.data2$y[] <- NA     # Replace data with missing values
 ```
@@ -647,7 +647,6 @@ Fit model (Really, we're just sampling from the prior)
 
 ```{r}
 #| label: bugs-mcmc-prior
-#| size: 'scriptsize'
 #| message: false
 #| results: 'hide'
 #| cache: true
@@ -663,7 +662,6 @@ jags.prior.samples <- jags.basic(data=jags.data2, inits=jags.inits,
 
 ```{r}
 #| label: summary-prior
-#| size: 'tiny'
 summary(jags.prior.samples)
 ```
 
@@ -675,7 +673,6 @@ Push the prior samples through the model to predict $p$
 
 ```{r}
 #| label: psi-coefs-prior
-#| size: 'scriptsize'
 p.coef.prior <- as.matrix(jags.prior.samples[,c("alpha0","alpha1")])
 p.prior.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))
 for(i in 1:n.iter) {
@@ -686,10 +683,11 @@ for(i in 1:n.iter) {
 
 ## Bayesian prediction
 
+::: {style="font-size: 80%;"}
+
 Compute prior mean and 95\% CI for $p$ predictions
 ```{r}
 #| label: prior-post-pred-1
-#| size: 'scriptsize'
 pred.prior.mean <- colMeans(p.prior.pred)
 pred.prior.lower <- apply(p.prior.pred, 2, quantile, prob=0.025)
 pred.prior.upper <- apply(p.prior.pred, 2, quantile, prob=0.975)
@@ -699,7 +697,6 @@ Show credible regions using shaded polygons. Include a few prior prediction line
 
 ```{r}
 #| label: prior-post-pred-2
-#| size: 'scriptsize'
 #| fig.height: 6
 #| dev: 'png'
 #| dpi: 200
@@ -720,10 +717,11 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
        col=c("darkgreen", "grey", "blue"), lwd=2)
 ```
 
+:::
 
 ## Prior and posterior prediction
   
-![]{prior-post-pred-2-1}
+![](lecture-Nmix-binomial-I_files/figure-revealjs/prior-post-pred-2-1.png)
 
 
 ## Prior predictive recap
@@ -731,20 +729,20 @@ legend(-3, 1.3, c("Prior mean", "Prior samples", "Posterior mean"),
 There are two common strategies for specifying priors:
   * Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods.
   * Use priors that reflect available information.
-  
+
   
 The second approach can be used even if there isn't much prior
 information available. Priors can allow for the
 possibility of being ``surprised'' by the data, but without
-putting most of the prior weight on extreme values. <br>
+putting most of the prior weight on extreme values. 
   
   
 Often, highly diffuse priors on the link scale result in most of the
-prior weight being on extreme values on the natural scale. <br>
+prior weight being on extreme values on the natural scale. 
   
   
 Prior predictive checks can be used to assess this possibility, and
-should be a standard component of Bayesian analysis. <br>
+should be a standard component of Bayesian analysis.
 
 
 
@@ -757,11 +755,7 @@ should be a standard component of Bayesian analysis. <br>
   Create a self-contained R script or Rmarkdown/Quarto file
   to do the following:
   
-Using the simulated data, compare the prior and posterior
-      predictive distributions of $\lambda$ for each of the 3 forest
-      types. Hint: because forest type is categorical (not
-      continuous), you can visualize the prior and posterior
-      predictive distributions as histograms for each forest type.  <br>
+Using the simulated data, compare the prior and posterior predictive distributions of $\lambda$ for each of the 3 forest types. ^[Hint: because forest type is categorical (not continuous), you can visualize the prior and posterior predictive distributions as histograms for each forest type.]
   
   Upload your `.R`, `.Rmd`, or `.qmd` file to ELC by 5:00 PM on Tuesday.
 
