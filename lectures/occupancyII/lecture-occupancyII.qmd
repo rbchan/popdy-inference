@@ -12,7 +12,6 @@ lang: en
 
 
 
-
 ## {content-align="center" style="font-size: 160%;"}
 
 <center>
@@ -21,7 +20,7 @@ Occupancy models:<br>covariates and prediction
 
 <br>
 
-::: {style="font-size: 80%;"}
+::: {style="font-size: 70%;"}
 WILD(FISH) 8390 <br>
 Inference for Models of Fish and Wildlife Population Dynamics <br>
 :::
@@ -273,7 +272,7 @@ summary(umf)
 
 It's almost always a good idea to standardize [continuous]{style="color: red;"} covariates.
   
-Standardizing involves subtracting the mean and then dividing by the standard deviation. 
+Standardizing involves subtracting the mean and then dividing by the standard deviation.^[You can use the R function `scale` but it's important to know how to do it yourself]
   
 
 ```{r}
@@ -673,29 +672,26 @@ lines(pred.data$elev, pred.post.upper, col="blue", lty=2)
 
 Assumptions are made explicit by the model description, but it's worth emphasizing that: 
 
-* Occupancy is assumed to remain constant at each site during the sampling period
+* Occupancy is assumed to remain constant at each site during the sampling period.
 * The definition of a 'site' is critical, but can difficult in some situations, such as in camera studies.
-* Abundance is assumed to be unimportant
-* Observations are assumed to be independent, conditional on latent variables and covariates
+* Abundance is assumed to be unimportant.
+* Observations are assumed to be independent, conditional on latent variables and covariates.
 
 ::: {.fragment}
 
 These assumptions can be relaxed if we have enough data. 
 
 * Dynamic occupancy models
-
-* Occupancy evolves as a function of local colonization and extinction
-
+  - Occupancy evolves as a function of local colonization and extinction.
 * $N$-mixture models
-
-* Focus is on local abundance, rather than presence/absence
+  - Focus is on local abundance, rather than presence/absence.
 
 :::
 
 
 ::: {.fragment}
 
-We'll talk more about design issues later
+<center>We'll talk more about design issues later.</center>
 
 :::
 

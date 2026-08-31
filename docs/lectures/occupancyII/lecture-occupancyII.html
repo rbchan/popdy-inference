@@ -200,7 +200,7 @@
 <center>
 <p>Occupancy models:<br>covariates and prediction</p>
 <p><br></p>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
 </div>
 </center>
@@ -402,7 +402,7 @@ Observation-level covariates:
 <h2>Standardizing</h2>
 <div style="font-size: 80%;">
 <p>It’s almost always a good idea to standardize <span style="color: red;">continuous</span> covariates.</p>
-<p>Standardizing involves subtracting the mean and then dividing by the standard deviation.</p>
+<p>Standardizing involves subtracting the mean and then dividing by the standard deviation.<sup>1</sup></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>mean.elev <span class="ot">&lt;-</span> <span class="fu">mean</span>(elev); mean.forest <span class="ot">&lt;-</span> <span class="fu">mean</span>(forest)</span>
 <span id="cb15-2"><a></a>sd.elev <span class="ot">&lt;-</span> <span class="fu">sd</span>(elev); sd.forest <span class="ot">&lt;-</span> <span class="fu">sd</span>(forest)</span>
@@ -416,7 +416,7 @@ Observation-level covariates:
 <p>We just have to remember to back-transform covariates when graphing predictions.</p>
 </div>
 </div>
-</section>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>You can use the R function <code>scale</code> but it’s important to know how to do it yourself</p></li></ol></aside></section>
 <section id="fit-the-model" class="slide level2">
 <h2>Fit the model</h2>
 <div class="cell">
@@ -613,7 +613,7 @@ Beginning parallel processing using 3 cores. Console output will be suppressed.
 
 Parallel processing completed.
 
-MCMC took 0.072 minutes.</code></pre>
+MCMC took 0.073 minutes.</code></pre>
 </div>
 </div>
 </section>
@@ -741,22 +741,28 @@ sitesOccupied 79.0000 84.00000 87.0000 91.0000 98.00000</code></pre>
 <div style="font-size: 65%;">
 <p>Assumptions are made explicit by the model description, but it’s worth emphasizing that:</p>
 <ul>
-<li>Occupancy is assumed to remain constant at each site during the sampling period</li>
+<li>Occupancy is assumed to remain constant at each site during the sampling period.</li>
 <li>The definition of a ‘site’ is critical, but can difficult in some situations, such as in camera studies.</li>
-<li>Abundance is assumed to be unimportant</li>
-<li>Observations are assumed to be independent, conditional on latent variables and covariates</li>
+<li>Abundance is assumed to be unimportant.</li>
+<li>Observations are assumed to be independent, conditional on latent variables and covariates.</li>
 </ul>
 <div class="fragment">
 <p>These assumptions can be relaxed if we have enough data.</p>
 <ul>
-<li><p>Dynamic occupancy models</p></li>
-<li><p>Occupancy evolves as a function of local colonization and extinction</p></li>
-<li><p><span class="math inline">\(N\)</span>-mixture models</p></li>
-<li><p>Focus is on local abundance, rather than presence/absence</p></li>
+<li>Dynamic occupancy models
+<ul>
+<li>Occupancy evolves as a function of local colonization and extinction.</li>
+</ul></li>
+<li><span class="math inline">\(N\)</span>-mixture models
+<ul>
+<li>Focus is on local abundance, rather than presence/absence.</li>
+</ul></li>
 </ul>
 </div>
 <div class="fragment">
-<p>We’ll talk more about design issues later</p>
+<center>
+We’ll talk more about design issues later.
+</center>
 </div>
 </div>
 </section></section>
@@ -785,6 +791,7 @@ Upload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday.
 
 
 </section></section>
+
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
