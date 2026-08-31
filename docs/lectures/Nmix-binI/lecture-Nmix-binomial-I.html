@@ -236,6 +236,8 @@
     y_{ij} \sim \mathrm{Binomial}(N_i, p_{ij})
 \end{gather*}
 \]</span></p>
+</div>
+<div style="font-size: 60%;">
 <p>Definitions <br> <span class="math inline">\(\lambda_i\)</span> – Expected value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(N_i\)</span> – Realized value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(p_{ij}\)</span> – Probability of detecting at site <span class="math inline">\(i\)</span> on occasion <span class="math inline">\(j\)</span> <br> <span class="math inline">\(y_{ij}\)</span> – Count data <br> <span class="math inline">\(\color{blue} x_1\)</span> and <span class="math inline">\(\color{blue} x_2\)</span> – site covariates <br> <span class="math inline">\(\color{Purple} w\)</span> – observation covariate</p>
 </div>
 </section></section>
@@ -278,7 +280,7 @@
 </section>
 <section id="simulation-covariates" class="slide level2">
 <h2>Simulation – Covariates</h2>
-<div style="font-size: 90%;">
+<div style="font-size: 80%;">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>forest <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Hardwood"</span>, <span class="st">"Mixed"</span>, <span class="st">"Pine"</span>), nSites, <span class="at">replace=</span><span class="cn">TRUE</span>))</span>
 <span id="cb5-2"><a></a>forestMixed <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(forest<span class="sc">==</span><span class="st">"Mixed"</span>, <span class="dv">1</span>, <span class="dv">0</span>)        <span class="do">## Dummy</span></span>
@@ -306,7 +308,7 @@
 </section>
 <section id="simulated-data" class="slide level2">
 <h2>Simulated data</h2>
-<div style="font-size: 90%;">
+<div style="font-size: 85%;">
 <div class="columns">
 <div class="column" style="width:40%;">
 <p>Observations</p>
@@ -375,6 +377,7 @@
 </section>
 <section id="prepare-data-in-unmarked" class="slide level2">
 <h2>Prepare data in ‘unmarked’</h2>
+<div style="font-size: 80%;">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFramePCount</span>(<span class="at">y=</span>y2, <span class="at">siteCovs=</span><span class="fu">data.frame</span>(forest), <span class="at">obsCovs=</span><span class="fu">list</span>(<span class="at">temp=</span>temp))</span>
 <span id="cb16-2"><a></a><span class="fu">summary</span>(umf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -406,10 +409,11 @@ Observation-level covariates:
  Max.   : 3.001200  </code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="fit-the-model-without-covariates" class="slide level2">
 <h2>Fit the model – without covariates</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 60%;">
 <p><code>pcount</code> is similar to <code>occu</code>, but there’s a new argument (<code>K</code>) that should be an integer much greater than the highest possible value of local abundance.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>fm0 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span><span class="dv">1</span>, umf, <span class="at">K=</span><span class="dv">100</span>)    </span>
@@ -431,6 +435,7 @@ AIC: 459.6769
 Number of sites: 100</code></pre>
 </div>
 </div>
+<div class="fragment">
 <p>We can use <code>backTransform</code> to obtain estimate of average abundance at each site because there aren’t covariates:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">backTransform</span>(fm0, <span class="at">type=</span><span class="st">"state"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -444,10 +449,11 @@ Transformation: exp </code></pre>
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="fit-the-model-with-covariates" class="slide level2">
 <h2>Fit the model – with covariates</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>Detection depends on <code>temp</code>. Abundance depends on <code>forest</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>fm <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span>forest, umf, <span class="at">K=</span><span class="dv">100</span>)    </span>
@@ -499,6 +505,7 @@ Number of sites: 100</code></pre>
          -0.3260          -0.3258           1.2073          -1.9615           1.1760 </code></pre>
 </div>
 </div>
+<div class="fragment">
 <p>Looks good:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>fm.test <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span>forest, umf, <span class="at">K=</span><span class="dv">150</span>)    </span>
@@ -508,7 +515,10 @@ Number of sites: 100</code></pre>
          -0.3260          -0.3258           1.2073          -1.9615           1.1760 </code></pre>
 </div>
 </div>
-<p>If the estimates do change, increase <span class="math inline">\(K\)</span> until they stabilize.</p>
+</div>
+<div class="fragment">
+<p><br> If the estimates do change, increase <span class="math inline">\(K\)</span> until they stabilize.</p>
+</div>
 </div>
 </section>
 <section id="empirical-bayes-site-level-abundance" class="slide level2">
@@ -521,12 +531,19 @@ Number of sites: 100</code></pre>
 <img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/ranef-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="total-abundance-in-surveyed-region" class="slide level2">
 <h2>Total abundance (in surveyed region)</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>N.total.post <span class="ot">&lt;-</span> <span class="fu">predict</span>(re, <span class="at">func=</span>sum, <span class="at">nsim=</span><span class="dv">1000</span>)</span>
 <span id="cb32-2"><a></a><span class="fu">hist</span>(N.total.post, <span class="at">freq=</span><span class="cn">FALSE</span>, <span class="at">main=</span><span class="st">""</span>, <span class="at">xlab=</span><span class="st">"N total"</span>, <span class="at">ylab=</span><span class="st">"Probability"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/Ntotal-1.png" class="quarto-figure quarto-figure-center" style="width:40.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/Ntotal-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:40.0%"><p>Estimate of total abundance in sampled area, with 95% CI:</p>
+</div>
+</div>
+<p>Estimate of total abundance in sampled area, with 95% CI:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">c</span>(<span class="at">Estimate=</span><span class="fu">mean</span>(N.total.post), <span class="fu">quantile</span>(N.total.post, <span class="at">prob=</span><span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -534,19 +551,24 @@ Number of sites: 100</code></pre>
  128.402  113.000  144.000 </code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="prediction-in-unmarked" class="slide level2">
 <h2>Prediction in `unmarked’</h2>
+<div style="font-size: 80%;">
 <p>Create <code>data.frame</code> with prediction covariates.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>pred.data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">forest=</span><span class="fu">c</span>(<span class="st">"Hardwood"</span>, <span class="st">"Mixed"</span>, <span class="st">"Pine"</span>),</span>
 <span id="cb35-2"><a></a>                        <span class="at">temp=</span><span class="dv">0</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <p>Get predictions of <span class="math inline">\(\lambda\)</span> for each row of prediction data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>lambda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm, <span class="at">newdata=</span>pred.data,</span>
 <span id="cb36-2"><a></a>                       <span class="at">type=</span><span class="st">'state'</span>, <span class="at">append=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
+<div class="fragment">
 <p>View <span class="math inline">\(\lambda\)</span> predictions</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">print</span>(<span class="fu">head</span>(lambda.pred), <span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -557,19 +579,30 @@ Number of sites: 100</code></pre>
 3      2.41 0.64  1.44   4.0     Pine    0</code></pre>
 </div>
 </div>
+</div>
+</div>
 </section>
 <section id="prediction-in-unmarked-1" class="slide level2">
 <h2>Prediction in `unmarked’</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>bpx <span class="ot">&lt;-</span> <span class="fu">barplot</span>(lambda.pred<span class="sc">$</span>Predicted, <span class="at">ylab=</span><span class="st">"Expected value of abundance"</span>, <span class="co">#col="blue",</span></span>
 <span id="cb39-2"><a></a>               <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">3.5</span>), <span class="at">names=</span>lambda.pred<span class="sc">$</span>forest, <span class="at">xlab=</span><span class="st">"Forest type"</span>); <span class="fu">box</span>()</span>
 <span id="cb39-3"><a></a><span class="fu">arrows</span>(bpx, lambda.pred<span class="sc">$</span>Predicted, bpx, lambda.pred<span class="sc">$</span>Predicted<span class="sc">+</span>lambda.pred<span class="sc">$</span>SE,</span>
 <span id="cb39-4"><a></a>       <span class="at">angle=</span><span class="dv">90</span>, <span class="at">length=</span><span class="fl">0.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="the-bugs-model-without-covariates" class="slide level2">
 <h2>The BUGS model – without covariates</h2>
+<p><a href="Nmix-model.jag">Nmix-model.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -687,22 +720,22 @@ Sample size per chain = 2000
    plus standard error of the mean:
 
                    Mean      SD Naive SE Time-series SE
-beta0           -0.3871  0.3736 0.004823        0.04629
-beta1           -0.3078  0.4155 0.005364        0.03895
-beta2            1.2016  0.3337 0.004308        0.02937
-alpha0          -1.8511  0.3231 0.004171        0.07751
-alpha1           1.1039  0.1696 0.002189        0.02088
-totalAbundance 127.2697 32.9265 0.425079        8.69716
+beta0           -0.3929  0.3311 0.004274        0.03587
+beta1           -0.4117  0.4693 0.006059        0.04957
+beta2            1.1824  0.3124 0.004033        0.02593
+alpha0          -1.8476  0.3007 0.003882        0.06867
+alpha1           1.1899  0.1791 0.002313        0.02768
+totalAbundance 121.1325 21.5948 0.278787        4.08153
 
 2. Quantiles for each variable:
 
                   2.5%      25%      50%       75%    97.5%
-beta0          -1.1137  -0.6436  -0.3899  -0.12712   0.3265
-beta1          -1.1247  -0.5817  -0.3046  -0.03193   0.5093
-beta2           0.6117   0.9680   1.1744   1.43482   1.8845
-alpha0         -2.4933  -2.0475  -1.8590  -1.66871  -1.1220
-alpha1          0.8097   0.9734   1.1009   1.21573   1.4424
-totalAbundance 83.0000 106.0000 120.0000 141.00000 217.0000</code></pre>
+beta0          -1.0624  -0.6132  -0.3849  -0.15200   0.1964
+beta1          -1.3734  -0.7373  -0.3883  -0.05767   0.3914
+beta2           0.6067   0.9652   1.1756   1.38706   1.8294
+alpha0         -2.3059  -2.0827  -1.8788  -1.65230  -1.1511
+alpha1          0.8120   1.0763   1.1949   1.31499   1.4999
+totalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000</code></pre>
 </div>
 </div>
 </section>
@@ -735,11 +768,11 @@ totalAbundance 83.0000 106.0000 120.0000 141.00000 217.0000</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>p.coef.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples[,<span class="fu">c</span>(<span class="st">"alpha0"</span>,<span class="st">"alpha1"</span>)])</span>
 <span id="cb54-2"><a></a><span class="fu">head</span>(p.coef.post, <span class="at">n=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        alpha0   alpha1
-[1,] -1.303666 1.050269
-[2,] -1.274961 1.076019
-[3,] -1.235899 1.088720
-[4,] -1.240720 1.135631</code></pre>
+<pre><code>        alpha0    alpha1
+[1,] -1.168063 0.8492890
+[2,] -1.159962 0.8759836
+[3,] -1.175225 0.8804013
+[4,] -1.161900 0.8326993</code></pre>
 </div>
 </div>
 <p>Create prediction matrix, one row for each MCMC iteration.</p>

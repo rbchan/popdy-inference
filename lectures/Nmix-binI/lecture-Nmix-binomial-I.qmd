@@ -75,8 +75,10 @@ $$
 \end{gather*}
 $$
   
+:::
   
   
+::: {style='font-size: 60%;'}
 Definitions <br>
   $\lambda_i$ -- Expected value of abundance at site $i$ <br>
   $N_i$ -- Realized value of abundance at site $i$ <br>
@@ -84,8 +86,8 @@ Definitions <br>
   $y_{ij}$ -- Count data <br>
   $\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates <br>
   $\color{Purple} w$ -- observation covariate
-
 :::
+
 
 
 
@@ -130,7 +132,7 @@ cbind(y1, N1)[1:5,]
 
 ## Simulation -- Covariates
   
-::: {style="font-size: 90%;"}
+::: {style="font-size: 80%;"}
 
 ```{r}
 #| label: sim-cov1
@@ -167,7 +169,7 @@ for(i in 1:nSites) {
 
 ## Simulated data
 
-::: {style="font-size: 90%;"}
+::: {style="font-size: 85%;"}
 
 ::: {.columns}
 ::: {.column width='40%'}
@@ -223,18 +225,21 @@ library(unmarked)
 
 
 ## Prepare data in 'unmarked'
-  
+
+::: {style="font-size: 80%;"}
+
 ```{r}
 #| label: un-umf
 umf <- unmarkedFramePCount(y=y2, siteCovs=data.frame(forest), obsCovs=list(temp=temp))
 summary(umf)
 ```
 
+:::
 
 
 ## Fit the model -- without covariates
 
-::: {style="font-size: 80%;"}
+::: {style="font-size: 60%;"}
 
 `pcount` is similar to `occu`, but there's a new argument (`K`) that should be an integer much greater than the highest possible value of local abundance. 
 ```{r}
@@ -243,6 +248,7 @@ fm0 <- pcount(~1 ~1, umf, K=100)
 fm0
 ```
 
+::: {.fragment}
 We can use `backTransform` to obtain estimate of average abundance
 at each site because there aren't covariates:
 ```{r}
@@ -250,6 +256,7 @@ at each site because there aren't covariates:
 #| size: 'tiny'
 backTransform(fm0, type="state")
 ```
+:::
 
 
 :::
@@ -258,7 +265,7 @@ backTransform(fm0, type="state")
 
 ## Fit the model -- with covariates
 
-::: {style="font-size: 80%;"}
+::: {style="font-size: 70%;"}
 
 Detection depends on `temp`. Abundance depends on `forest`.
 ```{r}
@@ -296,6 +303,7 @@ round(coef(fm), digits=4)
 ```
 
 
+::: {.fragment}
 Looks good:
   
 ```{r}
@@ -303,9 +311,13 @@ Looks good:
 fm.test <- pcount(~temp ~forest, umf, K=150)    
 round(coef(fm.test), digits=4)
 ```
+:::
 
 
+::: {.fragment}
+<br>
 If the estimates do change, increase $K$ until they stabilize.
+:::
 
 :::
 
@@ -327,6 +339,7 @@ plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
 
 ## Total abundance (in surveyed region)
 
+::: {style='font-size: 80%;'}
 ```{r}
 #| label: Ntotal
 #| out.width: '40%'
@@ -340,6 +353,7 @@ Estimate of total abundance in sampled area, with 95\% CI:
 #| size: 'tiny'
 c(Estimate=mean(N.total.post), quantile(N.total.post, prob=c(0.025, 0.975)))
 ```
+:::
 
 
 
@@ -347,6 +361,7 @@ c(Estimate=mean(N.total.post), quantile(N.total.post, prob=c(0.025, 0.975)))
 
 ## Prediction in `unmarked'
   
+::: {style='font-size: 80%;'}
 Create `data.frame` with prediction covariates. 
   
 ```{r}
@@ -357,6 +372,7 @@ pred.data <- data.frame(forest=c("Hardwood", "Mixed", "Pine"),
 ```
 
 
+::: {.fragment}
 Get predictions of $\lambda$ for each row of prediction data.
   
 ```{r}
@@ -365,8 +381,10 @@ Get predictions of $\lambda$ for each row of prediction data.
 lambda.pred <- predict(fm, newdata=pred.data,
                        type='state', append=TRUE)
 ```
+:::
 
 
+::: {.fragment}
 View $\lambda$ predictions
   
 ```{r}
@@ -374,6 +392,8 @@ View $\lambda$ predictions
 #| size: 'footnotesize'
 print(head(lambda.pred), digits=2)
 ```
+:::
+:::
 
 
 
@@ -382,11 +402,11 @@ print(head(lambda.pred), digits=2)
 
 ## Prediction in `unmarked'
 
+::: {style='font-size: 80%;'}
 ```{r}
 #| label: pred-psi1
 #| fig.width: 7
 #| fig.height: 5.5
-#| size: 'tiny'
 #| out.width: '80%'
 #| fig.align: 'center'
 bpx <- barplot(lambda.pred$Predicted, ylab="Expected value of abundance", #col="blue",
@@ -394,10 +414,13 @@ bpx <- barplot(lambda.pred$Predicted, ylab="Expected value of abundance", #col="
 arrows(bpx, lambda.pred$Predicted, bpx, lambda.pred$Predicted+lambda.pred$SE,
        angle=90, length=0.1)
 ```
+:::
 
 
 
 ## The BUGS model -- without covariates
+
+[Nmix-model.jag](Nmix-model.jag)
 
 ```{r}
 #| label: bugs0
