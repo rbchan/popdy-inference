@@ -94,7 +94,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-4cae7f0135491e71edcf397bd7863571.css">
   <link rel="stylesheet" href="../../custom.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -197,6 +197,7 @@
 
 <section id="section" class="slide level2" data-content-align="center" style="font-size: 160%;">
 <h2></h2>
+<p><br></p>
 <center>
 <p>Binomial <span class="math inline">\(N\)</span>-mixture models: <br> simulation, fitting, and prediction</p>
 <p><br></p>
@@ -212,11 +213,17 @@
 <div style="font-size: 85%;">
 <p>We’re often more interested in abundance than occupancy.</p>
 <p><br></p>
+<div class="fragment">
 <p>Even if you’re interested in occupancy, you get it for free by modeling abundance.</p>
+</div>
 <p><br></p>
+<div class="fragment">
 <p>Occupancy isn’t useful if all sites are occupied.</p>
+</div>
 <p><br></p>
+<div class="fragment">
 <p>Binomial <span class="math inline">\(N\)</span>-mixture models are useful for studying spatial variation in abundance if we have repeated count data, instead of repeated detection data.</p>
+</div>
 </div>
 </section>
 <section id="binomial-n-mixture-model" class="slide level2">
@@ -436,7 +443,7 @@ Number of sites: 100</code></pre>
 </div>
 </div>
 <div class="fragment">
-<p>We can use <code>backTransform</code> to obtain estimate of average abundance at each site because there aren’t covariates:</p>
+<p>We can use <code>backTransform</code> to obtain an estimate of expected abundance at each site (because there aren’t covariates):</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">backTransform</span>(fm0, <span class="at">type=</span><span class="st">"state"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -453,7 +460,7 @@ Transformation: exp </code></pre>
 </section>
 <section id="fit-the-model-with-covariates" class="slide level2">
 <h2>Fit the model – with covariates</h2>
-<div style="font-size: 70%;">
+<div style="font-size: 65%;">
 <p>Detection depends on <code>temp</code>. Abundance depends on <code>forest</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>fm <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span>forest, umf, <span class="at">K=</span><span class="dv">100</span>)    </span>
@@ -531,7 +538,7 @@ Number of sites: 100</code></pre>
 <img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/ranef-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="total-abundance-in-surveyed-region" class="slide level2">
 <h2>Total abundance (in surveyed region)</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 85%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>N.total.post <span class="ot">&lt;-</span> <span class="fu">predict</span>(re, <span class="at">func=</span>sum, <span class="at">nsim=</span><span class="dv">1000</span>)</span>
 <span id="cb32-2"><a></a><span class="fu">hist</span>(N.total.post, <span class="at">freq=</span><span class="cn">FALSE</span>, <span class="at">main=</span><span class="st">""</span>, <span class="at">xlab=</span><span class="st">"N total"</span>, <span class="at">ylab=</span><span class="st">"Probability"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -558,16 +565,16 @@ Number of sites: 100</code></pre>
 <div style="font-size: 80%;">
 <p>Create <code>data.frame</code> with prediction covariates.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>pred.data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">forest=</span><span class="fu">c</span>(<span class="st">"Hardwood"</span>, <span class="st">"Mixed"</span>, <span class="st">"Pine"</span>),</span>
-<span id="cb35-2"><a></a>                        <span class="at">temp=</span><span class="dv">0</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>pred.data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">forest=</span><span class="fu">c</span>(<span class="st">"Hardwood"</span>, <span class="st">"Mixed"</span>, <span class="st">"Pine"</span>), <span class="at">temp=</span><span class="dv">0</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
 <div class="fragment">
 <p>Get predictions of <span class="math inline">\(\lambda\)</span> for each row of prediction data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>lambda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm, <span class="at">newdata=</span>pred.data,</span>
-<span id="cb36-2"><a></a>                       <span class="at">type=</span><span class="st">'state'</span>, <span class="at">append=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>lambda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm, <span class="at">newdata=</span>pred.data, <span class="at">type=</span><span class="st">'state'</span>, <span class="at">append=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
+<p><br></p>
 <div class="fragment">
 <p>View <span class="math inline">\(\lambda\)</span> predictions</p>
 <div class="cell">
@@ -593,14 +600,14 @@ Number of sites: 100</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+<p><img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/pred-psi1-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="the-bugs-model-without-covariates" class="slide level2">
+<section id="the-bugs-model-without-covariates" class="slide level2" data-code-overflow="wrap">
 <h2>The BUGS model – without covariates</h2>
 <p><a href="Nmix-model.jag">Nmix-model.jag</a></p>
 <div class="cell">
@@ -644,6 +651,7 @@ totalAbundance &lt;- sum(N)
 </section>
 <section id="the-bugs-model-with-covariates" class="slide level2">
 <h2>The BUGS model – with covariates</h2>
+<p><a href="Nmix-model-covs.jag">Nmix-model-covs.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -792,6 +800,7 @@ totalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000</code></pre>
 </section>
 <section id="bayesian-prediction-1" class="slide level2">
 <h2>Bayesian prediction</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">plot</span>(temp.pred, p.post.pred[<span class="dv">1</span>,], <span class="at">type=</span><span class="st">"l"</span>, <span class="at">xlab=</span><span class="st">"Temperature (standardized)"</span>,</span>
 <span id="cb58-2"><a></a>     <span class="at">ylab=</span><span class="st">"Detection probability"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.8</span>))</span>
@@ -803,14 +812,31 @@ totalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000</code></pre>
 <span id="cb58-8"><a></a><span class="fu">lines</span>(temp.pred, pred.post.mean, <span class="at">col=</span><span class="st">"blue"</span>)</span>
 <span id="cb58-9"><a></a><span class="fu">lines</span>(temp.pred, pred.post.lower, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
 <span id="cb58-10"><a></a><span class="fu">lines</span>(temp.pred, pred.post.upper, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/psi-pred-post-meanCI-1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/psi-pred-post-meanCI-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="prior-sensitivity" class="slide level2">
 <h2>Prior sensitivity</h2>
-<p>Questions: - What are the implied priors on <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(p\)</span>? - What would be the consequence of changing the priors?</p>
-<p>[Prior predictive checks] can help us answer these questions.</p>
+<p>Questions:</p>
+<ul>
+<li>What are the implied priors on <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(p\)</span>?</li>
+<li>What would be the consequence of changing the priors?</li>
+</ul>
+<p><br></p>
+<div class="fragment">
+<p><span style="color: blue;">Prior predictive checks</span> can help us answer these questions.</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Prior prediction can be acheived by replacing the data with missing values.</p>
+</div>
 </section>
 <section id="prior-sampling" class="slide level2">
 <h2>Prior sampling</h2>
@@ -819,6 +845,8 @@ totalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>jags.data2 <span class="ot">&lt;-</span> jags.data</span>
 <span id="cb59-2"><a></a>jags.data2<span class="sc">$</span>y[] <span class="ot">&lt;-</span> <span class="cn">NA</span>     <span class="co"># Replace data with missing values</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
+<div class="fragment">
 <p>Fit model (Really, we’re just sampling from the prior)</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a>jags.prior.samples <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data2, <span class="at">inits=</span>jags.inits,</span>
@@ -826,6 +854,7 @@ totalAbundance 82.9750 106.0000 121.0000 135.00000 168.0000</code></pre>
 <span id="cb60-3"><a></a>                                 <span class="at">model.file=</span><span class="st">"Nmix-model-covs.jag"</span>,</span>
 <span id="cb60-4"><a></a>                                 <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
 <span id="cb60-5"><a></a>                                 <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="prior-summary" class="slide level2">
@@ -876,7 +905,7 @@ totalAbundance  5.000 50.0000  1.440e+02 437.0000 4136.425</code></pre>
 </section>
 <section id="bayesian-prediction-2" class="slide level2">
 <h2>Bayesian prediction</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <p>Compute prior mean and 95% CI for <span class="math inline">\(p\)</span> predictions</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a>pred.prior.mean <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(p.prior.pred)</span>
@@ -908,10 +937,22 @@ totalAbundance  5.000 50.0000  1.440e+02 437.0000 4136.425</code></pre>
 <img data-src="lecture-Nmix-binomial-I_files/figure-revealjs/prior-post-pred-2-1.png" class="r-stretch"></section>
 <section id="prior-predictive-recap" class="slide level2">
 <h2>Prior predictive recap</h2>
-<p>There are two common strategies for specifying priors: * Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods. * Use priors that reflect available information.</p>
-<p>The second approach can be used even if there isn’t much prior information available. Priors can allow for the possibility of being ``surprised’’ by the data, but without putting most of the prior weight on extreme values.</p>
+<div style="font-size: 80%;">
+<p>There are two common strategies for specifying priors:</p>
+<ol type="1">
+<li>Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods.</li>
+<li>Use priors that reflect available information.</li>
+</ol>
+<div class="fragment">
+<p>The second approach can be used even if there isn’t much prior information available. Priors can allow for the possibility of being “surprised” by the data, but without putting most of the prior weight on extreme values.</p>
+</div>
+<div class="fragment">
 <p>Often, highly diffuse priors on the link scale result in most of the prior weight being on extreme values on the natural scale.</p>
+</div>
+<div class="fragment">
 <p>Prior predictive checks can be used to assess this possibility, and should be a standard component of Bayesian analysis.</p>
+</div>
+</div>
 </section></section>
 <section>
 <section id="assignment" class="title-slide slide level1 center">
@@ -921,7 +962,9 @@ totalAbundance  5.000 50.0000  1.440e+02 437.0000 4136.425</code></pre>
 <section id="assignment-1" class="slide level2">
 <h2>Assignment</h2>
 <p>Create a self-contained R script or Rmarkdown/Quarto file to do the following:</p>
+<p><br></p>
 <p>Using the simulated data, compare the prior and posterior predictive distributions of <span class="math inline">\(\lambda\)</span> for each of the 3 forest types. <sup>1</sup></p>
+<p><br></p>
 <p>Upload your <code>.R</code>, <code>.Rmd</code>, or <code>.qmd</code> file to ELC by 5:00 PM on Tuesday.</p>
 
 

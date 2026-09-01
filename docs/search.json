@@ -361,7 +361,7 @@
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#overview-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Overview",
-    "text": "Overview\n\nWe’re often more interested in abundance than occupancy.\n\nEven if you’re interested in occupancy, you get it for free by modeling abundance.\n\nOccupancy isn’t useful if all sites are occupied.\n\nBinomial \\(N\\)-mixture models are useful for studying spatial variation in abundance if we have repeated count data, instead of repeated detection data."
+    "text": "Overview\n\nWe’re often more interested in abundance than occupancy.\n\n\nEven if you’re interested in occupancy, you get it for free by modeling abundance.\n\n\n\nOccupancy isn’t useful if all sites are occupied.\n\n\n\nBinomial \\(N\\)-mixture models are useful for studying spatial variation in abundance if we have repeated count data, instead of repeated detection data."
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#binomial-n-mixture-model",
@@ -403,7 +403,7 @@
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#fit-the-model-without-covariates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Fit the model – without covariates",
-    "text": "Fit the model – without covariates\n\npcount is similar to occu, but there’s a new argument (K) that should be an integer much greater than the highest possible value of local abundance.\n\nfm0 &lt;- pcount(~1 ~1, umf, K=100)    \nfm0\n\n\nCall:\npcount(formula = ~1 ~ 1, data = umf, K = 100)\n\nAbundance (log-scale):\n Estimate    SE    z P(&gt;|z|)\n    0.428 0.324 1.32   0.187\n\nDetection (logit-scale):\n Estimate    SE     z  P(&gt;|z|)\n     -1.8 0.384 -4.69 2.74e-06\n\nAIC: 459.6769 \nNumber of sites: 100\n\n\n\nWe can use backTransform to obtain estimate of average abundance at each site because there aren’t covariates:\n\nbackTransform(fm0, type=\"state\")\n\nBacktransformed linear combination(s) of Abundance estimate(s)\n\n Estimate    SE LinComb (Intercept)\n     1.53 0.498   0.428           1\n\nTransformation: exp"
+    "text": "Fit the model – without covariates\n\npcount is similar to occu, but there’s a new argument (K) that should be an integer much greater than the highest possible value of local abundance.\n\nfm0 &lt;- pcount(~1 ~1, umf, K=100)    \nfm0\n\n\nCall:\npcount(formula = ~1 ~ 1, data = umf, K = 100)\n\nAbundance (log-scale):\n Estimate    SE    z P(&gt;|z|)\n    0.428 0.324 1.32   0.187\n\nDetection (logit-scale):\n Estimate    SE     z  P(&gt;|z|)\n     -1.8 0.384 -4.69 2.74e-06\n\nAIC: 459.6769 \nNumber of sites: 100\n\n\n\nWe can use backTransform to obtain an estimate of expected abundance at each site (because there aren’t covariates):\n\nbackTransform(fm0, type=\"state\")\n\nBacktransformed linear combination(s) of Abundance estimate(s)\n\n Estimate    SE LinComb (Intercept)\n     1.53 0.498   0.428           1\n\nTransformation: exp"
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#fit-the-model-with-covariates",
@@ -438,7 +438,7 @@
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prediction-in-unmarked",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Prediction in `unmarked’",
-    "text": "Prediction in `unmarked’\n\nCreate data.frame with prediction covariates.\n\npred.data &lt;- data.frame(forest=c(\"Hardwood\", \"Mixed\", \"Pine\"),\n                        temp=0) \n\n\nGet predictions of \\(\\lambda\\) for each row of prediction data.\n\nlambda.pred &lt;- predict(fm, newdata=pred.data,\n                       type='state', append=TRUE)\n\n\n\nView \\(\\lambda\\) predictions\n\nprint(head(lambda.pred), digits=2)\n\n  Predicted   SE lower upper   forest temp\n1      0.72 0.26  0.35   1.5 Hardwood    0\n2      0.52 0.22  0.23   1.2    Mixed    0\n3      2.41 0.64  1.44   4.0     Pine    0"
+    "text": "Prediction in `unmarked’\n\nCreate data.frame with prediction covariates.\n\npred.data &lt;- data.frame(forest=c(\"Hardwood\", \"Mixed\", \"Pine\"), temp=0) \n\n\n\nGet predictions of \\(\\lambda\\) for each row of prediction data.\n\nlambda.pred &lt;- predict(fm, newdata=pred.data, type='state', append=TRUE)\n\n\n\n\nView \\(\\lambda\\) predictions\n\nprint(head(lambda.pred), digits=2)\n\n  Predicted   SE lower upper   forest temp\n1      0.72 0.26  0.35   1.5 Hardwood    0\n2      0.52 0.22  0.23   1.2    Mixed    0\n3      2.41 0.64  1.44   4.0     Pine    0"
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prediction-in-unmarked-1",
@@ -466,7 +466,7 @@
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#the-bugs-model-with-covariates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "The BUGS model – with covariates",
-    "text": "The BUGS model – with covariates\n\n\nmodel {\n\n# Priors for occupancy coefficients\nbeta0 ~ dnorm(0, 0.5)  # variance=1/0.5\nbeta1 ~ dnorm(0, 0.5)\nbeta2 ~ dnorm(0, 0.5)\n\n# Priors for detection coefficients\nalpha0 ~ dnorm(0, 0.5)  \nalpha1 ~ dnorm(0, 0.5)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]\n  N[i] ~ dpois(lambda[i])         # Latent local abundance\n  for(j in 1:nOccasions) {\n    logit(p[i,j]) &lt;- alpha0 + alpha1*temp[i,j]\n    y[i,j] ~ dbin(p[i,j], N[i])   # Data\n  }\n}\n\ntotalAbundance &lt;- sum(N)\n\n}"
+    "text": "The BUGS model – with covariates\nNmix-model-covs.jag\n\n\nmodel {\n\n# Priors for occupancy coefficients\nbeta0 ~ dnorm(0, 0.5)  # variance=1/0.5\nbeta1 ~ dnorm(0, 0.5)\nbeta2 ~ dnorm(0, 0.5)\n\n# Priors for detection coefficients\nalpha0 ~ dnorm(0, 0.5)  \nalpha1 ~ dnorm(0, 0.5)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*forestMixed[i] + beta2*forestPine[i]\n  N[i] ~ dpois(lambda[i])         # Latent local abundance\n  for(j in 1:nOccasions) {\n    logit(p[i,j]) &lt;- alpha0 + alpha1*temp[i,j]\n    y[i,j] ~ dbin(p[i,j], N[i])   # Data\n  }\n}\n\ntotalAbundance &lt;- sum(N)\n\n}"
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#data-inits-and-parameters-1",
@@ -522,21 +522,21 @@
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#bayesian-prediction-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Bayesian prediction",
-    "text": "Bayesian prediction\n\nplot(temp.pred, p.post.pred[1,], type=\"l\", xlab=\"Temperature (standardized)\",\n     ylab=\"Detection probability\", ylim=c(0, 1), col=gray(0.8))\nfor(i in seq(1, n.iter, by=10)) {  ## Thin by 10\n    lines(temp.pred, p.post.pred[i,], col=gray(0.8))  }\npred.post.mean &lt;- colMeans(p.post.pred)\npred.post.lower &lt;- apply(p.post.pred, 2, quantile, prob=0.025)\npred.post.upper &lt;- apply(p.post.pred, 2, quantile, prob=0.975)\nlines(temp.pred, pred.post.mean, col=\"blue\")\nlines(temp.pred, pred.post.lower, col=\"blue\", lty=2)\nlines(temp.pred, pred.post.upper, col=\"blue\", lty=2)"
+    "text": "Bayesian prediction\n\n\nplot(temp.pred, p.post.pred[1,], type=\"l\", xlab=\"Temperature (standardized)\",\n     ylab=\"Detection probability\", ylim=c(0, 1), col=gray(0.8))\nfor(i in seq(1, n.iter, by=10)) {  ## Thin by 10\n    lines(temp.pred, p.post.pred[i,], col=gray(0.8))  }\npred.post.mean &lt;- colMeans(p.post.pred)\npred.post.lower &lt;- apply(p.post.pred, 2, quantile, prob=0.025)\npred.post.upper &lt;- apply(p.post.pred, 2, quantile, prob=0.975)\nlines(temp.pred, pred.post.mean, col=\"blue\")\nlines(temp.pred, pred.post.lower, col=\"blue\", lty=2)\nlines(temp.pred, pred.post.upper, col=\"blue\", lty=2)"
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sensitivity",
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sensitivity",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Prior sensitivity",
-    "text": "Prior sensitivity\nQuestions: - What are the implied priors on \\(\\lambda\\) and \\(p\\)? - What would be the consequence of changing the priors?\n[Prior predictive checks] can help us answer these questions.\nPrior prediction can be acheived by replacing the data with missing values."
+    "text": "Prior sensitivity\nQuestions:\n\nWhat are the implied priors on \\(\\lambda\\) and \\(p\\)?\nWhat would be the consequence of changing the priors?\n\n\n\nPrior predictive checks can help us answer these questions.\n\n\n\nPrior prediction can be acheived by replacing the data with missing values."
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sampling",
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-sampling",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Prior sampling",
-    "text": "Prior sampling\nReplace data with missing values\n\njags.data2 &lt;- jags.data\njags.data2$y[] &lt;- NA     # Replace data with missing values\n\nFit model (Really, we’re just sampling from the prior)\n\njags.prior.samples &lt;- jags.basic(data=jags.data2, inits=jags.inits,\n                                 parameters.to.save=jags.pars,\n                                 model.file=\"Nmix-model-covs.jag\",\n                                 n.chains=3, n.adapt=100, n.burnin=0,\n                                 n.iter=2000, parallel=TRUE)"
+    "text": "Prior sampling\nReplace data with missing values\n\njags.data2 &lt;- jags.data\njags.data2$y[] &lt;- NA     # Replace data with missing values\n\n\n\nFit model (Really, we’re just sampling from the prior)\n\njags.prior.samples &lt;- jags.basic(data=jags.data2, inits=jags.inits,\n                                 parameters.to.save=jags.pars,\n                                 model.file=\"Nmix-model-covs.jag\",\n                                 n.chains=3, n.adapt=100, n.burnin=0,\n                                 n.iter=2000, parallel=TRUE)"
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-summary",
@@ -571,14 +571,14 @@
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#prior-predictive-recap",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Prior predictive recap",
-    "text": "Prior predictive recap\nThere are two common strategies for specifying priors: * Use uniform/flat priors to obtain results that will often be similar to likelihood-based methods. * Use priors that reflect available information.\nThe second approach can be used even if there isn’t much prior information available. Priors can allow for the possibility of being ``surprised’’ by the data, but without putting most of the prior weight on extreme values.\nOften, highly diffuse priors on the link scale result in most of the prior weight being on extreme values on the natural scale.\nPrior predictive checks can be used to assess this possibility, and should be a standard component of Bayesian analysis."
+    "text": "Prior predictive recap\n\nThere are two common strategies for specifying priors:\n\nUse uniform/flat priors to obtain results that will often be similar to likelihood-based methods.\nUse priors that reflect available information.\n\n\nThe second approach can be used even if there isn’t much prior information available. Priors can allow for the possibility of being “surprised” by the data, but without putting most of the prior weight on extreme values.\n\n\nOften, highly diffuse priors on the link scale result in most of the prior weight being on extreme values on the natural scale.\n\n\nPrior predictive checks can be used to assess this possibility, and should be a standard component of Bayesian analysis."
   },
   {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#assignment-1",
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#assignment-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assignment",
-    "text": "Assignment\nCreate a self-contained R script or Rmarkdown/Quarto file to do the following:\nUsing the simulated data, compare the prior and posterior predictive distributions of \\(\\lambda\\) for each of the 3 forest types. 1\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00 PM on Tuesday.\n\n\nHint: because forest type is categorical (not continuous), you can visualize the prior and posterior predictive distributions as histograms for each forest type."
+    "text": "Assignment\nCreate a self-contained R script or Rmarkdown/Quarto file to do the following:\n\nUsing the simulated data, compare the prior and posterior predictive distributions of \\(\\lambda\\) for each of the 3 forest types. 1\n\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00 PM on Tuesday.\n\n\nHint: because forest type is categorical (not continuous), you can visualize the prior and posterior predictive distributions as histograms for each forest type."
   },
   {
     "objectID": "lectures/intro/lecture-intro.html#section",
