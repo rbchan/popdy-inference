@@ -1,6 +1,6 @@
 rnw2qmd <- function(input_file, output_file = NULL) {
   if (is.null(output_file)) {
-    output_file <- sub("\\.[Rr]nw\\$", ".qmd", input_file)
+    output_file <- sub("\\.[Rr]nw$", ".qmd", input_file)
   }
   
   ## Read the full .Rnw content
