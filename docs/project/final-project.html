@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Richard Chandler">
 
-<title>Inference for models of Fish and Wildlife Population Dynamics – Inference for Models of Fish and Wildlife Population Dynamics</title>
+<title>final-project – Inference for Models of Fish and Wildlife Population Dynamics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,24 +23,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3a9b59a28ddcc48f010c2375eb3c9c6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3a9b59a28ddcc48f010c2375eb3c9c6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -80,7 +108,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Inference for Models of Fish and Wildlife Population Dynamics</span>
     </a>
   </div>
@@ -91,11 +119,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./IPD-syllabus.html"> 
+    <a class="nav-link" href="../IPD-syllabus.html"> 
 <span class="menu-text">Syllabus</span></a>
   </li>  
 </ul>
@@ -114,96 +142,77 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#course-description" id="toc-course-description" class="nav-link active" data-scroll-target="#course-description">Course Description</a></li>
-  <li><a href="#course-objectives-and-learning-outcomes" id="toc-course-objectives-and-learning-outcomes" class="nav-link" data-scroll-target="#course-objectives-and-learning-outcomes">Course Objectives and Learning Outcomes</a></li>
-  <li><a href="#lectures" id="toc-lectures" class="nav-link" data-scroll-target="#lectures">Lectures</a>
+  <li><a href="#final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390" id="toc-final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390" class="nav-link active" data-scroll-target="#final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390">Final Project Guidelines <br> Inference for Models of Fish and Wildlife <br> Population Dynamics <br> WILD 8390</a>
   <ul class="collapse">
-  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a></li>
-  <li><a href="#static-models" id="toc-static-models" class="nav-link" data-scroll-target="#static-models">Static models</a></li>
-  <li><a href="#dynamic-models" id="toc-dynamic-models" class="nav-link" data-scroll-target="#dynamic-models">Dynamic models</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#paper-structure" id="toc-paper-structure" class="nav-link" data-scroll-target="#paper-structure">Paper structure</a></li>
+  <li><a href="#timeline" id="toc-timeline" class="nav-link" data-scroll-target="#timeline">Timeline</a></li>
+  <li><a href="#grading" id="toc-grading" class="nav-link" data-scroll-target="#grading">Grading</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Inference for models of Fish and Wildlife Population Dynamics</h1>
-<p class="subtitle lead">WILD/FISH 8390</p>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
-<div class="quarto-title-meta-author">
-  <div class="quarto-title-meta-heading">Author</div>
-  <div class="quarto-title-meta-heading">Affiliation</div>
-  
-    <div class="quarto-title-meta-contents">
-    <p class="author">Richard Chandler </p>
-  </div>
-  <div class="quarto-title-meta-contents">
-        <p class="affiliation">
-            Warnell School of Forestry and Natural Resources University of Georgia
-          </p>
-      </div>
-  </div>
-
-<div class="quarto-title-meta">
-
-      
-  
-    
-  </div>
-  
 
 
-</header>
-
-
-<section id="course-description" class="level2">
-<h2 class="anchored" data-anchor-id="course-description">Course Description</h2>
-<p>Recently developed statistical tools make it possible to fit models of population dynamics to field data while accounting for observation error. This course will explain how to use these tools for statistical inference and prediction about animal population parameters including abundance, occupancy, survival, recruitment, and dispersal.</p>
+<section id="final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390" class="level1">
+<h1>Final Project Guidelines <br> Inference for Models of Fish and Wildlife <br> Population Dynamics <br> WILD 8390</h1>
+<section id="overview" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="overview">Overview</h2>
+<p>Each student will write a short (3–5 page) scientific paper supported by an analysis of either real or simulated data using one of the models covered during this semester. The paper will be submitted along with a self-contained R script (or .qmd or .Rmd file), and data.</p>
 </section>
-<section id="course-objectives-and-learning-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="course-objectives-and-learning-outcomes">Course Objectives and Learning Outcomes</h2>
-<p>By the end of the course, students will know how to (1) design studies of wildlife population dynamics, (2) fit statistical models to data collected in the field, (3) interpret results, and (4) make predictions useful for informing conservation decisions.</p>
+<section id="paper-structure" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="paper-structure">Paper structure</h2>
+<p>Abstract (1 paragraph, $&lt;$500 words)<br> Briefly describe the motivation, methods, results, and implications.</p>
+<p>Introduction (<span class="math inline">\(&gt;\)</span><!-- -->2 paragraphs)<br> Describe motivation for the study and background information. Cite prior research.</p>
+<p>Methods (<span class="math inline">\(&gt;\)</span><!-- -->2 paragraphs)<br> Describe study area, study species, study design, data collection, and data analysis. Emphasize the model description and include equations.</p>
+<p>Results (<span class="math inline">\(&gt;\)</span><!-- -->1 paragraph)<br> Describe key findings, and support them with references to figures and tables.</p>
+<p>Discussion (<span class="math inline">\(&gt;\)</span><!-- -->1 paragraph)<br> Explain how your results advance knowledge and inform conservation efforts. Connect your results to previously published work.</p>
+<p>Literature Cited (<span class="math inline">\(&gt;\)</span><!-- -->3 citations)<br> Use any peer-reviewed journal format you like, and be consistent.</p>
+<p>Tables and Figures<br> Include at least 1 table and 2 figures, along with clear, informative captions.</p>
 </section>
-<section id="lectures" class="level2">
-<h2 class="anchored" data-anchor-id="lectures">Lectures</h2>
-<section id="background" class="level3">
-<h3 class="anchored" data-anchor-id="background">Background</h3>
-<section id="week-1---classical-statistical-models" class="level4">
-<h4 class="anchored" data-anchor-id="week-1---classical-statistical-models">Week 1 - Classical statistical models</h4>
+<section id="timeline" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="timeline">Timeline</h2>
 <ul>
-<li><p><a href="./lectures/intro/lecture-intro.html">Lecture 1 - Introduction</a></p></li>
-<li><p><a href="./lectures/stats-basics/lecture-stats-basics.html">Lecture 2 - Linear and generalized linear models</a></p></li>
+<li><p>Sept 25: Email instructors with brief (1 paragraph) description of project idea</p></li>
+<li><p>Oct 28: Submit first draft (later than the syllabus says)</p></li>
+<li><p>Oct 28–Nov 21: Meet with Dr.&nbsp;Chandler to discuss first draft</p></li>
+<li><p>Nov 11: Submit peer review</p></li>
+<li><p>Nov 20 &amp; Nov 25: Presentations</p></li>
+<li><p>Dec 2: Submit final paper, code, and data</p></li>
 </ul>
 </section>
-</section>
-<section id="static-models" class="level3">
-<h3 class="anchored" data-anchor-id="static-models">Static models</h3>
-<section id="week-2---occupancy-models" class="level4">
-<h4 class="anchored" data-anchor-id="week-2---occupancy-models">Week 2 - Occupancy models</h4>
+<section id="grading" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="grading">Grading</h2>
+<p>The project comprises 30% of your overall grade, and will be graded as follows:</p>
 <ul>
-<li><a href="./lectures/occupancyI/lecture-occupancyI.html">Lecture 3 - Single season occupancy models without covariates</a></li>
-</ul>
-</section>
-<section id="week-3---occupancy-models" class="level4">
-<h4 class="anchored" data-anchor-id="week-3---occupancy-models">Week 3 - Occupancy models</h4>
+<li><p>First draft: 10%</p>
 <ul>
-<li><a href="./lectures/occupancyII/lecture-occupancyII.html">Lecture 4 - Single season occupancy models with covariates</a></li>
-</ul>
-</section>
-<section id="week-4---n-mixture-models" class="level4">
-<h4 class="anchored" data-anchor-id="week-4---n-mixture-models">Week 4 - N-mixture models</h4>
+<li><p>No Results or Discussion required, but you must submit an R script.</p></li>
+<li><p>The analysis does not need to be complete, but you should make substantial progress.</p></li>
+</ul></li>
+<li><p>Meeting with Dr.&nbsp;Chandler: 10%</p></li>
+<li><p>Peer review: 10%</p>
 <ul>
-<li><a href="./lectures/Nmix-binI/lecture-Nmix-binomial-I.html">Lecture 5 - Binomial N-mixture models</a></li>
+<li><p>Write your review as you would for a peer-reviewed journal. Good advice can be found <span style="color: blue"><a href="https://www.britishecologicalsociety.org/wp-content/uploads/2017/06/BES-Peer-Review-Guide-2017_web.pdf">here</a></span> and <span style="color: blue"><a href="https://www.nature.com/articles/d41586-018-06991-0">here</a></span>.</p></li>
+<li><p>Each of your two reviews should be 1-2 pages, including sections for “general comments” and “specific comments.”</p></li>
+</ul></li>
+<li><p>Final paper: 60%</p>
+<ul>
+<li>Will be graded based on criteria listed above under “Paper structure”. It should also incorporate suggestions from peer-review and from the presentations.</li>
+</ul></li>
+<li><p>Analysis: 10%</p>
+<ul>
+<li><p>R code should be easy to follow and annotated</p></li>
+<li><p>We should be able to reproduce results reported in the paper</p></li>
+<li><p>Script should not throw errors</p></li>
+<li><p>Script should not include lengthy data formatting code. Format the data elsewhere, and then import it ready for analysis.</p></li>
+</ul></li>
 </ul>
-</section>
-</section>
-<section id="dynamic-models" class="level3">
-<h3 class="anchored" data-anchor-id="dynamic-models">Dynamic models</h3>
+<p>The 10-min presentation counts towards an additional 20% of your overall grade. The presentation should include background information, methods, results, and conclusions.</p>
 
 
 </section>
