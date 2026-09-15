@@ -40,7 +40,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3a9b59a28ddcc48f010c2375eb3c9c6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-25c9275cf3fc64b1f20139da25f33777.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,35 +69,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -126,6 +97,10 @@ window.Quarto = {
     <a class="nav-link" href="../IPD-syllabus.html"> 
 <span class="menu-text">Syllabus</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../project/final-project.html" aria-current="page"> 
+<span class="menu-text">Final project</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -142,7 +117,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390" id="toc-final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390" class="nav-link active" data-scroll-target="#final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390">Final Project Guidelines <br> Inference for Models of Fish and Wildlife <br> Population Dynamics <br> WILD 8390</a>
+  <li><a href="#final-project-guidelines" id="toc-final-project-guidelines" class="nav-link active" data-scroll-target="#final-project-guidelines">Final Project Guidelines</a>
   <ul class="collapse">
   <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
   <li><a href="#paper-structure" id="toc-paper-structure" class="nav-link" data-scroll-target="#paper-structure">Paper structure</a></li>
@@ -158,31 +133,53 @@ window.Quarto = {
 
 
 
-<section id="final-project-guidelines-inference-for-models-of-fish-and-wildlife-population-dynamics-wild-8390" class="level1">
-<h1>Final Project Guidelines <br> Inference for Models of Fish and Wildlife <br> Population Dynamics <br> WILD 8390</h1>
+<section id="final-project-guidelines" class="level1">
+<h1>Final Project Guidelines</h1>
+<p>Inference for Models of Fish and Wildlife Population Dynamics</p>
 <section id="overview" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="overview">Overview</h2>
 <p>Each student will write a short (3–5 page) scientific paper supported by an analysis of either real or simulated data using one of the models covered during this semester. The paper will be submitted along with a self-contained R script (or .qmd or .Rmd file), and data.</p>
 </section>
 <section id="paper-structure" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="paper-structure">Paper structure</h2>
-<p>Abstract (1 paragraph, $&lt;$500 words)<br> Briefly describe the motivation, methods, results, and implications.</p>
-<p>Introduction (<span class="math inline">\(&gt;\)</span><!-- -->2 paragraphs)<br> Describe motivation for the study and background information. Cite prior research.</p>
-<p>Methods (<span class="math inline">\(&gt;\)</span><!-- -->2 paragraphs)<br> Describe study area, study species, study design, data collection, and data analysis. Emphasize the model description and include equations.</p>
-<p>Results (<span class="math inline">\(&gt;\)</span><!-- -->1 paragraph)<br> Describe key findings, and support them with references to figures and tables.</p>
-<p>Discussion (<span class="math inline">\(&gt;\)</span><!-- -->1 paragraph)<br> Explain how your results advance knowledge and inform conservation efforts. Connect your results to previously published work.</p>
-<p>Literature Cited (<span class="math inline">\(&gt;\)</span><!-- -->3 citations)<br> Use any peer-reviewed journal format you like, and be consistent.</p>
-<p>Tables and Figures<br> Include at least 1 table and 2 figures, along with clear, informative captions.</p>
+<section id="abstract-1-paragraph-500-words" class="level4">
+<h4 class="anchored" data-anchor-id="abstract-1-paragraph-500-words">Abstract (1 paragraph, &lt;500 words)</h4>
+<p>Briefly describe the motivation, methods, results, and implications.</p>
+</section>
+<section id="introduction-2-paragraphs" class="level4">
+<h4 class="anchored" data-anchor-id="introduction-2-paragraphs">Introduction (&gt;2 paragraphs)</h4>
+<p>Describe motivation for the study and background information. Cite prior research.</p>
+</section>
+<section id="methods-2-paragraphs" class="level4">
+<h4 class="anchored" data-anchor-id="methods-2-paragraphs">Methods (&gt;2 paragraphs)</h4>
+<p>Describe study area, study species, study design, data collection, and data analysis. Emphasize the model description and include equations.</p>
+</section>
+<section id="results-1-paragraph" class="level4">
+<h4 class="anchored" data-anchor-id="results-1-paragraph">Results (&gt;1 paragraph)</h4>
+<p>Describe key findings, and support them with references to figures and tables.</p>
+</section>
+<section id="discussion-1-paragraph" class="level4">
+<h4 class="anchored" data-anchor-id="discussion-1-paragraph">Discussion (&gt;1 paragraph)</h4>
+<p>Explain how your results advance knowledge and inform conservation efforts. Connect your results to previously published work.</p>
+</section>
+<section id="literature-cited-3-citations" class="level4">
+<h4 class="anchored" data-anchor-id="literature-cited-3-citations">Literature Cited (&gt;3 citations)</h4>
+<p>Use any peer-reviewed journal format you like, and be consistent.</p>
+</section>
+<section id="tables-and-figures" class="level4">
+<h4 class="anchored" data-anchor-id="tables-and-figures">Tables and Figures</h4>
+<p>Include at least 1 table and 2 figures, along with clear, informative captions.</p>
+</section>
 </section>
 <section id="timeline" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="timeline">Timeline</h2>
 <ul>
 <li><p>Sept 25: Email instructors with brief (1 paragraph) description of project idea</p></li>
-<li><p>Oct 28: Submit first draft (later than the syllabus says)</p></li>
-<li><p>Oct 28–Nov 21: Meet with Dr.&nbsp;Chandler to discuss first draft</p></li>
-<li><p>Nov 11: Submit peer review</p></li>
-<li><p>Nov 20 &amp; Nov 25: Presentations</p></li>
-<li><p>Dec 2: Submit final paper, code, and data</p></li>
+<li><p>Oct 20: Submit first draft (later than the syllabus says)</p></li>
+<li><p>Oct 20–Nov 21: Meet with Dr.&nbsp;Chandler to discuss first draft</p></li>
+<li><p>Nov 3: Submit peer review</p></li>
+<li><p>Nov 17 &amp; Nov 19: Presentations</p></li>
+<li><p>Dec 1: Submit final paper, code, and data</p></li>
 </ul>
 </section>
 <section id="grading" class="level2 unnumbered">
@@ -197,12 +194,12 @@ window.Quarto = {
 <li><p>Meeting with Dr.&nbsp;Chandler: 10%</p></li>
 <li><p>Peer review: 10%</p>
 <ul>
-<li><p>Write your review as you would for a peer-reviewed journal. Good advice can be found <span style="color: blue"><a href="https://www.britishecologicalsociety.org/wp-content/uploads/2017/06/BES-Peer-Review-Guide-2017_web.pdf">here</a></span> and <span style="color: blue"><a href="https://www.nature.com/articles/d41586-018-06991-0">here</a></span>.</p></li>
+<li><p>Write your review as you would for a peer-reviewed journal. Good advice can be found <a href="https://www.britishecologicalsociety.org/wp-content/uploads/2017/06/BES-Peer-Review-Guide-2017_web.pdf">here</a> and <a href="https://www.nature.com/articles/d41586-018-06991-0">here</a>.</p></li>
 <li><p>Each of your two reviews should be 1-2 pages, including sections for “general comments” and “specific comments.”</p></li>
 </ul></li>
 <li><p>Final paper: 60%</p>
 <ul>
-<li>Will be graded based on criteria listed above under “Paper structure”. It should also incorporate suggestions from peer-review and from the presentations.</li>
+<li>Graded using criteria listed above under “Paper structure”. It should also incorporate suggestions from peer-review and from the presentations.</li>
 </ul></li>
 <li><p>Analysis: 10%</p>
 <ul>
