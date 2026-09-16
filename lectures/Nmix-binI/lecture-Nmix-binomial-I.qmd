@@ -488,7 +488,6 @@ jags0.post.samples <- jags.basic(data=jags.data0, inits=jags.inits0,
 
 ```{r}
 #| label: bugs
-#| size: 'scriptsize'
 #| echo: false
 #| comment: ''
 #| background: 'beige'
@@ -507,7 +506,6 @@ Put data in a named list
   
 ```{r}
 #| label: bugs-data
-#| size: 'small'
 jags.data <- list(y=y2, temp=temp,
                   forestMixed=forestMixed,
                   forestPine=forestPine,
@@ -520,7 +518,6 @@ Initial values
   
 ```{r}
 #| label: bugs-inits
-#| size: 'small'
 jags.inits <- function() {
     list(beta0=rnorm(1), alpha0=rnorm(1), N=maxCounts)
 }
@@ -530,7 +527,6 @@ Parameters to monitor
   
 ```{r}
 #| label: bugs-pars
-#| size: 'small'
 jags.pars <- c("beta0", "beta1", "beta2",
                "alpha0", "alpha1", "totalAbundance")
 ```
@@ -543,7 +539,6 @@ jags.pars <- c("beta0", "beta1", "beta2",
   
 ```{r}
 #| label: bugs-mcmc
-#| size: 'scriptsize'
 #| message: false
 #| results: 'hide'
 #| cache: true
@@ -606,7 +601,6 @@ First, extract the $p$ coefficients
   
 ```{r}
 #| label: psi-coefs
-#| size: 'scriptsize'
 p.coef.post <- as.matrix(jags.post.samples[,c("alpha0","alpha1")])
 head(p.coef.post, n=4)
 ```
@@ -615,7 +609,6 @@ Create prediction matrix, one row for each MCMC iteration.
   
 ```{r}
 #| label: p-predmat
-#| size: 'scriptsize'
 n.iter <- nrow(p.coef.post)
 temp.pred <- seq(-3, 3, length=50)
 p.post.pred <- matrix(NA, nrow=n.iter, ncol=length(temp.pred))

@@ -1,0 +1,887 @@
+---
+## title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    pagetitle: 'Model selection and model fit'
+    slide-number: true
+lang: en
+---
+
+
+
+
+Lecture 6 -- Binomial $N$-mixture models: <br>
+model selection <!-- % , spatial prediction, -->
+and goodness-of-fit <br>
+  
+  
+  WILD(FISH) 8390 <br>
+  Inference for Models of Fish and Wildlife Population Dynamics <br>
+
+
+# Overview {visibility="hidden"}
+
+## Overview
+
+
+
+# Model selection {visibility="hidden"}
+
+
+
+## Model selection
+
+In scientific contexts, we want models that describe natural
+processes and allow us to evaluate hypotheses. 
+  
+  
+Models should be predictive, but they shouldn't be crafted with the
+sole goal of prediction in mind. 
+  
+  
+Scientists typically don't care about prediction if the model doesn't
+help us learn about the processes that gave rise to the data. 
+  
+Nonetheless, predictive performance is often the best way to compare
+models and avoid underfitting and overfitting. 
+  
+Make sure the models being compared were motivated by clear
+hypotheses. 
+
+
+
+## Model selection
+
+Prediction accuracy increases with model complexity up to a point,
+until overfitting kicks in. 
+  
+The best way to determine if a model is too simplistic or too complex
+is to compare predictions to new observations. 
+  
+However, we rarely have the resources to collect additional data for
+the sake of evaluating predictive performance.
+
+A cheaper (albeit less desirable) alternative is to use
+cross-validation:
+  
+- Split data into K partitions
+- Fit model to the data in K-1 partitions
+- Predict the holdout partition
+  
+  
+Information criteria like AIC and WAIC yield similar predictive rankings as cross-validation, but with less computation.
+
+
+
+
+## Overfitting
+
+7 regression models with 5 covariates.
+  
+Only `x2` is in the data generating model.
+```{r, echo=2:14}
+#| label: overfit
+#| fig-width: 8
+#| fig-show: 'hide'
+#| output-location: 'slide'
+set.seed(43340)
+n <- 50
+dat <- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n),
+                  x4=rnorm(n), x5=rnorm(n))
+dat$y <- rnorm(n, mean = -1 + 2*dat$x2, sd = 2) # Data generating model
+fm1 <- glm(y~1, gaussian, dat)
+fm2 <- glm(y~x1, gaussian, dat)
+fm3 <- glm(y~x2, gaussian, dat)                 # Data generating model
+fm4 <- glm(y~x1+x2, gaussian, dat)
+fm5 <- glm(y~x1+x2+x3, gaussian, dat)
+fm6 <- glm(y~x1+x2+x3+x4, gaussian, dat)
+fm7 <- glm(y~x1+x2+x3+x4+x5, gaussian, dat)
+
+library(boot)  ## For 'cv.glm'
+prediction_error <- c(fm1=cv.glm(dat, fm1)$delta[1],
+  fm2=cv.glm(dat, fm2)$delta[1], fm3=cv.glm(dat, fm3)$delta[1],
+  fm4=cv.glm(dat, fm4)$delta[1], fm5=cv.glm(dat, fm5)$delta[1],
+  fm6=cv.glm(dat, fm6)$delta[1], fm7=cv.glm(dat, fm7)$delta[1])
+
+xbp <- barplot(prediction_error, xlab="Model", ylab="Predication error", cex.lab=1.3)
+text(xbp[1], 0.3, as.character(fm1$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[2], 0.3, as.character(fm2$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[3], 0.3, as.character(fm3$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[4], 0.3, as.character(fm4$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[5], 0.3, as.character(fm5$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[6], 0.3, as.character(fm6$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[7], 0.3, as.character(fm7$call)[2], srt=90, pos=4, cex=1.0)
+text(xbp[3], prediction_error[3]+0.1, "Data generating model", srt=90,
+     pos=4, cex=1.3)
+segments(0.3, 9.5, 2.2, 9.5, xpd=TRUE)
+text(1.2, 10, "Under-fit", xpd=TRUE, cex=1.3)
+segments(4, 4.5, 8.2, 4.5, xpd=TRUE)
+text(6, 5, "Over-fit", xpd=TRUE, cex=1.3)
+```
+
+
+
+
+
+## Model selection with AIC
+  
+Most information criteria (IC) take on a form like this:
+$$
+  \mathrm{IC} = \mathrm{fit} + \mathrm{penalty}
+$$
+
+where `fit` describes the *in-sample* predictive accuracy and
+`penalty` describes model complexity. 
+  
+In the case of Akaike's "An Information Criterion", which approximates
+leave-one-out cross validation, `fit` is described by the likelihood
+and the `penalty` is determined by the number of parameters: 
+$$
+  \mathrm{AIC} = -2 \log(L) + 2P 
+$$
+where $L$ is the likelihood evaluated at the MLE and $P$ is the number
+of parameters. 
+   
+The lower the AIC, the better the \alert{out-of-sample} predictive
+performance. 
+
+
+
+% \bgroup
+% \let\oldfootnoterule\footnoterule
+% \def\footnoterule{\only<1->\oldfootnoterule}
+% 
+%   ## Model selection with AIC
+% %  
+%   For an $N$-mixture model, the `integrated likelihood' is computed by
+%   marginalizing (summing over all possible values of) $N_i$:
+%   \[
+%      L = \prod_{i=1}^M \sum_{N^*_i=\max(y_i)}^{K\approx \infty}
+%      \left\{\prod_{j=1}^J p(y_{ij}|N^*_i,p)\right\}p(N^*_i|\lambda)
+%   \]
+% %  
+%   where $p(y_{ij}|N_i,p)$ is the binomial probability
+%   density\footnote<1->{\scriptsize For discrete random variables, 
+%     ``mass'' is often used instead of ``density''.} function 
+%   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
+%   local abundance. 
+% 
+% \egroup
+
+
+
+% \bgroup
+% \let\oldfootnoterule\footnoterule
+% \def\footnoterule{\only<2->\oldfootnoterule}
+
+
+## Model selection in unmarked
+  
+Import the grouse data
+  
+```{r}
+#| label: grouse-in
+#| cache: false
+#| results: 'hide'
+#| message: false
+library(unmarked)
+grouse.data <- read.csv("grouse_data_Nmix.csv", row.names=1)
+grouse.umf <- unmarkedFramePCount(
+    y=grouse.data[,paste0("grouse",1:3)],
+    siteCovs=grouse.data[,c("utmE","utmN","elevation")],
+    obsCovs=list(temp=grouse.data[,paste0("Temperature.",1:3)]))
+```
+
+
+Standardize the covariates
+  
+```{r}
+#| label: grouse-stand
+#| cache: false
+## scale() only works if all the covariates are continuous  
+site.covs.s <- scale(siteCovs(grouse.umf))
+colnames(site.covs.s) <- paste0(colnames(site.covs.s), ".s")
+siteCovs(grouse.umf) <- cbind(siteCovs(grouse.umf), site.covs.s)
+obsCovs(grouse.umf) <- scale(obsCovs(grouse.umf))
+```
+
+
+
+
+
+## Model selection in `unmarked'
+  
+Fit some models
+  
+```{r}
+#| label: grouse-mods
+#| warning: false
+#| cache: true
+fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50) 
+fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
+fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
+fm4 <- pcount(~1 ~ elevation.s+utmN.s, grouse.umf, K=50)
+fm5 <- pcount(~1 ~ elevation.s, grouse.umf, K=50)
+fm6 <- pcount(~1 ~ 1, grouse.umf, K=50)
+```
+
+
+Put models in a special type of list
+  
+```{r}
+#| label: grouse-fitlist
+#| warning: false
+grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
+                         'lam(elev+utmN)p(temp)'=fm2,
+                         'lam(elev)p(ptemp)'=fm3,
+                         'lam(elev+utmN)p(.)'=fm4,
+                         'lam(elev)p(.)'=fm5,
+                         'lam(.)p(.)'=fm6)
+
+```
+
+Uh oh, missing values differ among models.
+
+
+
+
+
+## Model selection in `unmarked'
+ 
+Replace count data with `NA` where associated covariates are missing:
+  
+```{r}
+#| label: addNA
+na.sites <- apply(is.na(site.covs.s), 1, any)
+grouse.counts <- getY(grouse.umf)
+grouse.counts[na.sites,] <- NA
+```
+@
+  
+  
+Fit the models again
+  
+```{r}
+#| label: grouse-mods2
+#| warning: false
+#| cache: true
+fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
+fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
+fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
+fm4 <- pcount(~1 ~ elevation.s+utmN.s, grouse.umf, K=50)
+fm5 <- pcount(~1 ~ elevation.s, grouse.umf, K=50)
+fm6 <- pcount(~1 ~ 1, grouse.umf, K=50)
+```
+
+
+Put models in a `fitList`
+  
+```{r}
+#| label: grouse-fitlist2
+#| warning: false
+grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
+                         'lam(elev+utmN)p(temp)'=fm2,
+                         'lam(elev)p(ptemp)'=fm3,
+                         'lam(elev+utmN)p(.)'=fm4,
+                         'lam(elev)p(.)'=fm5,
+                         'lam(.)p(.)'=fm6)
+
+```
+
+
+
+
+
+## Model selection in `unmarked'
+  
+Create AIC table
+```{r}
+#| label: aic-table
+modSel(grouse.models)
+```
+  
+  
+We could use the model with the lowest AIC for inference and
+prediction.
+  
+  
+  Or, we could model-average the predictions. <br>
+
+
+
+
+## Outline
+  
+## WAIC
+
+Watanabe's widely applicable information criterion (WAIC) is a
+generalization of AIC suitable for Bayesian models. 
+  
+As before, we have 
+
+$$
+  \mathrm{WAIC} = \mathrm{fit} + \mathrm{penalty}
+$$
+  
+The measure of `fit` in this case is the log-pointwise-predictive-density:
+
+$$
+   \mathrm{lppd} = \sum_{i=1}^M \log\left(\frac{1}{S} \sum_s p(y_i|\theta_s)\right)
+$$
+  
+  
+The penalty is proportional to the posterior variance:
+$$
+  \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(\log p(y_i|\theta_s)))
+$$
+
+
+
+
+
+## Data, inits, and parameters
+
+Put data in a named list
+  
+```{r}
+#| label: bugs-data
+jags.data <- list(
+    y=grouse.counts,
+    elevation=site.covs.s[,"elevation.s"],
+    utmE=site.covs.s[,"utmE.s"],
+    utmN=site.covs.s[,"utmN.s"],
+    temp=as.matrix(grouse.data[,paste0("Temperature.",1:3)]),
+    nSites=nrow(grouse.counts),
+    nOccasions=ncol(grouse.counts))
+jags.data$temp <- (jags.data$temp-mean(jags.data$temp, na.rm=TRUE))/
+    sd(jags.data$temp, na.rm=TRUE) # standardize temperature
+```
+
+
+Initial values
+  
+```{r}
+#| label: bugs-inits
+jags.inits <- function() {
+    list(lambda.intercept=runif(1), alpha0=rnorm(1),
+         N=rep(2, jags.data$nSites))
+}
+```
+
+
+Parameters to monitor
+  
+```{r}
+#| label: bugs-pars
+jags.pars <- c("beta0", "beta1", "beta2", "beta3",
+               "alpha0", "alpha1", "totalAbundance",
+               "ld.y.dot", "ld.ydot.N")
+```
+
+
+
+
+## The BUGS model
+  
+Notice `modswitch`, which we can use to include/exclude predictors. 
+
+```{r}
+#| label: bugs
+#| echo: false
+#| comment: ''
+#| background: 'beige'
+writeLines(readLines("Nmix-model-grouse.jag"))
+```
+
+```{r}
+#| label: jagsUI
+#| include: false
+library(jagsUI)
+```
+
+
+## MCMC
+
+Fit Model 1, corresponding to \inr{fm1}. 
+  
+```{r}
+#| label: bugs-mcmc
+#| message: false
+#| cache: true
+#| results: 'hide'
+library(jagsUI)
+jags.data1 <- jags.data
+jags.data1$modswitch <- c(1,1,1,1) ## Include all covariates
+jm1 <- jags.basic(data=jags.data1, inits=jags.inits,
+                  parameters.to.save=jags.pars, 
+                  model.file="Nmix-model-grouse.jag",
+                  n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+```
+
+
+Fit Model 2
+  
+```{r}
+#| label: bugs-mcmc2
+#| message: false
+#| cache: true
+#| results: 'hide'
+jags.data2 <- jags.data; jags.data2$modswitch <- c(1,0,1,1) 
+jm2 <- jags.basic(data=jags.data2, inits=jags.inits,
+                  parameters.to.save=jags.pars, 
+                  model.file="Nmix-model-grouse.jag",
+                  n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+```
+
+## MCMC
+  
+Model 3
+  
+```{r}
+#| label: bugs-mcmc3
+#| message: false
+#| cache: true
+#| results: 'hide'
+jags.data3 <- jags.data; jags.data3$modswitch <- c(1,0,0,1)
+jm3 <- jags.basic(data=jags.data3, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+```
+Model 4
+  
+```{r}
+#| label: bugs-mcmc4
+#| message: false
+#| cache: true
+#| results: 'hide'
+jags.data4 <- jags.data; jags.data4$modswitch <- c(1,0,1,0)
+jm4 <- jags.basic(data=jags.data4, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+```
+Model 5
+  
+```{r}
+#| label: bugs-mcmc5
+#| message: false
+#| cache: true
+#| results: 'hide'
+jags.data5 <- jags.data; jags.data5$modswitch <- c(1,0,0,0)
+jm5 <- jags.basic(data=jags.data5, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+```
+Model 6
+  
+```{r}
+#| label: bugs-mcmc6
+#| message: false
+#| cache: true
+#| results: 'hide'
+jags.data6 <- jags.data; jags.data6$modswitch <- c(0,0,0,0)
+jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.pars,
+                  model.file="Nmix-model-grouse.jag", n.chains=3, n.adapt=100, n.burnin=0,
+                  n.iter=2000, parallel=TRUE)
+```
+
+
+
+## WAIC
+$$
+    \mathrm{WAIC} = -2\left(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta))\right)
+$$
+
+```{r}
+#| label: waic-fn-ld-op
+#| include: false
+waic <- function(x, focus=c("y", "yN")) {
+    vars <- coda::varnames(x)
+    if(focus[1]=="y") {
+        ld.samples <- as.matrix(x[,grep("ld.y.dot", vars)])
+    } else if(focus[1]=="yN") {
+        ld.samples <- as.matrix(x[,grep("ld.ydot.N", vars)])
+    } else stop("focus should be either 'y' or 'yN'")
+    lppd <- sum(log(colMeans(exp(ld.samples))))
+    penalty <- sum(apply(ld.samples, 2, var))
+    return(-2*lppd + 2*penalty)
+}
+```
+
+```{r}
+#| label: waic-fn
+waic <- function(x) {
+    ## Parameter names
+    vars <- coda::varnames(x)
+    ## Extract log-density of y at each site for each post sample
+    ld.samples <- as.matrix(x[,grep("ld.y.dot", vars)])
+    ## Compute log-pointwise-predictive-density
+    lppd <- sum(log(colMeans(exp(ld.samples))))
+    ## Compute penalty
+    penalty <- sum(apply(ld.samples, 2, var))
+    ## Return WAIC
+    return(-2*(lppd-penalty))
+}
+```
+
+
+## WAIC
+
+WAIC for the six models
+
+::: {.columns}
+::: {.column width='50%'}
+```{r}
+#| label: waic1
+#| size: 'scriptsize'
+(waic1 <- waic(jm1))
+```
+```{r}
+#| label: waic2
+#| size: 'scriptsize'
+(waic2 <- waic(jm2))
+```
+```{r}
+#| label: waic3
+#| size: 'scriptsize'
+(waic3 <- waic(jm3))
+```
+:::
+::: {.column width='50%'}
+```{r}
+#| label: waic4
+#| size: 'scriptsize'
+(waic4 <- waic(jm4))
+```
+```{r}
+#| label: waic5
+#| size: 'scriptsize'
+(waic5 <- waic(jm5))
+```
+```{r}
+#| label: waic6
+#| size: 'scriptsize'
+(waic6 <- waic(jm6))
+```
+:::
+:::
+  
+  
+In practice, you would discard burn-in and ensure convergence before computing WAIC.
+
+
+## WAIC
+
+Create a WAIC table:
+  
+<center>
+```{r}
+#| label: waic-table
+waic.table <- data.frame(WAIC=c(waic1,waic2,waic3,waic4,waic5,waic5))
+rownames(waic.table) <- paste("Model", 1:6)
+waic.table$delta <- waic.table$WAIC-min(waic.table$WAIC)
+waic.table <- waic.table[order(waic.table$WAIC),]
+knitr::kable(waic.table, format="latex", digits=2, booktabs=TRUE)
+```
+</center>
+
+
+
+
+
+
+# Goodness-of-fit
+
+
+
+
+## Goodness-of-fit
+  
+Distributional assumptions determine the expected values
+*and the expected variance* of the random variables, including
+the data.
+  
+  
+Overdispersion occurs when there is more variance in the data than
+expected by the model.
+  
+  
+Goodness-of-fit methods assess overdispersion and underdispersion.
+  
+  
+If the model does not fit the data very well because of
+overdispersion, there are several remedial actions:
+  
+- Scientific approach
+  * Figure out why there is unexplained variation
+  * Perhaps there were unmeasured covariates or you need a better process model
+    
+- Statistical approach
+  * Soak up variation with random effects
+  * Use a different distribution (we'll start here)
+    
+  
+## Changing the distribution for $N$
+  
+  Standard Poisson-binomial $N$-mixture model (without covariates):
+$$
+    N_i \sim \mathrm{Poisson}(\lambda) \\
+    y_{ij} \sim \mathrm{Binomial}(N_i, p)
+$$
+  
+We can replace the Poisson distribution with other distributions
+that allow for greater variance in $N$.  Two common examples
+are the negative  binomial:
+$$
+    N_i \sim \mathrm{NegBin}(\lambda_i, \kappa)
+$$
+where $\lambda_i$ is the expected value of $N$ and $\kappa$ is the
+dispersion parameter^[There are several other
+parameterizations of the negative binomial].
+  
+Another option is the zero-inflated Poisson:
+::: columns
+::: {.column width='50%'}
+$$
+  N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+  z_i \sim \mathrm{Bern}(\psi) <br>
+$$
+:::
+::: {.column width='50%'}
+::: {.column width='50%'}
+$$
+  N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi)
+$$
+:::
+:::
+where $\psi$ is the expected proportion of sites with excess zeros. 
+
+
+## Simulating data from ZIP model
+
+Zero-inflated Poisson model
+::: columns
+::: {.column width='50%'}
+$$
+  N_i \sim \mathrm{Poisson}(\lambda_i z_i) <br>
+  z_i \sim \mathrm{Bern}(\psi) <br>
+$$
+:::
+::: {.column width='50%'}
+$$
+  N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi)
+:::
+:::
+
+
+R code
+```{r}
+#| label: zip-sim
+
+nSites <- 20
+nVisits <- 3
+psi <- 0.5   # Proportion of extra-Poisson zeros
+z <- rbinom(n=nSites, size=1, prob=psi) # Extra zeros
+lam <- 5     # expected count when z=1
+N <- rpois(n=nSites, lambda=lam*z)      # abundance at each site
+p <- 0.5     # detection prob
+y <- matrix(NA, nSites, nVisits)
+for(i in 1:nSites) {
+    y[i,] <- rbinom(n=nVisits, size=N[i], prob=p) # count data
+}
+```
+
+
+
+## Goodness-of-fit in unmarked
+  
+One of the simplest and best ways of assessing goodness-of-fit is to
+look at the residuals.
+```{r}
+#| label: resid2
+#| fig-width: 9
+#| out-width: '60%'
+#| fig-align: 'center'
+#| fig-keep: 'first'
+plot(fm2)
+```
+
+
+No sign of obvious outliers or other problems.
+
+
+## Goodness-of-fit in unmarked
+
+The parametric bootstrap can be used to assess model fit:
+- Simulate a dataset from the fitted model
+- Fit the model to the new dataset
+- Compute a fit statistic
+- Repeat steps 1-3 several hundred/thousand times
+- Compare the distribution of the *expected* fit statistic to
+the fit statistic associated with the actual data.
+  
+The fit statistic associated with the actual data should not be in
+an extreme quantile of the distribution of the expected values.
+  
+Assuming a type I error rate of 0.05, the $p$-value should be
+$>0.05$ if the model fits the data well, which is the null hypothesis.
+
+
+## Goodness-of-fit in unmarked
+
+```{r}
+#| label: parboot
+#| warning: false
+#| cache: true
+#| fig-width: 9
+#| out-width: '70%'
+#| fig-align: 'center'
+fitstat <- function(fm) { ## Sum of squared-residuals
+    return(c(SSE=sum(residuals(fm)^2, na.rm=TRUE))) 
+}
+pb <- parboot(fm2, statistic=fitstat, nsim=200, ncores=3); plot(pb)
+```
+
+
+
+## Goodness-of-fit in unmarked
+```{r}
+#| label: parboot2
+pb
+```
+
+These results suggest that model `fm2` fits the data well.
+
+
+
+## Goodness-of-fit in unmarked
+  
+If the model didn't fit the data well, we could try a different
+distribution for $N_i$ such as the negative binomial:
+
+```{r}
+#| label: negbin
+#| warning: false
+#| cache: true
+(fm.nb <- pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="NB"))
+```
+
+
+
+## Goodness-of-fit in unmarked
+  
+Or the zero-inflated Poisson:
+
+```{r}
+#| label: zip
+#| warning: false
+#| cache: true
+(fm.zip <- pcount(~temp ~ elevation.s+utmN.s, data=grouse.umf, K=50, mixture="ZIP"))
+```
+
+
+
+
+
+
+## Bayesian fit assessments
+
+In a Bayesian analysis, we can assess model fit using a
+*posterior predictive check* (PPC).
+  
+  
+The PPC compares the posterior distribution of a fit statistic, to
+the posterior distribution of a fit statistic computed from
+simulated data.
+  
+  
+The two distributions should look similar if the model fits well.
+
+
+
+
+## BUGS model with fit stats
+
+```{r}
+#| label: bugs2
+#| echo: false
+#| comment: ''
+#| background: 'beige'
+writeLines(readLines("Nmix-model-grouse2.jag"))
+```
+
+
+
+## MCMC
+Fit Model 2, corresponding to \inr{fm2}. 
+
+
+```{r}
+#| label: bugs-mcmc-gof
+#| message: false
+#| cache: true
+#| results: 'hide'
+jm <- jags.basic(data=jags.data, inits=jags.inits,
+                 parameters.to.save=c(jags.pars, "SSE", "SSE.new"), 
+                 model.file="Nmix-model-grouse2.jag",
+                 n.chains=3, n.adapt=100, n.burnin=0,
+                 n.iter=2000, parallel=TRUE)
+```
+
+
+
+
+## Bayesian goodness-of-fit
+
+```{r}
+#| label: bugs-mcmc-gof-plot
+#| fig-width: 8
+#| fig-align: 'center'
+#| out-width: '55%'
+plot(as.matrix(jm[,c("SSE", "SSE.new")]))
+abline(a=0, b=1, col="red")
+```
+  
+  
+The distributions of `SSE` and `SSE.new` are similar,
+indicating that the model fits the data well.
+
+
+
+
+
+
+
+
+
+## Assignment
+
+Create a self-contained R script or Rmarkdown file
+to do the following:
+  
+- Simulate a dataset from the following $N$-mixture model:
+  * $N_i \sim \mathrm{ZIPoisson}(\lambda=5, \psi=0.5)$
+  * $y_{ij} \sim \mathrm{Binomial}(N_i, p=0.3)$
+  * nSites=200, nOccasions=4
+      
+- Fit a \alert{mis-specified model} using unmarked and `JAGS' with
+      $N_i \sim \mathrm{Pois}(\lambda)$ instead of
+      $N_i \sim \mathrm{ZIPois}(\lambda, \psi)$.
+- Assess goodness-of-fit using the parametric bootstrap and
+      the Bayesian posterior predictive check.
+- Fit the *correct model* using 'unmarked' and 'JAGS'
+      and compare the fit to the mis-specified models.
+- Were the fit assessments methods able to identify the
+      mis-specified model?
+  
+  
+Upload your `.R` or `.Rmd` file to ELC by 5:00pm on Tuesday. 
+
+
+
+
+
+
+
