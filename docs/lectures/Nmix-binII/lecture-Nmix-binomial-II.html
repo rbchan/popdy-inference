@@ -194,44 +194,83 @@
     <div class="slides">
 
 
-<section class="slide level2">
-
-<p>Lecture 6 – Binomial <span class="math inline">\(N\)</span>-mixture models: <br> model selection <!-- % , spatial prediction, --> and goodness-of-fit <br></p>
+<section id="section" class="slide level2" data-content-align="center" style="font-size: 140%;">
+<h2></h2>
+<p><br></p>
+<center>
+<p>Lecture 6 – Binomial <span class="math inline">\(N\)</span>-mixture models: <br> model selection <!-- % , spatial prediction, --> and goodness-of-fit</p>
+<p><br></p>
+<div style="font-size: 80%;">
 <p>WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
+</div>
+</center>
 </section>
 <section>
 
 <section id="overview-1" class="slide level2">
 <h2>Overview</h2>
+<p><br></p>
+<p>How should we choose among competing models?</p>
+<p><br></p>
+<p>What should we do if our model doesn’t fit the data well?</p>
 </section></section>
 <section>
+<section id="model-selection" class="title-slide slide level1 center">
+<h1>Model selection</h1>
 
+</section>
 <section id="model-selection-1" class="slide level2">
 <h2>Model selection</h2>
+<div style="font-size: 75%;">
 <p>In scientific contexts, we want models that describe natural processes and allow us to evaluate hypotheses.</p>
+<p><br></p>
+<div class="fragment">
 <p>Models should be predictive, but they shouldn’t be crafted with the sole goal of prediction in mind.</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Scientists typically don’t care about prediction if the model doesn’t help us learn about the processes that gave rise to the data.</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Nonetheless, predictive performance is often the best way to compare models and avoid underfitting and overfitting.</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Make sure the models being compared were motivated by clear hypotheses.</p>
+</div>
+</div>
 </section>
 <section id="model-selection-2" class="slide level2">
 <h2>Model selection</h2>
+<div style="font-size: 80%;">
 <p>Prediction accuracy increases with model complexity up to a point, until overfitting kicks in.</p>
+<div class="fragment">
 <p>The best way to determine if a model is too simplistic or too complex is to compare predictions to new observations.</p>
+</div>
+<div class="fragment">
 <p>However, we rarely have the resources to collect additional data for the sake of evaluating predictive performance.</p>
+</div>
+<div class="fragment">
 <p>A cheaper (albeit less desirable) alternative is to use cross-validation:</p>
 <ul>
 <li>Split data into K partitions</li>
 <li>Fit model to the data in K-1 partitions</li>
 <li>Predict the holdout partition</li>
 </ul>
-<p>Information criteria like AIC and WAIC yield similar predictive rankings as cross-validation, but with less computation.</p>
+</div>
+<div class="fragment">
+<center>
+Information criteria like AIC and WAIC yield similar predictive rankings as cross-validation, but with less computation.
+</center>
+</div>
+</div>
 </section>
 <section id="overfitting" class="slide level2">
 <h2>Overfitting</h2>
-<p>7 regression models with 5 covariates.</p>
-<p>Only <code>x2</code> is in the data generating model.</p>
-<div class="cell">
+<div style="font-size: 80%;">
+<p>7 regression models with 5 covariates. Only <code>x2</code> is in the data generating model.</p>
+<div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
 <span id="cb1-2"><a></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x1=</span><span class="fu">rnorm</span>(n), <span class="at">x2=</span><span class="fu">rnorm</span>(n), <span class="at">x3=</span><span class="fu">rnorm</span>(n),</span>
 <span id="cb1-3"><a></a>                  <span class="at">x4=</span><span class="fu">rnorm</span>(n), <span class="at">x5=</span><span class="fu">rnorm</span>(n))</span>
@@ -251,42 +290,120 @@
 <span id="cb1-17"><a></a>  <span class="at">fm6=</span><span class="fu">cv.glm</span>(dat, fm6)<span class="sc">$</span>delta[<span class="dv">1</span>], <span class="at">fm7=</span><span class="fu">cv.glm</span>(dat, fm7)<span class="sc">$</span>delta[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
+</div>
 </section>
-<section id="overfitting-output" class="slide level2 output-location-slide"><h2>Overfitting</h2><div class="cell output-location-slide">
-
+<section id="overfitting-output" class="slide level2 output-location-slide"><h2>Overfitting</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-Nmix-binomial-II_files/figure-revealjs/overfit-1.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
+</figure>
+</div>
+</div>
 </div></section><section id="model-selection-with-aic" class="slide level2">
 <h2>Model selection with AIC</h2>
+<div style="font-size: 80%;">
 <p>Most information criteria (IC) take on a form like this: <span class="math display">\[
   \mathrm{IC} = \mathrm{fit} + \mathrm{penalty}
 \]</span></p>
 <p>where <code>fit</code> describes the <em>in-sample</em> predictive accuracy and <code>penalty</code> describes model complexity.</p>
+<div class="fragment">
 <p>In the case of Akaike’s “An Information Criterion”, which approximates leave-one-out cross validation, <code>fit</code> is described by the likelihood and the <code>penalty</code> is determined by the number of parameters: <span class="math display">\[
   \mathrm{AIC} = -2 \log(L) + 2P
 \]</span> where <span class="math inline">\(L\)</span> is the likelihood evaluated at the MLE and <span class="math inline">\(P\)</span> is the number of parameters.</p>
-<p>The lower the AIC, the better the predictive performance.</p>
+</div>
+<div class="fragment">
+<p>The lower the AIC, the better the <em>out-of-sample</em> predictive performance.</p>
+</div>
+</div>
 </section>
 <section id="model-selection-in-unmarked" class="slide level2">
 <h2>Model selection in unmarked</h2>
+<div style="font-size: 80%;">
 <p>Import the grouse data</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(unmarked)</span>
+<span id="cb2-2"><a></a>grouse.data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"grouse_data_Nmix.csv"</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span>
+<span id="cb2-3"><a></a>grouse.umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFramePCount</span>(</span>
+<span id="cb2-4"><a></a>    <span class="at">y=</span>grouse.data[,<span class="fu">paste0</span>(<span class="st">"grouse"</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)],</span>
+<span id="cb2-5"><a></a>    <span class="at">siteCovs=</span>grouse.data[,<span class="fu">c</span>(<span class="st">"utmE"</span>,<span class="st">"utmN"</span>,<span class="st">"elevation"</span>)],</span>
+<span id="cb2-6"><a></a>    <span class="at">obsCovs=</span><span class="fu">list</span>(<span class="at">temp=</span>grouse.data[,<span class="fu">paste0</span>(<span class="st">"Temperature."</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
 <p>Standardize the covariates</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="do">## scale() only works if all the covariates are continuous  </span></span>
+<span id="cb3-2"><a></a>site.covs.s <span class="ot">&lt;-</span> <span class="fu">scale</span>(<span class="fu">siteCovs</span>(grouse.umf))</span>
+<span id="cb3-3"><a></a><span class="fu">colnames</span>(site.covs.s) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">colnames</span>(site.covs.s), <span class="st">".s"</span>)</span>
+<span id="cb3-4"><a></a><span class="fu">siteCovs</span>(grouse.umf) <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">siteCovs</span>(grouse.umf), site.covs.s)</span>
+<span id="cb3-5"><a></a><span class="fu">obsCovs</span>(grouse.umf) <span class="ot">&lt;-</span> <span class="fu">scale</span>(<span class="fu">obsCovs</span>(grouse.umf))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="model-selection-in-unmarked-1" class="slide level2">
 <h2>Model selection in `unmarked’</h2>
+<div style="font-size: 80%;">
 <p>Fit some models</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>fm1 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s<span class="sc">+</span>utmE.s<span class="sc">+</span>utmN.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>) </span>
+<span id="cb4-2"><a></a>fm2 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s<span class="sc">+</span>utmN.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb4-3"><a></a>fm3 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb4-4"><a></a>fm4 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span> elevation.s<span class="sc">+</span>utmN.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb4-5"><a></a>fm5 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span> elevation.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb4-6"><a></a>fm6 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
 <p>Put models in a special type of list</p>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>grouse.models <span class="ot">&lt;-</span> <span class="fu">fitList</span>(<span class="st">'lam(elev+utmE+utmN)p(temp)'</span><span class="ot">=</span>fm1,</span>
+<span id="cb5-2"><a></a>                         <span class="st">'lam(elev+utmN)p(temp)'</span><span class="ot">=</span>fm2,</span>
+<span id="cb5-3"><a></a>                         <span class="st">'lam(elev)p(ptemp)'</span><span class="ot">=</span>fm3,</span>
+<span id="cb5-4"><a></a>                         <span class="st">'lam(elev+utmN)p(.)'</span><span class="ot">=</span>fm4,</span>
+<span id="cb5-5"><a></a>                         <span class="st">'lam(elev)p(.)'</span><span class="ot">=</span>fm5,</span>
+<span id="cb5-6"><a></a>                         <span class="st">'lam(.)p(.)'</span><span class="ot">=</span>fm6)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `validityMethod()`:
 ! Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.</code></pre>
 </div>
 </div>
 <p>Uh oh, missing values differ among models.</p>
+</div>
+</div>
 </section>
 <section id="model-selection-in-unmarked-2" class="slide level2">
 <h2>Model selection in `unmarked’</h2>
+<div style="font-size: 80%;">
 <p>Replace count data with <code>NA</code> where associated covariates are missing:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>na.sites <span class="ot">&lt;-</span> <span class="fu">apply</span>(<span class="fu">is.na</span>(site.covs.s), <span class="dv">1</span>, any)</span>
+<span id="cb7-2"><a></a>grouse.counts <span class="ot">&lt;-</span> <span class="fu">getY</span>(grouse.umf)</span>
+<span id="cb7-3"><a></a>grouse.counts[na.sites,] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb7-4"><a></a>grouse.umf<span class="sc">@</span>y <span class="ot">&lt;-</span> grouse.counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
 <p>Fit the models again</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>fm1 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s<span class="sc">+</span>utmE.s<span class="sc">+</span>utmN.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb8-2"><a></a>fm2 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s<span class="sc">+</span>utmN.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb8-3"><a></a>fm3 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb8-4"><a></a>fm4 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span> elevation.s<span class="sc">+</span>utmN.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb8-5"><a></a>fm5 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span> elevation.s, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span>
+<span id="cb8-6"><a></a>fm6 <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>, grouse.umf, <span class="at">K=</span><span class="dv">50</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div class="fragment">
 <p>Put models in a <code>fitList</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>grouse.models <span class="ot">&lt;-</span> <span class="fu">fitList</span>(<span class="st">'lam(elev+utmE+utmN)p(temp)'</span><span class="ot">=</span>fm1,</span>
+<span id="cb9-2"><a></a>                         <span class="st">'lam(elev+utmN)p(temp)'</span><span class="ot">=</span>fm2,</span>
+<span id="cb9-3"><a></a>                         <span class="st">'lam(elev)p(ptemp)'</span><span class="ot">=</span>fm3,</span>
+<span id="cb9-4"><a></a>                         <span class="st">'lam(elev+utmN)p(.)'</span><span class="ot">=</span>fm4,</span>
+<span id="cb9-5"><a></a>                         <span class="st">'lam(elev)p(.)'</span><span class="ot">=</span>fm5,</span>
+<span id="cb9-6"><a></a>                         <span class="st">'lam(.)p(.)'</span><span class="ot">=</span>fm6)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
 <section id="model-selection-in-unmarked-3" class="slide level2">
 <h2>Model selection in unmarked</h2>
@@ -302,33 +419,73 @@ lam(elev)p(.)                  3 209.72  6.83 1.7e-02     1.00
 lam(.)p(.)                     2 222.52 19.63 2.8e-05     1.00</code></pre>
 </div>
 </div>
-<p>We could use the model with the lowest AIC for inference and prediction.</p>
-<p>Or, we could model-average the predictions.</p>
+<p><br></p>
+<div style="font-size: 90%;">
+<p>Use the model with the lowest AIC for prediction, or model-average the predictions.</p>
+<p><br></p>
+<div class="fragment">
+<center>
+For inference, you should use causal inference methods rather than blind model selection.
+</center>
+</div>
+</div>
 </section>
 <section id="waic" class="slide level2">
 <h2>WAIC</h2>
+<div style="font-size: 80%;">
 <p>Watanabe’s widely applicable information criterion (WAIC) is a generalization of AIC suitable for Bayesian models.</p>
 <p>As before, we have</p>
 <p><span class="math display">\[
   \mathrm{WAIC} = \mathrm{fit} + \mathrm{penalty}
 \]</span></p>
 <p>The measure of <code>fit</code> in this case is the log-pointwise-predictive-density:</p>
+</div>
+<div style="font-size: 70%;">
 <p><span class="math display">\[
    \mathrm{lppd} = \sum_{i=1}^M \log\left(\frac{1}{S} \sum_s p(y_i|\theta_s)\right)
 \]</span></p>
 <p>The penalty is proportional to the posterior variance: <span class="math display">\[
   \mathrm{penalty} = \sum_{i=1}^M \mathrm{Var}(\log p(y_i|\theta_s)))
 \]</span></p>
+</div>
 </section>
 <section id="data-inits-and-parameters" class="slide level2">
 <h2>Data, inits, and parameters</h2>
+<div style="font-size: 80%;">
 <p>Put data in a named list</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>jags.data <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb11-2"><a></a>    <span class="at">y=</span>grouse.counts,</span>
+<span id="cb11-3"><a></a>    <span class="at">elevation=</span>site.covs.s[,<span class="st">"elevation.s"</span>],</span>
+<span id="cb11-4"><a></a>    <span class="at">utmE=</span>site.covs.s[,<span class="st">"utmE.s"</span>],</span>
+<span id="cb11-5"><a></a>    <span class="at">utmN=</span>site.covs.s[,<span class="st">"utmN.s"</span>],</span>
+<span id="cb11-6"><a></a>    <span class="at">temp=</span><span class="fu">as.matrix</span>(grouse.data[,<span class="fu">paste0</span>(<span class="st">"Temperature."</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)]),</span>
+<span id="cb11-7"><a></a>    <span class="at">nSites=</span><span class="fu">nrow</span>(grouse.counts),</span>
+<span id="cb11-8"><a></a>    <span class="at">nOccasions=</span><span class="fu">ncol</span>(grouse.counts))</span>
+<span id="cb11-9"><a></a>jags.data<span class="sc">$</span>temp <span class="ot">&lt;-</span> (jags.data<span class="sc">$</span>temp<span class="sc">-</span><span class="fu">mean</span>(jags.data<span class="sc">$</span>temp, <span class="at">na.rm=</span><span class="cn">TRUE</span>))<span class="sc">/</span></span>
+<span id="cb11-10"><a></a>    <span class="fu">sd</span>(jags.data<span class="sc">$</span>temp, <span class="at">na.rm=</span><span class="cn">TRUE</span>) <span class="co"># standardize temperature</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Initial values</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>jags.inits <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb12-2"><a></a>    <span class="fu">list</span>(<span class="at">lambda.intercept=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>),</span>
+<span id="cb12-3"><a></a>         <span class="at">N=</span><span class="fu">rep</span>(<span class="dv">2</span>, jags.data<span class="sc">$</span>nSites))</span>
+<span id="cb12-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Parameters to monitor</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>jags.pars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>, <span class="st">"beta2"</span>, <span class="st">"beta3"</span>,</span>
+<span id="cb13-2"><a></a>               <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"totalAbundance"</span>,</span>
+<span id="cb13-3"><a></a>               <span class="st">"ld.y.dot"</span>, <span class="st">"ld.ydot.N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </section>
 <section id="the-bugs-model" class="slide level2">
 <h2>The BUGS model</h2>
+<div style="font-size: 80%;">
 <p>Notice <code>modswitch</code>, which we can use to include/exclude predictors.</p>
+</div>
+<p><a href="&quot;Nmix-model-grouse.jag&quot;">Nmix-model-grouse.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -367,21 +524,83 @@ totalAbundance &lt;- sum(N[1:nSites])
 </section>
 <section id="mcmc" class="slide level2">
 <h2>MCMC</h2>
+<div style="font-size: 80%;">
 <p>Fit Model 1, corresponding to <code>fm1</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb15-2"><a></a>jags.data1 <span class="ot">&lt;-</span> jags.data</span>
+<span id="cb15-3"><a></a>jags.data1<span class="sc">$</span>modswitch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>) <span class="do">## Include all covariates</span></span>
+<span id="cb15-4"><a></a>jm1 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data1, <span class="at">inits=</span>jags.inits,</span>
+<span id="cb15-5"><a></a>                  <span class="at">parameters.to.save=</span>jags.pars, </span>
+<span id="cb15-6"><a></a>                  <span class="at">model.file=</span><span class="st">"Nmix-model-grouse.jag"</span>,</span>
+<span id="cb15-7"><a></a>                  <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb15-8"><a></a>                  <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Fit Model 2</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>jags.data2 <span class="ot">&lt;-</span> jags.data; jags.data2<span class="sc">$</span>modswitch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>) </span>
+<span id="cb16-2"><a></a>jm2 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data2, <span class="at">inits=</span>jags.inits,</span>
+<span id="cb16-3"><a></a>                  <span class="at">parameters.to.save=</span>jags.pars, </span>
+<span id="cb16-4"><a></a>                  <span class="at">model.file=</span><span class="st">"Nmix-model-grouse.jag"</span>,</span>
+<span id="cb16-5"><a></a>                  <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb16-6"><a></a>                  <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </section>
 <section id="mcmc-1" class="slide level2">
 <h2>MCMC</h2>
+<div style="font-size: 70%;">
 <p>Model 3</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>jags.data3 <span class="ot">&lt;-</span> jags.data; jags.data3<span class="sc">$</span>modswitch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb17-2"><a></a>jm3 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data3, <span class="at">inits=</span>jags.inits, <span class="at">parameters.to.save=</span>jags.pars,</span>
+<span id="cb17-3"><a></a>                  <span class="at">model.file=</span><span class="st">"Nmix-model-grouse.jag"</span>, <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb17-4"><a></a>                  <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Model 4</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>jags.data4 <span class="ot">&lt;-</span> jags.data; jags.data4<span class="sc">$</span>modswitch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
+<span id="cb18-2"><a></a>jm4 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data4, <span class="at">inits=</span>jags.inits, <span class="at">parameters.to.save=</span>jags.pars,</span>
+<span id="cb18-3"><a></a>                  <span class="at">model.file=</span><span class="st">"Nmix-model-grouse.jag"</span>, <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb18-4"><a></a>                  <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Model 5</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>jags.data5 <span class="ot">&lt;-</span> jags.data; jags.data5<span class="sc">$</span>modswitch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb19-2"><a></a>jm5 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data5, <span class="at">inits=</span>jags.inits, <span class="at">parameters.to.save=</span>jags.pars,</span>
+<span id="cb19-3"><a></a>                  <span class="at">model.file=</span><span class="st">"Nmix-model-grouse.jag"</span>, <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb19-4"><a></a>                  <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Model 6</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>jags.data6 <span class="ot">&lt;-</span> jags.data; jags.data6<span class="sc">$</span>modswitch <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb20-2"><a></a>jm6 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data6, <span class="at">inits=</span>jags.inits, <span class="at">parameters.to.save=</span>jags.pars,</span>
+<span id="cb20-3"><a></a>                  <span class="at">model.file=</span><span class="st">"Nmix-model-grouse.jag"</span>, <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb20-4"><a></a>                  <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </section>
 <section id="waic-1" class="slide level2">
 <h2>WAIC</h2>
+<div style="font-size: 80%;">
 <p><span class="math display">\[
-    \mathrm{WAIC} = -2\left(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta))\right)
+  \mathrm{WAIC} = -2\left(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta))\right)
 \]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>waic <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb21-2"><a></a>    <span class="do">## Parameter names</span></span>
+<span id="cb21-3"><a></a>    vars <span class="ot">&lt;-</span> coda<span class="sc">::</span><span class="fu">varnames</span>(x)</span>
+<span id="cb21-4"><a></a>    <span class="do">## Extract log-density of y at each site for each post sample</span></span>
+<span id="cb21-5"><a></a>    ld.samples <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(x[,<span class="fu">grep</span>(<span class="st">"ld.y.dot"</span>, vars)])</span>
+<span id="cb21-6"><a></a>    <span class="do">## Compute log-pointwise-predictive-density</span></span>
+<span id="cb21-7"><a></a>    lppd <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">colMeans</span>(<span class="fu">exp</span>(ld.samples))))</span>
+<span id="cb21-8"><a></a>    <span class="do">## Compute penalty</span></span>
+<span id="cb21-9"><a></a>    penalty <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">apply</span>(ld.samples, <span class="dv">2</span>, var))</span>
+<span id="cb21-10"><a></a>    <span class="do">## Return WAIC</span></span>
+<span id="cb21-11"><a></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>(lppd<span class="sc">-</span>penalty))</span>
+<span id="cb21-12"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </section>
 <section id="waic-2" class="slide level2">
 <h2>WAIC</h2>
@@ -389,32 +608,38 @@ totalAbundance &lt;- sum(N[1:nSites])
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>(waic1 <span class="ot">&lt;-</span> <span class="fu">waic</span>(jm1))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 124.5963</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>(waic2 <span class="ot">&lt;-</span> <span class="fu">waic</span>(jm2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 124.8125</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>(waic3 <span class="ot">&lt;-</span> <span class="fu">waic</span>(jm3))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 118.1807</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>(waic4 <span class="ot">&lt;-</span> <span class="fu">waic</span>(jm4))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 150.4383</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>(waic5 <span class="ot">&lt;-</span> <span class="fu">waic</span>(jm5))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 151.1954</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>(waic6 <span class="ot">&lt;-</span> <span class="fu">waic</span>(jm6))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 160.7646</code></pre>
 </div>
@@ -427,6 +652,11 @@ totalAbundance &lt;- sum(N[1:nSites])
 <p>Create a WAIC table:</p>
 <center>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>waic.table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">WAIC=</span><span class="fu">c</span>(waic1,waic2,waic3,waic4,waic5,waic5))</span>
+<span id="cb34-2"><a></a><span class="fu">rownames</span>(waic.table) <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Model"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>)</span>
+<span id="cb34-3"><a></a>waic.table<span class="sc">$</span>delta <span class="ot">&lt;-</span> waic.table<span class="sc">$</span>WAIC<span class="sc">-</span><span class="fu">min</span>(waic.table<span class="sc">$</span>WAIC)</span>
+<span id="cb34-4"><a></a>waic.table <span class="ot">&lt;-</span> waic.table[<span class="fu">order</span>(waic.table<span class="sc">$</span>WAIC),]</span>
+<span id="cb34-5"><a></a>knitr<span class="sc">::</span><span class="fu">kable</span>(waic.table, <span class="at">format=</span><span class="st">"latex"</span>, <span class="at">digits=</span><span class="dv">2</span>, <span class="at">booktabs=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 
 </div>
@@ -440,9 +670,12 @@ totalAbundance &lt;- sum(N[1:nSites])
 </section>
 <section id="goodness-of-fit-1" class="slide level2">
 <h2>Goodness-of-fit</h2>
+<div style="font-size: 70%;">
 <p>Distributional assumptions determine the expected values <em>and the expected variance</em> of the random variables, including the data.</p>
-<p>Overdispersion occurs when there is more variance in the data than expected by the model.</p>
-<p>Goodness-of-fit methods assess overdispersion and underdispersion.</p>
+<div class="fragment">
+<p>Overdispersion occurs when there is more variance in the data than expected by the model. Goodness-of-fit methods assess overdispersion and underdispersion.</p>
+</div>
+<div class="fragment">
 <p>If the model does not fit the data very well because of overdispersion, there are several remedial actions:</p>
 <ul>
 <li>Scientific approach
@@ -456,50 +689,119 @@ totalAbundance &lt;- sum(N[1:nSites])
 <li>Use a different distribution (we’ll start here)</li>
 </ul></li>
 </ul>
+</div>
+</div>
 </section>
 <section id="changing-the-distribution-for-n" class="slide level2">
 <h2>Changing the distribution for <span class="math inline">\(N\)</span></h2>
+<div style="font-size: 60%;">
 <p>Standard Poisson-binomial <span class="math inline">\(N\)</span>-mixture model (without covariates): <span class="math display">\[
-    N_i \sim \mathrm{Poisson}(\lambda) \\
-    y_{ij} \sim \mathrm{Binomial}(N_i, p)
+  N_i \sim \mathrm{Poisson}(\lambda) \\
+  y_{ij} \sim \mathrm{Binomial}(N_i, p)
 \]</span></p>
+<div class="fragment">
 <p>We can replace the Poisson distribution with other distributions that allow for greater variance in <span class="math inline">\(N\)</span>. Two common examples are the negative binomial: <span class="math display">\[
     N_i \sim \mathrm{NegBin}(\lambda_i, \kappa)
-\]</span> where <span class="math inline">\(\lambda_i\)</span> is the expected value of <span class="math inline">\(N\)</span> and <span class="math inline">\(\kappa\)</span> is the dispersion parameter<sup>1</sup>.</p>
-<p>Another option is the zero-inflated Poisson: ::: {.columns} ::: {.column width=‘50%’} <span class="math display">\[
+\]</span> where <span class="math inline">\(\lambda_i\)</span> is the expected value of <span class="math inline">\(N\)</span> and <span class="math inline">\(\kappa\)</span> is the dispersion parameter. <!-- ^[There are several other --> <!-- parameterizations of the negative binomial]. --></p>
+</div>
+<div class="fragment">
+<p>Another option is the zero-inflated Poisson:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span class="math display">\[
   N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
-  z_i \sim \mathrm{Bern}(\psi) &lt;br&gt;
-\]</span> ::: ::: {.column width=‘50%’} <span class="math display">\[
+  z_i \sim \mathrm{Bern}(\psi)
+\]</span></p>
+</div><div class="column" style="width:50%;">
+<p><span class="math display">\[
   N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi)
-\]</span> ::: ::: where <span class="math inline">\(\psi\)</span> is the expected proportion of sites with excess zeros.</p>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>There are several other parameterizations of the negative binomial</p></li></ol></aside></section>
+\]</span></p>
+</div></div>
+<p>where <span class="math inline">\(\psi\)</span> is the expected proportion of sites with excess zeros.</p>
+</div>
+</div>
+</section>
 <section id="simulating-data-from-zip-model" class="slide level2">
 <h2>Simulating data from ZIP model</h2>
-<p>Zero-inflated Poisson model ::: {.columns} ::: {.column width=‘50%’} <span class="math display">\[
-  N_i \sim \mathrm{Poisson}(\lambda_i z_i) &lt;br&gt;
-  z_i \sim \mathrm{Bern}(\psi) &lt;br&gt;
-\]</span> ::: ::: {.column width=‘50%’} $$ N_i (_i,) ::: :::</p>
+<div style="font-size: 80%;">
+<p>Zero-inflated Poisson model</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span class="math display">\[
+  N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
+  z_i \sim \mathrm{Bern}(\psi)
+\]</span></p>
+</div><div class="column" style="width:50%;">
+<p><span class="math display">\[
+  N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi)
+\]</span></p>
+</div></div>
 <p>R code</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>nSites <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb35-2"><a></a>nVisits <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb35-3"><a></a>psi <span class="ot">&lt;-</span> <span class="fl">0.5</span>   <span class="co"># Proportion of extra-Poisson zeros</span></span>
+<span id="cb35-4"><a></a>z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n=</span>nSites, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>psi) <span class="co"># Extra zeros</span></span>
+<span id="cb35-5"><a></a>lam <span class="ot">&lt;-</span> <span class="dv">5</span>     <span class="co"># expected count when z=1</span></span>
+<span id="cb35-6"><a></a>N <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n=</span>nSites, <span class="at">lambda=</span>lam<span class="sc">*</span>z)      <span class="co"># abundance at each site</span></span>
+<span id="cb35-7"><a></a>p <span class="ot">&lt;-</span> <span class="fl">0.5</span>     <span class="co"># detection prob</span></span>
+<span id="cb35-8"><a></a>y <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, nSites, nVisits)</span>
+<span id="cb35-9"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
+<span id="cb35-10"><a></a>    y[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n=</span>nVisits, <span class="at">size=</span>N[i], <span class="at">prob=</span>p) <span class="co"># count data</span></span>
+<span id="cb35-11"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </section>
 <section id="goodness-of-fit-in-unmarked" class="slide level2">
 <h2>Goodness-of-fit in unmarked</h2>
+<div style="font-size: 80%;">
 <p>One of the simplest and best ways of assessing goodness-of-fit is to look at the residuals.</p>
-
-<img data-src="lecture-Nmix-binomial-II_files/figure-revealjs/resid2-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"><p>No sign of obvious outliers or other problems.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">plot</span>(fm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-Nmix-binomial-II_files/figure-revealjs/resid2-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>No sign of obvious outliers or other problems.</p>
+</div>
 </section>
 <section id="goodness-of-fit-in-unmarked-1" class="slide level2">
 <h2>Goodness-of-fit in unmarked</h2>
-<p>The parametric bootstrap can be used to assess model fit: - Simulate a dataset from the fitted model - Fit the model to the new dataset - Compute a fit statistic - Repeat steps 1-3 several hundred/thousand times - Compare the distribution of the <em>expected</em> fit statistic to the fit statistic associated with the actual data.</p>
+<div style="font-size: 80%;">
+<p>The parametric bootstrap can be used to assess model fit:</p>
+<ul>
+<li>Simulate a dataset from the fitted model</li>
+<li>Fit the model to the new dataset</li>
+<li>Compute a fit statistic</li>
+<li>Repeat steps 1-3 several hundred/thousand times</li>
+<li>Compare the distribution of the <em>expected</em> fit statistic to the fit statistic associated with the actual data.</li>
+</ul>
+<div class="fragment">
 <p>The fit statistic associated with the actual data should not be in an extreme quantile of the distribution of the expected values.</p>
-<p>Assuming a type I error rate of 0.05, the <span class="math inline">\(p\)</span>-value should be <span class="math inline">\(&gt;0.05\)</span> if the model fits the data well, which is the null hypothesis.</p>
+</div>
+<div class="fragment">
+<p>Assuming a type I error rate of 0.05, the <span class="math inline">\(p\)</span>-value should be &gt;0.05 if the model fits the data well, which is the null hypothesis.</p>
+</div>
+</div>
 </section>
 <section id="goodness-of-fit-in-unmarked-2" class="slide level2">
 <h2>Goodness-of-fit in unmarked</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>fitstat <span class="ot">&lt;-</span> <span class="cf">function</span>(fm) { <span class="do">## Sum of squared-residuals</span></span>
+<span id="cb37-2"><a></a>    <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">SSE=</span><span class="fu">sum</span>(<span class="fu">residuals</span>(fm)<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>))) </span>
+<span id="cb37-3"><a></a>}</span>
+<span id="cb37-4"><a></a>pb <span class="ot">&lt;-</span> <span class="fu">parboot</span>(fm2, <span class="at">statistic=</span>fitstat, <span class="at">nsim=</span><span class="dv">200</span>, <span class="at">ncores=</span><span class="dv">3</span>); <span class="fu">plot</span>(pb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="lecture-Nmix-binomial-II_files/figure-revealjs/parboot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="goodness-of-fit-in-unmarked-3" class="slide level2">
 <h2>Goodness-of-fit in unmarked</h2>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>pb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call: parboot(object = fm2, statistic = fitstat, nsim = 200, ncores = 3)
@@ -516,12 +818,15 @@ t0 = Original statistic computed from data
 t_B = Vector of bootstrap samples</code></pre>
 </div>
 </div>
+<p><br></p>
 <p>These results suggest that model <code>fm2</code> fits the data well.</p>
 </section>
 <section id="goodness-of-fit-in-unmarked-4" class="slide level2">
 <h2>Goodness-of-fit in unmarked</h2>
+<div style="font-size: 80%;">
 <p>If the model didn’t fit the data well, we could try a different distribution for <span class="math inline">\(N_i\)</span> such as the negative binomial:</p>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>(fm.nb <span class="ot">&lt;-</span> <span class="fu">pcount</span>(<span class="sc">~</span>temp <span class="sc">~</span> elevation.s<span class="sc">+</span>utmN.s, <span class="at">data=</span>grouse.umf, <span class="at">K=</span><span class="dv">50</span>, <span class="at">mixture=</span><span class="st">"NB"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -548,9 +853,11 @@ Number of sites: 574
 ID of sites removed due to NA: 328 532 565 578 579</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="goodness-of-fit-in-unmarked-5" class="slide level2">
 <h2>Goodness-of-fit in unmarked</h2>
+<div style="font-size: 80%;">
 <p>Or the zero-inflated Poisson:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -579,15 +886,20 @@ Number of sites: 574
 ID of sites removed due to NA: 328 532 565 578 579</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="bayesian-fit-assessments" class="slide level2">
 <h2>Bayesian fit assessments</h2>
+<p><br></p>
 <p>In a Bayesian analysis, we can assess model fit using a <em>posterior predictive check</em> (PPC).</p>
+<p><br></p>
 <p>The PPC compares the posterior distribution of a fit statistic, to the posterior distribution of a fit statistic computed from simulated data.</p>
+<p><br></p>
 <p>The two distributions should look similar if the model fits well.</p>
 </section>
 <section id="bugs-model-with-fit-stats" class="slide level2">
 <h2>BUGS model with fit stats</h2>
+<p><a href="&quot;Nmix-model-grouse2.jag&quot;">Nmix-model-grouse2.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -628,6 +940,13 @@ totalAbundance &lt;- sum(N[1:nSites])
 <section id="mcmc-2" class="slide level2">
 <h2>MCMC</h2>
 <p>Fit Model 2, corresponding to <code>fm2</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>jm <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data, <span class="at">inits=</span>jags.inits,</span>
+<span id="cb44-2"><a></a>                 <span class="at">parameters.to.save=</span><span class="fu">c</span>(jags.pars, <span class="st">"SSE"</span>, <span class="st">"SSE.new"</span>), </span>
+<span id="cb44-3"><a></a>                 <span class="at">model.file=</span><span class="st">"Nmix-model-grouse2.jag"</span>,</span>
+<span id="cb44-4"><a></a>                 <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb44-5"><a></a>                 <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
 <section id="bayesian-goodness-of-fit" class="slide level2">
 <h2>Bayesian goodness-of-fit</h2>
@@ -636,6 +955,7 @@ totalAbundance &lt;- sum(N[1:nSites])
 </section>
 <section id="assignment" class="slide level2">
 <h2>Assignment</h2>
+<div style="font-size: 70%;">
 <p>Create a self-contained R script or Rmarkdown file to do the following:</p>
 <ul>
 <li>Simulate a dataset from the following <span class="math inline">\(N\)</span>-mixture model:
@@ -649,11 +969,13 @@ totalAbundance &lt;- sum(N[1:nSites])
 <li>Fit the <em>correct model</em> using ‘unmarked’ and ‘JAGS’ and compare the fit to the mis-specified models.</li>
 <li>Were the fit assessments methods able to identify the mis-specified model?</li>
 </ul>
-<p>Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00pm on Tuesday.</p>
+<center>
+Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00pm on Tuesday.
+</center>
+</div>
 
 
 </section></section>
-
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
