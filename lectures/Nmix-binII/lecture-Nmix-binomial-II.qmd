@@ -16,8 +16,8 @@ model selection <!-- % , spatial prediction, -->
 and goodness-of-fit <br>
   
   
-  WILD(FISH) 8390 <br>
-  Inference for Models of Fish and Wildlife Population Dynamics <br>
+WILD(FISH) 8390 <br>
+Inference for Models of Fish and Wildlife Population Dynamics <br>
 
 
 # Overview {visibility="hidden"}
@@ -148,33 +148,6 @@ performance.
 
 
 
-% \bgroup
-% \let\oldfootnoterule\footnoterule
-% \def\footnoterule{\only<1->\oldfootnoterule}
-% 
-%   ## Model selection with AIC
-% %  
-%   For an $N$-mixture model, the `integrated likelihood' is computed by
-%   marginalizing (summing over all possible values of) $N_i$:
-%   \[
-%      L = \prod_{i=1}^M \sum_{N^*_i=\max(y_i)}^{K\approx \infty}
-%      \left\{\prod_{j=1}^J p(y_{ij}|N^*_i,p)\right\}p(N^*_i|\lambda)
-%   \]
-% %  
-%   where $p(y_{ij}|N_i,p)$ is the binomial probability
-%   density\footnote<1->{\scriptsize For discrete random variables, 
-%     ``mass'' is often used instead of ``density''.} function 
-%   (pdf), and $p(N_i|\lambda)$ is the Poisson (or similar) pdf for
-%   local abundance. 
-% 
-% \egroup
-
-
-
-% \bgroup
-% \let\oldfootnoterule\footnoterule
-% \def\footnoterule{\only<2->\oldfootnoterule}
-
 
 ## Model selection in unmarked
   
@@ -232,6 +205,7 @@ Put models in a special type of list
 ```{r}
 #| label: grouse-fitlist
 #| warning: false
+#| error: true
 grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
                          'lam(elev+utmN)p(temp)'=fm2,
                          'lam(elev)p(ptemp)'=fm3,
@@ -248,16 +222,17 @@ Uh oh, missing values differ among models.
 
 
 ## Model selection in `unmarked'
- 
+
 Replace count data with `NA` where associated covariates are missing:
-  
+
 ```{r}
 #| label: addNA
 na.sites <- apply(is.na(site.covs.s), 1, any)
 grouse.counts <- getY(grouse.umf)
 grouse.counts[na.sites,] <- NA
+grouse.umf@y <- grouse.counts
 ```
-@
+
   
   
 Fit the models again
@@ -265,7 +240,7 @@ Fit the models again
 ```{r}
 #| label: grouse-mods2
 #| warning: false
-#| cache: true
+#| cache: false
 fm1 <- pcount(~temp ~ elevation.s+utmE.s+utmN.s, grouse.umf, K=50)
 fm2 <- pcount(~temp ~ elevation.s+utmN.s, grouse.umf, K=50)
 fm3 <- pcount(~temp ~ elevation.s, grouse.umf, K=50)
@@ -286,14 +261,13 @@ grouse.models <- fitList('lam(elev+utmE+utmN)p(temp)'=fm1,
                          'lam(elev+utmN)p(.)'=fm4,
                          'lam(elev)p(.)'=fm5,
                          'lam(.)p(.)'=fm6)
-
 ```
 
 
 
 
 
-## Model selection in `unmarked'
+## Model selection in unmarked
   
 Create AIC table
 ```{r}
@@ -306,13 +280,11 @@ We could use the model with the lowest AIC for inference and
 prediction.
   
   
-  Or, we could model-average the predictions. <br>
+Or, we could model-average the predictions.
 
 
 
 
-## Outline
-  
 ## WAIC
 
 Watanabe's widely applicable information criterion (WAIC) is a
@@ -388,7 +360,6 @@ Notice `modswitch`, which we can use to include/exclude predictors.
 
 ```{r}
 #| label: bugs
-#| echo: false
 #| comment: ''
 #| background: 'beige'
 writeLines(readLines("Nmix-model-grouse.jag"))
@@ -403,7 +374,7 @@ library(jagsUI)
 
 ## MCMC
 
-Fit Model 1, corresponding to \inr{fm1}. 
+Fit Model 1, corresponding to `fm1`.
   
 ```{r}
 #| label: bugs-mcmc
@@ -491,7 +462,7 @@ jm6 <- jags.basic(data=jags.data6, inits=jags.inits, parameters.to.save=jags.par
 
 ## WAIC
 $$
-    \mathrm{WAIC} = -2\left(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta))\right)
+  \mathrm{WAIC} = -2\left(\mathrm{lppd} - \sum_i \mathrm{Var}(\log p(y_i|\theta))\right)
 $$
 
 ```{r}
@@ -625,12 +596,12 @@ overdispersion, there are several remedial actions:
   
 ## Changing the distribution for $N$
   
-  Standard Poisson-binomial $N$-mixture model (without covariates):
+Standard Poisson-binomial $N$-mixture model (without covariates):
 $$
-    N_i \sim \mathrm{Poisson}(\lambda) \\
-    y_{ij} \sim \mathrm{Binomial}(N_i, p)
+  N_i \sim \mathrm{Poisson}(\lambda) \\
+  y_{ij} \sim \mathrm{Binomial}(N_i, p)
 $$
-  
+
 We can replace the Poisson distribution with other distributions
 that allow for greater variance in $N$.  Two common examples
 are the negative  binomial:
@@ -640,16 +611,15 @@ $$
 where $\lambda_i$ is the expected value of $N$ and $\kappa$ is the
 dispersion parameter^[There are several other
 parameterizations of the negative binomial].
-  
+
 Another option is the zero-inflated Poisson:
-::: columns
+::: {.columns}
 ::: {.column width='50%'}
 $$
   N_i \sim \mathrm{Poisson}(\lambda_i z_i) \\
   z_i \sim \mathrm{Bern}(\psi) <br>
 $$
 :::
-::: {.column width='50%'}
 ::: {.column width='50%'}
 $$
   N_i \sim \mathrm{ZIPoisson}(\lambda_i,\psi)
@@ -662,7 +632,7 @@ where $\psi$ is the expected proportion of sites with excess zeros.
 ## Simulating data from ZIP model
 
 Zero-inflated Poisson model
-::: columns
+::: {.columns}
 ::: {.column width='50%'}
 $$
   N_i \sim \mathrm{Poisson}(\lambda_i z_i) <br>
@@ -679,7 +649,6 @@ $$
 R code
 ```{r}
 #| label: zip-sim
-
 nSites <- 20
 nVisits <- 3
 psi <- 0.5   # Proportion of extra-Poisson zeros
@@ -815,7 +784,7 @@ writeLines(readLines("Nmix-model-grouse2.jag"))
 
 
 ## MCMC
-Fit Model 2, corresponding to \inr{fm2}. 
+Fit Model 2, corresponding to `fm2`.
 
 
 ```{r}
@@ -866,9 +835,9 @@ to do the following:
   * $y_{ij} \sim \mathrm{Binomial}(N_i, p=0.3)$
   * nSites=200, nOccasions=4
       
-- Fit a \alert{mis-specified model} using unmarked and `JAGS' with
-      $N_i \sim \mathrm{Pois}(\lambda)$ instead of
-      $N_i \sim \mathrm{ZIPois}(\lambda, \psi)$.
+- Fit a *mis-specified model* using unmarked and `JAGS` with
+  $N_i \sim \mathrm{Pois}(\lambda)$ instead of
+  $N_i \sim \mathrm{ZIPois}(\lambda, \psi)$.
 - Assess goodness-of-fit using the parametric bootstrap and
       the Bayesian posterior predictive check.
 - Fit the *correct model* using 'unmarked' and 'JAGS'
@@ -878,10 +847,5 @@ to do the following:
   
   
 Upload your `.R` or `.Rmd` file to ELC by 5:00pm on Tuesday. 
-
-
-
-
-
 
 

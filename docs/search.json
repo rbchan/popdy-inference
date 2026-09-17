@@ -1132,5 +1132,229 @@
     "title": "Inference for models of Fish and Wildlife Population Dynamics",
     "section": "Lectures",
     "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\n\nDynamic models"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#overview-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#overview-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Overview",
+    "text": "Overview"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection",
+    "text": "Model selection\nIn scientific contexts, we want models that describe natural processes and allow us to evaluate hypotheses.\nModels should be predictive, but they shouldn’t be crafted with the sole goal of prediction in mind.\nScientists typically don’t care about prediction if the model doesn’t help us learn about the processes that gave rise to the data.\nNonetheless, predictive performance is often the best way to compare models and avoid underfitting and overfitting.\nMake sure the models being compared were motivated by clear hypotheses."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-2",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection",
+    "text": "Model selection\nPrediction accuracy increases with model complexity up to a point, until overfitting kicks in.\nThe best way to determine if a model is too simplistic or too complex is to compare predictions to new observations.\nHowever, we rarely have the resources to collect additional data for the sake of evaluating predictive performance.\nA cheaper (albeit less desirable) alternative is to use cross-validation:\n\nSplit data into K partitions\nFit model to the data in K-1 partitions\nPredict the holdout partition\n\nInformation criteria like AIC and WAIC yield similar predictive rankings as cross-validation, but with less computation."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#overfitting",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#overfitting",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Overfitting",
+    "text": "Overfitting\n7 regression models with 5 covariates.\nOnly x2 is in the data generating model.\n\nn &lt;- 50\ndat &lt;- data.frame(x1=rnorm(n), x2=rnorm(n), x3=rnorm(n),\n                  x4=rnorm(n), x5=rnorm(n))\ndat$y &lt;- rnorm(n, mean = -1 + 2*dat$x2, sd = 2) # Data generating model\nfm1 &lt;- glm(y~1, gaussian, dat)\nfm2 &lt;- glm(y~x1, gaussian, dat)\nfm3 &lt;- glm(y~x2, gaussian, dat)                 # Data generating model\nfm4 &lt;- glm(y~x1+x2, gaussian, dat)\nfm5 &lt;- glm(y~x1+x2+x3, gaussian, dat)\nfm6 &lt;- glm(y~x1+x2+x3+x4, gaussian, dat)\nfm7 &lt;- glm(y~x1+x2+x3+x4+x5, gaussian, dat)\n\nlibrary(boot)  ## For 'cv.glm'\nprediction_error &lt;- c(fm1=cv.glm(dat, fm1)$delta[1],\n  fm2=cv.glm(dat, fm2)$delta[1], fm3=cv.glm(dat, fm3)$delta[1],\n  fm4=cv.glm(dat, fm4)$delta[1], fm5=cv.glm(dat, fm5)$delta[1],\n  fm6=cv.glm(dat, fm6)$delta[1], fm7=cv.glm(dat, fm7)$delta[1])"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#overfitting-output",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#overfitting-output",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Overfitting",
+    "text": "Overfitting"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-with-aic",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-with-aic",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection with AIC",
+    "text": "Model selection with AIC\nMost information criteria (IC) take on a form like this: \\[\n  \\mathrm{IC} = \\mathrm{fit} + \\mathrm{penalty}\n\\]\nwhere fit describes the in-sample predictive accuracy and penalty describes model complexity.\nIn the case of Akaike’s “An Information Criterion”, which approximates leave-one-out cross validation, fit is described by the likelihood and the penalty is determined by the number of parameters: \\[\n  \\mathrm{AIC} = -2 \\log(L) + 2P\n\\] where \\(L\\) is the likelihood evaluated at the MLE and \\(P\\) is the number of parameters.\nThe lower the AIC, the better the predictive performance."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection in unmarked",
+    "text": "Model selection in unmarked\nImport the grouse data\nStandardize the covariates"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection in `unmarked’",
+    "text": "Model selection in `unmarked’\nFit some models\nPut models in a special type of list\n\n\nError in `validityMethod()`:\n! Data are not the same among models due to missing covariate values. Consider removing NAs before analysis.\n\n\nUh oh, missing values differ among models."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked-2",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection in `unmarked’",
+    "text": "Model selection in `unmarked’\nReplace count data with NA where associated covariates are missing:\nFit the models again\nPut models in a fitList"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked-3",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#model-selection-in-unmarked-3",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model selection in unmarked",
+    "text": "Model selection in unmarked\nCreate AIC table\n\n\n                           nPars    AIC delta   AICwt cumltvWt\nlam(elev+utmN)p(temp)          5 202.89  0.00 5.1e-01     0.51\nlam(elev+utmE+utmN)p(temp)     6 203.76  0.87 3.3e-01     0.84\nlam(elev)p(ptemp)              4 206.09  3.20 1.0e-01     0.95\nlam(elev+utmN)p(.)             4 208.25  5.36 3.5e-02     0.98\nlam(elev)p(.)                  3 209.72  6.83 1.7e-02     1.00\nlam(.)p(.)                     2 222.52 19.63 2.8e-05     1.00\n\n\nWe could use the model with the lowest AIC for inference and prediction.\nOr, we could model-average the predictions."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "WAIC",
+    "text": "WAIC\nWatanabe’s widely applicable information criterion (WAIC) is a generalization of AIC suitable for Bayesian models.\nAs before, we have\n\\[\n  \\mathrm{WAIC} = \\mathrm{fit} + \\mathrm{penalty}\n\\]\nThe measure of fit in this case is the log-pointwise-predictive-density:\n\\[\n   \\mathrm{lppd} = \\sum_{i=1}^M \\log\\left(\\frac{1}{S} \\sum_s p(y_i|\\theta_s)\\right)\n\\]\nThe penalty is proportional to the posterior variance: \\[\n  \\mathrm{penalty} = \\sum_{i=1}^M \\mathrm{Var}(\\log p(y_i|\\theta_s)))\n\\]"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#data-inits-and-parameters",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#data-inits-and-parameters",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data, inits, and parameters",
+    "text": "Data, inits, and parameters\nPut data in a named list\nInitial values\nParameters to monitor"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#the-bugs-model",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#the-bugs-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "The BUGS model",
+    "text": "The BUGS model\nNotice modswitch, which we can use to include/exclude predictors.\n\n\nmodel {\n\n#beta0 ~ dnorm(0, 0.5)  \nlambda.intercept ~ dunif(0, 5)\nbeta0 &lt;- log(lambda.intercept)\nbeta1 ~ dnorm(0, 0.5)\nbeta2 ~ dnorm(0, 0.5)\nbeta3 ~ dnorm(0, 0.5)\n\nalpha0 ~ dnorm(0, 0.5)  \nalpha1 ~ dnorm(0, 0.5)\n\nfor(i in 1:nSites) {\n  elevation[i] ~ dnorm(0, 1) # Missing values drawn from prior\n  utmN[i] ~ dnorm(0, 1)      # Ditto\n  utmE[i] ~ dnorm(0, 1)      # Ditto\n  log(lambda[i]) &lt;- beta0 + beta1*elevation[i]*modswitch[1] +\n    beta2*utmE[i]*modswitch[2] + beta3*utmN[i]*modswitch[3] \n  N[i] ~ dpois(lambda[i])    # Latent local abundance\n  for(j in 1:nOccasions) {\n    temp[i,j] ~ dnorm(0,1)\n    logit(p[i,j]) &lt;- alpha0 + alpha1*temp[i,j]*modswitch[4]\n    y[i,j] ~ dbin(p[i,j], N[i])   # Data\n    ld.y[i,j] &lt;- logdensity.bin(y[i,j], p[i,j], N[i])\n  }\n  ld.y.dot[i] &lt;- sum(ld.y[i,])\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#mcmc",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#mcmc",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC",
+    "text": "MCMC\nFit Model 1, corresponding to fm1.\nFit Model 2"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#mcmc-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#mcmc-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC",
+    "text": "MCMC\nModel 3\nModel 4\nModel 5\nModel 6"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "WAIC",
+    "text": "WAIC\n\\[\n    \\mathrm{WAIC} = -2\\left(\\mathrm{lppd} - \\sum_i \\mathrm{Var}(\\log p(y_i|\\theta))\\right)\n\\]"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic-2",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "WAIC",
+    "text": "WAIC\nWAIC for the six models\n\n\n\n\n[1] 124.5963\n\n\n\n\n[1] 124.8125\n\n\n\n\n[1] 118.1807\n\n\n\n\n\n[1] 150.4383\n\n\n\n\n[1] 151.1954\n\n\n\n\n[1] 160.7646\n\n\n\nIn practice, you would discard burn-in and ensure convergence before computing WAIC."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic-3",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#waic-3",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "WAIC",
+    "text": "WAIC\nCreate a WAIC table:"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit",
+    "text": "Goodness-of-fit\nDistributional assumptions determine the expected values and the expected variance of the random variables, including the data.\nOverdispersion occurs when there is more variance in the data than expected by the model.\nGoodness-of-fit methods assess overdispersion and underdispersion.\nIf the model does not fit the data very well because of overdispersion, there are several remedial actions:\n\nScientific approach\n\nFigure out why there is unexplained variation\nPerhaps there were unmeasured covariates or you need a better process model\n\nStatistical approach\n\nSoak up variation with random effects\nUse a different distribution (we’ll start here)"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#changing-the-distribution-for-n",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#changing-the-distribution-for-n",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Changing the distribution for \\(N\\)",
+    "text": "Changing the distribution for \\(N\\)\nStandard Poisson-binomial \\(N\\)-mixture model (without covariates): \\[\n    N_i \\sim \\mathrm{Poisson}(\\lambda) \\\\\n    y_{ij} \\sim \\mathrm{Binomial}(N_i, p)\n\\]\nWe can replace the Poisson distribution with other distributions that allow for greater variance in \\(N\\). Two common examples are the negative binomial: \\[\n    N_i \\sim \\mathrm{NegBin}(\\lambda_i, \\kappa)\n\\] where \\(\\lambda_i\\) is the expected value of \\(N\\) and \\(\\kappa\\) is the dispersion parameter1.\nAnother option is the zero-inflated Poisson: ::: {.columns} ::: {.column width=‘50%’} \\[\n  N_i \\sim \\mathrm{Poisson}(\\lambda_i z_i) \\\\\n  z_i \\sim \\mathrm{Bern}(\\psi) &lt;br&gt;\n\\] ::: ::: {.column width=‘50%’} \\[\n  N_i \\sim \\mathrm{ZIPoisson}(\\lambda_i,\\psi)\n\\] ::: ::: where \\(\\psi\\) is the expected proportion of sites with excess zeros.\nThere are several other parameterizations of the negative binomial"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#simulating-data-from-zip-model",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#simulating-data-from-zip-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulating data from ZIP model",
+    "text": "Simulating data from ZIP model\nZero-inflated Poisson model ::: {.columns} ::: {.column width=‘50%’} \\[\n  N_i \\sim \\mathrm{Poisson}(\\lambda_i z_i) &lt;br&gt;\n  z_i \\sim \\mathrm{Bern}(\\psi) &lt;br&gt;\n\\] ::: ::: {.column width=‘50%’} $$ N_i (_i,) ::: :::\nR code"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit in unmarked",
+    "text": "Goodness-of-fit in unmarked\nOne of the simplest and best ways of assessing goodness-of-fit is to look at the residuals.\n\nNo sign of obvious outliers or other problems."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-1",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit in unmarked",
+    "text": "Goodness-of-fit in unmarked\nThe parametric bootstrap can be used to assess model fit: - Simulate a dataset from the fitted model - Fit the model to the new dataset - Compute a fit statistic - Repeat steps 1-3 several hundred/thousand times - Compare the distribution of the expected fit statistic to the fit statistic associated with the actual data.\nThe fit statistic associated with the actual data should not be in an extreme quantile of the distribution of the expected values.\nAssuming a type I error rate of 0.05, the \\(p\\)-value should be \\(&gt;0.05\\) if the model fits the data well, which is the null hypothesis."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-2",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit in unmarked",
+    "text": "Goodness-of-fit in unmarked"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-3",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-3",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit in unmarked",
+    "text": "Goodness-of-fit in unmarked\n\n\n\nCall: parboot(object = fm2, statistic = fitstat, nsim = 200, ncores = 3)\n\nParametric Bootstrap Statistics:\n      t0 mean(t0 - t_B) StdDev(t0 - t_B) Pr(t_B &gt; t0)\nSSE 23.2            1.9             5.79        0.353\n\nt_B quantiles:\n      0% 2.5% 25% 50% 75% 97.5% 100%\n[1,] 9.8   12  17  20  26    33   40\n\nt0 = Original statistic computed from data\nt_B = Vector of bootstrap samples\n\n\nThese results suggest that model fm2 fits the data well."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-4",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-4",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit in unmarked",
+    "text": "Goodness-of-fit in unmarked\nIf the model didn’t fit the data well, we could try a different distribution for \\(N_i\\) such as the negative binomial:\n\n\n\nCall:\npcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, \n    K = 50, mixture = \"NB\")\n\nAbundance (log-scale):\n            Estimate    SE     z P(&gt;|z|)\n(Intercept)   -2.735 1.138 -2.40  0.0162\nelevation.s    0.659 0.283  2.33  0.0199\nutmN.s         0.876 0.445  1.97  0.0487\n\nDetection (logit-scale):\n            Estimate    SE     z P(&gt;|z|)\n(Intercept)   -2.415 1.234 -1.96  0.0504\ntemp          -0.738 0.366 -2.01  0.0441\n\nDispersion (log-scale):\n Estimate   SE     z P(&gt;|z|)\n    -1.23 1.01 -1.22   0.222\n\nAIC: 202.2481 \nNumber of sites: 574\nID of sites removed due to NA: 328 532 565 578 579"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-5",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#goodness-of-fit-in-unmarked-5",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Goodness-of-fit in unmarked",
+    "text": "Goodness-of-fit in unmarked\nOr the zero-inflated Poisson:\n\n\n\nCall:\npcount(formula = ~temp ~ elevation.s + utmN.s, data = grouse.umf, \n    K = 50, mixture = \"ZIP\")\n\nAbundance (log-scale):\n            Estimate    SE     z P(&gt;|z|)\n(Intercept)   -1.549 1.307 -1.19  0.2359\nelevation.s    0.633 0.275  2.30  0.0213\nutmN.s         0.875 0.433  2.02  0.0434\n\nDetection (logit-scale):\n            Estimate    SE     z P(&gt;|z|)\n(Intercept)   -2.363 1.172 -2.02  0.0438\ntemp          -0.735 0.365 -2.01  0.0441\n\nZero-inflation (logit-scale):\n Estimate   SE     z P(&gt;|z|)\n    0.875 0.89 0.983   0.326\n\nAIC: 202.494 \nNumber of sites: 574\nID of sites removed due to NA: 328 532 565 578 579"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#bayesian-fit-assessments",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#bayesian-fit-assessments",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian fit assessments",
+    "text": "Bayesian fit assessments\nIn a Bayesian analysis, we can assess model fit using a posterior predictive check (PPC).\nThe PPC compares the posterior distribution of a fit statistic, to the posterior distribution of a fit statistic computed from simulated data.\nThe two distributions should look similar if the model fits well."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#bugs-model-with-fit-stats",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#bugs-model-with-fit-stats",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "BUGS model with fit stats",
+    "text": "BUGS model with fit stats\n\n\nmodel {\n\nlambda.intercept ~ dunif(0, 5)\nbeta0 &lt;- log(lambda.intercept)\nbeta1 ~ dnorm(0, 0.5)\nbeta3 ~ dnorm(0, 0.5)\n\nalpha0 ~ dnorm(0, 0.5)  \nalpha1 ~ dnorm(0, 0.5)\n\nfor(i in 1:nSites) {\n  elevation[i] ~ dnorm(0, 1)\n  utmN[i] ~ dnorm(0, 1)\n  utmE[i] ~ dnorm(0, 1)\n  log(lambda[i]) &lt;- beta0 + beta1*elevation[i] + beta3*utmN[i]\n  N[i] ~ dpois(lambda[i])         # Latent local abundance\n  N.new[i] ~ dpois(lambda[i])     # Predicted local abundance\n  for(j in 1:nOccasions) {\n    temp[i,j] ~ dnorm(0,1)\n    logit(p[i,j]) &lt;- alpha0 + alpha1*temp[i,j]\n    y[i,j] ~ dbin(p[i,j], N[i])              # Data\n    resid[i,j] &lt;- y[i,j]-N[i]*p[i,j]         # Residual\n    y.new[i,j] ~ dbin(p[i,j], N.new[i])          # Predicted data\n    resid.new[i,j] &lt;- y.new[i,j]-N.new[i]*p[i,j] # Predicted residual\n  }\n}\nSSE &lt;- sum(resid^2)             # Fit stat\nSSE.new &lt;- sum(resid.new^2)     # Predicted fit stat\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#mcmc-2",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#mcmc-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC",
+    "text": "MCMC\nFit Model 2, corresponding to fm2."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#bayesian-goodness-of-fit",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#bayesian-goodness-of-fit",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian goodness-of-fit",
+    "text": "Bayesian goodness-of-fit\n\nThe distributions of SSE and SSE.new are similar, indicating that the model fits the data well."
+  },
+  {
+    "objectID": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#assignment",
+    "href": "lectures/Nmix-binII/lecture-Nmix-binomial-II.html#assignment",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Assignment",
+    "text": "Assignment\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nSimulate a dataset from the following \\(N\\)-mixture model:\n\n\\(N_i \\sim \\mathrm{ZIPoisson}(\\lambda=5, \\psi=0.5)\\)\n\\(y_{ij} \\sim \\mathrm{Binomial}(N_i, p=0.3)\\)\nnSites=200, nOccasions=4\n\nFit a mis-specified model using unmarked and JAGS with \\(N_i \\sim \\mathrm{Pois}(\\lambda)\\) instead of \\(N_i \\sim \\mathrm{ZIPois}(\\lambda, \\psi)\\).\nAssess goodness-of-fit using the parametric bootstrap and the Bayesian posterior predictive check.\nFit the correct model using ‘unmarked’ and ‘JAGS’ and compare the fit to the mis-specified models.\nWere the fit assessments methods able to identify the mis-specified model?\n\nUpload your .R or .Rmd file to ELC by 5:00pm on Tuesday."
   }
 ]
