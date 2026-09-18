@@ -210,7 +210,7 @@
 \end{alltt}
 \begin{verbatim}
 ##      survived depredated starved
-## [1,]        8          8       4
+## [1,]       14          3       3
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -579,7 +579,7 @@ Site 10 & 0 & 1 & 0\\
 ##  Min.   :-2.328970  
 ##  1st Qu.:-0.954293  
 ##  Median : 0.001277  
-##  Mean   :-0.120419  
+##  Mean   :-0.120420  
 ##  3rd Qu.: 0.569628  
 ##  Max.   : 2.610328
 \end{verbatim}
@@ -1475,8 +1475,8 @@ totalAbundance <- sum(N[1:nSites])
 \begin{knitrout}\scriptsize
 \definecolor{shadecolor}{rgb}{0.878, 0.918, 0.933}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hldef{observer} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{sample}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"A"}\hldef{,}\hlsng{"B"}\hldef{),} \hlkwc{size}\hldef{=nSites}\hlopt{*}\hlnum{2}\hldef{,} \hlkwc{replace}\hldef{=}\hlnum{TRUE}\hldef{),}
-                   \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=}\hlnum{2}\hldef{)}
+\hldef{observer} \hlkwb{<-} \hlkwd{matrix}\hldef{(}\hlkwd{c}\hldef{(}\hlsng{"A"}\hldef{,}\hlsng{"B"}\hldef{,}\hlsng{"B"}\hldef{,}\hlsng{"A"}\hldef{),}
+                   \hlkwc{nrow}\hldef{=nSites,} \hlkwc{ncol}\hldef{=}\hlnum{2}\hldef{,} \hlkwc{byrow}\hldef{=}\hlnum{TRUE}\hldef{)}
 \hldef{p1} \hlkwb{<-} \hlnum{0.4}  \hlcom{# Detection prob for observer A}
 \hldef{p2} \hlkwb{<-} \hlnum{0.3}  \hlcom{# Detection prob for observer B}
 \hldef{piAfirst} \hlkwb{<-} \hlkwd{c}\hldef{(p1, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{p2, (}\hlnum{1}\hlopt{-}\hldef{p1)}\hlopt{*}\hldef{(}\hlnum{1}\hlopt{-}\hldef{p2))}
@@ -1608,11 +1608,11 @@ totalAbundance <- sum(N[1:nSites])
 \end{alltt}
 \begin{verbatim}
 ##                   2.5%     25%     50%     75%   97.5%
-## deviance       359.920 401.638 424.376 446.839 486.597
-## lambda           3.060   3.536   3.824   4.216   5.212
-## p1               0.373   0.483   0.537   0.589   0.677
-## p2               0.232   0.310   0.356   0.399   0.485
-## totalAbundance 318.000 354.000 381.000 416.000 514.025
+## deviance       372.892 413.764 436.127 458.540 498.130
+## lambda           3.097   3.597   3.955   4.415   5.870
+## p1               0.281   0.399   0.460   0.516   0.615
+## p2               0.230   0.323   0.374   0.424   0.511
+## totalAbundance 319.000 360.000 393.000 438.000 582.000
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

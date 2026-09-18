@@ -1,0 +1,747 @@
+---
+## title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    pagetitle: 'Multinomial $N$-mixture models'
+    slide-number: true
+    echo: true
+lang: en
+---
+
+  
+## {content-align="center" style="font-size: 140%;"}
+
+<br>
+
+<center>
+Lecture 7 -- Multinomial $N$-mixture models: <br> simulation, fitting, and prediction
+
+<br>
+
+::: {style='font-size: 80%;'}
+WILD(FISH) 8390 <br>
+Inference for Models of Fish and Wildlife Population Dynamics
+:::
+
+</center>
+
+
+
+
+# Overview {visibility="hidden"}
+
+
+## Overview
+
+::: {style='font-size: 80%;'}
+The objectives are the same as with binomial $N$-mixture models.
+
+We want to:
+  
+- Estimate abundance
+- Model spatial variation in abundance/density
+  
+The difference is that, instead of repeated count data at each site,
+we have data from sampling methods such as:
+  
+- Double observer sampling
+- Removal sampling
+- Mark-recapture
+- Distance sampling
+- And other methods that yield multinomial counts\dots
+:::
+  
+
+## Multinomial $N$-mixture model
+  
+::: {style='font-size: 80%;'}
+State model (with Poisson assumption)
+$$
+  \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {\color{blue} x_{i1}} + \beta_2 {\color{blue} x_{i2}} + \cdots \\
+  N_i \sim \mathrm{Poisson}(\lambda_i)
+$$
+  
+  
+Observation model
+$$
+  \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 {\color{blue} x_{i1}} + \alpha_2 {\color{Purple} w_{ij}} + \cdots \\
+  \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i, \pi(p_{i1}, \dots, p_{iJ}))
+$$
+  
+Definitions
+:::
+
+::: {style='font-size: 70%;'}
+$\lambda_i$ -- Expected value of abundance at site $i$ <br>
+$N_i$ -- Realized value of abundance at site $i$ <br>
+$p_{ij}$ -- Probability of detecting *an individual* at site $i$ on occasion $j$ <br>
+$\pi(p)$ -- Function mapping $J$ detection probs to
+$K$ multinomial cell probs <br>
+$y_{ik}$ -- Multinomial count data (*The final count is not observed!*) <br>
+$\color{blue} x_1$ and $\color{blue} x_2$ -- site covariates
+$\color{Purple} w$ -- observation covariate
+:::
+
+
+
+## The multinomial distribution
+  
+::: {style='font-size: 80%;'}
+This is the first multivariate distribution we've covered.
+$$
+  \{y_{1}, \dots, y_{K}\} \sim \mathrm{Multinomial}(N, \{\pi_i, \dots, \pi_K\})
+$$
+  
+The multinomial describes how $N$ objects are distributed among $K$ classes (also called bins, categories, etc\dots).
+  
+Imagine $N=20$ animals are studied for 1 year and there are 3 possible "fates" with associated probabilities: $\Pr(\mathrm{survived})=0.5$, $\Pr(\mathrm{depredated})=0.3$, $\Pr(\mathrm{starved})=0.2$.
+  
+Here is one possible outcome:
+  
+```{r}
+#| label: multi-sim-concept
+#| size: 'footnotesize'
+N <- 20
+pi <- c(survived=0.5, depredated=0.3, starved=0.2)
+t(rmultinom(n=1, size=N, prob=pi))
+```
+  
+Note: the probabilities must sum to 1 and the counts must sum to $N$. <br>
+:::
+
+
+
+## Sampling methods
+
+::: {style='font-size: 80%;'}
+Benefits of the multinomial $N$-mixture model
+  
+- Can be applied to data from many sampling designs, simply by changing how the $\pi$ probabilities are computed.
+- Precision is typically better than binomial $N$-mixture models because there's more information in the data.
+
+Removal sampling
+$$
+  {\pi(p)} = \{p, (1-p)p, (1-p)^2p, \dots, (1-p)^{K-1}p, (1-p)^K\}
+$$
+
+Double observer (*independent observers*)
+$$
+  {\pi(p)} = \{p_1(1-p_2), (1-p_1)p_2, p_1p_2, (1-p_1)(1-p_2)\}
+$$
+
+Double observer (*dependent observers*)
+$$
+  {\pi(p)} = \{p_1, (1-p_1)p_2, (1-p_1)(1-p_2)\}
+$$
+
+:::
+
+
+
+# Removal sampling
+
+## Removal sampling
+  
+::: {style='font-size: 80%;'}
+Removal sampling is often used in electrofishing studies.
+  
+A stream section is surveyed $J$ times, fish are removed on each "pass", and the rate of removal tells us about capture probability.
+  
+Definitions
+  
+- $y_{ij}$ -- number of individuals removed at site $i$ on pass $j$
+- $p$ -- probability of catching an individual on a single pass
+  
+
+  Description                          Multinomial cell probability
+  ----------------------------------- ------------------------------
+  Pr(first captured on first pass)             $\pi_1 = p$
+  Pr(first captured on second pass)          $\pi_2 = (1-p)p$
+  Pr(first captured on third pass)        $\pi_3 = (1-p)(1-p)p$
+  $\cdots$                                       $\cdots$
+  Pr(first captured on pass $J$)          $\pi_J = (1-p)^{J-1}p$
+  Pr(not captured)                        $\pi_{J+1} = (1-p)^J$
+:::
+
+```{r}
+#| include: false
+set.seed(34889243)
+```
+
+
+
+## Simulating removal data, no covariates
+  
+::: {style='font-size: 80%;'}
+Abundance
+```{r, echo=-1}
+#| label: sim-rem-nocov1
+set.seed(430)
+nSites <- 100
+lambda1 <- 4.6  ## Expected value of N
+N1 <- rpois(n=nSites, lambda=lambda1)
+```
+  
+Capture probability and multinomial counts%, including individuals
+```{r}
+#| label: sim-nocov2
+nPasses <- 3
+K <- nPasses+1  # multinomial cells
+p1 <- 0.4
+pi1 <- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)
+y1.all <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+    y1.all[i,] <- rmultinom(n=1, size=N1[i], prob=pi1)    }
+```
+  
+Discard final column of individuals not detected
+```{r}
+#| label: N1y1
+y1 <- y1.all[,-K]
+head(y1, n=3)
+```
+:::
+
+
+## Simulated removal data
+
+```{r}
+#| label: y1-kable
+#| align: 'center'
+#| echo: false
+colnames(y1) <- c("Pass 1", "Pass 2", "Pass 3")
+rownames(y1) <- paste("Site", 1:nrow(y1))
+knitr::kable(y1[1:10,], format="latex", booktabs=TRUE, table.envir="table")
+```
+
+
+## Removal model, covariates
+  
+::: {style='font-size: 80%;'}
+Covariates
+  
+```{r}
+#| label: sim-cov1
+#| size: 'scriptsize'
+streamDepth <- rnorm(nSites)
+```
+Coefficients, $\lambda$, and $p$
+  
+```{r, echo=1:4}
+#| label: nsim-cov2
+beta0 <- 1; beta1 <- 0.5
+lambda2 <- exp(beta0 + beta1*streamDepth)
+alpha0 <- 0; alpha1 <- -1
+p2 <- plogis(alpha0 + alpha1*streamDepth)
+```
+
+Simulate abundance and removal data
+  
+```{r}
+#| label: sim-cov3
+N2 <- rpois(nSites, lambda=lambda2)         ## local abundance 
+y2.all <- pi2 <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+    pi2[i,] <- c(p2[i], (1-p2[i])*p2[i], (1-p2[i])^2*p2[i], (1-p2[i])^3)
+    y2.all[i,] <- rmultinom(n=1, size=N2[i], prob=pi2[i,])
+}
+y2 <- y2.all[,-K] ## Discard final column... individuals not detected
+```
+:::
+
+
+
+## Simulated data
+
+::: {.columns}
+::: {.column width='50%'}
+      
+Observations
+
+```{r}
+#| label: sim-nocov-dat
+y2[1:19,]
+```
+:::
+::: {.column width='50%'}
+
+<center>
+Summary stats
+</center>
+    
+Captures on each pass
+  
+```{r}
+#| label: sim-nocov-ss2
+#| size: 'scriptsize'
+colSums(y2)
+```
+
+Naive abundance
+  
+```{r}
+#| label: sim-nocov-ss3
+sum(y2)
+```
+```{r}
+#| label: un
+#| include: false
+library(unmarked)
+```
+:::
+:::
+
+
+## Prepare data in 'unmarked'
+  
+```{r}
+#| label: un-umf
+umf <- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type="removal")
+```
+
+```{r}
+#| label: wfac
+summary(umf)
+```
+
+## Fit the model
+ 
+::: {style='font-size: 80%;'}
+`multinomPois` has similar arguments as `occu` and `pcount`. 
+
+```{r}
+#| label: un-fit
+fm <- multinomPois(~streamDepth ~streamDepth, umf)    
+fm
+```
+
+
+Compare to actual parameter values:
+
+```{r}
+#| label: un-compare
+c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
+```
+
+:::
+
+
+
+##  Empirical Bayes -- Site-level abundance
+
+```{r}
+#| label: ranef
+#| out-width: '80%'
+#| fig-align: 'center'
+#| fig-width: 9
+re <- ranef(fm, K=15)
+plot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)
+```
+
+
+
+## Total abundance (in surveyed region)
+
+```{r}
+#| label: Ntotal
+#| out-width: '60%'
+#| fig-align: 'center'
+N.total.post <- predict(re, func=sum, nsim=1000)
+hist(N.total.post, freq=FALSE, main="", xlab="N total", ylab="Probability")
+```
+
+
+## Prediction in 'unmarked'
+  
+Create `data.frame` with prediction covariates. 
+
+```{r}
+#| label: preddat
+pred.data <- data.frame(streamDepth=seq(-3, 3, length=20))
+```
+
+Get predictions of $\lambda$ for each row of prediction data.
+  
+```{r}
+#| label: predpsi
+lambda.pred <- predict(fm, newdata=pred.data,
+                       type='state', append=TRUE)
+```
+
+
+View $\lambda$ predictions
+  
+```{r}
+#| label: psi-head
+print(head(lambda.pred), digits=2)
+```
+
+
+
+## Prediction in 'unmarked'
+
+```{r, echo=2:6}
+#| label: pred-lam2
+#| fig-width: 7
+#| fig-height: 5
+#| out-width: '80%'
+#| fig-align: 'center'
+par(mai=c(0.9,0.9,0.1,0.1))
+plot(Predicted ~ streamDepth, lambda.pred, ylab="Expected value of abundance",
+     ylim=c(0,20), xlab="Stream depth", type="l", lwd=2)
+lines(lower ~ streamDepth, lambda.pred, col="grey")
+lines(upper ~ streamDepth, lambda.pred, col="grey")
+points(rowSums(y2)~streamDepth)
+lines(lowess(rowSums(y2)~streamDepth), col="blue", lwd=2)  ## Lowess line for fun (it's way off)
+legend(-3, 20, c("Multinomial N-mix model", "Lowess smooth"), lwd=2, col=c("black", "blue"))
+```
+
+
+## Bayesian multinomial *N*-mixture models
+
+::: {style='font-size: 80%;'}
+There are several equivalent formulations of the multinomial that can be used to fit the model.
+  
+- Conditional-on-$N$, missing $y_{iK}$ (Not possible in JAGS)
+- Conditional-on-$N$, conditional on $n_i=\sum_{k=1}^{K-1} y_{i,k}$
+- Conditional-on-$N$, sequential binomial
+- Marginalized $N$
+  
+These are just probability tricks that can affect MCMC performance. See AHM I for details. Here, we will focus on the second option.
+:::
+
+
+##  Conditional-on-*N* and *n_i*
+
+::: {style='font-size: 80%;'}
+We can break the problem down into two steps by conditioning on $n_i$, the number of individuals captured at site $i$:
+  
+$$
+  n_i \sim \mathrm{Bin}(N_i, 1-\pi_K) \\
+  \{y_{i,1}, \dots, y_{i,K-1}\} \sim \mathrm{Multinomial}(n_i, \{\pi_{i,1}, \dots, \pi_{i,K-1}\}/(1-\pi_K))
+$$
+  
+Note that the modified cell probabilities still sum to 1.
+:::
+
+
+
+
+
+##  Conditional-on-*N* and *n_i*
+
+```{r}
+#| label: bugs-removal2
+#| echo: false
+#| comment: ''
+#| background: 'beige'
+writeLines(readLines("removal-mod2.jag"))
+```
+
+
+## Data, inits, and parameters
+
+Put data in a named list
+  
+```{r}
+#| label: bugs-data2
+jags.data.rem2 <- list(y=y2, n=rowSums(y2),
+                       streamDepth=streamDepth,
+                       nSites=nSites, nPasses=nPasses)
+```
+
+Initial values
+  
+```{r}
+#| label: bugs-inits
+jags.inits.rem <- function() {
+    list(lambda.intercept=runif(1), alpha0=rnorm(1),
+         N=rowSums(y2)+rpois(nrow(y2), 2))
+}
+```
+
+
+Parameters to monitor
+  
+```{r}
+#| label: bugs-pars
+jags.pars.rem <- c("beta0", "beta1",
+                   "alpha0", "alpha1", "totalAbundance")
+```
+
+
+## MCMC
+  
+```{r}
+#| label: bugs-mcmc-rem2
+#| message: false
+#| cache: false
+#| results: 'hide'
+library(jagsUI); library(coda)
+jags.post.rem2 <- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,
+                             parameters.to.save=jags.pars.rem, model.file="removal-mod2.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
+```
+
+```{r}
+#| label: bugs-sum-rem2
+summary(jags.post.rem2[,jags.pars.rem])
+```
+
+
+## Traceplots and density plots
+
+```{r}
+#| label: bugs-plot1-rem2
+#| out-width: "0.7<br>textwidth"
+#| fig-align: 'center'
+plot(jags.post.rem2[,jags.pars.rem[1:3]])
+```
+
+## Traceplots and density plots
+
+```{r}
+#| label: bugs-plot2-rem2
+#| out-width: "0.7<br>textwidth"
+#| fig-align: 'center'
+plot(jags.post.rem2[,jags.pars.rem[4:5]])
+```
+
+
+## Convergence diagnostics
+
+Gelman-Rubin diagnostic ($\hat{R}$)
+```{r}
+#| label: rhat
+gelman.diag(jags.post.rem2)
+```
+
+Convergence is suggested by $\hat{R}$ close to 1. 
+
+
+
+## Effective posterior sample size
+
+It's a good idea to have $>$500 effective posterior samples. 
+
+```{r}
+#| label: ess
+data.frame(ESS = effectiveSize(jags.post.rem2))
+```
+
+
+
+## Closing thoughts on removal models
+
+::: {style='font-size: 80%;'}
+In addition to site covariates, you could also include observation
+covariates, but it's hard to think of realistic covariates that
+would be specific to each pass. <br>
+  
+  
+Removal models get used in many scenarios other than electrofishing:
+  
+- Point count surveys
+  * Observers keep track of individuals during the survey
+  * Analyze number of new individuals detected during each time interval
+    
+- Mark-recapture surveys
+  * If behavior responses (trap shyness or trap happiness) are extreme, recaptures can be discarded and removal models can be applied.
+:::
+      
+
+
+# Double observer sampling
+
+## Double observer sampling (independent)
+  
+::: {style='font-size: 80%;'}
+Two observers sample the same location at the same time, working independently.
+  
+After each survey, they compare notes and figure out which individual were detected by observer A only, B only, or by both.
+  
+Definitions
+  
+- $y_{i1}$ -- number of individuals detected only by observer A
+- $y_{i2}$ -- number of individuals detected only by observer B
+- $y_{i3}$ -- number of individuals detected by observers A and B
+- $p_1$ -- probability that observer A detects an individual 
+- $p_2$ -- probability that observer B detects an individual 
+  
+  Description                             Multinomial cell probability
+  -------------------------------------- ------------------------------
+  Pr(detected by observer A but not B)        $\pi_1 = p_1(1-p_2)$
+  Pr(detected by observer B but not A)        $\pi_2 = (1-p_1)p_2$
+  Pr(detected by observers A and B)             $\pi_3 = p_1p_2$
+  Pr(not detected)                          $\pi_4 = (1-p_1)(1-p_2)$
+
+:::
+
+
+## Double observer sampling (dependent)
+  
+::: {style='font-size: 80%;'}
+Two observers sample at the same time, but observer B only records what observer A missed.
+  
+Often used in aerial waterfowl surveys. <br>
+  
+Observers should switch roles to ensure parameter identifiability. <br>
+  
+Definitions
+
+- $y_{i1}$ -- number of individuals detected by observer A
+- $y_{i2}$ -- number of individuals missed by A but detected by B
+- $p_1$ -- probability that observer A detects an individual 
+- $p_2$ -- probability that observer B detects an individual 
+  
+
+  Description                             Multinomial cell probability
+  -------------------------------------- ------------------------------
+  Pr(detected by observer A)                     $\pi_1 = p_1$
+  Pr(detected by observer B but not A)        $\pi_2 = (1-p_1)p_2$
+  Pr(not detected)                          $\pi_3 = (1-p_1)(1-p_2)$
+
+:::
+
+
+## Simulating dependent double observer data
+  
+::: {style='font-size: 80%;'}
+Abundance
+
+```{r, echo=-1}
+#| label: sim-doub-N
+set.seed(839)
+nSites <- 100
+lambda <- 4.6  # Expected value of N
+N <- rpois(n=nSites, lambda=lambda)
+```
+  
+Detection probability and multinomial counts
+
+```{r}
+#| label: sim-doub-counts
+observer <- matrix(c("A","B","B","A"),
+                   nrow=nSites, ncol=2, byrow=TRUE)
+p1 <- 0.4  # Detection prob for observer A
+p2 <- 0.3  # Detection prob for observer B
+piAfirst <- c(p1, (1-p1)*p2, (1-p1)*(1-p2))
+piBfirst <- c(p2, (1-p2)*p1, (1-p1)*(1-p2))
+K <- length(piAfirst)
+y.all <- matrix(NA, nrow=nSites, ncol=K)
+for(i in 1:nSites) {
+  pi <- if(observer[i,1]=="A") piAfirst else piBfirst
+  y.all[i,] <- rmultinom(n=1, size=N[i], prob=pi)    }
+```
+  
+Discard final column of individuals not detected
+```{r}
+#| label: y-doub
+y <- y.all[,-K]
+```
+
+:::
+
+
+##  Dependent double observer model in JAGS
+
+```{r}
+#| label: bugs-double
+#| echo: false
+#| comment: ''
+#| background: 'beige'
+writeLines(readLines("double-obs-dep.jag"))
+```
+
+
+## Data, inits, and parameters
+
+Put data in a named list
+  
+```{r}
+#| label: bugs-data-double
+jags.data.double <- list(y=y, n=rowSums(y), nSites=nSites,
+    observer=ifelse(observer=="A", 1, 2))
+```
+
+Initial values
+  
+```{r}
+#| label: bugs-inits-double
+jags.inits.doub <- function() {
+    list(lambda=runif(1), p1=runif(1), p2=runif(1),
+         N=rowSums(y)+rpois(nrow(y), 2))
+}
+```
+
+Parameters to monitor
+  
+```{r}
+#| label: bugs-pars-doub
+jags.pars.doub <- c("lambda", "p1", "p2", "totalAbundance")
+```
+
+
+
+
+## MCMC
+  
+```{r}
+#| label: bugs-mcmc-doub
+#| message: false
+#| cache: false
+#| results: 'hide'
+jags.post.doub <- jags.basic(data=jags.data.double, inits=jags.inits.doub,
+                             parameters.to.save=jags.pars.doub,
+                             model.file="double-obs-dep.jag",
+                             n.chains=3, n.adapt=100, n.burnin=0,
+                             n.iter=2000, parallel=TRUE)
+```
+
+```{r}
+#| label: bugs-sum-doub
+#| size: 'scriptsize'
+print(summary(jags.post.doub)$quantiles, digits=3)
+```
+
+
+
+## Additional remarks on double observer models
+
+::: {style='font-size: 80%;'}
+In practice, there are often many observers on a project, even though only two survey at a time.
+  
+We can deal with this by including ``observer ID'' as an observation covariate. Everything else stays the same.
+  
+It can be hard to pull of the independent double observer method because observers often influence each other while working.
+  
+All of these methods require some sort of *short-term* individual identification of animals, even though they aren't being marked.
+  
+If short-term individual ID isn't possible, you could fall back on binomial $N$-mixture models.
+:::
+
+
+
+# Assignment
+
+## Assignment
+  
+::: {style='font-size: 75%;'}
+Create a self-contained R script or Rmarkdown file to do the following:
+  
+- Simulate *independent* double observer data with the following properties:
+  * nSites=200
+  * $\lambda=3$
+  * $p_1=0.3$ and $p_2=0.5$
+  * Fit the model using 'unmarked.' You will need to create an observation covariate indicating observer A and B. When you create the `unmarkedFrameMPois`, use `type="double"`.
+  * Fit the same model in JAGS
+  * For both unmarked and JAGS, use the point estimates of $p_1$ and $p_2$ to compute the $\pi$ probabilities.
+  
+
+<center>
+Upload your `.R`, `.Rmd`, or `.qmd` file to ELC by 5:00pm on Tuesday.
+</center>
+
+:::
+

@@ -588,6 +588,244 @@
     "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nSimulate a dataset from the following \\(N\\)-mixture model:\n\n\\(N_i \\sim \\mathrm{ZIPoisson}(\\lambda=5, \\psi=0.5)\\)\n\\(y_{ij} \\sim \\mathrm{Binomial}(N_i, p=0.3)\\)\nnSites=200, nOccasions=4\n\nFit a mis-specified model using unmarked and JAGS with \\(N_i \\sim \\mathrm{Pois}(\\lambda)\\) instead of \\(N_i \\sim \\mathrm{ZIPois}(\\lambda, \\psi)\\).\nAssess goodness-of-fit using the parametric bootstrap and the Bayesian posterior predictive check.\nFit the correct model using ‘unmarked’ and ‘JAGS’ and compare the fit to the mis-specified models.\nWere the fit assessments methods able to identify the mis-specified model?\n\n\nUpload your .R or .Rmd file to ELC by 5:00pm on Tuesday."
   },
   {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#section",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#section",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "",
+    "text": "Lecture 7 – Multinomial \\(N\\)-mixture models:  simulation, fitting, and prediction\n\n\nWILD(FISH) 8390  Inference for Models of Fish and Wildlife Population Dynamics"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#overview-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#overview-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Overview",
+    "text": "Overview\n\nThe objectives are the same as with binomial \\(N\\)-mixture models.\nWe want to:\n\nEstimate abundance\nModel spatial variation in abundance/density\n\nThe difference is that, instead of repeated count data at each site, we have data from sampling methods such as:\n\nDouble observer sampling\nRemoval sampling\nMark-recapture\nDistance sampling\nAnd other methods that yield multinomial counts"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#multinomial-n-mixture-model",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#multinomial-n-mixture-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Multinomial \\(N\\)-mixture model",
+    "text": "Multinomial \\(N\\)-mixture model\n\nState model (with Poisson assumption) \\[\n  \\mathrm{log}(\\lambda_i) = \\beta_0 + \\beta_1 {\\color{blue} x_{i1}} + \\beta_2 {\\color{blue} x_{i2}} + \\cdots \\\\\n  N_i \\sim \\mathrm{Poisson}(\\lambda_i)\n\\]\nObservation model \\[\n  \\mathrm{logit}(p_{ij}) = \\alpha_0 + \\alpha_1 {\\color{blue} x_{i1}} + \\alpha_2 {\\color{Purple} w_{ij}} + \\cdots \\\\\n  \\{y_{i1}, \\dots, y_{iK}\\}  \\sim \\mathrm{Multinomial}(N_i, \\pi(p_{i1}, \\dots, p_{iJ}))\n\\]\nDefinitions\n\n\n\\(\\lambda_i\\) – Expected value of abundance at site \\(i\\)  \\(N_i\\) – Realized value of abundance at site \\(i\\)  \\(p_{ij}\\) – Probability of detecting an individual at site \\(i\\) on occasion \\(j\\)  \\(\\pi(p)\\) – Function mapping \\(J\\) detection probs to \\(K\\) multinomial cell probs  \\(y_{ik}\\) – Multinomial count data (The final count is not observed!)  \\(\\color{blue} x_1\\) and \\(\\color{blue} x_2\\) – site covariates \\(\\color{Purple} w\\) – observation covariate"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#the-multinomial-distribution",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#the-multinomial-distribution",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "The multinomial distribution",
+    "text": "The multinomial distribution\n\nThis is the first multivariate distribution we’ve covered. \\[\n  \\{y_{1}, \\dots, y_{K}\\} \\sim \\mathrm{Multinomial}(N, \\{\\pi_i, \\dots, \\pi_K\\})\n\\]\nThe multinomial describes how \\(N\\) objects are distributed among \\(K\\) classes (also called bins, categories, etc).\nImagine \\(N=20\\) animals are studied for 1 year and there are 3 possible “fates” with associated probabilities: \\(\\Pr(\\mathrm{survived})=0.5\\), \\(\\Pr(\\mathrm{depredated})=0.3\\), \\(\\Pr(\\mathrm{starved})=0.2\\).\nHere is one possible outcome:\n\nN &lt;- 20\npi &lt;- c(survived=0.5, depredated=0.3, starved=0.2)\nt(rmultinom(n=1, size=N, prob=pi))\n\n     survived depredated starved\n[1,]       11          4       5\n\n\nNote: the probabilities must sum to 1 and the counts must sum to \\(N\\)."
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#sampling-methods",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#sampling-methods",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Sampling methods",
+    "text": "Sampling methods\n\nBenefits of the multinomial \\(N\\)-mixture model\n\nCan be applied to data from many sampling designs, simply by changing how the \\(\\pi\\) probabilities are computed.\nPrecision is typically better than binomial \\(N\\)-mixture models because there’s more information in the data.\n\nRemoval sampling \\[\n  {\\pi(p)} = \\{p, (1-p)p, (1-p)^2p, \\dots, (1-p)^{K-1}p, (1-p)^K\\}\n\\]\nDouble observer (independent observers) \\[\n  {\\pi(p)} = \\{p_1(1-p_2), (1-p_1)p_2, p_1p_2, (1-p_1)(1-p_2)\\}\n\\]\nDouble observer (dependent observers) \\[\n  {\\pi(p)} = \\{p_1, (1-p_1)p_2, (1-p_1)(1-p_2)\\}\n\\]"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#removal-sampling-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#removal-sampling-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Removal sampling",
+    "text": "Removal sampling\n\nRemoval sampling is often used in electrofishing studies.\nA stream section is surveyed \\(J\\) times, fish are removed on each “pass”, and the rate of removal tells us about capture probability.\nDefinitions\n\n\\(y_{ij}\\) – number of individuals removed at site \\(i\\) on pass \\(j\\)\n\\(p\\) – probability of catching an individual on a single pass\nDescription Multinomial cell probability ———————————– —————————— Pr(first captured on first pass) \\(\\pi_1 = p\\) Pr(first captured on second pass) \\(\\pi_2 = (1-p)p\\) Pr(first captured on third pass) \\(\\pi_3 = (1-p)(1-p)p\\) \\(\\cdots\\) \\(\\cdots\\) Pr(first captured on pass \\(J\\)) \\(\\pi_J = (1-p)^{J-1}p\\) Pr(not captured) \\(\\pi_{J+1} = (1-p)^J\\)"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulating-removal-data-no-covariates",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulating-removal-data-no-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulating removal data, no covariates",
+    "text": "Simulating removal data, no covariates\n\nAbundance\n\nnSites &lt;- 100\nlambda1 &lt;- 4.6  ## Expected value of N\nN1 &lt;- rpois(n=nSites, lambda=lambda1)\n\nCapture probability and multinomial counts%, including individuals\n\nnPasses &lt;- 3\nK &lt;- nPasses+1  # multinomial cells\np1 &lt;- 0.4\npi1 &lt;- c(p1, (1-p1)*p1, (1-p1)*(1-p1)*p1, (1-p1)^3)\ny1.all &lt;- matrix(NA, nrow=nSites, ncol=K)\nfor(i in 1:nSites) {\n    y1.all[i,] &lt;- rmultinom(n=1, size=N1[i], prob=pi1)    }\n\nDiscard final column of individuals not detected\n\ny1 &lt;- y1.all[,-K]\nhead(y1, n=3)\n\n     [,1] [,2] [,3]\n[1,]    0    1    1\n[2,]    1    2    0\n[3,]    2    0    1"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulated-removal-data",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulated-removal-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulated removal data",
+    "text": "Simulated removal data"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#removal-model-covariates",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#removal-model-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Removal model, covariates",
+    "text": "Removal model, covariates\n\nCovariates\n\nstreamDepth &lt;- rnorm(nSites)\n\nCoefficients, \\(\\lambda\\), and \\(p\\)\n\nbeta0 &lt;- 1; beta1 &lt;- 0.5\nlambda2 &lt;- exp(beta0 + beta1*streamDepth)\nalpha0 &lt;- 0; alpha1 &lt;- -1\np2 &lt;- plogis(alpha0 + alpha1*streamDepth)\n\nSimulate abundance and removal data\n\nN2 &lt;- rpois(nSites, lambda=lambda2)         ## local abundance \ny2.all &lt;- pi2 &lt;- matrix(NA, nrow=nSites, ncol=K)\nfor(i in 1:nSites) {\n    pi2[i,] &lt;- c(p2[i], (1-p2[i])*p2[i], (1-p2[i])^2*p2[i], (1-p2[i])^3)\n    y2.all[i,] &lt;- rmultinom(n=1, size=N2[i], prob=pi2[i,])\n}\ny2 &lt;- y2.all[,-K] ## Discard final column... individuals not detected"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulated-data",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulated-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulated data",
+    "text": "Simulated data\n\n\nObservations\n\ny2[1:19,]\n\n      [,1] [,2] [,3]\n [1,]    1    0    0\n [2,]    0    0    0\n [3,]    1    0    0\n [4,]    1    1    0\n [5,]    0    0    0\n [6,]    0    0    0\n [7,]    0    1    0\n [8,]    1    0    0\n [9,]    1    2    0\n[10,]    2    0    0\n[11,]    3    0    0\n[12,]    2    0    0\n[13,]    1    2    0\n[14,]    0    0    0\n[15,]    3    2    1\n[16,]    0    0    0\n[17,]    0    1    0\n[18,]    4    1    1\n[19,]    1    0    0\n\n\n\n\nSummary stats\n\nCaptures on each pass\n\ncolSums(y2)\n\n[1] 119  62  36\n\n\nNaive abundance\n\nsum(y2)\n\n[1] 217"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#prepare-data-in-unmarked",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#prepare-data-in-unmarked",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prepare data in ‘unmarked’",
+    "text": "Prepare data in ‘unmarked’\n\numf &lt;- unmarkedFrameMPois(y=y2, siteCovs=data.frame(streamDepth), type=\"removal\")\n\n\nsummary(umf)\n\nunmarkedFrame Object\n\n100 sites\nMaximum number of observations per site: 3 \nMean number of observations per site: 3 \nSites with at least one detection: 89 \n\nTabulation of y observations:\n  0   1   2   3   4 \n153  98  32  13   4 \n\nSite-level covariates:\n  streamDepth       \n Min.   :-2.328970  \n 1st Qu.:-0.954293  \n Median : 0.001277  \n Mean   :-0.120420  \n 3rd Qu.: 0.569628  \n Max.   : 2.610328"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#fit-the-model",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#fit-the-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Fit the model",
+    "text": "Fit the model\n\nmultinomPois has similar arguments as occu and pcount.\n\nfm &lt;- multinomPois(~streamDepth ~streamDepth, umf)    \nfm\n\n\nCall:\nmultinomPois(formula = ~streamDepth ~ streamDepth, data = umf)\n\nAbundance (log-scale):\n            Estimate    SE     z  P(&gt;|z|)\n(Intercept)     1.04 0.101 10.31 6.29e-25\nstreamDepth     0.56 0.115  4.89 1.02e-06\n\nDetection (logit-scale):\n            Estimate    SE      z  P(&gt;|z|)\n(Intercept)  -0.0426 0.214 -0.199 8.42e-01\nstreamDepth  -1.0084 0.171 -5.902 3.59e-09\n\nAIC: 603.3294 \nNumber of sites: 100\n\n\nCompare to actual parameter values:\n\nc(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)\n\nbeta0 beta1 \n  1.0   0.5 \n\n\nalpha0 alpha1 \n     0     -1"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#empirical-bayes-site-level-abundance",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#empirical-bayes-site-level-abundance",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Empirical Bayes – Site-level abundance",
+    "text": "Empirical Bayes – Site-level abundance\n\nre &lt;- ranef(fm, K=15)\nplot(re, layout=c(4,3), subset=site%in%1:12, xlim=c(-1, 11), lwd=5)"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#total-abundance-in-surveyed-region",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#total-abundance-in-surveyed-region",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Total abundance (in surveyed region)",
+    "text": "Total abundance (in surveyed region)\n\nN.total.post &lt;- predict(re, func=sum, nsim=1000)\nhist(N.total.post, freq=FALSE, main=\"\", xlab=\"N total\", ylab=\"Probability\")"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#prediction-in-unmarked",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#prediction-in-unmarked",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prediction in ‘unmarked’",
+    "text": "Prediction in ‘unmarked’\nCreate data.frame with prediction covariates.\n\npred.data &lt;- data.frame(streamDepth=seq(-3, 3, length=20))\n\nGet predictions of \\(\\lambda\\) for each row of prediction data.\n\nlambda.pred &lt;- predict(fm, newdata=pred.data,\n                       type='state', append=TRUE)\n\nView \\(\\lambda\\) predictions\n\nprint(head(lambda.pred), digits=2)\n\n  Predicted   SE lower upper streamDepth\n1      0.53 0.16  0.29  0.97        -3.0\n2      0.63 0.17  0.37  1.08        -2.7\n3      0.75 0.18  0.47  1.20        -2.4\n4      0.90 0.19  0.60  1.35        -2.1\n5      1.07 0.19  0.76  1.51        -1.7\n6      1.28 0.18  0.97  1.70        -1.4"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#prediction-in-unmarked-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#prediction-in-unmarked-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Prediction in ‘unmarked’",
+    "text": "Prediction in ‘unmarked’\n\nplot(Predicted ~ streamDepth, lambda.pred, ylab=\"Expected value of abundance\",\n     ylim=c(0,20), xlab=\"Stream depth\", type=\"l\", lwd=2)\nlines(lower ~ streamDepth, lambda.pred, col=\"grey\")\nlines(upper ~ streamDepth, lambda.pred, col=\"grey\")\npoints(rowSums(y2)~streamDepth)\nlines(lowess(rowSums(y2)~streamDepth), col=\"blue\", lwd=2)  ## Lowess line for fun (it's way off)"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#bayesian-multinomial-n-mixture-models",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#bayesian-multinomial-n-mixture-models",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian multinomial N-mixture models",
+    "text": "Bayesian multinomial N-mixture models\n\nThere are several equivalent formulations of the multinomial that can be used to fit the model.\n\nConditional-on-\\(N\\), missing \\(y_{iK}\\) (Not possible in JAGS)\nConditional-on-\\(N\\), conditional on \\(n_i=\\sum_{k=1}^{K-1} y_{i,k}\\)\nConditional-on-\\(N\\), sequential binomial\nMarginalized \\(N\\)\n\nThese are just probability tricks that can affect MCMC performance. See AHM I for details. Here, we will focus on the second option."
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#conditional-on-n-and-n_i",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#conditional-on-n-and-n_i",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Conditional-on-N and n_i",
+    "text": "Conditional-on-N and n_i\n\nWe can break the problem down into two steps by conditioning on \\(n_i\\), the number of individuals captured at site \\(i\\):\n\\[\n  n_i \\sim \\mathrm{Bin}(N_i, 1-\\pi_K) \\\\\n  \\{y_{i,1}, \\dots, y_{i,K-1}\\} \\sim \\mathrm{Multinomial}(n_i, \\{\\pi_{i,1}, \\dots, \\pi_{i,K-1}\\}/(1-\\pi_K))\n\\]\nNote that the modified cell probabilities still sum to 1."
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#conditional-on-n-and-n_i-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#conditional-on-n-and-n_i-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Conditional-on-N and n_i",
+    "text": "Conditional-on-N and n_i\n\n\nmodel {\n\nlambda.intercept ~ dunif(0, 5)\nbeta0 &lt;- log(lambda.intercept)\nbeta1 ~ dnorm(0, 0.5)\n\nalpha0 ~ dnorm(0, 0.5)  \nalpha1 ~ dnorm(0, 0.5)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*streamDepth[i]\n  N[i] ~ dpois(lambda[i])         # Latent local abundance\n  logit(p[i]) &lt;- alpha0 + alpha1*streamDepth[i]\n  pi[i,1] &lt;- p[i]               ## Pr(first captured in first pass)\n  pi[i,2] &lt;- (1-p[i])*p[i]      ## Pr(first captured in second pass)\n  pi[i,3] &lt;- (1-p[i])^2*p[i]    ## Pr(first captured in third pass)\n  pi[i,4] &lt;- (1-p[i])^3         ## Pr(not captured)\n  n[i] ~ dbin(1-pi[i,4], N[i])  ## nCaptured at site i\n  y[i,1:3] ~ dmulti(pi[i,1:3]/(1-pi[i,4]), n[i])\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#data-inits-and-parameters",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#data-inits-and-parameters",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data, inits, and parameters",
+    "text": "Data, inits, and parameters\nPut data in a named list\n\njags.data.rem2 &lt;- list(y=y2, n=rowSums(y2),\n                       streamDepth=streamDepth,\n                       nSites=nSites, nPasses=nPasses)\n\nInitial values\n\njags.inits.rem &lt;- function() {\n    list(lambda.intercept=runif(1), alpha0=rnorm(1),\n         N=rowSums(y2)+rpois(nrow(y2), 2))\n}\n\nParameters to monitor\n\njags.pars.rem &lt;- c(\"beta0\", \"beta1\",\n                   \"alpha0\", \"alpha1\", \"totalAbundance\")"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#mcmc",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#mcmc",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC",
+    "text": "MCMC\n\nlibrary(jagsUI); library(coda)\njags.post.rem2 &lt;- jags.basic(data=jags.data.rem2, inits=jags.inits.rem,\n                             parameters.to.save=jags.pars.rem, model.file=\"removal-mod2.jag\",\n                             n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)\n\n\nsummary(jags.post.rem2[,jags.pars.rem])\n\n\nIterations = 101:2100\nThinning interval = 1 \nNumber of chains = 3 \nSample size per chain = 2000 \n\n1. Empirical mean and standard deviation for each variable,\n   plus standard error of the mean:\n\n                    Mean      SD Naive SE Time-series SE\nbeta0            1.06295  0.1031 0.001331       0.006146\nbeta1            0.57117  0.1128 0.001457       0.007544\nalpha0          -0.08098  0.2111 0.002725       0.011836\nalpha1          -1.01193  0.1730 0.002233       0.009075\ntotalAbundance 337.23450 49.5119 0.639195       3.976620\n\n2. Quantiles for each variable:\n\n                   2.5%      25%       50%       75%    97.5%\nbeta0            0.8707   0.9926   1.05948   1.12895   1.2749\nbeta1            0.3696   0.4914   0.56745   0.64612   0.7967\nalpha0          -0.5028  -0.2189  -0.07612   0.06651   0.3146\nalpha1          -1.3532  -1.1263  -1.01448  -0.89668  -0.6680\ntotalAbundance 268.0000 302.0000 329.00000 364.00000 458.0000"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#traceplots-and-density-plots",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#traceplots-and-density-plots",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Traceplots and density plots",
+    "text": "Traceplots and density plots\n\nplot(jags.post.rem2[,jags.pars.rem[1:3]])"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#traceplots-and-density-plots-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#traceplots-and-density-plots-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Traceplots and density plots",
+    "text": "Traceplots and density plots\n\nplot(jags.post.rem2[,jags.pars.rem[4:5]])"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#convergence-diagnostics",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#convergence-diagnostics",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Convergence diagnostics",
+    "text": "Convergence diagnostics\nGelman-Rubin diagnostic (\\(\\hat{R}\\))\n\ngelman.diag(jags.post.rem2)\n\nPotential scale reduction factors:\n\n               Point est. Upper C.I.\nalpha0               1.03       1.10\nalpha1               1.02       1.07\nbeta0                1.02       1.06\nbeta1                1.05       1.15\ndeviance             1.03       1.09\ntotalAbundance       1.06       1.18\n\nMultivariate psrf\n\n1.04\n\n\nConvergence is suggested by \\(\\hat{R}\\) close to 1."
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#effective-posterior-sample-size",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#effective-posterior-sample-size",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Effective posterior sample size",
+    "text": "Effective posterior sample size\nIt’s a good idea to have $&gt;$500 effective posterior samples.\n\ndata.frame(ESS = effectiveSize(jags.post.rem2))\n\n                    ESS\nalpha0         338.1930\nalpha1         414.2832\nbeta0          306.1222\nbeta1          237.8064\ndeviance       342.6139\ntotalAbundance 165.2488"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#closing-thoughts-on-removal-models",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#closing-thoughts-on-removal-models",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Closing thoughts on removal models",
+    "text": "Closing thoughts on removal models\n\nIn addition to site covariates, you could also include observation covariates, but it’s hard to think of realistic covariates that would be specific to each pass. \nRemoval models get used in many scenarios other than electrofishing:\n\nPoint count surveys\n\nObservers keep track of individuals during the survey\nAnalyze number of new individuals detected during each time interval\n\nMark-recapture surveys\n\nIf behavior responses (trap shyness or trap happiness) are extreme, recaptures can be discarded and removal models can be applied."
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#double-observer-sampling-independent",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#double-observer-sampling-independent",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Double observer sampling (independent)",
+    "text": "Double observer sampling (independent)\n\nTwo observers sample the same location at the same time, working independently.\nAfter each survey, they compare notes and figure out which individual were detected by observer A only, B only, or by both.\nDefinitions\n\n\\(y_{i1}\\) – number of individuals detected only by observer A\n\\(y_{i2}\\) – number of individuals detected only by observer B\n\\(y_{i3}\\) – number of individuals detected by observers A and B\n\\(p_1\\) – probability that observer A detects an individual\n\\(p_2\\) – probability that observer B detects an individual\n\n\n\nDescription\nMultinomial cell probability\n\n\n\n\nPr(detected by observer A but not B)\n\\(\\pi_1 = p_1(1-p_2)\\)\n\n\nPr(detected by observer B but not A)\n\\(\\pi_2 = (1-p_1)p_2\\)\n\n\nPr(detected by observers A and B)\n\\(\\pi_3 = p_1p_2\\)\n\n\nPr(not detected)\n\\(\\pi_4 = (1-p_1)(1-p_2)\\)"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#double-observer-sampling-dependent",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#double-observer-sampling-dependent",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Double observer sampling (dependent)",
+    "text": "Double observer sampling (dependent)\n\nTwo observers sample at the same time, but observer B only records what observer A missed.\nOften used in aerial waterfowl surveys. \nObservers should switch roles to ensure parameter identifiability. \nDefinitions\n\n\\(y_{i1}\\) – number of individuals detected by observer A\n\\(y_{i2}\\) – number of individuals missed by A but detected by B\n\\(p_1\\) – probability that observer A detects an individual\n\\(p_2\\) – probability that observer B detects an individual\n\n\n\nDescription\nMultinomial cell probability\n\n\n\n\nPr(detected by observer A)\n\\(\\pi_1 = p_1\\)\n\n\nPr(detected by observer B but not A)\n\\(\\pi_2 = (1-p_1)p_2\\)\n\n\nPr(not detected)\n\\(\\pi_3 = (1-p_1)(1-p_2)\\)"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulating-dependent-double-observer-data",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#simulating-dependent-double-observer-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulating dependent double observer data",
+    "text": "Simulating dependent double observer data\n\nAbundance\n\nnSites &lt;- 100\nlambda &lt;- 4.6  # Expected value of N\nN &lt;- rpois(n=nSites, lambda=lambda)\n\nDetection probability and multinomial counts\n\nobserver &lt;- matrix(c(\"A\",\"B\",\"B\",\"A\"),\n                   nrow=nSites, ncol=2, byrow=TRUE)\np1 &lt;- 0.4  # Detection prob for observer A\np2 &lt;- 0.3  # Detection prob for observer B\npiAfirst &lt;- c(p1, (1-p1)*p2, (1-p1)*(1-p2))\npiBfirst &lt;- c(p2, (1-p2)*p1, (1-p1)*(1-p2))\nK &lt;- length(piAfirst)\ny.all &lt;- matrix(NA, nrow=nSites, ncol=K)\nfor(i in 1:nSites) {\n  pi &lt;- if(observer[i,1]==\"A\") piAfirst else piBfirst\n  y.all[i,] &lt;- rmultinom(n=1, size=N[i], prob=pi)    }\n\nDiscard final column of individuals not detected\n\ny &lt;- y.all[,-K]"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#dependent-double-observer-model-in-jags",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#dependent-double-observer-model-in-jags",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Dependent double observer model in JAGS",
+    "text": "Dependent double observer model in JAGS\n\n\nmodel {\n\nlambda ~ dunif(0, 20) # Prior on E(N)\np1 ~ dunif(0, 1)      # Prior on observer A detection prob\np2 ~ dunif(0, 1)      # Prior on observer B detection prob\n\n# Multinomial cell probs\npiAfirst &lt;- c(p1, (1-p1)*p2, (1-p1)*(1-p2)) # When obs A goes first\npiBfirst &lt;- c(p2, (1-p2)*p1, (1-p1)*(1-p2)) # When obs B goes first\n\nfor(i in 1:nSites) {\n  N[i] ~ dpois(lambda)         # Latent local abundance\n  pi[i,1:3] &lt;- ifelse(observer[i,1]==1, piAfirst, piBfirst)\n  n[i] ~ dbin(1-pi[i,3], N[i])  ## nDetected at site i\n  y[i,1:2] ~ dmulti(pi[i,1:2]/(1-pi[i,3]), n[i])\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#data-inits-and-parameters-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#data-inits-and-parameters-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data, inits, and parameters",
+    "text": "Data, inits, and parameters\nPut data in a named list\n\njags.data.double &lt;- list(y=y, n=rowSums(y), nSites=nSites,\n    observer=ifelse(observer==\"A\", 1, 2))\n\nInitial values\n\njags.inits.doub &lt;- function() {\n    list(lambda=runif(1), p1=runif(1), p2=runif(1),\n         N=rowSums(y)+rpois(nrow(y), 2))\n}\n\nParameters to monitor\n\njags.pars.doub &lt;- c(\"lambda\", \"p1\", \"p2\", \"totalAbundance\")"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#mcmc-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#mcmc-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC",
+    "text": "MCMC\n\njags.post.doub &lt;- jags.basic(data=jags.data.double, inits=jags.inits.doub,\n                             parameters.to.save=jags.pars.doub,\n                             model.file=\"double-obs-dep.jag\",\n                             n.chains=3, n.adapt=100, n.burnin=0,\n                             n.iter=2000, parallel=TRUE)\n\n\nprint(summary(jags.post.doub)$quantiles, digits=3)\n\n                  2.5%     25%     50%     75%   97.5%\ndeviance       372.892 413.764 436.127 458.540 498.130\nlambda           3.097   3.597   3.955   4.415   5.870\np1               0.281   0.399   0.460   0.516   0.615\np2               0.230   0.323   0.374   0.424   0.511\ntotalAbundance 319.000 360.000 393.000 438.000 582.000"
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#additional-remarks-on-double-observer-models",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#additional-remarks-on-double-observer-models",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Additional remarks on double observer models",
+    "text": "Additional remarks on double observer models\n\nIn practice, there are often many observers on a project, even though only two survey at a time.\nWe can deal with this by including ``observer ID’’ as an observation covariate. Everything else stays the same.\nIt can be hard to pull of the independent double observer method because observers often influence each other while working.\nAll of these methods require some sort of short-term individual identification of animals, even though they aren’t being marked.\nIf short-term individual ID isn’t possible, you could fall back on binomial \\(N\\)-mixture models."
+  },
+  {
+    "objectID": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#assignment-1",
+    "href": "lectures/Nmix-multiI/lecture-Nmix-multinomial-I.html#assignment-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Assignment",
+    "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nSimulate independent double observer data with the following properties:\n\nnSites=200\n\\(\\lambda=3\\)\n\\(p_1=0.3\\) and \\(p_2=0.5\\)\nFit the model using ‘unmarked.’ You will need to create an observation covariate indicating observer A and B. When you create the unmarkedFrameMPois, use type=\"double\".\nFit the same model in JAGS\nFor both unmarked and JAGS, use the point estimates of \\(p_1\\) and \\(p_2\\) to compute the \\(\\pi\\) probabilities.\n\n\n\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday."
+  },
+  {
     "objectID": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#section",
     "href": "lectures/Nmix-binI/lecture-Nmix-binomial-I.html#section",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
