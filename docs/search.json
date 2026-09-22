@@ -53,7 +53,7 @@
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#distance-sampling-overview",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Distance sampling overview",
-    "text": "Distance sampling overview\nDistance sampling is one of the oldest wildlife sampling methods.\n\nIt’s based on the simple idea that detection probability should decline with distance between an animal and a transect.\n\nIf we can estimate the function describing how \\(p\\) declines with distance \\(x\\), we can estimate abundance… if certain assumptions hold, as always."
+    "text": "Distance sampling overview\nDistance sampling is one of the oldest wildlife sampling methods.\n\nIt’s based on the simple idea that detection probability should decline with distance between an animal and a transect.\n\n\nIf we can estimate the function describing how \\(p\\) declines with distance \\(x\\), we can estimate abundance…\n\n\nif certain assumptions hold, as always."
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#distance-sampling-overview-1",
@@ -109,63 +109,63 @@
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#computing-average-p-for-line-transects",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Computing average p for line transects",
-    "text": "Computing average p for line transects\nHalf-normal detection function and line-transect sampling.\n\nB &lt;- 100                                         # Transect width\ng &lt;- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)\npdf &lt;- function(x) 1/B                           # p(x), constant\n\nDo the integration\n\ngp &lt;- function(x) g(x)*pdf(x)\n(pbar &lt;- integrate(gp, lower=0, upper=B)$value)\n\n[1] 0.3133087\n\n\n31.3% chance of detecting an individual within 100 m."
+    "text": "Computing average p for line transects\nHalf-normal detection function and line-transect sampling.\n\nB &lt;- 100                                         # Transect width\ng &lt;- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)\npdf &lt;- function(x) 1/B                           # p(x), constant\n\n\n\nDo the integration\n\ngp &lt;- function(x) g(x)*pdf(x)\n(pbar &lt;- integrate(gp, lower=0, upper=B)$value)\n\n[1] 0.3133087\n\n\n31.3% chance of detecting an individual within 100 m."
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#computing-average-p-for-point-transects",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#computing-average-p-for-point-transects",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Computing average p for point transects",
-    "text": "Computing average p for point transects\nHalf-normal detection function and point-transect sampling.\n\nB &lt;- 100                                         # Transect width\ng &lt;- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)\npdf &lt;- function(x) 2*x/B^2                       # p(x)\n\nDo the integration\n\ngp &lt;- function(x) g(x)*pdf(x)\n(pbar &lt;- integrate(gp, lower=0, upper=B)$value)\n\n[1] 0.1249581\n\n\n12.5% chance of detecting an individual within 100 m."
+    "text": "Computing average p for point transects\nHalf-normal detection function and point-transect sampling.\n\nB &lt;- 100                                         # Transect width\ng &lt;- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)\npdf &lt;- function(x) 2*x/B^2                       # p(x)\n\n\n\nDo the integration\n\ngp &lt;- function(x) g(x)*pdf(x)\n(pbar &lt;- integrate(gp, lower=0, upper=B)$value)\n\n[1] 0.1249581\n\n\n12.5% chance of detecting an individual within 100 m."
   },
   {
-    "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#shiny-app",
-    "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#shiny-app",
+    "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#section-1",
+    "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#section-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Shiny App",
-    "text": "Shiny App\nDistance Sampling Shiny App"
+    "section": "",
+    "text": "Distance Sampling Shiny App"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conventional-vs-hierarchical-distance-sampling",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conventional-vs-hierarchical-distance-sampling",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Conventional vs hierarchical distance sampling",
-    "text": "Conventional vs hierarchical distance sampling\n\nConventional distance sampling\n\nFocus is on estimation of detection function parameters and density\nNo model for spatial variation in density\nData are individual-level distances\nWe’ll deal with CDS in more depth as a prelude to spatial-capture recapture\n\nHierarchical distance sampling\n\nFocus is on estimation of detection function parameters and spatial variation in abundance/density\nData are counts of individuals in each distance bin\nMultinomial \\(N\\)-mixture model with a unique function for computing the multinomial cell probabilities"
+    "text": "Conventional vs hierarchical distance sampling\n\nConventional distance sampling\n\nFocus is on estimation of detection function parameters and density\nNo model for spatial variation in density\nData are individual-level distances\nWe’ll deal with CDS in more depth as a prelude to spatial-capture recapture\n\n\nHierarchical distance sampling\n\nFocus is on estimation of detection function parameters and spatial variation in abundance/density\nData are counts of individuals in each distance bin\nMultinomial \\(N\\)-mixture model with a unique function for computing the multinomial cell probabilities"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#hierarchical-distance-sampling",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#hierarchical-distance-sampling",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Hierarchical distance sampling",
-    "text": "Hierarchical distance sampling\n\nState model (with Poisson assumption) \\[\n    \\mathrm{log}(\\lambda_i) = \\beta_0 + \\beta_1 {w_{i1}} +\n    \\beta_2 {w_{i2}} + \\cdots \\\\\n    N_i \\sim \\mathrm{Poisson}(\\lambda_i)\n\\]\nObservation model \\[\n    \\mathrm{log}(\\sigma_{i}) = \\alpha_0 + \\alpha_1 {w_{i1}}\n    + \\alpha_2 {w_{i3}} + \\cdots //\n    \\{y_{i1}, \\dots, y_{iK}\\}  \\sim \\mathrm{Multinomial}(N_i,\n    \\pi(x, \\sigma_i))\n\\]\n\nDefinitions  ::: {style=‘font-size: 60%;’} \\(\\lambda_i\\) – Expected value of abundance at site \\(i\\)  \\(N_i\\) – Realized value of abundance at site \\(i\\)  \\(\\sigma_{i}\\) – Scale parameter of detection function \\(g(x)\\) at site \\(i\\)  \\(\\pi(x,\\sigma_i)\\) – Function computing multinomial cell probs  \\(y_{ij}\\) – count for distance bin \\(j\\) (final count is unobserved)  \\(w_1\\), \\(w_2\\), \\(w_3\\) – site covariates % % :::"
+    "text": "Hierarchical distance sampling\n\nState model (with Poisson assumption) \\[\n    \\mathrm{log}(\\lambda_i) = \\beta_0 + \\beta_1 {w_{i1}} +\n    \\beta_2 {w_{i2}} + \\cdots \\\\\n    N_i \\sim \\mathrm{Poisson}(\\lambda_i)\n\\]\nObservation model \\[\n    \\mathrm{log}(\\sigma_{i}) = \\alpha_0 + \\alpha_1 {w_{i1}}\n    + \\alpha_2 {w_{i3}} + \\cdots \\\\\n    \\{y_{i1}, \\dots, y_{iK}\\}  \\sim \\mathrm{Multinomial}(N_i,\n    \\pi(x, \\sigma_i))\n\\]\n\n\n\n\\(\\lambda_i\\) – Expected value of abundance at site \\(i\\)  \\(N_i\\) – Realized value of abundance at site \\(i\\)  \\(\\sigma_{i}\\) – Scale parameter of detection function \\(g(x)\\) at site \\(i\\)  \\(\\pi(x,\\sigma_i)\\) – Function computing multinomial cell probs  \\(y_{ij}\\) – count for distance bin \\(j\\) (final count is unobserved)  \\(w_1\\), \\(w_2\\), \\(w_3\\) – site covariates % %"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#multinomial-cell-probs-for-point-transects",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#multinomial-cell-probs-for-point-transects",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Multinomial cell probs for point transects",
-    "text": "Multinomial cell probs for point transects\nDefinitions needed for computing \\(\\bar{p}\\) and multinomial cell probabilities.\n\n\\(y_{ij}\\) – number of individuals detected at site \\(i\\) in bin \\(j\\)\n\\(\\sigma_i\\) – scale parameter of detection function \\(g(x)\\)\n\\(b_1, \\dots, b_J\\) – Distance break points defining \\(J\\) distance intervals\n\\(\\bar{p}_j\\) – Average detection probability in distance interval \\(j\\).\n\\(\\psi_j\\) – Probability of occuring in distance band \\(j\\)\n\n\n\\begin{tabular}{lc}\n  \\hline\n  \n  Description                       & Multinomial cell probability &lt;br&gt;\n  \\hline\n  Pr(occurs and detected in first distance bin)  & $\\pi_1 = \\psi_1\\bar{p}_1$   &lt;br&gt;\n  Pr(occurs and detected in second distance bin)  & $\\pi_2 = \\psi_2\\bar{p}_2$   &lt;br&gt;\n  { $\\cdots$}             & $\\cdots$                     &lt;br&gt;\n  Pr(occurs and detected in last distance bin)  & $\\pi_J = \\psi_J\\bar{p}_J$   &lt;br&gt;\n  Pr(not detected)                  & $\\pi_{K} = 1-\\sum_{j=1}^J \\pi_j$          &lt;br&gt;\n  \\hline\n\\end{tabular}"
+    "text": "Multinomial cell probs for point transects\n\nDefinitions needed for computing \\(\\bar{p}\\) and multinomial cell probabilities.\n\n\\(y_{ij}\\) – number of individuals detected at site \\(i\\) in bin \\(j\\)\n\\(\\sigma_i\\) – scale parameter of detection function \\(g(x)\\)\n\\(b_1, \\dots, b_J\\) – Distance break points defining \\(J\\) distance intervals\n\\(\\bar{p}_j\\) – Average detection probability in distance interval \\(j\\).\n\\(\\psi_j\\) – Probability of occuring in distance band \\(j\\)\n\n\n\n\n\n\n\n\n\n\nDescription\nMultinomial cell probability\n\n\n\n\nPr(occurs and detected in first distance bin)\n\\(\\pi_1 = \\psi_1\\bar{p}_1\\)\n\n\nPr(occurs and detected in second distance bin)\n\\(\\pi_2 = \\psi_2\\bar{p}_2\\)\n\n\n\\(\\cdots\\)\n\\(\\cdots\\)\n\n\nPr(occurs and detected in last distance bin)\n\\(\\pi_J = \\psi_J\\bar{p}_J\\)\n\n\nPr(not detected)\n\\(\\pi_{K} = 1-\\sum_{j=1}^J \\pi_j\\)"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#point-transects-no-covariates",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#point-transects-no-covariates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Point transects, no covariates",
-    "text": "Point transects, no covariates\nAbundance\n\nB &lt;- 100; Area &lt;- pi*B^2/1e4   ## plot radius (B) and area in ha\nnSites &lt;- 100; lambda1 &lt;- 0.9  ## Expected value of density\nN3 &lt;- rpois(n=nSites, lambda=lambda1*Area)\n\nMultinomial cell probabilities\n\nJ &lt;- 5                     # distance bins\nsigma &lt;- 50                # scale parameter\nb &lt;- seq(0, B, length=J+1) # distance break points\narea &lt;- pi*b^2             # area of each circle\npsi &lt;- (area[-1]-area[-(J+1)]) / area[J+1]\npbar3 &lt;- numeric(J)        # average detection probability\npi3 &lt;- numeric(J+1)        # multinomial cell probs\nfor(j in 1:J) {\n    pbar3[j] &lt;- integrate(function(x) exp(-x^2/(2*sigma^2))*x,\n                          lower=b[j], upper=b[j+1])$value *\n                          (2*pi/diff(area)[j])\n    pi3[j] &lt;- pbar3[j]*psi[j] }; pi3[J+1] &lt;- 1-sum(pi3[1:J])\n\nDetections in each distance interval\n\ny3.all &lt;- matrix(NA, nrow=nSites, ncol=J+1)\nfor(i in 1:nSites) {\n    y3.all[i,] &lt;- rmultinom(n=1, size=N3[i], prob=pi3)    }\ny3 &lt;- y3.all[,1:J]  ## Drop final cell"
+    "text": "Point transects, no covariates\n\nAbundance\n\nB &lt;- 100; Area &lt;- pi*B^2/1e4   ## plot radius (B) and area in ha\nnSites &lt;- 100; lambda1 &lt;- 0.9  ## Expected value of density\nN3 &lt;- rpois(n=nSites, lambda=lambda1*Area)\n\nMultinomial cell probabilities\n\nJ &lt;- 5                     # distance bins\nsigma &lt;- 50                # scale parameter\nb &lt;- seq(0, B, length=J+1) # distance break points\narea &lt;- pi*b^2             # area of each circle\npsi &lt;- (area[-1]-area[-(J+1)]) / area[J+1]\npbar3 &lt;- numeric(J)        # average detection probability\npi3 &lt;- numeric(J+1)        # multinomial cell probs\nfor(j in 1:J) {\n    pbar3[j] &lt;- integrate(function(x) exp(-x^2/(2*sigma^2))*x,\n                          lower=b[j], upper=b[j+1])$value *\n                          (2*pi/diff(area)[j])\n    pi3[j] &lt;- pbar3[j]*psi[j] }; pi3[J+1] &lt;- 1-sum(pi3[1:J])\n\nDetections in each distance interval\n\ny3.all &lt;- matrix(NA, nrow=nSites, ncol=J+1)\nfor(i in 1:nSites) {\n    y3.all[i,] &lt;- rmultinom(n=1, size=N3[i], prob=pi3)    }\ny3 &lt;- y3.all[,1:J]  ## Drop final cell"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#observed-distances",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#observed-distances",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Observed distances",
-    "text": "Observed distances\n\nplot(b[-(J+1)]+10, colSums(y3), type=\"h\", lwd=80, lend=2, col=\"skyblue4\",\n     xlim=c(0,100), ylim=c(0, 70), xlab=\"Distance\", ylab=\"Detections\")"
+    "text": "Observed distances\n\nplot(b[-(J+1)]+10, colSums(y3), type=\"h\", lwd=80, lend=2, col=\"seagreen\",\n     xlim=c(0,100), ylim=c(0, 70), xlab=\"Distance\", ylab=\"Detections\")"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#point-transects-covariates",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#point-transects-covariates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Point transects, covariates",
-    "text": "Point transects, covariates\nAbundance\n\nelevation &lt;- rnorm(nSites)  \nbeta0 &lt;- 2; beta1 &lt;- 1\nlambda4 &lt;- exp(beta0 + beta1*elevation)   # E(density)\nN4 &lt;- rpois(n=nSites, lambda=lambda4*Area)\n\nMultinomial cell probabilities\n\nnoise &lt;- rnorm(nSites)\nalpha0 &lt;- 3; alpha1 &lt;- -0.5\nsigma4 &lt;- exp(alpha0 + alpha1*noise)\npi4 &lt;- matrix(NA, nSites, J+1) # multinomial cell probs\nfor(i in 1:nSites) {\n  for(j in 1:J) {\n      pi4[i,j] &lt;- integrate(function(x) exp(-x^2/(2*sigma4[i]^2))*x,\n          lower=b[j], upper=b[j+1])$value*(2*pi/diff(area)[j])*psi[j] }\n  pi4[i,J+1] &lt;- 1-sum(pi4[i,1:J]) } \n\nDetections in each distance interval\n\ny4.all &lt;- matrix(NA, nrow=nSites, ncol=J+1)\nfor(i in 1:nSites) {\n    y4.all[i,] &lt;- rmultinom(n=1, size=N4[i], prob=pi4[i,])    }\ny4 &lt;- y4.all[,1:J]"
+    "text": "Point transects, covariates\n\nAbundance\n\nelevation &lt;- rnorm(nSites)  \nbeta0 &lt;- 2; beta1 &lt;- 1\nlambda4 &lt;- exp(beta0 + beta1*elevation)   # E(density)\nN4 &lt;- rpois(n=nSites, lambda=lambda4*Area)\n\nMultinomial cell probabilities\n\nnoise &lt;- rnorm(nSites)\nalpha0 &lt;- 3; alpha1 &lt;- -0.5\nsigma4 &lt;- exp(alpha0 + alpha1*noise)\npi4 &lt;- matrix(NA, nSites, J+1) # multinomial cell probs\nfor(i in 1:nSites) {\n  for(j in 1:J) {\n      pi4[i,j] &lt;- integrate(function(x) exp(-x^2/(2*sigma4[i]^2))*x,\n          lower=b[j], upper=b[j+1])$value*(2*pi/diff(area)[j])*psi[j] }\n  pi4[i,J+1] &lt;- 1-sum(pi4[i,1:J]) } \n\nDetections in each distance interval\n\ny4.all &lt;- matrix(NA, nrow=nSites, ncol=J+1)\nfor(i in 1:nSites) {\n    y4.all[i,] &lt;- rmultinom(n=1, size=N4[i], prob=pi4[i,])    }\ny4 &lt;- y4.all[,1:J]"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#simulated-data",
@@ -178,8 +178,8 @@
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prepare-data-in-unmarked",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prepare-data-in-unmarked",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Prepare data in `unmarked’",
-    "text": "Prepare data in `unmarked’\nNote the new arguments.\n\numf4 &lt;- unmarkedFrameDS(y=y4, siteCovs=data.frame(elevation,noise), dist.breaks=b,\n                       survey=\"point\", unitsIn=\"m\")\n\n\nsummary(umf4)\n\nunmarkedFrameDS Object\n\npoint-transect survey design\nDistance class cutpoints (m):  0 20 40 60 80 100 \n\n100 sites\nMaximum number of distance classes per site: 5 \nMean number of distance classes per site: 5 \nSites with at least one detection: 77 \n\nTabulation of y observations:\n  0   1   2   3   4   5   6   7   8   9  10 \n351  85  31  13   6   5   2   2   1   2   2 \n\nSite-level covariates:\n   elevation           noise         \n Min.   :-2.2953   Min.   :-2.93845  \n 1st Qu.:-0.7225   1st Qu.:-0.72355  \n Median :-0.2411   Median :-0.06353  \n Mean   :-0.1119   Mean   :-0.05248  \n 3rd Qu.: 0.6033   3rd Qu.: 0.53973  \n Max.   : 2.2662   Max.   : 2.47751"
+    "section": "Prepare data in ‘unmarked’",
+    "text": "Prepare data in ‘unmarked’\nNote the new arguments.\n\numf4 &lt;- unmarkedFrameDS(y=y4, siteCovs=data.frame(elevation,noise), dist.breaks=b,\n                       survey=\"point\", unitsIn=\"m\")\n\n\nsummary(umf4)\n\nunmarkedFrameDS Object\n\npoint-transect survey design\nDistance class cutpoints (m):  0 20 40 60 80 100 \n\n100 sites\nMaximum number of distance classes per site: 5 \nMean number of distance classes per site: 5 \nSites with at least one detection: 77 \n\nTabulation of y observations:\n  0   1   2   3   4   5   6   7   8   9  10 \n351  85  31  13   6   5   2   2   1   2   2 \n\nSite-level covariates:\n   elevation           noise         \n Min.   :-2.2953   Min.   :-2.93845  \n 1st Qu.:-0.7225   1st Qu.:-0.72355  \n Median :-0.2411   Median :-0.06353  \n Mean   :-0.1119   Mean   :-0.05248  \n 3rd Qu.: 0.6033   3rd Qu.: 0.53973  \n Max.   : 2.2662   Max.   : 2.47751"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#fit-the-model",
@@ -192,36 +192,36 @@
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Prediction in `unmarked’",
-    "text": "Prediction in `unmarked’\nCreate data.frame with prediction covariates.\n\npred.data &lt;- data.frame(noise=seq(-3, 3, by=0.5))\n\nGet predictions of \\(\\sigma\\) for each row of prediction data.\n\nsigma.pred &lt;- predict(fm4, newdata=pred.data,\n                      type='det', append=TRUE)\n\nView \\(\\sigma\\) predictions\n\nprint(head(sigma.pred), digits=2)\n\n  Predicted   SE lower upper noise\n1        93 8.19    79   111  -3.0\n2        72 5.37    62    83  -2.5\n3        55 3.45    49    62  -2.0\n4        43 2.18    38    47  -1.5\n5        33 1.38    30    36  -1.0\n6        25 0.92    23    27  -0.5"
+    "section": "Prediction in ‘unmarked’",
+    "text": "Prediction in ‘unmarked’\nCreate data.frame with prediction covariates.\n\npred.data &lt;- data.frame(noise=seq(-3, 3, by=0.5))\n\nGet predictions of \\(\\sigma\\) for each row of prediction data.\n\nsigma.pred &lt;- predict(fm4, newdata=pred.data,\n                      type='det', append=TRUE)\n\nView \\(\\sigma\\) predictions\n\nprint(head(sigma.pred), digits=2)\n\n  Predicted   SE lower upper noise\n1        93 8.19    79   111  -3.0\n2        72 5.37    62    83  -2.5\n3        55 3.45    49    62  -2.0\n4        43 2.18    38    47  -1.5\n5        33 1.38    30    36  -1.0\n6        25 0.92    23    27  -0.5"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked-1",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Prediction in `unmarked’",
-    "text": "Prediction in `unmarked’\n\nplot(Predicted ~ noise, sigma.pred, ylab=\"Scale parameter (sigma)\",\n     ylim=c(0,100), xlab=\"Noise level\", type=\"l\")\nlines(lower ~ noise, sigma.pred, col=\"grey\")\nlines(upper ~ noise, sigma.pred, col=\"grey\")"
+    "section": "Prediction in ‘unmarked’",
+    "text": "Prediction in ‘unmarked’\n\nplot(Predicted ~ noise, sigma.pred, ylab=\"Scale parameter (sigma)\",\n     ylim=c(0,100), xlab=\"Noise level\", type=\"l\")\nlines(lower ~ noise, sigma.pred, col=\"grey\")\nlines(upper ~ noise, sigma.pred, col=\"grey\")"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked-2",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Prediction in `unmarked’",
-    "text": "Prediction in `unmarked’\n\nplot(Predicted ~ noise, sigma.pred, ylab=\"Scale parameter (sigma)\",\n     ylim=c(0,100), xlab=\"Noise level\", type=\"l\")\nlines(lower ~ noise, sigma.pred, col=\"grey\")\nlines(upper ~ noise, sigma.pred, col=\"grey\")\narrows(-2, sigma.pred$Predicted[3], 0.1, 63, len=0.1, col=\"blue\")\npoints(-2, sigma.pred$Predicted[3], col=\"orange\", pch=16, cex=2)\npar( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )\nplot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab=\"Dist\", ylab=\"p\",\n     col=\"orange\", lwd=2, ylim=c(0,1), las=1)"
+    "section": "Prediction in ‘unmarked’",
+    "text": "Prediction in ‘unmarked’\n\nplot(Predicted ~ noise, sigma.pred, ylab=\"Scale parameter (sigma)\",\n     ylim=c(0,100), xlab=\"Noise level\", type=\"l\")\nlines(lower ~ noise, sigma.pred, col=\"grey\")\nlines(upper ~ noise, sigma.pred, col=\"grey\")\narrows(-2, sigma.pred$Predicted[3], 0.1, 63, len=0.1, col=\"blue\")\npoints(-2, sigma.pred$Predicted[3], col=\"orange\", pch=16, cex=2)\npar( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )\nplot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab=\"Dist\", ylab=\"p\",\n     col=\"orange\", lwd=2, ylim=c(0,1), las=1)"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked-3",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#prediction-in-unmarked-3",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Prediction in `unmarked’",
-    "text": "Prediction in `unmarked’\n\nplot(Predicted ~ noise, sigma.pred, ylab=\"Scale parameter (sigma)\",\n     ylim=c(0,100), xlab=\"Noise level\", type=\"l\")\nlines(lower ~ noise, sigma.pred, col=\"grey\")\nlines(upper ~ noise, sigma.pred, col=\"grey\")\narrows(1, sigma.pred$Predicted[9], 1.1, 55, len=0.1, col=\"blue\")\npoints(1, sigma.pred$Predicted[9], col=\"red\", pch=16, cex=2)\npar( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )\nplot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab=\"Dist\", ylab=\"p\",\n     col=\"red\", lwd=2, ylim=c(0,1), las=1)"
+    "section": "Prediction in ‘unmarked’",
+    "text": "Prediction in ‘unmarked’\n\nplot(Predicted ~ noise, sigma.pred, ylab=\"Scale parameter (sigma)\",\n     ylim=c(0,100), xlab=\"Noise level\", type=\"l\")\nlines(lower ~ noise, sigma.pred, col=\"grey\")\nlines(upper ~ noise, sigma.pred, col=\"grey\")\narrows(1, sigma.pred$Predicted[9], 1.1, 55, len=0.1, col=\"blue\")\npoints(1, sigma.pred$Predicted[9], col=\"red\", pch=16, cex=2)\npar( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )\nplot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab=\"Dist\", ylab=\"p\",\n     col=\"red\", lwd=2, ylim=c(0,1), las=1)"
   },
   {
-    "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-n_i",
-    "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-n_i",
+    "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-ni",
+    "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-ni",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
-    "section": "Conditional-on-N and n_i",
-    "text": "Conditional-on-N and n_i\n\n\nmodel {\n\n# lambda.intercept ~ dunif(0, 20)\n# beta0 &lt;- log(lambda.intercept)\nbeta0 ~ dnorm(0, 0.1)\nbeta1 ~ dnorm(0, 0.1)\n\nalpha0 ~ dnorm(0, 0.1)\nalpha1 ~ dnorm(0, 0.1)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*elevation[i]\n  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance\n  log(sigma[i]) &lt;- alpha0 + alpha1*noise[i]\n  for(j in 1:nBins) {\n    ## Trick to do integration for *point-transects*\n    pbar[i,j] &lt;- (sigma[i]^2 * (1-exp(-b[j+1]^2/(2*sigma[i]^2))) -\n                  sigma[i]^2 * (1-exp(-b[j]^2/(2*sigma[i]^2)))) * \n                 2*3.141593/area[j]     \n    pi[i,j] &lt;- psi[j]*pbar[i,j]         ## Pr(present and detected in bin j)\n  }\n  pi[i,nBins+1] &lt;- 1-sum(pi[i,1:nBins]) ## Pr(not detected)\n  n[i] ~ dbin(1-pi[i,nBins+1], N[i])\n  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])\n  ## If N~Pois(lam), then the above is equivalent to:\n  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
+    "section": "Conditional-on-N and ni",
+    "text": "Conditional-on-N and ni\ndistsamp-point-mod.jag\n\n\nmodel {\n\n# lambda.intercept ~ dunif(0, 20)\n# beta0 &lt;- log(lambda.intercept)\nbeta0 ~ dnorm(0, 0.1)\nbeta1 ~ dnorm(0, 0.1)\n\nalpha0 ~ dnorm(0, 0.1)\nalpha1 ~ dnorm(0, 0.1)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*elevation[i]\n  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance\n  log(sigma[i]) &lt;- alpha0 + alpha1*noise[i]\n  for(j in 1:nBins) {\n    ## Trick to do integration for *point-transects*\n    pbar[i,j] &lt;- (sigma[i]^2 * (1-exp(-b[j+1]^2/(2*sigma[i]^2))) -\n                  sigma[i]^2 * (1-exp(-b[j]^2/(2*sigma[i]^2)))) * \n                 2*3.141593/area[j]     \n    pi[i,j] &lt;- psi[j]*pbar[i,j]         ## Pr(present and detected in bin j)\n  }\n  pi[i,nBins+1] &lt;- 1-sum(pi[i,1:nBins]) ## Pr(not detected)\n  n[i] ~ dbin(1-pi[i,nBins+1], N[i])\n  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])\n  ## If N~Pois(lam), then the above is equivalent to:\n  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#data-inits-and-parameters",
@@ -235,28 +235,28 @@
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#mcmc",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "MCMC",
-    "text": "MCMC\n\nlibrary(jagsUI)\njags.post.pt &lt;- jags.basic(data=jags.data.pt, inits=jags.inits.pt,\n                           parameters.to.save=jags.pars.pt,\n                           model.file=\"distsamp-point-mod.jag\",\n                           n.chains=3, n.adapt=100, n.burnin=0,\n                           n.iter=2000, parallel=TRUE)\n\n\nround(summary(jags.post.pt)$quantile, digits=3)\n\n                   2.5%      25%      50%      75%    97.5%\nalpha0            2.895    2.940    2.964    2.989    3.031\nalpha1           -0.587   -0.549   -0.529   -0.510   -0.474\nbeta0             1.806    1.922    1.985    2.050    2.158\nbeta1             0.833    0.914    0.958    1.008    1.108\ntotalAbundance 2847.000 3099.000 3264.500 3459.000 3814.025"
+    "text": "MCMC\n\nlibrary(jagsUI)\njags.post.pt &lt;- jags.basic(data=jags.data.pt, inits=jags.inits.pt,\n                           parameters.to.save=jags.pars.pt,\n                           model.file=\"distsamp-point-mod.jag\",\n                           n.chains=3, n.adapt=100, n.burnin=0,\n                           n.iter=2000, parallel=TRUE)\n\n\nround(summary(jags.post.pt)$quantile, digits=3)\n\n                   2.5%      25%      50%      75%    97.5%\nalpha0            2.896    2.940    2.963    2.986    3.034\nalpha1           -0.588   -0.546   -0.527   -0.508   -0.473\nbeta0             1.830    1.938    1.999    2.056    2.160\nbeta1             0.822    0.899    0.945    0.991    1.084\ndeviance        645.076  653.169  657.830  662.572  672.513\ntotalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#multinomial-cell-probs-for-line-transects",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#multinomial-cell-probs-for-line-transects",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Multinomial cell probs for line transects",
-    "text": "Multinomial cell probs for line transects\nDefinitions needed for computing \\(\\bar{p}\\) and multinomial cell probabilities.\n* $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$\n* $\\sigma_i$ -- scale parameter of detection function $g(x)$\n* $b_1, \\dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals\n* $\\bar{p}_j$ -- Average detection probability in distance bin j\n* $\\psi_j$ -- Pr(occuring in distance bin $j$)"
+    "text": "Multinomial cell probs for line transects\nDefinitions needed for computing \\(\\bar{p}\\) and multinomial cell probabilities.\n\n\n\\(y_{ij}\\) – number of individuals detected at site \\(i\\) in bin \\(j\\)\n\\(\\sigma_i\\) – scale parameter of detection function \\(g(x)\\)\n\\(b_1, \\dots, b_{J+1}\\) – Distance break points defining \\(J\\) distance intervals\n\\(\\bar{p}_j\\) – Average detection probability in distance bin j\n\\(\\psi_j\\) – Pr(occuring in distance bin \\(j\\))"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#line-transects-no-covariates",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#line-transects-no-covariates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Line transects, no covariates",
-    "text": "Line transects, no covariates\nAbundance\n\nB &lt;- 100; L &lt;- 100; A &lt;- 2*B*L/1e4  ## transect widths, length, and area\nnSites &lt;- 100; lambda1 &lt;- 1.3       ## Expected value of density\nN1 &lt;- rpois(n=nSites, lambda=lambda1*A)\n\nMultinomial cell probabilities\n\nJ &lt;- 5                     # distance bins\nsigma &lt;- 50                # scale parameter\nb &lt;- seq(0, B, length=J+1) # distance break points\npsi &lt;- diff(b)/B           # Pr(x is in bin j)\npbar1 &lt;- numeric(J)        # average detection probability\npi1 &lt;- numeric(J+1)        # multinomial cell probs\nfor(j in 1:J) {\n    pbar1[j] &lt;- integrate(function(x) exp(-x^2/(2*sigma^2)),\n                          lower=b[j], upper=b[j+1])$value / diff(b)[j]\n    pi1[j] &lt;- pbar1[j]*psi[j]\n}\npi1[J+1] &lt;- 1-sum(pi1[1:J])\n\nDetections in each distance interval\n\ny1.all &lt;- matrix(NA, nrow=nSites, ncol=J+1)\nfor(i in 1:nSites) {\n    y1.all[i,] &lt;- rmultinom(n=1, size=N1[i], prob=pi1)    }\ny1 &lt;- y1.all[,1:J]  ## Drop final cell"
+    "text": "Line transects, no covariates\n\nAbundance\n\nB &lt;- 100; L &lt;- 100; A &lt;- 2*B*L/1e4  ## transect widths, length, and area\nnSites &lt;- 100; lambda1 &lt;- 1.3       ## Expected value of density\nN1 &lt;- rpois(n=nSites, lambda=lambda1*A)\n\nMultinomial cell probabilities\n\nJ &lt;- 5                     # distance bins\nsigma &lt;- 50                # scale parameter\nb &lt;- seq(0, B, length=J+1) # distance break points\npsi &lt;- diff(b)/B           # Pr(x is in bin j)\npbar1 &lt;- numeric(J)        # average detection probability\npi1 &lt;- numeric(J+1)        # multinomial cell probs\nfor(j in 1:J) {\n    pbar1[j] &lt;- integrate(function(x) exp(-x^2/(2*sigma^2)),\n                          lower=b[j], upper=b[j+1])$value / diff(b)[j]\n    pi1[j] &lt;- pbar1[j]*psi[j]\n}\npi1[J+1] &lt;- 1-sum(pi1[1:J])\n\nDetections in each distance interval\n\ny1.all &lt;- matrix(NA, nrow=nSites, ncol=J+1)\nfor(i in 1:nSites) {\n    y1.all[i,] &lt;- rmultinom(n=1, size=N1[i], prob=pi1)    }\ny1 &lt;- y1.all[,1:J]  ## Drop final cell"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#observed-distances-1",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#observed-distances-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Observed distances",
-    "text": "Observed distances\n\nplot(b[-(J+1)]+10, colSums(y1), type=\"h\", lwd=80, lend=2, col=\"skyblue4\",\n     xlim=c(0,100), ylim=c(0, 70), xlab=\"Distance\", ylab=\"Detections\")"
+    "text": "Observed distances\n\nplot(b[-(J+1)]+10, colSums(y1), type=\"h\", lwd=80, lend=2, col=\"sienna\",\n     xlim=c(0,100), ylim=c(0, 70), xlab=\"Distance\", ylab=\"Detections\")"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#line-transects-covariates",
@@ -287,11 +287,11 @@
     "text": "Fit the model\n\n## fm &lt;- distsamp(~noise ~elevation, umf, keyfun=\"exp\")     # negative exp\n## fm &lt;- distsamp(~noise ~elevation, umf, keyfun=\"hazard\")  # hazard rate\nfm &lt;- distsamp(~noise ~elevation, umf, keyfun=\"halfnorm\")   # half-normal\nfm\n\n\nCall:\ndistsamp(formula = ~noise ~ elevation, data = umf, keyfun = \"halfnorm\")\n\nDensity (log-scale):\n            Estimate     SE    z   P(&gt;|z|)\n(Intercept)     2.05 0.0611 33.5 2.00e-245\nelevation       1.02 0.0489 21.0  1.82e-97\n\nDetection (log-scale):\n            Estimate     SE     z  P(&gt;|z|)\n(Intercept)    2.929 0.0369  79.4 0.00e+00\nnoise         -0.513 0.0312 -16.5 5.68e-61\n\nAIC: 824.6483 \nNumber of sites: 100\n\nSurvey design: line-transect\nDetection function: halfnorm\nUnitsIn: m\nUnitsOut: ha \n\n\nCompare to actual parameter values:\n\nc(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)\n\nbeta0 beta1 \n    2     1 \n\n\nalpha0 alpha1 \n   3.0   -0.5"
   },
   {
-    "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-ni",
-    "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-ni",
+    "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-ni-1",
+    "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#conditional-on-n-and-ni-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Conditional-on-N and ni",
-    "text": "Conditional-on-N and ni\n\n\nmodel {\n\nbeta0 ~ dnorm(0, 0.1)\nbeta1 ~ dnorm(0, 0.1)\n\nalpha0 ~ dnorm(0, 0.1)\nalpha1 ~ dnorm(0, 0.1)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*elevation[i]\n  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance\n  log(sigma[i]) &lt;- alpha0 + alpha1*noise[i]\n  tau[i] &lt;- 1/sigma[i]^2\n  for(j in 1:nBins) {\n    ## Trick to do integration for *line-transects*\n    pbar[i,j] &lt;- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /\n                  dnorm(0, 0, tau[i]) / (b[j+1]-b[j])\n    pi[i,j] &lt;- psi[j]*pbar[i,j]         ## Pr(present and detected in bin j)\n  }\n  pi[i,nBins+1] &lt;- 1-sum(pi[i,1:nBins]) ## Pr(not detected)\n  n[i] ~ dbin(1-pi[i,nBins+1], N[i])\n  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])\n  ## If N~Pois(lam), then the above is equivalent to:\n  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
+    "text": "Conditional-on-N and ni\ndistsamp-line-mod.jag\n\n\nmodel {\n\nbeta0 ~ dnorm(0, 0.1)\nbeta1 ~ dnorm(0, 0.1)\n\nalpha0 ~ dnorm(0, 0.1)\nalpha1 ~ dnorm(0, 0.1)\n\nfor(i in 1:nSites) {\n  log(lambda[i]) &lt;- beta0 + beta1*elevation[i]\n  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance\n  log(sigma[i]) &lt;- alpha0 + alpha1*noise[i]\n  tau[i] &lt;- 1/sigma[i]^2\n  for(j in 1:nBins) {\n    ## Trick to do integration for *line-transects*\n    pbar[i,j] &lt;- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /\n                  dnorm(0, 0, tau[i]) / (b[j+1]-b[j])\n    pi[i,j] &lt;- psi[j]*pbar[i,j]         ## Pr(present and detected in bin j)\n  }\n  pi[i,nBins+1] &lt;- 1-sum(pi[i,1:nBins]) ## Pr(not detected)\n  n[i] ~ dbin(1-pi[i,nBins+1], N[i])\n  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])\n  ## If N~Pois(lam), then the above is equivalent to:\n  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }\n}\n\ntotalAbundance &lt;- sum(N[1:nSites])\n\n}"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#data-inits-and-parameters-1",
@@ -305,7 +305,7 @@
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#mcmc-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "MCMC",
-    "text": "MCMC\n\nlibrary(jagsUI)\njags.post.line &lt;- jags.basic(data=jags.data.line, inits=jags.inits.line,\n                             parameters.to.save=jags.pars.line,\n                             model.file=\"distsamp-line-mod.jag\",\n                             n.chains=3, n.adapt=100, n.burnin=0,\n                             n.iter=2000, parallel=TRUE)\n\n\nround(summary(jags.post.line)$quantile, digits=3)\n\n                   2.5%      25%      50%      75%    97.5%\nalpha0            2.857    2.905    2.928    2.952    3.003\nalpha1           -0.578   -0.536   -0.515   -0.494   -0.458\nbeta0             1.915    2.004    2.046    2.085    2.161\nbeta1             0.930    0.990    1.022    1.055    1.119\ntotalAbundance 1921.975 2045.000 2112.000 2181.000 2314.025"
+    "text": "MCMC\n\nlibrary(jagsUI)\njags.post.line &lt;- jags.basic(data=jags.data.line, inits=jags.inits.line,\n                             parameters.to.save=jags.pars.line,\n                             model.file=\"distsamp-line-mod.jag\",\n                             n.chains=3, n.adapt=100, n.burnin=0,\n                             n.iter=2000, parallel=TRUE)\n\n\nround(summary(jags.post.line)$quantile, digits=3)\n\n                   2.5%      25%      50%      75%    97.5%\nalpha0            2.859    2.905    2.930    2.955    3.000\nalpha1           -0.576   -0.535   -0.514   -0.494   -0.456\nbeta0             1.923    2.003    2.044    2.085    2.168\nbeta1             0.924    0.987    1.021    1.057    1.118\ndeviance        767.462  778.736  784.953  791.727  805.744\ntotalAbundance 1925.000 2050.750 2112.000 2178.000 2306.000"
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#traceplots-and-density-plots",
@@ -326,14 +326,14 @@
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#distance-sampling-summary",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Distance sampling summary",
-    "text": "Distance sampling summary\nAssumptions\n\nAnimals don’t move during the survey\nAnimals are uniformly distributed with respect to the transects\nDetection is certain on the transect, i.e. \\(p=1\\) when \\(x=0\\).\nDetections are independent\n\nIf these assumptions can be met, distance sampling is a powerful method allowing for inference about abundance and density using data from a single visit."
+    "text": "Distance sampling summary\nAssumptions\n\n\nAnimals don’t move during the survey\nAnimals are uniformly distributed with respect to the transects\nDetection is certain on the transect, i.e. \\(p=1\\) when \\(x=0\\).\nDetections are independent\n\n\n\nIf these assumptions can be met, distance sampling is a powerful method allowing for inference about abundance and density using data from a single visit."
   },
   {
     "objectID": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#assignment-1",
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#assignment-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assignment",
-    "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nFit a distance sampling model with a half-normal detection function and the following covariates to the black-throated blue warbler data ({}) in unmarked' andJAGS’:\n\nDensity covariates: Elevation, UTM.N, UTM.W\nDetection covariates: Wind, Noise\nResponse: btbw0\\_20, btbw20\\_40, btbw40\\_60, btbw60\\_80, btbw80\\_100\n\nUsing the model fitted in `unmarked’, create two graphs of the predictions: one for density and the other for the scale parameter (\\(\\sigma\\)).\n\nSuggestions:\n\nConvert response variables to matrix with \nStandardize covariates\nUpload your .R or .Rmd file to ELC by 5:00pm on Tuesday."
+    "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nFit a distance sampling model with a half-normal detection function and the following covariates to the black-throated blue warbler data (btbw\\_data\\_distsamp.csv) in ‘unmarked’ and ‘JAGS’:\n\nDensity covariates: Elevation, UTM.N, UTM.W\nDetection covariates: Wind, Noise\nResponse: btbw0_20, btbw20_40, btbw40_60, btbw60_80, btbw80_100\n\nUsing the model fitted in ‘unmarked’, create two graphs of the predictions: one for density and the other for the scale parameter (\\(\\sigma\\)).\n\nSuggestions:\n\nConvert response variables to matrix with \nStandardize covariates\n\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday."
   },
   {
     "objectID": "lectures/occupancyI/lecture-occupancyI.html#section",

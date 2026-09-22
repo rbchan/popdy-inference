@@ -43,7 +43,12 @@ It's based on the simple idea that detection probability should decline with dis
   
 <br>
 
-If we can estimate the function describing how $p$ declines with distance $x$, we can estimate abundance... if certain assumptions hold, as always.
+::: {.fragment}
+If we can estimate the function describing how $p$ declines with distance $x$, we can estimate abundance... 
+:::
+::: {.fragment}
+if certain assumptions hold, as always.
+:::
 
 
 ## Distance sampling overview
@@ -80,13 +85,12 @@ How do we compute average detection probability ($\bar{p}$)?
 
 ::: {style='font-size: 80%;'}
 To estimate average detection probability ($\bar{p}$), we need:
-  
+
 - A detection function $g(x)$ describing how $p$ declines with distance.
 - A probability distribution $p(x)$ describing the distances of all animals (detected and not detected).
-  
-  
+
 The most common detection functions are:
-  
+
 Detection function   | $g(x)$
 ------------------   | -------
 Half normal          | $\exp(-x^2 / (2\sigma^2))$
@@ -107,7 +111,7 @@ $$
 #| label: hn
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: "70%"
+#| out-width: "50%"
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))  
 sigma1 <- 25; sigma2 <- 50
@@ -131,7 +135,7 @@ $$
 #| label: nexp
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: "70%"
+#| out-width: "50%"
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))  
 sigma1 <- 25; sigma2 <- 50
@@ -157,7 +161,7 @@ $$
 #| label: haz
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: "70%"
+#| out-width: "50%"
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))  
 a1 <- 25; a2 <- 50; b1 <- 2; b2 <- 10
@@ -194,7 +198,7 @@ To understand why $p(x)$ is needed, think about it this way:
 
 ## What should we use for *p(x)*?
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 What distribution should we use for the distances between animals and transects?
 
 ::: {.fragment}
@@ -225,6 +229,9 @@ g <- function(x, sigma=25) exp(-x^2/(2*sigma^2)) # g(x)
 pdf <- function(x) 1/B                           # p(x), constant
 ```
 
+<br>
+
+::: {.fragment}
 Do the integration
   
 ```{r}
@@ -234,6 +241,7 @@ gp <- function(x) g(x)*pdf(x)
 ```
 
 31.3\% chance of detecting an individual within 100 m.
+:::
 
 
 ## [Computing average *p* for point transects]{style="font-size: 90%;"}
@@ -248,6 +256,9 @@ pdf <- function(x) 2*x/B^2                       # p(x)
 ```
 
 
+<br>
+
+::: {.fragment}
 Do the integration
   
 ```{r}
@@ -257,14 +268,19 @@ gp <- function(x) g(x)*pdf(x)
 ```
 
 12.5\% chance of detecting an individual within 100 m. <br>
+:::
 
 
-## Shiny App
+## 
 
+<br>
+
+::: {.r-fit-text}
 [Distance Sampling Shiny App](https://richard-chandler.shinyapps.io/distance-sampling/)
-      
+:::
 
-## [Conventional vs hierarchical distance sampling]{style="font-size: 90%;"}
+
+## [Conventional vs hierarchical distance sampling]{style="font-size: 80%;"}
 
 ::: {style='font-size: 80%;'}
 *Conventional* distance sampling
@@ -274,11 +290,13 @@ gp <- function(x) g(x)*pdf(x)
 * Data are individual-level distances
 * We'll deal with CDS in more depth as a prelude to spatial-capture recapture
   
+::: {.fragment}
 *Hierarchical* distance sampling
   
 * Focus is on estimation of detection function parameters and spatial variation in abundance/density
 * Data are counts of individuals in each distance bin
 * Multinomial $N$-mixture model with a unique function for computing the multinomial cell probabilities 
+:::
  
 :::
  
@@ -290,7 +308,7 @@ gp <- function(x) g(x)*pdf(x)
 
 ## Hierarchical distance sampling
   
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 State model (with Poisson assumption)
 $$
     \mathrm{log}(\lambda_i) = \beta_0 + \beta_1 {w_{i1}} +
@@ -301,21 +319,24 @@ $$
 Observation model
 $$
     \mathrm{log}(\sigma_{i}) = \alpha_0 + \alpha_1 {w_{i1}}
-    + \alpha_2 {w_{i3}} + \cdots //
+    + \alpha_2 {w_{i3}} + \cdots \\
     \{y_{i1}, \dots, y_{iK}\}  \sim \mathrm{Multinomial}(N_i,
     \pi(x, \sigma_i))
 $$
 :::
-  
-  
-Definitions <br>
-::: {style='font-size: 60%;'}
-  $\lambda_i$ -- Expected value of abundance at site $i$ <br>
-  $N_i$ -- Realized value of abundance at site $i$ <br>
-  $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ <br>
-  $\pi(x,\sigma_i)$ -- Function computing multinomial cell probs <br>
-  $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) <br>
-  $w_1$, $w_2$, $w_3$ -- site covariates % %<br>
+
+
+::: {.fragment}
+::: {style='font-size: 65%;'}
+
+$\lambda_i$ -- Expected value of abundance at site $i$ <br>
+$N_i$ -- Realized value of abundance at site $i$ <br>
+$\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ <br>
+$\pi(x,\sigma_i)$ -- Function computing multinomial cell probs <br>
+$y_{ij}$ -- count for distance bin $j$ (final count is unobserved) <br>
+$w_1$, $w_2$, $w_3$ -- site covariates % %<br>
+
+:::
 :::
 
 
@@ -326,10 +347,10 @@ Definitions <br>
 
 # Point transects
 
-## Multinomial cell probs for point transects
+## [Multinomial cell probs for point transects]{style="font-size: 80%;"}
   
-  Definitions needed for computing \alert{bin-specific} $\bar{p}$ and
-  multinomial cell probabilities. 
+::: {style='font-size: 70%;'}
+Definitions needed for computing \alert{bin-specific} $\bar{p}$ and multinomial cell probabilities. 
     
 * $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
 * $\sigma_i$ -- scale parameter of detection function $g(x)$
@@ -337,24 +358,16 @@ Definitions <br>
       distance intervals
 * $\bar{p}_j$ -- Average detection probability in distance interval $j$.
 * $\psi_j$ -- Probability of occuring in distance band $j$
-  
-   
-::: columns
-    \begin{tabular}{lc}
-      \hline
-      
-      Description                       & Multinomial cell probability <br>
-      \hline
-      Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   <br>
-      Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   <br>
-      { $\cdots$}             & $\cdots$                     <br>
-      Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   <br>
-      Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          <br>
-      \hline
-    \end{tabular}
 :::
-
-
+::: {style='font-size: 60%;'}
+Description   | Multinomial cell probability
+----------------------------- | ------------
+Pr(occurs and detected in first distance bin)  | $\pi_1 = \psi_1\bar{p}_1$
+Pr(occurs and detected in second distance bin) | $\pi_2 = \psi_2\bar{p}_2$
+$\cdots$             | $\cdots$
+Pr(occurs and detected in last distance bin)  | $\pi_J = \psi_J\bar{p}_J$
+Pr(not detected)                  | $\pi_{K} = 1-\sum_{j=1}^J \pi_j$
+:::
 
 
 ```{r}
@@ -366,6 +379,7 @@ set.seed(34889243)
 
 ## Point transects, no covariates
   
+::: {style='font-size: 70%;'}
 Abundance
   
 ```{r}
@@ -408,6 +422,7 @@ for(i in 1:nSites) {
 y3 <- y3.all[,1:J]  ## Drop final cell
 ```
 
+:::
 
 
 
@@ -420,7 +435,7 @@ y3 <- y3.all[,1:J]  ## Drop final cell
 #| out.width: "90%"
 #| size: 'scriptsize'
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="skyblue4",
+plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="seagreen",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 ```
 
@@ -431,6 +446,7 @@ plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="skyblue4",
 
 ## Point transects, covariates
   
+::: {style='font-size: 70%;'}
 Abundance
   
 ```{r}
@@ -470,6 +486,7 @@ for(i in 1:nSites) {
     y4.all[i,] <- rmultinom(n=1, size=N4[i], prob=pi4[i,])    }
 y4 <- y4.all[,1:J]
 ```
+:::
 
 
 
@@ -540,7 +557,7 @@ library(unmarked)
 
 
 
-## Prepare data in `unmarked'
+## Prepare data in 'unmarked'
   
 Note the new arguments.
   
@@ -569,7 +586,7 @@ fm4
 ```
 
 
-## Prediction in `unmarked'
+## Prediction in 'unmarked'
   
 Create `data.frame` with prediction covariates. 
   
@@ -601,7 +618,7 @@ print(head(sigma.pred), digits=2)
 
 
 
-## Prediction in `unmarked'
+## Prediction in 'unmarked'
 
 ```{r, echo=-1}
 #| label: pred-sigma
@@ -619,7 +636,7 @@ lines(upper ~ noise, sigma.pred, col="grey")
 
 
 
-## Prediction in `unmarked'
+## Prediction in 'unmarked'
 
 ```{r, echo=-1}
 #| label: pred-sigma2
@@ -641,7 +658,7 @@ plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
 
 
 
-## Prediction in `unmarked'
+## Prediction in 'unmarked'
 
 ```{r, echo=-1}
 #| label: pred-sigma2-2
@@ -663,8 +680,9 @@ plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
 
 
 
-##  Conditional-on-*N* and *n_i*
+##  Conditional-on-*N* and *n~i~*
 
+[distsamp-point-mod.jag](distsamp-point-mod.jag)
 ```{r}
 #| label: bugs-pt
 #| echo: false
@@ -737,31 +755,14 @@ round(summary(jags.post.pt)$quantile, digits=3)
   
 Definitions needed for computing \alert{bin-specific} $\bar{p}$ and multinomial cell probabilities. 
   
-    * $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
-    * $\sigma_i$ -- scale parameter of detection function $g(x)$
-    * $b_1, \dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals
-    * $\bar{p}_j$ -- Average detection probability in distance bin j
-    * $\psi_j$ -- Pr(occuring in distance bin $j$)
+::: {style='font-size: 80%;'}
+* $y_{ij}$ -- number of individuals detected at site $i$ in bin $j$
+* $\sigma_i$ -- scale parameter of detection function $g(x)$
+* $b_1, \dots, b_{J+1}$ -- Distance break points defining $J$ distance intervals
+* $\bar{p}_j$ -- Average detection probability in distance bin j
+* $\psi_j$ -- Pr(occuring in distance bin $j$)
+:::
   
-<!-- ::: columns -->
-<!--     \column{0.9\paperwidth} -->
-<!--     \begin{tabular}{lc} -->
-<!--       \hline -->
-      
-<!--       Description                       & Multinomial cell probability <br> -->
-<!--       \hline -->
-<!--       Pr(occurs and detected in first distance bin)  & $\pi_1 = \psi_1\bar{p}_1$   <br> -->
-<!--       Pr(occurs and detected in second distance bin)  & $\pi_2 = \psi_2\bar{p}_2$   <br> -->
-<!--       { $\cdots$}             & $\cdots$                     <br> -->
-<!--       Pr(occurs and detected in last distance bin)  & $\pi_J = \psi_J\bar{p}_J$   <br> -->
-<!--       Pr(not detected)                  & $\pi_{K} = 1-\sum_{j=1}^J \pi_j$          <br> -->
-<!--       \hline -->
-<!--     \end{tabular} -->
-<!-- ::: -->
-
-
-
-
 
 ```{r}
 #| include: false
@@ -772,6 +773,7 @@ set.seed(34889243)
 
 ## Line transects, no covariates
   
+::: {style='font-size: 70%;'}
 Abundance
   
 ```{r}
@@ -810,6 +812,7 @@ for(i in 1:nSites) {
     y1.all[i,] <- rmultinom(n=1, size=N1[i], prob=pi1)    }
 y1 <- y1.all[,1:J]  ## Drop final cell
 ```
+:::
 
 
 ## Observed distances
@@ -819,12 +822,9 @@ y1 <- y1.all[,1:J]  ## Drop final cell
 #| fig-height: 5
 #| out-width: "90%"
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="skyblue4",
+plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="sienna",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 ```
-
-
-
 
 
 
@@ -958,6 +958,7 @@ c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 
 ##  Conditional-on-*N* and *n~i~*
 
+[distsamp-line-mod.jag](distsamp-line-mod.jag)
 ```{r}
 #| label: bugs-line
 #| echo: false
@@ -1060,12 +1061,16 @@ plot(jags.post.line[,jags.pars.line[4:5]])
 
 Assumptions
   
+::: {style='font-size: 80%;'}
 - Animals don't move during the survey
 - Animals are uniformly distributed with respect to the transects
 - Detection is certain on the transect, i.e. $p=1$ when $x=0$. 
 - Detections are independent
+:::
 
+::: {.fragment}
 If these assumptions can be met, distance sampling is a powerful method allowing for inference about abundance and density using data from a single visit.
+:::
 
 
 
@@ -1075,19 +1080,18 @@ If these assumptions can be met, distance sampling is a powerful method allowing
 
 ## Assignment
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 65%;'}
 Create a self-contained R script or Rmarkdown file to do the following:
   
 - Fit a distance sampling model with a half-normal detection
      function and the following covariates to the black-throated blue
-      warbler data ({\tt btbw\_data\_distsamp.csv}) in `unmarked' and
-      `JAGS':
-      
+      warbler data (`btbw\_data\_distsamp.csv`) in 'unmarked' and
+      'JAGS':
   * Density covariates: `Elevation, UTM.N, UTM.W`
   * Detection covariates: `Wind, Noise`
-  * Response: `btbw0\_20, btbw20\_40, btbw40\_60, btbw60\_80, btbw80\_100`
+  * Response: `btbw0_20, btbw20_40, btbw40_60, btbw60_80, btbw80_100`
       
-- Using the model fitted in `unmarked', create two graphs of
+- Using the model fitted in 'unmarked', create two graphs of
   the predictions: one for density and the other for the scale
   parameter ($\sigma$).
   
@@ -1097,5 +1101,6 @@ Suggestions:
 - Standardize covariates
   
 
-  Upload your `.R` or `.Rmd` file to ELC by 5:00pm on Tuesday. 
+Upload your `.R`, `.Rmd`, or `.qmd` file to ELC by 5:00pm on Tuesday. 
+
 :::

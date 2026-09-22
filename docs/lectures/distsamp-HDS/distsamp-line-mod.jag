@@ -1,0 +1,29 @@
+model {
+
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+
+alpha0 ~ dnorm(0, 0.1)
+alpha1 ~ dnorm(0, 0.1)
+
+for(i in 1:nSites) {
+  log(lambda[i]) <- beta0 + beta1*elevation[i]
+  N[i] ~ dpois(lambda[i]*Area)         # Latent local abundance
+  log(sigma[i]) <- alpha0 + alpha1*noise[i]
+  tau[i] <- 1/sigma[i]^2
+  for(j in 1:nBins) {
+    ## Trick to do integration for *line-transects*
+    pbar[i,j] <- (pnorm(b[j+1], 0, tau[i]) - pnorm(b[j], 0, tau[i])) /
+                  dnorm(0, 0, tau[i]) / (b[j+1]-b[j])
+    pi[i,j] <- psi[j]*pbar[i,j]         ## Pr(present and detected in bin j)
+  }
+  pi[i,nBins+1] <- 1-sum(pi[i,1:nBins]) ## Pr(not detected)
+  n[i] ~ dbin(1-pi[i,nBins+1], N[i])
+  y[i,] ~ dmulti(pi[i,1:nBins]/(1-pi[i,nBins+1]), n[i])
+  ## If N~Pois(lam), then the above is equivalent to:
+  # for(j in 1:nBins) { y[i,j] ~ dpois(lambda[i]*pi[i,j])  }
+}
+
+totalAbundance <- sum(N[1:nSites])
+
+}
