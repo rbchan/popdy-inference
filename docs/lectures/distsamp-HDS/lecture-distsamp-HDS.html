@@ -220,7 +220,7 @@
 <p>If we can estimate the function describing how <span class="math inline">\(p\)</span> declines with distance <span class="math inline">\(x\)</span>, we can estimate abundance…</p>
 </div>
 <div class="fragment">
-<p>if certain assumptions hold, as always.</p>
+<p>… if certain assumptions hold, as always.</p>
 </div>
 </section>
 <section id="distance-sampling-overview-1" class="slide level2">
@@ -466,7 +466,7 @@
 </div>
 <div class="fragment">
 <div style="font-size: 65%;">
-<p><span class="math inline">\(\lambda_i\)</span> – Expected value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(N_i\)</span> – Realized value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(\sigma_{i}\)</span> – Scale parameter of detection function <span class="math inline">\(g(x)\)</span> at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(\pi(x,\sigma_i)\)</span> – Function computing multinomial cell probs <br> <span class="math inline">\(y_{ij}\)</span> – count for distance bin <span class="math inline">\(j\)</span> (final count is unobserved) <br> <span class="math inline">\(w_1\)</span>, <span class="math inline">\(w_2\)</span>, <span class="math inline">\(w_3\)</span> – site covariates % %<br></p>
+<p><span class="math inline">\(\lambda_i\)</span> – Expected value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(N_i\)</span> – Realized value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(\sigma_{i}\)</span> – Scale parameter of detection function <span class="math inline">\(g(x)\)</span> at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(\pi(x,\sigma_i)\)</span> – Function computing multinomial cell probs <br> <span class="math inline">\(y_{ij}\)</span> – count for distance bin <span class="math inline">\(j\)</span> (final count is unobserved) <br> <span class="math inline">\(w_1\)</span>, <span class="math inline">\(w_2\)</span>, <span class="math inline">\(w_3\)</span> – site covariates</p>
 </div>
 </div>
 </section></section>
@@ -560,7 +560,7 @@
 <section id="observed-distances" class="slide level2">
 <h2>Observed distances</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">plot</span>(b[<span class="sc">-</span>(J<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">+</span><span class="dv">10</span>, <span class="fu">colSums</span>(y3), <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">80</span>, <span class="at">lend=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"seagreen"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">plot</span>(b[<span class="sc">-</span>(J<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">+</span><span class="dv">10</span>, <span class="fu">colSums</span>(y3), <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">80</span>, <span class="at">lend=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"darkcyan"</span>, </span>
 <span id="cb13-2"><a></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>), <span class="at">xlab=</span><span class="st">"Distance"</span>, <span class="at">ylab=</span><span class="st">"Detections"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
@@ -599,7 +599,7 @@
 <section id="simulated-data" class="slide level2">
 <h2>Simulated data</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:45%;">
 <p>Observations</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>y4[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -632,9 +632,9 @@
 [25,]    0    0    0    0    0</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:55%;">
 <p>Summary stats</p>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>Proportion of sites known to be occupied</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="co"># Max count at each site</span></span>
@@ -664,6 +664,7 @@
 </section>
 <section id="prepare-data-in-unmarked" class="slide level2">
 <h2>Prepare data in ‘unmarked’</h2>
+<div style="font-size: 80%;">
 <p>Note the new arguments.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>umf4 <span class="ot">&lt;-</span> <span class="fu">unmarkedFrameDS</span>(<span class="at">y=</span>y4, <span class="at">siteCovs=</span><span class="fu">data.frame</span>(elevation,noise), <span class="at">dist.breaks=</span>b,</span>
@@ -696,9 +697,11 @@ Site-level covariates:
  Max.   : 2.2662   Max.   : 2.47751  </code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="fit-the-model" class="slide level2">
 <h2>Fit the model</h2>
+<div style="font-size: 80%;">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="do">## fm4 &lt;- distsamp(~noise ~elevation, umf4, keyfun="exp")     # negative exp</span></span>
 <span id="cb28-2"><a></a><span class="do">## fm4 &lt;- distsamp(~noise ~elevation, umf4, keyfun="hazard")  # hazard rate</span></span>
@@ -726,6 +729,7 @@ Survey design: point-transect
 Detection function: halfnorm
 UnitsIn: m
 UnitsOut: ha </code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -766,6 +770,7 @@ UnitsOut: ha </code></pre>
 <img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="prediction-in-unmarked-2" class="slide level2">
 <h2>Prediction in ‘unmarked’</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> noise, sigma.pred, <span class="at">ylab=</span><span class="st">"Scale parameter (sigma)"</span>,</span>
 <span id="cb35-2"><a></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">xlab=</span><span class="st">"Noise level"</span>, <span class="at">type=</span><span class="st">"l"</span>)</span>
@@ -776,11 +781,19 @@ UnitsOut: ha </code></pre>
 <span id="cb35-7"><a></a><span class="fu">par</span>( <span class="at">fig=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.95</span>,<span class="fl">0.55</span>,<span class="fl">0.95</span>), <span class="at">new=</span><span class="cn">TRUE</span>, <span class="at">las=</span><span class="dv">1</span>)<span class="co">#, mar=c(0,0,0,0) )</span></span>
 <span id="cb35-8"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="dv">40</span><span class="sc">^</span><span class="dv">2</span>)), <span class="dv">0</span>, <span class="dv">100</span>, <span class="at">xlab=</span><span class="st">"Dist"</span>, <span class="at">ylab=</span><span class="st">"p"</span>,</span>
 <span id="cb35-9"><a></a>     <span class="at">col=</span><span class="st">"orange"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="prediction-in-unmarked-3" class="slide level2">
 <h2>Prediction in ‘unmarked’</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> noise, sigma.pred, <span class="at">ylab=</span><span class="st">"Scale parameter (sigma)"</span>,</span>
 <span id="cb36-2"><a></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">xlab=</span><span class="st">"Noise level"</span>, <span class="at">type=</span><span class="st">"l"</span>)</span>
@@ -791,9 +804,16 @@ UnitsOut: ha </code></pre>
 <span id="cb36-7"><a></a><span class="fu">par</span>( <span class="at">fig=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.95</span>,<span class="fl">0.55</span>,<span class="fl">0.95</span>), <span class="at">new=</span><span class="cn">TRUE</span>, <span class="at">las=</span><span class="dv">1</span>)<span class="co">#, mar=c(0,0,0,0) )</span></span>
 <span id="cb36-8"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="dv">15</span><span class="sc">^</span><span class="dv">2</span>)), <span class="dv">0</span>, <span class="dv">100</span>, <span class="at">xlab=</span><span class="st">"Dist"</span>, <span class="at">ylab=</span><span class="st">"p"</span>,</span>
 <span id="cb36-9"><a></a>     <span class="at">col=</span><span class="st">"red"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-2-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-2-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="conditional-on-n-and-ni" class="slide level2">
 <h2>Conditional-on-<em>N</em> and <em>n<sub>i</sub></em></h2>
 <p><a href="distsamp-point-mod.jag">distsamp-point-mod.jag</a></p>
@@ -871,12 +891,11 @@ totalAbundance &lt;- sum(N[1:nSites])
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(jags.post.pt)<span class="sc">$</span>quantile, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   2.5%      25%      50%      75%    97.5%
-alpha0            2.896    2.940    2.963    2.986    3.034
-alpha1           -0.588   -0.546   -0.527   -0.508   -0.473
-beta0             1.830    1.938    1.999    2.056    2.160
-beta1             0.822    0.899    0.945    0.991    1.084
-deviance        645.076  653.169  657.830  662.572  672.513
-totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
+alpha0            2.895    2.940    2.964    2.989    3.031
+alpha1           -0.587   -0.549   -0.529   -0.510   -0.474
+beta0             1.806    1.922    1.985    2.050    2.158
+beta1             0.833    0.914    0.958    1.008    1.108
+totalAbundance 2847.000 3099.000 3264.500 3459.000 3814.025</code></pre>
 </div>
 </div>
 </section></section>
@@ -934,7 +953,7 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <section id="observed-distances-1" class="slide level2">
 <h2>Observed distances</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a><span class="fu">plot</span>(b[<span class="sc">-</span>(J<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">+</span><span class="dv">10</span>, <span class="fu">colSums</span>(y1), <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">80</span>, <span class="at">lend=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"sienna"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a><span class="fu">plot</span>(b[<span class="sc">-</span>(J<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">+</span><span class="dv">10</span>, <span class="fu">colSums</span>(y1), <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">80</span>, <span class="at">lend=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"darkcyan"</span>,</span>
 <span id="cb47-2"><a></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>), <span class="at">xlab=</span><span class="st">"Distance"</span>, <span class="at">ylab=</span><span class="st">"Detections"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
@@ -973,7 +992,7 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <section id="simulated-data-1" class="slide level2">
 <h2>Simulated data</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:45%;">
 <p>Observations</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a>y2[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1006,7 +1025,8 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 [25,]    7    8    4    1    2</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:55%;">
+<div style="font-size: 80%;">
 <p>Summary stats</p>
 <p>Proportion of sites known to be occupied</p>
 <div class="cell">
@@ -1032,10 +1052,12 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <pre><code>[1] 621</code></pre>
 </div>
 </div>
+</div>
 </div></div>
 </section>
 <section id="prepare-data-in-unmarked-1" class="slide level2">
 <h2>Prepare data in ‘unmarked’</h2>
+<div style="font-size: 80%;">
 <p>Note the new arguments.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFrameDS</span>(<span class="at">y=</span>y2, <span class="at">siteCovs=</span><span class="fu">data.frame</span>(elevation,noise), <span class="at">dist.breaks=</span>b,</span>
@@ -1068,9 +1090,11 @@ Site-level covariates:
  Max.   : 2.03949   Max.   : 1.84018  </code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="fit-the-model-1" class="slide level2">
 <h2>Fit the model</h2>
+<div style="font-size: 70%;">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a><span class="do">## fm &lt;- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp</span></span>
 <span id="cb62-2"><a></a><span class="do">## fm &lt;- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate</span></span>
@@ -1110,6 +1134,7 @@ UnitsOut: ha </code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>alpha0 alpha1 
    3.0   -0.5 </code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -1188,12 +1213,11 @@ totalAbundance &lt;- sum(N[1:nSites])
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(jags.post.line)<span class="sc">$</span>quantile, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   2.5%      25%      50%      75%    97.5%
-alpha0            2.859    2.905    2.930    2.955    3.000
-alpha1           -0.576   -0.535   -0.514   -0.494   -0.456
-beta0             1.923    2.003    2.044    2.085    2.168
-beta1             0.924    0.987    1.021    1.057    1.118
-deviance        767.462  778.736  784.953  791.727  805.744
-totalAbundance 1925.000 2050.750 2112.000 2178.000 2306.000</code></pre>
+alpha0            2.857    2.905    2.928    2.952    3.003
+alpha1           -0.578   -0.536   -0.515   -0.494   -0.458
+beta0             1.915    2.004    2.046    2.085    2.161
+beta1             0.930    0.990    1.022    1.055    1.119
+totalAbundance 1921.975 2045.000 2112.000 2181.000 2314.025</code></pre>
 </div>
 </div>
 </section>

@@ -47,7 +47,7 @@ It's based on the simple idea that detection probability should decline with dis
 If we can estimate the function describing how $p$ declines with distance $x$, we can estimate abundance... 
 :::
 ::: {.fragment}
-if certain assumptions hold, as always.
+... if certain assumptions hold, as always.
 :::
 
 
@@ -334,7 +334,7 @@ $N_i$ -- Realized value of abundance at site $i$ <br>
 $\sigma_{i}$ -- Scale parameter of detection function $g(x)$ at site $i$ <br>
 $\pi(x,\sigma_i)$ -- Function computing multinomial cell probs <br>
 $y_{ij}$ -- count for distance bin $j$ (final count is unobserved) <br>
-$w_1$, $w_2$, $w_3$ -- site covariates % %<br>
+$w_1$, $w_2$, $w_3$ -- site covariates
 
 :::
 :::
@@ -435,7 +435,7 @@ y3 <- y3.all[,1:J]  ## Drop final cell
 #| out.width: "90%"
 #| size: 'scriptsize'
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="seagreen",
+plot(b[-(J+1)]+10, colSums(y3), type="h", lwd=80, lend=2, col="darkcyan", 
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 ```
 
@@ -493,23 +493,23 @@ y4 <- y4.all[,1:J]
 ## Simulated data
 
 ::: {.columns}
-::: {.column width='50%'}
+::: {.column width='45%'}
       
 Observations
 
   
 ```{r}
 #| label: sim-nocov-dat4-pt
-#| size: 'tiny'
 y4[1:25,]
 ```
 :::
-::: {.column width='50%'}
+::: {.column width='55%'}
     
 Summary stats
+
     
-    
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
+
 Proportion of sites known to be occupied
     
 ```{r}
@@ -559,6 +559,7 @@ library(unmarked)
 
 ## Prepare data in 'unmarked'
   
+::: {style='font-size: 80%;'}
 Note the new arguments.
   
 ```{r}
@@ -573,10 +574,12 @@ umf4 <- unmarkedFrameDS(y=y4, siteCovs=data.frame(elevation,noise), dist.breaks=
 #| size: 'tiny'
 summary(umf4)
 ```
+:::
 
 
 ## Fit the model
 
+::: {style='font-size: 80%;'}
 ```{r}
 #| label: un-fit-pt
 ## fm4 <- distsamp(~noise ~elevation, umf4, keyfun="exp")     # negative exp
@@ -584,6 +587,7 @@ summary(umf4)
 fm4 <- distsamp(~noise ~elevation, umf4, keyfun="halfnorm")   # half-normal
 fm4
 ```
+:::
 
 
 ## Prediction in 'unmarked'
@@ -638,11 +642,12 @@ lines(upper ~ noise, sigma.pred, col="grey")
 
 ## Prediction in 'unmarked'
 
+::: {style='font-size: 80%;'}
 ```{r, echo=-1}
 #| label: pred-sigma2
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: '80%'
+#| out-width: '50%'
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ noise, sigma.pred, ylab="Scale parameter (sigma)",
@@ -655,16 +660,18 @@ par( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )
 plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
      col="orange", lwd=2, ylim=c(0,1), las=1)
 ```
+:::
 
 
 
 ## Prediction in 'unmarked'
 
+::: {style='font-size: 80%;'}
 ```{r, echo=-1}
 #| label: pred-sigma2-2
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: '80%'
+#| out-width: '50%'
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ noise, sigma.pred, ylab="Scale parameter (sigma)",
@@ -677,6 +684,7 @@ par( fig=c(0.5,0.95,0.55,0.95), new=TRUE, las=1)#, mar=c(0,0,0,0) )
 plot(function(x) exp(-x^2/(2*15^2)), 0, 100, xlab="Dist", ylab="p",
      col="red", lwd=2, ylim=c(0,1), las=1)
 ```
+:::
 
 
 
@@ -822,7 +830,7 @@ y1 <- y1.all[,1:J]  ## Drop final cell
 #| fig-height: 5
 #| out-width: "90%"
 par(mai=c(0.9,0.9,0.1,0.1))  
-plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="sienna",
+plot(b[-(J+1)]+10, colSums(y1), type="h", lwd=80, lend=2, col="darkcyan",
      xlim=c(0,100), ylim=c(0, 70), xlab="Distance", ylab="Detections")
 ```
 
@@ -876,7 +884,7 @@ y2 <- y2.all[,1:J]
 
 ::: {.columns}
 
-::: {.column width='50%'}
+::: {.column width='45%'}
       
 Observations
   
@@ -885,8 +893,9 @@ Observations
 y2[1:25,]
 ```
 :::
-::: {.column width='50%'}
+::: {.column width='55%'}
     
+::: {style='font-size: 80%;'}
 Summary stats
     
     
@@ -915,6 +924,7 @@ sum(y2)
 ```
 :::
 :::
+:::
 
 
 
@@ -924,6 +934,7 @@ sum(y2)
 
 ## Prepare data in 'unmarked'
   
+::: {style='font-size: 80%;'}
 Note the new arguments.
   
 ```{r}
@@ -936,10 +947,12 @@ umf <- unmarkedFrameDS(y=y2, siteCovs=data.frame(elevation,noise), dist.breaks=b
 #| label: wfac
 summary(umf)
 ```
+:::
 
 
 ## Fit the model
 
+::: {style='font-size: 70%;'}
 ```{r}
 #| label: un-fit
 ## fm <- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp
@@ -955,6 +968,7 @@ Compare to actual parameter values:
 #| label: un-compare
 c(beta0=beta0, beta1=beta1); c(alpha0=alpha0, alpha1=alpha1)
 ```
+:::
 
 ##  Conditional-on-*N* and *n~i~*
 
