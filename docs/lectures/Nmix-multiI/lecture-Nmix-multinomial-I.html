@@ -251,9 +251,13 @@
   \{y_{1}, \dots, y_{K}\} \sim \mathrm{Multinomial}(N, \{\pi_i, \dots, \pi_K\})
 \]</span></p>
 <p>The multinomial describes how <span class="math inline">\(N\)</span> objects are distributed among <span class="math inline">\(K\)</span> classes (also called bins, categories, etc).</p>
+</div>
+<div class="fragment">
+<div style="font-size: 65%;">
 <p>Imagine <span class="math inline">\(N=20\)</span> animals are studied for 1 year and there are 3 possible “fates” with associated probabilities: <span class="math inline">\(\Pr(\mathrm{survived})=0.5\)</span>, <span class="math inline">\(\Pr(\mathrm{depredated})=0.3\)</span>, <span class="math inline">\(\Pr(\mathrm{starved})=0.2\)</span>.</p>
 <p>Here is one possible outcome:</p>
 </div>
+<p><br></p>
 <div style="font-size: 85%;">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>N <span class="ot">&lt;-</span> <span class="dv">20</span></span>
@@ -261,7 +265,8 @@
 <span id="cb1-3"><a></a><span class="fu">t</span>(<span class="fu">rmultinom</span>(<span class="at">n=</span><span class="dv">1</span>, <span class="at">size=</span>N, <span class="at">prob=</span>pi))                 <span class="do">## Counts must sum to N</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     survived depredated starved
-[1,]       10          9       1</code></pre>
+[1,]        9          4       7</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -274,6 +279,8 @@
 <li>Can be applied to data from many sampling designs, simply by changing how the <span class="math inline">\(\pi\)</span> probabilities are computed.</li>
 <li>Precision is typically better than binomial <span class="math inline">\(N\)</span>-mixture models because there’s more information in the data.</li>
 </ul>
+</div>
+<div style="font-size: 65%;">
 <p>Removal sampling <span class="math display">\[
   {\pi(p)} = \{p, (1-p)p, (1-p)^2p, \dots, (1-p)^{K-1}p, (1-p)^K\}
 \]</span></p>
@@ -295,7 +302,10 @@
 <div style="font-size: 70%;">
 <p>Removal sampling is often used in electrofishing studies.</p>
 <p>A stream section is surveyed <span class="math inline">\(J\)</span> times, fish are removed on each “pass”, and the rate of removal tells us about capture probability.</p>
-<p>Definitions</p>
+<!-- Definitions -->
+</div>
+<div class="fragment">
+<div style="font-size: 70%;">
 <ul>
 <li><span class="math inline">\(y_{ij}\)</span> – number of individuals removed at site <span class="math inline">\(i\)</span> on pass <span class="math inline">\(j\)</span></li>
 <li><span class="math inline">\(p\)</span> – probability of catching an individual on a single pass</li>
@@ -337,6 +347,7 @@
 </tbody>
 </table>
 </div>
+</div>
 </section>
 <section id="simulating-removal-data-no-covariates" class="slide level2">
 <h2><span style="font-size: 90%;">Simulating removal data, no covariates</span></h2>
@@ -372,7 +383,7 @@
 </section>
 <section id="simulated-removal-data" class="slide level2">
 <h2>Simulated removal data</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <div class="cell">
 <div id="tbl-kable" class="cell quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
@@ -629,8 +640,7 @@ Number of sites: 100</code></pre>
 </div>
 <p>Get predictions of <span class="math inline">\(\lambda\)</span> for each row of prediction data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>lambda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm, <span class="at">newdata=</span>pred.data,</span>
-<span id="cb26-2"><a></a>                       <span class="at">type=</span><span class="st">'state'</span>, <span class="at">append=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>lambda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm, <span class="at">newdata=</span>pred.data, <span class="at">type=</span><span class="st">'state'</span>, <span class="at">append=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>View <span class="math inline">\(\lambda\)</span> predictions</p>
 <div class="cell">
@@ -755,20 +765,20 @@ Sample size per chain = 2000
    plus standard error of the mean:
 
                     Mean      SD Naive SE Time-series SE
-beta0            1.06570  0.1093 0.001411       0.007564
-beta1            0.57281  0.1261 0.001628       0.011016
-alpha0          -0.07862  0.2253 0.002908       0.013519
-alpha1          -1.01330  0.1841 0.002376       0.012184
-totalAbundance 340.36600 63.0831 0.814399       6.550871
+beta0            1.06295  0.1031 0.001331       0.006146
+beta1            0.57117  0.1128 0.001457       0.007544
+alpha0          -0.08098  0.2111 0.002725       0.011836
+alpha1          -1.01193  0.1730 0.002233       0.009075
+totalAbundance 337.23450 49.5119 0.639195       3.976620
 
 2. Quantiles for each variable:
 
                    2.5%      25%       50%       75%    97.5%
-beta0            0.8659   0.9922   1.05966   1.13139   1.3061
-beta1            0.3523   0.4869   0.56798   0.64469   0.8707
-alpha0          -0.5743  -0.2215  -0.06564   0.07506   0.3392
-alpha1          -1.3958  -1.1346  -1.01035  -0.89113  -0.6677
-totalAbundance 262.0000 300.0000 328.00000 363.00000 519.0000</code></pre>
+beta0            0.8707   0.9926   1.05948   1.12895   1.2749
+beta1            0.3696   0.4914   0.56745   0.64612   0.7967
+alpha0          -0.5028  -0.2189  -0.07612   0.06651   0.3146
+alpha1          -1.3532  -1.1263  -1.01448  -0.89668  -0.6680
+totalAbundance 268.0000 302.0000 329.00000 364.00000 458.0000</code></pre>
 </div>
 </div>
 </section>
@@ -795,15 +805,16 @@ totalAbundance 262.0000 300.0000 328.00000 363.00000 519.0000</code></pre>
 <pre><code>Potential scale reduction factors:
 
                Point est. Upper C.I.
-alpha0               1.04       1.13
-alpha1               1.06       1.18
-beta0                1.05       1.15
-beta1                1.08       1.24
-totalAbundance       1.11       1.32
+alpha0               1.03       1.10
+alpha1               1.02       1.07
+beta0                1.02       1.06
+beta1                1.05       1.15
+deviance             1.03       1.09
+totalAbundance       1.06       1.18
 
 Multivariate psrf
 
-1.06</code></pre>
+1.04</code></pre>
 </div>
 </div>
 <p>Convergence is suggested by <span class="math inline">\(\hat{R}\)</span> close to 1.</p>
@@ -815,11 +826,12 @@ Multivariate psrf
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">data.frame</span>(<span class="at">ESS =</span> <span class="fu">effectiveSize</span>(jags.post.rem2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    ESS
-alpha0         307.4293
-alpha1         305.4935
-beta0          253.1546
-beta1          169.4270
-totalAbundance 111.7783</code></pre>
+alpha0         338.1930
+alpha1         414.2832
+beta0          306.1222
+beta1          237.8064
+deviance       342.6139
+totalAbundance 165.2488</code></pre>
 </div>
 </div>
 </section>
@@ -855,10 +867,10 @@ totalAbundance 111.7783</code></pre>
 </section>
 <section id="double-observer-sampling-independent" class="slide level2">
 <h2><span style="font-size: 85%;">Double observer sampling (independent)</span></h2>
-<div style="font-size: 60%;">
+<div style="font-size: 65%;">
 <p>Two observers sample the same location at the same time, working independently.</p>
 <p>After each survey, they compare notes and figure out which individual were detected by observer A only, B only, or by both.</p>
-<p>Definitions</p>
+<div class="fragment">
 <ul>
 <li><p><span class="math inline">\(y_{i1}\)</span> – number of individuals detected only by observer A</p></li>
 <li><p><span class="math inline">\(y_{i2}\)</span> – number of individuals detected only by observer B</p></li>
@@ -893,14 +905,16 @@ totalAbundance 111.7783</code></pre>
 </table></li>
 </ul>
 </div>
+</div>
 </section>
 <section id="double-observer-sampling-dependent" class="slide level2">
 <h2><span style="font-size: 85%;">Double observer sampling (dependent)</span></h2>
-<div style="font-size: 60%;">
+<div style="font-size: 65%;">
 <p>Two observers sample at the same time, but observer B only records what observer A missed.</p>
 <p>Often used in aerial waterfowl surveys. <br></p>
 <p>Observers should switch roles to ensure parameter identifiability. <br></p>
-<p>Definitions</p>
+<!-- Definitions -->
+<div class="fragment">
 <ul>
 <li><p><span class="math inline">\(y_{i1}\)</span> – number of individuals detected by observer A</p></li>
 <li><p><span class="math inline">\(y_{i2}\)</span> – number of individuals missed by A but detected by B</p></li>
@@ -929,6 +943,7 @@ totalAbundance 111.7783</code></pre>
 </tbody>
 </table></li>
 </ul>
+</div>
 </div>
 </section>
 <section id="simulating-dependent-double-observer-data" class="slide level2">
@@ -1020,10 +1035,11 @@ totalAbundance &lt;- sum(N[1:nSites])
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="fu">print</span>(<span class="fu">summary</span>(jags.post.doub)<span class="sc">$</span>quantiles, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  2.5%     25%     50%     75%   97.5%
-lambda           3.141   3.587   3.891   4.322   5.577
-p1               0.299   0.409   0.467   0.519   0.608
-p2               0.238   0.334   0.383   0.427   0.511
-totalAbundance 321.975 359.000 387.000 428.000 556.025</code></pre>
+deviance       372.892 413.764 436.127 458.540 498.130
+lambda           3.097   3.597   3.955   4.415   5.870
+p1               0.281   0.399   0.460   0.516   0.615
+p2               0.230   0.323   0.374   0.424   0.511
+totalAbundance 319.000 360.000 393.000 438.000 582.000</code></pre>
 </div>
 </div>
 </section>
@@ -1054,7 +1070,7 @@ totalAbundance 321.975 359.000 387.000 428.000 556.025</code></pre>
 </section>
 <section id="assignment-1" class="slide level2">
 <h2>Assignment</h2>
-<div style="font-size: 75%;">
+<div style="font-size: 70%;">
 <p>Create a self-contained R script or Rmarkdown file to do the following:</p>
 <ul>
 <li>Simulate <em>independent</em> double observer data with the following properties:

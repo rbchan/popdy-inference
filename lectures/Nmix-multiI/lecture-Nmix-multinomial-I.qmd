@@ -96,11 +96,17 @@ $$
   
 The multinomial describes how $N$ objects are distributed among $K$ classes (also called bins, categories, etc\dots).
   
+:::
+
+::: {.fragment}
+::: {style='font-size: 65%;'}
 Imagine $N=20$ animals are studied for 1 year and there are 3 possible "fates" with associated probabilities: $\Pr(\mathrm{survived})=0.5$, $\Pr(\mathrm{depredated})=0.3$, $\Pr(\mathrm{starved})=0.2$.
   
 Here is one possible outcome:
-  
 :::
+
+<br>
+
 ::: {style='font-size: 85%;'}
 
 ```{r}
@@ -110,6 +116,7 @@ N <- 20
 pi <- c(survived=0.5, depredated=0.3, starved=0.2) ## Probs must sum to 1
 t(rmultinom(n=1, size=N, prob=pi))                 ## Counts must sum to N
 ```
+:::
 :::
 
 
@@ -122,6 +129,8 @@ Benefits of the multinomial $N$-mixture model
 - Can be applied to data from many sampling designs, simply by changing how the $\pi$ probabilities are computed.
 - Precision is typically better than binomial $N$-mixture models because there's more information in the data.
 
+:::
+::: {style='font-size: 65%;'}
 Removal sampling
 $$
   {\pi(p)} = \{p, (1-p)p, (1-p)^2p, \dots, (1-p)^{K-1}p, (1-p)^K\}
@@ -150,12 +159,15 @@ Removal sampling is often used in electrofishing studies.
   
 A stream section is surveyed $J$ times, fish are removed on each "pass", and the rate of removal tells us about capture probability.
   
-Definitions
+<!-- Definitions -->
   
+:::
+::: {.fragment}
+::: {style='font-size: 70%;'}
 - $y_{ij}$ -- number of individuals removed at site $i$ on pass $j$
 - $p$ -- probability of catching an individual on a single pass
-
 :::
+
 ::: {style='font-size: 60%;'}
 
   Description                         |  Multinomial cell probability
@@ -167,6 +179,7 @@ Definitions
   Pr(first captured on pass $J$)      |    $\pi_J = (1-p)^{J-1}p$
   Pr(not captured)                    |    $\pi_{J+1} = (1-p)^J$
 
+:::
 :::
 
 ```{r}
@@ -211,14 +224,14 @@ head(y1, n=3)
 
 ## Simulated removal data
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 
 ```{r}
 #| label: tbl-kable
 #| echo: false
 colnames(y1) <- c("Pass 1", "Pass 2", "Pass 3")
 rownames(y1) <- paste("Site", 1:nrow(y1))
-knitr::kable(y1[1:10,], format="html")
+knitr::kable(y1[1:10,], format="html", caption="")
 ```
 
 :::
@@ -370,8 +383,7 @@ Get predictions of $\lambda$ for each row of prediction data.
   
 ```{r}
 #| label: predpsi
-lambda.pred <- predict(fm, newdata=pred.data,
-                       type='state', append=TRUE)
+lambda.pred <- predict(fm, newdata=pred.data, type='state', append=TRUE)
 ```
 
 
@@ -566,13 +578,12 @@ Removal models get used in many scenarios other than electrofishing:
 
 ## [Double observer sampling (independent)]{style="font-size: 85%;"}
   
-::: {style='font-size: 60%;'}
+::: {style='font-size: 65%;'}
 Two observers sample the same location at the same time, working independently.
   
 After each survey, they compare notes and figure out which individual were detected by observer A only, B only, or by both.
   
-Definitions
-  
+::: {.fragment}
 - $y_{i1}$ -- number of individuals detected only by observer A
 - $y_{i2}$ -- number of individuals detected only by observer B
 - $y_{i3}$ -- number of individuals detected by observers A and B
@@ -585,21 +596,23 @@ Definitions
   Pr(detected by observer B but not A)   |      $\pi_2 = (1-p_1)p_2$
   Pr(detected by observers A and B)      |        $\pi_3 = p_1p_2$
   Pr(not detected)                       |    $\pi_4 = (1-p_1)(1-p_2)$
+:::
 
 :::
 
 
 ## [Double observer sampling (dependent)]{style="font-size: 85%;"}
   
-::: {style='font-size: 60%;'}
+::: {style='font-size: 65%;'}
 Two observers sample at the same time, but observer B only records what observer A missed.
   
 Often used in aerial waterfowl surveys. <br>
   
 Observers should switch roles to ensure parameter identifiability. <br>
   
-Definitions
+<!-- Definitions -->
 
+::: {.fragment}
 - $y_{i1}$ -- number of individuals detected by observer A
 - $y_{i2}$ -- number of individuals missed by A but detected by B
 - $p_1$ -- probability that observer A detects an individual 
@@ -611,6 +624,7 @@ Definitions
   Pr(detected by observer A)             |         $\pi_1 = p_1$
   Pr(detected by observer B but not A)   |      $\pi_2 = (1-p_1)p_2$
   Pr(not detected)                       |    $\pi_3 = (1-p_1)(1-p_2)$
+:::
 
 :::
 
@@ -748,7 +762,7 @@ If short-term individual ID isn't possible, you could fall back on binomial $N$-
 
 ## Assignment
   
-::: {style='font-size: 75%;'}
+::: {style='font-size: 70%;'}
 Create a self-contained R script or Rmarkdown file to do the following:
   
 - Simulate *independent* double observer data with the following properties:
