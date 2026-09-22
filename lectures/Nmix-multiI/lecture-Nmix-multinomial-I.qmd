@@ -98,6 +98,8 @@ The multinomial describes how $N$ objects are distributed among $K$ classes (als
   
 :::
 
+<br>
+
 ::: {.fragment}
 ::: {style='font-size: 65%;'}
 Imagine $N=20$ animals are studied for 1 year and there are 3 possible "fates" with associated probabilities: $\Pr(\mathrm{survived})=0.5$, $\Pr(\mathrm{depredated})=0.3$, $\Pr(\mathrm{starved})=0.2$.
@@ -105,7 +107,6 @@ Imagine $N=20$ animals are studied for 1 year and there are 3 possible "fates" w
 Here is one possible outcome:
 :::
 
-<br>
 
 ::: {style='font-size: 85%;'}
 
@@ -126,10 +127,12 @@ t(rmultinom(n=1, size=N, prob=pi))                 ## Counts must sum to N
 ::: {style='font-size: 70%;'}
 Benefits of the multinomial $N$-mixture model
   
-- Can be applied to data from many sampling designs, simply by changing how the $\pi$ probabilities are computed.
 - Precision is typically better than binomial $N$-mixture models because there's more information in the data.
+- Can be applied to data from many sampling designs, simply by changing how the $\pi$ probabilities are computed.
 
 :::
+
+::: {.fragment}
 ::: {style='font-size: 65%;'}
 Removal sampling
 $$
@@ -146,6 +149,7 @@ $$
   {\pi(p)} = \{p_1, (1-p_1)p_2, (1-p_1)(1-p_2)\}
 $$
 
+:::
 :::
 
 
@@ -447,6 +451,9 @@ Note that the modified cell probabilities still sum to 1.
 
 
 ##  Conditional-on-*N* and *n~i~*
+
+
+[removal-mod2.jag](removal-mod2.jag)
 
 ```{r}
 #| label: bugs-removal2
