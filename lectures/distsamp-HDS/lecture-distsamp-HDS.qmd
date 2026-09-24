@@ -240,6 +240,8 @@ gp <- function(x) g(x)*pdf(x)
 (pbar <- integrate(gp, lower=0, upper=B)$value)
 ```
 
+<br>
+
 31.3\% chance of detecting an individual within 100 m.
 :::
 
@@ -266,18 +268,22 @@ Do the integration
 gp <- function(x) g(x)*pdf(x)
 (pbar <- integrate(gp, lower=0, upper=B)$value)
 ```
+<br>
 
 12.5\% chance of detecting an individual within 100 m. <br>
 :::
 
 
-## 
+## Shiny App {style="margin: 0;"}
 
 <br>
 
-::: {.r-fit-text}
-[Distance Sampling Shiny App](https://richard-chandler.shinyapps.io/distance-sampling/)
-:::
+<!-- ::: {.r-fit-text} -->
+<!-- [Distance Sampling Shiny App](https://richard-chandler.shinyapps.io/distance-sampling/) -->
+
+<iframe src="https://richard-chandler.shinyapps.io/distance-sampling/" width="100%" height="500px" style="border:none;"></iframe>
+
+<!-- ::: -->
 
 
 ## [Conventional vs hierarchical distance sampling]{style="font-size: 80%;"}
