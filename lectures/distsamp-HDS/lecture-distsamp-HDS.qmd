@@ -113,6 +113,7 @@ $$
 #| fig-height: 5
 #| out-width: "50%"
 #| fig-align: 'center'
+#| code-fold: true
 par(mai=c(0.9,0.9,0.1,0.1))  
 sigma1 <- 25; sigma2 <- 50
 plot(function(x) exp(-x^2/(2*sigma1^2)), from=0, to=100, 
@@ -137,6 +138,7 @@ $$
 #| fig-height: 5
 #| out-width: "50%"
 #| fig-align: 'center'
+#| code-fold: true
 par(mai=c(0.9,0.9,0.1,0.1))  
 sigma1 <- 25; sigma2 <- 50
 plot(function(x) exp(-x/sigma1), from=0, to=100, 
@@ -155,7 +157,7 @@ legend(70, 1, c("sigma=25", "sigma=50"), lty=1, col=c("black","blue"))
 $$
     g(x,a,b) = 1-\exp(-(x/a)^{-b})
 $$
-  
+
   
 ```{r, echo=-1}
 #| label: haz
@@ -163,6 +165,7 @@ $$
 #| fig-height: 5
 #| out-width: "50%"
 #| fig-align: 'center'
+#| code-fold: true
 par(mai=c(0.9,0.9,0.1,0.1))  
 a1 <- 25; a2 <- 50; b1 <- 2; b2 <- 10
 plot(function(x) 1-exp(-(x/a1)^(-b1)), from=0, to=100, 
@@ -274,14 +277,23 @@ gp <- function(x) g(x)*pdf(x)
 :::
 
 
-## [Shiny App](https://rbchan-distance-sampling.share.connect.posit.cloud/){style="font-size: 70%;"}
+## [Shiny App](https://rbchan-distance-sampling.share.connect.posit.cloud/){#no-margin-slide style="font-size: 70%;"}
 
 <!-- This CSS block only overrides padding while this specific slide is active -->
+<!-- <style> -->
+<!-- .reveal .slides section.present { -->
+<!--   padding: 0 !important; -->
+<!-- } -->
+<!-- </style> -->
+
 <style>
-.reveal .slides section.present {
+#no-margin-slide {
   padding: 0 !important;
+  margin: 0 !important;
 }
 </style>
+
+
 
 <!-- ::: {.r-fit-text} -->
 <!-- <center> -->
@@ -656,11 +668,12 @@ lines(upper ~ noise, sigma.pred, col="grey")
 ## Prediction in 'unmarked'
 
 ::: {style='font-size: 80%;'}
-```{r, echo=-1}
+```{r}
 #| label: pred-sigma2
+#| echo: false
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: '50%'
+#| out-width: '70%'
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ noise, sigma.pred, ylab="Scale parameter (sigma)",
@@ -682,9 +695,10 @@ plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
 ::: {style='font-size: 80%;'}
 ```{r, echo=-1}
 #| label: pred-sigma2-2
+#| echo: false
 #| fig-width: 7
 #| fig-height: 5
-#| out-width: '50%'
+#| out-width: '70%'
 #| fig-align: 'center'
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(Predicted ~ noise, sigma.pred, ylab="Scale parameter (sigma)",

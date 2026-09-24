@@ -282,11 +282,14 @@
     g(x,\sigma) = \exp(-x^2/(2\sigma^2))
 \]</span></p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>sigma1 <span class="ot">&lt;-</span> <span class="dv">25</span>; sigma2 <span class="ot">&lt;-</span> <span class="dv">50</span></span>
 <span id="cb1-2"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma1<span class="sc">^</span><span class="dv">2</span>)), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>, </span>
 <span id="cb1-3"><a></a>     <span class="at">xlab=</span><span class="st">"Distance (x)"</span>, <span class="at">ylab=</span><span class="st">"Detection probability (p)"</span>)</span>
 <span id="cb1-4"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma2<span class="sc">^</span><span class="dv">2</span>)), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="dv">4</span>)</span>
 <span id="cb1-5"><a></a><span class="fu">legend</span>(<span class="dv">70</span>, <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">"sigma=25"</span>, <span class="st">"sigma=50"</span>), <span class="at">lty=</span><span class="dv">1</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"blue"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -304,11 +307,14 @@
     g(x,\sigma) = \exp(-x/\sigma)
 \]</span></p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>sigma1 <span class="ot">&lt;-</span> <span class="dv">25</span>; sigma2 <span class="ot">&lt;-</span> <span class="dv">50</span></span>
 <span id="cb2-2"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">/</span>sigma1), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>, </span>
 <span id="cb2-3"><a></a>     <span class="at">xlab=</span><span class="st">"Distance (x)"</span>, <span class="at">ylab=</span><span class="st">"Detection probability (p)"</span>)</span>
 <span id="cb2-4"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">/</span>sigma2), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="dv">4</span>)</span>
 <span id="cb2-5"><a></a><span class="fu">legend</span>(<span class="dv">70</span>, <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">"sigma=25"</span>, <span class="st">"sigma=50"</span>), <span class="at">lty=</span><span class="dv">1</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"blue"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -326,11 +332,14 @@
     g(x,a,b) = 1-\exp(-(x/a)^{-b})
 \]</span></p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>a1 <span class="ot">&lt;-</span> <span class="dv">25</span>; a2 <span class="ot">&lt;-</span> <span class="dv">50</span>; b1 <span class="ot">&lt;-</span> <span class="dv">2</span>; b2 <span class="ot">&lt;-</span> <span class="dv">10</span></span>
 <span id="cb3-2"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>(x<span class="sc">/</span>a1)<span class="sc">^</span>(<span class="sc">-</span>b1)), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>, </span>
 <span id="cb3-3"><a></a>     <span class="at">xlab=</span><span class="st">"Distance (x)"</span>, <span class="at">ylab=</span><span class="st">"Detection probability (p)"</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)</span>
 <span id="cb3-4"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="dv">1</span><span class="sc">-</span><span class="fu">exp</span>(<span class="sc">-</span>(x<span class="sc">/</span>a2)<span class="sc">^</span>(<span class="sc">-</span>b2)), <span class="at">from=</span><span class="dv">0</span>, <span class="at">to=</span><span class="dv">100</span>, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="dv">4</span>)</span>
 <span id="cb3-5"><a></a><span class="fu">legend</span>(<span class="dv">70</span>, <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">"a=25, b=2"</span>, <span class="st">"a=50, b=10"</span>), <span class="at">lty=</span><span class="dv">1</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>,<span class="st">"blue"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -425,11 +434,17 @@
 </div>
 </section>
 <section id="shiny-app" class="slide level2">
-<h2><a href="https://rbchan-distance-sampling.share.connect.posit.cloud/" style="font-size: 70%;">Shiny App</a></h2>
+<h2><a href="https://rbchan-distance-sampling.share.connect.posit.cloud/" id="no-margin-slide" style="font-size: 70%;">Shiny App</a></h2>
 <!-- This CSS block only overrides padding while this specific slide is active -->
+<!-- <style> -->
+<!-- .reveal .slides section.present { -->
+<!--   padding: 0 !important; -->
+<!-- } -->
+<!-- </style> -->
 <style>
-.reveal .slides section.present {
+#no-margin-slide {
   padding: 0 !important;
+  margin: 0 !important;
 }
 </style>
 <!-- ::: {.r-fit-text} -->
@@ -783,19 +798,10 @@ UnitsOut: ha </code></pre>
 <h2>Prediction in ‘unmarked’</h2>
 <div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> noise, sigma.pred, <span class="at">ylab=</span><span class="st">"Scale parameter (sigma)"</span>,</span>
-<span id="cb35-2"><a></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">xlab=</span><span class="st">"Noise level"</span>, <span class="at">type=</span><span class="st">"l"</span>)</span>
-<span id="cb35-3"><a></a><span class="fu">lines</span>(lower <span class="sc">~</span> noise, sigma.pred, <span class="at">col=</span><span class="st">"grey"</span>)</span>
-<span id="cb35-4"><a></a><span class="fu">lines</span>(upper <span class="sc">~</span> noise, sigma.pred, <span class="at">col=</span><span class="st">"grey"</span>)</span>
-<span id="cb35-5"><a></a><span class="fu">arrows</span>(<span class="sc">-</span><span class="dv">2</span>, sigma.pred<span class="sc">$</span>Predicted[<span class="dv">3</span>], <span class="fl">0.1</span>, <span class="dv">63</span>, <span class="at">len=</span><span class="fl">0.1</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span>
-<span id="cb35-6"><a></a><span class="fu">points</span>(<span class="sc">-</span><span class="dv">2</span>, sigma.pred<span class="sc">$</span>Predicted[<span class="dv">3</span>], <span class="at">col=</span><span class="st">"orange"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="dv">2</span>)</span>
-<span id="cb35-7"><a></a><span class="fu">par</span>( <span class="at">fig=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.95</span>,<span class="fl">0.55</span>,<span class="fl">0.95</span>), <span class="at">new=</span><span class="cn">TRUE</span>, <span class="at">las=</span><span class="dv">1</span>)<span class="co">#, mar=c(0,0,0,0) )</span></span>
-<span id="cb35-8"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="dv">40</span><span class="sc">^</span><span class="dv">2</span>)), <span class="dv">0</span>, <span class="dv">100</span>, <span class="at">xlab=</span><span class="st">"Dist"</span>, <span class="at">ylab=</span><span class="st">"p"</span>,</span>
-<span id="cb35-9"><a></a>     <span class="at">col=</span><span class="st">"orange"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
 </figure>
 </div>
 </div>
@@ -806,19 +812,10 @@ UnitsOut: ha </code></pre>
 <h2>Prediction in ‘unmarked’</h2>
 <div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> noise, sigma.pred, <span class="at">ylab=</span><span class="st">"Scale parameter (sigma)"</span>,</span>
-<span id="cb36-2"><a></a>     <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">xlab=</span><span class="st">"Noise level"</span>, <span class="at">type=</span><span class="st">"l"</span>)</span>
-<span id="cb36-3"><a></a><span class="fu">lines</span>(lower <span class="sc">~</span> noise, sigma.pred, <span class="at">col=</span><span class="st">"grey"</span>)</span>
-<span id="cb36-4"><a></a><span class="fu">lines</span>(upper <span class="sc">~</span> noise, sigma.pred, <span class="at">col=</span><span class="st">"grey"</span>)</span>
-<span id="cb36-5"><a></a><span class="fu">arrows</span>(<span class="dv">1</span>, sigma.pred<span class="sc">$</span>Predicted[<span class="dv">9</span>], <span class="fl">1.1</span>, <span class="dv">55</span>, <span class="at">len=</span><span class="fl">0.1</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span>
-<span id="cb36-6"><a></a><span class="fu">points</span>(<span class="dv">1</span>, sigma.pred<span class="sc">$</span>Predicted[<span class="dv">9</span>], <span class="at">col=</span><span class="st">"red"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="dv">2</span>)</span>
-<span id="cb36-7"><a></a><span class="fu">par</span>( <span class="at">fig=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.95</span>,<span class="fl">0.55</span>,<span class="fl">0.95</span>), <span class="at">new=</span><span class="cn">TRUE</span>, <span class="at">las=</span><span class="dv">1</span>)<span class="co">#, mar=c(0,0,0,0) )</span></span>
-<span id="cb36-8"><a></a><span class="fu">plot</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="dv">15</span><span class="sc">^</span><span class="dv">2</span>)), <span class="dv">0</span>, <span class="dv">100</span>, <span class="at">xlab=</span><span class="st">"Dist"</span>, <span class="at">ylab=</span><span class="st">"p"</span>,</span>
-<span id="cb36-9"><a></a>     <span class="at">col=</span><span class="st">"red"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-2-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="lecture-distsamp-HDS_files/figure-revealjs/pred-sigma2-2-1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
 </figure>
 </div>
 </div>
@@ -868,46 +865,45 @@ totalAbundance &lt;- sum(N[1:nSites])
 <h2>Data, inits, and parameters</h2>
 <p>Put data in a named list</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>jags.data.pt <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y4, <span class="at">n=</span><span class="fu">rowSums</span>(y4), <span class="at">area=</span><span class="fu">diff</span>(area),</span>
-<span id="cb38-2"><a></a>                     <span class="at">b=</span>b,              <span class="co"># Distance break points</span></span>
-<span id="cb38-3"><a></a>                     <span class="at">Area=</span>pi<span class="sc">*</span>B<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="fl">1e4</span>,  <span class="co"># Area in ha</span></span>
-<span id="cb38-4"><a></a>                     <span class="at">psi=</span>psi,          <span class="co"># Pr(occuring in bin j)</span></span>
-<span id="cb38-5"><a></a>                     <span class="at">elevation=</span>elevation, <span class="at">noise=</span>noise,</span>
-<span id="cb38-6"><a></a>                     <span class="at">nSites=</span>nSites, <span class="at">nBins=</span>J)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>jags.data.pt <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y4, <span class="at">n=</span><span class="fu">rowSums</span>(y4), <span class="at">area=</span><span class="fu">diff</span>(area),</span>
+<span id="cb36-2"><a></a>                     <span class="at">b=</span>b,              <span class="co"># Distance break points</span></span>
+<span id="cb36-3"><a></a>                     <span class="at">Area=</span>pi<span class="sc">*</span>B<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="fl">1e4</span>,  <span class="co"># Area in ha</span></span>
+<span id="cb36-4"><a></a>                     <span class="at">psi=</span>psi,          <span class="co"># Pr(occuring in bin j)</span></span>
+<span id="cb36-5"><a></a>                     <span class="at">elevation=</span>elevation, <span class="at">noise=</span>noise,</span>
+<span id="cb36-6"><a></a>                     <span class="at">nSites=</span>nSites, <span class="at">nBins=</span>J)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Initial values</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>jags.inits.pt <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb39-2"><a></a>    <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">5</span>),</span>
-<span id="cb39-3"><a></a>         <span class="at">N=</span><span class="fu">rowSums</span>(y4)<span class="sc">+</span><span class="fu">rpois</span>(<span class="fu">nrow</span>(y4), <span class="dv">2</span>))</span>
-<span id="cb39-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>jags.inits.pt <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb37-2"><a></a>    <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">5</span>),</span>
+<span id="cb37-3"><a></a>         <span class="at">N=</span><span class="fu">rowSums</span>(y4)<span class="sc">+</span><span class="fu">rpois</span>(<span class="fu">nrow</span>(y4), <span class="dv">2</span>))</span>
+<span id="cb37-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Parameters to monitor</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>jags.pars.pt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>,</span>
-<span id="cb40-2"><a></a>                  <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"totalAbundance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>jags.pars.pt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>,</span>
+<span id="cb38-2"><a></a>                  <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"totalAbundance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="mcmc" class="slide level2">
 <h2>MCMC</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">library</span>(jagsUI)</span>
-<span id="cb41-2"><a></a>jags.post.pt <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.pt, <span class="at">inits=</span>jags.inits.pt,</span>
-<span id="cb41-3"><a></a>                           <span class="at">parameters.to.save=</span>jags.pars.pt,</span>
-<span id="cb41-4"><a></a>                           <span class="at">model.file=</span><span class="st">"distsamp-point-mod.jag"</span>,</span>
-<span id="cb41-5"><a></a>                           <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb41-6"><a></a>                           <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb39-2"><a></a>jags.post.pt <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.pt, <span class="at">inits=</span>jags.inits.pt,</span>
+<span id="cb39-3"><a></a>                           <span class="at">parameters.to.save=</span>jags.pars.pt,</span>
+<span id="cb39-4"><a></a>                           <span class="at">model.file=</span><span class="st">"distsamp-point-mod.jag"</span>,</span>
+<span id="cb39-5"><a></a>                           <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb39-6"><a></a>                           <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(jags.post.pt)<span class="sc">$</span>quantile, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(jags.post.pt)<span class="sc">$</span>quantile, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   2.5%      25%      50%      75%    97.5%
-alpha0            2.896    2.940    2.963    2.986    3.034
-alpha1           -0.588   -0.546   -0.527   -0.508   -0.473
-beta0             1.830    1.938    1.999    2.056    2.160
-beta1             0.822    0.899    0.945    0.991    1.084
-deviance        645.076  653.169  657.830  662.572  672.513
-totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
+alpha0            2.895    2.940    2.964    2.989    3.031
+alpha1           -0.587   -0.549   -0.529   -0.510   -0.474
+beta0             1.806    1.922    1.985    2.050    2.158
+beta1             0.833    0.914    0.958    1.008    1.108
+totalAbundance 2847.000 3099.000 3264.500 3459.000 3814.025</code></pre>
 </div>
 </div>
 </section></section>
@@ -934,39 +930,39 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <div style="font-size: 70%;">
 <p>Abundance</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>B <span class="ot">&lt;-</span> <span class="dv">100</span>; L <span class="ot">&lt;-</span> <span class="dv">100</span>; A <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>B<span class="sc">*</span>L<span class="sc">/</span><span class="fl">1e4</span>  <span class="do">## transect widths, length, and area</span></span>
-<span id="cb44-2"><a></a>nSites <span class="ot">&lt;-</span> <span class="dv">100</span>; lambda1 <span class="ot">&lt;-</span> <span class="fl">1.3</span>       <span class="do">## Expected value of density</span></span>
-<span id="cb44-3"><a></a>N1 <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n=</span>nSites, <span class="at">lambda=</span>lambda1<span class="sc">*</span>A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>B <span class="ot">&lt;-</span> <span class="dv">100</span>; L <span class="ot">&lt;-</span> <span class="dv">100</span>; A <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>B<span class="sc">*</span>L<span class="sc">/</span><span class="fl">1e4</span>  <span class="do">## transect widths, length, and area</span></span>
+<span id="cb42-2"><a></a>nSites <span class="ot">&lt;-</span> <span class="dv">100</span>; lambda1 <span class="ot">&lt;-</span> <span class="fl">1.3</span>       <span class="do">## Expected value of density</span></span>
+<span id="cb42-3"><a></a>N1 <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n=</span>nSites, <span class="at">lambda=</span>lambda1<span class="sc">*</span>A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Multinomial cell probabilities</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>J <span class="ot">&lt;-</span> <span class="dv">5</span>                     <span class="co"># distance bins</span></span>
-<span id="cb45-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="dv">50</span>                <span class="co"># scale parameter</span></span>
-<span id="cb45-3"><a></a>b <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, B, <span class="at">length=</span>J<span class="sc">+</span><span class="dv">1</span>) <span class="co"># distance break points</span></span>
-<span id="cb45-4"><a></a>psi <span class="ot">&lt;-</span> <span class="fu">diff</span>(b)<span class="sc">/</span>B           <span class="co"># Pr(x is in bin j)</span></span>
-<span id="cb45-5"><a></a>pbar1 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(J)        <span class="co"># average detection probability</span></span>
-<span id="cb45-6"><a></a>pi1 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(J<span class="sc">+</span><span class="dv">1</span>)        <span class="co"># multinomial cell probs</span></span>
-<span id="cb45-7"><a></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
-<span id="cb45-8"><a></a>    pbar1[j] <span class="ot">&lt;-</span> <span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb45-9"><a></a>                          <span class="at">lower=</span>b[j], <span class="at">upper=</span>b[j<span class="sc">+</span><span class="dv">1</span>])<span class="sc">$</span>value <span class="sc">/</span> <span class="fu">diff</span>(b)[j]</span>
-<span id="cb45-10"><a></a>    pi1[j] <span class="ot">&lt;-</span> pbar1[j]<span class="sc">*</span>psi[j]</span>
-<span id="cb45-11"><a></a>}</span>
-<span id="cb45-12"><a></a>pi1[J<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span><span class="fu">sum</span>(pi1[<span class="dv">1</span><span class="sc">:</span>J])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>J <span class="ot">&lt;-</span> <span class="dv">5</span>                     <span class="co"># distance bins</span></span>
+<span id="cb43-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="dv">50</span>                <span class="co"># scale parameter</span></span>
+<span id="cb43-3"><a></a>b <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, B, <span class="at">length=</span>J<span class="sc">+</span><span class="dv">1</span>) <span class="co"># distance break points</span></span>
+<span id="cb43-4"><a></a>psi <span class="ot">&lt;-</span> <span class="fu">diff</span>(b)<span class="sc">/</span>B           <span class="co"># Pr(x is in bin j)</span></span>
+<span id="cb43-5"><a></a>pbar1 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(J)        <span class="co"># average detection probability</span></span>
+<span id="cb43-6"><a></a>pi1 <span class="ot">&lt;-</span> <span class="fu">numeric</span>(J<span class="sc">+</span><span class="dv">1</span>)        <span class="co"># multinomial cell probs</span></span>
+<span id="cb43-7"><a></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb43-8"><a></a>    pbar1[j] <span class="ot">&lt;-</span> <span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb43-9"><a></a>                          <span class="at">lower=</span>b[j], <span class="at">upper=</span>b[j<span class="sc">+</span><span class="dv">1</span>])<span class="sc">$</span>value <span class="sc">/</span> <span class="fu">diff</span>(b)[j]</span>
+<span id="cb43-10"><a></a>    pi1[j] <span class="ot">&lt;-</span> pbar1[j]<span class="sc">*</span>psi[j]</span>
+<span id="cb43-11"><a></a>}</span>
+<span id="cb43-12"><a></a>pi1[J<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span><span class="fu">sum</span>(pi1[<span class="dv">1</span><span class="sc">:</span>J])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Detections in each distance interval</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>y1.all <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>nSites, <span class="at">ncol=</span>J<span class="sc">+</span><span class="dv">1</span>)</span>
-<span id="cb46-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
-<span id="cb46-3"><a></a>    y1.all[i,] <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n=</span><span class="dv">1</span>, <span class="at">size=</span>N1[i], <span class="at">prob=</span>pi1)    }</span>
-<span id="cb46-4"><a></a>y1 <span class="ot">&lt;-</span> y1.all[,<span class="dv">1</span><span class="sc">:</span>J]  <span class="do">## Drop final cell</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>y1.all <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>nSites, <span class="at">ncol=</span>J<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb44-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
+<span id="cb44-3"><a></a>    y1.all[i,] <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n=</span><span class="dv">1</span>, <span class="at">size=</span>N1[i], <span class="at">prob=</span>pi1)    }</span>
+<span id="cb44-4"><a></a>y1 <span class="ot">&lt;-</span> y1.all[,<span class="dv">1</span><span class="sc">:</span>J]  <span class="do">## Drop final cell</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
 <section id="observed-distances-1" class="slide level2">
 <h2>Observed distances</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a><span class="fu">plot</span>(b[<span class="sc">-</span>(J<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">+</span><span class="dv">10</span>, <span class="fu">colSums</span>(y1), <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">80</span>, <span class="at">lend=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"darkcyan"</span>,</span>
-<span id="cb47-2"><a></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>), <span class="at">xlab=</span><span class="st">"Distance"</span>, <span class="at">ylab=</span><span class="st">"Detections"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a><span class="fu">plot</span>(b[<span class="sc">-</span>(J<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">+</span><span class="dv">10</span>, <span class="fu">colSums</span>(y1), <span class="at">type=</span><span class="st">"h"</span>, <span class="at">lwd=</span><span class="dv">80</span>, <span class="at">lend=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">"darkcyan"</span>,</span>
+<span id="cb45-2"><a></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">100</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>), <span class="at">xlab=</span><span class="st">"Distance"</span>, <span class="at">ylab=</span><span class="st">"Detections"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-distsamp-HDS_files/figure-revealjs/dist-hist2-1.png" style="width:90.0%" class="r-stretch"></section>
@@ -975,29 +971,29 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <div style="font-size: 70%;">
 <p>Abundance</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a>elevation <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nSites)  </span>
-<span id="cb48-2"><a></a>beta0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb48-3"><a></a>lambda2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(beta0 <span class="sc">+</span> beta1<span class="sc">*</span>elevation)</span>
-<span id="cb48-4"><a></a>N2 <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n=</span>nSites, <span class="at">lambda=</span>lambda2<span class="sc">*</span>A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>elevation <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nSites)  </span>
+<span id="cb46-2"><a></a>beta0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta1 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb46-3"><a></a>lambda2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(beta0 <span class="sc">+</span> beta1<span class="sc">*</span>elevation)</span>
+<span id="cb46-4"><a></a>N2 <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n=</span>nSites, <span class="at">lambda=</span>lambda2<span class="sc">*</span>A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Multinomial cell probabilities</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>noise <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nSites)</span>
-<span id="cb49-2"><a></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">3</span>; alpha1 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span></span>
-<span id="cb49-3"><a></a>sigma2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(alpha0 <span class="sc">+</span> alpha1<span class="sc">*</span>noise)</span>
-<span id="cb49-4"><a></a>pi2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, nSites, J<span class="sc">+</span><span class="dv">1</span>) <span class="co"># multinomial cell probs</span></span>
-<span id="cb49-5"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
-<span id="cb49-6"><a></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
-<span id="cb49-7"><a></a>      pi2[i,j] <span class="ot">&lt;-</span> <span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma2[i]<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb49-8"><a></a>          <span class="at">lower=</span>b[j], <span class="at">upper=</span>b[j<span class="sc">+</span><span class="dv">1</span>])<span class="sc">$</span>value <span class="sc">/</span> (b[j<span class="sc">+</span><span class="dv">1</span>]<span class="sc">-</span>b[j]) <span class="sc">*</span> psi[j] }</span>
-<span id="cb49-9"><a></a>  pi2[i,J<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span><span class="fu">sum</span>(pi2[i,<span class="dv">1</span><span class="sc">:</span>J]) } </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>noise <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nSites)</span>
+<span id="cb47-2"><a></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">3</span>; alpha1 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span></span>
+<span id="cb47-3"><a></a>sigma2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(alpha0 <span class="sc">+</span> alpha1<span class="sc">*</span>noise)</span>
+<span id="cb47-4"><a></a>pi2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, nSites, J<span class="sc">+</span><span class="dv">1</span>) <span class="co"># multinomial cell probs</span></span>
+<span id="cb47-5"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
+<span id="cb47-6"><a></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb47-7"><a></a>      pi2[i,j] <span class="ot">&lt;-</span> <span class="fu">integrate</span>(<span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma2[i]<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb47-8"><a></a>          <span class="at">lower=</span>b[j], <span class="at">upper=</span>b[j<span class="sc">+</span><span class="dv">1</span>])<span class="sc">$</span>value <span class="sc">/</span> (b[j<span class="sc">+</span><span class="dv">1</span>]<span class="sc">-</span>b[j]) <span class="sc">*</span> psi[j] }</span>
+<span id="cb47-9"><a></a>  pi2[i,J<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span><span class="fu">sum</span>(pi2[i,<span class="dv">1</span><span class="sc">:</span>J]) } </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Detections in each distance interval</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a>y2.all <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>nSites, <span class="at">ncol=</span>J<span class="sc">+</span><span class="dv">1</span>)</span>
-<span id="cb50-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
-<span id="cb50-3"><a></a>    y2.all[i,] <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n=</span><span class="dv">1</span>, <span class="at">size=</span>N2[i], <span class="at">prob=</span>pi2[i,])    }</span>
-<span id="cb50-4"><a></a>y2 <span class="ot">&lt;-</span> y2.all[,<span class="dv">1</span><span class="sc">:</span>J]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a>y2.all <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>nSites, <span class="at">ncol=</span>J<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb48-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nSites) {</span>
+<span id="cb48-3"><a></a>    y2.all[i,] <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(<span class="at">n=</span><span class="dv">1</span>, <span class="at">size=</span>N2[i], <span class="at">prob=</span>pi2[i,])    }</span>
+<span id="cb48-4"><a></a>y2 <span class="ot">&lt;-</span> y2.all[,<span class="dv">1</span><span class="sc">:</span>J]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -1007,7 +1003,7 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <div class="column" style="width:45%;">
 <p>Observations</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a>y2[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>y2[<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      [,1] [,2] [,3] [,4] [,5]
  [1,]    3    2    0    0    0
@@ -1042,24 +1038,24 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <p>Summary stats</p>
 <p>Proportion of sites known to be occupied</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a><span class="co"># Max count at each site</span></span>
-<span id="cb53-2"><a></a>maxCounts <span class="ot">&lt;-</span> <span class="fu">apply</span>(y2, <span class="dv">1</span>, max) </span>
-<span id="cb53-3"><a></a>naiveOccupancy <span class="ot">&lt;-</span> <span class="fu">sum</span>(maxCounts<span class="sc">&gt;</span><span class="dv">0</span>)<span class="sc">/</span>nSites</span>
-<span id="cb53-4"><a></a>naiveOccupancy </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="co"># Max count at each site</span></span>
+<span id="cb51-2"><a></a>maxCounts <span class="ot">&lt;-</span> <span class="fu">apply</span>(y2, <span class="dv">1</span>, max) </span>
+<span id="cb51-3"><a></a>naiveOccupancy <span class="ot">&lt;-</span> <span class="fu">sum</span>(maxCounts<span class="sc">&gt;</span><span class="dv">0</span>)<span class="sc">/</span>nSites</span>
+<span id="cb51-4"><a></a>naiveOccupancy </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9</code></pre>
 </div>
 </div>
 <p>Total detections in each distance interval</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a><span class="fu">colSums</span>(y2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a><span class="fu">colSums</span>(y2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 360 151  63  32  15</code></pre>
 </div>
 </div>
 <p>Naive abundance</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a><span class="fu">sum</span>(y2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a><span class="fu">sum</span>(y2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 621</code></pre>
 </div>
@@ -1072,11 +1068,11 @@ totalAbundance 2775.975 3103.000 3276.000 3464.000 3862.025</code></pre>
 <div style="font-size: 80%;">
 <p>Note the new arguments.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFrameDS</span>(<span class="at">y=</span>y2, <span class="at">siteCovs=</span><span class="fu">data.frame</span>(elevation,noise), <span class="at">dist.breaks=</span>b,</span>
-<span id="cb59-2"><a></a>                       <span class="at">tlength=</span><span class="fu">rep</span>(L, nSites), <span class="at">survey=</span><span class="st">"line"</span>, <span class="at">unitsIn=</span><span class="st">"m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>umf <span class="ot">&lt;-</span> <span class="fu">unmarkedFrameDS</span>(<span class="at">y=</span>y2, <span class="at">siteCovs=</span><span class="fu">data.frame</span>(elevation,noise), <span class="at">dist.breaks=</span>b,</span>
+<span id="cb57-2"><a></a>                       <span class="at">tlength=</span><span class="fu">rep</span>(L, nSites), <span class="at">survey=</span><span class="st">"line"</span>, <span class="at">unitsIn=</span><span class="st">"m"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a><span class="fu">summary</span>(umf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">summary</span>(umf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>unmarkedFrameDS Object
 
@@ -1108,10 +1104,10 @@ Site-level covariates:
 <h2>Fit the model</h2>
 <div style="font-size: 70%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a><span class="do">## fm &lt;- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp</span></span>
-<span id="cb62-2"><a></a><span class="do">## fm &lt;- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate</span></span>
-<span id="cb62-3"><a></a>fm <span class="ot">&lt;-</span> <span class="fu">distsamp</span>(<span class="sc">~</span>noise <span class="sc">~</span>elevation, umf, <span class="at">keyfun=</span><span class="st">"halfnorm"</span>)   <span class="co"># half-normal</span></span>
-<span id="cb62-4"><a></a>fm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a><span class="do">## fm &lt;- distsamp(~noise ~elevation, umf, keyfun="exp")     # negative exp</span></span>
+<span id="cb60-2"><a></a><span class="do">## fm &lt;- distsamp(~noise ~elevation, umf, keyfun="hazard")  # hazard rate</span></span>
+<span id="cb60-3"><a></a>fm <span class="ot">&lt;-</span> <span class="fu">distsamp</span>(<span class="sc">~</span>noise <span class="sc">~</span>elevation, umf, <span class="at">keyfun=</span><span class="st">"halfnorm"</span>)   <span class="co"># half-normal</span></span>
+<span id="cb60-4"><a></a>fm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1138,7 +1134,7 @@ UnitsOut: ha </code></pre>
 </div>
 <p>Compare to actual parameter values:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a><span class="fu">c</span>(<span class="at">beta0=</span>beta0, <span class="at">beta1=</span>beta1); <span class="fu">c</span>(<span class="at">alpha0=</span>alpha0, <span class="at">alpha1=</span>alpha1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a><span class="fu">c</span>(<span class="at">beta0=</span>beta0, <span class="at">beta1=</span>beta1); <span class="fu">c</span>(<span class="at">alpha0=</span>alpha0, <span class="at">alpha1=</span>alpha1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>beta0 beta1 
     2     1 </code></pre>
@@ -1191,60 +1187,59 @@ totalAbundance &lt;- sum(N[1:nSites])
 <h2>Data, inits, and parameters</h2>
 <p>Put data in a named list</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a></a>jags.data.line <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y2, <span class="at">n=</span><span class="fu">rowSums</span>(y2),</span>
-<span id="cb68-2"><a></a>                       <span class="at">b=</span>b,           <span class="co"># Distance break points</span></span>
-<span id="cb68-3"><a></a>                       <span class="at">psi=</span><span class="fu">diff</span>(b)<span class="sc">/</span>B, <span class="co"># Pr(occuring in bin j)</span></span>
-<span id="cb68-4"><a></a>                       <span class="at">Area=</span>A,        <span class="co"># Area in ha</span></span>
-<span id="cb68-5"><a></a>                       <span class="at">elevation=</span>elevation, <span class="at">noise=</span>noise,</span>
-<span id="cb68-6"><a></a>                       <span class="at">nSites=</span>nSites, <span class="at">nBins=</span>J)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a></a>jags.data.line <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y2, <span class="at">n=</span><span class="fu">rowSums</span>(y2),</span>
+<span id="cb66-2"><a></a>                       <span class="at">b=</span>b,           <span class="co"># Distance break points</span></span>
+<span id="cb66-3"><a></a>                       <span class="at">psi=</span><span class="fu">diff</span>(b)<span class="sc">/</span>B, <span class="co"># Pr(occuring in bin j)</span></span>
+<span id="cb66-4"><a></a>                       <span class="at">Area=</span>A,        <span class="co"># Area in ha</span></span>
+<span id="cb66-5"><a></a>                       <span class="at">elevation=</span>elevation, <span class="at">noise=</span>noise,</span>
+<span id="cb66-6"><a></a>                       <span class="at">nSites=</span>nSites, <span class="at">nBins=</span>J)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Initial values</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a></a>jags.inits.line <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb69-2"><a></a>    <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">5</span>),</span>
-<span id="cb69-3"><a></a>         <span class="at">N=</span><span class="fu">rowSums</span>(y2)<span class="sc">+</span><span class="fu">rpois</span>(<span class="fu">nrow</span>(y2), <span class="dv">2</span>))</span>
-<span id="cb69-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a></a>jags.inits.line <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb67-2"><a></a>    <span class="fu">list</span>(<span class="at">beta0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">alpha0=</span><span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">5</span>),</span>
+<span id="cb67-3"><a></a>         <span class="at">N=</span><span class="fu">rowSums</span>(y2)<span class="sc">+</span><span class="fu">rpois</span>(<span class="fu">nrow</span>(y2), <span class="dv">2</span>))</span>
+<span id="cb67-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Parameters to monitor</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a></a>jags.pars.line <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>,</span>
-<span id="cb70-2"><a></a>                    <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"totalAbundance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a></a>jags.pars.line <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>,</span>
+<span id="cb68-2"><a></a>                    <span class="st">"alpha0"</span>, <span class="st">"alpha1"</span>, <span class="st">"totalAbundance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="mcmc-1" class="slide level2">
 <h2>MCMC</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a></a><span class="fu">library</span>(jagsUI)</span>
-<span id="cb71-2"><a></a>jags.post.line <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.line, <span class="at">inits=</span>jags.inits.line,</span>
-<span id="cb71-3"><a></a>                             <span class="at">parameters.to.save=</span>jags.pars.line,</span>
-<span id="cb71-4"><a></a>                             <span class="at">model.file=</span><span class="st">"distsamp-line-mod.jag"</span>,</span>
-<span id="cb71-5"><a></a>                             <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb71-6"><a></a>                             <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb69-2"><a></a>jags.post.line <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.line, <span class="at">inits=</span>jags.inits.line,</span>
+<span id="cb69-3"><a></a>                             <span class="at">parameters.to.save=</span>jags.pars.line,</span>
+<span id="cb69-4"><a></a>                             <span class="at">model.file=</span><span class="st">"distsamp-line-mod.jag"</span>,</span>
+<span id="cb69-5"><a></a>                             <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb69-6"><a></a>                             <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(jags.post.line)<span class="sc">$</span>quantile, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a></a><span class="fu">round</span>(<span class="fu">summary</span>(jags.post.line)<span class="sc">$</span>quantile, <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   2.5%      25%      50%      75%    97.5%
-alpha0            2.859    2.905    2.930    2.955    3.000
-alpha1           -0.576   -0.535   -0.514   -0.494   -0.456
-beta0             1.923    2.003    2.044    2.085    2.168
-beta1             0.924    0.987    1.021    1.057    1.118
-deviance        767.462  778.736  784.953  791.727  805.744
-totalAbundance 1925.000 2050.750 2112.000 2178.000 2306.000</code></pre>
+alpha0            2.857    2.905    2.928    2.952    3.003
+alpha1           -0.578   -0.536   -0.515   -0.494   -0.458
+beta0             1.915    2.004    2.046    2.085    2.161
+beta1             0.930    0.990    1.022    1.055    1.119
+totalAbundance 1921.975 2045.000 2112.000 2181.000 2314.025</code></pre>
 </div>
 </div>
 </section>
 <section id="traceplots-and-density-plots" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a></a><span class="fu">plot</span>(jags.post.line[,jags.pars.line[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a></a><span class="fu">plot</span>(jags.post.line[,jags.pars.line[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-distsamp-HDS_files/figure-revealjs/bugs-plot1-rem2-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="traceplots-and-density-plots-1" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a></a><span class="fu">plot</span>(jags.post.line[,jags.pars.line[<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a></a><span class="fu">plot</span>(jags.post.line[,jags.pars.line[<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-distsamp-HDS_files/figure-revealjs/bugs-plot2-rem2-1.png" class="quarto-figure quarto-figure-center r-stretch"></section></section>

@@ -8,13 +8,17 @@ fluidPage(
     width=3),
     mainPanel(
         fluidRow(
-            column(6, plotOutput('gx', inline=TRUE)),
-            column(6, plotOutput('px', inline=TRUE)),
+            column(4, plotOutput('gx', inline=TRUE)),
+            column(4, plotOutput('px', inline=TRUE)),
+            column(4, plotOutput('gxpx', inline=TRUE))
         ),
         fluidRow(
-            column(8, plotOutput('gxpx', inline=TRUE)),
-            h4("Average detection prob\n"),
-            tableOutput('pbar')
+            column(4),
+            column(4, 
+                   h4("Average detection prob\n"),
+                   tableOutput('pbar'),
+            column(4),
+            )
         )
     )
 )

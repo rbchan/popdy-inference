@@ -23,7 +23,7 @@ rsconnect::migrateToConnectCloud(
   appPath = "shiny",
   contentId = "01a0d342-62e7-2e67-b9bc-3d69064dd322"
 )
-    
+
 ## rsconnect::migrateToConnectCloud(
 ##   appPath = "shiny",
 ##   contentId = "abc123",

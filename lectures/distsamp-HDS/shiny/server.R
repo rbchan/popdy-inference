@@ -6,7 +6,7 @@ function(input, output, session) {
              ylim=c(0, 1), col="blue", lwd=2,
              xlab="Distance (x)", ylab="g(x)",
              main="Detection probability", cex.main=1)
-    }, width=288, height=288)
+    }, width=252, height=252)
 
     output$px <- renderPlot({
         if(input$transect=="Line transect") {
@@ -14,15 +14,15 @@ function(input, output, session) {
                  from=0, to=input$distanceMax, ylim=c(0, 2/input$distanceMax),
                  col="orange", lwd=2,
                  xlab="Distance (x)", ylab="p(x)",
-                 main="p(animal occurs at distance x)", cex.main=1)
+                 main="p(occurs at distance x)", cex.main=1)
         } else {
             plot(function(x) 2*x/input$distanceMax^2,
                  from=0, to=input$distanceMax, ylim=c(0, 2/input$distanceMax),
                  col="orange", lwd=2,
                  xlab="Distance (x)", ylab="p(x)",
-                 main="p(animal occurs at distance x)", cex.main=1)
+                 main="p(occurs at distance x)", cex.main=1)
         }
-    }, width=288, height=288)
+    }, width=252, height=252)
 
     output$gxpx <- renderPlot({
         sig <- input$sigma
@@ -31,15 +31,15 @@ function(input, output, session) {
                  from=0, to=input$distanceMax, ylim=c(0, 1/input$distanceMax),
                  col="seagreen", lwd=2,
                  xlab="Distance (x)", ylab="g(x)p(x)",
-                 main="p(animal occurs and is detected at distance x)", cex.main=1)
+                 main="p(occurs and detected at distance x)", cex.main=1)
         } else {
             plot(function(x) exp(-x^2 / (2*sig^2))*(2*x/input$distanceMax^2),
                  from=0, to=input$distanceMax, ylim=c(0, 2/input$distanceMax),
                  col="seagreen", lwd=2,
                  xlab="Distance (x)", ylab="g(x)p(x)",
-                 main="p(animal occurs and detected at dist x)", cex.main=1)
+                 main="p(occurs and detected at dist x)", cex.main=1)
         }
-    }, width=288, height=288)
+    }, width=252, height=252)
 
     output$pbar <- renderTable({
         sig <- input$sigma
@@ -52,7 +52,7 @@ function(input, output, session) {
         pbar <- integrate(gp, lower=0, upper=input$distanceMax)$value
         pbarOut <- rbind("pbar" = pbar)
         return(pbarOut)
-    }, rownames=TRUE, colnames=FALSE)
+    }, rownames=TRUE, colnames=FALSE, bordered=TRUE)
     
     
 }
