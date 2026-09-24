@@ -693,7 +693,7 @@ plot(function(x) exp(-x^2/(2*40^2)), 0, 100, xlab="Dist", ylab="p",
 ## Prediction in 'unmarked'
 
 ::: {style='font-size: 80%;'}
-```{r, echo=-1}
+```{r}
 #| label: pred-sigma2-2
 #| echo: false
 #| fig-width: 7
@@ -1126,7 +1126,7 @@ Create a self-contained R script or Rmarkdown file to do the following:
   
 - Fit a distance sampling model with a half-normal detection
      function and the following covariates to the black-throated blue
-      warbler data (`btbw\_data\_distsamp.csv`) in 'unmarked' and
+      warbler data (`btbw_data_distsamp.csv`) in 'unmarked' and
       'JAGS':
   * Density covariates: `Elevation, UTM.N, UTM.W`
   * Detection covariates: `Wind, Noise`
@@ -1138,7 +1138,7 @@ Create a self-contained R script or Rmarkdown file to do the following:
   
 Suggestions:
   
-- Convert response variables to matrix with \inr{as.matrix}
+- Convert response variables to matrix with `as.matrix`
 - Standardize covariates
   
 

@@ -1355,7 +1355,7 @@
     "href": "lectures/distsamp-HDS/lecture-distsamp-HDS.html#assignment-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assignment",
-    "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nFit a distance sampling model with a half-normal detection function and the following covariates to the black-throated blue warbler data (btbw\\_data\\_distsamp.csv) in ‘unmarked’ and ‘JAGS’:\n\nDensity covariates: Elevation, UTM.N, UTM.W\nDetection covariates: Wind, Noise\nResponse: btbw0_20, btbw20_40, btbw40_60, btbw60_80, btbw80_100\n\nUsing the model fitted in ‘unmarked’, create two graphs of the predictions: one for density and the other for the scale parameter (\\(\\sigma\\)).\n\nSuggestions:\n\nConvert response variables to matrix with \nStandardize covariates\n\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday."
+    "text": "Assignment\n\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nFit a distance sampling model with a half-normal detection function and the following covariates to the black-throated blue warbler data (btbw_data_distsamp.csv) in ‘unmarked’ and ‘JAGS’:\n\nDensity covariates: Elevation, UTM.N, UTM.W\nDetection covariates: Wind, Noise\nResponse: btbw0_20, btbw20_40, btbw40_60, btbw60_80, btbw80_100\n\nUsing the model fitted in ‘unmarked’, create two graphs of the predictions: one for density and the other for the scale parameter (\\(\\sigma\\)).\n\nSuggestions:\n\nConvert response variables to matrix with as.matrix\nStandardize covariates\n\nUpload your .R, .Rmd, or .qmd file to ELC by 5:00pm on Tuesday."
   },
   {
     "objectID": "lectures/occupancyII/lecture-occupancyII.html#section",
