@@ -424,18 +424,25 @@
 <p>12.5% chance of detecting an individual within 100 m. <br></p>
 </div>
 </section>
-<section id="shiny-app" class="slide level2" style="margin: 0;">
-<h2>Shiny App</h2>
-<p><br></p>
+<section id="shiny-app" class="slide level2">
+<h2><a href="https://rbchan-distance-sampling.share.connect.posit.cloud/" style="font-size: 70%;">Shiny App</a></h2>
+<!-- This CSS block only overrides padding while this specific slide is active -->
+<style>
+.reveal .slides section.present {
+  padding: 0 !important;
+}
+</style>
 <!-- ::: {.r-fit-text} -->
+<!-- <center> -->
 <!-- [Distance Sampling Shiny App](https://richard-chandler.shinyapps.io/distance-sampling/) -->
+<!-- </center> -->
 <iframe src="https://richard-chandler.shinyapps.io/distance-sampling/" width="100%" height="500px" style="border:none;">
 </iframe>
 <!-- ::: -->
 </section>
 <section id="conventional-vs-hierarchical-distance-sampling" class="slide level2">
 <h2><span style="font-size: 80%;">Conventional vs hierarchical distance sampling</span></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p><em>Conventional</em> distance sampling</p>
 <ul>
 <li>Focus is on estimation of detection function parameters and density</li>
@@ -469,7 +476,7 @@
 \]</span></p>
 </div>
 <div class="fragment">
-<div style="font-size: 65%;">
+<div style="font-size: 60%;">
 <p><span class="math inline">\(\lambda_i\)</span> – Expected value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(N_i\)</span> – Realized value of abundance at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(\sigma_{i}\)</span> – Scale parameter of detection function <span class="math inline">\(g(x)\)</span> at site <span class="math inline">\(i\)</span> <br> <span class="math inline">\(\pi(x,\sigma_i)\)</span> – Function computing multinomial cell probs <br> <span class="math inline">\(y_{ij}\)</span> – count for distance bin <span class="math inline">\(j\)</span> (final count is unobserved) <br> <span class="math inline">\(w_1\)</span>, <span class="math inline">\(w_2\)</span>, <span class="math inline">\(w_3\)</span> – site covariates</p>
 </div>
 </div>

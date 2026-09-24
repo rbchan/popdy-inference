@@ -274,12 +274,19 @@ gp <- function(x) g(x)*pdf(x)
 :::
 
 
-## Shiny App {style="margin: 0;"}
+## [Shiny App](https://rbchan-distance-sampling.share.connect.posit.cloud/){style="font-size: 70%;"}
 
-<br>
+<!-- This CSS block only overrides padding while this specific slide is active -->
+<style>
+.reveal .slides section.present {
+  padding: 0 !important;
+}
+</style>
 
 <!-- ::: {.r-fit-text} -->
+<!-- <center> -->
 <!-- [Distance Sampling Shiny App](https://richard-chandler.shinyapps.io/distance-sampling/) -->
+<!-- </center> -->
 
 <iframe src="https://richard-chandler.shinyapps.io/distance-sampling/" width="100%" height="500px" style="border:none;"></iframe>
 
@@ -288,7 +295,7 @@ gp <- function(x) g(x)*pdf(x)
 
 ## [Conventional vs hierarchical distance sampling]{style="font-size: 80%;"}
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 *Conventional* distance sampling
   
 * Focus is on estimation of detection function parameters and density
@@ -333,7 +340,7 @@ $$
 
 
 ::: {.fragment}
-::: {style='font-size: 65%;'}
+::: {style='font-size: 60%;'}
 
 $\lambda_i$ -- Expected value of abundance at site $i$ <br>
 $N_i$ -- Realized value of abundance at site $i$ <br>
