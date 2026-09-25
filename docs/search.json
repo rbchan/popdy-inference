@@ -1895,5 +1895,271 @@
     "title": "Inference for models of Fish and Wildlife Population Dynamics",
     "section": "Lectures",
     "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - Binomial N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\nWeek 5 - Model selection and model fit\n\nLecture 6 - Model selection and model fit\n\n\n\nWeek 6 - Multinomial N-mixture models\n\nLecture 7 - Multinomial N-mixture models\nLecture 8 - Distance sampling\n\n\n\n\nDynamic models"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#section",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#section",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "",
+    "text": "Non-spatial mark-recapture for  estimating population size\n\n\nWILD(FISH) 8390  Inference for Models of Fish and Wildlife Population Dynamics"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#outline",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#outline",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Outline",
+    "text": "Outline"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-overview",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-overview",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Mark-recapture overview",
+    "text": "Mark-recapture overview\nUntil now, we’ve focused on models for data on aggregated quantities like abundance and occupancy.\n\nNow we will talk about data on uniquely identifiable individuals.\n\nThis is nice because all individuals are different, and we’re often interested in these differences…\n…even when our primary goal is inference on population-level parameters like abundance and density."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#closed-populations",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#closed-populations",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Closed populations",
+    "text": "Closed populations\nFor this lecture, we will assume population closure:\n\nNo births or deaths during the time of sampling (demographic closure)\nNo permanent immigration or emigration (geographic closure)\n\n\nThere are several other assumptions that depend on the specific model being employed, including:\n\nNo misidentification\nNo band/tag loss\netc…\n\n\n\nLater, we will relax the closure assumption so that we can study survival, recruitment, and movement."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-overview-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-overview-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Mark-recapture overview",
+    "text": "Mark-recapture overview\nThe simplest estimator of abundance is \\[\n    \\hat{N} = \\frac{n}{\\hat{p}}\n\\] where \\(n\\) is the number of individuals detected, \\(p\\) is detection probability, and \\(E(n)=Np\\).\nIn distance sampling, we modeled detection probability as a function of distance, and we replaced \\(p\\) with average detection probability.\nFor the simplest mark-recapture problems, \\(p\\) is a constant (scalar) and we estimate it by trapping on multiple occasions and marking and recapturing as we go."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#classical-approaches",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#classical-approaches",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Classical approaches",
+    "text": "Classical approaches\nLincoln-Peterson\n\n\\(J=2\\) occasions\nData are:\n\n\\(n_1\\) – number of individuals captured on first occasion\n\\(n_2\\) – number of individuals captured on second occasion\n\\(m_2\\) – number of recaptures\n\n\nEstimator is \\(\\hat{N} = n_1n_2/m_2\\)\n\nClosed population models\n\nUsually better to have \\(J&gt;2\\) occasions\nAllows for assessment of behavioral effects, individual heterogeneity, etc…"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-data",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Mark-recapture data",
+    "text": "Mark-recapture data\nMark-recapture data are often called “capture histories.” Here’s an example with \\(n=6\\) animals captured on \\(J=3\\) occasions.\nIndividual & 1 & 2 & 3 —— | – | – | – 1 | 0 | 0 | 1 2 | 1 | 1 | 1 3 | 0 | 1 | 0 4 | 0 | 1 | 1 5 | 1 | 0 | 0 6 | 0 | 0 | 1\nHow do we estimate \\(p\\) (and \\(N\\)) from these data?\nYou can get a sense for \\(p\\) (and \\(N\\)) by looking at the data.\n\nIf \\(p\\approx 1\\), most individuals would be captured on all 3 occasions, and few would go undetected\nIf \\(p\\approx 0\\), few individuals would be captured more than once, and many would go undetected"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#closed-population-model-if-we-knew-n",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#closed-population-model-if-we-knew-n",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Closed population model (if we knew N)",
+    "text": "Closed population model (if we knew N)\nState model\nThere isn’t one! \\(N\\) is often treated as a constant, although we sometimes put a Poisson or binomial prior on it.\nObservation model (supposing \\(N\\) was known)\n\\[\n    y_{ij} \\sim \\mathrm{Bernoulli}(p) \\;\\; \\mathrm{for}\\, i=1,\\dots,N\n\\]\nDefinitions - \\(N\\) – Population size - y_{ij}$ – Capture histories, indicating if individual \\(i\\) was captured on occasion \\(j\\) - \\(p\\) – Capture probability\nThe problem with this formulation is that we don’t observe the “all zero” encounter histories (and thus we don’t know \\(N\\)). As a result, the Bernoulli assumption isn’t valid, and we need to develop a model that describes how many individuals we failed to capture."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#closed-population-estimation-options",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#closed-population-estimation-options",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Closed population estimation options",
+    "text": "Closed population estimation options\nConditional likelihood\n\nEstimate \\(p\\), and then estimate \\(N\\) as a derived quantity.\nMost software is based on the work by Huggins, which allows for continuous covariates.\n\nJoint likelihood\n\nEstimate \\(N\\) and \\(p\\) jointly\n\nData augmentation\n\nTack on many “all zero” encounter histories and estimate how many of them actually occurred\nUsually, but not necessarily, used in Bayesian inference"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#joint-likelihood",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#joint-likelihood",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Joint likelihood",
+    "text": "Joint likelihood\nThe joint likelihood is based on the multinomial distribution, with the “all-zero” encounter history being unobserved. \\[\n    \\{f_1, \\dots, f_{K+1}\\} \\sim \\mathrm{Multinomial}(N, \\pi_1, \\dots, \\pi_{K+1}) \\;\\;\n\\] where \\(\\{f_1, \\dots, f_K\\}\\) are the frequencies of the observable capture histories.\nHere’s an example with \\(J=3\\) capture occasions. \n\n\n\nCapture history\nMultinomial cell probability\n\n\n\n\n100\n\\(\\pi_1=p_1(1-p_2)(1-p_3)\\)\n\n\n010\n\\(\\pi_2=(1-p_1)p_2(1-p_3)\\)\n\n\n001\n\\(\\pi_3=(1-p_1)(1-p_2)p_3\\)\n\n\n110\n\\(\\pi_4=p_1p_2(1-p_3)\\)\n\n\n101\n\\(\\pi_5=p_1(1-p_2)p_3\\)\n\n\n011\n\\(\\pi_6=(1-p_1)p_2p_3\\)\n\n\n111\n\\(\\pi_7 = p_1p_2p_3\\)\n\n\n000\n\\(\\pi_0 = \\prod_j 1-p_j\\)"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-variations",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-variations",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model variations",
+    "text": "Model variations\nMore important than the estimation approach, is identification of the sources of variation in capture probability (\\(p\\)).\nOtis et al. (1978) identified several model variations:\n\n\\(M_0\\) – \\(p\\) is constant\n\\(M_t\\) – unique \\(p\\) for each capture occasion\n\\(M_b\\) – behavioral response with \\(p\\) different than recapture probability \\(c\\)\n\\(M_h\\) – individual heterogeneity in \\(p\\)\nFinite mixture models\nContinuous mixture models (not available in RMark)\n\nThese can be combined, but beware of identifiability issues. See Otis et al. (1978) for details.\nLater we’ll talk about “individual covariate” models."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#software-options",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#software-options",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Software options",
+    "text": "Software options\nProgram MARK\n\nHas the most model types\nWritten for Windows, but can be executed on other platforms\n\nR package ‘RMark’\n\nFunction mark runs MARK from R.\n\nR package ‘marked’\n\nIncludes CJS and JS models\n\nR package ‘mra’\n\nIncludes closed-population, CJS, and JS models\n\nR package ‘Rcapture’\n\nIncludes closed-population\n\nR package ‘unmarked’\n\nLikelihood-based data augmentation with \n\nR package ‘secr’\n\nDesigned for spatially explicit models, but see"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-m0",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-m0",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model M0",
+    "text": "Model M0\nParameters\n\nN &lt;- 100\np &lt;- 0.2\n\nAll capture histories (for captured and uncaptured individuals)\n\nJ &lt;- 4  ## Occasions\ny.all &lt;- matrix(NA, N, J)\nfor(i in 1:N) {\n    y.all[i,] &lt;- rbinom(J, 1, p)\n}\n\nObserved capture histories (data)\n\ncaptured &lt;- rowSums(y.all)&gt;0\n(n &lt;- sum(captured))\n\n[1] 54\n\ny &lt;- y.all[captured,]\ny[1:3,]\n\n     [,1] [,2] [,3] [,4]\n[1,]    0    1    0    0\n[2,]    1    0    0    0\n[3,]    0    0    1    0"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#summary-stats",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#summary-stats",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Summary stats",
+    "text": "Summary stats\nCapture history frequencies\n\nhistories &lt;- apply(y, 1, paste, collapse=\"\")\nsort(table(histories))\n\nhistories\n0011 0101 1100 1010 1101 0110 1001 0001 0010 0100 1000 \n   1    1    1    2    2    4    4    7   10   10   12 \n\n\nDetection frequencies\n\ny.tilde &lt;- rowSums(y)\nsort(table(y.tilde))\n\ny.tilde\n 3  2  1 \n 2 13 39"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mt-temporal-variation",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mt-temporal-variation",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mt – Temporal variation",
+    "text": "Model Mt – Temporal variation\nCapture probability for each occasion\n\np.t &lt;- c(0.3, 0.5, 0.2, 0.4)\n\nAll capture histories (for captured and uncaptured individuals)\n\ny.all.Mt &lt;- matrix(NA, N, J)\nfor(i in 1:N) {\n    y.all.Mt[i,] &lt;- rbinom(J, 1, p.t) }\n\nObserved capture histories (data)\n\ncaptured.Mt &lt;- rowSums(y.all.Mt)&gt;0\nn.Mt &lt;- sum(captured.Mt)\ny.Mt &lt;- y.all.Mt[captured.Mt,]\ny.Mt[1:3,]\n\n     [,1] [,2] [,3] [,4]\n[1,]    1    0    1    0\n[2,]    1    1    1    0\n[3,]    1    0    0    0\n\ncolSums(y.Mt)\n\n[1] 28 53 22 38"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mb-behavioral-response",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mb-behavioral-response",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mb – Behavioral response",
+    "text": "Model Mb – Behavioral response\nCapture probability for each occasion\n\np.b &lt;- 0.3\nc &lt;- 0.5  ## Trap happy\n\nAll capture histories (for captured and uncaptured individuals)\n\ny.all.Mb &lt;- matrix(NA, N, J)\nprevcap &lt;- matrix(FALSE, N, J)\nfor(i in 1:N) {\n    y.all.Mb[i,1] &lt;- rbinom(1, 1, p.b)\n    for(j in 2:J) {\n        prevcap[i,j] &lt;- any(y.all.Mb[i,1:(j-1)]&gt;0)\n        prob &lt;- ifelse(prevcap[i,j], c, p.b)\n        y.all.Mb[i,j] &lt;- rbinom(1, 1, prob)\n    }\n}\n\nObserved capture histories (data)\n\ncaptured.Mb &lt;- rowSums(y.all.Mb)&gt;0\nn.Mb &lt;- sum(captured.Mb)\ny.Mb &lt;- y.all.Mb[captured.Mb,]\n## prevcap[1:3,]"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-finite-mixture",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-finite-mixture",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mh – Finite mixture",
+    "text": "Model Mh – Finite mixture\nThere are many flavors of \\(M_h\\). This one assumes there are two (unknown) groups of individuals with different capture probs.\n\nmixture.prob &lt;- 0.6\ngroup &lt;- rbinom(N, 1, mixture.prob)    ## Two groups\np.Mh.mix &lt;- ifelse(group==0, 0.2, 0.7) ## Two-point mixture\n\nAll capture histories (for captured and uncaptured individuals)\n\ny.all.Mh.mix &lt;- matrix(NA, N, J)\nfor(i in 1:N) {\n    y.all.Mh.mix[i,] &lt;- rbinom(J, 1, p.Mh.mix[i])\n}\n\nObserved capture histories (data)\n\ncaptured.Mh.mix &lt;- rowSums(y.all.Mh.mix)&gt;0\nn.Mh.mix &lt;- sum(captured.Mh.mix)\ny.Mh.mix &lt;- y.all.Mh.mix[captured.Mh.mix,]"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-individual-heterogeneity",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-individual-heterogeneity",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mh – Individual heterogeneity",
+    "text": "Model Mh – Individual heterogeneity\nHere’s another flavor of \\(M_h\\): logit-normal distribution for \\(p\\).\n\nlogit.p.bar &lt;- -1  ## Mean p on logit scale\nlogit.p.var &lt;- 1   ## SD of p on logit scale\np.h &lt;- plogis(rnorm(N, logit.p.bar, logit.p.var))\n\nAll capture histories (for captured and uncaptured individuals)\n\ny.all.Mh &lt;- matrix(NA, N, J)\nfor(i in 1:N) {\n    y.all.Mh[i,] &lt;- rbinom(J, 1, p.h[i])\n}\n\nObserved capture histories (data)\n\ncaptured.Mh &lt;- rowSums(y.all.Mh)&gt;0\nn.Mh &lt;- sum(captured.Mh)\ny.Mh &lt;- y.all.Mh[captured.Mh,]\n#y.Mh[1:3,]"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "R package `RMark’",
+    "text": "R package `RMark’\nBefore you can use ‘RMark’, you have to install MARK.\nThe main MARK page is here\nInstructions for Linux and Mac users\nHeather Gaya’s tutorial\nLots of good information about closed population mark-recapture"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark-model-m0",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark-model-m0",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "R package ‘RMark’ – Model M0",
+    "text": "R package ‘RMark’ – Model M0\nFit the model and set capture probability equal to recapture probability (\\(p=c\\)) using the share argument.\n\n## install.packages(\"RMark\") ## Must install MARK too!!\nlibrary(RMark)\ny.ch &lt;- data.frame(ch=apply(y, 1, paste, collapse=\"\"))\nmark.M0 &lt;- mark(data=y.ch, model=\"Closed\", silent=TRUE,\n                model.parameters=list(p=list(formula=~1,share=TRUE)))\n\nEstimates of \\(p\\) and \\(n_0\\) (called \\(f_0\\) in MARK)\n\nmark.M0$results$real      \n\n              estimate         se        lcl        ucl fixed note\np g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           \nf0 g1 a0 t1 42.6208640 16.7216950 20.3019990 89.4758200           \n\n\nEstimate of \\(N\\)\n\nmark.M0$results$derived   \n\n$`N Population Size`\n  estimate      se    lcl      ucl\n1 96.62086 16.7217 74.302 143.4758"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark-model-mt",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark-model-mt",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "R package `RMark’ – Model Mt",
+    "text": "R package `RMark’ – Model Mt\n\nyt.ch &lt;- data.frame(ch=apply(y.Mt, 1, paste, collapse=\"\"))\nmark.Mt &lt;- mark(data=yt.ch, model=\"Closed\", silent=TRUE,\n                model.parameters=list(p=list(formula=~time,share=TRUE)))\n\nEstimates of \\(p_j\\) and \\(n_0\\) (called \\(f_0\\) in MARK)\n\nmark.Mt$results$real      \n\n              estimate        se       lcl        ucl fixed note\np g1 t1      0.2740198 0.0473865 0.1913594  0.3757930           \np g1 t2      0.5186804 0.0592722 0.4035760  0.6318356           \np g1 t3      0.2153013 0.0428690 0.1429996  0.3108977           \np g1 t4      0.3718840 0.0532543 0.2746824  0.4806868           \nf0 g1 a0 t1 17.1823890 6.4441809 8.4388334 34.9852260           \n\n\nEstimate of \\(N\\)\n\nmark.Mt$results$derived   \n\n$`N Population Size`\n  estimate       se      lcl      ucl\n1 102.1824 6.444181 93.43883 119.9852"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark-model-mb",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#r-package-rmark-model-mb",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "R package `RMark’ – Model Mb",
+    "text": "R package `RMark’ – Model Mb\n\nyb.ch &lt;- data.frame(ch=apply(y.Mb, 1, paste, collapse=\"\"))\nmark.Mb &lt;- mark(data=yb.ch, model=\"Closed\", silent=TRUE) ## Default model\n\nEstimates of \\(p\\), \\(c\\), and \\(n_0\\) (called \\(f_0\\) in MARK)\n\nmark.Mb$results$real      \n\n              estimate         se       lcl         ucl fixed note\np g1 t1      0.2459652  0.0827673 0.1197363   0.4389147           \nc g1 t2      0.4031008  0.0431879 0.3220497   0.4898126           \nf0 g1 a0 t1 33.4146850 23.1165880 9.8085806 113.8331000           \n\n\nEstimate of \\(N\\)\n\nmark.Mb$results$derived   \n\n$`N Population Size`\n  estimate       se      lcl      ucl\n1 104.4147 23.11659 80.80858 184.8331"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#rmark-model-mh",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#rmark-model-mh",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "‘RMark’ – Model Mh",
+    "text": "‘RMark’ – Model Mh\nThis is a two-point mixture model.\n\nyh.ch &lt;- data.frame(ch=apply(y.Mh.mix, 1, paste, collapse=\"\"))\nmark.Mh &lt;- mark(data=yh.ch, silent=TRUE, model=\"HetClosed\", # \"HugHet\", \n                model.parameters=list(p=list(formula=~mixture,share=TRUE)))\n\nEstimates of \\(p\\) and \\(\\pi\\), the proportion of individuals in group 2.\n\nmark.Mh$results$real      \n\n             estimate        se       lcl        ucl fixed note\npi g1 m1    0.6554419 0.1938704 0.2612437  0.9109758           \np g1 t1 m1  0.3985716 0.1171103 0.2027864  0.6332369           \np g1 t1 m2  0.8435083 0.1105444 0.5107922  0.9653087           \nf0 g1 a0 t1 7.6766948 5.7418263 2.0786066 28.3515140           \n\n\nEstimate of \\(N\\)\n\nmark.Mh$results$derived   \n\n$`N Population Size`\n  estimate       se      lcl      ucl\n1 94.67669 5.741826 89.07861 115.3515"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data augmentation",
+    "text": "Data augmentation\nData augmentation is strange.\nWe add “all zero” capture histories to our data, then we try to estimate how many of them are real.\nThe total number of observed and augmented encounter histories is \\(M\\).\nWe define the model in terms of a binary indicator variable \\(z_i\\), such that \\(N=\\sum_{i=1}^M z_i\\).\nWe know \\(z_i=1\\) for the \\(n\\) captured individuals."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-2",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data augmentation",
+    "text": "Data augmentation\nWe can think about the problem like this:\n\n\n\nIndividual\n1\n2\n3\nz\n\n\n\n\n1\n0\n0\n1\n1\n\n\n2\n1\n1\n1\n1\n\n\n3\n0\n1\n0\n1\n\n\n4\n0\n1\n1\n1\n\n\n5\n1\n0\n0\n1\n\n\n\\(\\dots\\)\n\\(\\dots\\)\n\\(\\dots\\)\n\\(\\dots\\)\n1\n\n\n\\(n\\)\n0\n0\n1\n1\n\n\n\\(n+1\\)\n0\n0\n0\n?\n\n\n\\(n+2\\)\n0\n0\n0\n?\n\n\n\\(\\dots\\)\n\\(\\dots\\)\n\\(\\dots\\)\n\\(\\dots\\)\n?\n\n\n\\(N\\)\n0\n0\n0\n?\n\n\n\\(N+1\\)\n0\n0\n0\n?\n\n\n\\(N+2\\)\n0\n0\n0\n?\n\n\n\\(\\dots\\)\n\\(\\dots\\)\n\\(\\dots\\)\n\\(\\dots\\)\n?\n\n\n\\(M\\)\n0\n0\n0\n?"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-3",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-3",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data augmentation",
+    "text": "Data augmentation\nThe model: \\[\n  z_i \\sim \\mathrm{Bern}(\\psi) \\\\\n  y_{ij} \\sim \\mathrm{Bern}(z_i \\times p_{ij}) \\\\\n  N=\\sum_{i=1}^M z_i\n\\]\nNote that this looks exactly like an occupancy model. \nBut why bother with augmentation?\n\nDA works for [all] varieties of mark-recapture models\nMakes it easy to incorporate individual-covariates… including distance and location."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-4",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#data-augmentation-4",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Data augmentation",
+    "text": "Data augmentation\nFirst, let’s augment the data simulated under model \\(M_b\\), with \\(M=200\\).\n\nM &lt;- 200\ny.aug &lt;- matrix(0, M, J)\ny.aug[1:nrow(y.Mb),] &lt;- y.Mb\n\nWe also need to augment the prevcap object.\n\nprevcap.aug &lt;- matrix(FALSE, M, J)\nprevcap.aug[1:nrow(y.Mb),] &lt;- prevcap[captured.Mb,]\nprevcap.aug &lt;- ifelse(prevcap.aug, \"Yes\", \"No\")"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#bayesian-data-augmentation",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#bayesian-data-augmentation",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian data augmentation",
+    "text": "Bayesian data augmentation\nFor Bayesian inference, we need priors on \\(\\psi\\) and \\(p\\). \\[\n  z_i \\sim \\mathrm{Bern}(\\psi) \\\\\n  y_{ij} \\sim \\mathrm{Bern}(z_i \\times p) \\\\\n  N = \\sum_{i=1}^M z_i\n\\]\nA uniform prior on \\(\\psi\\) results in a discrete uniform prior on \\(N\\). We can change the prior for \\(N\\) by changing the prior on \\(\\psi\\), recognizing: \\[\n    E(N)=M\\psi\n\\]"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-m0-data-augmentation",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-m0-data-augmentation",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model M0 – data augmentation",
+    "text": "Model M0 – data augmentation\n\n\nmodel {\n\np ~ dunif(0,1)             ## Capture probability\npsi ~ dunif(0,1)           ## Data augmentation parameter\n\nfor(i in 1:M) {\n  z[i] ~ dbern(psi)        ## DA indicator\n  for(j in 1:J) {\n    y[i,j] ~ dbern(z[i]*p) ## Model for the capture histories\n  }\n}\n\nN &lt;- sum(z)                ## Abundance\n\n}"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-m0-data-augmentation-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-m0-data-augmentation-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model M0 – data augmentation",
+    "text": "Model M0 – data augmentation\nData\n\ny.aug &lt;- matrix(0, M, J)\ny.aug[1:n,] &lt;- y\njags.data.M0 &lt;- list(y=y.aug, M=M, J=J)\n\nInits and parameters\n\nji.M0 &lt;- function() list(z=rep(1,M), psi=runif(1), p=runif(1))\njp.M0 &lt;- c(\"p\", \"psi\", \"N\")\n\nMCMC\n\nlibrary(jagsUI)\njags.post.M0 &lt;- jags.basic(data=jags.data.M0, inits=ji.M0,\n                           parameters.to.save=jp.M0,\n                           model.file=\"M0-aug.jag\",\n                           n.chains=3, n.adapt=100, n.burnin=0,\n                           n.iter=2000, parallel=TRUE)"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#traceplots-and-density-plots",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#traceplots-and-density-plots",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Traceplots and density plots",
+    "text": "Traceplots and density plots\n\nplot(jags.post.M0[,jp.M0])"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mb-data-augmentation",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mb-data-augmentation",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mb – data augmentation",
+    "text": "Model Mb – data augmentation\n\n\nmodel {\n\np ~ dunif(0, 1)     ## Capture prob\nc ~ dunif(0, 1)     ## Recapture prob\n\npsi ~ dunif(0,1)    ## Data augmentation parameter\n\nfor(i in 1:M) {     \n  z[i] ~ dbern(psi) ## DA indicator\n  for(j in 1:J) {\n    pc[i,j] &lt;- ifelse(prevcap[i,j]==0, p, c) ## First cap or recap?\n    y[i,j] ~ dbern(z[i]*pc[i,j])\n  }\n}\n\nN &lt;- sum(z)\n\n}"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mb-data-augmentation-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mb-data-augmentation-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mb – data augmentation",
+    "text": "Model Mb – data augmentation\nData, inits, parameters to monitor\n\njags.data.Mb &lt;- jags.data.M0\njags.data.Mb$y[1:nrow(y.Mb),] &lt;- y.Mb\njags.data.Mb$prevcap &lt;- ifelse(prevcap.aug==\"Yes\", 1, 0)\nji.Mb &lt;- function() list(z=rep(1,M), psi=runif(1), p=runif(1), c=runif(1))\njp.Mb &lt;- c(\"p\", \"c\", \"psi\", \"N\")\n\nMCMC\n\njags.post.Mb &lt;- jags.basic(data=jags.data.Mb, inits=ji.Mb,\n                           parameters.to.save=jp.Mb,\n                           model.file=\"Mb-aug.jag\",\n                           n.chains=3, n.adapt=100, n.burnin=0,\n                           n.iter=2000, parallel=TRUE)"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#traceplots-and-density-plots-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#traceplots-and-density-plots-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Traceplots and density plots",
+    "text": "Traceplots and density plots\n\nplot(jags.post.Mb[,jp.Mb])"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-finite-mixture-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-finite-mixture-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mh – finite mixture",
+    "text": "Model Mh – finite mixture\n\n\nmodel {\n\np1 ~ dunif(0, 1)     ## Capture prob, group 1\np2 ~ dunif(0, 1)     ## Capture prob, group 2\nmixprob ~ dunif(0,1) ## Finite mixture prob\npsi ~ dunif(0,1)     ## Data augmentation parameter\n\nfor(i in 1:M) {     \n  z[i] ~ dbern(psi)  ## DA indicator\n  group[i] ~ dbern(mixprob)           ## Group 1 or 2?\n  p[i] &lt;- ifelse(group[i]==0, p1, p2) ## p depends on group\n  for(j in 1:J) {\n    y[i,j] ~ dbern(z[i]*p[i])\n  }\n}\n\nN &lt;- sum(z)\n\n}"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-logit-normal",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#model-mh-logit-normal",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Model Mh – logit normal",
+    "text": "Model Mh – logit normal\n\n\nmodel {\n\nlp.mean ~ dnorm(0,0.1)   ## Mean of logit(p)\nlp.var ~ dexp(1)         ## Variance of logit(p)\npsi ~ dunif(0,1)         ## Data augmentation parameter\n\nfor(i in 1:M) {     \n  z[i] ~ dbern(psi)      ## DA indicator\n  lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect, p on logit\n  p[i] &lt;- ilogit(lp[i])  ## Capture prob for individual i\n  for(j in 1:J) {\n    y[i,j] ~ dbern(z[i]*p[i])\n  }\n}\n\nN &lt;- sum(z)\n\n}"
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-summary",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#mark-recapture-summary",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Mark-recapture summary",
+    "text": "Mark-recapture summary\nWe assume that variation in \\(p\\) arises from changes over time, behavioral effects, or random individual heterogeneity.\nIndividual heterogeneity models pose estimation problems.\nA solution is to use individual covariates to explain the variation, rather than random effects. But what covariates are important? And how do we know the covariates values for uncaptured individuals?\nWith spatial capture-recapture (SCR) models we will use [the unobserved distance between animals and traps] as a covariate, and we’ll use a spatial point process model for animal locations."
+  },
+  {
+    "objectID": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#assignment-1",
+    "href": "lectures/cap-recap-nonspatial/lecture-cap-recap-nonspatial.html#assignment-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Assignment",
+    "text": "Assignment\nCreate a self-contained R script or Rmarkdown file to do the following:\n\nImport the Canada warbler mark-recapture data CAWAcaps_2018.csv and fit the following models in RMark and JAGS1:\n\nModel \\(M_0\\)\nModel \\(M_t\\)\nModel \\(M_h\\) – Finite mixture\nModel \\(M_h\\) – Logit-normal (JAGS only)\n\nCreate a table reporting point estimates and 95% CIs for \\(N\\) for each model fit in RMark and JAGS. Which model has the lowest AICc (RMark only)?\n\nUpload your .R or .Rmd file to ELC by 5:00pm on Tuesday.\n\n\nFor JAGS, use \\(M=800\\) but note if the posterior of \\(N\\) pushes up against \\(M\\)."
   }
 ]

@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.26">
+
+  <title>Inference for Models of Fish and Wildlife Population Dynamics – Non-spatial mark-recapture for &lt;br&gt; estimating population size</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+
+<section id="section" class="slide level2" data-content-align="center" style="font-size: 140%;">
+<h2></h2>
+<p><br></p>
+<center>
+<p>Non-spatial mark-recapture for <br> estimating population size</p>
+<p><br></p>
+<div style="font-size: 80%;">
+<p>WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
+</div>
+</center>
+</section>
+<section>
+
+<section id="outline" class="slide level2">
+<h2>Outline</h2>
+</section>
+<section id="mark-recapture-overview" class="slide level2">
+<h2>Mark-recapture overview</h2>
+<p>Until now, we’ve focused on models for data on aggregated quantities like abundance and occupancy.</p>
+<p><br></p>
+<p>Now we will talk about data on uniquely identifiable individuals.</p>
+<p><br></p>
+<p>This is nice because all individuals are different, and we’re often interested in these differences…</p>
+<p>…even when our primary goal is inference on population-level parameters like abundance and density.</p>
+</section>
+<section id="closed-populations" class="slide level2">
+<h2>Closed populations</h2>
+<p>For this lecture, we will assume population closure:</p>
+<ul>
+<li>No births or deaths during the time of sampling (demographic closure)</li>
+<li>No permanent immigration or emigration (geographic closure)</li>
+</ul>
+<div class="fragment">
+<p>There are several other assumptions that depend on the specific model being employed, including:</p>
+<ul>
+<li>No misidentification</li>
+<li>No band/tag loss</li>
+<li>etc…</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Later, we will relax the closure assumption so that we can study survival, recruitment, and movement.</p>
+</div>
+</section>
+<section id="mark-recapture-overview-1" class="slide level2">
+<h2>Mark-recapture overview</h2>
+<p>The simplest estimator of abundance is <span class="math display">\[
+    \hat{N} = \frac{n}{\hat{p}}
+\]</span> where <span class="math inline">\(n\)</span> is the number of individuals detected, <span class="math inline">\(p\)</span> is detection probability, and <span class="math inline">\(E(n)=Np\)</span>.</p>
+<p>In distance sampling, we modeled detection probability as a function of distance, and we replaced <span class="math inline">\(p\)</span> with average detection probability.</p>
+<p>For the simplest mark-recapture problems, <span class="math inline">\(p\)</span> is a constant (scalar) and we estimate it by trapping on multiple occasions and marking and recapturing as we go.</p>
+</section>
+<section id="classical-approaches" class="slide level2">
+<h2>Classical approaches</h2>
+<p>Lincoln-Peterson</p>
+<ul>
+<li><p><span class="math inline">\(J=2\)</span> occasions</p></li>
+<li><p>Data are:</p>
+<ul>
+<li><span class="math inline">\(n_1\)</span> – number of individuals captured on first occasion</li>
+<li><span class="math inline">\(n_2\)</span> – number of individuals captured on second occasion</li>
+<li><span class="math inline">\(m_2\)</span> – number of recaptures</li>
+</ul></li>
+</ul>
+<p>Estimator is <span class="math inline">\(\hat{N} = n_1n_2/m_2\)</span></p>
+<div class="fragment">
+<p>Closed population models</p>
+<ul>
+<li>Usually better to have <span class="math inline">\(J&gt;2\)</span> occasions</li>
+<li>Allows for assessment of behavioral effects, individual heterogeneity, etc…</li>
+</ul>
+</div>
+</section>
+<section id="mark-recapture-data" class="slide level2">
+<h2>Mark-recapture data</h2>
+<p>Mark-recapture data are often called “capture histories.” Here’s an example with <span class="math inline">\(n=6\)</span> animals captured on <span class="math inline">\(J=3\)</span> occasions.</p>
+<p>Individual &amp; 1 &amp; 2 &amp; 3 —— | – | – | – 1 | 0 | 0 | 1 2 | 1 | 1 | 1 3 | 0 | 1 | 0 4 | 0 | 1 | 1 5 | 1 | 0 | 0 6 | 0 | 0 | 1</p>
+<p>How do we estimate <span class="math inline">\(p\)</span> (and <span class="math inline">\(N\)</span>) from these data?</p>
+<p>You can get a sense for <span class="math inline">\(p\)</span> (and <span class="math inline">\(N\)</span>) by looking at the data.</p>
+<ul>
+<li>If <span class="math inline">\(p\approx 1\)</span>, most individuals would be captured on all 3 occasions, and few would go undetected</li>
+<li>If <span class="math inline">\(p\approx 0\)</span>, few individuals would be captured more than once, and many would go undetected</li>
+</ul>
+</section>
+<section id="closed-population-model-if-we-knew-n" class="slide level2">
+<h2>Closed population model (if we knew <em>N</em>)</h2>
+<p>State model</p>
+<p>There isn’t one! <span class="math inline">\(N\)</span> is often treated as a constant, although we sometimes put a Poisson or binomial prior on it.</p>
+<p>Observation model (supposing <span class="math inline">\(N\)</span> was known)</p>
+<p><span class="math display">\[
+    y_{ij} \sim \mathrm{Bernoulli}(p) \;\; \mathrm{for}\, i=1,\dots,N
+\]</span></p>
+<p>Definitions - <span class="math inline">\(N\)</span> – Population size - y_{ij}$ – Capture histories, indicating if individual <span class="math inline">\(i\)</span> was captured on occasion <span class="math inline">\(j\)</span> - <span class="math inline">\(p\)</span> – Capture probability</p>
+<p>The problem with this formulation is that we don’t observe the “all zero” encounter histories (and thus we don’t know <span class="math inline">\(N\)</span>). As a result, the Bernoulli assumption isn’t valid, and we need to develop a model that describes how many individuals we failed to capture.</p>
+</section>
+<section id="closed-population-estimation-options" class="slide level2">
+<h2>Closed population estimation options</h2>
+<p>Conditional likelihood</p>
+<ul>
+<li>Estimate <span class="math inline">\(p\)</span>, and then estimate <span class="math inline">\(N\)</span> as a derived quantity.</li>
+<li>Most software is based on the work by Huggins, which allows for continuous covariates.</li>
+</ul>
+<p>Joint likelihood</p>
+<ul>
+<li>Estimate <span class="math inline">\(N\)</span> and <span class="math inline">\(p\)</span> jointly</li>
+</ul>
+<p>Data augmentation</p>
+<ul>
+<li>Tack on many “all zero” encounter histories and estimate how many of them actually occurred</li>
+<li>Usually, but not necessarily, used in Bayesian inference</li>
+</ul>
+</section>
+<section id="joint-likelihood" class="slide level2">
+<h2>Joint likelihood</h2>
+<p>The joint likelihood is based on the multinomial distribution, with the “all-zero” encounter history being unobserved. <span class="math display">\[
+    \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
+\]</span> where <span class="math inline">\(\{f_1, \dots, f_K\}\)</span> are the frequencies of the observable capture histories.</p>
+<p>Here’s an example with <span class="math inline">\(J=3\)</span> capture occasions. <br></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Capture history</th>
+<th>Multinomial cell probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>100</td>
+<td><span class="math inline">\(\pi_1=p_1(1-p_2)(1-p_3)\)</span></td>
+</tr>
+<tr class="even">
+<td>010</td>
+<td><span class="math inline">\(\pi_2=(1-p_1)p_2(1-p_3)\)</span></td>
+</tr>
+<tr class="odd">
+<td>001</td>
+<td><span class="math inline">\(\pi_3=(1-p_1)(1-p_2)p_3\)</span></td>
+</tr>
+<tr class="even">
+<td>110</td>
+<td><span class="math inline">\(\pi_4=p_1p_2(1-p_3)\)</span></td>
+</tr>
+<tr class="odd">
+<td>101</td>
+<td><span class="math inline">\(\pi_5=p_1(1-p_2)p_3\)</span></td>
+</tr>
+<tr class="even">
+<td>011</td>
+<td><span class="math inline">\(\pi_6=(1-p_1)p_2p_3\)</span></td>
+</tr>
+<tr class="odd">
+<td>111</td>
+<td><span class="math inline">\(\pi_7 = p_1p_2p_3\)</span></td>
+</tr>
+<tr class="even">
+<td>000</td>
+<td><span class="math inline">\(\pi_0 = \prod_j 1-p_j\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="model-variations" class="slide level2">
+<h2>Model variations</h2>
+<p>More important than the estimation approach, is identification of the sources of variation in capture probability (<span class="math inline">\(p\)</span>).</p>
+<p>Otis et al.&nbsp;(1978) identified several model variations:</p>
+<ul>
+<li><span class="math inline">\(M_0\)</span> – <span class="math inline">\(p\)</span> is constant</li>
+<li><span class="math inline">\(M_t\)</span> – unique <span class="math inline">\(p\)</span> for each capture occasion</li>
+<li><span class="math inline">\(M_b\)</span> – behavioral response with <span class="math inline">\(p\)</span> different than recapture probability <span class="math inline">\(c\)</span></li>
+<li><span class="math inline">\(M_h\)</span> – individual heterogeneity in <span class="math inline">\(p\)</span></li>
+<li>Finite mixture models</li>
+<li>Continuous mixture models (not available in RMark)</li>
+</ul>
+<p>These can be combined, but beware of identifiability issues. See Otis et al.&nbsp;(1978) for details.</p>
+<p>Later we’ll talk about “individual covariate” models.</p>
+</section>
+<section id="software-options" class="slide level2">
+<h2>Software options</h2>
+<p>Program MARK</p>
+<ul>
+<li>Has the most model types</li>
+<li>Written for Windows, but can be executed on other platforms</li>
+</ul>
+<p>R package ‘RMark’</p>
+<ul>
+<li>Function <code>mark</code> runs MARK from R.</li>
+</ul>
+<p>R package ‘marked’</p>
+<ul>
+<li>Includes CJS and JS models</li>
+</ul>
+<p>R package ‘mra’</p>
+<ul>
+<li>Includes closed-population, CJS, and JS models</li>
+</ul>
+<p>R package ‘Rcapture’</p>
+<ul>
+<li>Includes closed-population</li>
+</ul>
+<p>R package ‘unmarked’</p>
+<ul>
+<li>Likelihood-based data augmentation with </li>
+</ul>
+<p>R package ‘secr’</p>
+<ul>
+<li>Designed for spatially explicit models, but see </li>
+</ul>
+</section></section>
+<section>
+<section id="simulation" class="title-slide slide level1 center">
+<h1>Simulation</h1>
+
+</section>
+<section id="model-m0" class="slide level2">
+<h2>Model <em>M<sub>0</sub></em></h2>
+<p>Parameters</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb1-2"><a></a>p <span class="ot">&lt;-</span> <span class="fl">0.2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>All capture histories (for captured and uncaptured individuals)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>J <span class="ot">&lt;-</span> <span class="dv">4</span>  <span class="do">## Occasions</span></span>
+<span id="cb2-2"><a></a>y.all <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)</span>
+<span id="cb2-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb2-4"><a></a>    y.all[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(J, <span class="dv">1</span>, p)</span>
+<span id="cb2-5"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Observed capture histories (data)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>captured <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb3-2"><a></a>(n <span class="ot">&lt;-</span> <span class="fu">sum</span>(captured))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 54</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>y <span class="ot">&lt;-</span> y.all[captured,]</span>
+<span id="cb5-2"><a></a>y[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    0    1    0    0
+[2,]    1    0    0    0
+[3,]    0    0    1    0</code></pre>
+</div>
+</div>
+</section>
+<section id="summary-stats" class="slide level2">
+<h2>Summary stats</h2>
+<p>Capture history frequencies</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>histories <span class="ot">&lt;-</span> <span class="fu">apply</span>(y, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>)</span>
+<span id="cb7-2"><a></a><span class="fu">sort</span>(<span class="fu">table</span>(histories))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>histories
+0011 0101 1100 1010 1101 0110 1001 0001 0010 0100 1000 
+   1    1    1    2    2    4    4    7   10   10   12 </code></pre>
+</div>
+</div>
+<p>Detection frequencies</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y)</span>
+<span id="cb9-2"><a></a><span class="fu">sort</span>(<span class="fu">table</span>(y.tilde))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>y.tilde
+ 3  2  1 
+ 2 13 39 </code></pre>
+</div>
+</div>
+</section>
+<section id="model-mt-temporal-variation" class="slide level2">
+<h2>Model <em>M<sub>t</sub></em> – Temporal variation</h2>
+<p>Capture probability for each occasion</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>p.t <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>All capture histories (for captured and uncaptured individuals)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>y.all.Mt <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)</span>
+<span id="cb12-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb12-3"><a></a>    y.all.Mt[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(J, <span class="dv">1</span>, p.t) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Observed capture histories (data)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>captured.Mt <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all.Mt)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb13-2"><a></a>n.Mt <span class="ot">&lt;-</span> <span class="fu">sum</span>(captured.Mt)</span>
+<span id="cb13-3"><a></a>y.Mt <span class="ot">&lt;-</span> y.all.Mt[captured.Mt,]</span>
+<span id="cb13-4"><a></a>y.Mt[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    0    1    0
+[2,]    1    1    1    0
+[3,]    1    0    0    0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">colSums</span>(y.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 28 53 22 38</code></pre>
+</div>
+</div>
+</section>
+<section id="model-mb-behavioral-response" class="slide level2">
+<h2>Model <em>M<sub>b</sub></em> – Behavioral response</h2>
+<p>Capture probability for each occasion</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>p.b <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb17-2"><a></a>c <span class="ot">&lt;-</span> <span class="fl">0.5</span>  <span class="do">## Trap happy</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>All capture histories (for captured and uncaptured individuals)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>y.all.Mb <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)</span>
+<span id="cb18-2"><a></a>prevcap <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">FALSE</span>, N, J)</span>
+<span id="cb18-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb18-4"><a></a>    y.all.Mb[i,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, p.b)</span>
+<span id="cb18-5"><a></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>J) {</span>
+<span id="cb18-6"><a></a>        prevcap[i,j] <span class="ot">&lt;-</span> <span class="fu">any</span>(y.all.Mb[i,<span class="dv">1</span><span class="sc">:</span>(j<span class="dv">-1</span>)]<span class="sc">&gt;</span><span class="dv">0</span>)</span>
+<span id="cb18-7"><a></a>        prob <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prevcap[i,j], c, p.b)</span>
+<span id="cb18-8"><a></a>        y.all.Mb[i,j] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, prob)</span>
+<span id="cb18-9"><a></a>    }</span>
+<span id="cb18-10"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Observed capture histories (data)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>captured.Mb <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all.Mb)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb19-2"><a></a>n.Mb <span class="ot">&lt;-</span> <span class="fu">sum</span>(captured.Mb)</span>
+<span id="cb19-3"><a></a>y.Mb <span class="ot">&lt;-</span> y.all.Mb[captured.Mb,]</span>
+<span id="cb19-4"><a></a><span class="do">## prevcap[1:3,]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="model-mh-finite-mixture" class="slide level2">
+<h2>Model <em>M<sub>h</sub></em> – Finite mixture</h2>
+<p>There are many flavors of <span class="math inline">\(M_h\)</span>. This one assumes there are two (unknown) groups of individuals with different capture probs.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>mixture.prob <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
+<span id="cb20-2"><a></a>group <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, mixture.prob)    <span class="do">## Two groups</span></span>
+<span id="cb20-3"><a></a>p.Mh.mix <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(group<span class="sc">==</span><span class="dv">0</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>) <span class="do">## Two-point mixture</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>All capture histories (for captured and uncaptured individuals)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>y.all.Mh.mix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)</span>
+<span id="cb21-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb21-3"><a></a>    y.all.Mh.mix[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(J, <span class="dv">1</span>, p.Mh.mix[i])</span>
+<span id="cb21-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Observed capture histories (data)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>captured.Mh.mix <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all.Mh.mix)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb22-2"><a></a>n.Mh.mix <span class="ot">&lt;-</span> <span class="fu">sum</span>(captured.Mh.mix)</span>
+<span id="cb22-3"><a></a>y.Mh.mix <span class="ot">&lt;-</span> y.all.Mh.mix[captured.Mh.mix,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="model-mh-individual-heterogeneity" class="slide level2">
+<h2>Model <em>M<sub>h</sub></em> – Individual heterogeneity</h2>
+<p>Here’s another flavor of <span class="math inline">\(M_h\)</span>: logit-normal distribution for <span class="math inline">\(p\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>logit.p.bar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span>  <span class="do">## Mean p on logit scale</span></span>
+<span id="cb23-2"><a></a>logit.p.var <span class="ot">&lt;-</span> <span class="dv">1</span>   <span class="do">## SD of p on logit scale</span></span>
+<span id="cb23-3"><a></a>p.h <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fu">rnorm</span>(N, logit.p.bar, logit.p.var))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>All capture histories (for captured and uncaptured individuals)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>y.all.Mh <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)</span>
+<span id="cb24-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb24-3"><a></a>    y.all.Mh[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(J, <span class="dv">1</span>, p.h[i])</span>
+<span id="cb24-4"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Observed capture histories (data)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>captured.Mh <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all.Mh)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb25-2"><a></a>n.Mh <span class="ot">&lt;-</span> <span class="fu">sum</span>(captured.Mh)</span>
+<span id="cb25-3"><a></a>y.Mh <span class="ot">&lt;-</span> y.all.Mh[captured.Mh,]</span>
+<span id="cb25-4"><a></a><span class="co">#y.Mh[1:3,]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section></section>
+<section>
+<section id="joint-likelihood-1" class="title-slide slide level1 center">
+<h1>Joint likelihood</h1>
+
+</section>
+<section id="r-package-rmark" class="slide level2">
+<h2>R package `RMark’</h2>
+<p>Before you can use ‘RMark’, you have to install MARK.</p>
+<p>The main MARK page is <a href="http://www.phidot.org/software/mark/index.html">here</a></p>
+<p><a href="http://www.phidot.org/software/mark/rmark/linux/">Instructions for Linux and Mac users</a></p>
+<p><a href="https://github.com/heathergaya/JAGS-NIMBLE-Tutorials/blob/master/Installing%20RMark%20on%20Mac%202022">Heather Gaya’s tutorial</a></p>
+<p>Lots of <a href="http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf">good information about closed population mark-recapture</a></p>
+</section>
+<section id="r-package-rmark-model-m0" class="slide level2">
+<h2>R package ‘RMark’ – Model <em>M<sub>0</sub></em></h2>
+<p>Fit the model and set capture probability equal to recapture probability (<span class="math inline">\(p=c\)</span>) using the <code>share</code> argument.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="do">## install.packages("RMark") ## Must install MARK too!!</span></span>
+<span id="cb26-2"><a></a><span class="fu">library</span>(RMark)</span>
+<span id="cb26-3"><a></a>y.ch <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ch=</span><span class="fu">apply</span>(y, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>))</span>
+<span id="cb26-4"><a></a>mark.M0 <span class="ot">&lt;-</span> <span class="fu">mark</span>(<span class="at">data=</span>y.ch, <span class="at">model=</span><span class="st">"Closed"</span>, <span class="at">silent=</span><span class="cn">TRUE</span>,</span>
+<span id="cb26-5"><a></a>                <span class="at">model.parameters=</span><span class="fu">list</span>(<span class="at">p=</span><span class="fu">list</span>(<span class="at">formula=</span><span class="sc">~</span><span class="dv">1</span>,<span class="at">share=</span><span class="cn">TRUE</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Estimates of <span class="math inline">\(p\)</span> and <span class="math inline">\(n_0\)</span> (called <span class="math inline">\(f_0\)</span> in MARK)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>mark.M0<span class="sc">$</span>results<span class="sc">$</span>real      </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              estimate         se        lcl        ucl fixed note
+p g1 t1      0.1837077  0.0374009  0.1212906  0.2684329           
+f0 g1 a0 t1 42.6208640 16.7216950 20.3019990 89.4758200           </code></pre>
+</div>
+</div>
+<p>Estimate of <span class="math inline">\(N\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>mark.M0<span class="sc">$</span>results<span class="sc">$</span>derived   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`N Population Size`
+  estimate      se    lcl      ucl
+1 96.62086 16.7217 74.302 143.4758</code></pre>
+</div>
+</div>
+</section>
+<section id="r-package-rmark-model-mt" class="slide level2">
+<h2>R package `RMark’ – Model <em>M<sub>t</sub></em></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>yt.ch <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ch=</span><span class="fu">apply</span>(y.Mt, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>))</span>
+<span id="cb31-2"><a></a>mark.Mt <span class="ot">&lt;-</span> <span class="fu">mark</span>(<span class="at">data=</span>yt.ch, <span class="at">model=</span><span class="st">"Closed"</span>, <span class="at">silent=</span><span class="cn">TRUE</span>,</span>
+<span id="cb31-3"><a></a>                <span class="at">model.parameters=</span><span class="fu">list</span>(<span class="at">p=</span><span class="fu">list</span>(<span class="at">formula=</span><span class="sc">~</span>time,<span class="at">share=</span><span class="cn">TRUE</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Estimates of <span class="math inline">\(p_j\)</span> and <span class="math inline">\(n_0\)</span> (called <span class="math inline">\(f_0\)</span> in MARK)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>mark.Mt<span class="sc">$</span>results<span class="sc">$</span>real      </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              estimate        se       lcl        ucl fixed note
+p g1 t1      0.2740198 0.0473865 0.1913594  0.3757930           
+p g1 t2      0.5186804 0.0592722 0.4035760  0.6318356           
+p g1 t3      0.2153013 0.0428690 0.1429996  0.3108977           
+p g1 t4      0.3718840 0.0532543 0.2746824  0.4806868           
+f0 g1 a0 t1 17.1823890 6.4441809 8.4388334 34.9852260           </code></pre>
+</div>
+</div>
+<p>Estimate of <span class="math inline">\(N\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>mark.Mt<span class="sc">$</span>results<span class="sc">$</span>derived   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`N Population Size`
+  estimate       se      lcl      ucl
+1 102.1824 6.444181 93.43883 119.9852</code></pre>
+</div>
+</div>
+</section>
+<section id="r-package-rmark-model-mb" class="slide level2">
+<h2>R package `RMark’ – Model <em>M<sub>b</sub></em></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>yb.ch <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ch=</span><span class="fu">apply</span>(y.Mb, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>))</span>
+<span id="cb36-2"><a></a>mark.Mb <span class="ot">&lt;-</span> <span class="fu">mark</span>(<span class="at">data=</span>yb.ch, <span class="at">model=</span><span class="st">"Closed"</span>, <span class="at">silent=</span><span class="cn">TRUE</span>) <span class="do">## Default model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Estimates of <span class="math inline">\(p\)</span>, <span class="math inline">\(c\)</span>, and <span class="math inline">\(n_0\)</span> (called <span class="math inline">\(f_0\)</span> in MARK)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>mark.Mb<span class="sc">$</span>results<span class="sc">$</span>real      </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              estimate         se       lcl         ucl fixed note
+p g1 t1      0.2459652  0.0827673 0.1197363   0.4389147           
+c g1 t2      0.4031008  0.0431879 0.3220497   0.4898126           
+f0 g1 a0 t1 33.4146850 23.1165880 9.8085806 113.8331000           </code></pre>
+</div>
+</div>
+<p>Estimate of <span class="math inline">\(N\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>mark.Mb<span class="sc">$</span>results<span class="sc">$</span>derived   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`N Population Size`
+  estimate       se      lcl      ucl
+1 104.4147 23.11659 80.80858 184.8331</code></pre>
+</div>
+</div>
+</section>
+<section id="rmark-model-mh" class="slide level2">
+<h2>‘RMark’ – Model <em>M<sub>h</sub></em></h2>
+<p>This is a two-point mixture model.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>yh.ch <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ch=</span><span class="fu">apply</span>(y.Mh.mix, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>))</span>
+<span id="cb41-2"><a></a>mark.Mh <span class="ot">&lt;-</span> <span class="fu">mark</span>(<span class="at">data=</span>yh.ch, <span class="at">silent=</span><span class="cn">TRUE</span>, <span class="at">model=</span><span class="st">"HetClosed"</span>, <span class="co"># "HugHet", </span></span>
+<span id="cb41-3"><a></a>                <span class="at">model.parameters=</span><span class="fu">list</span>(<span class="at">p=</span><span class="fu">list</span>(<span class="at">formula=</span><span class="sc">~</span>mixture,<span class="at">share=</span><span class="cn">TRUE</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Estimates of <span class="math inline">\(p\)</span> and <span class="math inline">\(\pi\)</span>, the proportion of individuals in group 2.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>mark.Mh<span class="sc">$</span>results<span class="sc">$</span>real      </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             estimate        se       lcl        ucl fixed note
+pi g1 m1    0.6554419 0.1938704 0.2612437  0.9109758           
+p g1 t1 m1  0.3985716 0.1171103 0.2027864  0.6332369           
+p g1 t1 m2  0.8435083 0.1105444 0.5107922  0.9653087           
+f0 g1 a0 t1 7.6766948 5.7418263 2.0786066 28.3515140           </code></pre>
+</div>
+</div>
+<p>Estimate of <span class="math inline">\(N\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>mark.Mh<span class="sc">$</span>results<span class="sc">$</span>derived   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`N Population Size`
+  estimate       se      lcl      ucl
+1 94.67669 5.741826 89.07861 115.3515</code></pre>
+</div>
+</div>
+</section></section>
+<section>
+<section id="data-augmentation" class="title-slide slide level1 center">
+<h1>Data augmentation</h1>
+
+</section>
+<section id="data-augmentation-1" class="slide level2">
+<h2>Data augmentation</h2>
+<p>Data augmentation is strange.</p>
+<p>We add “all zero” capture histories to our data, then we try to estimate how many of them are real.</p>
+<p>The total number of observed and augmented encounter histories is <span class="math inline">\(M\)</span>.</p>
+<p>We define the model in terms of a binary indicator variable <span class="math inline">\(z_i\)</span>, such that <span class="math inline">\(N=\sum_{i=1}^M z_i\)</span>.</p>
+<p>We know <span class="math inline">\(z_i=1\)</span> for the <span class="math inline">\(n\)</span> captured individuals.</p>
+</section>
+<section id="data-augmentation-2" class="slide level2">
+<h2>Data augmentation</h2>
+<p>We can think about the problem like this:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Individual</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>z</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(n\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(n+1\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>?</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(n+2\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>?</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td>?</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(N\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>?</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(N+1\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>?</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(N+2\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>?</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td>?</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(M\)</span></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>?</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-augmentation-3" class="slide level2">
+<h2>Data augmentation</h2>
+<p>The model: <span class="math display">\[
+  z_i \sim \mathrm{Bern}(\psi) \\
+  y_{ij} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
+  N=\sum_{i=1}^M z_i
+\]</span></p>
+<p>Note that this looks exactly like an occupancy model. <br></p>
+<p>But why bother with augmentation?</p>
+<ul>
+<li>DA works for [all] varieties of mark-recapture models</li>
+<li>Makes it easy to incorporate individual-covariates… including distance and location.</li>
+</ul>
+</section>
+<section id="data-augmentation-4" class="slide level2">
+<h2>Data augmentation</h2>
+<p>First, let’s augment the data simulated under model <span class="math inline">\(M_b\)</span>, with <span class="math inline">\(M=200\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb46-2"><a></a>y.aug <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, M, J)</span>
+<span id="cb46-3"><a></a>y.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> y.Mb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We also need to augment the <code>prevcap</code> object.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>prevcap.aug <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">FALSE</span>, M, J)</span>
+<span id="cb47-2"><a></a>prevcap.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> prevcap[captured.Mb,]</span>
+<span id="cb47-3"><a></a>prevcap.aug <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prevcap.aug, <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="bayesian-data-augmentation" class="slide level2">
+<h2>Bayesian data augmentation</h2>
+<p>For Bayesian inference, we need priors on <span class="math inline">\(\psi\)</span> and <span class="math inline">\(p\)</span>. <span class="math display">\[
+  z_i \sim \mathrm{Bern}(\psi) \\
+  y_{ij} \sim \mathrm{Bern}(z_i \times p) \\
+  N = \sum_{i=1}^M z_i
+\]</span></p>
+<p>A uniform prior on <span class="math inline">\(\psi\)</span> results in a discrete uniform prior on <span class="math inline">\(N\)</span>. We can change the prior for <span class="math inline">\(N\)</span> by changing the prior on <span class="math inline">\(\psi\)</span>, recognizing: <span class="math display">\[
+    E(N)=M\psi
+\]</span></p>
+</section>
+<section id="model-m0-data-augmentation" class="slide level2">
+<h2>Model <em>M<sub>0</sub></em> – data augmentation</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+p ~ dunif(0,1)             ## Capture probability
+psi ~ dunif(0,1)           ## Data augmentation parameter
+
+for(i in 1:M) {
+  z[i] ~ dbern(psi)        ## DA indicator
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p) ## Model for the capture histories
+  }
+}
+
+N &lt;- sum(z)                ## Abundance
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="model-m0-data-augmentation-1" class="slide level2">
+<h2>Model <em>M<sub>0</sub></em> – data augmentation</h2>
+<p>Data</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>y.aug <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, M, J)</span>
+<span id="cb49-2"><a></a>y.aug[<span class="dv">1</span><span class="sc">:</span>n,] <span class="ot">&lt;-</span> y</span>
+<span id="cb49-3"><a></a>jags.data.M0 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.aug, <span class="at">M=</span>M, <span class="at">J=</span>J)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Inits and parameters</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a>ji.M0 <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">p=</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb50-2"><a></a>jp.M0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"psi"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>MCMC</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb51-2"><a></a>jags.post.M0 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.M0, <span class="at">inits=</span>ji.M0,</span>
+<span id="cb51-3"><a></a>                           <span class="at">parameters.to.save=</span>jp.M0,</span>
+<span id="cb51-4"><a></a>                           <span class="at">model.file=</span><span class="st">"M0-aug.jag"</span>,</span>
+<span id="cb51-5"><a></a>                           <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb51-6"><a></a>                           <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="traceplots-and-density-plots" class="slide level2">
+<h2>Traceplots and density plots</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a><span class="fu">plot</span>(jags.post.M0[,jp.M0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-M0-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="model-mb-data-augmentation" class="slide level2">
+<h2>Model <em>M<sub>b</sub></em> – data augmentation</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+p ~ dunif(0, 1)     ## Capture prob
+c ~ dunif(0, 1)     ## Recapture prob
+
+psi ~ dunif(0,1)    ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi) ## DA indicator
+  for(j in 1:J) {
+    pc[i,j] &lt;- ifelse(prevcap[i,j]==0, p, c) ## First cap or recap?
+    y[i,j] ~ dbern(z[i]*pc[i,j])
+  }
+}
+
+N &lt;- sum(z)
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="model-mb-data-augmentation-1" class="slide level2">
+<h2>Model <em>M<sub>b</sub></em> – data augmentation</h2>
+<p>Data, inits, parameters to monitor</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>jags.data.Mb <span class="ot">&lt;-</span> jags.data.M0</span>
+<span id="cb54-2"><a></a>jags.data.Mb<span class="sc">$</span>y[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> y.Mb</span>
+<span id="cb54-3"><a></a>jags.data.Mb<span class="sc">$</span>prevcap <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prevcap.aug<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb54-4"><a></a>ji.Mb <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">p=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">c=</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb54-5"><a></a>jp.Mb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"c"</span>, <span class="st">"psi"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>MCMC</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>jags.post.Mb <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.Mb, <span class="at">inits=</span>ji.Mb,</span>
+<span id="cb55-2"><a></a>                           <span class="at">parameters.to.save=</span>jp.Mb,</span>
+<span id="cb55-3"><a></a>                           <span class="at">model.file=</span><span class="st">"Mb-aug.jag"</span>,</span>
+<span id="cb55-4"><a></a>                           <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb55-5"><a></a>                           <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="traceplots-and-density-plots-1" class="slide level2">
+<h2>Traceplots and density plots</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a></a><span class="fu">plot</span>(jags.post.Mb[,jp.Mb])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-Mb-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="model-mh-finite-mixture-1" class="slide level2">
+<h2>Model <em>M<sub>h</sub></em> – finite mixture</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+p1 ~ dunif(0, 1)     ## Capture prob, group 1
+p2 ~ dunif(0, 1)     ## Capture prob, group 2
+mixprob ~ dunif(0,1) ## Finite mixture prob
+psi ~ dunif(0,1)     ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi)  ## DA indicator
+  group[i] ~ dbern(mixprob)           ## Group 1 or 2?
+  p[i] &lt;- ifelse(group[i]==0, p1, p2) ## p depends on group
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[i])
+  }
+}
+
+N &lt;- sum(z)
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="model-mh-logit-normal" class="slide level2">
+<h2>Model <em>M<sub>h</sub></em> – logit normal</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+lp.mean ~ dnorm(0,0.1)   ## Mean of logit(p)
+lp.var ~ dexp(1)         ## Variance of logit(p)
+psi ~ dunif(0,1)         ## Data augmentation parameter
+
+for(i in 1:M) {     
+  z[i] ~ dbern(psi)      ## DA indicator
+  lp[i] ~ dnorm(lp.mean, 1/lp.var) ## Random effect, p on logit
+  p[i] &lt;- ilogit(lp[i])  ## Capture prob for individual i
+  for(j in 1:J) {
+    y[i,j] ~ dbern(z[i]*p[i])
+  }
+}
+
+N &lt;- sum(z)
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="mark-recapture-summary" class="slide level2">
+<h2>Mark-recapture summary</h2>
+<p>We assume that variation in <span class="math inline">\(p\)</span> arises from changes over time, behavioral effects, or random individual heterogeneity.</p>
+<p>Individual heterogeneity models pose estimation problems.</p>
+<p>A solution is to use individual covariates to explain the variation, rather than random effects. But what covariates are important? And how do we know the covariates values for uncaptured individuals?</p>
+<p>With spatial capture-recapture (SCR) models we will use [the unobserved distance between animals and traps] as a covariate, and we’ll use a spatial point process model for animal locations.</p>
+</section></section>
+<section>
+<section id="assignment" class="title-slide slide level1 center">
+<h1>Assignment</h1>
+
+</section>
+<section id="assignment-1" class="slide level2">
+<h2>Assignment</h2>
+<p>Create a self-contained R script or Rmarkdown file to do the following:</p>
+<ul>
+<li>Import the Canada warbler mark-recapture data <code>CAWAcaps_2018.csv</code> and fit the following models in RMark and JAGS<sup>1</sup>:
+<ul>
+<li>Model <span class="math inline">\(M_0\)</span></li>
+<li>Model <span class="math inline">\(M_t\)</span></li>
+<li>Model <span class="math inline">\(M_h\)</span> – Finite mixture</li>
+<li>Model <span class="math inline">\(M_h\)</span> – Logit-normal (JAGS only)</li>
+</ul></li>
+<li>Create a table reporting point estimates and 95% CIs for <span class="math inline">\(N\)</span> for each model fit in RMark and JAGS. Which model has the lowest AICc (RMark only)?</li>
+</ul>
+<p>Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00pm on Tuesday.</p>
+
+
+<aside><ol class="aside-footnotes"><li id="fn1"><p>For JAGS, use <span class="math inline">\(M=800\)</span> but note if the posterior of <span class="math inline">\(N\)</span> pushes up against <span class="math inline">\(M\)</span>.</p></li></ol></aside></section></section>
+
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
