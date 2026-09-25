@@ -198,7 +198,7 @@
 <h2></h2>
 <p><br></p>
 <center>
-<p>Non-spatial mark-recapture for <br> estimating population size</p>
+<p><strong>Non-spatial mark-recapture for <br> estimating population size</strong></p>
 <p><br></p>
 <div style="font-size: 80%;">
 <p>WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
@@ -207,20 +207,19 @@
 </section>
 <section>
 
-<section id="outline" class="slide level2">
-<h2>Outline</h2>
-</section>
 <section id="mark-recapture-overview" class="slide level2">
 <h2>Mark-recapture overview</h2>
 <p>Until now, we’ve focused on models for data on aggregated quantities like abundance and occupancy.</p>
 <p><br></p>
 <p>Now we will talk about data on uniquely identifiable individuals.</p>
 <p><br></p>
-<p>This is nice because all individuals are different, and we’re often interested in these differences…</p>
-<p>…even when our primary goal is inference on population-level parameters like abundance and density.</p>
+<div class="fragment">
+<p>This is nice because all individuals are different, and we’re often interested in these differences, even when our primary goal is inference on population-level parameters like abundance and density.</p>
+</div>
 </section>
 <section id="closed-populations" class="slide level2">
 <h2>Closed populations</h2>
+<div style="font-size: 80%;">
 <p>For this lecture, we will assume population closure:</p>
 <ul>
 <li>No births or deaths during the time of sampling (demographic closure)</li>
@@ -237,17 +236,25 @@
 <div class="fragment">
 <p>Later, we will relax the closure assumption so that we can study survival, recruitment, and movement.</p>
 </div>
+</div>
 </section>
 <section id="mark-recapture-overview-1" class="slide level2">
 <h2>Mark-recapture overview</h2>
+<div style="font-size: 75%;">
 <p>The simplest estimator of abundance is <span class="math display">\[
     \hat{N} = \frac{n}{\hat{p}}
 \]</span> where <span class="math inline">\(n\)</span> is the number of individuals detected, <span class="math inline">\(p\)</span> is detection probability, and <span class="math inline">\(E(n)=Np\)</span>.</p>
+<p><br></p>
 <p>In distance sampling, we modeled detection probability as a function of distance, and we replaced <span class="math inline">\(p\)</span> with average detection probability.</p>
+<p><br></p>
+<div class="fragment">
 <p>For the simplest mark-recapture problems, <span class="math inline">\(p\)</span> is a constant (scalar) and we estimate it by trapping on multiple occasions and marking and recapturing as we go.</p>
+</div>
+</div>
 </section>
 <section id="classical-approaches" class="slide level2">
 <h2>Classical approaches</h2>
+<div style="font-size: 75%;">
 <p>Lincoln-Peterson</p>
 <ul>
 <li><p><span class="math inline">\(J=2\)</span> occasions</p></li>
@@ -266,52 +273,124 @@
 <li>Allows for assessment of behavioral effects, individual heterogeneity, etc…</li>
 </ul>
 </div>
+</div>
 </section>
 <section id="mark-recapture-data" class="slide level2">
 <h2>Mark-recapture data</h2>
+<div style="font-size: 80%;">
 <p>Mark-recapture data are often called “capture histories.” Here’s an example with <span class="math inline">\(n=6\)</span> animals captured on <span class="math inline">\(J=3\)</span> occasions.</p>
-<p>Individual &amp; 1 &amp; 2 &amp; 3 —— | – | – | – 1 | 0 | 0 | 1 2 | 1 | 1 | 1 3 | 0 | 1 | 0 4 | 0 | 1 | 1 5 | 1 | 0 | 0 6 | 0 | 0 | 1</p>
+<div style="font-size: 60%;">
+<center>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Individual</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</center>
+</div>
 <p>How do we estimate <span class="math inline">\(p\)</span> (and <span class="math inline">\(N\)</span>) from these data?</p>
-<p>You can get a sense for <span class="math inline">\(p\)</span> (and <span class="math inline">\(N\)</span>) by looking at the data.</p>
-<ul>
-<li>If <span class="math inline">\(p\approx 1\)</span>, most individuals would be captured on all 3 occasions, and few would go undetected</li>
-<li>If <span class="math inline">\(p\approx 0\)</span>, few individuals would be captured more than once, and many would go undetected</li>
-</ul>
+</div>
+<p><br></p>
+<!-- You can get a sense for $p$ (and $N$) by looking at the data. -->
+<div class="fragment">
+<div style="font-size: 60%;">
+<p>Conceptually… - If <span class="math inline">\(p\approx 1\)</span>, most individuals would be captured on all 3 occasions, and few would go undetected - If <span class="math inline">\(p\approx 0\)</span>, few individuals would be captured more than once, and many would go undetected</p>
+</div>
+</div>
 </section>
 <section id="closed-population-model-if-we-knew-n" class="slide level2">
-<h2>Closed population model (if we knew <em>N</em>)</h2>
-<p>State model</p>
+<h2><span style="font-size: 85%;">Closed population model (if we knew <em>N</em>)</span></h2>
+<div style="font-size: 75%;">
+<p><strong>State model</strong></p>
 <p>There isn’t one! <span class="math inline">\(N\)</span> is often treated as a constant, although we sometimes put a Poisson or binomial prior on it.</p>
-<p>Observation model (supposing <span class="math inline">\(N\)</span> was known)</p>
-<p><span class="math display">\[
+<div class="fragment">
+<p><strong>Observation model</strong> (supposing <span class="math inline">\(N\)</span> was known) <span class="math display">\[
     y_{ij} \sim \mathrm{Bernoulli}(p) \;\; \mathrm{for}\, i=1,\dots,N
 \]</span></p>
-<p>Definitions - <span class="math inline">\(N\)</span> – Population size - y_{ij}$ – Capture histories, indicating if individual <span class="math inline">\(i\)</span> was captured on occasion <span class="math inline">\(j\)</span> - <span class="math inline">\(p\)</span> – Capture probability</p>
+<ul>
+<li><span class="math inline">\(N\)</span> – Population size</li>
+<li><span class="math inline">\(y_{ij}\)</span> – Capture histories, indicating if individual <span class="math inline">\(i\)</span> was captured on occasion <span class="math inline">\(j\)</span></li>
+<li><span class="math inline">\(p\)</span> – Capture probability</li>
+</ul>
+</div>
+<div class="fragment">
 <p>The problem with this formulation is that we don’t observe the “all zero” encounter histories (and thus we don’t know <span class="math inline">\(N\)</span>). As a result, the Bernoulli assumption isn’t valid, and we need to develop a model that describes how many individuals we failed to capture.</p>
+</div>
+</div>
 </section>
 <section id="closed-population-estimation-options" class="slide level2">
 <h2>Closed population estimation options</h2>
-<p>Conditional likelihood</p>
+<div style="font-size: 75%;">
+<p><strong>Conditional likelihood</strong></p>
 <ul>
 <li>Estimate <span class="math inline">\(p\)</span>, and then estimate <span class="math inline">\(N\)</span> as a derived quantity.</li>
 <li>Most software is based on the work by Huggins, which allows for continuous covariates.</li>
 </ul>
-<p>Joint likelihood</p>
+<p><strong>Joint likelihood</strong></p>
 <ul>
 <li>Estimate <span class="math inline">\(N\)</span> and <span class="math inline">\(p\)</span> jointly</li>
 </ul>
-<p>Data augmentation</p>
+<p><strong>Data augmentation</strong></p>
 <ul>
 <li>Tack on many “all zero” encounter histories and estimate how many of them actually occurred</li>
 <li>Usually, but not necessarily, used in Bayesian inference</li>
 </ul>
+</div>
 </section>
 <section id="joint-likelihood" class="slide level2">
 <h2>Joint likelihood</h2>
+<div style="font-size: 75%;">
 <p>The joint likelihood is based on the multinomial distribution, with the “all-zero” encounter history being unobserved. <span class="math display">\[
     \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
 \]</span> where <span class="math inline">\(\{f_1, \dots, f_K\}\)</span> are the frequencies of the observable capture histories.</p>
+</div>
+<div class="fragment">
+<div style="font-size: 60%;">
 <p>Here’s an example with <span class="math inline">\(J=3\)</span> capture occasions. <br></p>
+<center>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -354,9 +433,13 @@
 </tr>
 </tbody>
 </table>
+</center>
+</div>
+</div>
 </section>
 <section id="model-variations" class="slide level2">
 <h2>Model variations</h2>
+<div style="font-size: 75%;">
 <p>More important than the estimation approach, is identification of the sources of variation in capture probability (<span class="math inline">\(p\)</span>).</p>
 <p>Otis et al.&nbsp;(1978) identified several model variations:</p>
 <ul>
@@ -369,9 +452,11 @@
 </ul>
 <p>These can be combined, but beware of identifiability issues. See Otis et al.&nbsp;(1978) for details.</p>
 <p>Later we’ll talk about “individual covariate” models.</p>
+</div>
 </section>
 <section id="software-options" class="slide level2">
 <h2>Software options</h2>
+<div style="font-size: 80%;">
 <p>Program MARK</p>
 <ul>
 <li>Has the most model types</li>
@@ -401,6 +486,7 @@
 <ul>
 <li>Designed for spatially explicit models, but see </li>
 </ul>
+</div>
 </section></section>
 <section>
 <section id="simulation" class="title-slide slide level1 center">
@@ -409,6 +495,7 @@
 </section>
 <section id="model-m0" class="slide level2">
 <h2>Model <em>M<sub>0</sub></em></h2>
+<div style="font-size: 80%;">
 <p>Parameters</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
@@ -438,6 +525,7 @@
 [3,]    0    0    1    0</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="summary-stats" class="slide level2">
 <h2>Summary stats</h2>
@@ -451,6 +539,7 @@
    1    1    1    2    2    4    4    7   10   10   12 </code></pre>
 </div>
 </div>
+<p><br></p>
 <p>Detection frequencies</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y)</span>
@@ -464,6 +553,7 @@
 </section>
 <section id="model-mt-temporal-variation" class="slide level2">
 <h2>Model <em>M<sub>t</sub></em> – Temporal variation</h2>
+<div style="font-size: 80%;">
 <p>Capture probability for each occasion</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>p.t <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -491,9 +581,11 @@
 <pre><code>[1] 28 53 22 38</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="model-mb-behavioral-response" class="slide level2">
 <h2>Model <em>M<sub>b</sub></em> – Behavioral response</h2>
+<div style="font-size: 80%;">
 <p>Capture probability for each occasion</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>p.b <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
@@ -519,9 +611,11 @@
 <span id="cb19-3"><a></a>y.Mb <span class="ot">&lt;-</span> y.all.Mb[captured.Mb,]</span>
 <span id="cb19-4"><a></a><span class="do">## prevcap[1:3,]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
 </section>
 <section id="model-mh-finite-mixture" class="slide level2">
 <h2>Model <em>M<sub>h</sub></em> – Finite mixture</h2>
+<div style="font-size: 80%;">
 <p>There are many flavors of <span class="math inline">\(M_h\)</span>. This one assumes there are two (unknown) groups of individuals with different capture probs.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>mixture.prob <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
@@ -541,9 +635,11 @@
 <span id="cb22-2"><a></a>n.Mh.mix <span class="ot">&lt;-</span> <span class="fu">sum</span>(captured.Mh.mix)</span>
 <span id="cb22-3"><a></a>y.Mh.mix <span class="ot">&lt;-</span> y.all.Mh.mix[captured.Mh.mix,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
 </section>
 <section id="model-mh-individual-heterogeneity" class="slide level2">
 <h2>Model <em>M<sub>h</sub></em> – Individual heterogeneity</h2>
+<div style="font-size: 80%;">
 <p>Here’s another flavor of <span class="math inline">\(M_h\)</span>: logit-normal distribution for <span class="math inline">\(p\)</span>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>logit.p.bar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span>  <span class="do">## Mean p on logit scale</span></span>
@@ -564,6 +660,7 @@
 <span id="cb25-3"><a></a>y.Mh <span class="ot">&lt;-</span> y.all.Mh[captured.Mh,]</span>
 <span id="cb25-4"><a></a><span class="co">#y.Mh[1:3,]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
 </section></section>
 <section>
 <section id="joint-likelihood-1" class="title-slide slide level1 center">
@@ -573,13 +670,18 @@
 <section id="r-package-rmark" class="slide level2">
 <h2>R package `RMark’</h2>
 <p>Before you can use ‘RMark’, you have to install MARK.</p>
-<p>The main MARK page is <a href="http://www.phidot.org/software/mark/index.html">here</a></p>
+<p><br></p>
+<p>The main MARK page is <a href="http://www.phidot.org/software/mark/index.html">here</a>.</p>
+<p><br></p>
 <p><a href="http://www.phidot.org/software/mark/rmark/linux/">Instructions for Linux and Mac users</a></p>
+<p><br></p>
 <p><a href="https://github.com/heathergaya/JAGS-NIMBLE-Tutorials/blob/master/Installing%20RMark%20on%20Mac%202022">Heather Gaya’s tutorial</a></p>
+<p><br></p>
 <p>Lots of <a href="http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf">good information about closed population mark-recapture</a></p>
 </section>
 <section id="r-package-rmark-model-m0" class="slide level2">
 <h2>R package ‘RMark’ – Model <em>M<sub>0</sub></em></h2>
+<div style="font-size: 80%;">
 <p>Fit the model and set capture probability equal to recapture probability (<span class="math inline">\(p=c\)</span>) using the <code>share</code> argument.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="do">## install.packages("RMark") ## Must install MARK too!!</span></span>
@@ -604,6 +706,7 @@ f0 g1 a0 t1 42.6208640 16.7216950 20.3019990 89.4758200           </code></pre>
 <pre><code>$`N Population Size`
   estimate      se    lcl      ucl
 1 96.62086 16.7217 74.302 143.4758</code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -638,6 +741,7 @@ f0 g1 a0 t1 17.1823890 6.4441809 8.4388334 34.9852260           </code></pre>
 </section>
 <section id="r-package-rmark-model-mb" class="slide level2">
 <h2>R package `RMark’ – Model <em>M<sub>b</sub></em></h2>
+<div style="font-size: 80%;">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>yb.ch <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ch=</span><span class="fu">apply</span>(y.Mb, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>))</span>
 <span id="cb36-2"><a></a>mark.Mb <span class="ot">&lt;-</span> <span class="fu">mark</span>(<span class="at">data=</span>yb.ch, <span class="at">model=</span><span class="st">"Closed"</span>, <span class="at">silent=</span><span class="cn">TRUE</span>) <span class="do">## Default model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -661,9 +765,11 @@ f0 g1 a0 t1 33.4146850 23.1165880 9.8085806 113.8331000           </code></pre>
 1 104.4147 23.11659 80.80858 184.8331</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="rmark-model-mh" class="slide level2">
 <h2>‘RMark’ – Model <em>M<sub>h</sub></em></h2>
+<div style="font-size: 80%;">
 <p>This is a two-point mixture model.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>yh.ch <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ch=</span><span class="fu">apply</span>(y.Mh.mix, <span class="dv">1</span>, paste, <span class="at">collapse=</span><span class="st">""</span>))</span>
@@ -690,6 +796,7 @@ f0 g1 a0 t1 7.6766948 5.7418263 2.0786066 28.3515140           </code></pre>
 1 94.67669 5.741826 89.07861 115.3515</code></pre>
 </div>
 </div>
+</div>
 </section></section>
 <section>
 <section id="data-augmentation" class="title-slide slide level1 center">
@@ -698,15 +805,25 @@ f0 g1 a0 t1 7.6766948 5.7418263 2.0786066 28.3515140           </code></pre>
 </section>
 <section id="data-augmentation-1" class="slide level2">
 <h2>Data augmentation</h2>
+<div style="font-size: 80%;">
 <p>Data augmentation is strange.</p>
+<p><br></p>
 <p>We add “all zero” capture histories to our data, then we try to estimate how many of them are real.</p>
-<p>The total number of observed and augmented encounter histories is <span class="math inline">\(M\)</span>.</p>
-<p>We define the model in terms of a binary indicator variable <span class="math inline">\(z_i\)</span>, such that <span class="math inline">\(N=\sum_{i=1}^M z_i\)</span>.</p>
+<p><br></p>
+<div class="fragment">
+<p>The total number of observed and augmented encounter histories is <span class="math inline">\(M\)</span>. We define the model in terms of a binary indicator variable <span class="math inline">\(z_i\)</span>, such that <span class="math inline">\(N=\sum_{i=1}^M z_i\)</span>.</p>
+<p><br></p>
 <p>We know <span class="math inline">\(z_i=1\)</span> for the <span class="math inline">\(n\)</span> captured individuals.</p>
+</div>
+</div>
 </section>
 <section id="data-augmentation-2" class="slide level2">
 <h2>Data augmentation</h2>
+<div style="font-size: 80%;">
 <p>We can think about the problem like this:</p>
+</div>
+<center>
+<div style="font-size: 40%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -825,49 +942,64 @@ f0 g1 a0 t1 7.6766948 5.7418263 2.0786066 28.3515140           </code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+</center>
 </section>
 <section id="data-augmentation-3" class="slide level2">
 <h2>Data augmentation</h2>
+<div style="font-size: 80%;">
 <p>The model: <span class="math display">\[
   z_i \sim \mathrm{Bern}(\psi) \\
   y_{ij} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
   N=\sum_{i=1}^M z_i
 \]</span></p>
-<p>Note that this looks exactly like an occupancy model. <br></p>
+<p>Note that this looks exactly like an occupancy model.</p>
+<div class="fragment">
 <p>But why bother with augmentation?</p>
 <ul>
-<li>DA works for [all] varieties of mark-recapture models</li>
+<li>DA works for <em>all</em> varieties of mark-recapture models</li>
 <li>Makes it easy to incorporate individual-covariates… including distance and location.</li>
 </ul>
+</div>
+</div>
 </section>
 <section id="data-augmentation-4" class="slide level2">
 <h2>Data augmentation</h2>
+<div style="font-size: 90%;">
 <p>First, let’s augment the data simulated under model <span class="math inline">\(M_b\)</span>, with <span class="math inline">\(M=200\)</span>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">200</span></span>
 <span id="cb46-2"><a></a>y.aug <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, M, J)</span>
 <span id="cb46-3"><a></a>y.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> y.Mb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
 <p>We also need to augment the <code>prevcap</code> object.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>prevcap.aug <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">FALSE</span>, M, J)</span>
 <span id="cb47-2"><a></a>prevcap.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> prevcap[captured.Mb,]</span>
 <span id="cb47-3"><a></a>prevcap.aug <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prevcap.aug, <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
 </section>
 <section id="bayesian-data-augmentation" class="slide level2">
 <h2>Bayesian data augmentation</h2>
+<div style="font-size: 80%;">
 <p>For Bayesian inference, we need priors on <span class="math inline">\(\psi\)</span> and <span class="math inline">\(p\)</span>. <span class="math display">\[
   z_i \sim \mathrm{Bern}(\psi) \\
   y_{ij} \sim \mathrm{Bern}(z_i \times p) \\
   N = \sum_{i=1}^M z_i
 \]</span></p>
+<p><br></p>
+<div class="fragment">
 <p>A uniform prior on <span class="math inline">\(\psi\)</span> results in a discrete uniform prior on <span class="math inline">\(N\)</span>. We can change the prior for <span class="math inline">\(N\)</span> by changing the prior on <span class="math inline">\(\psi\)</span>, recognizing: <span class="math display">\[
     E(N)=M\psi
 \]</span></p>
+</div>
+</div>
 </section>
 <section id="model-m0-data-augmentation" class="slide level2">
 <h2>Model <em>M<sub>0</sub></em> – data augmentation</h2>
+<p><a href="M0-aug.jag">M0-aug.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -917,9 +1049,10 @@ N &lt;- sum(z)                ## Abundance
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a><span class="fu">plot</span>(jags.post.M0[,jp.M0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-M0-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-M0-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
 <section id="model-mb-data-augmentation" class="slide level2">
 <h2>Model <em>M<sub>b</sub></em> – data augmentation</h2>
+<p><a href="Mb-aug.jag">Mb-aug.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -968,7 +1101,7 @@ N &lt;- sum(z)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a></a><span class="fu">plot</span>(jags.post.Mb[,jp.Mb])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-Mb-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-Mb-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
 <section id="model-mh-finite-mixture-1" class="slide level2">
 <h2>Model <em>M<sub>h</sub></em> – finite mixture</h2>
 <div class="cell">
@@ -1022,10 +1155,21 @@ N &lt;- sum(z)
 </section>
 <section id="mark-recapture-summary" class="slide level2">
 <h2>Mark-recapture summary</h2>
+<div style="font-size: 80%;">
 <p>We assume that variation in <span class="math inline">\(p\)</span> arises from changes over time, behavioral effects, or random individual heterogeneity.</p>
+<p><br></p>
+<div class="fragment">
 <p>Individual heterogeneity models pose estimation problems.</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>A solution is to use individual covariates to explain the variation, rather than random effects. But what covariates are important? And how do we know the covariates values for uncaptured individuals?</p>
-<p>With spatial capture-recapture (SCR) models we will use [the unobserved distance between animals and traps] as a covariate, and we’ll use a spatial point process model for animal locations.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>With spatial capture-recapture (SCR) models we will use <em>the unobserved distance between animals and traps</em> as a covariate, and we’ll use a spatial point process model for animal locations.</p>
+</div>
+</div>
 </section></section>
 <section>
 <section id="assignment" class="title-slide slide level1 center">
@@ -1034,6 +1178,7 @@ N &lt;- sum(z)
 </section>
 <section id="assignment-1" class="slide level2">
 <h2>Assignment</h2>
+<div style="font-size: 70%;">
 <p>Create a self-contained R script or Rmarkdown file to do the following:</p>
 <ul>
 <li>Import the Canada warbler mark-recapture data <code>CAWAcaps_2018.csv</code> and fit the following models in RMark and JAGS<sup>1</sup>:
@@ -1045,7 +1190,10 @@ N &lt;- sum(z)
 </ul></li>
 <li>Create a table reporting point estimates and 95% CIs for <span class="math inline">\(N\)</span> for each model fit in RMark and JAGS. Which model has the lowest AICc (RMark only)?</li>
 </ul>
-<p>Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00pm on Tuesday.</p>
+<center>
+Upload your <code>.R</code> or <code>.Rmd</code> file to ELC by 5:00pm on Tuesday.
+</center>
+</div>
 
 
 <aside><ol class="aside-footnotes"><li id="fn1"><p>For JAGS, use <span class="math inline">\(M=800\)</span> but note if the posterior of <span class="math inline">\(N\)</span> pushes up against <span class="math inline">\(M\)</span>.</p></li></ol></aside></section></section>
