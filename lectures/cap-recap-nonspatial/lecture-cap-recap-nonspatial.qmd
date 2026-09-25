@@ -154,8 +154,9 @@ How do we estimate $p$ (and $N$) from these data?
 
 
 ::: {.fragment}
-::: {style='font-size: 60%;'}
+::: {style='font-size: 65%;'}
 Conceptually...
+
 - If $p\approx 1$, most individuals would be captured on all 3 occasions, and few would go undetected
 - If $p\approx 0$, few individuals would be captured  more than once, and many would go undetected
 :::
@@ -164,7 +165,7 @@ Conceptually...
 
 ## [Closed population model (if we knew *N*)]{style="font-size: 85%;"}
   
-::: {style='font-size: 75%;'}
+::: {style='font-size: 70%;'}
 **State model**
   
 There isn't one! $N$ is often treated as a constant, although we sometimes put a Poisson or binomial prior on it.
@@ -197,14 +198,18 @@ The problem with this formulation is that we don't observe the "all zero" encoun
 - Most software is based on the work by Huggins, which allows for continuous covariates. 
   
   
+::: {.fragment}
 **Joint likelihood**
   
 - Estimate $N$ and $p$ jointly
+:::
    
+::: {.fragment}
 **Data augmentation**
   
 - Tack on many "all zero" encounter histories and estimate how many of them actually occurred
 - Usually, but not necessarily, used in Bayesian inference
+:::
 :::
   
 
@@ -212,21 +217,23 @@ The problem with this formulation is that we don't observe the "all zero" encoun
 ## Joint likelihood
 
   
-::: {style='font-size: 75%;'}
+::: {style='font-size: 70%;'}
 The joint likelihood is based on the multinomial distribution, with
 the "all-zero" encounter history being unobserved.
 $$
-    \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
+  \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
 $$
 where $\{f_1, \dots, f_K\}$ are the frequencies of the observable capture
 histories.
 :::
   
 ::: {.fragment}
-::: {style='font-size: 60%;'}
+::: {style='font-size: 70%;'}
 Here's an example with $J=3$ capture occasions.  <br>
+:::
 
 <center>
+::: {style='font-size: 50%;'}
 Capture history   |     Multinomial cell probability
 ----------------- | -----------------------------
       100                   | $\pi_1=p_1(1-p_2)(1-p_3)$
@@ -237,15 +244,15 @@ Capture history   |     Multinomial cell probability
       011                   | $\pi_6=(1-p_1)p_2p_3$
       111                   | $\pi_7 = p_1p_2p_3$
       000                   | $\pi_0 = \prod_j 1-p_j$
+:::
 </center>
 
-:::
 :::
 
 
 ## Model variations
   
-::: {style='font-size: 75%;'}
+::: {style='font-size: 70%;'}
 More important than the estimation approach, is identification of the sources of variation in capture probability ($p$).
   
 Otis et al. (1978) identified several model variations: 
@@ -308,7 +315,7 @@ set.seed(34889243)
 
 ## Model *M~0~*
   
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 Parameters
   
 ```{r}
@@ -512,6 +519,7 @@ y.Mh <- y.all.Mh[captured.Mh,]
 
 ## R package `RMark'
 
+::: {style='font-size: 80%;'}
 Before you can use 'RMark', you have to install MARK.
 
 <br>
@@ -529,6 +537,7 @@ The main MARK page is [here]( http://www.phidot.org/software/mark/index.html).
 <br>
 
 Lots of [good information about closed population mark-recapture](http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf)
+:::
 
 
 ## R package 'RMark' -- Model *M~0~*
@@ -691,7 +700,7 @@ We can think about the problem like this:
 :::
 
 <center>
-::: {style='font-size: 40%;'}
+::: {style='font-size: 45%;'}
 Individual | 1     | 2     | 3     | z
 --------- | ----- | ------ | ----- | -----
 1          | 0     | 0     | 1     | 1
@@ -835,7 +844,10 @@ jags.post.M0 <- jags.basic(data=jags.data.M0, inits=ji.M0,
 
 ```{r}
 #| label: plot-mcmc-M0
-#| out-width: "50%"
+#| echo: false
+#| fig-width: 7
+#| fig-height: 7
+#| out-width: "70%"
 #| fig-align: 'center'
 #| cache: false
 plot(jags.post.M0[,jp.M0])
@@ -884,7 +896,10 @@ jags.post.Mb <- jags.basic(data=jags.data.Mb, inits=ji.Mb,
 
 ```{r}
 #| label: plot-mcmc-Mb
-#| out-width: "50%"
+#| echo: false
+#| fig-width: 7
+#| fig-height: 7
+#| out-width: "70%"
 #| fig-align: 'center'
 #| cache: false
 plot(jags.post.Mb[,jp.Mb])

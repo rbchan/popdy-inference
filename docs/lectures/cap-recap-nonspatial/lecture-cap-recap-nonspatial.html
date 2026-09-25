@@ -336,14 +336,18 @@
 <p><br></p>
 <!-- You can get a sense for $p$ (and $N$) by looking at the data. -->
 <div class="fragment">
-<div style="font-size: 60%;">
-<p>Conceptually… - If <span class="math inline">\(p\approx 1\)</span>, most individuals would be captured on all 3 occasions, and few would go undetected - If <span class="math inline">\(p\approx 0\)</span>, few individuals would be captured more than once, and many would go undetected</p>
+<div style="font-size: 65%;">
+<p>Conceptually…</p>
+<ul>
+<li>If <span class="math inline">\(p\approx 1\)</span>, most individuals would be captured on all 3 occasions, and few would go undetected</li>
+<li>If <span class="math inline">\(p\approx 0\)</span>, few individuals would be captured more than once, and many would go undetected</li>
+</ul>
 </div>
 </div>
 </section>
 <section id="closed-population-model-if-we-knew-n" class="slide level2">
 <h2><span style="font-size: 85%;">Closed population model (if we knew <em>N</em>)</span></h2>
-<div style="font-size: 75%;">
+<div style="font-size: 70%;">
 <p><strong>State model</strong></p>
 <p>There isn’t one! <span class="math inline">\(N\)</span> is often treated as a constant, although we sometimes put a Poisson or binomial prior on it.</p>
 <div class="fragment">
@@ -369,28 +373,34 @@
 <li>Estimate <span class="math inline">\(p\)</span>, and then estimate <span class="math inline">\(N\)</span> as a derived quantity.</li>
 <li>Most software is based on the work by Huggins, which allows for continuous covariates.</li>
 </ul>
+<div class="fragment">
 <p><strong>Joint likelihood</strong></p>
 <ul>
 <li>Estimate <span class="math inline">\(N\)</span> and <span class="math inline">\(p\)</span> jointly</li>
 </ul>
+</div>
+<div class="fragment">
 <p><strong>Data augmentation</strong></p>
 <ul>
 <li>Tack on many “all zero” encounter histories and estimate how many of them actually occurred</li>
 <li>Usually, but not necessarily, used in Bayesian inference</li>
 </ul>
 </div>
+</div>
 </section>
 <section id="joint-likelihood" class="slide level2">
 <h2>Joint likelihood</h2>
-<div style="font-size: 75%;">
+<div style="font-size: 70%;">
 <p>The joint likelihood is based on the multinomial distribution, with the “all-zero” encounter history being unobserved. <span class="math display">\[
-    \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
+  \{f_1, \dots, f_{K+1}\} \sim \mathrm{Multinomial}(N, \pi_1, \dots, \pi_{K+1}) \;\;
 \]</span> where <span class="math inline">\(\{f_1, \dots, f_K\}\)</span> are the frequencies of the observable capture histories.</p>
 </div>
 <div class="fragment">
-<div style="font-size: 60%;">
+<div style="font-size: 70%;">
 <p>Here’s an example with <span class="math inline">\(J=3\)</span> capture occasions. <br></p>
+</div>
 <center>
+<div style="font-size: 50%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -433,13 +443,13 @@
 </tr>
 </tbody>
 </table>
-</center>
 </div>
+</center>
 </div>
 </section>
 <section id="model-variations" class="slide level2">
 <h2>Model variations</h2>
-<div style="font-size: 75%;">
+<div style="font-size: 70%;">
 <p>More important than the estimation approach, is identification of the sources of variation in capture probability (<span class="math inline">\(p\)</span>).</p>
 <p>Otis et al.&nbsp;(1978) identified several model variations:</p>
 <ul>
@@ -495,7 +505,7 @@
 </section>
 <section id="model-m0" class="slide level2">
 <h2>Model <em>M<sub>0</sub></em></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <p>Parameters</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
@@ -669,6 +679,7 @@
 </section>
 <section id="r-package-rmark" class="slide level2">
 <h2>R package `RMark’</h2>
+<div style="font-size: 80%;">
 <p>Before you can use ‘RMark’, you have to install MARK.</p>
 <p><br></p>
 <p>The main MARK page is <a href="http://www.phidot.org/software/mark/index.html">here</a>.</p>
@@ -678,6 +689,7 @@
 <p><a href="https://github.com/heathergaya/JAGS-NIMBLE-Tutorials/blob/master/Installing%20RMark%20on%20Mac%202022">Heather Gaya’s tutorial</a></p>
 <p><br></p>
 <p>Lots of <a href="http://www.phidot.org/software/mark/docs/book/pdf/chap14.pdf">good information about closed population mark-recapture</a></p>
+</div>
 </section>
 <section id="r-package-rmark-model-m0" class="slide level2">
 <h2>R package ‘RMark’ – Model <em>M<sub>0</sub></em></h2>
@@ -823,7 +835,7 @@ f0 g1 a0 t1 7.6766948 5.7418263 2.0786066 28.3515140           </code></pre>
 <p>We can think about the problem like this:</p>
 </div>
 <center>
-<div style="font-size: 40%;">
+<div style="font-size: 45%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -1045,11 +1057,8 @@ N &lt;- sum(z)                ## Abundance
 </section>
 <section id="traceplots-and-density-plots" class="slide level2">
 <h2>Traceplots and density plots</h2>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a><span class="fu">plot</span>(jags.post.M0[,jp.M0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-</div>
-<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-M0-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-M0-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="model-mb-data-augmentation" class="slide level2">
 <h2>Model <em>M<sub>b</sub></em> – data augmentation</h2>
 <p><a href="Mb-aug.jag">Mb-aug.jag</a></p>
@@ -1080,28 +1089,25 @@ N &lt;- sum(z)
 <h2>Model <em>M<sub>b</sub></em> – data augmentation</h2>
 <p>Data, inits, parameters to monitor</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>jags.data.Mb <span class="ot">&lt;-</span> jags.data.M0</span>
-<span id="cb54-2"><a></a>jags.data.Mb<span class="sc">$</span>y[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> y.Mb</span>
-<span id="cb54-3"><a></a>jags.data.Mb<span class="sc">$</span>prevcap <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prevcap.aug<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb54-4"><a></a>ji.Mb <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">p=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">c=</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
-<span id="cb54-5"><a></a>jp.Mb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"c"</span>, <span class="st">"psi"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a>jags.data.Mb <span class="ot">&lt;-</span> jags.data.M0</span>
+<span id="cb53-2"><a></a>jags.data.Mb<span class="sc">$</span>y[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y.Mb),] <span class="ot">&lt;-</span> y.Mb</span>
+<span id="cb53-3"><a></a>jags.data.Mb<span class="sc">$</span>prevcap <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prevcap.aug<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb53-4"><a></a>ji.Mb <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">p=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">c=</span><span class="fu">runif</span>(<span class="dv">1</span>))</span>
+<span id="cb53-5"><a></a>jp.Mb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"c"</span>, <span class="st">"psi"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>MCMC</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>jags.post.Mb <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.Mb, <span class="at">inits=</span>ji.Mb,</span>
-<span id="cb55-2"><a></a>                           <span class="at">parameters.to.save=</span>jp.Mb,</span>
-<span id="cb55-3"><a></a>                           <span class="at">model.file=</span><span class="st">"Mb-aug.jag"</span>,</span>
-<span id="cb55-4"><a></a>                           <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb55-5"><a></a>                           <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>jags.post.Mb <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.Mb, <span class="at">inits=</span>ji.Mb,</span>
+<span id="cb54-2"><a></a>                           <span class="at">parameters.to.save=</span>jp.Mb,</span>
+<span id="cb54-3"><a></a>                           <span class="at">model.file=</span><span class="st">"Mb-aug.jag"</span>,</span>
+<span id="cb54-4"><a></a>                           <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb54-5"><a></a>                           <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="traceplots-and-density-plots-1" class="slide level2">
 <h2>Traceplots and density plots</h2>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a></a><span class="fu">plot</span>(jags.post.Mb[,jp.Mb])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-</div>
-<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-Mb-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<img data-src="lecture-cap-recap-nonspatial_files/figure-revealjs/plot-mcmc-Mb-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="model-mh-finite-mixture-1" class="slide level2">
 <h2>Model <em>M<sub>h</sub></em> – finite mixture</h2>
 <div class="cell">
