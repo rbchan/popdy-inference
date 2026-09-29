@@ -39,6 +39,9 @@ Inference for Models of Fish and Wildlife Population Dynamics <br>
 
 ## Mark-recapture overview
 
+<br>
+
+::: {style='font-size: 90%;'}
 Until now, we've focused on models for data on aggregated quantities
 like abundance and occupancy. 
 
@@ -50,6 +53,7 @@ Now we will talk about data on uniquely identifiable individuals.
   
 ::: {.fragment}
 This is nice because all individuals are different, and we're often interested in these differences, even when our primary goal is inference on population-level parameters like abundance and density.
+:::
 :::
 
 
@@ -127,7 +131,7 @@ Closed population models
 
 ## Mark-recapture data
   
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 Mark-recapture data are often called "capture histories." Here's an example with $n=6$ animals captured on $J=3$ occasions. 
 
 ::: {style='font-size: 60%;'}
@@ -147,18 +151,19 @@ Individual | 1 | 2 | 3
 How do we estimate $p$ (and $N$) from these data? 
 :::
 
-<br>
 
 
 <!-- You can get a sense for $p$ (and $N$) by looking at the data. -->
 
 
 ::: {.fragment}
-::: {style='font-size: 65%;'}
+::: {style='font-size: 70%;'}
 Conceptually...
+:::
 
-- If $p\approx 1$, most individuals would be captured on all 3 occasions, and few would go undetected
-- If $p\approx 0$, few individuals would be captured  more than once, and many would go undetected
+::: {style='font-size: 63%;'}
+- If $p\approx 1$, most individuals would be captured on all 3 occasions, and few would go undetected.
+- If $p\approx 0$, few individuals would be captured  more than once, and many would go undetected.
 :::
 :::
 
@@ -183,7 +188,7 @@ $$
 :::
   
 ::: {.fragment}
-The problem with this formulation is that we don't observe the "all zero" encounter histories (and thus we don't know $N$).  As a result, the Bernoulli assumption isn't valid, and we need to develop a model that describes how many individuals we failed to capture.
+The problem is that we don't observe the "all zero" encounter histories (and thus we don't know $N$).  As a result, the Bernoulli assumption isn't valid, and we need to develop a model that describes how many individuals we failed to capture.
 :::
 :::
 
@@ -252,7 +257,7 @@ Capture history   |     Multinomial cell probability
 
 ## Model variations
   
-::: {style='font-size: 70%;'}
+::: {style='font-size: 65%;'}
 More important than the estimation approach, is identification of the sources of variation in capture probability ($p$).
   
 Otis et al. (1978) identified several model variations: 
@@ -272,36 +277,38 @@ Later we'll talk about "individual covariate" models.
 
 ## Software options
   
-::: {style='font-size: 80%;'}
-Program MARK
+::: {style='font-size: 70%;'}
+::: {.columns}
 
-- Has the most model types
-- Written for Windows, but can be executed on other platforms
-  
-R package 'RMark'
-  
-- Function `mark` runs MARK from R.
+::: {.column width="50%"}
 
-R package 'marked'
+- Program MARK
+  * Has the most model types
+  * Written for Windows, but can be executed on other platforms
   
-- Includes CJS and JS models
+- R package 'RMark'
+  * Function `mark` runs MARK from R.
+
+- R package 'marked'
+  * Includes CJS and JS models
   
-R package 'mra'
-  
-- Includes closed-population, CJS, and JS models
-  
-R package 'Rcapture'
-  
-- Includes closed-population
-  
-R package 'unmarked'
-  
-- Likelihood-based data augmentation with \inr{occu}
-  
-R package 'secr'
-  
-- Designed for spatially explicit models, but see \inr{closedN}
+- R package 'mra'
+  * Includes closed-population, CJS, and JS models
 :::
+
+::: {.column width="50%"}
+- R package 'Rcapture'
+  * Includes closed-population
+  
+- R package 'unmarked'
+  * Likelihood-based data augmentation with `occu`
+  
+- R package 'secr'
+  * Designed for spatially explicit models, but see `closedN`
+:::
+:::
+:::
+
   
 
 
@@ -517,9 +524,12 @@ y.Mh <- y.all.Mh[captured.Mh,]
 # Joint likelihood
 
 
-## R package `RMark'
+## R package 'RMark'
+
 
 ::: {style='font-size: 80%;'}
+<br> 
+
 Before you can use 'RMark', you have to install MARK.
 
 <br>
@@ -542,7 +552,7 @@ Lots of [good information about closed population mark-recapture](http://www.phi
 
 ## R package 'RMark' -- Model *M~0~*
   
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 Fit the model and set capture probability equal to recapture probability
 ($p=c$) using the `share` argument.
 
@@ -574,8 +584,9 @@ mark.M0$results$derived
 :::
 
 
-## R package `RMark' -- Model *M~t~*
+## R package 'RMark' -- Model *M~t~*
 
+::: {style='font-size: 80%;'}
 ```{r}
 #| label: RMark-Mt
 #| warning: false
@@ -600,11 +611,12 @@ Estimate of $N$
 #| label: RMark-N-Mt
 mark.Mt$results$derived   
 ```
+:::
 
 
 
 
-## R package `RMark' -- Model *M~b~*
+## R package 'RMark' -- Model *M~b~*
 
 ::: {style='font-size: 80%;'}
 ```{r}
@@ -683,9 +695,9 @@ We add "all zero" capture histories to our data, then we try to estimate how man
 <br>
 
 ::: {.fragment}
-The total number of observed and augmented encounter histories is $M$. We define the model in terms of a binary indicator variable $z_i$, such that $N=\sum_{i=1}^M z_i$.
+The total number of observed and augmented encounter histories is $M$. We define the model in terms of a binary indicator variable $z_i$, such that 
 
-<br>
+$$N=\sum_{i=1}^M z_i$$
 
 We know $z_i=1$ for the $n$ captured individuals.
 :::
@@ -695,7 +707,7 @@ We know $z_i=1$ for the $n$ captured individuals.
 
 ## Data augmentation
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 We can think about the problem like this:
 :::
 
@@ -708,15 +720,15 @@ Individual | 1     | 2     | 3     | z
 3          | 0     | 1     | 0     | 1
 4          | 0     | 1     | 1     | 1
 5          | 1     | 0     | 0     | 1
-$\dots$    | $\dots$ | $\dots$ | $\dots$      | 1
+$\vdots$    | $\vdots$ | $\vdots$ | $\vdots$      | $\vdots$
 $n$        | 0     | 0     | 1     | 1
 $n+1$      | 0     | 0     | 0     | ?
 $n+2$      | 0     | 0     | 0     | ?
-$\dots$      | $\dots$ | $\dots$ | $\dots$     | ?
+$\vdots$      | $\vdots$ | $\vdots$ | $\vdots$     | $\vdots$
 $N$        | 0     | 0     | 0     | ?
 $N+1$      | 0     | 0     | 0     | ?
 $N+2$      | 0     | 0     | 0     | ?
-$\dots$      | $\dots$ | $\dots$ | $\dots$     | ?
+$\vdots$      | $\vdots$ | $\vdots$ | $\vdots$     | $\vdots$
 $M$      | 0     | 0     | 0     | ?
 :::
 </center>
@@ -726,7 +738,7 @@ $M$      | 0     | 0     | 0     | ?
 
 ## Data augmentation
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 The model:
 $$
   z_i \sim \mathrm{Bern}(\psi) \\
