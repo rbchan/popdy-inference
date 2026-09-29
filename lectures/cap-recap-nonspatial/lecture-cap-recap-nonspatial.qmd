@@ -206,14 +206,14 @@ The problem is that we don't observe the "all zero" encounter histories (and thu
 ::: {.fragment}
 **Joint likelihood**
   
-- Estimate $N$ and $p$ jointly
+- Estimate $N$ and $p$ jointly.
 :::
    
 ::: {.fragment}
 **Data augmentation**
   
-- Tack on many "all zero" encounter histories and estimate how many of them actually occurred
-- Usually, but not necessarily, used in Bayesian inference
+- Tack on many "all zero" encounter histories and estimate how many of them actually occurred.
+- Usually, but not necessarily, used in Bayesian inference.
 :::
 :::
   
@@ -707,10 +707,18 @@ We know $z_i=1$ for the $n$ captured individuals.
 
 ## Data augmentation
 
+::: {.columns}
+
+::: {.column width="55%"}
+
 ::: {style='font-size: 75%;'}
 We can think about the problem like this:
 :::
 
+:::
+
+
+::: {.column width="45%"}
 <center>
 ::: {style='font-size: 45%;'}
 Individual | 1     | 2     | 3     | z
@@ -732,6 +740,8 @@ $\vdots$      | $\vdots$ | $\vdots$ | $\vdots$     | $\vdots$
 $M$      | 0     | 0     | 0     | ?
 :::
 </center>
+:::
+:::
 
 
 
