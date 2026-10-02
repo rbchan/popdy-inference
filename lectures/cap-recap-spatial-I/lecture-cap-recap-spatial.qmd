@@ -217,8 +217,6 @@ writeRaster(elevation.r, filename="elevation.tif", overwrite=TRUE)
 ##           }, 
 ##           at=seq(min(lambda), max(lambda), len=100),
 ##           col.regions=terrain.colors(100))
-
-
 ```
 
 
@@ -228,6 +226,7 @@ writeRaster(elevation.r, filename="elevation.tif", overwrite=TRUE)
 
 
 ## Traps
+
 
 ```{r, echo=-(2:4)}
 #| label: traps1
@@ -246,11 +245,10 @@ points(x, pch=3)              ## Trap locations
 
 ## Distance between traps and activity centers
 
-Compute distances between activity centers ($\bs_1, \dots, \bs_N$)
-and traps ($\bx_1, \dots, \bx_J$).
+::: {style='font-size: 80%;'}
+Compute distances between activity centers ($\bs_1, \dots, \bs_N$) and traps ($\bx_1, \dots, \bx_J$).
 ```{r}
 #| label: dist1
-#| size: 'footnotesize'
 J <- nrow(x)                 ## nTraps
 dist.sx <- matrix(NA, N, J)  
 for(i in 1:N) {
@@ -258,52 +256,47 @@ for(i in 1:N) {
 }
 ```
 
+Look at distances between first 4 individuals and first 5 traps.
 
-  Look at distances between first 4 individuals and first 5 traps.
 ```{r}
 #| label: dist2
-#| size: 'footnotesize'
 round(dist.sx[1:4,1:5], digits=2)
 ```
+:::
 
 
 
 
 
+## Capture probability
 
+::: {style='font-size: 80%;'}
+Compute capture probability
 
-
-
-  ## Capture probability
-  Compute capture probability
 ```{r}
 #| label: p1
-#| size: 'footnotesize'
 g0 <- 0.2
 sigma <- 0.05
 p <- g0*exp(-dist.sx^2/(2*sigma^2))
 ```
 
+Look at capture probs for first 4 individuals and first 5 traps.
 
-  Look at capture probs for first 4 individuals and first 5 traps.
 ```{r}
 #| label: p2
-#| size: 'footnotesize'
 round(p[1:4,1:5], digits=3)
 ```
+:::
 
 
 
+## Capture histories
 
+::: {style='font-size: 80%;'}
+Simulate capture histories for all $N$ individuals
 
-
-
-
-  ## Capture histories
-  Simulate capture histories for all $N$ individuals
 ```{r}
 #| label: y1
-#| size: 'footnotesize'
 K <- 5                          # nOccasions
 y.all <- array(NA, c(N, J, K))
 for(i in 1:N) {
@@ -313,47 +306,39 @@ for(i in 1:N) {
 }
 ```
 
+Discard individuals not captured
 
-  Discard individuals not captured
 ```{r}
 #| label: y2
-#| size: 'footnotesize'
 captured <- rowSums(y.all)>0
 y <- y.all[captured,,]
 ```
 
+Capture histories for first 2 individuals and first 5 traps on first occasion.
 
-  Capture histories for first 2 individuals and first 5 traps
-  on first occasion.
 ```{r}
 #| label: y3
-#| size: 'footnotesize'
 y[1:2,1:5,1]
 ```
+:::
 
 
+## Summary stats
+
+::: {style='font-size: 80%;'}
+Individuals captured
 
 
-
-
-
-
-
-
-  ## Summary stats
-  
-  Individuals captured
 ```{r}
-#| label: n
-#| size: 'footnotesize'
+#| label: n-y
 (n <- nrow(y))
 ```
  
-  Capture frequencies
+Capture frequencies
     
+
 ```{r}
 #| label: cap-freq
-#| size: 'footnotesize'
 y.tilde <- rowSums(y)
 table(y.tilde)
 ```
@@ -363,24 +348,22 @@ Spatial recaptures
     
 ```{r}
 #| label: sp-cap-freq
-#| size: 'footnotesize'
 y.nok <- apply(y, c(1, 2), sum)
 y.nojk <- apply(y.nok>0, 1, sum)
 table(y.nojk)
 ```
 
+:::
 
 
 
+## Spider plot
 
-
-  ## Spider plot
-```{r}
+```{r, echo=-(1:2)}
 #| label: spider
-#| size: 'scriptsize'
-#| fig.width: 7.15
-#| fig.show: 'hide'
-#| echo: -(1:2)
+#| fig-width: 7.15
+#| fig-height: 7
+#| out-width: '85%'
 ## plot(lambda, col=terrain.colors(100),
 ##      main="Density surface, activity centers, traps, and capture locs")
 plot(0, xlim=c(0,1), ylim=c(0,1), asp=1, xlab="", ylab="",
@@ -401,243 +384,24 @@ points(x, pch=3)                         ## Trap locations
 
 
 
-  ## Spider plot
-  
-  [width=0.85\textwidth]{figure/spider-1} <br>
-
-
-
-
-
-
-
-% 
-%   ## Joint likelihood
-%   % \footnotesize
-%   
-%   The joint likelihood looks similar to the nonspatial likelihood,
-%   except that we have a third dimension for $y$ and we have to
-%   integrate out the latent activity center $s_i$. 
-%   
-%   
-%   \flushleft
-%   \begin{equation*}
-% %  \begin{multline*}
-% %    L(N,p; y,n) =                                          <br>
-%     L(N,p; y,n) = \left\{\prod_{i=1}^n \prod_{j=1}^J \prod_{k=1}^K p_{ij}^{y_{ijj}}(1-p_{ij})^{1-y_{ijk}}\right\}
-% %    \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-%     \frac{N!}{(N-n)!}  \left(q^*\right)^{N-n}
-% %  \end{multline*}
-%   \end{equation*}
-% 
-
-
-
-% 
-%   ## Model variations
-%   Aside from the approach to estimation, the key consideration
-%   concerns the sources of variation in capture probability ($p$). <br>
-%   
-%   
-%   Otis et al. (1978, Wildlife Monographs) identified several model variations
-%   
-%     
-%     * $M_0$ -- $p$ is constant
-%     * $M_t$ -- unique $p$ for each capture occasion
-%     * \hangindent=0.8cm $M_b$ -- behavioral response with $p$ different than
-%       recapture probability $c$
-%     * $M_h$ -- individual heterogeneity in $p$
-%   
-%    
-%   These can be combined, but beware of identifiability issues. See
-%   Otis et al. (1978) for details.  <br>
-%    
-%   Later we'll talk about another important class of models, the
-%   ``individual covariate'' models.  
-% 
-
-
-
-
-
-
-%# Model $M_0$
-
-
-%\subsection{Simulation}
-
-
-%\subsection{Model $M_0$}
-
-
-
-
-
-
-% 
-%   ## Summary stats
-%   Capture history frequencies
-```{r}
-#| label: M0-hist
-#| size: 'scriptsize'
-% histories <- apply(y, 1, paste, collapse="")
-% sort(table(histories))
-```
-% 
-% 
-%   Detection frequencies
-```{r}
-#| label: M0-freq
-#| size: 'scriptsize'
-% y.tilde <- rowSums(y)
-% sort(table(y.tilde))
-```
-% 
-
-
-
-%\subsection{Model $M_t$}
-
-
-% 
-%   ## Model $M_t$ -- Temporal variation
-%   Capture probability for each occasion
-```{r}
-#| label: sim-Mt-pars
-#| size: 'scriptsize'
-% p.t <- c(0.3, 0.5, 0.2, 0.4)
-```
-%   
-%   
-%   All capture histories (for captured and uncaptured individuals)
-%   
-```{r}
-#| label: sim-Mt-ch
-#| size: 'scriptsize'
-% y.all.Mt <- matrix(NA, N, J)
-% for(i in 1:N) {
-%     y.all.Mt[i,] <- rbinom(J, 1, p.t) }
-```
-%   
-%   
-%   Observed capture histories (data)
-%   
-```{r}
-#| label: sim-Mt-y1
-#| size: 'scriptsize'
-% captured.Mt <- rowSums(y.all.Mt)>0
-% n.Mt <- sum(captured.Mt)
-% y.Mt <- y.all.Mt[captured.Mt,]
-% y.Mt[1:3,]
-% colSums(y.Mt)
-```
-% 
-
-
-
-
-
-
-
 
 
 # Likelihood
 
 
+## Software options
 
-
-  ## Outline
+-  Program DENSITY
+  * Windows program with GUI
   
-  [currentsection]
-
-
-
-
-
-
-  ## Software options
-%  
-  Program DENSITY
+-  R package 'secr'
+  * The oldest R package with the most options
   
-%  \footnotesize
-    * Windows program with GUI
-  
-  
-  R package `secr'
-  
-%  \footnotesize
-    * The oldest R package with the most options
-  
-  
-  R package `oSCR'
-  
-%  \footnotesize
-    * A newer R package with similar functionality
+- R package 'oSCR'
+  * A newer R package with similar functionality
   
 
 
-
-
-% %% p(y,n|N,p)
-% 
-%   ## Joint likelihood for $M_0$
-%   The joint likelihood has a multinomial form:
-%   \begin{multline*}
-%     L(N,p; y,n) = <br>
-%     \left\{\prod_{i=1}^n \prod_{j=1}^J p^{y_{ij}}(1-p)^{1-y_{ij}}\right\}
-%     \left\{\frac{N!}{(N-n)!}  \left(\prod_{j=1}^J(1-p)\right)^{N-n} \right\}
-%   \end{multline*}
-%   
-%   
-```{r}
-#| label: nll-M0
-#| echo: true
-#| size: 'scriptsize'
-% nll.M0 <- function(pars, y) {           ## Negative log-likelihood
-%     n <- nrow(y);       J <- ncol(y)
-%     N <- exp(pars[1])
-%     n0 <- N-n
-%     if(n0<0) return(NA)
-%     p <- plogis(pars[2])
-%     ld.y1 <- sum(dbinom(y, 1, p, log=TRUE))
-%     p0 <- (1-p)^J
-%     ld.n0 <- lgamma(N+1)-lgamma(n0+1)+n0*log(p0)
-%     nll <- -(ld.y1+ld.n0)
-%     return(nll)
-% }
-```
-% 
-
-
-
-% 
-%   ## Maximize joint likelihood for $M_0$
-% Minimized the negative log-likelihood
-```{r}
-#| label: opt-nll-M0
-#| size: 'scriptsize'
-% fm.M0 <- optim(c(log.N=4,logit.p=0), nll.M0, y=y, hessian=TRUE)
-% fm.M0.est <- data.frame(Estimate=c(fm.M0$par[1], fm.M0$par[2]),
-%                         SE=sqrt(diag(solve(fm.M0$hessian))))
-% fm.M0.est
-```
-% 
-% 
-% Back-transform the estimates
-```{r}
-#| label: opt-nll-M0-back
-#| size: 'scriptsize'
-% c(N.hat=exp(fm.M0$par[1]), p.hat=plogis(fm.M0$par[2]))
-```
-% 
-% 
-% Compare to data-generating values
-```{r}
-#| label: dg
-#| size: 'scriptsize'
-% c(N=N, p=p)
-```
-% 
 
 
 ```{r}
@@ -658,42 +422,40 @@ library(secr)
 ```
 
 
+## R package 'secr'
 
-  ## R package `secr'
-  Import data from two text files
+::: {style='font-size: 80%;'}
+Import data from two text files
 ```{r}
 #| label: secr-in
 #| warning: false
-#| size: 'tiny'
 library(secr)  
 sch <- read.capthist(captfile="encounter_data_file.csv",
                      trapfile="trap_data_file.csv",
                      detector="proximity", fmt="trapID")
 summary(sch)
 ```
+:::
 
 
 
+## R package 'secr'
 
-
-  ## R package `secr'
 ```{r}
 #| label: secr-plot
-#| out.width: "70%"
-#| fig.align: "center"
+#| out-width: "70%"
+#| fig-align: "center"
 plot(sch)
 ```
 
 
 
+## R package 'secr'
 
-
-
-  ## R package `secr'
-  Fit the SCR equivalent of Model $M_0$
+::: {style='font-size: 80%;'}
+Fit the SCR equivalent of Model $M_0$
 ```{r}
 #| label: secr-M0
-#| size: 'scriptsize'
 #| cache: true
 #| warning: false
 fm.M0 <- secr.fit(sch, model=list(D=~1, g0=~1, sigma=~1),
@@ -706,22 +468,23 @@ coef(fm.M0)
 Estimates on original scale
 ```{r}
 #| label: secr-M0-real
-#| size: 'scriptsize'
 #| cache: true
 predict(fm.M0)
 ```
-\inr{D} is density ($\lambda$, animals/ha), \inr{g0} is $g_0$, and \inr{sigma} is 
-$\sigma$.   
+
+`D` is density ($\lambda$, animals/ha), `g0` is $g_0$, and `sigma` is 
+$\sigma$.
+
+:::
 
 
+## R package 'secr'
 
+::: {style='font-size: 80%;'}
+Fit the SCR equivalent of Model $M_t$
 
-
-  ## R package `secr'
-  Fit the SCR equivalent of Model $M_t$
 ```{r}
 #| label: secr-Mt
-#| size: 'scriptsize'
 #| cache: true
 #| warning: false
 fm.Mt <- secr.fit(sch, model=list(D=~1, g0=~t, sigma=~1),
@@ -733,20 +496,18 @@ coef(fm.Mt)
 Estimates on original scale
 ```{r}
 #| label: secr-Mt-real
-#| size: 'scriptsize'
 #| cache: true
 predict(fm.Mt)
 ```
+:::
 
 
+## R package 'secr'
 
-
-
-  ## R package `secr'
-  Fit the SCR equivalent of Model $M_b$
+::: {style='font-size: 80%;'}
+Fit the SCR equivalent of Model $M_b$
 ```{r}
 #| label: secr-Mb
-#| size: 'scriptsize'
 #| cache: true
 #| warning: false
 fm.Mb <- secr.fit(sch, model=list(D=~1, g0=~b, sigma=~1),
@@ -758,47 +519,40 @@ coef(fm.Mb)
 Estimates on original scale
 ```{r}
 #| label: secr-Mb-real
-#| size: 'scriptsize'
 #| cache: true
 predict(fm.Mb)
 ```
+:::
 
 
+## R package `secr'
+
+What about $N$? `E.N` is the expected value of $N$. \inr{R.N} is the realized value of $N$. 
 
 
-  ## R package `secr'
-  What about $N$?  \inr{E.N} is the expected value of
-  $N$. \inr{R.N} is the realized value of $N$. 
-  
 ```{r}
 #| label: regionN-M0
-#| size: 'footnotesize'
 region.N(fm.M0)
 ```
   
 ```{r}
 #| label: regionN-Mt
-#| size: 'footnotesize'
 region.N(fm.Mt)
 ```
   
 ```{r}
 #| label: regionN-Mb
-#| size: 'footnotesize'
 region.N(fm.Mb)
 ```
-%
-%
 
 
-
-
-  ## R package `secr'
+## R package 'secr'
   
-  Was \inr{buffer} big enough?
+Was `buffer` big enough?
+
+::: {style='font-size: 70%;'}
 ```{r}
 #| label: buffer1
-#| size: 'scriptsize'
 #| warning: false
 #| cache: true
 predict(update(fm.M0, buffer=100))[1,]
@@ -807,7 +561,6 @@ predict(update(fm.M0, buffer=100))[1,]
 
 ```{r}
 #| label: buffer2
-#| size: 'scriptsize'
 #| warning: false
 #| cache: true
 predict(update(fm.M0, buffer=150))[1,]
@@ -816,7 +569,6 @@ predict(update(fm.M0, buffer=150))[1,]
 
 ```{r}
 #| label: buffer3
-#| size: 'scriptsize'
 #| warning: false
 #| cache: true
 predict(update(fm.M0, buffer=200))[1,]
@@ -825,7 +577,6 @@ predict(update(fm.M0, buffer=200))[1,]
 
 ```{r}
 #| label: buffer4
-#| size: 'scriptsize'
 #| warning: false
 #| cache: true
 predict(update(fm.M0, buffer=250))[1,]
@@ -834,21 +585,21 @@ predict(update(fm.M0, buffer=250))[1,]
 
 ```{r}
 #| label: buffer5
-#| size: 'scriptsize'
 #| warning: false
 #| cache: true
 predict(update(fm.M0, buffer=300))[1,]
 ```
 
+:::
 
 
 
 
-  ## R package `secr'
-  AIC
+## R package 'secr'
+
+AIC
 ```{r}
 #| label: aic
-#| size: 'tiny'
 #| cache: true
 AIC(fm.M0, fm.Mt, fm.Mb)
 ```
@@ -858,60 +609,32 @@ AIC(fm.M0, fm.Mt, fm.Mb)
 # Data augmentation
 
 
-%# Prediction
-%\subsection{Likelihood-based inference}
 
+## Data augmentation model
 
+The DA version of a basic SCR model is:
 
-  ## Outline
-  
-  [currentsection]
-
-
-
-
-
-
-
-  ## Data augmentation model
-  The DA version of a basic SCR model is:
-  \begin{gather*}
-    \bsi \sim \mathrm{Unif}(\mathcal{S}) <br>
-    z_i \sim \mathrm{Bern}(\psi) <br>
-    %% p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) <br>
-    p_{ij} = g_0\exp\left(\frac{-\|\bsi-\bxj\|^2}{2\sigma^2}\right) <br>
-    y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) <br>
+$$
+    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
+    z_i \sim \mathrm{Bern}(\psi) \\
+    p_{ij} = g_0\exp\left(\frac{-\|\bsi-\bxj\|^2}{2\sigma^2}\right) \\
+    y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
-  \end{gather*}
-  % A uniform prior on $\psi$ results in a discrete uniform prior on
-  % $N$. We can change the prior for $N$ by changing the prior on
-  % $\psi$, recognizing that $E(N)=M\psi$.
-  % But why bother with augmentation?
-  % 
-  %   * DA works for \alert{all} varieties of mark-recapture models
-  %   * Make it easy to incorporate
-  %     individual-covariates\dots including distance and
-  %     location!   
-  % 
+$$
 
 
 
 
 
-
-
-
-  ## Model SCR$_0$ -- data augmentation
+## Model SCR~0~ -- data augmentation
 
 ```{r}
 #| label: bugs-SC0-R
-#| size: 'scriptsize'
 #| eval: false
 writeLines(readLines("SCR0.jag"))
 ```
 ```{r}
 #| label: bugs-SC0
-#| size: 'scriptsize'
 #| comment: ''
 #| background: 'beige'
 #| echo: false
@@ -928,13 +651,12 @@ library(rjags)
 ```
 
 
+## Model SCR~0~ -- data augmentation
 
-  ## Model SCR$_0$ -- data augmentation
-  Data
+Data
   
 ```{r}
 #| label: jd-SCR0-aug
-#| size: 'scriptsize'
 M <- 150
 y.aug <- array(0, c(M, J, K))
 y.aug[1:nrow(y),,] <- y
@@ -943,14 +665,12 @@ jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
 ```
 
 
-  Inits and parameters
+Inits and parameters
   
-```{r}
+```{r, echo=1:2}
 #| label: ji-M0-aug
-#| size: 'scriptsize'
 #| message: false
 #| report: false
-#| echo: 1:2
 ji.SCR0 <- function() {
   si <- cbind(runif(M), runif(M))
   for(i in 1:nrow(y)) {
@@ -968,7 +688,6 @@ MCMC
   
 ```{r}
 #| label: mcmc-M0-aug
-#| size: 'scriptsize'
 #| results: 'hide'
 #| cache: true
 jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
@@ -979,65 +698,38 @@ jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
 ```
 
 
+## Posterior summaries
 
-
-
-
-  ## Posterior summaries
 ```{r}
 #| label: summary-mcmc-SCR0
-#| size: 'tiny'
 summary(jags.post.SCR0)
 ```
 
+## Traceplots and density plots
 
-
-
-
-  ## Traceplots and density plots
 ```{r}
 #| label: plot-mcmc-SCR0
-#| size: 'footnotesize'
 #| out.width: "0.7<br>textwidth"
 #| fig.align: 'center'
 plot(jags.post.SCR0[,jp.SCR0])
 ```
 
-
-
-
-  ## Easy tricks to speed up Bayesian inference
+## Easy tricks to speed up Bayesian inference
   
-    % * Use joint likelihood $p(y|n)p(0|n,N)p(N)$ approach as shown in
-    %   non-spatial lecture.
-    %   
-    %     * This can work well, but not when there are other
-    %       individual-level covariates.
-    %   
-    * Treat $z_i=1$ as data for first $n$ individuals.
-    * If there are no occasion-specific covariates, collapse data
-      and use binomial instead of Bernoulli distribution.
-    * Use a single zero for each augmented individual, instead of
-      an array of zeros. Then compute probability of detecting an
-      individual at least once.
+- Treat $z_i=1$ as data for first $n$ individuals.
+- If there are no occasion-specific covariates, collapse data and use binomial instead of Bernoulli distribution.
+- Use a single zero for each augmented individual, instead of an array of zeros. Then compute probability of detecting an individual at least once.
   
 
-
-
-
-
-
-  ## Model SCR$_0$ -- data augmentation
+## Model SCR~0~ -- data augmentation
 
 ```{r}
 #| label: bugs-SC0-faster-R
-#| size: 'tiny'
 #| eval: false
 writeLines(readLines("SCR0-faster.jag"))
 ```
 ```{r}
 #| label: bugs-SC0-faster
-#| size: 'tiny'
 #| comment: ''
 #| background: 'beige'
 #| echo: false
@@ -1047,14 +739,12 @@ writeLines(readLines("SCR0-faster.jag"))
 
 
 
+## Model SCR~0~ -- faster
 
-
-  ## Model SCR$_0$ -- faster
-  Data
+Data
   
 ```{r}
 #| label: jd-SCR0-aug-faster
-#| size: 'scriptsize'
 y.tilde <- apply(y, c(1,2), sum)
 n <- nrow(y)
 jags.data.SCR0.faster <- list(y.tilde=y.tilde, n=n, M=M, J=J,
@@ -1064,12 +754,11 @@ jags.data.SCR0.faster <- list(y.tilde=y.tilde, n=n, M=M, J=J,
 ```
 
 
-  Inits and parameters (same as before)
+Inits and parameters (same as before)
 
 
 ```{r}
 #| label: ji-M0-aug-faster
-#| size: 'scriptsize'
 ji.SCR0.faster <- function() {
     list(z=c(rep(NA, n), rep(0,M-n)), psi=runif(1),
          s=cbind(runif(M), runif(M)),
@@ -1079,7 +768,6 @@ MCMC
   
 ```{r}
 #| label: mcmc-M0-aug-faster
-#| size: 'scriptsize'
 #| results: 'hide'
 #| cache: true
 jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
@@ -1091,27 +779,19 @@ jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
 ```
 
 
+## Posterior summaries
 
-
-
-
-  ## Posterior summaries
 ```{r}
 #| label: summary-mcmc-SCR0-faster
-#| size: 'tiny'
 summary(jags.post.SCR0.faster)
 ```
 
+## Traceplots and density plots
 
-
-
-
-  ## Traceplots and density plots
 ```{r}
 #| label: plot-mcmc-SCR0-faster
-#| size: 'footnotesize'
-#| out.width: "0.7<br>textwidth"
-#| fig.align: 'center'
+#| out-width: '70%'
+#| fig-align: 'center'
 plot(jags.post.SCR0.faster[,jp.SCR0])
 ```
 
@@ -1122,107 +802,52 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
 
 
 
-  ## Alternative observation models
-%  
-%  * % Observation models are not the same as encounter rate functions. <br>
-  %  
-  % % * Observation models are chosen with respect to the sampling
-      method (mist-net, camera trap, hair snare, etc\dots) <br>
-%  
+## Alternative observation models
+
+Common options include:
+  
+  Model                     Detector/Trap   Examples
+  ------------------------- --------------- --------------------
+  Bernoulli                 Proximity       Hair-snares
+  Poisson                   Count           Camera trap
+  Multinomial/Categorical   Multi-catch     Mist net, crab pot
+  ---                       Single-catch    Sherman trap
    
-  % <center>
-  Common options include:
+There are other observation models for data from area searches, transects, or acoustic recording units.
+
+
+
+## SCR study design
+
+SCR uses model-based, rather than design-based, inference (see Ch. 10).
   
-    \begin{tabular}{lll}
-      \hline
-      Model       & Detector/Trap     & Examples           <br>
-      \hline
-      Bernoulli   & Proximity    & Hair-snares        <br>
-      Poisson     & Count        & Camera trap        <br>
-      Multinomial/Categorical & Multi-catch  & Mist net, crab pot <br>
-      ---          & Single-catch & Sherman trap       <br>
-      \hline
-    \end{tabular}
-    % </center>
+Random placement of traps is not required, but it's a good idea to randomly sample locations along the environmental gradients you're interested in.
    
-  There are other observation models for data from area searches,
-  transects, or acoustic recording units.
-
-
-
-
-
-
-
-
-
-
-  ## SCR study design
-  SCR uses model-based, rather than design-based,
-  inference (see Ch. 10). <br> 
+The other two key design considerations are:
+- Capture as many individuals as you can (i.e., maximize $n$)
+- Obtain as many {\it spatial} recaptures as possible
   
-  
-  Random placement of traps is not required, but it's a good idea to
-  randomly sample locations along the environmental gradients you're
-  interested in. <br>
+::: {.fragment}
+There is a tradeoff between these two objectives. Simulation is often the best option for finding the right balance.
+:::
+
+
+## SCR summary
+
+We assume that variation in $p$ arises from distance between animals and traps.
    
-  The other two key design considerations are:
-  
-    * <3-> Capture as many individuals as you can (i.e., maximize $n$)
-    * <4-> Obtain as many {\it spatial} recaptures as possible
-  
-  
-  \uncover<5->{
-    There is a tradeoff between these two objectives. Simulation is
-    often the best option for finding the right balance.
-  }
-
-
-%# Summary
-
-
-
-  ## SCR summary
-  We assume that variation in $p$ arises from distance between animals
-  and traps. <br>
+We can estimate abundance and model distribution (i.e., spatial variation in density)
    
-  We can estimate abundance and model distribution (i.e., spatial
-  variation in density) <br>
-   
-  Next time, we'll see how to do that using secr and JAGS, and we'll
-  make a bunch of maps. <br>
+Next time, we'll see how to do that using secr and JAGS, and we'll make a bunch of maps.
 
 
 
+## Assignment
 
-
-%# Assignment
-
-
-
-
-
-  ## Assignment
-  Create a self-contained R script or Rmarkdown file to do the
-  following: 
+Create a self-contained R script or Rmarkdown file to do the following: 
   
+- Import the bear data formatted for `secr' and fit the null model and a model where $g_0$ varies among the 8 occasions. Use 'secr' to determine what an appropriate buffer should be.
+- Import the bear data formatted for JAGS (using the command `load("jags\_bear\_data.gzip")`) and tabulate the capture frequencies and the number of spatial recapture. Fit the model with occasion-specific $g_0$ in JAGS, and compare estimates and 95\% CIs for $g_{0}$, $\sigma$, $E(N)$ and $N$ with the results from secr. 
   
-    * Import the bear data formatted for `secr' and fit the null
-      model and a model where $g_0$ varies among the 8 occasions. Use
-      `secr' to determine what an appropriate buffer should be.
-    * Import the bear data formatted for JAGS (using the command
-      \inr{load("jags\_bear\_data.gzip")}) and tabulate the 
-      capture frequencies and the number of spatial recapture. Fit the
-      model with occasion-specific $g_0$ in JAGS, and
-      compare estimates and 95\% CIs for $g_{0}$, $\sigma$, $E(N)$ and
-      $N$ with the results from secr. 
-  
-  
-  Upload your work to ELC by 5:00pm on Tuesday. 
-
-
-
-
-
-
+Upload your work to ELC by 5:00pm on Tuesday. 
 
