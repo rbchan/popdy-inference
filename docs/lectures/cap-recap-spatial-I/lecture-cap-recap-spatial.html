@@ -194,11 +194,12 @@
     <div class="slides">
 
 
-<section id="section" class="slide level2" data-content-align="center" style="font-size: 140%;">
+<section id="section" class="slide level2" data-content-align="center" style="font-size: 150%;">
 <h2></h2>
 <p><br></p>
 <center>
 <p><strong>Spatial capture-recapture for <br> closed populations</strong></p>
+<p><br></p>
 <div style="font-size: 60%;">
 <p>WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
 </div>
@@ -206,9 +207,9 @@
 </section>
 <section>
 
-<section id="scr-overview" class="slide level2">
-<h2>SCR overview</h2>
-<p>Two motivations for SCR</p>
+<section id="scr-overview-two-motivations" class="slide level2">
+<h2>SCR overview – Two motivations</h2>
+<div style="font-size: 65%;">
 <ol type="1">
 <li>Improved inference</li>
 </ol>
@@ -236,11 +237,14 @@
 <div class="fragment">
 <p>Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.</p>
 </div>
+</div>
 </section>
 <section id="scr-data" class="slide level2">
 <h2>SCR data</h2>
+<div style="font-size: 75%;">
 <p>SCR capture histories can be organized as a 3D array where <span class="math inline">\(y_{ijk}\)</span> indicates if individual <span class="math inline">\(i=1,\dots,n\)</span>, was captured in trap <span class="math inline">\(j=1,\dots,J\)</span> on occasion <span class="math inline">\(k=1,\dots,K\)</span>.</p>
 <p>Here’s an example of a “flattened array” with <span class="math inline">\(n=4\)</span> animals captured at <span class="math inline">\(J=3\)</span> traps on <span class="math inline">\(K=2\)</span> occasions.</p>
+<div style="font-size: 50%;">
 <table class="caption-top" style="width:72%;">
 <colgroup>
 <col style="width: 23%">
@@ -323,17 +327,19 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>Because we know the coordinates of the traps, we also know when and where each individual was detected.</p>
 <p>This spatial information has been available all along, but it wasn’t utilized to estimate density until Efford (2004, Oikos).</p>
+</div>
 </section>
 <section id="closed-population-model-n-known-hypothetically" class="slide level2">
-<h2>Closed population model (<em>N</em> known hypothetically)</h2>
-<div style="font-size: 80%;">
+<h2><span style="font-size: 50%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
+<div style="font-size: 60%;">
 <p>State model (a spatial point process model) <span class="math display">\[
-    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) + \cdots) \\
-    \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
+    \lambda({\bf s}) = \exp(\beta_0 + \beta_1 w_1({\bf s}) + \beta_2 w_2({\bf s}) + \cdots) \\
+    \Lambda = \int_{\mathcal{S}} \lambda({\bf s}) \; \mathrm{d}{\bf s} \\
     N \sim \mathrm{Pois}(\Lambda) \\
-    \bsi \propto \lambda(\bs) \;\; \mathrm{for}\; i=1,\dots,N
+    {\bf s}_i \propto \lambda({\bf s}) \;\; \mathrm{for}\; i=1,\dots,N
 \]</span></p>
 <div class="fragment">
 <p>Observation model (supposing <span class="math inline">\(N\)</span> was known) <span class="math display">\[
@@ -341,26 +347,30 @@
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 \]</span></p>
 </div>
-<p>Definitions <br></p>
 </div>
-<div style="font-size: 70%;">
+<div style="font-size: 50%;">
 <p><span class="math inline">\(\lambda(\bs)\)</span> – “Intensity function” describing expected density of individuals at location <span class="math inline">\(\bs\)</span> <br> <span class="math inline">\(\Lambda\)</span> – Expected number of individuals in the spatial region <span class="math inline">\(\mathcal{S}\)</span> <br> <span class="math inline">\(N\)</span> – Realized number of individuals (ie, population size) <br> <span class="math inline">\(\bsi\)</span> – Location of the <span class="math inline">\(i\)</span>th activity center <br> <span class="math inline">\(\bxj\)</span> – Location of trap <span class="math inline">\(j\)</span> <br> <span class="math inline">\(\dsixj\)</span> – Euclidean distance between <span class="math inline">\(\bsi\)</span> and <span class="math inline">\(\bxj\)</span> <br> <span class="math inline">\(g_0\)</span> – Capture probability when distance between activity centers and traps is 0 <br> <span class="math inline">\(\sigma\)</span> – Scale parameter of encounter function <br> <span class="math inline">\(p_{ij}\)</span> – Capture probability <br> <span class="math inline">\(y_{ijk}\)</span> – Spatial capture histories <br></p>
 </div>
 </section>
 <section id="closed-population-model-n-known-hypothetically-1" class="slide level2">
-<h2>Closed population model (<em>N</em> known hypothetically)</h2>
+<h2><span style="font-size: 90%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
+<div style="font-size: 80%;">
 <p>Many variations and extensions are possible for both the state and observation models, but today we will focus on the simplest case with no spatial variation in the expected value of density.</p>
 <p><span class="math display">\[
     N \sim \mathrm{Pois}(\lambda) \\
-    \bsi \sim \mathrm{Unif}(\cal S) \\
-    p_{ij} = g_0\exp\left(\frac{-\|\bsi - \bxj\|^2}{2\sigma^2}\right) \\
+    {\bm s}_i \sim \mathrm{Unif}(\cal S) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i - {\bm x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 \]</span></p>
 <p>Just remember, this formulation isn’t exactly correct because we can’t observe the “all zero” encounter histories (and thus we don’t know <span class="math inline">\(N\)</span>).</p>
+</div>
 </section>
-<section id="shiny-app" class="slide level2">
-<h2>Shiny app</h2>
-<p><a href="https://richard-chandler.shinyapps.io/scr-cap-prob/">Shiny App</a></p>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><a href="https://rbchan-scr-cap-prob.share.connect.posit.cloud/">Shiny App</a></p>
+</div>
 </section></section>
 <section>
 <section id="simulation" class="title-slide slide level1 center">
@@ -369,30 +379,46 @@
 </section>
 <section id="homogeneous-poisson-point-process" class="slide level2">
 <h2>Homogeneous Poisson point process</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>lambda1 <span class="ot">&lt;-</span> <span class="dv">25</span>; A <span class="ot">&lt;-</span> <span class="dv">1</span>     <span class="do">## lambda1=density, A=area</span></span>
 <span id="cb1-2"><a></a>N <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, lambda1<span class="sc">*</span>A)  </span>
 <span id="cb1-3"><a></a>s <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>))</span>
 <span id="cb1-4"><a></a><span class="fu">plot</span>(s, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">xlab=</span><span class="st">"Easting"</span>, <span class="at">ylab=</span><span class="st">"Northing"</span>,</span>
 <span id="cb1-5"><a></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">cex.lab=</span><span class="fl">1.5</span>, <span class="at">asp=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial_files/figure-revealjs/ppp1-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-cap-recap-spatial_files/figure-revealjs/ppp1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="traps" class="slide level2">
 <h2>Traps</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>x <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(<span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">by=</span><span class="fl">0.1</span>), <span class="at">each=</span><span class="dv">8</span>),</span>
 <span id="cb2-2"><a></a>           <span class="fu">rep</span>(<span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">by=</span><span class="fl">0.1</span>), <span class="at">times=</span><span class="dv">8</span>))  <span class="do">## Trap locations</span></span>
 <span id="cb2-3"><a></a><span class="fu">plot</span>(s, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">xlab=</span><span class="st">"Easting"</span>, <span class="at">ylab=</span><span class="st">"Northing"</span>, <span class="at">asp=</span><span class="dv">1</span>,</span>
 <span id="cb2-4"><a></a>     <span class="at">main=</span><span class="st">"Activity centers and traps"</span>)</span>
 <span id="cb2-5"><a></a><span class="fu">points</span>(x, <span class="at">pch=</span><span class="dv">3</span>)              <span class="do">## Trap locations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial_files/figure-revealjs/traps1-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-cap-recap-spatial_files/figure-revealjs/traps1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="distance-between-traps-and-activity-centers" class="slide level2">
-<h2>Distance between traps and activity centers</h2>
+<h2><span style="font-size: 80%;">Distance between traps and activity centers</span></h2>
 <div style="font-size: 80%;">
-<p>Compute distances between activity centers (<span class="math inline">\(\bs_1, \dots, \bs_N\)</span>) and traps (<span class="math inline">\(\bx_1, \dots, \bx_J\)</span>).</p>
+<p>Compute distances between activity centers (<span class="math inline">\({\bm s}_1, \dots, {\bm s}_N\)</span>) and traps (<span class="math inline">\({\bm x}_1, \dots, {\bm x}_J\)</span>).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>J <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x)                 <span class="do">## nTraps</span></span>
 <span id="cb3-2"><a></a>dist.sx <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)  </span>
@@ -422,6 +448,7 @@
 <span id="cb6-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
 <span id="cb6-3"><a></a>p <span class="ot">&lt;-</span> g0<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>dist.sx<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
 <p>Look at capture probs for first 4 individuals and first 5 traps.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">round</span>(p[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -499,23 +526,10 @@
 </section>
 <section id="spider-plot" class="slide level2">
 <h2>Spider plot</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">plot</span>(<span class="dv">0</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>,</span>
-<span id="cb19-2"><a></a>     <span class="at">main=</span><span class="st">"Activity centers, traps, and capture locs"</span>)</span>
-<span id="cb19-3"><a></a>s.cap <span class="ot">&lt;-</span> s[captured,]</span>
-<span id="cb19-4"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb19-5"><a></a>    traps.i <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">rowSums</span>(y[i,,])<span class="sc">&gt;</span><span class="dv">0</span>)</span>
-<span id="cb19-6"><a></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traps.i)) {</span>
-<span id="cb19-7"><a></a>        <span class="fu">segments</span>(s.cap[i,<span class="dv">1</span>], s.cap[i,<span class="dv">2</span>],</span>
-<span id="cb19-8"><a></a>                 x[traps.i[j],<span class="dv">1</span>], x[traps.i[j],<span class="dv">2</span>], <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.3</span>))</span>
-<span id="cb19-9"><a></a>    }</span>
-<span id="cb19-10"><a></a>}</span>
-<span id="cb19-11"><a></a><span class="fu">points</span>(s[captured,], <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>) <span class="do">## Activity center locations</span></span>
-<span id="cb19-12"><a></a><span class="fu">points</span>(s[<span class="sc">!</span>captured,], <span class="at">pch=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">"blue"</span>) <span class="do">## Activity center locations</span></span>
-<span id="cb19-13"><a></a><span class="fu">points</span>(x, <span class="at">pch=</span><span class="dv">3</span>)                         <span class="do">## Trap locations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="font-size: 80%;">
 
 </div>
-<img data-src="lecture-cap-recap-spatial_files/figure-revealjs/spider-1.png" style="width:85.0%" class="r-stretch"></section></section>
+</section></section>
 <section>
 <section id="likelihood" class="title-slide slide level1 center">
 <h1>Likelihood</h1>
@@ -539,11 +553,11 @@
 <div style="font-size: 80%;">
 <p>Import data from two text files</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">library</span>(secr)  </span>
-<span id="cb20-2"><a></a>sch <span class="ot">&lt;-</span> <span class="fu">read.capthist</span>(<span class="at">captfile=</span><span class="st">"encounter_data_file.csv"</span>,</span>
-<span id="cb20-3"><a></a>                     <span class="at">trapfile=</span><span class="st">"trap_data_file.csv"</span>,</span>
-<span id="cb20-4"><a></a>                     <span class="at">detector=</span><span class="st">"proximity"</span>, <span class="at">fmt=</span><span class="st">"trapID"</span>)</span>
-<span id="cb20-5"><a></a><span class="fu">summary</span>(sch)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">library</span>(secr)  </span>
+<span id="cb19-2"><a></a>sch <span class="ot">&lt;-</span> <span class="fu">read.capthist</span>(<span class="at">captfile=</span><span class="st">"encounter_data_file.csv"</span>,</span>
+<span id="cb19-3"><a></a>                     <span class="at">trapfile=</span><span class="st">"trap_data_file.csv"</span>,</span>
+<span id="cb19-4"><a></a>                     <span class="at">detector=</span><span class="st">"proximity"</span>, <span class="at">fmt=</span><span class="st">"trapID"</span>)</span>
+<span id="cb19-5"><a></a><span class="fu">summary</span>(sch)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Object class       capthist 
 Detector type      proximity 
@@ -569,7 +583,7 @@ detectors used    64 64 64 64 64   320</code></pre>
 <section id="r-package-secr-1" class="slide level2">
 <h2>R package ‘secr’</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">plot</span>(sch)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">plot</span>(sch)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-cap-recap-spatial_files/figure-revealjs/secr-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
@@ -578,10 +592,10 @@ detectors used    64 64 64 64 64   320</code></pre>
 <div style="font-size: 80%;">
 <p>Fit the SCR equivalent of Model <span class="math inline">\(M_0\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>fm.M0 <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">g0=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
-<span id="cb23-2"><a></a>    <span class="at">details =</span> <span class="fu">list</span>(<span class="at">fastproximity =</span> <span class="cn">FALSE</span>), <span class="do">## For AIC comparisons</span></span>
-<span id="cb23-3"><a></a>    <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">trace=</span><span class="cn">FALSE</span>, <span class="at">ncores=</span><span class="dv">3</span>)</span>
-<span id="cb23-4"><a></a><span class="fu">coef</span>(fm.M0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>fm.M0 <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">g0=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
+<span id="cb22-2"><a></a>    <span class="at">details =</span> <span class="fu">list</span>(<span class="at">fastproximity =</span> <span class="cn">FALSE</span>), <span class="do">## For AIC comparisons</span></span>
+<span id="cb22-3"><a></a>    <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">trace=</span><span class="cn">FALSE</span>, <span class="at">ncores=</span><span class="dv">3</span>)</span>
+<span id="cb22-4"><a></a><span class="fu">coef</span>(fm.M0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           beta   SE.beta       lcl        ucl
 D     -1.050968 0.2738747 -1.587753 -0.5141834
@@ -591,7 +605,7 @@ sigma  3.789683 0.1342465  3.526565  4.0528010</code></pre>
 </div>
 <p>Estimates on original scale</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">predict</span>(fm.M0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">predict</span>(fm.M0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       link   estimate SE.estimate        lcl        ucl
 D       log  0.3495992  0.09757018  0.2043844  0.5979887
@@ -599,7 +613,9 @@ g0    logit  0.2181035  0.07656510  0.1037048  0.4020852
 sigma   log 44.2423619  5.96624128 34.0069365 57.5584511</code></pre>
 </div>
 </div>
-<p><code>D</code> is density (<span class="math inline">\(\lambda\)</span>, animals/ha), <code>g0</code> is <span class="math inline">\(g_0\)</span>, and <code>sigma</code> is <span class="math inline">\(\sigma\)</span>.</p>
+<center>
+<code>D</code> is density (<span class="math inline">\(\lambda\)</span>, animals/ha), <code>g0</code> is <span class="math inline">\(g_0\)</span>, and <code>sigma</code> is <span class="math inline">\(\sigma\)</span>.
+</center>
 </div>
 </section>
 <section id="r-package-secr-3" class="slide level2">
@@ -607,9 +623,9 @@ sigma   log 44.2423619  5.96624128 34.0069365 57.5584511</code></pre>
 <div style="font-size: 80%;">
 <p>Fit the SCR equivalent of Model <span class="math inline">\(M_t\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>fm.Mt <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">g0=</span><span class="sc">~</span>t, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
-<span id="cb27-2"><a></a>                  <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">trace=</span><span class="cn">FALSE</span>, <span class="at">ncores=</span><span class="dv">3</span>)</span>
-<span id="cb27-3"><a></a><span class="fu">coef</span>(fm.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>fm.Mt <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">g0=</span><span class="sc">~</span>t, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
+<span id="cb26-2"><a></a>                  <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">trace=</span><span class="cn">FALSE</span>, <span class="at">ncores=</span><span class="dv">3</span>)</span>
+<span id="cb26-3"><a></a><span class="fu">coef</span>(fm.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            beta   SE.beta       lcl        ucl
 D     -1.0603936 0.2725340 -1.594550 -0.5262367
@@ -623,7 +639,7 @@ sigma  3.7799754 0.1330984  3.519107  4.0408435</code></pre>
 </div>
 <p>Estimates on original scale</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">predict</span>(fm.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">predict</span>(fm.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       link   estimate SE.estimate        lcl        ucl
 D       log  0.3463195  0.09616385  0.2029998  0.5908242
@@ -638,9 +654,9 @@ sigma   log 43.8149643  5.85762566 33.7542824 56.8742975</code></pre>
 <div style="font-size: 80%;">
 <p>Fit the SCR equivalent of Model <span class="math inline">\(M_b\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>fm.Mb <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">g0=</span><span class="sc">~</span>b, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
-<span id="cb31-2"><a></a>                  <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">trace=</span><span class="cn">FALSE</span>, <span class="at">ncores=</span><span class="dv">3</span>)</span>
-<span id="cb31-3"><a></a><span class="fu">coef</span>(fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>fm.Mb <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">g0=</span><span class="sc">~</span>b, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
+<span id="cb30-2"><a></a>                  <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">trace=</span><span class="cn">FALSE</span>, <span class="at">ncores=</span><span class="dv">3</span>)</span>
+<span id="cb30-3"><a></a><span class="fu">coef</span>(fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               beta   SE.beta       lcl       ucl
 D        -0.9355618 0.5587887 -2.030768 0.1596439
@@ -651,7 +667,7 @@ sigma     3.7945281 0.1361532  3.527673 4.0613835</code></pre>
 </div>
 <p>Estimates on original scale</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">predict</span>(fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="fu">predict</span>(fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       link   estimate SE.estimate         lcl        ucl
 D       log  0.3923654   0.2375315  0.13123476  1.1730930
@@ -662,10 +678,12 @@ sigma   log 44.4572512   6.0811580 34.04464338 58.0545716</code></pre>
 </div>
 </section>
 <section id="r-package-secr-5" class="slide level2">
-<h2>R package `secr’</h2>
-<p>What about <span class="math inline">\(N\)</span>? <code>E.N</code> is the expected value of <span class="math inline">\(N\)</span>. is the realized value of <span class="math inline">\(N\)</span>.</p>
+<h2>R package ‘secr’</h2>
+<div style="font-size: 80%;">
+<p>What about <span class="math inline">\(N\)</span>? <code>E.N</code> is the expected value of <span class="math inline">\(N\)</span>. <code>R.N</code> is the realized value of <span class="math inline">\(N\)</span>.</p>
+</div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">region.N</span>(fm.M0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">region.N</span>(fm.M0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    estimate SE.estimate      lcl      ucl  n
 E.N 34.24296    9.556923 20.01929 58.57253 18
@@ -673,7 +691,7 @@ R.N 34.24297    7.555912 24.82226 56.67252 18</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">region.N</span>(fm.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">region.N</span>(fm.Mt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    estimate SE.estimate      lcl      ucl  n
 E.N 33.92172    9.419174 19.88367 57.87077 18
@@ -681,7 +699,7 @@ R.N 33.92173    7.402642 24.69007 55.89223 18</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">region.N</span>(fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">region.N</span>(fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    estimate SE.estimate      lcl      ucl  n
 E.N 38.43188    23.26603 12.85434 114.9035 18
@@ -692,37 +710,37 @@ R.N 38.43189    22.42490 21.57669 134.7173 18</code></pre>
 <section id="r-package-secr-6" class="slide level2">
 <h2>R package ‘secr’</h2>
 <p>Was <code>buffer</code> big enough?</p>
-<div style="font-size: 70%;">
+<div style="font-size: 75%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">100</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">100</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  link  estimate SE.estimate       lcl       ucl
 D  log 0.3554085  0.09872472 0.2082871 0.6064475</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">150</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">150</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  link estimate SE.estimate       lcl       ucl
 D  log 0.349599  0.09757013 0.2043843 0.5979884</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">200</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">200</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  link  estimate SE.estimate      lcl       ucl
 D  log 0.3494254  0.09755105 0.204251 0.5977846</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">250</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">250</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  link  estimate SE.estimate       lcl       ucl
 D  log 0.3494237  0.09755102 0.2042495 0.5977831</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">300</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a><span class="fu">predict</span>(<span class="fu">update</span>(fm.M0, <span class="at">buffer=</span><span class="dv">300</span>))[<span class="dv">1</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  link  estimate SE.estimate       lcl       ucl
 D  log 0.3494236    0.097551 0.2042495 0.5977829</code></pre>
@@ -734,7 +752,7 @@ D  log 0.3494236    0.097551 0.2042495 0.5977829</code></pre>
 <h2>R package ‘secr’</h2>
 <p>AIC</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="fu">AIC</span>(fm.M0, fm.Mt, fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a><span class="fu">AIC</span>(fm.M0, fm.Mt, fm.Mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 model   detectfn npar    logLik     AIC    AICc  dAIC  AICwt
 fm.M0 D~1 g0~1 sigma~1 halfnormal    3 -117.3269 240.654 242.368 0.000 0.6867
@@ -752,18 +770,18 @@ fm.Mt D~1 g0~t sigma~1 halfnormal    7 -115.9497 245.899 257.099 5.245 0.0499</c
 <h2>Data augmentation model</h2>
 <p>The DA version of a basic SCR model is:</p>
 <p><span class="math display">\[
-    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
+    {\bm s}_i \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp\left(\frac{-\|\bsi-\bxj\|^2}{2\sigma^2}\right) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i-{\bm x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
 \]</span></p>
 </section>
 <section id="model-scr0-data-augmentation" class="slide level2">
 <h2>Model SCR<sub>0</sub> – data augmentation</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(<span class="st">"SCR0.jag"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<center>
+<a href="SCR0.jag">SCR0.jag</a>
+</center>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -794,37 +812,37 @@ N &lt;- sum(z)  ## Realized value of N
 <h2>Model SCR<sub>0</sub> – data augmentation</h2>
 <p>Data</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">150</span></span>
-<span id="cb55-2"><a></a>y.aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M, J, K))</span>
-<span id="cb55-3"><a></a>y.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),,] <span class="ot">&lt;-</span> y</span>
-<span id="cb55-4"><a></a>jags.data.SCR0 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.aug, <span class="at">M=</span>M, <span class="at">J=</span>J, <span class="at">K=</span>K,</span>
-<span id="cb55-5"><a></a>                       <span class="at">x=</span>x, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">150</span></span>
+<span id="cb53-2"><a></a>y.aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M, J, K))</span>
+<span id="cb53-3"><a></a>y.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),,] <span class="ot">&lt;-</span> y</span>
+<span id="cb53-4"><a></a>jags.data.SCR0 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.aug, <span class="at">M=</span>M, <span class="at">J=</span>J, <span class="at">K=</span>K,</span>
+<span id="cb53-5"><a></a>                       <span class="at">x=</span>x, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Inits and parameters</p>
 <div class="cell" data-report="false">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a></a>ji.SCR0 <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb56-2"><a></a>  si <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">runif</span>(M), <span class="fu">runif</span>(M))</span>
-<span id="cb56-3"><a></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y)) {</span>
-<span id="cb56-4"><a></a>    traps_with_dets_i <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y[i,,]<span class="sc">&gt;</span><span class="dv">0</span>)</span>
-<span id="cb56-5"><a></a>    si[i,] <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(x[traps_with_dets_i,,<span class="at">drop=</span><span class="cn">FALSE</span>])</span>
-<span id="cb56-6"><a></a>  }</span>
-<span id="cb56-7"><a></a>  <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">s=</span>si,</span>
-<span id="cb56-8"><a></a>       <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span>
-<span id="cb56-9"><a></a>jp.SCR0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"g0"</span>, <span class="st">"sigma"</span>, <span class="st">"EN"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a>ji.SCR0 <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb54-2"><a></a>  si <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">runif</span>(M), <span class="fu">runif</span>(M))</span>
+<span id="cb54-3"><a></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y)) {</span>
+<span id="cb54-4"><a></a>    traps_with_dets_i <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y[i,,]<span class="sc">&gt;</span><span class="dv">0</span>)</span>
+<span id="cb54-5"><a></a>    si[i,] <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(x[traps_with_dets_i,,<span class="at">drop=</span><span class="cn">FALSE</span>])</span>
+<span id="cb54-6"><a></a>  }</span>
+<span id="cb54-7"><a></a>  <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">s=</span>si,</span>
+<span id="cb54-8"><a></a>       <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span>
+<span id="cb54-9"><a></a>jp.SCR0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"g0"</span>, <span class="st">"sigma"</span>, <span class="st">"EN"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>MCMC</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>jags.post.SCR0 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.SCR0, <span class="at">inits=</span>ji.SCR0,</span>
-<span id="cb57-2"><a></a>                             <span class="at">parameters.to.save=</span>jp.SCR0,</span>
-<span id="cb57-3"><a></a>                             <span class="at">model.file=</span><span class="st">"SCR0.jag"</span>,</span>
-<span id="cb57-4"><a></a>                             <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb57-5"><a></a>                             <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>jags.post.SCR0 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.SCR0, <span class="at">inits=</span>ji.SCR0,</span>
+<span id="cb55-2"><a></a>                             <span class="at">parameters.to.save=</span>jp.SCR0,</span>
+<span id="cb55-3"><a></a>                             <span class="at">model.file=</span><span class="st">"SCR0.jag"</span>,</span>
+<span id="cb55-4"><a></a>                             <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb55-5"><a></a>                             <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="posterior-summaries" class="slide level2">
 <h2>Posterior summaries</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">summary</span>(jags.post.SCR0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a></a><span class="fu">summary</span>(jags.post.SCR0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Iterations = 101:2100
@@ -856,7 +874,7 @@ sigma      0.03516   0.04084   0.04459   0.04906   0.06074</code></pre>
 <section id="traceplots-and-density-plots" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a><span class="fu">plot</span>(jags.post.SCR0[,jp.SCR0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">plot</span>(jags.post.SCR0[,jp.SCR0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-cap-recap-spatial_files/figure-revealjs/plot-mcmc-SCR0-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
@@ -871,7 +889,7 @@ sigma      0.03516   0.04084   0.04459   0.04906   0.06074</code></pre>
 <section id="model-scr0-data-augmentation-2" class="slide level2">
 <h2>Model SCR<sub>0</sub> – data augmentation</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(<span class="st">"SCR0-faster.jag"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(<span class="st">"SCR0-faster.jag"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -909,34 +927,34 @@ N &lt;- sum(z)  ## Realized value of N
 <h2>Model SCR<sub>0</sub> – faster</h2>
 <p>Data</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(y, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), sum)</span>
-<span id="cb63-2"><a></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(y)</span>
-<span id="cb63-3"><a></a>jags.data.SCR0.faster <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y.tilde=</span>y.tilde, <span class="at">n=</span>n, <span class="at">M=</span>M, <span class="at">J=</span>J,</span>
-<span id="cb63-4"><a></a>                              <span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n), <span class="fu">rep</span>(<span class="cn">NA</span>, M<span class="sc">-</span>n)),</span>
-<span id="cb63-5"><a></a>                              <span class="at">K=</span>K, <span class="at">zero=</span><span class="fu">rep</span>(<span class="dv">0</span>, M), <span class="at">x=</span>x,</span>
-<span id="cb63-6"><a></a>                              <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(y, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), sum)</span>
+<span id="cb61-2"><a></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(y)</span>
+<span id="cb61-3"><a></a>jags.data.SCR0.faster <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y.tilde=</span>y.tilde, <span class="at">n=</span>n, <span class="at">M=</span>M, <span class="at">J=</span>J,</span>
+<span id="cb61-4"><a></a>                              <span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n), <span class="fu">rep</span>(<span class="cn">NA</span>, M<span class="sc">-</span>n)),</span>
+<span id="cb61-5"><a></a>                              <span class="at">K=</span>K, <span class="at">zero=</span><span class="fu">rep</span>(<span class="dv">0</span>, M), <span class="at">x=</span>x,</span>
+<span id="cb61-6"><a></a>                              <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Inits and parameters (same as before)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a>ji.SCR0.faster <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb64-2"><a></a>    <span class="fu">list</span>(<span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="cn">NA</span>, n), <span class="fu">rep</span>(<span class="dv">0</span>,M<span class="sc">-</span>n)), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>),</span>
-<span id="cb64-3"><a></a>         <span class="at">s=</span><span class="fu">cbind</span>(<span class="fu">runif</span>(M), <span class="fu">runif</span>(M)),</span>
-<span id="cb64-4"><a></a>         <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a>ji.SCR0.faster <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb62-2"><a></a>    <span class="fu">list</span>(<span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="cn">NA</span>, n), <span class="fu">rep</span>(<span class="dv">0</span>,M<span class="sc">-</span>n)), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>),</span>
+<span id="cb62-3"><a></a>         <span class="at">s=</span><span class="fu">cbind</span>(<span class="fu">runif</span>(M), <span class="fu">runif</span>(M)),</span>
+<span id="cb62-4"><a></a>         <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>MCMC</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a></a>jags.post.SCR0.faster <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.SCR0.faster,</span>
-<span id="cb65-2"><a></a>                                    <span class="at">inits=</span>ji.SCR0.faster,</span>
-<span id="cb65-3"><a></a>                                    <span class="at">parameters.to.save=</span>jp.SCR0,</span>
-<span id="cb65-4"><a></a>                                    <span class="at">model.file=</span><span class="st">"SCR0-faster.jag"</span>,</span>
-<span id="cb65-5"><a></a>                                    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb65-6"><a></a>                                    <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a></a>jags.post.SCR0.faster <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.SCR0.faster,</span>
+<span id="cb63-2"><a></a>                                    <span class="at">inits=</span>ji.SCR0.faster,</span>
+<span id="cb63-3"><a></a>                                    <span class="at">parameters.to.save=</span>jp.SCR0,</span>
+<span id="cb63-4"><a></a>                                    <span class="at">model.file=</span><span class="st">"SCR0-faster.jag"</span>,</span>
+<span id="cb63-5"><a></a>                                    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb63-6"><a></a>                                    <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="posterior-summaries-1" class="slide level2">
 <h2>Posterior summaries</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a></a><span class="fu">summary</span>(jags.post.SCR0.faster)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a><span class="fu">summary</span>(jags.post.SCR0.faster)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Iterations = 101:2100
@@ -968,7 +986,7 @@ sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
 <section id="traceplots-and-density-plots-1" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a></a><span class="fu">plot</span>(jags.post.SCR0.faster[,jp.SCR0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a></a><span class="fu">plot</span>(jags.post.SCR0.faster[,jp.SCR0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-cap-recap-spatial_files/figure-revealjs/plot-mcmc-SCR0-faster-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section></section>

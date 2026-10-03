@@ -10,13 +10,15 @@ lang: en
 ---
 
   
-## {content-align="center" style="font-size: 140%;"}
+## {content-align="center" style="font-size: 150%;"}
 
 <br>
 
 <center>
 
 **Spatial capture-recapture for <br> closed populations**
+
+<br>
 
 ::: {style='font-size: 60%;'}
   WILD(FISH) 8390 <br>
@@ -32,18 +34,17 @@ lang: en
 
 
 
-## SCR overview
+## SCR overview -- Two motivations
 
-Two motivations for SCR
-  
-1. Improved inference
+::: {style='font-size: 65%;'}
+1.  Improved inference
   * Non-spatial models don't account for important sources of variation in $p$.
     + Distance between animals and traps
     + Trap-specific covariates
   * SCR makes it possible to estimate *density*, not just $N$ in an unknown region. 
 
 ::: {.fragment}
-2. Improved science
+2.  Improved science
   * We can ask new questions, such as:
     + What influences spatial variation in density?
     + How do survival and recruitment vary in space and time?
@@ -53,14 +54,17 @@ Two motivations for SCR
 ::: {.fragment}
 Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.
 :::
+:::
 
 
 ## SCR data
   
+::: {style='font-size: 75%;'}
 SCR capture histories can be organized as a 3D array where $y_{ijk}$ indicates if individual $i=1,\dots,n$, was captured in trap $j=1,\dots,J$ on occasion $k=1,\dots,K$.
 
 Here's an example of a "flattened array" with $n=4$ animals captured at $J=3$ traps on $K=2$ occasions.
   
+::: {style='font-size: 50%;'}
 +----------------+----------------------------------+
 |                | Occasion                         |
 +:===============+:==:+:==:+:==:+:==:+:==:+:==:+:==:+
@@ -78,25 +82,27 @@ Here's an example of a "flattened array" with $n=4$ animals captured at $J=3$ tr
 +----------------+----+----+----+----+----+----+----+
 | 4              | 0  | 1  | 1  |    | 1  | 0  | 0  |
 +----------------+----+----+----+----+----+----+----+
+:::
     
 Because we know the coordinates of the traps, we also know when and where each individual was detected.
   
   
 This spatial information has been available all along, but it wasn't utilized to estimate density until Efford (2004, Oikos).
+:::
 
 
 
-##  Closed population model (*N* known hypothetically) 
+##  [Closed population model (*N* known hypothetically) ]{style="font-size: 50%;"}
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 60%;'}
 State model (a spatial point process model) 
 $$
-    \lambda(\bs) = \exp(\beta_0 + \beta_1 w_1(\bs) + \beta_2 w_2(\bs) + \cdots) \\
-    \Lambda = \int_{\mathcal{S}} \lambda(\bs) \; \mathrm{d}\bs \\
+    \lambda({\bf s}) = \exp(\beta_0 + \beta_1 w_1({\bf s}) + \beta_2 w_2({\bf s}) + \cdots) \\
+    \Lambda = \int_{\mathcal{S}} \lambda({\bf s}) \; \mathrm{d}{\bf s} \\
     N \sim \mathrm{Pois}(\Lambda) \\
-    \bsi \propto \lambda(\bs) \;\; \mathrm{for}\; i=1,\dots,N 
+    {\bf s}_i \propto \lambda({\bf s}) \;\; \mathrm{for}\; i=1,\dots,N 
 $$
-  
+
 ::: {.fragment}
 Observation model (supposing $N$ was known)
 $$
@@ -106,9 +112,8 @@ $$
 :::
 
 
-Definitions <br>
 :::
-::: {style='font-size: 70%;'}
+::: {style='font-size: 50%;'}
   $\lambda(\bs)$ -- "Intensity function" describing expected density of individuals at location $\bs$ <br> 
   $\Lambda$ -- Expected number of individuals in the spatial region $\mathcal{S}$ <br>
   $N$ -- Realized number of individuals (ie, population size) <br>
@@ -127,14 +132,15 @@ Definitions <br>
 
 
 
-##  Closed population model (*N* known hypothetically) 
+##  [Closed population model (*N* known hypothetically)]{style="font-size: 90%;"}
 
+::: {style='font-size: 80%;'}
 Many variations and extensions are possible for both the state and observation models, but today we will focus on the simplest case with no spatial variation in the expected value of density.
 
 $$
     N \sim \mathrm{Pois}(\lambda) \\
-    \bsi \sim \mathrm{Unif}(\cal S) \\
-    p_{ij} = g_0\exp\left(\frac{-\|\bsi - \bxj\|^2}{2\sigma^2}\right) \\
+    {\bm s}_i \sim \mathrm{Unif}(\cal S) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i - {\bm x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 $$
   
@@ -143,13 +149,17 @@ Just remember, this formulation isn't exactly correct because we can't observe t
 
 
 
+:::
 
 
 
-## Shiny app
-  
-[Shiny App](https://richard-chandler.shinyapps.io/scr-cap-prob/)
+## 
 
+<br>
+
+::: {.r-fit-text}
+[Shiny App](https://rbchan-scr-cap-prob.share.connect.posit.cloud/)
+:::
 
 
 
@@ -159,10 +169,15 @@ Just remember, this formulation isn't exactly correct because we can't observe t
 
 ## Homogeneous Poisson point process
 
+
+::: {style='font-size: 80%;'}
+
 ```{r, echo=-1}
 #| label: ppp1
 #| size: 'footnotesize'
-#| out-width: "50%"
+#| fig-height: 7
+#| fig-width: 7
+#| out-width: "45%"
 #| fig-align: "center"
 set.seed(439)
 lambda1 <- 25; A <- 1     ## lambda1=density, A=area
@@ -172,6 +187,7 @@ plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing",
      xlim=c(0,1), ylim=c(0,1), cex.lab=1.5, asp=1)
 ```
 
+:::
 
 ```{r}
 #| include: false
@@ -227,11 +243,13 @@ writeRaster(elevation.r, filename="elevation.tif", overwrite=TRUE)
 
 ## Traps
 
+::: {style='font-size: 80%;'}
 
 ```{r, echo=-(2:4)}
 #| label: traps1
-#| fig-width: 7.2
-#| out-width: "60%"
+#| fig-height: 7
+#| fig-width: 7
+#| out-width: "45%"
 #| fig-align: "center"
 x <- cbind(rep(seq(0.15, 0.85, by=0.1), each=8),
            rep(seq(0.15, 0.85, by=0.1), times=8))  ## Trap locations
@@ -242,11 +260,14 @@ plot(s, pch=16, col="blue", xlab="Easting", ylab="Northing", asp=1,
      main="Activity centers and traps")
 points(x, pch=3)              ## Trap locations
 ```
+:::
 
-## Distance between traps and activity centers
+
+
+## [Distance between traps and activity centers]{style="font-size: 80%;"}
 
 ::: {style='font-size: 80%;'}
-Compute distances between activity centers ($\bs_1, \dots, \bs_N$) and traps ($\bx_1, \dots, \bx_J$).
+Compute distances between activity centers (${\bm s}_1, \dots, {\bm s}_N$) and traps (${\bm x}_1, \dots, {\bm x}_J$).
 ```{r}
 #| label: dist1
 J <- nrow(x)                 ## nTraps
@@ -279,6 +300,8 @@ g0 <- 0.2
 sigma <- 0.05
 p <- g0*exp(-dist.sx^2/(2*sigma^2))
 ```
+
+<br>
 
 Look at capture probs for first 4 individuals and first 5 traps.
 
@@ -359,11 +382,14 @@ table(y.nojk)
 
 ## Spider plot
 
+::: {style='font-size: 80%;'}
 ```{r, echo=-(1:2)}
 #| label: spider
 #| fig-width: 7.15
 #| fig-height: 7
+#| fig-align: 'center'
 #| out-width: '85%'
+#| include: false
 ## plot(lambda, col=terrain.colors(100),
 ##      main="Density surface, activity centers, traps, and capture locs")
 plot(0, xlim=c(0,1), ylim=c(0,1), asp=1, xlab="", ylab="",
@@ -380,6 +406,7 @@ points(s[captured,], pch=16, col="blue") ## Activity center locations
 points(s[!captured,], pch=1, col="blue") ## Activity center locations
 points(x, pch=3)                         ## Trap locations
 ```
+:::
 
 
 
@@ -472,8 +499,10 @@ Estimates on original scale
 predict(fm.M0)
 ```
 
+<center>
 `D` is density ($\lambda$, animals/ha), `g0` is $g_0$, and `sigma` is 
 $\sigma$.
+</center>
 
 :::
 
@@ -525,9 +554,11 @@ predict(fm.Mb)
 :::
 
 
-## R package `secr'
+## R package 'secr'
 
-What about $N$? `E.N` is the expected value of $N$. \inr{R.N} is the realized value of $N$. 
+::: {style='font-size: 80%;'}
+What about $N$? `E.N` is the expected value of $N$. `R.N` is the realized value of $N$. 
+:::
 
 
 ```{r}
@@ -550,7 +581,7 @@ region.N(fm.Mb)
   
 Was `buffer` big enough?
 
-::: {style='font-size: 70%;'}
+::: {style='font-size: 75%;'}
 ```{r}
 #| label: buffer1
 #| warning: false
@@ -615,9 +646,9 @@ AIC(fm.M0, fm.Mt, fm.Mb)
 The DA version of a basic SCR model is:
 
 $$
-    \bsi \sim \mathrm{Unif}(\mathcal{S}) \\
+    {\bm s}_i \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp\left(\frac{-\|\bsi-\bxj\|^2}{2\sigma^2}\right) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i-{\bm x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
 $$
@@ -628,9 +659,16 @@ $$
 
 ## Model SCR~0~ -- data augmentation
 
+<center>
+[SCR0.jag](SCR0.jag)
+</center>
+
+
 ```{r}
 #| label: bugs-SC0-R
 #| eval: false
+#| include: false
+#| echo: false
 writeLines(readLines("SCR0.jag"))
 ```
 ```{r}
