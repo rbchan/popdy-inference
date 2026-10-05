@@ -34,45 +34,49 @@ lang: en
 
 
 
-## SCR overview -- Two motivations
+## [SCR overview -- Two motivations]{style='font-size: 85%;'}
 
 ::: {style='font-size: 65%;'}
-1.  Improved inference
-  * Non-spatial models don't account for important sources of variation in $p$.
-    + Distance between animals and traps
-    + Trap-specific covariates
-  * SCR makes it possible to estimate *density*, not just $N$ in an unknown region. 
 
-::: {.fragment}
-2.  Improved science
-  * We can ask new questions, such as:
-    + What influences spatial variation in density?
-    + How do survival and recruitment vary in space and time?
-    + How does movement influence density and detectability?
-:::
-      
+1. Improved inference
+
+- Non-spatial models don't account for important sources of variation in $p$.
+  * Distance between animals and traps
+  * Trap-specific covariates
+- SCR makes it possible to estimate *density*, not just $N$ in an unknown region.
+
+2. Improved science
+
+- We can ask new questions, such as:
+  * What influences spatial variation in density?
+  * How do survival and recruitment vary in space and time?
+  * How does movement influence density and detectability?
+
+
 ::: {.fragment}
 Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.
 :::
+
 :::
 
 
 ## SCR data
   
-::: {style='font-size: 75%;'}
+::: {style='font-size: 70%;'}
 SCR capture histories can be organized as a 3D array where $y_{ijk}$ indicates if individual $i=1,\dots,n$, was captured in trap $j=1,\dots,J$ on occasion $k=1,\dots,K$.
 
-Here's an example of a "flattened array" with $n=4$ animals captured at $J=3$ traps on $K=2$ occasions.
+<!-- Here's an example of a "flattened array" with $n=4$ animals captured at $J=3$ traps on $K=2$ occasions. -->
   
-::: {style='font-size: 50%;'}
+::: {style='font-size: 60%;'}
+
 +----------------+----------------------------------+
 |                | Occasion                         |
 +:===============+:==:+:==:+:==:+:==:+:==:+:==:+:==:+
-| 2-8            | 1            |    | 2            |
+|                | 1            |    | 2            |
 +----------------+--------------+----+--------------+
-| 2-4            | Trap         |    | Trap         |
+|                | Trap         |    | Trap         |
 +----------------+----+----+----+----+----+----+----+
-| 2-4 Individual | 1  | 2  | 3  |    | 1  | 2  | 3  |
+| Individual     | 1  | 2  | 3  |    | 1  | 2  | 3  |
 +----------------+----+----+----+----+----+----+----+
 | 1              | 0  | 0  | 0  |    | 1  | 0  | 1  |
 +----------------+----+----+----+----+----+----+----+
@@ -82,19 +86,27 @@ Here's an example of a "flattened array" with $n=4$ animals captured at $J=3$ tr
 +----------------+----+----+----+----+----+----+----+
 | 4              | 0  | 1  | 1  |    | 1  | 0  | 0  |
 +----------------+----+----+----+----+----+----+----+
+
 :::
-    
+
+<br>
+
+::: {.fragment}
 Because we know the coordinates of the traps, we also know when and where each individual was detected.
+:::
   
   
+::: {.fragment}
 This spatial information has been available all along, but it wasn't utilized to estimate density until Efford (2004, Oikos).
 :::
 
+:::
 
 
-##  [Closed population model (*N* known hypothetically) ]{style="font-size: 50%;"}
 
-::: {style='font-size: 60%;'}
+## [Closed population model (*N* known hypothetically) ]{style="font-size: 60%;"}
+
+::: {style='font-size: 50%;'}
 State model (a spatial point process model) 
 $$
     \lambda({\bf s}) = \exp(\beta_0 + \beta_1 w_1({\bf s}) + \beta_2 w_2({\bf s}) + \cdots) \\
@@ -103,23 +115,21 @@ $$
     {\bf s}_i \propto \lambda({\bf s}) \;\; \mathrm{for}\; i=1,\dots,N 
 $$
 
-::: {.fragment}
 Observation model (supposing $N$ was known)
 $$
-    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J \\
+    p_{ij} = g_0\exp(-\|{\bf s}_i - {\bf x}_j\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 $$
-:::
-
 
 :::
+
 ::: {style='font-size: 50%;'}
-  $\lambda(\bs)$ -- "Intensity function" describing expected density of individuals at location $\bs$ <br> 
+  $\lambda({\bf s})$ -- "Intensity function" describing expected density of individuals at location $\bf s$ <br> 
   $\Lambda$ -- Expected number of individuals in the spatial region $\mathcal{S}$ <br>
   $N$ -- Realized number of individuals (ie, population size) <br>
-  $\bsi$ -- Location of the $i$th activity center <br>
-  $\bxj$ -- Location of trap $j$ <br>
-  $\dsixj$ -- Euclidean distance between $\bsi$ and $\bxj$ <br>
+  ${\bf s}_i$ -- Location of the $i$th activity center <br>
+  ${\bf x}_j$ -- Location of trap $j$ <br>
+  $\|{\bf s}_i - {\bf x}_j\|$ -- Euclidean distance between ${\bf s}_i$ and ${\bf x}_j$ <br>
   $g_0$ -- Capture probability when distance between activity centers
   and traps is 0 <br>
   $\sigma$ -- Scale parameter of encounter function <br>
@@ -132,15 +142,15 @@ $$
 
 
 
-##  [Closed population model (*N* known hypothetically)]{style="font-size: 90%;"}
+## [Closed population model (*N* known hypothetically)]{style="font-size: 60%;"}
 
 ::: {style='font-size: 80%;'}
 Many variations and extensions are possible for both the state and observation models, but today we will focus on the simplest case with no spatial variation in the expected value of density.
 
 $$
     N \sim \mathrm{Pois}(\lambda) \\
-    {\bm s}_i \sim \mathrm{Unif}(\cal S) \\
-    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i - {\bm x}_j\|^2}{2\sigma^2}\right) \\
+    {\bf s}_i \sim \mathrm{Unif}(\cal S) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bf s}_i - {\bf x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 $$
   
@@ -267,7 +277,7 @@ points(x, pch=3)              ## Trap locations
 ## [Distance between traps and activity centers]{style="font-size: 80%;"}
 
 ::: {style='font-size: 80%;'}
-Compute distances between activity centers (${\bm s}_1, \dots, {\bm s}_N$) and traps (${\bm x}_1, \dots, {\bm x}_J$).
+Compute distances between activity centers (${\bf s}_1, \dots, {\bf s}_N$) and traps (${\bf x}_1, \dots, {\bf x}_J$).
 ```{r}
 #| label: dist1
 J <- nrow(x)                 ## nTraps
@@ -383,13 +393,14 @@ table(y.nojk)
 ## Spider plot
 
 ::: {style='font-size: 80%;'}
-```{r, echo=-(1:2)}
+```{r}
 #| label: spider
-#| fig-width: 7.15
+#| fig-width: 7
 #| fig-height: 7
 #| fig-align: 'center'
-#| out-width: '85%'
-#| include: false
+#| out-width: '65%'
+#| echo: false
+#| include: true
 ## plot(lambda, col=terrain.colors(100),
 ##      main="Density surface, activity centers, traps, and capture locs")
 plot(0, xlim=c(0,1), ylim=c(0,1), asp=1, xlab="", ylab="",
@@ -407,8 +418,6 @@ points(s[!captured,], pch=1, col="blue") ## Activity center locations
 points(x, pch=3)                         ## Trap locations
 ```
 :::
-
-
 
 
 
@@ -498,6 +507,7 @@ Estimates on original scale
 #| cache: true
 predict(fm.M0)
 ```
+<br>
 
 <center>
 `D` is density ($\lambda$, animals/ha), `g0` is $g_0$, and `sigma` is 
@@ -556,7 +566,7 @@ predict(fm.Mb)
 
 ## R package 'secr'
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 What about $N$? `E.N` is the expected value of $N$. `R.N` is the realized value of $N$. 
 :::
 
@@ -645,13 +655,15 @@ AIC(fm.M0, fm.Mt, fm.Mb)
 
 The DA version of a basic SCR model is:
 
+::: {style='font-size: 80%;'}
 $$
-    {\bm s}_i \sim \mathrm{Unif}(\mathcal{S}) \\
+    {\bf s}_i \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i-{\bm x}_j\|^2}{2\sigma^2}\right) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bf s}_i-{\bf x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
 $$
+:::
 
 
 
@@ -691,6 +703,7 @@ library(rjags)
 
 ## Model SCR~0~ -- data augmentation
 
+::: {style='font-size: 75%;'}
 Data
   
 ```{r}
@@ -698,8 +711,7 @@ Data
 M <- 150
 y.aug <- array(0, c(M, J, K))
 y.aug[1:nrow(y),,] <- y
-jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K,
-                       x=x, xlim=c(0,1), ylim=c(0,1))
+jags.data.SCR0 <- list(y=y.aug, M=M, J=J, K=K, x=x, xlim=c(0,1), ylim=c(0,1))
 ```
 
 
@@ -715,8 +727,7 @@ ji.SCR0 <- function() {
     traps_with_dets_i <- rowSums(y[i,,]>0)
     si[i,] <- colMeans(x[traps_with_dets_i,,drop=FALSE])
   }
-  list(z=rep(1,M), psi=runif(1), s=si,
-       g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
+  list(z=rep(1,M), psi=runif(1), s=si, g0=runif(1), sigma=runif(1, 0.05, 0.1)) }
 jp.SCR0 <- c("g0", "sigma", "EN", "N")
 library(jagsUI)
 ```
@@ -729,11 +740,11 @@ MCMC
 #| results: 'hide'
 #| cache: true
 jags.post.SCR0 <- jags.basic(data=jags.data.SCR0, inits=ji.SCR0,
-                             parameters.to.save=jp.SCR0,
-                             model.file="SCR0.jag",
+                             parameters.to.save=jp.SCR0, model.file="SCR0.jag",
                              n.chains=3, n.adapt=100, n.burnin=0,
                              n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 ## Posterior summaries
@@ -747,12 +758,14 @@ summary(jags.post.SCR0)
 
 ```{r}
 #| label: plot-mcmc-SCR0
-#| out.width: "0.7<br>textwidth"
-#| fig.align: 'center'
+#| fig-height: 7
+#| fig-width: 9
+#| out-width: "70%"
+#| fig-align: 'center'
 plot(jags.post.SCR0[,jp.SCR0])
 ```
 
-## Easy tricks to speed up Bayesian inference
+## [Easy tricks to speed up Bayesian inference]{style="font-size: 80%;"}
   
 - Treat $z_i=1$ as data for first $n$ individuals.
 - If there are no occasion-specific covariates, collapse data and use binomial instead of Bernoulli distribution.
@@ -779,6 +792,7 @@ writeLines(readLines("SCR0-faster.jag"))
 
 ## Model SCR~0~ -- faster
 
+::: {style='font-size: 80%;'}
 Data
   
 ```{r}
@@ -815,6 +829,7 @@ jags.post.SCR0.faster <- jags.basic(data=jags.data.SCR0.faster,
                                     n.chains=3, n.adapt=100, n.burnin=0,
                                     n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 ## Posterior summaries
@@ -828,6 +843,8 @@ summary(jags.post.SCR0.faster)
 
 ```{r}
 #| label: plot-mcmc-SCR0-faster
+#| fig-width: 9
+#| fig-height: 7
 #| out-width: '70%'
 #| fig-align: 'center'
 plot(jags.post.SCR0.faster[,jp.SCR0])
@@ -844,12 +861,14 @@ plot(jags.post.SCR0.faster[,jp.SCR0])
 
 Common options include:
   
+::: {style='font-size: 70%;'}
   Model                     Detector/Trap   Examples
   ------------------------- --------------- --------------------
   Bernoulli                 Proximity       Hair-snares
   Poisson                   Count           Camera trap
   Multinomial/Categorical   Multi-catch     Mist net, crab pot
   ---                       Single-catch    Sherman trap
+:::
    
 There are other observation models for data from area searches, transects, or acoustic recording units.
 
@@ -857,35 +876,50 @@ There are other observation models for data from area searches, transects, or ac
 
 ## SCR study design
 
-SCR uses model-based, rather than design-based, inference (see Ch. 10).
-  
+::: {style='font-size: 80%;'}
+SCR involves model-based, rather than design-based, inference (see Ch. 10).
+
+<br>
+
 Random placement of traps is not required, but it's a good idea to randomly sample locations along the environmental gradients you're interested in.
    
+<br>
+
 The other two key design considerations are:
 - Capture as many individuals as you can (i.e., maximize $n$)
-- Obtain as many {\it spatial} recaptures as possible
+- Obtain as many *spatial* recaptures as possible
   
+<br>
+
 ::: {.fragment}
 There is a tradeoff between these two objectives. Simulation is often the best option for finding the right balance.
+:::
+
 :::
 
 
 ## SCR summary
 
 We assume that variation in $p$ arises from distance between animals and traps.
+
+<br>
    
 We can estimate abundance and model distribution (i.e., spatial variation in density)
    
+<br>
+
 Next time, we'll see how to do that using secr and JAGS, and we'll make a bunch of maps.
 
 
 
 ## Assignment
 
+::: {style='font-size: 80%;'}
 Create a self-contained R script or Rmarkdown file to do the following: 
   
-- Import the bear data formatted for `secr' and fit the null model and a model where $g_0$ varies among the 8 occasions. Use 'secr' to determine what an appropriate buffer should be.
-- Import the bear data formatted for JAGS (using the command `load("jags\_bear\_data.gzip")`) and tabulate the capture frequencies and the number of spatial recapture. Fit the model with occasion-specific $g_0$ in JAGS, and compare estimates and 95\% CIs for $g_{0}$, $\sigma$, $E(N)$ and $N$ with the results from secr. 
+- Import the bear data formatted for 'secr' and fit the null model and a model where $g_0$ varies among the 8 occasions. Use 'secr' to determine what an appropriate buffer should be.
+- Import the bear data formatted for JAGS (using the command `load("jags_bear_data.gzip")`) and tabulate the capture frequencies and the number of spatial recapture. Fit the model with occasion-specific $g_0$ in 'JAGS', and compare estimates and 95% CIs for $g_{0}$, $\sigma$, $E(N)$ and $N$ with the results from secr. 
   
 Upload your work to ELC by 5:00pm on Tuesday. 
+:::
 

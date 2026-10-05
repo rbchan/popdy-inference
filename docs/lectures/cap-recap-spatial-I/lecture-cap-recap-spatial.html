@@ -208,7 +208,7 @@
 <section>
 
 <section id="scr-overview-two-motivations" class="slide level2">
-<h2>SCR overview – Two motivations</h2>
+<h2><span style="font-size: 85%;">SCR overview – Two motivations</span></h2>
 <div style="font-size: 65%;">
 <ol type="1">
 <li>Improved inference</li>
@@ -221,7 +221,6 @@
 </ul></li>
 <li>SCR makes it possible to estimate <em>density</em>, not just <span class="math inline">\(N\)</span> in an unknown region.</li>
 </ul>
-<div class="fragment">
 <ol start="2" type="1">
 <li>Improved science</li>
 </ol>
@@ -233,7 +232,6 @@
 <li>How does movement influence density and detectability?</li>
 </ul></li>
 </ul>
-</div>
 <div class="fragment">
 <p>Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.</p>
 </div>
@@ -241,10 +239,10 @@
 </section>
 <section id="scr-data" class="slide level2">
 <h2>SCR data</h2>
-<div style="font-size: 75%;">
+<div style="font-size: 70%;">
 <p>SCR capture histories can be organized as a 3D array where <span class="math inline">\(y_{ijk}\)</span> indicates if individual <span class="math inline">\(i=1,\dots,n\)</span>, was captured in trap <span class="math inline">\(j=1,\dots,J\)</span> on occasion <span class="math inline">\(k=1,\dots,K\)</span>.</p>
-<p>Here’s an example of a “flattened array” with <span class="math inline">\(n=4\)</span> animals captured at <span class="math inline">\(J=3\)</span> traps on <span class="math inline">\(K=2\)</span> occasions.</p>
-<div style="font-size: 50%;">
+<!-- Here's an example of a "flattened array" with $n=4$ animals captured at $J=3$ traps on $K=2$ occasions. -->
+<div style="font-size: 60%;">
 <table class="caption-top" style="width:72%;">
 <colgroup>
 <col style="width: 23%">
@@ -264,19 +262,19 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">2-8</td>
+<td style="text-align: left;"></td>
 <td colspan="3" style="text-align: center;">1</td>
 <td style="text-align: center;"></td>
 <td colspan="3" style="text-align: center;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">2-4</td>
+<td style="text-align: left;"></td>
 <td colspan="3" style="text-align: center;">Trap</td>
 <td style="text-align: center;"></td>
 <td colspan="3" style="text-align: center;">Trap</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">2-4 Individual</td>
+<td style="text-align: left;">Individual</td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">3</td>
@@ -328,38 +326,41 @@
 </tbody>
 </table>
 </div>
+<p><br></p>
+<div class="fragment">
 <p>Because we know the coordinates of the traps, we also know when and where each individual was detected.</p>
+</div>
+<div class="fragment">
 <p>This spatial information has been available all along, but it wasn’t utilized to estimate density until Efford (2004, Oikos).</p>
+</div>
 </div>
 </section>
 <section id="closed-population-model-n-known-hypothetically" class="slide level2">
-<h2><span style="font-size: 50%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
-<div style="font-size: 60%;">
+<h2><span style="font-size: 60%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
+<div style="font-size: 50%;">
 <p>State model (a spatial point process model) <span class="math display">\[
     \lambda({\bf s}) = \exp(\beta_0 + \beta_1 w_1({\bf s}) + \beta_2 w_2({\bf s}) + \cdots) \\
     \Lambda = \int_{\mathcal{S}} \lambda({\bf s}) \; \mathrm{d}{\bf s} \\
     N \sim \mathrm{Pois}(\Lambda) \\
     {\bf s}_i \propto \lambda({\bf s}) \;\; \mathrm{for}\; i=1,\dots,N
 \]</span></p>
-<div class="fragment">
 <p>Observation model (supposing <span class="math inline">\(N\)</span> was known) <span class="math display">\[
-    p_{ij} = g_0\exp(-\|\bsi - \bxj\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J \\
+    p_{ij} = g_0\exp(-\|{\bf s}_i - {\bf x}_j\|^2/(2\sigma^2))  \;\; \mathrm{for}\, j=1,\dots,J \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 \]</span></p>
 </div>
-</div>
 <div style="font-size: 50%;">
-<p><span class="math inline">\(\lambda(\bs)\)</span> – “Intensity function” describing expected density of individuals at location <span class="math inline">\(\bs\)</span> <br> <span class="math inline">\(\Lambda\)</span> – Expected number of individuals in the spatial region <span class="math inline">\(\mathcal{S}\)</span> <br> <span class="math inline">\(N\)</span> – Realized number of individuals (ie, population size) <br> <span class="math inline">\(\bsi\)</span> – Location of the <span class="math inline">\(i\)</span>th activity center <br> <span class="math inline">\(\bxj\)</span> – Location of trap <span class="math inline">\(j\)</span> <br> <span class="math inline">\(\dsixj\)</span> – Euclidean distance between <span class="math inline">\(\bsi\)</span> and <span class="math inline">\(\bxj\)</span> <br> <span class="math inline">\(g_0\)</span> – Capture probability when distance between activity centers and traps is 0 <br> <span class="math inline">\(\sigma\)</span> – Scale parameter of encounter function <br> <span class="math inline">\(p_{ij}\)</span> – Capture probability <br> <span class="math inline">\(y_{ijk}\)</span> – Spatial capture histories <br></p>
+<p><span class="math inline">\(\lambda({\bf s})\)</span> – “Intensity function” describing expected density of individuals at location <span class="math inline">\(\bf s\)</span> <br> <span class="math inline">\(\Lambda\)</span> – Expected number of individuals in the spatial region <span class="math inline">\(\mathcal{S}\)</span> <br> <span class="math inline">\(N\)</span> – Realized number of individuals (ie, population size) <br> <span class="math inline">\({\bf s}_i\)</span> – Location of the <span class="math inline">\(i\)</span>th activity center <br> <span class="math inline">\({\bf x}_j\)</span> – Location of trap <span class="math inline">\(j\)</span> <br> <span class="math inline">\(\|{\bf s}_i - {\bf x}_j\|\)</span> – Euclidean distance between <span class="math inline">\({\bf s}_i\)</span> and <span class="math inline">\({\bf x}_j\)</span> <br> <span class="math inline">\(g_0\)</span> – Capture probability when distance between activity centers and traps is 0 <br> <span class="math inline">\(\sigma\)</span> – Scale parameter of encounter function <br> <span class="math inline">\(p_{ij}\)</span> – Capture probability <br> <span class="math inline">\(y_{ijk}\)</span> – Spatial capture histories <br></p>
 </div>
 </section>
 <section id="closed-population-model-n-known-hypothetically-1" class="slide level2">
-<h2><span style="font-size: 90%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
+<h2><span style="font-size: 60%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
 <div style="font-size: 80%;">
 <p>Many variations and extensions are possible for both the state and observation models, but today we will focus on the simplest case with no spatial variation in the expected value of density.</p>
 <p><span class="math display">\[
     N \sim \mathrm{Pois}(\lambda) \\
-    {\bm s}_i \sim \mathrm{Unif}(\cal S) \\
-    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i - {\bm x}_j\|^2}{2\sigma^2}\right) \\
+    {\bf s}_i \sim \mathrm{Unif}(\cal S) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bf s}_i - {\bf x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 \]</span></p>
 <p>Just remember, this formulation isn’t exactly correct because we can’t observe the “all zero” encounter histories (and thus we don’t know <span class="math inline">\(N\)</span>).</p>
@@ -418,7 +419,7 @@
 <section id="distance-between-traps-and-activity-centers" class="slide level2">
 <h2><span style="font-size: 80%;">Distance between traps and activity centers</span></h2>
 <div style="font-size: 80%;">
-<p>Compute distances between activity centers (<span class="math inline">\({\bm s}_1, \dots, {\bm s}_N\)</span>) and traps (<span class="math inline">\({\bm x}_1, \dots, {\bm x}_J\)</span>).</p>
+<p>Compute distances between activity centers (<span class="math inline">\({\bf s}_1, \dots, {\bf s}_N\)</span>) and traps (<span class="math inline">\({\bf x}_1, \dots, {\bf x}_J\)</span>).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>J <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x)                 <span class="do">## nTraps</span></span>
 <span id="cb3-2"><a></a>dist.sx <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)  </span>
@@ -527,7 +528,15 @@
 <section id="spider-plot" class="slide level2">
 <h2>Spider plot</h2>
 <div style="font-size: 80%;">
-
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial_files/figure-revealjs/spider-1.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 </section></section>
 <section>
@@ -613,6 +622,7 @@ g0    logit  0.2181035  0.07656510  0.1037048  0.4020852
 sigma   log 44.2423619  5.96624128 34.0069365 57.5584511</code></pre>
 </div>
 </div>
+<p><br></p>
 <center>
 <code>D</code> is density (<span class="math inline">\(\lambda\)</span>, animals/ha), <code>g0</code> is <span class="math inline">\(g_0\)</span>, and <code>sigma</code> is <span class="math inline">\(\sigma\)</span>.
 </center>
@@ -679,7 +689,7 @@ sigma   log 44.4572512   6.0811580 34.04464338 58.0545716</code></pre>
 </section>
 <section id="r-package-secr-5" class="slide level2">
 <h2>R package ‘secr’</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <p>What about <span class="math inline">\(N\)</span>? <code>E.N</code> is the expected value of <span class="math inline">\(N\)</span>. <code>R.N</code> is the realized value of <span class="math inline">\(N\)</span>.</p>
 </div>
 <div class="cell">
@@ -769,13 +779,15 @@ fm.Mt D~1 g0~t sigma~1 halfnormal    7 -115.9497 245.899 257.099 5.245 0.0499</c
 <section id="data-augmentation-model" class="slide level2">
 <h2>Data augmentation model</h2>
 <p>The DA version of a basic SCR model is:</p>
+<div style="font-size: 80%;">
 <p><span class="math display">\[
-    {\bm s}_i \sim \mathrm{Unif}(\mathcal{S}) \\
+    {\bf s}_i \sim \mathrm{Unif}(\mathcal{S}) \\
     z_i \sim \mathrm{Bern}(\psi) \\
-    p_{ij} = g_0\exp\left(\frac{-\|{\bm s}_i-{\bm x}_j\|^2}{2\sigma^2}\right) \\
+    p_{ij} = g_0\exp\left(\frac{-\|{\bf s}_i-{\bf x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bern}(z_i \times p_{ij}) \\
     N=\sum_{i=1}^M z_i
 \]</span></p>
+</div>
 </section>
 <section id="model-scr0-data-augmentation" class="slide level2">
 <h2>Model SCR<sub>0</sub> – data augmentation</h2>
@@ -810,13 +822,13 @@ N &lt;- sum(z)  ## Realized value of N
 </section>
 <section id="model-scr0-data-augmentation-1" class="slide level2">
 <h2>Model SCR<sub>0</sub> – data augmentation</h2>
+<div style="font-size: 75%;">
 <p>Data</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">150</span></span>
 <span id="cb53-2"><a></a>y.aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M, J, K))</span>
 <span id="cb53-3"><a></a>y.aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),,] <span class="ot">&lt;-</span> y</span>
-<span id="cb53-4"><a></a>jags.data.SCR0 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.aug, <span class="at">M=</span>M, <span class="at">J=</span>J, <span class="at">K=</span>K,</span>
-<span id="cb53-5"><a></a>                       <span class="at">x=</span>x, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb53-4"><a></a>jags.data.SCR0 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.aug, <span class="at">M=</span>M, <span class="at">J=</span>J, <span class="at">K=</span>K, <span class="at">x=</span>x, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Inits and parameters</p>
 <div class="cell" data-report="false">
@@ -826,17 +838,16 @@ N &lt;- sum(z)  ## Realized value of N
 <span id="cb54-4"><a></a>    traps_with_dets_i <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y[i,,]<span class="sc">&gt;</span><span class="dv">0</span>)</span>
 <span id="cb54-5"><a></a>    si[i,] <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(x[traps_with_dets_i,,<span class="at">drop=</span><span class="cn">FALSE</span>])</span>
 <span id="cb54-6"><a></a>  }</span>
-<span id="cb54-7"><a></a>  <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">s=</span>si,</span>
-<span id="cb54-8"><a></a>       <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span>
-<span id="cb54-9"><a></a>jp.SCR0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"g0"</span>, <span class="st">"sigma"</span>, <span class="st">"EN"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb54-7"><a></a>  <span class="fu">list</span>(<span class="at">z=</span><span class="fu">rep</span>(<span class="dv">1</span>,M), <span class="at">psi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">s=</span>si, <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span>
+<span id="cb54-8"><a></a>jp.SCR0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"g0"</span>, <span class="st">"sigma"</span>, <span class="st">"EN"</span>, <span class="st">"N"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>MCMC</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>jags.post.SCR0 <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jags.data.SCR0, <span class="at">inits=</span>ji.SCR0,</span>
-<span id="cb55-2"><a></a>                             <span class="at">parameters.to.save=</span>jp.SCR0,</span>
-<span id="cb55-3"><a></a>                             <span class="at">model.file=</span><span class="st">"SCR0.jag"</span>,</span>
-<span id="cb55-4"><a></a>                             <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb55-5"><a></a>                             <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb55-2"><a></a>                             <span class="at">parameters.to.save=</span>jp.SCR0, <span class="at">model.file=</span><span class="st">"SCR0.jag"</span>,</span>
+<span id="cb55-3"><a></a>                             <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
+<span id="cb55-4"><a></a>                             <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="posterior-summaries" class="slide level2">
@@ -877,9 +888,9 @@ sigma      0.03516   0.04084   0.04459   0.04906   0.06074</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">plot</span>(jags.post.SCR0[,jp.SCR0])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture-cap-recap-spatial_files/figure-revealjs/plot-mcmc-SCR0-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="lecture-cap-recap-spatial_files/figure-revealjs/plot-mcmc-SCR0-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="easy-tricks-to-speed-up-bayesian-inference" class="slide level2">
-<h2>Easy tricks to speed up Bayesian inference</h2>
+<h2><span style="font-size: 80%;">Easy tricks to speed up Bayesian inference</span></h2>
 <ul>
 <li>Treat <span class="math inline">\(z_i=1\)</span> as data for first <span class="math inline">\(n\)</span> individuals.</li>
 <li>If there are no occasion-specific covariates, collapse data and use binomial instead of Bernoulli distribution.</li>
@@ -925,6 +936,7 @@ N &lt;- sum(z)  ## Realized value of N
 </section>
 <section id="model-scr0-faster" class="slide level2">
 <h2>Model SCR<sub>0</sub> – faster</h2>
+<div style="font-size: 80%;">
 <p>Data</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(y, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), sum)</span>
@@ -949,6 +961,7 @@ N &lt;- sum(z)  ## Realized value of N
 <span id="cb63-4"><a></a>                                    <span class="at">model.file=</span><span class="st">"SCR0-faster.jag"</span>,</span>
 <span id="cb63-5"><a></a>                                    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
 <span id="cb63-6"><a></a>                                    <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="posterior-summaries-1" class="slide level2">
@@ -998,6 +1011,7 @@ sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
 <section id="alternative-observation-models" class="slide level2">
 <h2>Alternative observation models</h2>
 <p>Common options include:</p>
+<div style="font-size: 70%;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -1029,31 +1043,41 @@ sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
 <p>There are other observation models for data from area searches, transects, or acoustic recording units.</p>
 </section>
 <section id="scr-study-design" class="slide level2">
 <h2>SCR study design</h2>
-<p>SCR uses model-based, rather than design-based, inference (see Ch. 10).</p>
+<div style="font-size: 80%;">
+<p>SCR involves model-based, rather than design-based, inference (see Ch. 10).</p>
+<p><br></p>
 <p>Random placement of traps is not required, but it’s a good idea to randomly sample locations along the environmental gradients you’re interested in.</p>
-<p>The other two key design considerations are: - Capture as many individuals as you can (i.e., maximize <span class="math inline">\(n\)</span>) - Obtain as many {} recaptures as possible</p>
+<p><br></p>
+<p>The other two key design considerations are: - Capture as many individuals as you can (i.e., maximize <span class="math inline">\(n\)</span>) - Obtain as many <em>spatial</em> recaptures as possible</p>
+<p><br></p>
 <div class="fragment">
 <p>There is a tradeoff between these two objectives. Simulation is often the best option for finding the right balance.</p>
+</div>
 </div>
 </section>
 <section id="scr-summary" class="slide level2">
 <h2>SCR summary</h2>
 <p>We assume that variation in <span class="math inline">\(p\)</span> arises from distance between animals and traps.</p>
+<p><br></p>
 <p>We can estimate abundance and model distribution (i.e., spatial variation in density)</p>
+<p><br></p>
 <p>Next time, we’ll see how to do that using secr and JAGS, and we’ll make a bunch of maps.</p>
 </section>
 <section id="assignment" class="slide level2">
 <h2>Assignment</h2>
+<div style="font-size: 80%;">
 <p>Create a self-contained R script or Rmarkdown file to do the following:</p>
 <ul>
-<li>Import the bear data formatted for `secr’ and fit the null model and a model where <span class="math inline">\(g_0\)</span> varies among the 8 occasions. Use ‘secr’ to determine what an appropriate buffer should be.</li>
-<li>Import the bear data formatted for JAGS (using the command <code>load("jags\_bear\_data.gzip")</code>) and tabulate the capture frequencies and the number of spatial recapture. Fit the model with occasion-specific <span class="math inline">\(g_0\)</span> in JAGS, and compare estimates and 95% CIs for <span class="math inline">\(g_{0}\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(E(N)\)</span> and <span class="math inline">\(N\)</span> with the results from secr.</li>
+<li>Import the bear data formatted for ‘secr’ and fit the null model and a model where <span class="math inline">\(g_0\)</span> varies among the 8 occasions. Use ‘secr’ to determine what an appropriate buffer should be.</li>
+<li>Import the bear data formatted for JAGS (using the command <code>load("jags_bear_data.gzip")</code>) and tabulate the capture frequencies and the number of spatial recapture. Fit the model with occasion-specific <span class="math inline">\(g_0\)</span> in ‘JAGS’, and compare estimates and 95% CIs for <span class="math inline">\(g_{0}\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(E(N)\)</span> and <span class="math inline">\(N\)</span> with the results from secr.</li>
 </ul>
 <p>Upload your work to ELC by 5:00pm on Tuesday.</p>
+</div>
 
 
 </section></section>
