@@ -211,8 +211,7 @@
 <h2><span style="font-size: 85%;">SCR overview – Two motivations</span></h2>
 <div style="font-size: 65%;">
 <ol type="1">
-<li>Improved inference</li>
-</ol>
+<li>Improved inference
 <ul>
 <li>Non-spatial models don’t account for important sources of variation in <span class="math inline">\(p\)</span>.
 <ul>
@@ -220,10 +219,8 @@
 <li>Trap-specific covariates</li>
 </ul></li>
 <li>SCR makes it possible to estimate <em>density</em>, not just <span class="math inline">\(N\)</span> in an unknown region.</li>
-</ul>
-<ol start="2" type="1">
-<li>Improved science</li>
-</ol>
+</ul></li>
+<li>Improved science
 <ul>
 <li>We can ask new questions, such as:
 <ul>
@@ -231,9 +228,12 @@
 <li>How do survival and recruitment vary in space and time?</li>
 <li>How does movement influence density and detectability?</li>
 </ul></li>
-</ul>
+</ul></li>
+</ol>
 <div class="fragment">
-<p>Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.</p>
+<center>
+Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.
+</center>
 </div>
 </div>
 </section>
@@ -263,15 +263,15 @@
 <tbody>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td colspan="3" style="text-align: center;">1</td>
+<td colspan="3" style="text-align: center;">Trap</td>
 <td style="text-align: center;"></td>
-<td colspan="3" style="text-align: center;">2</td>
+<td colspan="3" style="text-align: center;">Trap</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td colspan="3" style="text-align: center;">Trap</td>
+<td colspan="3" style="text-align: center;">1</td>
 <td style="text-align: center;"></td>
-<td colspan="3" style="text-align: center;">Trap</td>
+<td colspan="3" style="text-align: center;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Individual</td>
@@ -357,21 +357,29 @@
 <h2><span style="font-size: 60%;">Closed population model (<em>N</em> known hypothetically)</span></h2>
 <div style="font-size: 80%;">
 <p>Many variations and extensions are possible for both the state and observation models, but today we will focus on the simplest case with no spatial variation in the expected value of density.</p>
+<div style="font-size: 80%;">
 <p><span class="math display">\[
     N \sim \mathrm{Pois}(\lambda) \\
     {\bf s}_i \sim \mathrm{Unif}(\cal S) \\
     p_{ij} = g_0\exp\left(\frac{-\|{\bf s}_i - {\bf x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 \]</span></p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Just remember, this formulation isn’t exactly correct because we can’t observe the “all zero” encounter histories (and thus we don’t know <span class="math inline">\(N\)</span>).</p>
 </div>
+</div>
 </section>
-<section id="section-1" class="slide level2">
+<section id="section-1" class="slide level2 smaller">
 <h2></h2>
 <p><br></p>
 <div class="r-fit-text">
 <p><a href="https://rbchan-scr-cap-prob.share.connect.posit.cloud/">Shiny App</a></p>
 </div>
+<center>
+<a href="https://rbchan-scr-cap-prob.share.connect.posit.cloud/">https://rbchan-scr-cap-prob.share.connect.posit.cloud/</a>
+</center>
 </section></section>
 <section>
 <section id="simulation" class="title-slide slide level1 center">
@@ -532,7 +540,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial_files/figure-revealjs/spider-1.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
+<p><img data-src="lecture-cap-recap-spatial_files/figure-revealjs/spider-1.png" class="quarto-figure quarto-figure-center" style="width:55.0%"></p>
 </figure>
 </div>
 </div>
@@ -864,21 +872,19 @@ Sample size per chain = 2000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-              Mean        SD  Naive SE Time-series SE
-EN        36.94042  9.454322 1.221e-01      0.3587170
-N         36.52117  8.164516 1.054e-01      0.3358342
-deviance 212.53505 17.020055 2.197e-01      0.7410803
-g0         0.22214  0.077958 1.006e-03      0.0036733
-sigma      0.04542  0.006479 8.364e-05      0.0003242
+          Mean        SD  Naive SE Time-series SE
+EN    37.73026 10.232163 1.321e-01      0.4117271
+N     37.30900  8.852848 1.143e-01      0.3695890
+g0     0.22109  0.079680 1.029e-03      0.0036654
+sigma  0.04543  0.006883 8.886e-05      0.0003373
 
 2. Quantiles for each variable:
 
-              2.5%       25%       50%       75%     97.5%
-EN        21.04752  30.29906  35.82973  42.41375  57.81718
-N         24.00000  31.00000  35.00000  41.00000  55.00000
-deviance 183.27910 200.24327 211.03758 223.48971 248.95833
-g0         0.10172   0.16329   0.21473   0.26827   0.40097
-sigma      0.03516   0.04084   0.04459   0.04906   0.06074</code></pre>
+          2.5%     25%      50%      75%    97.5%
+EN    21.37830 30.2722 36.57724 43.80305 60.71610
+N     24.00000 31.0000 36.00000 42.00000 58.00000
+g0     0.09579  0.1636  0.21099  0.26980  0.40370
+sigma  0.03457  0.0408  0.04465  0.04902  0.06126</code></pre>
 </div>
 </div>
 </section>
@@ -978,21 +984,19 @@ Sample size per chain = 2000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-              Mean        SD  Naive SE Time-series SE
-EN        37.91885 10.538384 1.360e-01      0.4262260
-N         37.42983  9.184596 1.186e-01      0.3924181
-deviance 177.85757 15.153944 1.956e-01      0.5693382
-g0         0.22650  0.081995 1.059e-03      0.0038030
-sigma      0.04485  0.006296 8.128e-05      0.0003032
+          Mean        SD  Naive SE Time-series SE
+EN    37.54321 10.296915 1.329e-01      0.4074486
+N     37.08667  8.942827 1.155e-01      0.3686001
+g0     0.22852  0.079011 1.020e-03      0.0034507
+sigma  0.04455  0.006254 8.074e-05      0.0002842
 
 2. Quantiles for each variable:
 
-              2.5%       25%       50%       75%     97.5%
-EN        21.42326  30.30816  36.64816  43.85615  62.06503
-N         24.00000  31.00000  36.00000  42.00000  59.00000
-deviance 150.96169 167.13560 176.77262 187.73161 210.38517
-g0         0.09792   0.16590   0.21589   0.27430   0.41153
-sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
+          2.5%      25%     50%      75%    97.5%
+EN    21.68437 30.56296 36.1399 42.89445 61.90485
+N     24.00000 31.00000 36.0000 41.00000 58.00000
+g0     0.10293  0.17150  0.2202  0.27316  0.40942
+sigma  0.03483  0.04019  0.0438  0.04787  0.05908</code></pre>
 </div>
 </div>
 </section>
@@ -1044,16 +1048,24 @@ sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
 </tbody>
 </table>
 </div>
+<p><br></p>
+<div class="fragment">
 <p>There are other observation models for data from area searches, transects, or acoustic recording units.</p>
+</div>
 </section>
 <section id="scr-study-design" class="slide level2">
 <h2>SCR study design</h2>
 <div style="font-size: 80%;">
+<p><br></p>
 <p>SCR involves model-based, rather than design-based, inference (see Ch. 10).</p>
 <p><br></p>
+<div class="fragment">
 <p>Random placement of traps is not required, but it’s a good idea to randomly sample locations along the environmental gradients you’re interested in.</p>
+</div>
 <p><br></p>
+<div class="fragment">
 <p>The other two key design considerations are: - Capture as many individuals as you can (i.e., maximize <span class="math inline">\(n\)</span>) - Obtain as many <em>spatial</em> recaptures as possible</p>
+</div>
 <p><br></p>
 <div class="fragment">
 <p>There is a tradeoff between these two objectives. Simulation is often the best option for finding the right balance.</p>
@@ -1062,6 +1074,7 @@ sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
 </section>
 <section id="scr-summary" class="slide level2">
 <h2>SCR summary</h2>
+<p><br></p>
 <p>We assume that variation in <span class="math inline">\(p\)</span> arises from distance between animals and traps.</p>
 <p><br></p>
 <p>We can estimate abundance and model distribution (i.e., spatial variation in density)</p>
@@ -1071,6 +1084,7 @@ sigma      0.03459   0.04038   0.04422   0.04853   0.05935</code></pre>
 <section id="assignment" class="slide level2">
 <h2>Assignment</h2>
 <div style="font-size: 80%;">
+<p><br></p>
 <p>Create a self-contained R script or Rmarkdown file to do the following:</p>
 <ul>
 <li>Import the bear data formatted for ‘secr’ and fit the null model and a model where <span class="math inline">\(g_0\)</span> varies among the 8 occasions. Use ‘secr’ to determine what an appropriate buffer should be.</li>
