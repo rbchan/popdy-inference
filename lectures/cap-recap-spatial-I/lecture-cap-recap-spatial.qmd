@@ -39,22 +39,21 @@ lang: en
 ::: {style='font-size: 65%;'}
 
 1. Improved inference
-
-- Non-spatial models don't account for important sources of variation in $p$.
-  * Distance between animals and traps
-  * Trap-specific covariates
-- SCR makes it possible to estimate *density*, not just $N$ in an unknown region.
-
+    - Non-spatial models don't account for important sources of variation in $p$.
+        * Distance between animals and traps
+        * Trap-specific covariates
+    - SCR makes it possible to estimate *density*, not just $N$ in an unknown region.
 2. Improved science
-
-- We can ask new questions, such as:
-  * What influences spatial variation in density?
-  * How do survival and recruitment vary in space and time?
-  * How does movement influence density and detectability?
+    - We can ask new questions, such as:
+        * What influences spatial variation in density?
+        * How do survival and recruitment vary in space and time?
+        * How does movement influence density and detectability?
 
 
 ::: {.fragment}
+<center>
 Rather than think of SCR as a new estimation tool, you can think of it as an individual-based framework for inference on spatial population dynamics.
+</center>
 :::
 
 :::
@@ -72,9 +71,9 @@ SCR capture histories can be organized as a 3D array where $y_{ijk}$ indicates i
 +----------------+----------------------------------+
 |                | Occasion                         |
 +:===============+:==:+:==:+:==:+:==:+:==:+:==:+:==:+
-|                | 1            |    | 2            |
-+----------------+--------------+----+--------------+
 |                | Trap         |    | Trap         |
++----------------+--------------+----+--------------+
+|                | 1            |    | 2            |
 +----------------+----+----+----+----+----+----+----+
 | Individual     | 1  | 2  | 3  |    | 1  | 2  | 3  |
 +----------------+----+----+----+----+----+----+----+
@@ -147,29 +146,37 @@ $$
 ::: {style='font-size: 80%;'}
 Many variations and extensions are possible for both the state and observation models, but today we will focus on the simplest case with no spatial variation in the expected value of density.
 
+::: {style='font-size: 80%;'}
 $$
     N \sim \mathrm{Pois}(\lambda) \\
     {\bf s}_i \sim \mathrm{Unif}(\cal S) \\
     p_{ij} = g_0\exp\left(\frac{-\|{\bf s}_i - {\bf x}_j\|^2}{2\sigma^2}\right) \\
     y_{ijk} \sim \mathrm{Bernoulli}(p_{ij})
 $$
-  
-  
-Just remember, this formulation isn't exactly correct because we can't observe the "all zero" encounter histories (and thus we don't know $N$).
+::: 
 
+<br>
+
+::: {.fragment}
+Just remember, this formulation isn't exactly correct because we can't observe the "all zero" encounter histories (and thus we don't know $N$).
+:::
 
 
 :::
 
 
 
-## 
+## {.smaller}
 
 <br>
 
 ::: {.r-fit-text}
 [Shiny App](https://rbchan-scr-cap-prob.share.connect.posit.cloud/)
 :::
+
+<center>
+[https://rbchan-scr-cap-prob.share.connect.posit.cloud/](https://rbchan-scr-cap-prob.share.connect.posit.cloud/)
+</center>
 
 
 
@@ -397,8 +404,8 @@ table(y.nojk)
 #| label: spider
 #| fig-width: 7
 #| fig-height: 7
+#| out-width: '55%'
 #| fig-align: 'center'
-#| out-width: '65%'
 #| echo: false
 #| include: true
 ## plot(lambda, col=terrain.colors(100),
@@ -869,25 +876,36 @@ Common options include:
   Multinomial/Categorical   Multi-catch     Mist net, crab pot
   ---                       Single-catch    Sherman trap
 :::
-   
+
+<br>
+
+::: {.fragment}
 There are other observation models for data from area searches, transects, or acoustic recording units.
+:::
 
 
 
 ## SCR study design
 
 ::: {style='font-size: 80%;'}
+
+<br>
+
 SCR involves model-based, rather than design-based, inference (see Ch. 10).
 
 <br>
 
+::: {.fragment}
 Random placement of traps is not required, but it's a good idea to randomly sample locations along the environmental gradients you're interested in.
+:::
    
 <br>
 
+::: {.fragment}
 The other two key design considerations are:
 - Capture as many individuals as you can (i.e., maximize $n$)
 - Obtain as many *spatial* recaptures as possible
+:::
   
 <br>
 
@@ -900,10 +918,12 @@ There is a tradeoff between these two objectives. Simulation is often the best o
 
 ## SCR summary
 
+<br>
+
 We assume that variation in $p$ arises from distance between animals and traps.
 
 <br>
-   
+
 We can estimate abundance and model distribution (i.e., spatial variation in density)
    
 <br>
@@ -915,6 +935,9 @@ Next time, we'll see how to do that using secr and JAGS, and we'll make a bunch 
 ## Assignment
 
 ::: {style='font-size: 80%;'}
+
+<br>
+
 Create a self-contained R script or Rmarkdown file to do the following: 
   
 - Import the bear data formatted for 'secr' and fit the null model and a model where $g_0$ varies among the 8 occasions. Use 'secr' to determine what an appropriate buffer should be.
