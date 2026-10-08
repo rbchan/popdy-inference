@@ -1,0 +1,30 @@
+model {
+beta0 ~ dnorm(0, 0.1)
+beta1 ~ dnorm(0, 0.1)
+g0 ~ dunif(0, 1)
+sigma ~ dunif(0, 0.5)
+for(g in 1:G) { ## Loop over pixels
+  lambda[g] <- exp(beta0 + beta1*elevation[g])*pixelArea
+  pi[g] <- lambda[g]/Lambda }
+Lambda <- sum(lambda)
+EN <- sum(lambda) ## Expected value of N
+psi <- EN/M
+for(i in 1:M) {
+  s[i,1] ~ dunif(xlim[1], xlim[2]) 
+  s[i,2] ~ dunif(ylim[1], ylim[2])
+  pixel[i] <- lookup[round((ylim[2]-s[i,2])/delta+0.5),  ## row
+                     round((s[i,1]-xlim[1])/delta+0.5)]  ## column
+  logProb[i] <- log(pi[pixel[i]])
+  zeros[i] ~ dpois(-logProb[i]) ## zeros trick for IPP
+  z[i] ~ dbern(psi)
+  for(j in 1:J) {
+    dist[i,j] <- sqrt((s[i,1]-x[j,1])^2 + (s[i,2]-x[j,2])^2)
+    p[i,j] <- g0*exp(-dist[i,j]^2/(2*sigma^2)) } }
+for(i in 1:n) {  ## Model for observed capture histories
+  for(j in 1:J) {
+    y.tilde[i,j] ~ dbinom(p[i,j], K) } }
+for(i in (n+1):M) { ## Model for augmented guys
+  PrAtLeastOneCap[i] <- 1-prod(1-p[i,])^K
+  zero.cap[i] ~ dbern(PrAtLeastOneCap[i]*z[i]) }
+N <- sum(z)
+}

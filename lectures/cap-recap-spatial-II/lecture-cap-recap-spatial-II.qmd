@@ -71,21 +71,27 @@ $$
 
 The state model of SCR is a spatial (or spatio-temporal) point process
   
+<br>
+
+::: {.fragment}
 There are many varieties of spatial point processes, including:
+
     * (In)homogeneous binomial point process
     * (In)homogeneous Poisson point process
     * Cox process
     * Gibbs process
     * Markov point process
+:::
 
 
 
 ## Spatial point processes
 
 All share a few properties
+
     * The data are a collection of points called a "point pattern"
     * Points are in an area called the state-space ($\mathcal{S}$), or observation window, which is usually two dimensional
-    * An intensity function ($\lambda(\bs)$) describes spatial variation in the density of points
+    * An intensity function ($\lambda({\bf s})$) describes spatial variation in the density of points
     * The area under this function is the expected number of points (a.k.a, $N$) in the region:
   
   
@@ -96,20 +102,26 @@ $$
 
 ## Poisson point process
 
+::: {style='font-size: 80%;'}
 Properties
-    * If density is constant throughout the state-space: $\lambda(\bs) = \lambda$, the process is said to be "homogeneous"
+
+    * If density is constant throughout the state-space: $\lambda({\bf s}) = \lambda$, the process is said to be "homogeneous"
     * Otherwise, the process is "inhomogeneous"
     * The number of points in any region of the state-space is Poisson distributed
     * Points are independent of one another (no attraction or repulsion) 
   
+::: {.fragment}
 An inhomogeneous point process allows for spatial variation in density, which can be modeled using [spatial covariates]{style="color: red;"}, such as raster layers.
+:::
+:::
 
 
 ## Density surfaces
   
+::: {style='font-size: 80%;'}
 We can use a fitted model to make maps of the following: 
 
-1. Expected density surface%, $\lambda({\bf s})$
+1. Expected density surface
     * This is an estimate of $\lambda({\bf s})$.
     * It's the expected value of density at  each location.
     * It's good for describing and predicting density at a different point in time, assuming the processes controlling density don't change.
@@ -121,17 +133,21 @@ We can use a fitted model to make maps of the following:
     * The posterior distribution of each activity center.
     * This is not a home range map.
       
+:::
   
 
 # Simulation
 
-## Inhomogeneous Poisson point process
+## [Inhomogeneous Poisson point process]{style="font-size: 90%;"}
+
+::: {style='font-size: 80%;'}
 
 First, let's import a raster layer
 
 ```{r}
 #| label: ippp1
-#| fig-width: 7.2
+#| fig-height: 7
+#| fig-width: 7
 #| out-width: "60%"
 #| fig-align: "center"
 #| results: "hide"
@@ -141,13 +157,16 @@ elevation <- raster("elevation.tif")
 delta <- res(elevation)[1]  ## resolution
 plot(elevation, col=topo.colors(100), main="Elevation")
 ```
+:::
 
 
 
 
 
 
-## Inhomogeneous Poisson point process
+## [Inhomogeneous Poisson point process]{style="font-size: 90%;"}
+
+::: {style='font-size: 80%;'}
   
 Second, let's pick some coefficients and create a density surface
 
@@ -161,12 +180,14 @@ beta1 <- 0.01 #0.005
 lambda <- exp(beta0 + beta1*elevation) # Intensity function
 plot(lambda, col=terrain.colors(100), main="Density surface", zlim=c(0,0.18))
 ```
+:::
 
 
 
 
-## Inhomogeneous Poisson point process
+## [Inhomogeneous Poisson point process]{style="font-size: 90%;"}
   
+::: {style='font-size: 80%;'}
 Third, simulate $N$
   
 ```{r}
@@ -178,6 +199,7 @@ Lambda <- sum(lambda.values*ds)  ## E(N)
 (N <- rpois(1, Lambda))          ## Realized N
 ```
 
+::: {.fragment}
 Fourth, simulate ${\bf s}_1, \dots, {\bf s}_N$. To do this, we'll pick pixels proportional to density. Then we'll jitter each point inside its pixel. 
   
 ```{r}
@@ -190,12 +212,15 @@ elevation.xyz <- as.data.frame(elevation, xy=TRUE)
 s <- elevation.xyz[s.pixels,c("x","y")] +
     cbind(runif(N, -jitter, jitter),runif(N, -jitter, jitter))
 ```
+:::
+
+:::
 
 
 
+## [Inhomogeneous Poisson point process]{style="font-size: 90%;"}
 
-## Inhomogeneous Poisson point process
-
+::: {style='font-size: 80%;'}
 ```{r}
 #| label: ippp5
 #| fig-width: 7.2
@@ -205,6 +230,7 @@ plot(lambda, col=terrain.colors(100),
      main="Density surface with activity centers")
 points(s, pch=16, cex=1, col="blue")
 ```
+:::
 
 
 
@@ -229,9 +255,9 @@ points(x, pch=3)              ## Trap locations
 
 
 
-## Distance between traps and activity centers
+## [Distance between traps and activity centers]{style="font-size: 90%;"}
 
-Compute distances between activity centers (${\bf s}_1, \dots, {\bf s}_N$) and traps (${\bf x}_1, \dots, {\bf x}_J$).
+<!-- Compute distances between activity centers (${\bf s}_1, \dots, {\bf s}_N$) and traps (${\bf x}_1, \dots, {\bf x}_J$). -->
 ```{r}
 #| label: dist1
 J <- nrow(x)                 ## nTraps
@@ -241,13 +267,14 @@ for(i in 1:N) {
 }
 ```
 
-
+::: {.fragment}
 Look at distances between first 4 individuals and first 5 traps.
 
 ```{r}
 #| label: dist2
 dist.sx[1:4,1:5]
 ```
+:::
 
 
 
@@ -264,16 +291,19 @@ p <- g0*exp(-dist.sx^2/(2*sigma^2))
 
 
 
+::: {.fragment}
 Look at capture probs for first 4 individuals and first 5 traps.
 ```{r}
 #| label: p2
 print(p[1:4,1:5], digits=3)
 ```
+:::
 
 
 
 ## Capture histories
 
+::: {style='font-size: 80%;'}
 Simulate capture histories for all $N$ individuals
 ```{r}
 #| label: y1
@@ -286,22 +316,26 @@ for(i in 1:N) {
 }
 ```
 
+::: {.fragment}
+Discard individuals not captured
 
-  Discard individuals not captured
 ```{r}
 #| label: y2
 captured <- rowSums(y.all)>0
 y <- y.all[captured,,]
 ```
+:::
 
 
-  Capture histories for first 2 individuals and first 5 traps
-  on first occasion.
+::: {.fragment}
+Capture histories for first 2 individuals and first 5 traps on first occasion.
 ```{r}
 #| label: y3
 y[1:2,1:5,1]
 ```
+:::
 
+:::
 
 
 
@@ -331,6 +365,7 @@ library(secr)
 
 ## R package 'secr'
 
+::: {style='font-size: 80%;'}
 
 Import data from two text files.
 ```{r}
@@ -344,11 +379,11 @@ sch <- read.capthist(captfile="encounter_data_file.csv",
                      detector="proximity", fmt="trapID")
 ```
   
-  Create the ``habitat mask'', which defines the state-space and the
-  spatial covariates. First, prepare the elevation covariate. 
+::: {.fragment}
+Create the "habitat mask", which defines the state-space and the spatial covariates. First, prepare the elevation covariate. 
+
 ```{r}
 #| label: format-elevation
-#| size: 'scriptsize'
 elevation.xyz <- as.data.frame(elevation, xy=TRUE)
 elevation.xyz$y <- round(elevation.xyz$y, 3) ## Fix numerical fuzz
 elevation.xyz.m <- elevation.xyz
@@ -357,30 +392,32 @@ elevation.xyz.m$y <- elevation.xyz$y*1000
 elevation.xyz.m$elevation <- scale(elevation.xyz$elevation) ## Standardize
 elevation.m <- rasterFromXYZ(elevation.xyz.m)
 ```
+:::
   
-  Now create the mask.
+::: {.fragment}
+Now create the mask.
 ```{r}
 #| label: make-mask
-#| size: 'scriptsize'
 library(sp)
 elev.sp <- as(elevation.m, "SpatialGridDataFrame")
 trp <- traps(sch)
 mask <- make.mask(trp, buffer=150, spacing=10)
 mask <- addCovariates(mask, spatialdata=elev.sp)
 ```
+:::
 
+:::
 
 
 
 
 ## Habitat mask
 
-```{r}
+```{r, echo=-1}
 #| label: plot-mask
 #| fig-height: 5
 #| out-width: "95%"
 #| fig-align: 'center'
-#| echo: -1
 #| size: 'scriptsize'
 par(mai=c(0.1, 0.1, 0.1, 0.1))
 plot(mask, covariate="elevation")
@@ -418,6 +455,7 @@ predict(fm.elev)
 ```{r}
 #| label: secr-dsurf
 #| fig-height: 6.8
+#| fig-align: 'center'
 #| warning: false
 ## #| fig.show: 'hide'
 dsurf <- predictDsurface(fm.elev)
@@ -444,6 +482,8 @@ Contour map for the Empirical Bayes posterior distribution of the activity cente
 ```{r}
 #| label: fxi
 #| eval: true
+#| fig-width: 7
+#| fig-height: 7
 #| out-width: '65%'
 #| fig-align: 'center'
 fxiContour(fm.elev, i=1)
@@ -473,31 +513,38 @@ region.N(fm.elev)
 
 ## Data augmentation model
 
+::: {style='font-size: 80%;'}
+
 DA version of SCR model with inhomogeneous point process <br>
   
 Version 1 
 
 $$
-  \lambda(\bs) = \exp(\beta_0 + \beta_1 \mathrm{ELEV}(\bs)) \\
-  \bsi \propto \lambda(\bs) \\
-  \Lambda = E(N) = \int_{\mathcal{S}} \lambda(\bs)\; \mathrm{d}\bs \\
+  \lambda({\bf s}) = \exp(\beta_0 + \beta_1 \mathrm{ELEV}({\bf s})) \\
+  {\bf s}_i \propto \lambda({\bf s}) \\
+  \Lambda = E(N) = \int_{\mathcal{S}} \lambda({\bf s})\; \mathrm{d}{\bf s} \\
   \psi = \Lambda/M \\
   z_i \sim \mathrm{Bern}(\psi) \\
-  p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) \\
+  p_{ij} = g_0\exp(-\|{\bf s}_i-{\bf x}_j\|^2/(2\sigma^2)) \\
   y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) \\
   N=\sum_{i=1}^M z_i
 $$
    
 This version is relatively slow and doesn't mix that well.
+:::
 
 
 
 ## SCR with IPP -- version 1
 
+<center>
 [SCR-elev-v1.jag](SCR-elev-v1.jag)
+</center>
+
 
 ```{r}
 #| label: bugs-SCR-elev
+#| echo: false
 writeLines(readLines("SCR-elev-v1.jag"))
 ```
 
@@ -510,47 +557,33 @@ writeLines(readLines("SCR-elev-v1.jag"))
 
 ## Data augmentation model
 
-DA version of SCR model with inhomogeneous point process <br>
+Version 2: DA version of SCR model with inhomogeneous point process
   
-  Version 2 <br>
-  \begin{gather*}
-    \tilde{\lambda}(\bs) = \exp(\beta_1 \mathrm{ELEV}(\bs)) <br>
-    \bsi \propto \tilde{\lambda}(\bs) <br>
-%    \Lambda = E(N) = \int_{\mathcal{S}} \lambda(\bs)\; \mathrm{d}\bs <br>
-%    \psi \sim \mathrm{Unif}(0,1) <br>
-    z_i \sim \mathrm{Bern}(\psi) <br>
-    p_{ij} = g_0\exp(-\|\bsi-\bxj\|^2/(2\sigma^2)) <br>
-    y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) <br>
-    N=\sum_{i=1}^M z_i
-  \end{gather*}
-%   
-  This version is faster and mixes better. <br>
+$$
+  \tilde{\lambda}({\bf s}) = \exp(\beta_1 \mathrm{ELEV}({\bf s})) \\
+  {\bf s}_i \propto \tilde{\lambda}({\bf s}) \\
+  z_i \sim \mathrm{Bern}(\psi) \\
+  p_{ij} = g_0\exp(-\|{\bf s}_i-{\bf x}_j\|^2/(2\sigma^2)) \\
+  y_{ijk} \sim \mathrm{Bern}(z_i\times p_{ij}) \\
+  N=\sum_{i=1}^M z_i
+$$
 
-
-
-
+This version is faster and mixes better.
 
 
 
 
 ## SCR with IPP -- version 2
 
-```{r}
-#| label: bugs-SCR-elev-v2-R
-#| size: 'tiny'
-#| eval: false
-writeLines(readLines("SCR-elev-v2.jag"))
-```
+[SCR-elev-v2.jag](SCR-elev-v2.jag)
+
 ```{r}
 #| label: bugs-SCR-elev-v2
-#| size: 'tiny'
 #| echo: false
 #| comment: ''
 #| background: 'beige'
 writeLines(readLines("SCR-elev-v2.jag"))
 ```
-
-
 
 
 
@@ -569,7 +602,9 @@ It works fine, but it's slow in JAGS and it adds an extra level of approximation
 
 ## Inhomogeneous point process in JAGS
 
+::: {style='font-size: 80%;'}
 We need to do the following to use version 2:
+
     * Provide the spatial covariate as a vector
     * Loop over all pixels to compute the *conditional*-on-$N$ density surface. 
     * Retain the uniform prior on the activity centers, but add a second probability component to force them to be distributed according to the density surface.
@@ -577,7 +612,9 @@ We need to do the following to use version 2:
     * Then we use the "zero's trick" to implement the non-standard probability distribution
     * Put a uniform prior on $\psi$.
   
+::: {.fragment}
 If we were using version 1, we would define $\psi=E(N)/M$ and we'd include $\beta_0$ in the intensity function.
+:::
 
 
 ```{r}
@@ -586,16 +623,17 @@ If we were using version 1, we would define $\psi=E(N)/M$ and we'd include $\bet
 #| results: "hide"
 library(rjags)
 ```
+:::
 
 
 
 ## SCR with IPP
 
 Create the lookup table
-```{r}
+```{r, echo=-1}
 #| label: lookup
 #| fig-show: 'hide'
-#| echo: -1
+#| location: 'column'
 #par(mai=c(0.1,0.1,0.3,0.1))  
 G <- nrow(elevation.xyz)    ## nPixels  
 lookup <- matrix(1:G, nrow=nrow(elevation), ncol=ncol(elevation),
@@ -610,17 +648,9 @@ text(elevation.xyz$x[seq(5, G, by=10)],
 
 
 
-## Lookup table
-  
-[width=0.8\textwidth]{figure/lookup-1}
-
-
-
-
-
-
 ## SCR with IPP
 
+::: {style='font-size: 80%;'}
 Data
   
 ```{r}
@@ -660,6 +690,7 @@ jags.post.SCR.elev <- jags.basic(
     n.chains=3, n.adapt=100, n.iter=1000, parallel=TRUE)
 ```
 
+:::
 
 
 
@@ -727,7 +758,8 @@ lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
 
 ## Predicted density surface
 
-Make multi-panel figure showing posterior mean density surface, along with 95\% CI.
+::: {style='font-size: 80%;'}
+Make multi-panel figure showing posterior mean density surface, along with 95% CI.
 ```{r}
 #| label: lambda-post
 #| fig-height: 5
@@ -752,6 +784,7 @@ panels <- update(
 plot(panels)
 ```
 
+:::
 
 
 
@@ -768,7 +801,8 @@ Posterior mean and 95% CI
 
 ## Realized density surface
 
-We need to monitor $z$ and $\bsi$.
+::: {style='font-size: 80%;'}
+We need to monitor $z$ and ${\bf s}_i$.
 
 ```{r}
 #| label: mcmc-SCR-elev-sz
@@ -780,8 +814,8 @@ jags.post.SCR.elev.sz <- jags.basic(
     model.file="SCR-elev-v2.jag",
     n.chains=3, n.adapt=100, n.iter=1000, parallel=TRUE)
 ```
- 
-Extract posterior samples of $z$ and $\bsi$. 
+
+Extract posterior samples of $z$ and ${\bf s}_i$. 
 
 ```{r}
 #| label: extract-sz
@@ -789,7 +823,7 @@ s1.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("s[", 1:M, ",1]")])
 s2.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("s[", 1:M, ",2]")])
 z.post <- as.matrix(jags.post.SCR.elev.sz[,paste0("z[", 1:M, "]")])
 ```
- 
+
 Chop activity centers into discrete intervals, then tabulate.
 
 ```{r}
@@ -803,10 +837,12 @@ for(i in 1:n.samples) {
 }
 ```
 
+:::
 
 
 ## Realized density surface
 
+::: {style='font-size: 80%;'}
 ```{r, echo=-1}
 #| label: lambda-r
 #| fig-height: 3
@@ -818,18 +854,19 @@ lambda.re <- stack(lambda.r.mean, lambda.e.mean)
 names(lambda.re) <- c("Realized", "Expected")
 plot(lambda.re, zlim=c(0,0.18))
 ```
+:::
 
 
 
 
 
-## Posterior distribution of $\bsi$
+## Posterior distribution of * **s**~i~ *
   
-Posterior distribution of $\bs_1$. 
+::: {style='font-size: 80%;'}
+Posterior distribution of ${\bf s}_1$. 
 
 ```{r, echo=-1}
 #| label: si-post
-#| fig-show: 'hide'
 par(mai=c(0.0,0.0,0.0,0.0))
 plot(x, asp=1, xlim=0:1, ylim=0:1, pch=3, axes=FALSE, ann=FALSE)
 points(s1.post[,1], s2.post[,1], pch=16, col=rgb(0,0,1,0.1))
@@ -837,14 +874,15 @@ contour(MASS::kde2d(s1.post[,1], s2.post[,1]), add=TRUE)
 points(x[y.tilde[1,]>0,,drop=FALSE], pch=3, col="red", lwd=2, cex=2)
 ```
 
-
-[width=0.75\textwidth]{figure/si-post-1} <br>
-
+:::
 
 
-## Posterior distribution of $\bsi$
+
+
+## Posterior distribution of * **s**~i~ *
   
-Posterior distribution of $\bs_i$
+::: {style='font-size: 80%;'}
+Posterior distribution of ${\bf s}_i$
 
 ```{r}
 #| label: si-post-i
@@ -858,24 +896,21 @@ for(i in 1:n) {
     points(x[y.tilde[i,]>0,,drop=FALSE], pch=3, col="red", lwd=2, cex=2)
 }
 ```
-%
 
 
-%\only<1>{[width=0.85\textwidth]{figure/si-post-i-2} <br>}
-%\only<2>{[width=0.85\textwidth]{figure/si-post-i-3} <br>}
-% \only<3>{[width=0.85\textwidth]{figure/si-post-i-4} <br>}
 \foreach \n in {1,...,30} {%
   \only<\n>{[width=0.85\textwidth]{figure/si-post-i-\n}<br>}
 }
 
+:::
 
 
 
 
 
 ## Posterior distribution of * **s**~i~ *
-  
-Posterior distribution of $\bsi$ for an indiviudal \alert{not} captured. 
+
+Posterior distribution of ${\bf s}_i$ for an indiviudal \alert{not} captured. 
 
 ```{r, echo=-(1:2)}
 #| label: si-post-y0
@@ -898,10 +933,18 @@ points(x, asp=1, pch=3)
 ## Summary
 
 Just as we can estimate both the realized and expected value of $N$, we can also estimate the realized and expected value of abundance (or density) at each location in the region of interest.
-   
+
+<br>
+
+::: {.fragment}
 Sometimes, the region of interest will be different than $\cal S$, and we can easily obtain estimates of abundance in subsets of $\mathcal{S}$.
+:::
+
+<br>
    
+::: {.fragment}
 When we get back to SCR later, we'll talk about modeling both spatial and temporal variation in density.
+:::
 
 
 
@@ -924,7 +967,9 @@ When we get back to SCR later, we'll talk about modeling both spatial and tempor
 <!--   %  -->
 <!--   % Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. -->
 
-No assignment this week. Work on your paper. <br>
+No assignment this week. 
+
+Work on your paper.
 
 
 
