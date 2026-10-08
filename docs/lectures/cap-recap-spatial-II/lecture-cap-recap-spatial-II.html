@@ -227,64 +227,84 @@
 </section>
 <section id="spatial-point-processes" class="slide level2">
 <h2>Spatial point processes</h2>
-<p>The state model of SCR is a spatial (or spatio-temporal) point process</p>
+<div style="font-size: 90%;">
+<center>
+The state model of SCR is a spatial (or spatio-temporal) point process.
+</center>
 <p><br></p>
 <div class="fragment">
 <p>There are many varieties of spatial point processes, including:</p>
-<pre><code>* (In)homogeneous binomial point process
-* (In)homogeneous Poisson point process
-* Cox process
-* Gibbs process
-* Markov point process</code></pre>
+<ul>
+<li>(In)homogeneous binomial point process</li>
+<li>(In)homogeneous Poisson point process</li>
+<li>Cox process</li>
+<li>Gibbs process</li>
+<li>Markov point process</li>
+</ul>
+</div>
 </div>
 </section>
 <section id="spatial-point-processes-1" class="slide level2">
 <h2>Spatial point processes</h2>
+<div style="font-size: 80%;">
 <p>All share a few properties</p>
-<pre><code>* The data are a collection of points called a "point pattern"
-* Points are in an area called the state-space ($\mathcal{S}$), or observation window, which is usually two dimensional
-* An intensity function ($\lambda({\bf s})$) describes spatial variation in the density of points
-* The area under this function is the expected number of points (a.k.a, $N$) in the region:</code></pre>
+<ul>
+<li>The data are a collection of points called a “point pattern”</li>
+<li>Points are in an area called the state-space (<span class="math inline">\(\mathcal{S}\)</span>), or observation window, which is usually two dimensional</li>
+<li>An intensity function, <span class="math inline">\(\lambda({\bf s})\)</span>, describes spatial variation in the density of points</li>
+<li>The area under this function is the expected number of points (a.k.a, <span class="math inline">\(N\)</span>) in the region:</li>
+</ul>
 <p><span class="math display">\[
   E(N) = \Lambda = \int_{\mathcal{S}} \lambda({\bf s}) \;\mathrm{d}{\bf s}
 \]</span></p>
+</div>
 </section>
 <section id="poisson-point-process" class="slide level2">
 <h2>Poisson point process</h2>
 <div style="font-size: 80%;">
-<p>Properties</p>
-<pre><code>* If density is constant throughout the state-space: $\lambda({\bf s}) = \lambda$, the process is said to be "homogeneous"
-* Otherwise, the process is "inhomogeneous"
-* The number of points in any region of the state-space is Poisson distributed
-* Points are independent of one another (no attraction or repulsion) </code></pre>
+<p><strong>Properties</strong></p>
+<ul>
+<li>If density is constant throughout the state-space: <span class="math inline">\(\lambda({\bf s}) = \lambda\)</span>, the process is said to be “homogeneous”</li>
+<li>Otherwise, the process is “inhomogeneous”</li>
+<li>The number of points in any region of the state-space is Poisson distributed</li>
+<li>Points are independent of one another (no attraction or repulsion)</li>
+</ul>
+<p><br></p>
 <div class="fragment">
-<p>An inhomogeneous point process allows for spatial variation in density, which can be modeled using <span style="color: red;">spatial covariates</span>, such as raster layers.</p>
+<center>
+An inhomogeneous point process allows for spatial variation in density, which can be modeled using <span style="color: red;">spatial covariates</span>, such as raster layers.
+</center>
 </div>
 </div>
 </section>
 <section id="density-surfaces" class="slide level2">
 <h2>Density surfaces</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>We can use a fitted model to make maps of the following:</p>
 <ol type="1">
 <li>Expected density surface
 <ul>
-<li>This is an estimate of <span class="math inline">\(\lambda({\bf s})\)</span>.</li>
-<li>It’s the expected value of density at each location.</li>
-<li>It’s good for describing and predicting density at a different point in time, assuming the processes controlling density don’t change.</li>
+<li>This is an estimate of <span class="math inline">\(\lambda({\bf s})\)</span>, the expected value of density at each location.</li>
+<li>It’s good for describing and predicting density at a different point in time.</li>
 </ul></li>
+</ol>
+<div class="fragment">
+<ol start="2" type="1">
 <li>Realized density surface
 <ul>
-<li>This is an estimate of the number of activity centers per unit area <span style="color: red;">during the sampling period</span>.</li>
-<li>It’s an estimate of the realized point pattern.</li>
-<li>It will be equivalent to the expected density surface far from the traps.</li>
+<li>Estimated number of activity centers per unit area <span style="color: red;">during the sampling period</span>.</li>
 </ul></li>
+</ol>
+</div>
+<div class="fragment">
+<ol start="3" type="1">
 <li>Activity center locations
 <ul>
 <li>The posterior distribution of each activity center.</li>
 <li>This is not a home range map.</li>
 </ul></li>
 </ol>
+</div>
 </div>
 </section></section>
 <section>
@@ -294,17 +314,17 @@
 </section>
 <section id="inhomogeneous-poisson-point-process" class="slide level2">
 <h2><span style="font-size: 90%;">Inhomogeneous Poisson point process</span></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>First, let’s import a raster layer</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(raster)</span>
-<span id="cb4-2"><a></a>elevation <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"elevation.tif"</span>)</span>
-<span id="cb4-3"><a></a>delta <span class="ot">&lt;-</span> <span class="fu">res</span>(elevation)[<span class="dv">1</span>]  <span class="do">## resolution</span></span>
-<span id="cb4-4"><a></a><span class="fu">plot</span>(elevation, <span class="at">col=</span><span class="fu">topo.colors</span>(<span class="dv">100</span>), <span class="at">main=</span><span class="st">"Elevation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(raster)</span>
+<span id="cb1-2"><a></a>elevation <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="st">"elevation.tif"</span>)</span>
+<span id="cb1-3"><a></a>delta <span class="ot">&lt;-</span> <span class="fu">res</span>(elevation)[<span class="dv">1</span>]  <span class="do">## resolution</span></span>
+<span id="cb1-4"><a></a><span class="fu">plot</span>(elevation, <span class="at">col=</span><span class="fu">topo.colors</span>(<span class="dv">100</span>), <span class="at">main=</span><span class="st">"Elevation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/ippp1-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/ippp1-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
 </figure>
 </div>
 </div>
@@ -313,17 +333,17 @@
 </section>
 <section id="inhomogeneous-poisson-point-process-1" class="slide level2">
 <h2><span style="font-size: 90%;">Inhomogeneous Poisson point process</span></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>Second, let’s pick some coefficients and create a density surface</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>beta0 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">15</span></span>
-<span id="cb5-2"><a></a>beta1 <span class="ot">&lt;-</span> <span class="fl">0.01</span> <span class="co">#0.005</span></span>
-<span id="cb5-3"><a></a>lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(beta0 <span class="sc">+</span> beta1<span class="sc">*</span>elevation) <span class="co"># Intensity function</span></span>
-<span id="cb5-4"><a></a><span class="fu">plot</span>(lambda, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>), <span class="at">main=</span><span class="st">"Density surface"</span>, <span class="at">zlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.18</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>beta0 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">15</span></span>
+<span id="cb2-2"><a></a>beta1 <span class="ot">&lt;-</span> <span class="fl">0.01</span> <span class="co">#0.005</span></span>
+<span id="cb2-3"><a></a>lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(beta0 <span class="sc">+</span> beta1<span class="sc">*</span>elevation) <span class="co"># Intensity function</span></span>
+<span id="cb2-4"><a></a><span class="fu">plot</span>(lambda, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>), <span class="at">main=</span><span class="st">"Density surface"</span>, <span class="at">zlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.18</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/ippp2-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/ippp2-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
 </figure>
 </div>
 </div>
@@ -335,11 +355,11 @@
 <div style="font-size: 80%;">
 <p>Third, simulate <span class="math inline">\(N\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">set.seed</span>(<span class="dv">538</span>)  </span>
-<span id="cb6-2"><a></a>ds <span class="ot">&lt;-</span> <span class="dv">1</span>                          <span class="do">## Pixel area is 1 ha</span></span>
-<span id="cb6-3"><a></a>lambda.values <span class="ot">&lt;-</span> <span class="fu">values</span>(lambda)  <span class="do">## Convert raster to vector</span></span>
-<span id="cb6-4"><a></a>Lambda <span class="ot">&lt;-</span> <span class="fu">sum</span>(lambda.values<span class="sc">*</span>ds)  <span class="do">## E(N)</span></span>
-<span id="cb6-5"><a></a>(N <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, Lambda))          <span class="do">## Realized N</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">538</span>)  </span>
+<span id="cb3-2"><a></a>ds <span class="ot">&lt;-</span> <span class="dv">1</span>                          <span class="do">## Pixel area is 1 ha</span></span>
+<span id="cb3-3"><a></a>lambda.values <span class="ot">&lt;-</span> <span class="fu">values</span>(lambda)  <span class="do">## Convert raster to vector</span></span>
+<span id="cb3-4"><a></a>Lambda <span class="ot">&lt;-</span> <span class="fu">sum</span>(lambda.values<span class="sc">*</span>ds)  <span class="do">## E(N)</span></span>
+<span id="cb3-5"><a></a>(N <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, Lambda))          <span class="do">## Realized N</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 98</code></pre>
 </div>
@@ -347,13 +367,13 @@
 <div class="fragment">
 <p>Fourth, simulate <span class="math inline">\({\bf s}_1, \dots, {\bf s}_N\)</span>. To do this, we’ll pick pixels proportional to density. Then we’ll jitter each point inside its pixel.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>n.pixels <span class="ot">&lt;-</span> <span class="fu">length</span>(lambda)</span>
-<span id="cb8-2"><a></a>jitter <span class="ot">&lt;-</span> <span class="fl">0.005</span>                    <span class="do">## Half width of pixel </span></span>
-<span id="cb8-3"><a></a>s.pixels <span class="ot">&lt;-</span> <span class="fu">sample</span>(n.pixels, <span class="at">size=</span>N, <span class="at">replace=</span><span class="cn">TRUE</span>,</span>
-<span id="cb8-4"><a></a>                   <span class="at">prob=</span>lambda.values<span class="sc">/</span>Lambda)</span>
-<span id="cb8-5"><a></a>elevation.xyz <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(elevation, <span class="at">xy=</span><span class="cn">TRUE</span>)</span>
-<span id="cb8-6"><a></a>s <span class="ot">&lt;-</span> elevation.xyz[s.pixels,<span class="fu">c</span>(<span class="st">"x"</span>,<span class="st">"y"</span>)] <span class="sc">+</span></span>
-<span id="cb8-7"><a></a>    <span class="fu">cbind</span>(<span class="fu">runif</span>(N, <span class="sc">-</span>jitter, jitter),<span class="fu">runif</span>(N, <span class="sc">-</span>jitter, jitter))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>n.pixels <span class="ot">&lt;-</span> <span class="fu">length</span>(lambda)</span>
+<span id="cb5-2"><a></a>jitter <span class="ot">&lt;-</span> <span class="fl">0.005</span>                    <span class="do">## Half width of pixel </span></span>
+<span id="cb5-3"><a></a>s.pixels <span class="ot">&lt;-</span> <span class="fu">sample</span>(n.pixels, <span class="at">size=</span>N, <span class="at">replace=</span><span class="cn">TRUE</span>,</span>
+<span id="cb5-4"><a></a>                   <span class="at">prob=</span>lambda.values<span class="sc">/</span>Lambda)</span>
+<span id="cb5-5"><a></a>elevation.xyz <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(elevation, <span class="at">xy=</span><span class="cn">TRUE</span>)</span>
+<span id="cb5-6"><a></a>s <span class="ot">&lt;-</span> elevation.xyz[s.pixels,<span class="fu">c</span>(<span class="st">"x"</span>,<span class="st">"y"</span>)] <span class="sc">+</span></span>
+<span id="cb5-7"><a></a>    <span class="fu">cbind</span>(<span class="fu">runif</span>(N, <span class="sc">-</span>jitter, jitter),<span class="fu">runif</span>(N, <span class="sc">-</span>jitter, jitter))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -362,13 +382,12 @@
 <h2><span style="font-size: 90%;">Inhomogeneous Poisson point process</span></h2>
 <div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">plot</span>(lambda, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>),</span>
-<span id="cb9-2"><a></a>     <span class="at">main=</span><span class="st">"Density surface with activity centers"</span>)</span>
-<span id="cb9-3"><a></a><span class="fu">points</span>(s, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">plot</span>(lambda, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>), <span class="at">main=</span><span class="st">"Density surface with activity centers"</span>)</span>
+<span id="cb6-2"><a></a><span class="fu">points</span>(s, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/ippp5-1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/ippp5-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
 </figure>
 </div>
 </div>
@@ -377,30 +396,37 @@
 </section>
 <section id="traps" class="slide level2">
 <h2>Traps</h2>
+<div style="font-size: 70%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>x <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(<span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">by=</span><span class="fl">0.1</span>), <span class="at">each=</span><span class="dv">8</span>),</span>
-<span id="cb10-2"><a></a>           <span class="fu">rep</span>(<span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">by=</span><span class="fl">0.1</span>), <span class="at">times=</span><span class="dv">8</span>))  <span class="do">## Trap locations</span></span>
-<span id="cb10-3"><a></a><span class="fu">plot</span>(lambda, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>),</span>
-<span id="cb10-4"><a></a>     <span class="at">main=</span><span class="st">"Density surface with activity centers and traps"</span>)</span>
-<span id="cb10-5"><a></a><span class="fu">points</span>(s, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>) <span class="do">## Activity center locations</span></span>
-<span id="cb10-6"><a></a><span class="fu">points</span>(x, <span class="at">pch=</span><span class="dv">3</span>)              <span class="do">## Trap locations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>x <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(<span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">by=</span><span class="fl">0.1</span>), <span class="at">each=</span><span class="dv">8</span>),</span>
+<span id="cb7-2"><a></a>           <span class="fu">rep</span>(<span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">by=</span><span class="fl">0.1</span>), <span class="at">times=</span><span class="dv">8</span>))  <span class="do">## Trap locations</span></span>
+<span id="cb7-3"><a></a><span class="fu">plot</span>(lambda, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>), <span class="at">main=</span><span class="st">"Density surface, activity centers and traps"</span>)</span>
+<span id="cb7-4"><a></a><span class="fu">points</span>(s, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"blue"</span>) <span class="do">## Activity center locations</span></span>
+<span id="cb7-5"><a></a><span class="fu">points</span>(x, <span class="at">pch=</span><span class="dv">3</span>)              <span class="do">## Trap locations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/traps1-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/traps1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section id="distance-between-traps-and-activity-centers" class="slide level2">
-<h2><span style="font-size: 90%;">Distance between traps and activity centers</span></h2>
+</div>
+</div>
+</div>
+</section>
+<section id="distance-bw-traps-and-activity-centers" class="slide level2">
+<h2><span style="font-size: 90%;">Distance b/w traps and activity centers</span></h2>
 <!-- Compute distances between activity centers (${\bf s}_1, \dots, {\bf s}_N$) and traps (${\bf x}_1, \dots, {\bf x}_J$). -->
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>J <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x)                 <span class="do">## nTraps</span></span>
-<span id="cb11-2"><a></a>dist.sx <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)  </span>
-<span id="cb11-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
-<span id="cb11-4"><a></a>    dist.sx[i,] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((s[i,<span class="dv">1</span>]<span class="sc">-</span>x[,<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (s[i,<span class="dv">2</span>]<span class="sc">-</span>x[,<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb11-5"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>J <span class="ot">&lt;-</span> <span class="fu">nrow</span>(x)                 <span class="do">## nTraps</span></span>
+<span id="cb8-2"><a></a>dist.sx <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, N, J)  </span>
+<span id="cb8-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb8-4"><a></a>    dist.sx[i,] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((s[i,<span class="dv">1</span>]<span class="sc">-</span>x[,<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (s[i,<span class="dv">2</span>]<span class="sc">-</span>x[,<span class="dv">2</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb8-5"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>Look at distances between first 4 individuals and first 5 traps.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>dist.sx[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>dist.sx[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          [,1]      [,2]      [,3]      [,4]      [,5]
 [1,] 0.1218625 0.1175070 0.1810119 0.2678109 0.3614970
@@ -413,16 +439,17 @@
 </section>
 <section id="capture-probability" class="slide level2">
 <h2>Capture probability</h2>
+<div style="font-size: 80%;">
 <p>Compute capture probability</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>g0 <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb14-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb14-3"><a></a>p <span class="ot">&lt;-</span> g0<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>dist.sx<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>g0 <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb11-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb11-3"><a></a>p <span class="ot">&lt;-</span> g0<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>dist.sx<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>Look at capture probs for first 4 individuals and first 5 traps.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">print</span>(p[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">print</span>(p[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         [,1]     [,2]     [,3]     [,4]     [,5]
 [1,] 1.03e-02 1.26e-02 2.85e-04 1.18e-07 8.92e-13
@@ -432,31 +459,32 @@
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="capture-histories" class="slide level2">
 <h2>Capture histories</h2>
 <div style="font-size: 80%;">
 <p>Simulate capture histories for all <span class="math inline">\(N\)</span> individuals</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>K <span class="ot">&lt;-</span> <span class="dv">5</span>                          <span class="co"># nOccasions</span></span>
-<span id="cb17-2"><a></a>y.all <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(N, J, K))</span>
-<span id="cb17-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
-<span id="cb17-4"><a></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
-<span id="cb17-5"><a></a>        y.all[i,j,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(K, <span class="dv">1</span>, <span class="at">prob=</span>p[i,j])</span>
-<span id="cb17-6"><a></a>    }</span>
-<span id="cb17-7"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>K <span class="ot">&lt;-</span> <span class="dv">5</span>                          <span class="co"># nOccasions</span></span>
+<span id="cb14-2"><a></a>y.all <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(N, J, K))</span>
+<span id="cb14-3"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb14-4"><a></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb14-5"><a></a>        y.all[i,j,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(K, <span class="dv">1</span>, <span class="at">prob=</span>p[i,j])</span>
+<span id="cb14-6"><a></a>    }</span>
+<span id="cb14-7"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>Discard individuals not captured</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>captured <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all)<span class="sc">&gt;</span><span class="dv">0</span></span>
-<span id="cb18-2"><a></a>y <span class="ot">&lt;-</span> y.all[captured,,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>captured <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(y.all)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb15-2"><a></a>y <span class="ot">&lt;-</span> y.all[captured,,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div class="fragment">
 <p>Capture histories for first 2 individuals and first 5 traps on first occasion.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>y[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>y[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3] [,4] [,5]
 [1,]    0    0    0    0    0
@@ -473,34 +501,33 @@
 </section>
 <section id="r-package-secr" class="slide level2">
 <h2>R package ‘secr’</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>Import data from two text files.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">library</span>(secr)  </span>
-<span id="cb21-2"><a></a>sch <span class="ot">&lt;-</span> <span class="fu">read.capthist</span>(<span class="at">captfile=</span><span class="st">"encounter_data_file.csv"</span>,</span>
-<span id="cb21-3"><a></a>                     <span class="at">trapfile=</span><span class="st">"trap_data_file.csv"</span>,</span>
-<span id="cb21-4"><a></a>                     <span class="at">detector=</span><span class="st">"proximity"</span>, <span class="at">fmt=</span><span class="st">"trapID"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">library</span>(secr)  </span>
+<span id="cb18-2"><a></a>sch <span class="ot">&lt;-</span> <span class="fu">read.capthist</span>(<span class="at">captfile=</span><span class="st">"encounter_data_file.csv"</span>, <span class="at">trapfile=</span><span class="st">"trap_data_file.csv"</span>,</span>
+<span id="cb18-3"><a></a>                     <span class="at">detector=</span><span class="st">"proximity"</span>, <span class="at">fmt=</span><span class="st">"trapID"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>Create the “habitat mask”, which defines the state-space and the spatial covariates. First, prepare the elevation covariate.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>elevation.xyz <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(elevation, <span class="at">xy=</span><span class="cn">TRUE</span>)</span>
-<span id="cb22-2"><a></a>elevation.xyz<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">round</span>(elevation.xyz<span class="sc">$</span>y, <span class="dv">3</span>) <span class="do">## Fix numerical fuzz</span></span>
-<span id="cb22-3"><a></a>elevation.xyz.m <span class="ot">&lt;-</span> elevation.xyz</span>
-<span id="cb22-4"><a></a>elevation.xyz.m<span class="sc">$</span>x <span class="ot">&lt;-</span> elevation.xyz<span class="sc">$</span>x<span class="sc">*</span><span class="dv">1000</span>  <span class="do">## Convert units to meters</span></span>
-<span id="cb22-5"><a></a>elevation.xyz.m<span class="sc">$</span>y <span class="ot">&lt;-</span> elevation.xyz<span class="sc">$</span>y<span class="sc">*</span><span class="dv">1000</span></span>
-<span id="cb22-6"><a></a>elevation.xyz.m<span class="sc">$</span>elevation <span class="ot">&lt;-</span> <span class="fu">scale</span>(elevation.xyz<span class="sc">$</span>elevation) <span class="do">## Standardize</span></span>
-<span id="cb22-7"><a></a>elevation.m <span class="ot">&lt;-</span> <span class="fu">rasterFromXYZ</span>(elevation.xyz.m)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>elevation.xyz <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(elevation, <span class="at">xy=</span><span class="cn">TRUE</span>)</span>
+<span id="cb19-2"><a></a>elevation.xyz<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">round</span>(elevation.xyz<span class="sc">$</span>y, <span class="dv">3</span>) <span class="do">## Fix numerical fuzz</span></span>
+<span id="cb19-3"><a></a>elevation.xyz.m <span class="ot">&lt;-</span> elevation.xyz</span>
+<span id="cb19-4"><a></a>elevation.xyz.m<span class="sc">$</span>x <span class="ot">&lt;-</span> elevation.xyz<span class="sc">$</span>x<span class="sc">*</span><span class="dv">1000</span>  <span class="do">## Convert units to meters</span></span>
+<span id="cb19-5"><a></a>elevation.xyz.m<span class="sc">$</span>y <span class="ot">&lt;-</span> elevation.xyz<span class="sc">$</span>y<span class="sc">*</span><span class="dv">1000</span></span>
+<span id="cb19-6"><a></a>elevation.xyz.m<span class="sc">$</span>elevation <span class="ot">&lt;-</span> <span class="fu">scale</span>(elevation.xyz<span class="sc">$</span>elevation) <span class="do">## Standardize</span></span>
+<span id="cb19-7"><a></a>elevation.m <span class="ot">&lt;-</span> <span class="fu">rasterFromXYZ</span>(elevation.xyz.m)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div class="fragment">
 <p>Now create the mask.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">library</span>(sp)</span>
-<span id="cb23-2"><a></a>elev.sp <span class="ot">&lt;-</span> <span class="fu">as</span>(elevation.m, <span class="st">"SpatialGridDataFrame"</span>)</span>
-<span id="cb23-3"><a></a>trp <span class="ot">&lt;-</span> <span class="fu">traps</span>(sch)</span>
-<span id="cb23-4"><a></a>mask <span class="ot">&lt;-</span> <span class="fu">make.mask</span>(trp, <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">spacing=</span><span class="dv">10</span>)</span>
-<span id="cb23-5"><a></a>mask <span class="ot">&lt;-</span> <span class="fu">addCovariates</span>(mask, <span class="at">spatialdata=</span>elev.sp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">library</span>(sp)</span>
+<span id="cb20-2"><a></a>elev.sp <span class="ot">&lt;-</span> <span class="fu">as</span>(elevation.m, <span class="st">"SpatialGridDataFrame"</span>)</span>
+<span id="cb20-3"><a></a>trp <span class="ot">&lt;-</span> <span class="fu">traps</span>(sch)</span>
+<span id="cb20-4"><a></a>mask <span class="ot">&lt;-</span> <span class="fu">make.mask</span>(trp, <span class="at">buffer=</span><span class="dv">150</span>, <span class="at">spacing=</span><span class="dv">10</span>)</span>
+<span id="cb20-5"><a></a>mask <span class="ot">&lt;-</span> <span class="fu">addCovariates</span>(mask, <span class="at">spatialdata=</span>elev.sp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -508,18 +535,19 @@
 <section id="habitat-mask" class="slide level2">
 <h2>Habitat mask</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">plot</span>(mask, <span class="at">covariate=</span><span class="st">"elevation"</span>)</span>
-<span id="cb24-2"><a></a><span class="fu">plot</span>(trp, <span class="at">add=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">plot</span>(mask, <span class="at">covariate=</span><span class="st">"elevation"</span>)</span>
+<span id="cb21-2"><a></a><span class="fu">plot</span>(trp, <span class="at">add=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/plot-mask-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:95.0%"></section>
 <section id="r-package-secr-1" class="slide level2">
 <h2>R package ‘secr’</h2>
+<div style="font-size: 80%;">
 <p>Model density as a function of elevation.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>fm.elev <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span>elevation, <span class="at">g0=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
-<span id="cb25-2"><a></a>                    <span class="at">mask=</span>mask, <span class="at">trace=</span><span class="cn">FALSE</span>)  <span class="do">## Don't use 'buffer'</span></span>
-<span id="cb25-3"><a></a><span class="fu">coef</span>(fm.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>fm.elev <span class="ot">&lt;-</span> <span class="fu">secr.fit</span>(sch, <span class="at">model=</span><span class="fu">list</span>(<span class="at">D=</span><span class="sc">~</span>elevation, <span class="at">g0=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">sigma=</span><span class="sc">~</span><span class="dv">1</span>),</span>
+<span id="cb22-2"><a></a>                    <span class="at">mask=</span>mask, <span class="at">trace=</span><span class="cn">FALSE</span>)  <span class="do">## Don't use 'buffer'</span></span>
+<span id="cb22-3"><a></a><span class="fu">coef</span>(fm.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  beta    SE.beta        lcl        ucl
 D           -0.5600286 0.23323698 -1.0171647 -0.1028925
@@ -530,7 +558,7 @@ sigma        3.9089834 0.06556957  3.7804694  4.0374974</code></pre>
 </div>
 <p>Estimates on original scale (at average covariate values).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">predict</span>(fm.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">predict</span>(fm.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       link   estimate SE.estimate        lcl        ucl
 D       log  0.5712491   0.1350596  0.3616658  0.9022848
@@ -538,37 +566,52 @@ g0    logit  0.2354210   0.0384633  0.1684336  0.3188351
 sigma   log 49.8482523   3.2720450 43.8366152 56.6843093</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="estimated-density-surface" class="slide level2">
 <h2>Estimated density surface</h2>
+<div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="do">## #| fig.show: 'hide'</span></span>
-<span id="cb29-2"><a></a>dsurf <span class="ot">&lt;-</span> <span class="fu">predictDsurface</span>(fm.elev)</span>
-<span id="cb29-3"><a></a>dsurf.r <span class="ot">&lt;-</span> <span class="fu">raster</span>(dsurf, <span class="at">covariate=</span><span class="st">"D.0"</span>)</span>
-<span id="cb29-4"><a></a>pix.area <span class="ot">&lt;-</span> (delta<span class="sc">*</span><span class="dv">1000</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb29-5"><a></a><span class="fu">plot</span>(dsurf.r<span class="sc">/</span>pix.area, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>), <span class="at">zlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.18</span>),</span>
-<span id="cb29-6"><a></a>     <span class="at">main=</span><span class="st">"Estimated density surface"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>dsurf <span class="ot">&lt;-</span> <span class="fu">predictDsurface</span>(fm.elev)</span>
+<span id="cb26-2"><a></a>dsurf.r <span class="ot">&lt;-</span> <span class="fu">raster</span>(dsurf, <span class="at">covariate=</span><span class="st">"D.0"</span>)</span>
+<span id="cb26-3"><a></a>pix.area <span class="ot">&lt;-</span> (delta<span class="sc">*</span><span class="dv">1000</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb26-4"><a></a><span class="fu">plot</span>(dsurf.r<span class="sc">/</span>pix.area, <span class="at">col=</span><span class="fu">terrain.colors</span>(<span class="dv">100</span>), <span class="at">zlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.18</span>),</span>
+<span id="cb26-5"><a></a>     <span class="at">main=</span><span class="st">"Estimated density surface"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/secr-dsurf-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 <!-- [width=0.49\textwidth]{figure/secr-dsurf-1} -->
 <!-- [width=0.49\textwidth]{figure/ippp2-1} <br> -->
 <!-- %  -->
 <!-- %The units differ because we transformed to meters. <br> -->
-<img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/secr-dsurf-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+</section>
 <section id="estimated-activity-centers" class="slide level2">
 <h2>Estimated activity centers</h2>
+<div style="font-size: 80%;">
 <p>Contour map for the Empirical Bayes posterior distribution of the activity center for individual 1.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">fxiContour</span>(fm.elev, <span class="at">i=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">fxiContour</span>(fm.elev, <span class="at">i=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/fxi-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
+</figure>
 </div>
-<img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/fxi-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"></section>
+</div>
+</div>
+</div>
+</section>
 <section id="r-package-secr-2" class="slide level2">
 <h2>R package ‘secr’</h2>
 <p>We can still estimate <span class="math inline">\(N\)</span> as before.</p>
-<p><code>E.N</code> is the expected value of <span class="math inline">\(N\)</span>. <code>R.N</code> is the realized value of <span class="math inline">\(N\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">region.N</span>(fm.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">region.N</span>(fm.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    estimate SE.estimate      lcl      ucl  n
 E.N  87.3537   12.228402 66.48162 114.7786 59
@@ -581,11 +624,10 @@ R.N  87.3537    7.885437 75.60648 107.4108 59</code></pre>
 <h1>Bayes</h1>
 
 </section>
-<section id="data-augmentation-model" class="slide level2">
-<h2>Data augmentation model</h2>
-<div style="font-size: 80%;">
-<p>DA version of SCR model with inhomogeneous point process <br></p>
-<p>Version 1</p>
+<section id="scr-with-data-augmentation" class="slide level2">
+<h2>SCR with data augmentation</h2>
+<div style="font-size: 70%;">
+<p>Version 1: SCR model with inhomogeneous point process.</p>
 <p><span class="math display">\[
   \lambda({\bf s}) = \exp(\beta_0 + \beta_1 \mathrm{ELEV}({\bf s})) \\
   {\bf s}_i \propto \lambda({\bf s}) \\
@@ -640,9 +682,10 @@ N &lt;- sum(z)
 </div>
 <!-- %   ## Add code to convert from secr format to 3D array -->
 </section>
-<section id="data-augmentation-model-1" class="slide level2">
-<h2>Data augmentation model</h2>
-<p>Version 2: DA version of SCR model with inhomogeneous point process</p>
+<section id="scr-with-data-augmentation-1" class="slide level2">
+<h2>SCR with data augmentation</h2>
+<div style="font-size: 80%;">
+<p>Version 2: SCR model with inhomogeneous point process</p>
 <p><span class="math display">\[
   \tilde{\lambda}({\bf s}) = \exp(\beta_1 \mathrm{ELEV}({\bf s})) \\
   {\bf s}_i \propto \tilde{\lambda}({\bf s}) \\
@@ -652,6 +695,7 @@ N &lt;- sum(z)
   N=\sum_{i=1}^M z_i
 \]</span></p>
 <p>This version is faster and mixes better.</p>
+</div>
 </section>
 <section id="scr-with-ipp-version-2" class="slide level2">
 <h2>SCR with IPP – version 2</h2>
@@ -693,77 +737,98 @@ N &lt;- sum(z)
 </section>
 <section id="scr-with-ipp-version-3" class="slide level2">
 <h2>SCR with IPP – version 3</h2>
+<div style="font-size: 80%;">
 <p>There’s another version where we treat space as discrete, rather than continuous.</p>
+<p><br></p>
 <p>Under this formulation, activity centers are snapped to pixel centers, and a categorical prior is used instead of a continuous distribution.</p>
+<p><br></p>
 <p>This version is similar to what is used in likelihood-based methods.</p>
+<p><br></p>
 <p>It works fine, but it’s slow in JAGS and it adds an extra level of approximation.</p>
+</div>
 </section>
 <section id="inhomogeneous-point-process-in-jags" class="slide level2">
 <h2>Inhomogeneous point process in JAGS</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 73%;">
 <p>We need to do the following to use version 2:</p>
-<pre><code>* Provide the spatial covariate as a vector
-* Loop over all pixels to compute the *conditional*-on-$N$ density surface. 
-* Retain the uniform prior on the activity centers, but add a second probability component to force them to be distributed according to the density surface.
-* This requires that we create a "lookup" table to map points in space to pixel IDs
-* Then we use the "zero's trick" to implement the non-standard probability distribution
-* Put a uniform prior on $\psi$.</code></pre>
+<ul>
+<li>Provide the spatial covariate as a vector</li>
+<li>Loop over all pixels to compute the <em>conditional</em>-on-<span class="math inline">\(N\)</span> density surface.</li>
+<li>Retain the uniform prior on the activity centers, but add a second probability component to force them to be distributed according to the density surface.</li>
+<li>This requires that we create a “lookup” table to map points in space to pixel IDs</li>
+<li>Then we use the “zero’s trick” to implement the non-standard probability distribution</li>
+<li>Put a uniform prior on <span class="math inline">\(\psi\)</span>.</li>
+</ul>
+<p><br></p>
 <div class="fragment">
-<p>If we were using version 1, we would define <span class="math inline">\(\psi=E(N)/M\)</span> and we’d include <span class="math inline">\(\beta_0\)</span> in the intensity function.</p>
+<center>
+If we were using version 1, we would define <span class="math inline">\(\psi=E(N)/M\)</span> and we’d include <span class="math inline">\(\beta_0\)</span> in the intensity function.
+</center>
 </div>
 </div>
 </section>
 <section id="scr-with-ipp" class="slide level2">
 <h2>SCR with IPP</h2>
+<div style="font-size: 70%;">
 <p>Create the lookup table</p>
-<div class="cell" data-location="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>G <span class="ot">&lt;-</span> <span class="fu">nrow</span>(elevation.xyz)    <span class="do">## nPixels  </span></span>
-<span id="cb36-2"><a></a>lookup <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span>G, <span class="at">nrow=</span><span class="fu">nrow</span>(elevation), <span class="at">ncol=</span><span class="fu">ncol</span>(elevation),</span>
-<span id="cb36-3"><a></a>                 <span class="at">byrow=</span><span class="cn">TRUE</span>) <span class="do">## To be consistent with raster package</span></span>
-<span id="cb36-4"><a></a>delta <span class="ot">&lt;-</span> <span class="fu">res</span>(elevation)[<span class="dv">1</span>]  <span class="do">## resolution</span></span>
-<span id="cb36-5"><a></a><span class="fu">image</span>(<span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>),</span>
-<span id="cb36-6"><a></a>      <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>), lookup, <span class="at">asp=</span><span class="dv">1</span>,</span>
-<span id="cb36-7"><a></a>      <span class="at">xlab=</span><span class="st">"x"</span>, <span class="at">ylab=</span><span class="st">"y"</span>, <span class="at">frame=</span><span class="cn">FALSE</span>, <span class="at">col=</span><span class="dv">0</span>, <span class="at">main=</span><span class="st">"Pixel ID"</span>)</span>
-<span id="cb36-8"><a></a><span class="fu">text</span>(elevation.xyz<span class="sc">$</span>x[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)],</span>
-<span id="cb36-9"><a></a>     elevation.xyz<span class="sc">$</span>y[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)], <span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>), <span class="at">cex=</span><span class="fl">0.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell columns column-output-location">
+<div class="column">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>G <span class="ot">&lt;-</span> <span class="fu">nrow</span>(elevation.xyz)    <span class="do">## nPixels  </span></span>
+<span id="cb32-2"><a></a>lookup <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span>G, <span class="at">nrow=</span><span class="fu">nrow</span>(elevation), <span class="at">ncol=</span><span class="fu">ncol</span>(elevation),</span>
+<span id="cb32-3"><a></a>                 <span class="at">byrow=</span><span class="cn">TRUE</span>) <span class="do">## To be consistent with raster package</span></span>
+<span id="cb32-4"><a></a>delta <span class="ot">&lt;-</span> <span class="fu">res</span>(elevation)[<span class="dv">1</span>]  <span class="do">## resolution</span></span>
+<span id="cb32-5"><a></a><span class="fu">image</span>(<span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>),</span>
+<span id="cb32-6"><a></a>      <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>), lookup, <span class="at">asp=</span><span class="dv">1</span>, </span>
+<span id="cb32-7"><a></a>      <span class="at">xlab=</span><span class="st">"x"</span>, <span class="at">ylab=</span><span class="st">"y"</span>, <span class="at">frame=</span><span class="cn">FALSE</span>, <span class="at">col=</span><span class="dv">0</span>, <span class="at">main=</span><span class="st">"Pixel ID"</span>)</span>
+<span id="cb32-8"><a></a><span class="fu">text</span>(elevation.xyz<span class="sc">$</span>x[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)],</span>
+<span id="cb32-9"><a></a>     elevation.xyz<span class="sc">$</span>y[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)], <span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>), <span class="at">cex=</span><span class="fl">0.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/lookup-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div></div>
 </div>
 </section>
 <section id="scr-with-ipp-1" class="slide level2">
 <h2>SCR with IPP</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>Data</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">150</span>  </span>
-<span id="cb37-2"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(y, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), sum)</span>
-<span id="cb37-3"><a></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(y)</span>
-<span id="cb37-4"><a></a>jags.data.SCR.elev <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb37-5"><a></a>    <span class="at">y.tilde=</span>y.tilde, <span class="at">n=</span>n, <span class="at">M=</span>M, <span class="at">J=</span>J, <span class="at">G=</span>G, <span class="at">delta=</span>delta,</span>
-<span id="cb37-6"><a></a>    <span class="at">lookup=</span>lookup, <span class="at">pixelArea=</span>delta<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span><span class="fl">1e4</span>, <span class="do">## Convert to hectares</span></span>
-<span id="cb37-7"><a></a>    <span class="at">elevation=</span>elevation.xyz<span class="sc">$</span>elevation, <span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n), <span class="fu">rep</span>(<span class="cn">NA</span>, M<span class="sc">-</span>n)),</span>
-<span id="cb37-8"><a></a>    <span class="at">zeros=</span><span class="fu">rep</span>(<span class="dv">0</span>, M), <span class="at">K=</span>K, <span class="at">zero.cap=</span><span class="fu">rep</span>(<span class="dv">0</span>, M), <span class="at">x=</span>x, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">150</span>  </span>
+<span id="cb33-2"><a></a>y.tilde <span class="ot">&lt;-</span> <span class="fu">apply</span>(y, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), sum)</span>
+<span id="cb33-3"><a></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(y)</span>
+<span id="cb33-4"><a></a>jags.data.SCR.elev <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb33-5"><a></a>    <span class="at">y.tilde=</span>y.tilde, <span class="at">n=</span>n, <span class="at">M=</span>M, <span class="at">J=</span>J, <span class="at">G=</span>G, <span class="at">delta=</span>delta,</span>
+<span id="cb33-6"><a></a>    <span class="at">lookup=</span>lookup, <span class="at">pixelArea=</span>delta<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span><span class="fl">1e4</span>, <span class="do">## Convert to hectares</span></span>
+<span id="cb33-7"><a></a>    <span class="at">elevation=</span>elevation.xyz<span class="sc">$</span>elevation, <span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n), <span class="fu">rep</span>(<span class="cn">NA</span>, M<span class="sc">-</span>n)),</span>
+<span id="cb33-8"><a></a>    <span class="at">zeros=</span><span class="fu">rep</span>(<span class="dv">0</span>, M), <span class="at">K=</span>K, <span class="at">zero.cap=</span><span class="fu">rep</span>(<span class="dv">0</span>, M), <span class="at">x=</span>x, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Inits and parameters</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>jp.SCR.elev <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>, <span class="st">"g0"</span>, <span class="st">"sigma"</span>, <span class="st">"EN"</span>, <span class="st">"N"</span>)</span>
-<span id="cb38-2"><a></a>ji.SCR.elev <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb38-3"><a></a>    <span class="fu">list</span>(<span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="cn">NA</span>, n), <span class="fu">rep</span>(<span class="dv">0</span>,M<span class="sc">-</span>n)),<span class="co">#psi=runif(1),beta0=runif(1,-20,-15),</span></span>
-<span id="cb38-4"><a></a>         <span class="at">beta1=</span><span class="fl">0.01</span>, <span class="at">s=</span><span class="fu">cbind</span>(<span class="fu">runif</span>(M), <span class="fu">runif</span>(M)),</span>
-<span id="cb38-5"><a></a>         <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>jp.SCR.elev <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta0"</span>, <span class="st">"beta1"</span>, <span class="st">"g0"</span>, <span class="st">"sigma"</span>, <span class="st">"EN"</span>, <span class="st">"N"</span>)</span>
+<span id="cb34-2"><a></a>ji.SCR.elev <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb34-3"><a></a>    <span class="fu">list</span>(<span class="at">z=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="cn">NA</span>, n), <span class="fu">rep</span>(<span class="dv">0</span>,M<span class="sc">-</span>n)),<span class="co">#psi=runif(1),beta0=runif(1,-20,-15),</span></span>
+<span id="cb34-4"><a></a>         <span class="at">beta1=</span><span class="fl">0.01</span>, <span class="at">s=</span><span class="fu">cbind</span>(<span class="fu">runif</span>(M), <span class="fu">runif</span>(M)),</span>
+<span id="cb34-5"><a></a>         <span class="at">g0=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">sigma=</span><span class="fu">runif</span>(<span class="dv">1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>)) }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>MCMC</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">library</span>(jagsUI)  </span>
-<span id="cb39-2"><a></a>jags.post.SCR.elev <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(</span>
-<span id="cb39-3"><a></a>    <span class="at">data=</span>jags.data.SCR.elev, <span class="at">inits=</span>ji.SCR.elev,</span>
-<span id="cb39-4"><a></a>    <span class="at">parameters.to.save=</span>jp.SCR.elev, <span class="at">model.file=</span><span class="st">"SCR-elev-v2.jag"</span>,</span>
-<span id="cb39-5"><a></a>    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.iter=</span><span class="dv">1000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">library</span>(jagsUI)  </span>
+<span id="cb35-2"><a></a>jags.post.SCR.elev <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(</span>
+<span id="cb35-3"><a></a>    <span class="at">data=</span>jags.data.SCR.elev, <span class="at">inits=</span>ji.SCR.elev,</span>
+<span id="cb35-4"><a></a>    <span class="at">parameters.to.save=</span>jp.SCR.elev, <span class="at">model.file=</span><span class="st">"SCR-elev-v2.jag"</span>,</span>
+<span id="cb35-5"><a></a>    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.iter=</span><span class="dv">1000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
 <section id="posterior-summaries" class="slide level2">
 <h2>Posterior summaries</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">summary</span>(jags.post.SCR.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">summary</span>(jags.post.SCR.elev)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Iterations = 101:1100
@@ -774,134 +839,140 @@ Sample size per chain = 1000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-               Mean        SD  Naive SE Time-series SE
-EN        8.829e+01  9.977617 1.822e-01      0.4613329
-N         8.856e+01  8.166137 1.491e-01      0.4016001
-beta0    -1.415e+01  2.073910 3.786e-02      0.1500099
-beta1     8.864e-03  0.001853 3.382e-05      0.0001327
-deviance  3.177e+03 44.911679 8.200e-01      3.2062181
-g0        2.346e-01  0.039152 7.148e-04      0.0022487
-sigma     5.026e-02  0.003429 6.260e-05      0.0002202
+            Mean        SD  Naive SE Time-series SE
+EN     88.850648 10.474479 1.912e-01      0.5282427
+N      88.959000  8.631733 1.576e-01      0.4805394
+beta0 -14.443557  2.107711 3.848e-02      0.1669706
+beta1   0.009138  0.001887 3.444e-05      0.0001482
+g0      0.236503  0.039253 7.167e-04      0.0026025
+sigma   0.050003  0.003434 6.270e-05      0.0002085
 
 2. Quantiles for each variable:
 
-               2.5%        25%        50%        75%      97.5%
-EN        6.974e+01  8.142e+01  8.800e+01   94.73555  109.06133
-N         7.500e+01  8.300e+01  8.800e+01   94.00000  107.00000
-beta0    -1.854e+01 -1.546e+01 -1.407e+01  -12.74256  -10.33929
-beta1     5.423e-03  7.608e-03  8.796e-03    0.01006    0.01278
-deviance  3.086e+03  3.148e+03  3.180e+03 3209.07695 3258.69782
-g0        1.672e-01  2.057e-01  2.310e-01    0.25895    0.32332
-sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741</code></pre>
+            2.5%        25%        50%       75%     97.5%
+EN     69.541232  81.586838  88.156952  95.47809 110.20447
+N      74.975000  83.000000  88.000000  94.00000 109.00000
+beta0 -18.451935 -15.929415 -14.411138 -12.97787 -10.27970
+beta1   0.005432   0.007817   0.009106   0.01045   0.01273
+g0      0.165442   0.209116   0.234794   0.26129   0.32409
+sigma   0.043949   0.047650   0.049761   0.05217   0.05745</code></pre>
 </div>
 </div>
 </section>
 <section id="traceplots-and-density-plots" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">plot</span>(jags.post.SCR.elev[,jp.SCR.elev[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">plot</span>(jags.post.SCR.elev[,jp.SCR.elev[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/plot-mcmc-SCR-elev1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="traceplots-and-density-plots-1" class="slide level2">
 <h2>Traceplots and density plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="fu">plot</span>(jags.post.SCR.elev[,jp.SCR.elev[<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">plot</span>(jags.post.SCR.elev[,jp.SCR.elev[<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/plot-mcmc-SCR-elev2-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="predicted-density-surface-in-jags" class="slide level2">
 <h2>Predicted density surface in JAGS</h2>
+<div style="font-size: 80%;">
 <p>Extract posterior samples of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>beta.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev[,<span class="fu">c</span>(<span class="st">"beta0"</span>,<span class="st">"beta1"</span>)])</span>
-<span id="cb44-2"><a></a>n.samples <span class="ot">&lt;-</span> <span class="fu">nrow</span>(beta.post)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>beta.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev[,<span class="fu">c</span>(<span class="st">"beta0"</span>,<span class="st">"beta1"</span>)])</span>
+<span id="cb40-2"><a></a>n.samples <span class="ot">&lt;-</span> <span class="fu">nrow</span>(beta.post)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Compute density surface for every MCMC sample</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>lambda.post <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n.pixels, n.samples)</span>
-<span id="cb45-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.samples) {</span>
-<span id="cb45-3"><a></a>    lambda.post[,i] <span class="ot">&lt;-</span> <span class="fu">exp</span>(</span>
-<span id="cb45-4"><a></a>        beta.post[i,<span class="st">"beta0"</span>] <span class="sc">+</span></span>
-<span id="cb45-5"><a></a>        beta.post[i,<span class="st">"beta1"</span>]<span class="sc">*</span>elevation.xyz<span class="sc">$</span>elevation)</span>
-<span id="cb45-6"><a></a>}</span>
-<span id="cb45-7"><a></a>lambda.post.mean <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(lambda.post)</span>
-<span id="cb45-8"><a></a>lambda.post.lower <span class="ot">&lt;-</span> <span class="fu">apply</span>(lambda.post, <span class="dv">1</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span>
-<span id="cb45-9"><a></a>lambda.post.upper <span class="ot">&lt;-</span> <span class="fu">apply</span>(lambda.post, <span class="dv">1</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>lambda.post <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n.pixels, n.samples)</span>
+<span id="cb41-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.samples) {</span>
+<span id="cb41-3"><a></a>    lambda.post[,i] <span class="ot">&lt;-</span> <span class="fu">exp</span>(</span>
+<span id="cb41-4"><a></a>        beta.post[i,<span class="st">"beta0"</span>] <span class="sc">+</span></span>
+<span id="cb41-5"><a></a>        beta.post[i,<span class="st">"beta1"</span>]<span class="sc">*</span>elevation.xyz<span class="sc">$</span>elevation)</span>
+<span id="cb41-6"><a></a>}</span>
+<span id="cb41-7"><a></a>lambda.post.mean <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(lambda.post)</span>
+<span id="cb41-8"><a></a>lambda.post.lower <span class="ot">&lt;-</span> <span class="fu">apply</span>(lambda.post, <span class="dv">1</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span>
+<span id="cb41-9"><a></a>lambda.post.upper <span class="ot">&lt;-</span> <span class="fu">apply</span>(lambda.post, <span class="dv">1</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="predicted-density-surface" class="slide level2">
 <h2>Predicted density surface</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <p>Make multi-panel figure showing posterior mean density surface, along with 95% CI.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a><span class="fu">library</span>(latticeExtra)</span>
-<span id="cb46-2"><a></a><span class="fu">trellis.par.set</span>(<span class="at">regions=</span><span class="fu">list</span>(<span class="at">col=</span><span class="fu">hcl.colors</span>(<span class="dv">100</span>))) <span class="do">## Colors</span></span>
-<span id="cb46-3"><a></a>panel1 <span class="ot">&lt;-</span> <span class="fu">levelplot</span>(lambda.post.lower <span class="sc">~</span> x<span class="sc">+</span>y, elevation.xyz, <span class="at">aspect=</span><span class="st">"iso"</span>,</span>
-<span id="cb46-4"><a></a>                    <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.20</span>,<span class="fl">0.005</span>), <span class="do">## Resolution of color key</span></span>
-<span id="cb46-5"><a></a>                    <span class="at">colorkey=</span><span class="fu">list</span>(<span class="at">space=</span><span class="st">"bottom"</span>),</span>
-<span id="cb46-6"><a></a>                    <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>)</span>
-<span id="cb46-7"><a></a>panel2 <span class="ot">&lt;-</span> <span class="fu">levelplot</span>(lambda.post.mean <span class="sc">~</span>x<span class="sc">+</span>y, elevation.xyz, <span class="at">aspect=</span><span class="st">"iso"</span>,</span>
-<span id="cb46-8"><a></a>                    <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.20</span>,<span class="fl">0.005</span>))</span>
-<span id="cb46-9"><a></a>panel3 <span class="ot">&lt;-</span> <span class="fu">levelplot</span>(lambda.post.upper <span class="sc">~</span>x<span class="sc">+</span>y, elevation.xyz, <span class="at">aspect=</span><span class="st">"iso"</span>,</span>
-<span id="cb46-10"><a></a>                    <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.20</span>,<span class="fl">0.005</span>))</span>
-<span id="cb46-11"><a></a>panels <span class="ot">&lt;-</span> <span class="fu">c</span>(panel1, panel2, panel3)</span>
-<span id="cb46-12"><a></a>panels <span class="ot">&lt;-</span> <span class="fu">update</span>( </span>
-<span id="cb46-13"><a></a>    panels, <span class="at">scales=</span><span class="fu">list</span>(<span class="at">draw=</span><span class="cn">FALSE</span>), <span class="at">layout=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>), </span>
-<span id="cb46-14"><a></a>    <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>, </span>
-<span id="cb46-15"><a></a>    <span class="at">strip=</span><span class="fu">strip.custom</span>(<span class="at">bg=</span><span class="fu">gray</span>(<span class="fl">0.8</span>),</span>
-<span id="cb46-16"><a></a>        <span class="at">factor.levels=</span><span class="fu">c</span>(<span class="st">"Lower CI"</span>,<span class="st">"Posterior mean"</span>,<span class="st">"Upper CI"</span>)))</span>
-<span id="cb46-17"><a></a><span class="fu">plot</span>(panels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">library</span>(latticeExtra)</span>
+<span id="cb42-2"><a></a><span class="fu">trellis.par.set</span>(</span>
+<span id="cb42-3"><a></a>    <span class="at">regions=</span><span class="fu">list</span>(</span>
+<span id="cb42-4"><a></a>        <span class="at">col=</span><span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"lightblue"</span>, <span class="st">"white"</span>, <span class="st">"orange"</span>, <span class="st">"firebrick"</span>))(<span class="dv">50</span>))) <span class="do">## Colors</span></span>
+<span id="cb42-5"><a></a>panel1 <span class="ot">&lt;-</span> <span class="fu">levelplot</span>(lambda.post.lower <span class="sc">~</span> x<span class="sc">+</span>y, elevation.xyz, <span class="at">aspect=</span><span class="st">"iso"</span>,</span>
+<span id="cb42-6"><a></a>                    <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.20</span>,<span class="fl">0.005</span>), <span class="do">## Resolution of color key</span></span>
+<span id="cb42-7"><a></a>                    <span class="at">colorkey=</span><span class="fu">list</span>(<span class="at">space=</span><span class="st">"bottom"</span>),</span>
+<span id="cb42-8"><a></a>                    <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>)</span>
+<span id="cb42-9"><a></a>panel2 <span class="ot">&lt;-</span> <span class="fu">levelplot</span>(lambda.post.mean <span class="sc">~</span>x<span class="sc">+</span>y, elevation.xyz, <span class="at">aspect=</span><span class="st">"iso"</span>,</span>
+<span id="cb42-10"><a></a>                    <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.20</span>,<span class="fl">0.005</span>))</span>
+<span id="cb42-11"><a></a>panel3 <span class="ot">&lt;-</span> <span class="fu">levelplot</span>(lambda.post.upper <span class="sc">~</span>x<span class="sc">+</span>y, elevation.xyz, <span class="at">aspect=</span><span class="st">"iso"</span>,</span>
+<span id="cb42-12"><a></a>                    <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="fl">0.20</span>,<span class="fl">0.005</span>))</span>
+<span id="cb42-13"><a></a>panels <span class="ot">&lt;-</span> <span class="fu">c</span>(panel1, panel2, panel3)</span>
+<span id="cb42-14"><a></a>panels <span class="ot">&lt;-</span> <span class="fu">update</span>( </span>
+<span id="cb42-15"><a></a>    panels, <span class="at">scales=</span><span class="fu">list</span>(<span class="at">draw=</span><span class="cn">FALSE</span>), <span class="at">layout=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>), </span>
+<span id="cb42-16"><a></a>    <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>, </span>
+<span id="cb42-17"><a></a>    <span class="at">strip=</span><span class="fu">strip.custom</span>(<span class="at">bg=</span><span class="fu">gray</span>(<span class="fl">0.8</span>),</span>
+<span id="cb42-18"><a></a>        <span class="at">factor.levels=</span><span class="fu">c</span>(<span class="st">"Lower CI"</span>,<span class="st">"Posterior mean"</span>,<span class="st">"Upper CI"</span>)))</span>
+<span id="cb42-19"><a></a><span class="fu">plot</span>(panels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+
 </div>
 </section>
-<section id="predicted-density-surface-1" class="slide level2">
-<h2>Predicted density surface</h2>
-<p>Posterior mean and 95% CI</p>
-<p>[width=]{figure/lambda-post-1} <br></p>
-</section>
-<section id="realized-density-surface" class="slide level2">
+<section id="predicted-density-surface-output" class="slide level2 output-location-slide"><h2>Predicted density surface</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/lambda-post-1.png" width="4000"></p>
+</figure>
+</div>
+</div>
+</div></section><section id="realized-density-surface" class="slide level2">
 <h2>Realized density surface</h2>
 <div style="font-size: 80%;">
 <p>We need to monitor <span class="math inline">\(z\)</span> and <span class="math inline">\({\bf s}_i\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>jags.post.SCR.elev.sz <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(</span>
-<span id="cb47-2"><a></a>    <span class="at">data=</span>jags.data.SCR.elev, <span class="at">inits=</span>ji.SCR.elev,</span>
-<span id="cb47-3"><a></a>    <span class="at">parameters.to.save=</span><span class="fu">c</span>(jp.SCR.elev,<span class="st">"s"</span>,<span class="st">"z"</span>),</span>
-<span id="cb47-4"><a></a>    <span class="at">model.file=</span><span class="st">"SCR-elev-v2.jag"</span>,</span>
-<span id="cb47-5"><a></a>    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.iter=</span><span class="dv">1000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>jags.post.SCR.elev.sz <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(</span>
+<span id="cb43-2"><a></a>    <span class="at">data=</span>jags.data.SCR.elev, <span class="at">inits=</span>ji.SCR.elev,</span>
+<span id="cb43-3"><a></a>    <span class="at">parameters.to.save=</span><span class="fu">c</span>(jp.SCR.elev,<span class="st">"s"</span>,<span class="st">"z"</span>),</span>
+<span id="cb43-4"><a></a>    <span class="at">model.file=</span><span class="st">"SCR-elev-v2.jag"</span>,</span>
+<span id="cb43-5"><a></a>    <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">n.thin=</span><span class="dv">2</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Extract posterior samples of <span class="math inline">\(z\)</span> and <span class="math inline">\({\bf s}_i\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a>s1.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev.sz[,<span class="fu">paste0</span>(<span class="st">"s["</span>, <span class="dv">1</span><span class="sc">:</span>M, <span class="st">",1]"</span>)])</span>
-<span id="cb48-2"><a></a>s2.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev.sz[,<span class="fu">paste0</span>(<span class="st">"s["</span>, <span class="dv">1</span><span class="sc">:</span>M, <span class="st">",2]"</span>)])</span>
-<span id="cb48-3"><a></a>z.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev.sz[,<span class="fu">paste0</span>(<span class="st">"z["</span>, <span class="dv">1</span><span class="sc">:</span>M, <span class="st">"]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>s1.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev.sz[,<span class="fu">paste0</span>(<span class="st">"s["</span>, <span class="dv">1</span><span class="sc">:</span>M, <span class="st">",1]"</span>)])</span>
+<span id="cb44-2"><a></a>s2.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev.sz[,<span class="fu">paste0</span>(<span class="st">"s["</span>, <span class="dv">1</span><span class="sc">:</span>M, <span class="st">",2]"</span>)])</span>
+<span id="cb44-3"><a></a>z.post <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.SCR.elev.sz[,<span class="fu">paste0</span>(<span class="st">"z["</span>, <span class="dv">1</span><span class="sc">:</span>M, <span class="st">"]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Chop activity centers into discrete intervals, then tabulate.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>lambda.r.post <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(<span class="fu">sqrt</span>(n.pixels), <span class="fu">sqrt</span>(n.pixels), n.samples))</span>
-<span id="cb49-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.samples) {</span>
-<span id="cb49-3"><a></a>    si1.post.d <span class="ot">&lt;-</span> <span class="fu">cut</span>(s1.post[i,z.post[i,]<span class="sc">==</span><span class="dv">1</span>], <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, delta))</span>
-<span id="cb49-4"><a></a>    si2.post.d <span class="ot">&lt;-</span> <span class="fu">cut</span>(s2.post[i,z.post[i,]<span class="sc">==</span><span class="dv">1</span>], <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, delta))</span>
-<span id="cb49-5"><a></a>    pixel.counts <span class="ot">&lt;-</span> <span class="fu">table</span>(si2.post.d, si1.post.d)</span>
-<span id="cb49-6"><a></a>    lambda.r.post[,,i] <span class="ot">&lt;-</span> pixel.counts[<span class="fu">sqrt</span>(n.pixels)<span class="sc">:</span><span class="dv">1</span>,]</span>
-<span id="cb49-7"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>lambda.r.post <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="fu">c</span>(<span class="fu">sqrt</span>(n.pixels), <span class="fu">sqrt</span>(n.pixels), n.samples))</span>
+<span id="cb45-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n.samples) {</span>
+<span id="cb45-3"><a></a>    si1.post.d <span class="ot">&lt;-</span> <span class="fu">cut</span>(s1.post[i,z.post[i,]<span class="sc">==</span><span class="dv">1</span>], <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, delta))</span>
+<span id="cb45-4"><a></a>    si2.post.d <span class="ot">&lt;-</span> <span class="fu">cut</span>(s2.post[i,z.post[i,]<span class="sc">==</span><span class="dv">1</span>], <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, delta))</span>
+<span id="cb45-5"><a></a>    pixel.counts <span class="ot">&lt;-</span> <span class="fu">table</span>(si2.post.d, si1.post.d)</span>
+<span id="cb45-6"><a></a>    lambda.r.post[,,i] <span class="ot">&lt;-</span> pixel.counts[<span class="fu">sqrt</span>(n.pixels)<span class="sc">:</span><span class="dv">1</span>,]</span>
+<span id="cb45-7"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
 <section id="realized-density-surface-1" class="slide level2">
 <h2>Realized density surface</h2>
 <div style="font-size: 80%;">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a>lambda.r.mean <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="fu">apply</span>(lambda.r.post, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), mean))</span>
-<span id="cb50-2"><a></a>lambda.e.mean <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="fu">matrix</span>(lambda.post.mean, <span class="fu">sqrt</span>(n.pixels), <span class="at">byrow=</span><span class="cn">TRUE</span>))</span>
-<span id="cb50-3"><a></a>lambda.re <span class="ot">&lt;-</span> <span class="fu">stack</span>(lambda.r.mean, lambda.e.mean)</span>
-<span id="cb50-4"><a></a><span class="fu">names</span>(lambda.re) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Realized"</span>, <span class="st">"Expected"</span>)</span>
-<span id="cb50-5"><a></a><span class="fu">plot</span>(lambda.re, <span class="at">zlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.18</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>lambda.r.mean <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="fu">apply</span>(lambda.r.post, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), mean))</span>
+<span id="cb46-2"><a></a>lambda.e.mean <span class="ot">&lt;-</span> <span class="fu">raster</span>(<span class="fu">matrix</span>(lambda.post.mean, <span class="fu">sqrt</span>(n.pixels), <span class="at">byrow=</span><span class="cn">TRUE</span>))</span>
+<span id="cb46-3"><a></a>lambda.re <span class="ot">&lt;-</span> <span class="fu">stack</span>(lambda.r.mean, lambda.e.mean)</span>
+<span id="cb46-4"><a></a><span class="fu">names</span>(lambda.re) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Realized"</span>, <span class="st">"Expected"</span>)</span>
+<span id="cb46-5"><a></a><span class="fu">plot</span>(lambda.re, <span class="at">zlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.18</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/lambda-r-1.png" style="width:99.0%"></p>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/lambda-r-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -909,14 +980,13 @@ sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741</code></pre>
 </div>
 </section>
 <section id="posterior-distribution-of-si" class="slide level2">
-<h2>Posterior distribution of * <strong>s</strong><sub>i</sub> *</h2>
+<h2>Posterior distribution of <strong><em>s</em></strong><sub><em>i</em></sub></h2>
 <div style="font-size: 80%;">
-<p>Posterior distribution of <span class="math inline">\({\bf s}_1\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="fu">plot</span>(x, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">pch=</span><span class="dv">3</span>, <span class="at">axes=</span><span class="cn">FALSE</span>, <span class="at">ann=</span><span class="cn">FALSE</span>)</span>
-<span id="cb51-2"><a></a><span class="fu">points</span>(s1.post[,<span class="dv">1</span>], s2.post[,<span class="dv">1</span>], <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.1</span>))</span>
-<span id="cb51-3"><a></a><span class="fu">contour</span>(MASS<span class="sc">::</span><span class="fu">kde2d</span>(s1.post[,<span class="dv">1</span>], s2.post[,<span class="dv">1</span>]), <span class="at">add=</span><span class="cn">TRUE</span>)</span>
-<span id="cb51-4"><a></a><span class="fu">points</span>(x[y.tilde[<span class="dv">1</span>,]<span class="sc">&gt;</span><span class="dv">0</span>,,<span class="at">drop=</span><span class="cn">FALSE</span>], <span class="at">pch=</span><span class="dv">3</span>, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">cex=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a><span class="fu">plot</span>(x, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">pch=</span><span class="dv">3</span>, <span class="at">axes=</span><span class="cn">FALSE</span>, <span class="at">ann=</span><span class="cn">FALSE</span>)</span>
+<span id="cb47-2"><a></a><span class="fu">points</span>(s1.post[,<span class="dv">1</span>], s2.post[,<span class="dv">1</span>], <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.1</span>))</span>
+<span id="cb47-3"><a></a><span class="fu">contour</span>(MASS<span class="sc">::</span><span class="fu">kde2d</span>(s1.post[,<span class="dv">1</span>], s2.post[,<span class="dv">1</span>]), <span class="at">add=</span><span class="cn">TRUE</span>)</span>
+<span id="cb47-4"><a></a><span class="fu">points</span>(x[y.tilde[<span class="dv">1</span>,]<span class="sc">&gt;</span><span class="dv">0</span>,,<span class="at">drop=</span><span class="cn">FALSE</span>], <span class="at">pch=</span><span class="dv">3</span>, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">cex=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -928,26 +998,41 @@ sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741</code></pre>
 </div>
 </section>
 <section id="posterior-distribution-of-si-1" class="slide level2">
-<h2>Posterior distribution of * <strong>s</strong><sub>i</sub> *</h2>
+<h2>Posterior distribution of <strong><em>s</em></strong><sub><em>i</em></sub></h2>
 <div style="font-size: 80%;">
-<p>Posterior distribution of <span class="math inline">\({\bf s}_i\)</span></p>
-<p>in {1,…,30} {% &lt;&gt;{[width=0.85]{figure/si-post-i-}<br>} }</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/si-post-i-.gif" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 </section>
 <section id="posterior-distribution-of-si-2" class="slide level2">
-<h2>Posterior distribution of * <strong>s</strong><sub>i</sub> *</h2>
-<p>Posterior distribution of <span class="math inline">\({\bf s}_i\)</span> for an indiviudal captured.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a><span class="fu">image</span>(MASS<span class="sc">::</span><span class="fu">kde2d</span>(s1.post[z.post[,<span class="dv">150</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="dv">150</span>],</span>
-<span id="cb52-2"><a></a>                  s2.post[z.post[,<span class="dv">150</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="dv">150</span>]))</span>
-<span id="cb52-3"><a></a><span class="fu">points</span>(x, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">pch=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a><span class="do">##points(s1.post[z.post[,150]==1,150],</span></span>
-<span id="cb53-2"><a></a><span class="do">##       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<h2>Posterior distribution of <em><strong>s</strong><sub>i</sub></em></h2>
+<div style="font-size: 80%;">
+<p>Posterior distribution of <span class="math inline">\({\bf s}_i\)</span> for an indiviudal <em>not</em> captured.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a><span class="fu">image</span>(MASS<span class="sc">::</span><span class="fu">kde2d</span>(s1.post[z.post[,<span class="dv">150</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="dv">150</span>], s2.post[z.post[,<span class="dv">150</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="dv">150</span>]))</span>
+<span id="cb48-2"><a></a><span class="fu">points</span>(x, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">pch=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/si-post-y0-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
+</figure>
 </div>
-<p>[width=0.5]{figure/si-post-y0-1} <br></p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a><span class="do">##points(s1.post[z.post[,150]==1,150],</span></span>
+<span id="cb49-2"><a></a><span class="do">##       s2.post[z.post[,150]==1,150], pch=16, col=rgb(0,0,1,0.8))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </section>
 <section id="summary" class="slide level2">
 <h2>Summary</h2>
+<div style="font-size: 80%;">
 <p>Just as we can estimate both the realized and expected value of <span class="math inline">\(N\)</span>, we can also estimate the realized and expected value of abundance (or density) at each location in the region of interest.</p>
 <p><br></p>
 <div class="fragment">
@@ -955,13 +1040,14 @@ sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741</code></pre>
 </div>
 <p><br></p>
 <div class="fragment">
-<p>When we get back to SCR later, we’ll talk about modeling both spatial and temporal variation in density.</p>
+<p>When we get back to SCR later, we’ll talk about modeling both spatial and temporal variation in density, as it arises from variation in demography.</p>
+</div>
 </div>
 </section></section>
 <section>
 
-<section id="assignment-1" class="slide level2">
-<h2>Assignment</h2>
+<section id="section-1" class="slide level2 smaller">
+<h2></h2>
 <!-- % Create a self-contained R script or Rmarkdown file to do the -->
 <!--   % following:  -->
 <!--   %  -->
@@ -974,8 +1060,11 @@ sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741</code></pre>
 <!--   %  -->
 <!--   %  -->
 <!--   % Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. -->
+<p><br></p>
+<div class="r-fit-text">
 <p>No assignment this week.</p>
 <p>Work on your paper.</p>
+</div>
 
 
 </section></section>
