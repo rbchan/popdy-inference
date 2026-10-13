@@ -675,17 +675,21 @@ Create the lookup table
 #| label: lookup
 #| fig-width: 7
 #| fig-height: 7
+#| fig-align: 'center'
 #| output-location: 'column'
 #par(mai=c(0.1,0.1,0.3,0.1))  
 G <- nrow(elevation.xyz)    ## nPixels  
-lookup <- matrix(1:G, nrow=nrow(elevation), ncol=ncol(elevation),
-                 byrow=TRUE) ## To be consistent with raster package
-delta <- res(elevation)[1]  ## resolution
-image(seq(delta/2, 1-delta/2, length=100),
-      seq(delta/2, 1-delta/2, length=100), lookup, asp=1, 
-      xlab="x", ylab="y", frame=FALSE, col=0, main="Pixel ID")
-text(elevation.xyz$x[seq(5, G, by=10)],
-     elevation.xyz$y[seq(5, G, by=10)], seq(5, G, by=10), cex=0.4)
+lookup <- matrix(1:G, nrow=nrow(elevation),
+                 ncol=ncol(elevation),
+                 byrow=TRUE) ## For raster package
+delta <- res(elevation)[1]   ## Resolution
+image(x=seq(delta/2, 1-delta/2, length=100),
+      y=seq(delta/2, 1-delta/2, length=100),
+      z=lookup, asp=1,  xlab="x", ylab="y",
+      frame=FALSE, col=0, main="Pixel ID")
+text(x=elevation.xyz$x[seq(5, G, by=10)],
+     y=elevation.xyz$y[seq(5, G, by=10)],
+     labels=seq(5, G, by=10), cex=0.4)
 ```
 :::
 
@@ -803,7 +807,7 @@ lambda.post.upper <- apply(lambda.post, 1, quantile, prob=0.975)
 
 ## Predicted density surface
 
-::: {style='font-size: 70%;'}
+::: {style='font-size: 75%;'}
 Make multi-panel figure showing posterior mean density surface, along with 95% CI.
 ```{r}
 #| label: lambda-post
@@ -929,7 +933,7 @@ points(x[y.tilde[1,]>0,,drop=FALSE], pch=3, col="red", lwd=2, cex=2)
 #| echo: false
 #| fig-width: 7
 #| fig-height: 7
-#| out-width: "50%"
+#| out-width: "60%"
 #| fig-align: 'center'
 #| fig-show: 'animate'
 for(i in 1:n) {
@@ -1010,10 +1014,15 @@ When we get back to SCR later, we'll talk about modeling both spatial and tempor
 <!--   %  -->
 <!--   % Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. -->
 
+
+<center>
+::: {.r-fit-text}
+
+No assignment this week 
+
 <br>
 
-::: {.r-fit-text}
-No assignment this week. 
+Work on your paper
 
-Work on your paper.
 :::
+</center>

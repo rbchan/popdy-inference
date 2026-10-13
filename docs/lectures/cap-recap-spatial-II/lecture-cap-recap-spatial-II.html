@@ -771,22 +771,25 @@ If we were using version 1, we would define <span class="math inline">\(\psi=E(N
 <h2>SCR with IPP</h2>
 <div style="font-size: 70%;">
 <p>Create the lookup table</p>
-<div class="cell columns column-output-location">
+<div class="cell columns column-output-location" data-layout-align="center">
 <div class="column">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>G <span class="ot">&lt;-</span> <span class="fu">nrow</span>(elevation.xyz)    <span class="do">## nPixels  </span></span>
-<span id="cb32-2"><a></a>lookup <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span>G, <span class="at">nrow=</span><span class="fu">nrow</span>(elevation), <span class="at">ncol=</span><span class="fu">ncol</span>(elevation),</span>
-<span id="cb32-3"><a></a>                 <span class="at">byrow=</span><span class="cn">TRUE</span>) <span class="do">## To be consistent with raster package</span></span>
-<span id="cb32-4"><a></a>delta <span class="ot">&lt;-</span> <span class="fu">res</span>(elevation)[<span class="dv">1</span>]  <span class="do">## resolution</span></span>
-<span id="cb32-5"><a></a><span class="fu">image</span>(<span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>),</span>
-<span id="cb32-6"><a></a>      <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>), lookup, <span class="at">asp=</span><span class="dv">1</span>, </span>
-<span id="cb32-7"><a></a>      <span class="at">xlab=</span><span class="st">"x"</span>, <span class="at">ylab=</span><span class="st">"y"</span>, <span class="at">frame=</span><span class="cn">FALSE</span>, <span class="at">col=</span><span class="dv">0</span>, <span class="at">main=</span><span class="st">"Pixel ID"</span>)</span>
-<span id="cb32-8"><a></a><span class="fu">text</span>(elevation.xyz<span class="sc">$</span>x[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)],</span>
-<span id="cb32-9"><a></a>     elevation.xyz<span class="sc">$</span>y[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)], <span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>), <span class="at">cex=</span><span class="fl">0.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb32-2"><a></a>lookup <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span>G, <span class="at">nrow=</span><span class="fu">nrow</span>(elevation),</span>
+<span id="cb32-3"><a></a>                 <span class="at">ncol=</span><span class="fu">ncol</span>(elevation),</span>
+<span id="cb32-4"><a></a>                 <span class="at">byrow=</span><span class="cn">TRUE</span>) <span class="do">## For raster package</span></span>
+<span id="cb32-5"><a></a>delta <span class="ot">&lt;-</span> <span class="fu">res</span>(elevation)[<span class="dv">1</span>]   <span class="do">## Resolution</span></span>
+<span id="cb32-6"><a></a><span class="fu">image</span>(<span class="at">x=</span><span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>),</span>
+<span id="cb32-7"><a></a>      <span class="at">y=</span><span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, <span class="at">length=</span><span class="dv">100</span>),</span>
+<span id="cb32-8"><a></a>      <span class="at">z=</span>lookup, <span class="at">asp=</span><span class="dv">1</span>,  <span class="at">xlab=</span><span class="st">"x"</span>, <span class="at">ylab=</span><span class="st">"y"</span>,</span>
+<span id="cb32-9"><a></a>      <span class="at">frame=</span><span class="cn">FALSE</span>, <span class="at">col=</span><span class="dv">0</span>, <span class="at">main=</span><span class="st">"Pixel ID"</span>)</span>
+<span id="cb32-10"><a></a><span class="fu">text</span>(<span class="at">x=</span>elevation.xyz<span class="sc">$</span>x[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)],</span>
+<span id="cb32-11"><a></a>     <span class="at">y=</span>elevation.xyz<span class="sc">$</span>y[<span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>)],</span>
+<span id="cb32-12"><a></a>     <span class="at">labels=</span><span class="fu">seq</span>(<span class="dv">5</span>, G, <span class="at">by=</span><span class="dv">10</span>), <span class="at">cex=</span><span class="fl">0.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/lookup-1.png" width="672"></p>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/lookup-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
 </figure>
 </div>
 </div>
@@ -839,23 +842,25 @@ Sample size per chain = 1000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-            Mean        SD  Naive SE Time-series SE
-EN     88.850648 10.474479 1.912e-01      0.5282427
-N      88.959000  8.631733 1.576e-01      0.4805394
-beta0 -14.443557  2.107711 3.848e-02      0.1669706
-beta1   0.009138  0.001887 3.444e-05      0.0001482
-g0      0.236503  0.039253 7.167e-04      0.0026025
-sigma   0.050003  0.003434 6.270e-05      0.0002085
+               Mean        SD  Naive SE Time-series SE
+EN        8.829e+01  9.977617 1.822e-01      0.4613329
+N         8.856e+01  8.166137 1.491e-01      0.4016001
+beta0    -1.415e+01  2.073910 3.786e-02      0.1500099
+beta1     8.864e-03  0.001853 3.382e-05      0.0001327
+deviance  3.177e+03 44.911679 8.200e-01      3.2062181
+g0        2.346e-01  0.039152 7.148e-04      0.0022487
+sigma     5.026e-02  0.003429 6.260e-05      0.0002202
 
 2. Quantiles for each variable:
 
-            2.5%        25%        50%       75%     97.5%
-EN     69.541232  81.586838  88.156952  95.47809 110.20447
-N      74.975000  83.000000  88.000000  94.00000 109.00000
-beta0 -18.451935 -15.929415 -14.411138 -12.97787 -10.27970
-beta1   0.005432   0.007817   0.009106   0.01045   0.01273
-g0      0.165442   0.209116   0.234794   0.26129   0.32409
-sigma   0.043949   0.047650   0.049761   0.05217   0.05745</code></pre>
+               2.5%        25%        50%        75%      97.5%
+EN        6.974e+01  8.142e+01  8.800e+01   94.73555  109.06133
+N         7.500e+01  8.300e+01  8.800e+01   94.00000  107.00000
+beta0    -1.854e+01 -1.546e+01 -1.407e+01  -12.74256  -10.33929
+beta1     5.423e-03  7.608e-03  8.796e-03    0.01006    0.01278
+deviance  3.086e+03  3.148e+03  3.180e+03 3209.07695 3258.69782
+g0        1.672e-01  2.057e-01  2.310e-01    0.25895    0.32332
+sigma     4.400e-02  4.790e-02  5.005e-02    0.05247    0.05741</code></pre>
 </div>
 </div>
 </section>
@@ -897,7 +902,7 @@ sigma   0.043949   0.047650   0.049761   0.05217   0.05745</code></pre>
 </section>
 <section id="predicted-density-surface" class="slide level2">
 <h2>Predicted density surface</h2>
-<div style="font-size: 70%;">
+<div style="font-size: 75%;">
 <p>Make multi-panel figure showing posterior mean density surface, along with 95% CI.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">library</span>(latticeExtra)</span>
@@ -1004,7 +1009,7 @@ sigma   0.043949   0.047650   0.049761   0.05217   0.05745</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/si-post-i-.gif" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="lecture-cap-recap-spatial-II_files/figure-revealjs/si-post-i-.gif" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
 </div>
@@ -1060,11 +1065,13 @@ sigma   0.043949   0.047650   0.049761   0.05217   0.05745</code></pre>
 <!--   %  -->
 <!--   %  -->
 <!--   % Upload your {\tt .R} or {\tt .Rmd} file to ELC before Tuesday. -->
-<p><br></p>
+<center>
 <div class="r-fit-text">
-<p>No assignment this week.</p>
-<p>Work on your paper.</p>
+<p>No assignment this week</p>
+<p><br></p>
+<p>Work on your paper</p>
 </div>
+</center>
 
 
 </section></section>
