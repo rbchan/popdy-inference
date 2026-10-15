@@ -1656,7 +1656,7 @@
     "href": "lectures/dynamic-occupancy/lecture-dynamic-occupancy.html#dynamic-occupancy-models-with-covariates",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Dynamic occupancy models with covariates",
-    "text": "Dynamic occupancy models with covariates\n\nThree types of covariates:\n\nSite covariates\n\nThese vary among sites, but not among occasions\nCan be used to model \\(\\psi_1\\), \\(\\varepsilon\\), \\(\\gamma\\), and \\(p\\)\nCalled siteCovs in ‘unmarked’\n\nPrimary sampling period covariates\n\nThese vary among sites and among, but not within, primary periods\nCan be used to model \\(\\varepsilon\\), \\(\\gamma\\), and \\(p\\)\nCalled yearlySiteCovs in ‘unmarked’\n\nSecondary sampling period covariates\n\nThese vary among sites and among and within primary periods\nCan be used to model \\(p\\)\nCalled obsCovs in ‘unmarked’"
+    "text": "Dynamic occupancy models with covariates\n\nThree types of covariates:\n\nSite covariates\n\nThese vary among sites, but not among occasions\nCan be used to model \\(\\psi_1\\), \\(\\varepsilon\\), \\(\\gamma\\), and \\(p\\)\nCalled siteCovs in ‘unmarked’\n\n\n\n\nPrimary sampling period covariates\n\nThese vary among sites and among, but not within, primary periods\nCan be used to model \\(\\varepsilon\\), \\(\\gamma\\), and \\(p\\)\nCalled yearlySiteCovs in ‘unmarked’\n\n\n\n\n\nSecondary sampling period covariates\n\nThese vary among sites and among and within primary periods\nCan be used to model \\(p\\)\nCalled obsCovs in ‘unmarked’"
   },
   {
     "objectID": "lectures/dynamic-occupancy/lecture-dynamic-occupancy.html#simulation-with-covariates",
@@ -1761,7 +1761,7 @@
     "href": "lectures/dynamic-occupancy/lecture-dynamic-occupancy.html#temperature-and-colonization-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Temperature and colonization",
-    "text": "Temperature and colonization\n\n\nmatplot(temperature.seq, t(gamma.post[seq(1,n.samples,10),]), type=\"l\",\n        xlab=\"Temperature (standardized)\", ylab=\"Colonization prob\", col=gray(0.9))\nlines(temperature.seq, gamma.post.mean, lwd=3, col=\"blue\")\nlines(temperature.seq, gamma.post.lower, col=\"blue\")\nlines(temperature.seq, gamma.post.upper, col=\"blue\")"
+    "text": "Temperature and colonization\n\n\n\nCode\nmatplot(temperature.seq, t(gamma.post[seq(1,n.samples,10),]), type=\"l\",\n        xlab=\"Temperature (standardized)\", ylab=\"Colonization prob\", col=gray(0.9))\nlines(temperature.seq, gamma.post.mean, lwd=3, col=\"blue\")\nlines(temperature.seq, gamma.post.lower, col=\"blue\")\nlines(temperature.seq, gamma.post.upper, col=\"blue\")"
   },
   {
     "objectID": "lectures/dynamic-occupancy/lecture-dynamic-occupancy.html#concluding-thoughts",

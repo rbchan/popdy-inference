@@ -262,7 +262,7 @@
 \]</span></p>
 </div>
 </div>
-<div style="font-size: 60%;">
+<div style="font-size: 55%;">
 <div class="fragment">
 <p><span class="math inline">\(\psi_{i,k}\)</span> – probability species occurs at site <span class="math inline">\(i\)</span> during primary period <span class="math inline">\(k\)</span> <br> <span class="math inline">\(z_{i,k}\)</span> – binary presence/absence variable <br> <span class="math inline">\(\varepsilon\)</span> – local extinction probability <br> <span class="math inline">\(\gamma\)</span> – local colonization probability <br> <span class="math inline">\(p\)</span> – probability of detecting the species if it’s present <br> <span class="math inline">\(y_{i,j,k}\)</span> – detection data at site <span class="math inline">\(i\)</span> on secondary period <span class="math inline">\(j\)</span>, primary period <span class="math inline">\(k\)</span> <br></p>
 </div>
@@ -278,7 +278,7 @@
 </ul>
 <div class="fragment">
 <center>
-<img data-src="figure/royle_dorazio_9-1.png" style="width:30.0%"> <br> From Royle and Dorazio (2008)
+<img data-src="figure/royle_dorazio_9-1.png" style="width:20.0%"> <br> From Royle and Dorazio (2008)
 </center>
 </div>
 <div class="fragment">
@@ -484,7 +484,7 @@ Number of sites: 100</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/re-1.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
+<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/re-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
 </div>
@@ -590,10 +590,10 @@ p       0.1617 0.1877 0.2030 0.2196 0.2515</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">plot</span>(jags.post.samples[,jags.pars[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture-dynamic-occupancy_files/figure-revealjs/bugs-plot1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+<img data-src="lecture-dynamic-occupancy_files/figure-revealjs/bugs-plot1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="dynamic-occupancy-models-with-covariates" class="slide level2">
 <h2><span style="font-size: 80%;">Dynamic occupancy models with covariates</span></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 65%;">
 <p>Three types of covariates:</p>
 <ol type="1">
 <li>Site covariates
@@ -602,12 +602,19 @@ p       0.1617 0.1877 0.2030 0.2196 0.2515</code></pre>
 <li>Can be used to model <span class="math inline">\(\psi_1\)</span>, <span class="math inline">\(\varepsilon\)</span>, <span class="math inline">\(\gamma\)</span>, and <span class="math inline">\(p\)</span></li>
 <li>Called <code>siteCovs</code> in ‘unmarked’</li>
 </ul></li>
+</ol>
+<div class="fragment">
+<ol start="2" type="1">
 <li>Primary sampling period covariates
 <ul>
 <li>These vary among sites and among, but not within, primary periods</li>
 <li>Can be used to model <span class="math inline">\(\varepsilon\)</span>, <span class="math inline">\(\gamma\)</span>, and <span class="math inline">\(p\)</span></li>
 <li>Called <code>yearlySiteCovs</code> in ‘unmarked’</li>
 </ul></li>
+</ol>
+</div>
+<div class="fragment">
+<ol start="3" type="1">
 <li>Secondary sampling period covariates
 <ul>
 <li>These vary among sites and among and within primary periods</li>
@@ -615,6 +622,7 @@ p       0.1617 0.1877 0.2030 0.2196 0.2515</code></pre>
 <li>Called <code>obsCovs</code> in ‘unmarked’</li>
 </ul></li>
 </ol>
+</div>
 </div>
 </section>
 <section id="simulation-with-covariates" class="slide level2">
@@ -748,7 +756,7 @@ Number of sites: 100</code></pre>
 </section>
 <section id="prediction-in-unmarked-1" class="slide level2">
 <h2>Prediction in unmarked</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> temp, gamma.pred, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Colonization probability"</span>,</span>
 <span id="cb50-2"><a></a>     <span class="at">xlab=</span><span class="st">"Standardized temperature"</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">2</span>) </span>
@@ -757,7 +765,7 @@ Number of sites: 100</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/pred-gamma1-1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
+<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/pred-gamma1-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
 </div>
@@ -893,7 +901,7 @@ p            0.1780  0.2037  0.2195  0.2355  0.2690</code></pre>
 </section>
 <section id="sites-occupied-2" class="slide level2">
 <h2>Sites occupied</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>nPrimary, N.post.mean, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>), <span class="at">pch=</span><span class="dv">16</span>,</span>
 <span id="cb61-2"><a></a>     <span class="at">xlab=</span><span class="st">"Time"</span>, <span class="at">ylab=</span><span class="st">"Sites occupied"</span>)</span>
@@ -903,7 +911,7 @@ p            0.1780  0.2037  0.2195  0.2355  0.2690</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/N-post-covs-plot-1.png" class="quarto-figure quarto-figure-center" style="width:85.0%"></p>
+<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/N-post-covs-plot-1.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
 </figure>
 </div>
 </div>
@@ -935,15 +943,18 @@ p            0.1780  0.2037  0.2195  0.2355  0.2690</code></pre>
 <h2>Temperature and colonization</h2>
 <div style="font-size: 80%;">
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a></a><span class="fu">matplot</span>(temperature.seq, <span class="fu">t</span>(gamma.post[<span class="fu">seq</span>(<span class="dv">1</span>,n.samples,<span class="dv">10</span>),]), <span class="at">type=</span><span class="st">"l"</span>,</span>
 <span id="cb63-2"><a></a>        <span class="at">xlab=</span><span class="st">"Temperature (standardized)"</span>, <span class="at">ylab=</span><span class="st">"Colonization prob"</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.9</span>))</span>
 <span id="cb63-3"><a></a><span class="fu">lines</span>(temperature.seq, gamma.post.mean, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span>
 <span id="cb63-4"><a></a><span class="fu">lines</span>(temperature.seq, gamma.post.lower, <span class="at">col=</span><span class="st">"blue"</span>)</span>
 <span id="cb63-5"><a></a><span class="fu">lines</span>(temperature.seq, gamma.post.upper, <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/gamma-post-covs-plot-1.png" class="quarto-figure quarto-figure-center" style="width:85.0%"></p>
+<p><img data-src="lecture-dynamic-occupancy_files/figure-revealjs/gamma-post-covs-plot-1.png" class="quarto-figure quarto-figure-center" style="width:65.0%"></p>
 </figure>
 </div>
 </div>

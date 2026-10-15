@@ -112,7 +112,7 @@ $$
 :::
 :::
   
-::: {style='font-size: 60%;'}
+::: {style='font-size: 55%;'}
 ::: {.fragment}
   $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ <br>
   $z_{i,k}$ -- binary presence/absence variable <br>
@@ -136,7 +136,7 @@ After the initial time period, the probability that a site is occupied depends o
 
 ::: {.fragment}
 <center>
-![](figure/royle_dorazio_9-1){width="30%"} <br>
+![](figure/royle_dorazio_9-1){width="20%"} <br>
 From Royle and Dorazio (2008)
 </center>
 :::
@@ -289,7 +289,7 @@ p
 #| label: re
 #| fig-height: 5
 #| fig-width: 7
-#| out-width: '65%'
+#| out-width: '60%'
 #| fig-align: 'center'
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 re <- ranef(fm)
@@ -388,8 +388,8 @@ summary(jags.post.samples[,jags.pars[1:4]])
 ```{r}
 #| label: bugs-plot1
 #| fig-width: 7
-#| fig-height: 6
-#| out-width: '70%'
+#| fig-height: 5
+#| out-width: '80%'
 #| fig-align: 'center'
 plot(jags.post.samples[,jags.pars[1:4]])
 ```
@@ -398,21 +398,29 @@ plot(jags.post.samples[,jags.pars[1:4]])
 
 ## [Dynamic occupancy models with covariates]{style="font-size: 80%;"}
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 65%;'}
+
 Three types of covariates:
 
 1. Site covariates
     - These vary among sites, but not among occasions
     - Can be used to model $\psi_1$, $\varepsilon$, $\gamma$, and $p$
     - Called `siteCovs` in 'unmarked'
+
+::: {.fragment}
 2. Primary sampling period covariates
     - These vary among sites and among, but not within, primary periods 
     - Can be used to model $\varepsilon$, $\gamma$, and $p$
     - Called `yearlySiteCovs` in 'unmarked'
+:::
+
+::: {.fragment}
 3. Secondary sampling period covariates
     - These vary among sites and among and within primary periods 
     - Can be used to model $p$
     - Called `obsCovs` in 'unmarked'
+:::
+
 :::
       
 
@@ -517,12 +525,12 @@ gamma.pred <- predict(fm2, newdata=pred.data,
 
 ## Prediction in unmarked
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 ```{r}
 #| label: pred-gamma1
-#| fig-height: 5.5
-#| fig-width: 7
-#| out-width: '70%'
+#| fig-height: 7
+#| fig-width: 9
+#| out-width: '60%'
 #| fig-align: 'center'
 plot(Predicted ~ temp, gamma.pred, type="l", ylab="Colonization probability",
      xlab="Standardized temperature", ylim=0:1, lwd=2) 
@@ -641,12 +649,12 @@ N.post.upper <- apply(N.post, 2, quantile, prob=0.975)
 
 ## Sites occupied
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 ```{r, echo=-1}
 #| label: N-post-covs-plot
-#| fig-height: 5
-#| fig-width: 7
-#| out-width: "85%"
+#| fig-height: 7
+#| fig-width: 9
+#| out-width: "65%"
 #| fig-align: "center"
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 plot(1:nPrimary, N.post.mean, type="b", ylim=c(0, 70), pch=16,
@@ -692,8 +700,9 @@ gamma.post.upper <- apply(gamma.post, 2, quantile, prob=0.975)
 #| label: gamma-post-covs-plot
 #| fig-height: 5
 #| fig-width: 7
-#| out-width: "85%"
+#| out-width: "65%"
 #| fig-align: "center"
+#| code-fold: true
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 matplot(temperature.seq, t(gamma.post[seq(1,n.samples,10),]), type="l",
         xlab="Temperature (standardized)", ylab="Colonization prob", col=gray(0.9))
