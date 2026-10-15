@@ -1,0 +1,27 @@
+model {
+
+beta0.psi ~ dnorm(0, 0.5)   ## Intercept of initial occupancy
+beta1.psi ~ dnorm(0, 0.5)   ## Effect of elevation
+epsilon ~ dunif(0, 1)       ## Local extinction
+beta0.gamma ~ dnorm(0, 0.5) ## Intercept of colonization
+beta1.gamma ~ dnorm(0, 0.5) ## Effect of temperature
+p ~ dunif(0, 1)        ## detection prob
+
+for(i in 1:nSites) {
+  logit(psi[i,1]) <- beta0.psi + beta1.psi*elevation[i]
+  z[i,1] ~ dbern(psi[i,1])
+  for(k in 2:K) {
+    logit(gamma[i,k-1]) <- beta0.gamma + beta1.gamma*temp[i,k-1]
+    psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma[i,k-1]
+    z[i,k] ~ dbern(psi[i,k])
+  }
+  for(k in 1:K) {
+    for(j in 1:J) {
+      y[i,j,k] ~ dbern(z[i,k]*p)
+  } } }
+
+for(k in 1:K) {
+  N[k] <- sum(z[,k]) ## Sites occupied
+}
+
+}

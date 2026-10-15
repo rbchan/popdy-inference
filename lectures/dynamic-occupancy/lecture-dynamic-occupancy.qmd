@@ -1,0 +1,734 @@
+---
+## title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    pagetitle: 'Dynamic occupancy models'
+    slide-number: true
+    echo: true
+lang: en
+---
+
+
+## {content-align="center" style="font-size: 150%;"}
+
+<br>
+
+<center>
+  
+**Dynamic occupancy models**
+
+<br>
+
+::: {style='font-size: 60%;'}
+  WILD(FISH) 8390 <br>
+  Inference for Models of Fish and Wildlife Population Dynamics <br>
+:::
+  
+</center>
+
+
+
+# Overview {visibility="hidden"}
+  
+
+## Overview
+
+::: {style='font-size: 80%;'}
+When we covered static occupancy models, we focused exclusively on spatial variation.
+
+<br>
+  
+::: {.fragment}
+Historically, the study of population dynamics was entirely focused on temporal variation.
+:::
+  
+<br>
+
+::: {.fragment}
+Metapopulation models played a big role in emphasizing both spatial and temporal dynamics.
+:::
+  
+<br>
+
+::: {.fragment}
+Dynamic occupancy models allow for inference on spatio-temporal occupancy resulting from local colonization and extinction processes.
+:::
+:::
+
+
+## [Static (single-season) occupancy model]{style="font-size: 90%;"}
+
+<!-- [Refresher]{style="color: blue;"} -->
+  
+  
+::: {style='font-size: 80%;'}
+The model for the state process is the same as logistic regression:
+$$
+    \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
+    z_i \sim \mathrm{Bern}(\psi_i)
+$$
+  
+Model for the observation process conditional on the state process:
+
+$$
+    \mathrm{logit}(p_{ij}) = \alpha_0 + \alpha_1 x_{ij1} + \alpha_2 x_{ij2} + \cdots \\
+    y_{ij} \sim \mathrm{Bern}(z_i\times p_{ij})
+$$
+  
+Definitions <br>
+:::
+::: {style='font-size: 60%;'}
+  $\psi_i$ -- probability that the species occurs at site $i$ <br>
+  $z_i$ -- binary presence/absence variable at site $i$ <br>
+  $p_{ij}$ -- probability of detecting the species at site $i$ on occasion $j$ <br>
+  $y_{ij}$ -- binary detection/non-detection data
+:::
+
+
+
+
+## Dynamic occupancy model
+  
+::: {style='font-size: 70%;'}
+Initial occupancy state (same as static model), for $k=1$.
+$$
+    z_{i,1} \sim \mathrm{Bern}(\psi_{i,1})
+$$
+  
+::: {.fragment}
+Occupancy state dynamics, for $k=2, \dots, K$.
+$$
+    \psi_{i,k} = z_{i,k-1}(1-\varepsilon) +  (1-z_{i,k-1})\gamma \\
+    z_{i,k} \sim \mathrm{Bern}(\psi_{i,k})
+$$
+:::
+  
+::: {.fragment}
+Observation model
+$$
+    y_{i,j,k} \sim \mathrm{Bern}(z_{i,k}\times p)
+$$
+:::
+:::
+  
+::: {style='font-size: 60%;'}
+::: {.fragment}
+  $\psi_{i,k}$ -- probability species occurs at site $i$ during primary period $k$ <br>
+  $z_{i,k}$ -- binary presence/absence variable <br>
+  $\varepsilon$ -- local extinction probability <br>
+  $\gamma$ -- local colonization probability <br>
+  $p$ -- probability of detecting the species if it's present <br>
+  $y_{i,j,k}$ -- detection data at site $i$ on secondary period $j$, primary period $k$ <br>
+:::
+:::
+   
+
+
+
+## Colonization and extinction dynamics
+  
+::: {style='font-size: 70%;'}
+After the initial time period, the probability that a site is occupied depends on the previous state and the two probabilities:
+
+- Local colonization: $\gamma=\Pr(z_{i,k}=1|z_{i,k-1}=0)$
+- Local extinction: $\varepsilon=\Pr(z_{i,k}=0|z_{i,k-1}=1)$
+
+::: {.fragment}
+<center>
+![](figure/royle_dorazio_9-1){width="30%"} <br>
+From Royle and Dorazio (2008)
+</center>
+:::
+
+  
+::: {.fragment}
+These probabilities can depend on spatio-temporal covariates and random effects. In spatially-explicit models, they depend on the states and distances to neighboring sites.
+:::
+:::
+
+
+## Simulation without covariates
+  
+::: {style='font-size: 75%;'}
+Initial occupancy
+
+```{r, echo=-1}
+#| label: sim-init
+set.seed(54598)
+nSites <- 100
+nPrimary <- 10
+z <- psi <- matrix(NA, nSites, nPrimary)
+psi[,1] <- 0.5  ## Initial occupancy prob
+z[,1] <- rbinom(n=nSites, size=1, prob=psi[,1])
+```
+Occupancy dynamics
+```{r}
+#| label: nsim-dy
+epsilon <- 0.3 ## Local extinction prob
+gamma <- 0.2   ## Local colonization prob
+for(k in 2:nPrimary) {
+    psi[,k] <- z[,k-1]*(1-epsilon) + (1-z[,k-1])*gamma
+    z[,k] <- rbinom(n=nSites, size=1, prob=psi[,k])    }
+```
+
+Data
+```{r}
+#| label: sim-cov3
+nSecondary <- 3    
+p <- 0.2
+y <- array(NA, c(nSites, nSecondary, nPrimary))
+for(i in 1:nSites) {
+    for(k in 1:nPrimary) {
+        y[i,,k] <- rbinom(nSecondary, size=1, prob=z[i,k]*p)
+    } }
+```
+:::
+
+
+
+## Simulated data
+
+::: {.columns}
+::: {.column width='50%'}
+      
+**Observations**
+
+```{r}
+#| label: sim-nocov-dat
+y[1:15,,1]
+```
+:::
+::: {.column width='50%'}
+    
+**Summary stats**
+    
+Detections at each site <br>
+```{r}
+#| label: sim-nocov-ss1
+siteDets <- rowSums(y) # Dets at each site
+table(siteDets)        # Frequency
+```
+
+Detections each year <br>
+```{r}
+#| label: sim-nocov-ss2
+yearDets <- apply(y, 3, sum)
+yearDets
+```
+```{r}
+#| label: un
+#| include: false
+library(unmarked)
+```
+:::
+:::
+
+
+
+## Prepare data in 'unmarked'
+  
+Notice the new argument `numPrimary`:
+
+```{r}
+#| label: un-umf
+## Format as nSites by (nSec*nPrimary) matrix
+y.wide <- matrix(y, nrow=nrow(y)) 
+umf <- unmarkedMultFrame(y=y.wide, numPrimary=nPrimary)
+```
+
+
+```{r}
+#| label: wfac
+#| size: 'scriptsize'
+summary(umf)
+```
+
+
+## Fit the model
+
+Notice the 4 distinct formulas
+```{r}
+#| label: un-fit
+fm <- colext(~1,~1,~1,~1, umf)    
+fm
+```
+
+
+## Compare estimate to actual
+
+::: {.columns}
+::: {.column width='50%'}
+
+Estimates
+```{r}
+#| label: un-compare
+coef(backTransform(fm, type="psi"))
+coef(backTransform(fm, type="col"))
+coef(backTransform(fm, type="ext"))
+coef(backTransform(fm, type="det"))
+```
+:::
+::: {.column width='50%'}
+Actual
+```{r}
+#| label: un-actual
+psi[1,1]
+gamma
+epsilon
+p
+```
+:::
+:::
+
+
+## Sites occupied
+
+::: {style='font-size: 70%;'}
+```{r, echo=-1}
+#| label: re
+#| fig-height: 5
+#| fig-width: 7
+#| out-width: '65%'
+#| fig-align: 'center'
+par(mai=c(0.9, 0.9, 0.1, 0.1))  
+re <- ranef(fm)
+occupied.post <- predict(re, func=colSums, nsim=1000)
+plot(1:nPrimary, rowMeans(occupied.post), type="b", pch=16,
+     xlab="Time", ylab="Sites occupied", ylim=c(0, 70))
+lines(1:nPrimary, colSums(z), type="b", col=4)
+segments(1:nPrimary, apply(occupied.post, 1, quantile, prob=0.025),
+         1:nPrimary, apply(occupied.post, 1, quantile, prob=0.975))
+legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
+```
+:::
+
+
+
+
+
+## The JAGS model
+
+[dynocc-model.jag](dynocc-model.jag)
+
+
+```{r}
+#| label: bugs
+#| echo: false
+writeLines(readLines("dynocc-model.jag"))
+```
+
+
+## Data, inits, and parameters
+
+Put data in a named list
+  
+```{r}
+#| label: bugs-data
+jags.data <- list(y=y, nSites=nSites,
+                  J=nSecondary, K=nPrimary)
+```
+
+Initial values
+  
+```{r}
+#| label: bugs-inits
+jags.inits <- function() {
+    list(psi1=runif(1), epsilon=runif(1),
+         gamma=runif(1), p=runif(1),
+         z=matrix(1, nSites, nPrimary))
+}
+```
+
+Parameters to monitor
+  
+```{r}
+#| label: bugs-pars
+jags.pars <- c("psi1", "epsilon", "gamma", "p", "N")
+```
+
+
+
+```{r}
+#| label: jagsUI
+#| include: false
+#| results: 'hide'
+library(jagsUI)
+library(coda)
+```
+
+
+
+## MCMC
+  
+```{r}
+#| label: bugs-mcmc
+#| message: false
+#| cache: true
+#| results: 'hide'
+library(jagsUI)
+jags.post.samples <- jags.basic(data=jags.data, inits=jags.inits,
+                                parameters.to.save=jags.pars,
+                                model.file="dynocc-model.jag",
+                                n.chains=3, n.adapt=100, n.burnin=0,
+                                n.iter=2000, parallel=TRUE)
+```
+
+
+## Summarize output
+
+```{r}
+#| label: bugs-sum
+summary(jags.post.samples[,jags.pars[1:4]])
+```
+
+
+## Traceplots and density plots
+
+```{r}
+#| label: bugs-plot1
+#| fig-width: 7
+#| fig-height: 6
+#| out-width: '70%'
+#| fig-align: 'center'
+plot(jags.post.samples[,jags.pars[1:4]])
+```
+
+
+
+## [Dynamic occupancy models with covariates]{style="font-size: 80%;"}
+
+::: {style='font-size: 80%;'}
+Three types of covariates:
+
+1. Site covariates
+    - These vary among sites, but not among occasions
+    - Can be used to model $\psi_1$, $\varepsilon$, $\gamma$, and $p$
+    - Called `siteCovs` in 'unmarked'
+2. Primary sampling period covariates
+    - These vary among sites and among, but not within, primary periods 
+    - Can be used to model $\varepsilon$, $\gamma$, and $p$
+    - Called `yearlySiteCovs` in 'unmarked'
+3. Secondary sampling period covariates
+    - These vary among sites and among and within primary periods 
+    - Can be used to model $p$
+    - Called `obsCovs` in 'unmarked'
+:::
+      
+
+## Simulation with covariates
+  
+::: {style='font-size: 70%;'}
+Initial occupancy
+
+```{r, echo=-1}
+#| label: sim-init-cov
+set.seed(5098)
+beta0.psi <- -1; beta1.psi <- 1
+elevation <- rnorm(nSites) ## site covariate
+z2 <- psi2 <- matrix(NA, nSites, nPrimary)
+psi2[,1] <- plogis(beta0.psi + beta1.psi*elevation)
+z2[,1] <- rbinom(n=nSites, size=1, prob=psi2[,1])
+```
+
+Occupancy dynamics
+```{r}
+#| label: nsim-dy-cov
+epsilon2 <- 0.3 ## Local extinction prob
+temperature <- matrix(rnorm(nSites*nPrimary)*elevation, ## Primary period covariate
+                      nrow=nSites) 
+beta0.gamma <- -2; beta1.gamma <- -1
+gamma2 <- plogis(beta0.gamma + beta1.gamma*temperature)
+for(k in 2:nPrimary) {
+    psi2[,k] <- z2[,k-1]*(1-epsilon2) + (1-z2[,k-1])*gamma2[,k-1]
+    z2[,k] <- rbinom(n=nSites, size=1, prob=psi2[,k])
+}
+```
+
+Data
+```{r}
+#| label: sim-cov3-cov
+p2 <- 0.2
+y2 <- array(NA, c(nSites, nSecondary, nPrimary))
+for(i in 1:nSites) {
+    for(k in 1:nPrimary) {
+        y2[i,,k] <- rbinom(nSecondary, size=1, prob=z2[i,k]*p2)
+    } }
+```
+:::
+
+
+
+
+## Prepare data in 'unmarked'
+
+::: {style='font-size: 80%;'}
+Notice the new arguments `numPrimary` and `yearlySiteCovs`:
+
+```{r}
+#| label: un-umf-cov
+y2.wide <- matrix(y2, nrow=nrow(y2)) ## nSites by (nSec*nPrimary) matrix
+umf2 <- unmarkedMultFrame(y=y2.wide, numPrimary=nPrimary, siteCovs=data.frame(elevation),
+                          yearlySiteCovs=list(temp=temperature))
+```
+
+
+```{r}
+#| label: wfac-cov
+summary(umf2)
+```
+:::
+
+
+## Fit the model
+
+::: {style='font-size: 80%;'}
+Notice the 4 distinct formulas
+
+```{r}
+#| label: un-fit-cov
+fm2 <- colext(~elevation,~temp,~1,~1, umf2)    
+fm2
+```
+:::
+
+
+
+
+
+## Prediction in unmarked
+
+Create data frame with prediction covariates. 
+```{r}
+#| label: preddat
+pred.data <- data.frame(temp=seq(from=-5, to=4, length=50))
+```
+
+
+Get predictions of $\gamma$ for each row of prediction data.
+```{r}
+#| label: pred-gamma
+gamma.pred <- predict(fm2, newdata=pred.data,
+                      type='col', append=TRUE)
+```
+
+
+
+
+## Prediction in unmarked
+
+::: {style='font-size: 80%;'}
+```{r}
+#| label: pred-gamma1
+#| fig-height: 5.5
+#| fig-width: 7
+#| out-width: '70%'
+#| fig-align: 'center'
+plot(Predicted ~ temp, gamma.pred, type="l", ylab="Colonization probability",
+     xlab="Standardized temperature", ylim=0:1, lwd=2) 
+lines(lower ~ temp, gamma.pred, col=gray(0.6))
+lines(upper ~ temp, gamma.pred, col=gray(0.6))
+```
+
+:::
+
+
+## The JAGS model
+
+
+[dynocc-model-covars.jag](dynocc-model-covars.jag)
+
+
+```{r}
+#| label: bugs-cov
+#| echo: false
+#| comment: ''
+#| background: 'beige'
+writeLines(readLines("dynocc-model-covars.jag"))
+```
+
+
+## Data, inits, and parameters
+
+Put data in a named list
+  
+```{r}
+#| label: bugs-data-cov
+jags.data.covs <- list(y=y2, nSites=nSites, elevation=elevation,
+                       temp=temperature, J=nSecondary, K=nPrimary)
+```
+
+
+Initial values
+  
+```{r}
+#| label: bugs-inits-cov
+jags.inits.covs <- function() {
+    list(beta0.psi=rnorm(1), beta1.psi=rnorm(1), epsilon=runif(1),
+         beta0.gamma=rnorm(1), beta1.gamma=rnorm(1), p=runif(1),
+         z=matrix(1, nSites, nPrimary))
+}
+```
+
+Parameters to monitor
+  
+```{r}
+#| label: bugs-pars-cov
+jags.pars.covs <- c("beta0.psi", "beta1.psi", "epsilon",
+                    "beta0.gamma", "beta1.gamma", "p", "N")
+```
+
+
+
+## MCMC
+  
+```{r}
+#| label: bugs-mcmc-cov
+#| message: false
+#| cache: true
+#| results: 'hide'
+library(jagsUI)
+jags.post.samples.covs <- jags.basic(
+    data=jags.data.covs, inits=jags.inits.covs,
+    parameters.to.save=jags.pars.covs,
+    model.file="dynocc-model-covars.jag",
+    n.chains=3, n.adapt=100, n.burnin=0, n.iter=2000, parallel=TRUE)
+```
+
+
+## Summarize output
+
+```{r}
+#| label: bugs-sum-cov
+summary(jags.post.samples.covs[,jags.pars.covs[1:6]])
+```
+
+
+## Traceplots and density plots
+
+```{r}
+#| label: bugs-plot1-cov
+#| out-width: "70%"
+#| fig-align: 'center'
+plot(jags.post.samples.covs[,jags.pars.covs[1:3]])
+```
+
+
+## Traceplots and density plots
+
+```{r}
+#| label: bugs-plot2-cov
+#| out-width: "70%"
+#| fig-align: 'center'
+plot(jags.post.samples.covs[,jags.pars.covs[4:6]])
+```
+
+
+## Sites occupied
+
+Extract posterior samples of $N_t$ and compute summary stats.
+
+```{r}
+#| label: N-post-covs
+library(coda)
+N.names <- grep("N\\[", varnames(jags.post.samples.covs)  )
+N.post <- as.matrix(jags.post.samples.covs[,N.names])
+N.post.mean <- colMeans(N.post)
+N.post.lower <- apply(N.post, 2, quantile, prob=0.025)
+N.post.upper <- apply(N.post, 2, quantile, prob=0.975)
+```
+
+
+## Sites occupied
+
+::: {style='font-size: 80%;'}
+```{r, echo=-1}
+#| label: N-post-covs-plot
+#| fig-height: 5
+#| fig-width: 7
+#| out-width: "85%"
+#| fig-align: "center"
+par(mai=c(0.9, 0.9, 0.1, 0.1))  
+plot(1:nPrimary, N.post.mean, type="b", ylim=c(0, 70), pch=16,
+     xlab="Time", ylab="Sites occupied")
+segments(1:nPrimary, N.post.lower, 1:nPrimary, N.post.upper)
+lines(1:nPrimary, colSums(z2), type="b", col=4)
+legend(1, 70, c("Actual", "Estimated"), pch=c(1,16), col=c(4,1), lty=1)
+```
+:::
+
+
+
+## Temperature and colonization
+
+::: {style='font-size: 80%;'}
+Extract posterior samples of colonization coefficients, and then predict $\gamma$ for each posterior draw.
+
+<br>
+
+```{r}
+#| label: beta-post
+beta.post <- as.matrix(jags.post.samples.covs[,c(
+    "beta0.gamma","beta1.gamma")])
+temperature.seq <- seq(-5, 5, length=50)
+n.samples <- nrow(beta.post)
+gamma.post <- matrix(NA, n.samples, length(temperature.seq))
+for(i in 1:n.samples) {
+    gamma.post[i,] <- plogis(beta.post[i,1] +
+                             beta.post[i,2]*temperature.seq)
+}
+gamma.post.mean <- colMeans(gamma.post)
+gamma.post.lower <- apply(gamma.post, 2, quantile, prob=0.025)
+gamma.post.upper <- apply(gamma.post, 2, quantile, prob=0.975)
+```
+:::
+
+
+
+## Temperature and colonization
+
+::: {style='font-size: 80%;'}
+```{r, echo=-1}
+#| label: gamma-post-covs-plot
+#| fig-height: 5
+#| fig-width: 7
+#| out-width: "85%"
+#| fig-align: "center"
+par(mai=c(0.9, 0.9, 0.1, 0.1))  
+matplot(temperature.seq, t(gamma.post[seq(1,n.samples,10),]), type="l",
+        xlab="Temperature (standardized)", ylab="Colonization prob", col=gray(0.9))
+lines(temperature.seq, gamma.post.mean, lwd=3, col="blue")
+lines(temperature.seq, gamma.post.lower, col="blue")
+lines(temperature.seq, gamma.post.upper, col="blue")
+```
+:::
+
+
+
+## Concluding thoughts
+
+::: {style='font-size: 80%;'}
+Although we didn't demonstrate, these models are great for creating dynamic species distribution maps.
+
+<br>
+
+::: {.fragment}
+The spatially-explicit versions are also great for modeling metapopulation dynamics and viability.
+:::
+  
+<br>
+
+::: {.fragment}
+Most of the assumptions that we covered for the static models apply, except that we've relaxed the closure assumption.
+:::
+  
+<br>
+
+::: {.fragment}
+Check out the new R package
+[spOccupancy](https://www.jeffdoser.com/files/spoccupancy-web/)
+  for a wide range of Bayesian occupancy models.
+:::
+:::
+
+
