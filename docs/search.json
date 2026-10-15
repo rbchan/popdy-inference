@@ -2924,5 +2924,271 @@
     "title": "Inference for models of Fish and Wildlife Population Dynamics",
     "section": "Lectures",
     "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - Binomial N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\nWeek 5 - Model selection and model fit\n\nLecture 6 - Model selection and model fit\n\n\n\nWeek 6 - Multinomial N-mixture models\n\nLecture 7 - Multinomial N-mixture models\nLecture 8 - Distance sampling\n\n\n\nWeek 7 - Non-spatial mark-recapture\n\nLecture 9 - Mark-recapture\n\n\n\nWeek 8 - Spatial mark-recapture, part I\n\nLecture 10 - Spatial capture-recapture\n\n\n\nWeek 9 - Spatial mark-recapture, part II\n\nLecture 10 - Spatial capture-recapture II\n\n\n\n\nDynamic models\n\nLecture 11 - Dynamic occupancy models"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#section",
+    "href": "lectures/survival/lecture-survival.html#section",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "",
+    "text": "Classical survival analysis\n\n\nWILD(FISH) 8390  Inference for Models of Fish and Wildlife Population Dynamics"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#survival",
+    "href": "lectures/survival/lecture-survival.html#survival",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Survival",
+    "text": "Survival\nThe objective of survival analysis it to understand the factors influencing mortality rates.\nMost studies of survival use a “failure time”, a.k.a. “time to event” approach.\nThese are continuous-time models in which the random variable of interest is the survival time (\\(T\\)).\nThere are many great books about survival analysis, and much of the information can be found online. This is a particularly good resource:\n\nPrinceton course"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#censoring",
+    "href": "lectures/survival/lecture-survival.html#censoring",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Censoring",
+    "text": "Censoring\nTypically, we don’t observer survival time for all individuals because some are still alive at the end of the observation period, either because transmitter batteries die or we stop monitoring.\nThese survival times are “right censored”, which means that we know they occurred after the observation window, but we don’t know their exact value.\nThere are several types of censoring: - Right censoring (common): survival time is in the interval \\((U,\\infty]\\) - Left censoring (rare): survival time is in the interval \\([-\\infty,L)\\) - Interval censoring (rare): survival time is in \\((a,b]\\)."
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#survival-1",
+    "href": "lectures/survival/lecture-survival.html#survival-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Survival",
+    "text": "Survival\nThere are 4 quantities that you must understand:\n\nHazard \\(\\lambda(t)\\)\n\nThe instantaneous mortality risk\n\nCummulative hazard \\(\\Lambda(t)\\)\n\nThe cummulative mortality risk\n\nSurvivorship \\(S(t)\\)\n\nThe probability of surviving until time \\(t\\)\n\nProbability density \\(p(t)\\)\n\nThe relative probability of dying at time \\(t\\)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#hazard",
+    "href": "lectures/survival/lecture-survival.html#hazard",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Hazard",
+    "text": "Hazard\nThe continuous-time definition of the hazard rate is the instantaneous mortality risk, conditional on surviving to time \\(t\\): \\[\n  \\lambda(t) = \\lim_{\\Delta_t \\to 0} \\Pr(t \\le T &lt; t+\\Delta_t | T\\ge t)/\\Delta_t\n\\]\nThe cumulative hazard can be thought of as the sum of the risks up to time \\(t\\): \\[\n  \\Lambda(t) = \\int_{0}^t \\lambda(j) \\,\\mathrm{d}j\n\\]"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#survivorship-and-probability-density",
+    "href": "lectures/survival/lecture-survival.html#survivorship-and-probability-density",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Survivorship and probability density",
+    "text": "Survivorship and probability density\nSurvivorship is the probability of surviving to time \\(t\\) or longer: \\[\n%    S(t) = \\Pr(T \\ge t) = \\exp\\left(-\\int_{0}^t \\lambda(j) \\,dj\\right)\n    S(t) = \\Pr(T \\ge t) = \\exp(-\\Lambda(t))\n\\]\nThe probability density is given by the probability of surviving to, and then dying at, time \\(t\\) \\[\n    p(t) = S(t)\\lambda(t) %\\exp\\left(-\\int_{0}^t \\lambda(j) \\,dj\\right)\n\\]"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#exponential-survival-times",
+    "href": "lectures/survival/lecture-survival.html#exponential-survival-times",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Exponential survival times",
+    "text": "Exponential survival times\nThe simplest survival model is the “exponential model”, which assumes that the hazard is constant over time: \\(\\lambda = \\lambda(t)\\).\nThis implies: - \\(S(t) = \\exp(-\\lambda t)\\) - \\(p(t) = \\lambda \\exp(-\\lambda t)\\)\nThe mean life expectancy is: \\(\\mu = E(T) = 1/\\lambda\\)."
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#exponential-survival-times-without-covariates",
+    "href": "lectures/survival/lecture-survival.html#exponential-survival-times-without-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Exponential survival times – without covariates",
+    "text": "Exponential survival times – without covariates\n\nn &lt;- 100                          ## Sample size\nhazard0 &lt;- 1/100\nsurvival.time0 &lt;- rexp(n, hazard0)\nhist(survival.time0, xlab=\"Survival time (time to mortality)\", main=\"\")\nabline(v=c(mean(survival.time0), 100), col=c(\"blue\", \"black\"))\nlegend(\"topright\", legend=c(\"Sample mean\", \"Population mean\"),\n       col=c(\"blue\", \"black\"), lwd=2)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#exponential-survival-times-1",
+    "href": "lectures/survival/lecture-survival.html#exponential-survival-times-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Exponential survival times",
+    "text": "Exponential survival times\n\nn &lt;- 200                          ## Sample size\nx &lt;- rnorm(n)                     ## Covariate\nbeta0 &lt;- -5; beta1 &lt;- -0.5        ## Hazard coefficients\nhazard &lt;- exp(beta0 + beta1*x) \nsurvival.time &lt;- rexp(n, hazard)\n## summary(survival.time)\nhist(survival.time, xlab=\"Survival time (time to mortality)\", main=\"\")"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#censoring-1",
+    "href": "lectures/survival/lecture-survival.html#censoring-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Censoring",
+    "text": "Censoring\n\nPick a censoring time (duration of study)\n\nctime &lt;- 500    ## Censoring time\ncensored &lt;- ifelse(survival.time&gt;ctime, 1, 0)\ntable(censored) ## Most individuals died before censoring time\n\ncensored\n  0   1 \n192   8 \n\n\nThe observed data, with censoring:\n\nsurvival.time.c &lt;- ifelse(censored, ctime, survival.time) \nsummary(survival.time.c)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  0.562  28.912  86.931 128.825 174.320 500.000"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#life-lines",
+    "href": "lectures/survival/lecture-survival.html#life-lines",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Life lines",
+    "text": "Life lines"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#kaplan-meier",
+    "href": "lectures/survival/lecture-survival.html#kaplan-meier",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Kaplan-Meier",
+    "text": "Kaplan-Meier\nBefore we fit a model, it can be useful to visualize a non-parametric estimator of the survivorship curve.\n\\[\n    \\hat{S}(t) = \\prod_{j:a_j &lt; t} \\left(1 - \\frac{d_j}{r_j}\\right)\n\\]\nwhere - \\(a_j\\) is the time interval - \\(d_j\\) is the number of mortalities in time interval \\(j\\) - \\(r_j\\) is the number of individuals “at risk” at the beginning of interval \\(j\\)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#kaplan-meier-1",
+    "href": "lectures/survival/lecture-survival.html#kaplan-meier-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Kaplan-Meier",
+    "text": "Kaplan-Meier\n\nlibrary(survival)\ny &lt;- Surv(survival.time.c, 1-censored)\nplot(y, xlab=\"Time\", ylab=\"Survivorship\", main=\"Kaplan-Meier\")"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#parametric-survival-model",
+    "href": "lectures/survival/lecture-survival.html#parametric-survival-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Parametric survival model",
+    "text": "Parametric survival model\nFit model to simulated data:\n\nsummary(pm1 &lt;- survreg(y ~ x, dist=\"exponential\"))\n\n\nCall:\nsurvreg(formula = y ~ x, dist = \"exponential\")\n             Value Std. Error     z       p\n(Intercept) 4.8642     0.0732 66.46 &lt; 2e-16\nx           0.4731     0.0725  6.53 6.6e-11\n\nScale fixed at 1 \n\nExponential distribution\nLoglik(model)= -1110.7   Loglik(intercept only)= -1132.7\n    Chisq= 43.95 on 1 degrees of freedom, p= 3.4e-11 \nNumber of Newton-Raphson Iterations: 4 \nn= 200"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#estimated-hazard",
+    "href": "lectures/survival/lecture-survival.html#estimated-hazard",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Estimated hazard",
+    "text": "Estimated hazard\n\nplot(function(x) exp(beta0 + beta1*x), from=-3, to=3,\n     xlab=\"Covariate\", ylab=\"Hazard\", col=\"black\", ylim=c(0, 0.035))\nalpha.hat &lt;- coef(pm1)   ## Extract the estimates\nplot(function(x) 1/exp(alpha.hat[1] + alpha.hat[2]*x), ## survreg formulation\n     from=-3, to=3, col=\"blue\", add=TRUE, lty=2)\nlegend(0.5, 0.035, c(\"Estimated hazard\", \"Hazard\"), col=c(4,1), lty=2:1)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#semi-parametric-survival-model",
+    "href": "lectures/survival/lecture-survival.html#semi-parametric-survival-model",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Semi-parametric survival model",
+    "text": "Semi-parametric survival model\nThe Cox proportional hazards model is of the form: \\[\n    \\lambda_i(t) = \\lambda_0(t)\\exp(\\beta_1 x_{i,1} + \\beta_2 x_{i,2} + \\cdots)\n\\] where \\(\\lambda_0(t)\\) is the baseline hazard rate, similar to a Kaplan-Meier hazard.\n\n(cox1 &lt;- coxph(y ~ x))\n\nCall:\ncoxph(formula = y ~ x)\n\n      coef exp(coef) se(coef)      z        p\nx -0.45875   0.63207  0.07584 -6.049 1.46e-09\n\nLikelihood ratio test=37.81  on 1 df, p=7.801e-10\nn= 200, number of events= 192"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#semi-parametric-survival-model-1",
+    "href": "lectures/survival/lecture-survival.html#semi-parametric-survival-model-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Semi-parametric survival model",
+    "text": "Semi-parametric survival model\n\nplot(survfit(cox1, newdata=data.frame(x=c(-2,0,2))),\n     xlab=\"Time\", ylab=\"Survivorship\", col=1:3,\n     main=\"Cox proportional hazards fit\")\nlegend(350, 1, paste(\"x =\", c(-2, 0, 2)), lty=1, col=1:3)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#bayesian-inference",
+    "href": "lectures/survival/lecture-survival.html#bayesian-inference",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian inference",
+    "text": "Bayesian inference\nIn JAGS, the recommended way of dealing with censoring is with the dinterval distribution.\nsurv-exp.jag\n\n\nmodel{\n\nbeta0 ~ dnorm(0, 0.1)\nbeta1 ~ dnorm(0, 0.1)\n\nfor(i in 1:n) {\n  lambda[i] &lt;- exp(beta0 + beta1*x[i])\n  # Survival times are only observed when censored=0 \n  survivalTime[i] ~ dexp(lambda[i])\n  censored[i] ~ dinterval(survivalTime[i], censorTime[i])\n}\n\n}"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#bayesian-inference-1",
+    "href": "lectures/survival/lecture-survival.html#bayesian-inference-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Bayesian inference",
+    "text": "Bayesian inference\nPrepare data by treating censored (unobserved) survival times as NA.\n\nsurvival.time.jags &lt;- survival.time.c\nsurvival.time.jags[censored==1] &lt;- NA\njd.exp &lt;- list(survivalTime=survival.time.jags, censored=censored,\n               censorTime=rep(ctime, length(censored)),\n               x=x, n=length(censored))\n\nInits, parameters:\n\nji.exp &lt;- function() list(beta0=rnorm(1), beta1=rnorm(1)) \njp.exp &lt;- c(\"beta0\", \"beta1\")\n\nFit the model\n\njags.post.samples.exp &lt;- jags.basic(data=jd.exp, inits=ji.exp,\n                                    parameters.to.save=jp.exp,\n                                    model.file=\"surv-exp.jag\",\n                                    n.chains=3, n.adapt=100, n.burnin=0,\n                                    n.iter=2000, parallel=TRUE)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#mcmc-output",
+    "href": "lectures/survival/lecture-survival.html#mcmc-output",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC output",
+    "text": "MCMC output\n\nplot(jags.post.samples.exp)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#posterior-hazard",
+    "href": "lectures/survival/lecture-survival.html#posterior-hazard",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Posterior hazard",
+    "text": "Posterior hazard"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#discrete-time-survival-models",
+    "href": "lectures/survival/lecture-survival.html#discrete-time-survival-models",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Discrete-time survival models",
+    "text": "Discrete-time survival models\nA simple way of modeling survival is to discretize time and use the following model: \\[\n    z_{i,t} \\sim \\mathrm{Bern}(z_{i,t-1}\\times \\phi_t)\n\\]\nwhere \\(z_{i,t}\\) indicates if individual \\(i\\) is alive at time \\(t\\) and \\(\\phi\\) is the probability of surviving the time interval.\nIn discrete time we have: - Hazard: \\(\\lambda_t = 1-\\phi_t = \\Pr(t \\le T &lt; t+1 | T\\ge t)\\) - Survivorship: \\(S_t = \\prod_{j=1}^t \\phi_j\\) - Probability density: \\(p(t) = S_t \\lambda_t\\)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#simulating-discrete-time-survival-data",
+    "href": "lectures/survival/lecture-survival.html#simulating-discrete-time-survival-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulating discrete-time survival data",
+    "text": "Simulating discrete-time survival data\nParameters and dimensions\n\nmaxTime &lt;- 10           ## Time period\nn &lt;- 25                 ## nIndividuals\nphi &lt;- 0.7              ## Survival probability over 1 time step\n\nGenerate \\(z\\), the alive-dead indicator\n\nz &lt;- matrix(NA, n, maxTime)\nfirst &lt;- rpois(n, 1)+1  ## random release dates\nfor(i in 1:n) {\n    z[i,first[i]] &lt;- 1  ## Known alive at release\n    for(t in (first[i]+1):maxTime) {\n        z[i,t] &lt;- rbinom(1, 1, z[i,t-1]*phi) ## Alive/dead state\n    }\n}"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#simulated-survival-data",
+    "href": "lectures/survival/lecture-survival.html#simulated-survival-data",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Simulated survival data",
+    "text": "Simulated survival data\n\nz[1:15,]\n\n      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]\n [1,]    1    0    0    0    0    0    0    0    0     0\n [2,]   NA    1    1    1    1    1    1    1    0     0\n [3,]   NA    1    1    1    0    0    0    0    0     0\n [4,]    1    0    0    0    0    0    0    0    0     0\n [5,]    1    1    1    1    0    0    0    0    0     0\n [6,]   NA    1    0    0    0    0    0    0    0     0\n [7,]   NA   NA    1    1    1    1    1    1    0     0\n [8,]   NA   NA   NA    1    0    0    0    0    0     0\n [9,]    1    0    0    0    0    0    0    0    0     0\n[10,]    1    1    1    1    1    1    0    0    0     0\n[11,]    1    0    0    0    0    0    0    0    0     0\n[12,]    1    1    1    0    0    0    0    0    0     0\n[13,]   NA   NA    1    0    0    0    0    0    0     0\n[14,]    1    1    0    0    0    0    0    0    0     0\n[15,]   NA    1    1    1    1    1    0    0    0     0"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#discrete-time-survival-in-jags",
+    "href": "lectures/survival/lecture-survival.html#discrete-time-survival-in-jags",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Discrete-time survival in JAGS",
+    "text": "Discrete-time survival in JAGS\nsurv-dtime.jag\n\n\nmodel{\n\nphi ~ dunif(0,1)\n\nfor(i in 1:n) {\n  for(t in (first[i]+1):maxTime) {\n    z[i,t] ~ dbern(z[i,t-1]*phi)\n  }\n}\n\n}"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#jags",
+    "href": "lectures/survival/lecture-survival.html#jags",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "JAGS",
+    "text": "JAGS\nData\n\njd.dtime0 &lt;- list(z=z, n=n, first=first, maxTime=maxTime)\n\nInitial values\n\nji.dtime0 &lt;- function() list(phi=runif(1))\njp.dtime0 &lt;- c(\"phi\")\n\nFit the model\n\njags.post.samples.dtime0 &lt;- jags.basic(data=jd.dtime0, inits=ji.dtime0,\n                                       parameters.to.save=jp.dtime0,\n                                       model.file=\"surv-dtime.jag\",\n                                       n.chains=3, n.adapt=100, n.burnin=0,\n                                       n.iter=2000, parallel=TRUE)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#mcmc-output-1",
+    "href": "lectures/survival/lecture-survival.html#mcmc-output-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC output",
+    "text": "MCMC output\n\nplot(jags.post.samples.dtime0)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#posterior-survivorship",
+    "href": "lectures/survival/lecture-survival.html#posterior-survivorship",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Posterior survivorship",
+    "text": "Posterior survivorship\n\nphi.post &lt;- as.matrix(jags.post.samples.dtime0)[,\"phi\"]\nS.post &lt;- sapply(phi.post, function(x) x^(0:10))\nmatplot(0:10, S.post[,1:1000], type=\"l\", xlab=\"Time\", ylab=\"Survivorship\",\n        col=rgb(0,0.5,1,0.02))\nlines(0:10, rowMeans(S.post), col=\"royalblue\", lwd=3)\nlines(0:10, phi^(0:10), col=\"cadetblue\", lwd=3)\nlegend(6, 1, c(\"Posterior sample\", \"Posterior mean\", \"Actual\"),\n       col=c(rgb(0,0.5,1,0.2), \"royalblue\", \"cadetblue\"), lty=1, lwd=c(1,3,3))"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#time-varying-covariates",
+    "href": "lectures/survival/lecture-survival.html#time-varying-covariates",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Time-varying covariates",
+    "text": "Time-varying covariates\nsurv-dtime-tcovs.jag\n\n\nmodel{\n\nbeta0 ~ dnorm(0, 0.1)\nbeta1 ~ dnorm(0, 0.1)\n\nfor(i in 1:n) {\n  for(t in (first[i]+1):maxTime) {\n    logit(phi[i,t-1]) &lt;- beta0 + beta1*x[i,t-1]\n    z[i,t] ~ dbern(z[i,t-1]*phi[i,t-1])\n  }\n}\n\n}"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#competing-risks",
+    "href": "lectures/survival/lecture-survival.html#competing-risks",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Competing risks",
+    "text": "Competing risks\nCompeting risks models are used when there are multiple ways of dying, and we’re interested in the cause-specific mortality risk, represented by \\(K\\) hazard functions: \\[\n    \\lambda_{k,t} = \\exp(\\beta_{0,k} + \\beta_{1,k}x_{t} + \\cdots)\n\\]\nWe can model the conditional probability of dying during interval \\(t\\), with a multinomial link function: \\[\n    \\pi_{k,t} = \\frac{\\lambda_{k,t}}{1+\\sum_{j=1}^K \\lambda_{j,t}}\n\\] where the final multinomial cell probability is the probability of surviving: \\(\\pi_{K+1,t} = 1-\\sum_{k=1}^K \\pi_{k,t}\\).\nThe data can be modeled with a categorical distribution: \\[\n    z_{i,t} \\sim \\mathrm{Cat}({\\bm \\pi}_t | \\mathrm{alive\\; at\\;} t-1)\n\\]"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#competing-risks-1",
+    "href": "lectures/survival/lecture-survival.html#competing-risks-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Competing risks",
+    "text": "Competing risks\nSuppose you can die in 3 ways: killed by cougar, bear, or wolf\n\nbeta0 &lt;- c(-6, -4, -3) ## log-hazard. No covariates\nlambda &lt;- exp(beta0)   ## Cause-specific hazard\npi &lt;- lambda / (1+sum(lambda))\npi[4] &lt;- 1-sum(pi)     ## Probability of surviving t to t+1\n\nSet-up the data as a multi-state indicator\n\nnDeer &lt;- 100\nnDays &lt;- 100\nz &lt;- matrix(NA, nDeer, nDays)\nz[,1] &lt;- 4  ## Everyone starts in state 4 (alive)"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#competing-risks-2",
+    "href": "lectures/survival/lecture-survival.html#competing-risks-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Competing risks",
+    "text": "Competing risks\nThere are simpler ways of modeling temporal state dynamics, but we will use a general multi-state transition matrix \\(\\Phi\\):\n\nPhi &lt;- diag(4)\nrownames(Phi) &lt;- colnames(Phi) &lt;- c(\"cougar\", \"bear\", \"wolf\", \"alive\")\n# kable(Phi, format=\"latex\", digits=3, booktabs=TRUE)\n\n——- | ——- | —– | —– | —– | cougar | bear | wolf | alive ——- | ——- | —– | —– | —– cougar | 1.000 | 0.000 | 0.000 | 0.000 bear | 0.000 | 1.000 | 0.000 | 0.000 wolf | 0.000 | 0.000 | 1.000 | 0.000 alive | 0.002 | 0.017 | 0.047 | 0.934\n\nfor(i in 1:nDeer) {\n    for(t in 2:nDays) {\n        z[i,t] &lt;- which(rmultinom(n=1, size=1, prob=Phi[z[i,t-1],])==1)\n    }\n}"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#competing-risks-3",
+    "href": "lectures/survival/lecture-survival.html#competing-risks-3",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Competing risks",
+    "text": "Competing risks\nsurv-dtime-comp-risks.jag\n\n\nmodel{\n\n## z states could be (for example):\n## 1=killed by cougar\n## 2=killed by bear\n## 3=killed by wolf\n## 4=alive\nfor(k in 1:nRisks) {\n  beta0[k] ~ dnorm(0, 0.1)          ## Intercept only model\n  lambda[k] &lt;- exp(beta0[k])        ## Cause-specific hazard\n  pi[k] &lt;- lambda[k]/(1+Lambda)     ## Pr(killed by cause k)\n  }\nLambda &lt;- sum(lambda)               ## Total risk\npi[nRisks+1] &lt;- 1-sum(pi[1:nRisks]) ## Pr(not killed)\nPhi[nRisks+1,] &lt;- pi\n\nfor(i in 1:n) {\n  for(t in (first[i]+1):maxTime) {\n    z[i,t] ~ dcat(Phi[z[i,t-1],1:4])\n  }\n}\n\n}"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#jags-1",
+    "href": "lectures/survival/lecture-survival.html#jags-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "JAGS",
+    "text": "JAGS\nData\n\nPhi.data &lt;- diag(4)\nPhi.data[4,] &lt;- NA\njd.comp.risk &lt;- list(z=z, n=nDeer, first=rep(1,nrow(z)), maxTime=ncol(z),\n                     nRisks=3, Phi=Phi.data)\n\nInitial values\n\nji.comp.risk &lt;- function() list(beta0=log(runif(3)))\njp.comp.risk &lt;- c(\"beta0\", \"pi\")\n\nFit the model\n\njags.ps.comp.risk &lt;- jags.basic(data=jd.comp.risk, inits=ji.comp.risk,\n                                parameters.to.save=jp.comp.risk,\n                                model.file=\"surv-dtime-comp-risks.jag\",\n                                n.chains=3, n.adapt=100, n.burnin=0,\n                                n.iter=2000, parallel=TRUE)\n\n\nProcessing function input....... \n\nDone. \n \nBeginning parallel processing using 3 cores. Console output will be suppressed.\n\nParallel processing completed.\n\nMCMC took 0.047 minutes."
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#mcmc-output-2",
+    "href": "lectures/survival/lecture-survival.html#mcmc-output-2",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC output",
+    "text": "MCMC output"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#mcmc-output-3",
+    "href": "lectures/survival/lecture-survival.html#mcmc-output-3",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "MCMC output",
+    "text": "MCMC output"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#assumptions-of-failure-time-models",
+    "href": "lectures/survival/lecture-survival.html#assumptions-of-failure-time-models",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Assumptions of failure time models",
+    "text": "Assumptions of failure time models\nRandom sampling - Very hard to do in practice\nIndependent survival times - Problematic for gregarious species\nMortality times are known exactly - Also hard\nCensoring is random and independent of survival - This will be a problem if transmitters fail when animals die, and you don’t know if they died.\nWell-defined time origin - Animals don’t have to be released at the same time"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#looking-ahead",
+    "href": "lectures/survival/lecture-survival.html#looking-ahead",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Looking ahead",
+    "text": "Looking ahead\nMost “open population” mark-recapture models use discrete-time survival models, with observation error coming from imperfect detection.\nStatisticians call these hidden Markov models.\nNext time, we’ll focus on one of the most important examples: the Cormack-Jolly-Seber model.\nNo assignment again this week. Work on your papers and presentations."
   }
 ]
