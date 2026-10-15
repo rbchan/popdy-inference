@@ -228,7 +228,7 @@
 <section id="static-single-season-occupancy-model" class="slide level2">
 <h2><span style="font-size: 90%;">Static (single-season) occupancy model</span></h2>
 <!-- [Refresher]{style="color: blue;"} -->
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <p>The model for the state process is the same as logistic regression: <span class="math display">\[
     \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
     z_i \sim \mathrm{Bern}(\psi_i)
@@ -278,7 +278,7 @@
 </ul>
 <div class="fragment">
 <center>
-<img data-src="figure/royle_dorazio_9-1.png" style="width:20.0%"> <br> From Royle and Dorazio (2008)
+<img data-src="figure/royle_dorazio_9-1.png" style="width:23.0%"> <br> From Royle and Dorazio (2008)
 </center>
 </div>
 <div class="fragment">
@@ -319,8 +319,9 @@
 </section>
 <section id="simulated-data" class="slide level2">
 <h2>Simulated data</h2>
+<div style="font-size: 80%;">
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:40%;">
 <p><strong>Observations</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>y[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>,,<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -343,7 +344,7 @@
 [15,]    0    0    0</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:60%;">
 <p><strong>Summary stats</strong></p>
 <p>Detections at each site <br></p>
 <div class="cell">
@@ -364,6 +365,7 @@
 </div>
 </div>
 </div></div>
+</div>
 </section>
 <section id="prepare-data-in-unmarked" class="slide level2">
 <h2>Prepare data in ‘unmarked’</h2>
@@ -426,6 +428,7 @@ Number of sites: 100</code></pre>
 </section>
 <section id="compare-estimate-to-actual" class="slide level2">
 <h2>Compare estimate to actual</h2>
+<div style="font-size: 80%;">
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Estimates</p>
@@ -468,11 +471,14 @@ Number of sites: 100</code></pre>
 </div>
 </div>
 </div></div>
+</div>
 </section>
 <section id="sites-occupied" class="slide level2">
 <h2>Sites occupied</h2>
 <div style="font-size: 70%;">
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>re <span class="ot">&lt;-</span> <span class="fu">ranef</span>(fm)</span>
 <span id="cb31-2"><a></a>occupied.post <span class="ot">&lt;-</span> <span class="fu">predict</span>(re, <span class="at">func=</span>colSums, <span class="at">nsim=</span><span class="dv">1000</span>)</span>
 <span id="cb31-3"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>nPrimary, <span class="fu">rowMeans</span>(occupied.post), <span class="at">type=</span><span class="st">"b"</span>, <span class="at">pch=</span><span class="dv">16</span>,</span>
@@ -481,6 +487,7 @@ Number of sites: 100</code></pre>
 <span id="cb31-6"><a></a><span class="fu">segments</span>(<span class="dv">1</span><span class="sc">:</span>nPrimary, <span class="fu">apply</span>(occupied.post, <span class="dv">1</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>),</span>
 <span id="cb31-7"><a></a>         <span class="dv">1</span><span class="sc">:</span>nPrimary, <span class="fu">apply</span>(occupied.post, <span class="dv">1</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>))</span>
 <span id="cb31-8"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">70</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">16</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">1</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -569,18 +576,18 @@ Sample size per chain = 2000
    plus standard error of the mean:
 
           Mean      SD  Naive SE Time-series SE
-psi1    0.4837 0.08828 0.0011397       0.003077
-epsilon 0.3526 0.06522 0.0008420       0.004007
-gamma   0.2158 0.03444 0.0004446       0.001586
-p       0.2041 0.02326 0.0003003       0.001325
+psi1    0.4831 0.09226 0.0011911       0.003766
+epsilon 0.3528 0.06832 0.0008820       0.004748
+gamma   0.2141 0.03246 0.0004190       0.001410
+p       0.2053 0.02380 0.0003072       0.001488
 
 2. Quantiles for each variable:
 
           2.5%    25%    50%    75%  97.5%
-psi1    0.3216 0.4204 0.4808 0.5419 0.6648
-epsilon 0.2310 0.3062 0.3518 0.3977 0.4836
-gamma   0.1550 0.1922 0.2143 0.2372 0.2893
-p       0.1617 0.1877 0.2030 0.2196 0.2515</code></pre>
+psi1    0.3139 0.4189 0.4794 0.5434 0.6774
+epsilon 0.2211 0.3059 0.3503 0.3995 0.4880
+gamma   0.1553 0.1913 0.2127 0.2351 0.2820
+p       0.1616 0.1885 0.2047 0.2208 0.2546</code></pre>
 </div>
 </div>
 </section>
@@ -758,10 +765,13 @@ Number of sites: 100</code></pre>
 <h2>Prediction in unmarked</h2>
 <div style="font-size: 70%;">
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a><span class="fu">plot</span>(Predicted <span class="sc">~</span> temp, gamma.pred, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">ylab=</span><span class="st">"Colonization probability"</span>,</span>
 <span id="cb50-2"><a></a>     <span class="at">xlab=</span><span class="st">"Standardized temperature"</span>, <span class="at">ylim=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">2</span>) </span>
 <span id="cb50-3"><a></a><span class="fu">lines</span>(lower <span class="sc">~</span> temp, gamma.pred, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.6</span>))</span>
 <span id="cb50-4"><a></a><span class="fu">lines</span>(upper <span class="sc">~</span> temp, gamma.pred, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.6</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -854,22 +864,22 @@ Sample size per chain = 2000
    plus standard error of the mean:
 
                Mean      SD  Naive SE Time-series SE
-beta0.psi   -1.8528 0.40464 0.0052239       0.013782
-beta1.psi    0.9290 0.44821 0.0057864       0.015942
-epsilon      0.2801 0.06036 0.0007792       0.003408
-beta0.gamma -1.8652 0.18462 0.0023835       0.006602
-beta1.gamma -0.7330 0.21694 0.0028007       0.008412
-p            0.2203 0.02360 0.0003046       0.001141
+beta0.psi   -1.8699 0.40801 0.0052674       0.013949
+beta1.psi    0.9697 0.48040 0.0062019       0.017401
+epsilon      0.2881 0.06243 0.0008060       0.003404
+beta0.gamma -1.8624 0.18641 0.0024066       0.006207
+beta1.gamma -0.7277 0.23357 0.0030154       0.009477
+p            0.2231 0.02349 0.0003033       0.001133
 
 2. Quantiles for each variable:
 
-               2.5%     25%     50%     75%   97.5%
-beta0.psi   -2.7135 -2.1099 -1.8352 -1.5730 -1.1064
-beta1.psi    0.1114  0.6198  0.9011  1.2152  1.8717
-epsilon      0.1726  0.2386  0.2767  0.3183  0.4073
-beta0.gamma -2.2364 -1.9851 -1.8630 -1.7397 -1.5165
-beta1.gamma -1.2117 -0.8657 -0.7172 -0.5853 -0.3558
-p            0.1780  0.2037  0.2195  0.2355  0.2690</code></pre>
+                2.5%     25%     50%     75%   97.5%
+beta0.psi   -2.73065 -2.1324 -1.8478 -1.5918 -1.1161
+beta1.psi    0.07734  0.6448  0.9413  1.2691  1.9906
+epsilon      0.17355  0.2444  0.2854  0.3284  0.4196
+beta0.gamma -2.24032 -1.9827 -1.8559 -1.7382 -1.5095
+beta1.gamma -1.24358 -0.8644 -0.7089 -0.5675 -0.3279
+p            0.17741  0.2072  0.2225  0.2388  0.2709</code></pre>
 </div>
 </div>
 </section>
@@ -903,11 +913,14 @@ p            0.1780  0.2037  0.2195  0.2355  0.2690</code></pre>
 <h2>Sites occupied</h2>
 <div style="font-size: 70%;">
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>nPrimary, N.post.mean, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">70</span>), <span class="at">pch=</span><span class="dv">16</span>,</span>
 <span id="cb61-2"><a></a>     <span class="at">xlab=</span><span class="st">"Time"</span>, <span class="at">ylab=</span><span class="st">"Sites occupied"</span>)</span>
 <span id="cb61-3"><a></a><span class="fu">segments</span>(<span class="dv">1</span><span class="sc">:</span>nPrimary, N.post.lower, <span class="dv">1</span><span class="sc">:</span>nPrimary, N.post.upper)</span>
 <span id="cb61-4"><a></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span>nPrimary, <span class="fu">colSums</span>(z2), <span class="at">type=</span><span class="st">"b"</span>, <span class="at">col=</span><span class="dv">4</span>)</span>
 <span id="cb61-5"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">70</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">16</span>), <span class="at">col=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">1</span>), <span class="at">lty=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -964,10 +977,10 @@ p            0.1780  0.2037  0.2195  0.2355  0.2690</code></pre>
 <section id="concluding-thoughts" class="slide level2">
 <h2>Concluding thoughts</h2>
 <div style="font-size: 80%;">
-<p>Although we didn’t demonstrate, these models are great for creating dynamic species distribution maps.</p>
+<p>These models can be used to create dynamic species distribution maps.</p>
 <p><br></p>
 <div class="fragment">
-<p>The spatially-explicit versions are also great for modeling metapopulation dynamics and viability.</p>
+<p>Spatially-explicit versions are good for modeling metapopulation dynamics and viability.</p>
 </div>
 <p><br></p>
 <div class="fragment">

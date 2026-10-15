@@ -62,7 +62,7 @@ Dynamic occupancy models allow for inference on spatio-temporal occupancy result
 <!-- [Refresher]{style="color: blue;"} -->
   
   
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 The model for the state process is the same as logistic regression:
 $$
     \mathrm{logit}(\psi_i) = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots \\
@@ -136,7 +136,7 @@ After the initial time period, the probability that a site is occupied depends o
 
 ::: {.fragment}
 <center>
-![](figure/royle_dorazio_9-1){width="20%"} <br>
+![](figure/royle_dorazio_9-1){width="23%"} <br>
 From Royle and Dorazio (2008)
 </center>
 :::
@@ -189,8 +189,9 @@ for(i in 1:nSites) {
 
 ## Simulated data
 
+::: {style='font-size: 80%;'}
 ::: {.columns}
-::: {.column width='50%'}
+::: {.column width='40%'}
       
 **Observations**
 
@@ -199,7 +200,7 @@ for(i in 1:nSites) {
 y[1:15,,1]
 ```
 :::
-::: {.column width='50%'}
+::: {.column width='60%'}
     
 **Summary stats**
     
@@ -221,6 +222,7 @@ yearDets
 #| include: false
 library(unmarked)
 ```
+:::
 :::
 :::
 
@@ -256,6 +258,7 @@ fm
 
 
 ## Compare estimate to actual
+::: {style='font-size: 80%;'}
 
 ::: {.columns}
 ::: {.column width='50%'}
@@ -281,6 +284,9 @@ p
 :::
 :::
 
+:::
+
+
 
 ## Sites occupied
 
@@ -291,6 +297,7 @@ p
 #| fig-width: 7
 #| out-width: '60%'
 #| fig-align: 'center'
+#| code-fold: true
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 re <- ranef(fm)
 occupied.post <- predict(re, func=colSums, nsim=1000)
@@ -388,7 +395,7 @@ summary(jags.post.samples[,jags.pars[1:4]])
 ```{r}
 #| label: bugs-plot1
 #| fig-width: 7
-#| fig-height: 5
+#| fig-height: 7
 #| out-width: '80%'
 #| fig-align: 'center'
 plot(jags.post.samples[,jags.pars[1:4]])
@@ -532,6 +539,7 @@ gamma.pred <- predict(fm2, newdata=pred.data,
 #| fig-width: 9
 #| out-width: '60%'
 #| fig-align: 'center'
+#| code-fold: true
 plot(Predicted ~ temp, gamma.pred, type="l", ylab="Colonization probability",
      xlab="Standardized temperature", ylim=0:1, lwd=2) 
 lines(lower ~ temp, gamma.pred, col=gray(0.6))
@@ -656,6 +664,7 @@ N.post.upper <- apply(N.post, 2, quantile, prob=0.975)
 #| fig-width: 9
 #| out-width: "65%"
 #| fig-align: "center"
+#| code-fold: true
 par(mai=c(0.9, 0.9, 0.1, 0.1))  
 plot(1:nPrimary, N.post.mean, type="b", ylim=c(0, 70), pch=16,
      xlab="Time", ylab="Sites occupied")
@@ -717,12 +726,12 @@ lines(temperature.seq, gamma.post.upper, col="blue")
 ## Concluding thoughts
 
 ::: {style='font-size: 80%;'}
-Although we didn't demonstrate, these models are great for creating dynamic species distribution maps.
+These models can be used to create dynamic species distribution maps.
 
 <br>
 
 ::: {.fragment}
-The spatially-explicit versions are also great for modeling metapopulation dynamics and viability.
+Spatially-explicit versions are good for modeling metapopulation dynamics and viability.
 :::
   
 <br>
