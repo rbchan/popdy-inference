@@ -11,7 +11,7 @@ lang: en
 
 
 
-## {content-align="center" style="font-size: 150%;"}
+## {content-align="center" style="font-size: 170%;"}
 
 <br>
 
@@ -39,44 +39,84 @@ lang: en
 
 ## Survival
   
+::: {style='font-size: 80%;'}
 The objective of survival analysis it to understand the factors influencing mortality rates.
-  
+
+<br>
+
+::: {.fragment fragment-index=1}
 Most studies of survival use a "failure time", a.k.a. "time to event" approach.
+:::
   
+<br>
+
+::: {.fragment fragment-index=2}
 These are continuous-time models in which the random variable of interest is the *survival time* ($T$).
+:::
   
+<br>
+
+::: {.fragment fragment-index=3}
 There are many great books about survival analysis, and much of the information can be found online. This is a particularly good resource:
+:::
+:::
   
+::: {.fragment fragment-index=3}
 <center>
-[Princeton course](https://grodri.github.io/survival/index)
+[**Princeton course**](https://grodri.github.io/survival/index)
 </center>
+:::
 
 
 
 ## Censoring
 
+::: {style='font-size: 80%;'}
+
 Typically, we don't observer survival time for all individuals because some are still alive at the end of the observation period, either because transmitter batteries die or we stop monitoring. 
-  
+
+<br>
+
+::: {.fragment}
 These survival times are "right censored", which means that we know they occurred after the observation window, but we don't know their exact value.
+:::
   
+<br>
+
+::: {.fragment}
 There are several types of censoring: 
+
 - Right censoring (common): survival time is in the interval $(U,\infty]$
 - Left censoring (rare): survival time is in the interval $[-\infty,L)$
 - Interval censoring (rare): survival time is in $(a,b]$. 
+:::
+
+:::
     
 
 ## Survival
   
+::: {style='font-size: 80%;'}
 There are 4 quantities that you must understand:
   
 1. Hazard $\lambda(t)$
     * The instantaneous mortality risk
+
+::: {.fragment}
 2. Cummulative hazard $\Lambda(t)$
     * The cummulative mortality risk
+:::
+
+::: {.fragment}
 3. Survivorship $S(t)$
     * The probability of surviving until time $t$
+:::
+
+::: {.fragment}
 4. Probability density $p(t)$
     * The relative probability of dying at time $t$
+:::
+:::
       
   
 
@@ -85,45 +125,66 @@ There are 4 quantities that you must understand:
 
 ## Hazard
 
+::: {style='font-size: 80%;'}
 The continuous-time definition of the hazard rate is the instantaneous mortality risk, conditional on surviving to time $t$:
 $$
   \lambda(t) = \lim_{\Delta_t \to 0} \Pr(t \le T < t+\Delta_t | T\ge t)/\Delta_t
 $$
-  
-  
+
+<br>
+
+::: {.fragment}
 The cumulative hazard can be thought of as the sum of the risks up to time $t$:
 $$
   \Lambda(t) = \int_{0}^t \lambda(j) \,\mathrm{d}j
 $$
+:::
+:::
 
 
 ## Survivorship and probability density
 
+<br>
+
 Survivorship is the probability of surviving to time $t$ or longer:
 $$
-%    S(t) = \Pr(T \ge t) = \exp\left(-\int_{0}^t \lambda(j) \,dj\right)
     S(t) = \Pr(T \ge t) = \exp(-\Lambda(t))
 $$
   
-The probability density is given by the probability of surviving to, and then dying at, time $t$
+
+<br>
+
+::: {.fragment}
+The probability density is given by the probability of surviving to, and then dying at, time $t$:
 $$
     p(t) = S(t)\lambda(t) %\exp\left(-\int_{0}^t \lambda(j) \,dj\right)
 $$
+:::
 
 
 ## Exponential survival times
 
 The simplest survival model is the "exponential model", which assumes that the hazard is constant over time: $\lambda = \lambda(t)$.
-  
+
+<br>
+
+::: {.fragment}
 This implies:
+
 - $S(t) = \exp(-\lambda t)$
 - $p(t) = \lambda \exp(-\lambda t)$
+:::
   
+<br>
+
+::: {.fragment}
 The mean life expectancy is: $\mu = E(T) = 1/\lambda$. 
+:::
 
 
-##  Exponential survival times -- without covariates
+##  [Exponential survival times -- without covariates]{style="font-size: 80%;"}
 
+::: {style='font-size: 80%;'}
 ```{r, echo=-1}
 #| label: sim0
 #| out-width: "60%"
@@ -138,16 +199,19 @@ abline(v=c(mean(survival.time0), 100), col=c("blue", "black"))
 legend("topright", legend=c("Sample mean", "Population mean"),
        col=c("blue", "black"), lwd=2)
 ```
+:::
 
 
 
 
 ## Exponential survival times
 
+
+::: {style='font-size: 80%;'}
 ```{r, echo=-1}
 #| label: sim1
-#| out.width: "50%"
-#| fig.align: 'center'
+#| out-width: "70%"
+#| fig-align: 'center'
 set.seed(7829)
 n <- 200                          ## Sample size
 x <- rnorm(n)                     ## Covariate
@@ -157,16 +221,8 @@ survival.time <- rexp(n, hazard)
 ## summary(survival.time)
 hist(survival.time, xlab="Survival time (time to mortality)", main="")
 ```
+:::
 
-<!-- %  -->
-<!-- %   ## Exponential survival times -->
-<!-- ```{r} -->
-<!-- #| label: sim1-hist -->
-<!-- #| out.width: "0.65<br>textwidth" -->
-<!-- #| fig.align: 'center' -->
-<!-- % hist(survival.time, xlab="Time to mortality", main="") -->
-<!-- ``` -->
-<!-- %  -->
 
 
 ## Censoring
@@ -181,12 +237,17 @@ censored <- ifelse(survival.time>ctime, 1, 0)
 table(censored) ## Most individuals died before censoring time
 ```
 
+<br>
+
+
+::: {.fragment}
 The observed data, with censoring:
 ```{r}
 #| label: cen1
 survival.time.c <- ifelse(censored, ctime, survival.time) 
 summary(survival.time.c)
 ```
+:::
 
 
 :::
@@ -199,15 +260,16 @@ summary(survival.time.c)
 #| fig-width: 8
 #| out-width: '90%'
 #| fig-align: 'center'
-#| echo: false
+#| code-fold: true
 plot(0, type="n", xlim=c(0, ctime), ylim=c(1,20),
      xlab="Time", ylab="Individual")
 abline(h=1:20, col=gray(0.8))
 segments(rep(0, 20), 1:20, survival.time.c[1:20], 1:20)
 points(rep(0,20), 1:20, pch=16, col="seagreen3", cex=1)
-points(survival.time.c[1:20], 1:20, pch=17,
+points(survival.time.c[1:20], 1:20,
+       pch=ifelse(survival.time.c[1:20]==ctime, 18, 17),
        col=ifelse(survival.time.c[1:20]==ctime, "blue", "red"))
-legend(170, 23, c("mortality", "censoring"), pch=17, col=c("red", "blue"),
+legend(170, 24, c("mortality", "censoring"), pch=c(17,18), col=c("red", "blue"),
        xpd=TRUE, horiz=TRUE)
 ```
 
@@ -215,16 +277,19 @@ legend(170, 23, c("mortality", "censoring"), pch=17, col=c("red", "blue"),
 
 ## Kaplan-Meier
 
+::: {style='font-size: 80%;'}
 Before we fit a model, it can be useful to visualize a non-parametric estimator of the survivorship curve.
-  
+
 $$
     \hat{S}(t) = \prod_{j:a_j < t} \left(1 - \frac{d_j}{r_j}\right)
 $$
 
 where
+
 - $a_j$ is the time interval
 - $d_j$ is the number of mortalities in time interval $j$
 - $r_j$ is the number of individuals "at risk" at the beginning of interval $j$
+:::
   
 
 
@@ -254,6 +319,7 @@ summary(pm1 <- survreg(y ~ x, dist="exponential"))
 #| label: plothaz
 #| out-width: "50%"
 #| fig-align: 'center'
+#| code-fold: true
 plot(function(x) exp(beta0 + beta1*x), from=-3, to=3,
      xlab="Covariate", ylab="Hazard", col="black", ylim=c(0, 0.035))
 alpha.hat <- coef(pm1)   ## Extract the estimates
@@ -266,6 +332,7 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 
 ## Semi-parametric survival model
 
+::: {style='font-size: 80%;'}
 The Cox proportional hazards model is of the form:
 $$
     \lambda_i(t) = \lambda_0(t)\exp(\beta_1 x_{i,1} + \beta_2 x_{i,2} + \cdots)
@@ -276,6 +343,7 @@ where $\lambda_0(t)$ is the baseline hazard rate, similar to a Kaplan-Meier haza
 #| label: coxreg
 (cox1 <- coxph(y ~ x))
 ```
+:::
 
 
 ## Semi-parametric survival model
@@ -297,7 +365,9 @@ legend(350, 1, paste("x =", c(-2, 0, 2)), lty=1, col=1:3)
 
 In JAGS, the recommended way of dealing with censoring is with the `dinterval` distribution. 
 
+<center>
 [surv-exp.jag](surv-exp.jag)
+</center>
 
 
 ```{r}
@@ -320,6 +390,7 @@ library(coda)
 
 ## Bayesian inference
   
+::: {style='font-size: 80%;'}
 Prepare data by treating censored (unobserved) survival times as `NA`. 
 
 ```{r}
@@ -331,13 +402,16 @@ jd.exp <- list(survivalTime=survival.time.jags, censored=censored,
                x=x, n=length(censored))
 ```
 
+::: {.fragment}
 Inits, parameters:
 ```{r}
 #| label: ji-jp-exp
 ji.exp <- function() list(beta0=rnorm(1), beta1=rnorm(1)) 
 jp.exp <- c("beta0", "beta1")
 ```
+:::
 
+::: {.fragment}
 Fit the model
 ```{r}
 #| label: js
@@ -350,6 +424,8 @@ jags.post.samples.exp <- jags.basic(data=jd.exp, inits=ji.exp,
                                     n.chains=3, n.adapt=100, n.burnin=0,
                                     n.iter=2000, parallel=TRUE)
 ```
+:::
+:::
 
 
 
@@ -394,18 +470,24 @@ legend(1, 0.06, c("Posterior sample", "Posterior mean", "Actual"),
 
 ## Discrete-time survival models
 
+::: {style='font-size: 80%;'}
 A simple way of modeling survival is to discretize time and use the following model:
 $$
     z_{i,t} \sim \mathrm{Bern}(z_{i,t-1}\times \phi_t)
 $$
 
 where $z_{i,t}$ indicates if individual $i$ is alive at time $t$ and $\phi$ is the probability of surviving the time interval.
+
+<br>
   
-  
+::: {.fragment}
 In discrete time we have:
+
 - Hazard: $\lambda_t = 1-\phi_t = \Pr(t \le T < t+1 | T\ge t)$
 - Survivorship: $S_t = \prod_{j=1}^t \phi_j$
 - Probability density: $p(t) = S_t \lambda_t$
+:::
+:::
   
 
 
@@ -447,7 +529,9 @@ z[1:15,]
 
 ## Discrete-time survival in JAGS
 
+<center>
 [surv-dtime.jag](surv-dtime.jag)
+</center>
 
 ```{r}
 #| label: jags-surv-dtime2
@@ -503,11 +587,13 @@ plot(jags.post.samples.dtime0)
 
 ## Posterior survivorship
 
+::: {style='font-size: 80%;'}
 ```{r, echo=-3}
 #| label: phi-post
 #| fig-width: 8
-#| out-width: '60%'
+#| out-width: '70%'
 #| fig-align: 'center'
+#| code-fold: true
 phi.post <- as.matrix(jags.post.samples.dtime0)[,"phi"]
 S.post <- sapply(phi.post, function(x) x^(0:10))
 par(mai=c(0.9,0.9,0.1,0.1))
@@ -518,11 +604,14 @@ lines(0:10, phi^(0:10), col="cadetblue", lwd=3)
 legend(6, 1, c("Posterior sample", "Posterior mean", "Actual"),
        col=c(rgb(0,0.5,1,0.2), "royalblue", "cadetblue"), lty=1, lwd=c(1,3,3))
 ```
+:::
 
 
 ## Time-varying covariates
 
+<center>
 [surv-dtime-tcovs.jag](surv-dtime-tcovs.jag)
+</center>
 
 
 ```{r}
@@ -532,23 +621,29 @@ writeLines(readLines("surv-dtime-tcovs.jag"))
 ```
 
 
-## Competing risks
+## [Competing risks]{style="font-size: 80%;"}
   
+::: {style='font-size: 72%;'}
 Competing risks models are used when there are multiple ways of dying, and we're interested in the cause-specific mortality risk, represented by $K$ hazard functions: 
 $$
     \lambda_{k,t} = \exp(\beta_{0,k} + \beta_{1,k}x_{t} + \cdots)
 $$
   
+::: {.fragment}
 We can model the conditional probability of dying during interval $t$, with a multinomial link function:
 $$
     \pi_{k,t} = \frac{\lambda_{k,t}}{1+\sum_{j=1}^K \lambda_{j,t}}
 $$
 where the final multinomial cell probability is the probability of surviving: $\pi_{K+1,t} = 1-\sum_{k=1}^K \pi_{k,t}$.
+:::
   
+::: {.fragment}
 The data can be modeled with a categorical distribution:
 $$
-    z_{i,t} \sim \mathrm{Cat}({\bm \pi}_t | \mathrm{alive\; at\;} t-1)
+    z_{i,t} \sim \mathrm{Cat}({\bf \pi}_t | \mathrm{alive\; at\;} t-1)
 $$
+:::
+:::
 
 
 
@@ -565,6 +660,9 @@ pi <- lambda / (1+sum(lambda))
 pi[4] <- 1-sum(pi)     ## Probability of surviving t to t+1
 ```
 
+<br>
+
+::: {.fragment}
 Set-up the data as a multi-state indicator
 
 ```{r}
@@ -574,10 +672,12 @@ nDays <- 100
 z <- matrix(NA, nDeer, nDays)
 z[,1] <- 4  ## Everyone starts in state 4 (alive)
 ```
+:::
 
 
 ## Competing risks
 
+::: {style='font-size: 75%;'}
 There are simpler ways of modeling temporal state dynamics, but we will use a general multi-state transition matrix $\Phi$:
 ```{r, echo=-3}
 #| label: comp-risk-Phi
@@ -588,14 +688,12 @@ Phi[4,] <- pi
 ```
 
 
-
-------- | ------- | ----- | ----- | -----
-       | cougar | bear | wolf | alive
-------- | ------- | ----- | ----- | -----
-cougar | 1.000      | 0.000 | 0.000 | 0.000
-bear   | 0.000      | 1.000 | 0.000 | 0.000
-wolf   | 0.000      | 0.000 | 1.000 | 0.000
-alive  | 0.002      | 0.017 | 0.047 | 0.934
+|      | cougar | bear | wolf | alive |
+|-------|-------|-----|-----|-----|
+| cougar | 1.000      | 0.000 | 0.000 | 0.000 |
+| bear   | 0.000      | 1.000 | 0.000 | 0.000 |
+| wolf   | 0.000      | 0.000 | 1.000 | 0.000 |
+| alive  | 0.002      | 0.017 | 0.047 | 0.934 |
 
 
 
@@ -607,12 +705,15 @@ for(i in 1:nDeer) {
     }
 }
 ```
+:::
 
 
 
 ## Competing risks
 
+<center>
 [surv-dtime-comp-risks.jag](surv-dtime-comp-risks.jag)
+</center>
 
 
 ```{r}
@@ -624,6 +725,7 @@ writeLines(readLines("surv-dtime-comp-risks.jag"))
 
 ## JAGS
 
+::: {style='font-size: 80%;'}
 Data
 ```{r}
 #| label: jd-comp-risk
@@ -645,12 +747,15 @@ Fit the model
 ```{r}
 #| label: js-comp-risk
 #| eval: true
+#| message: false
+#| results: 'hide'
 jags.ps.comp.risk <- jags.basic(data=jd.comp.risk, inits=ji.comp.risk,
                                 parameters.to.save=jp.comp.risk,
                                 model.file="surv-dtime-comp-risks.jag",
                                 n.chains=3, n.adapt=100, n.burnin=0,
                                 n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 
@@ -671,6 +776,8 @@ plot(jags.ps.comp.risk[,c("beta0[1]", "beta0[2]", "beta0[3]")])
 ```{r}
 #| label: post-samps-comp-risk-pi
 #| fig-align: 'center'
+#| fig-width: 7
+#| fig-height: 9
 #| out-width: '75%'
 #| echo: false
 plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
@@ -679,32 +786,55 @@ plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
 
 
 
-## Assumptions of failure time models
+## [Assumptions of failure time models]{style="font-size: 80%;"}
 
+::: {style='font-size: 75%;'}
 Random sampling
+
 - Very hard to do in practice
   
 Independent survival times
+
 - Problematic for gregarious species
   
 Mortality times are known exactly
+
 - Also hard
   
 Censoring is random and independent of survival
-- This will be a problem if transmitters fail when animals die, and you don't know if they died.
+
+- Problematic if transmitters fail when animals die.
   
 Well-defined time origin
+
 - Animals don't have to be released at the same time 
+:::
   
 
 
 ## Looking ahead
 
+::: {style='font-size: 90%;'}
 Most "open population" mark-recapture models use discrete-time survival models, with observation error coming from imperfect detection.
-  
+
+<br>
+
+::: {.fragment}
 Statisticians call these hidden Markov models.
+:::
   
+<br>
+
+::: {.fragment}
 Next time, we'll focus on one of the most important examples: the Cormack-Jolly-Seber model.
+:::
   
-No assignment again this week. Work on your papers and presentations. 
+<br>
+
+::: {.fragment}
+<center>
+**No assignment again this week. Work on your papers and presentations.**
+</center>
+:::
+:::
 
