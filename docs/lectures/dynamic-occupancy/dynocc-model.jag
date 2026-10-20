@@ -1,0 +1,24 @@
+model {
+
+psi1 ~ dunif(0, 1)     ## initial occupancy
+epsilon ~ dunif(0, 1)  ## local extinction
+gamma ~ dunif(0, 1)    ## local colonization
+p ~ dunif(0, 1)        ## detection prob
+
+for(i in 1:nSites) {
+  psi[i,1] <- psi1
+  z[i,1] ~ dbern(psi[i,1])
+  for(k in 2:K) {
+    psi[i,k] <- z[i,k-1]*(1-epsilon) + (1-z[i,k-1])*gamma
+    z[i,k] ~ dbern(psi[i,k])
+  }
+  for(k in 1:K) {
+    for(j in 1:J) {
+      y[i,j,k] ~ dbern(z[i,k]*p)
+  } } }
+
+for(k in 1:K) {
+  N[k] <- sum(z[,k]) ## Sites occupied
+}
+
+}

@@ -1,0 +1,42 @@
+/* Frame for images */
+.framed-img {
+  border: 1px solid #2F4F4F;
+  padding: 2px;
+  background-color: #FFFFFF;
+  display: inline-block;
+}
+
+
+/* Reduce the font size of regular slide titles */
+.reveal h2 {
+  font-size: 1.2em; /* Default is usually around 2em or larger */
+}
+
+
+/* Beamer-like blocks */
+/* Ensure the custom block behaves like a standard layout container */
+.reveal .beamer-block {
+  border: 2px solid #123456;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+  overflow: hidden;
+  display: block !important;
+  position: relative;
+}
+
+/* Ensure the header block doesn't capture slide-advance click triggers */
+.reveal .beamer-block h4 {
+  background-color: #123456;
+  color: white;
+  margin: 0 !important;
+  padding: 6px 10px;
+  font-size: 1em;
+  user-select: none; /* Prevents text highlights from hijacking focus */
+}
+
+.reveal .beamer-block .beamer-block-content {
+  padding: 10px;
+  display: block;
+}
+

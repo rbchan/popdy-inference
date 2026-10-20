@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs/
+  render:
+    - "*.qmd"
+    - "!*.R"
 
 website:
   title: "Inference for Models of Fish and Wildlife Population Dynamics"
