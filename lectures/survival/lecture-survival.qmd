@@ -329,6 +329,30 @@ legend(0.5, 0.035, c("Estimated hazard", "Hazard"), col=c(4,1), lty=2:1)
 ```
 
 
+## Semi-parametric survival model
+
+::: {.columns}
+
+::: {.column width='40%'}
+![](figs/david_cox.jpeg)
+:::
+
+::: {.column width='60%'}
+
+::: {style='font-size: 80%;'}
+> In the light of some of the further results one knows since, I think I would normally want to tackle problems parametrically, so I would take the underlying hazard to be a Weibull or something. I'm not keen on nonparametric formulations usually.
+:::
+
+::: {style='font-size: 60%;'}
+Sir David Cox interviewed by Nancy Reid (Statistical Sicence 1994)
+:::
+
+:::
+
+
+:::
+
+
 
 ## Semi-parametric survival model
 
@@ -789,27 +813,25 @@ plot(jags.ps.comp.risk[,c("pi[1]", "pi[2]", "pi[3]", "pi[4]")])
 ## [Assumptions of failure time models]{style="font-size: 80%;"}
 
 ::: {style='font-size: 75%;'}
-Random sampling
+::: {.columns}
 
-- Very hard to do in practice
-  
-Independent survival times
-
-- Problematic for gregarious species
-  
-Mortality times are known exactly
-
-- Also hard
-  
-Censoring is random and independent of survival
-
-- Problematic if transmitters fail when animals die.
-  
-Well-defined time origin
-
-- Animals don't have to be released at the same time 
+::: {.column width='50%' .incremental}
+1. Random sampling
+    - Very hard to do in practice
+2. Independent survival times
+    - Problematic for gregarious species
+3. Mortality times are known exactly
+    - Also hard
 :::
-  
+
+::: {.column width='50%' .incremental}
+4. Censoring is random and independent of survival
+    - Problematic if transmitters fail when animals die.
+5. Well-defined time origin
+    - Animals don't have to be released at the same time 
+:::
+:::
+:::
 
 
 ## Looking ahead

@@ -130,11 +130,18 @@
     "href": "lectures/survival/lecture-survival.html#semi-parametric-survival-model",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Semi-parametric survival model",
-    "text": "Semi-parametric survival model\n\nThe Cox proportional hazards model is of the form: \\[\n    \\lambda_i(t) = \\lambda_0(t)\\exp(\\beta_1 x_{i,1} + \\beta_2 x_{i,2} + \\cdots)\n\\] where \\(\\lambda_0(t)\\) is the baseline hazard rate, similar to a Kaplan-Meier hazard.\n\n(cox1 &lt;- coxph(y ~ x))\n\nCall:\ncoxph(formula = y ~ x)\n\n      coef exp(coef) se(coef)      z        p\nx -0.45875   0.63207  0.07584 -6.049 1.46e-09\n\nLikelihood ratio test=37.81  on 1 df, p=7.801e-10\nn= 200, number of events= 192"
+    "text": "Semi-parametric survival model\n\n\n\n\n\n\nIn the light of some of the further results one knows since, I think I would normally want to tackle problems parametrically, so I would take the underlying hazard to be a Weibull or something. I’m not keen on nonparametric formulations usually.\n\n\n\nSir David Cox interviewed by Nancy Reid (Statistical Sicence 1994)"
   },
   {
     "objectID": "lectures/survival/lecture-survival.html#semi-parametric-survival-model-1",
     "href": "lectures/survival/lecture-survival.html#semi-parametric-survival-model-1",
+    "title": "Inference for Models of Fish and Wildlife Population Dynamics",
+    "section": "Semi-parametric survival model",
+    "text": "Semi-parametric survival model\n\nThe Cox proportional hazards model is of the form: \\[\n    \\lambda_i(t) = \\lambda_0(t)\\exp(\\beta_1 x_{i,1} + \\beta_2 x_{i,2} + \\cdots)\n\\] where \\(\\lambda_0(t)\\) is the baseline hazard rate, similar to a Kaplan-Meier hazard.\n\n(cox1 &lt;- coxph(y ~ x))\n\nCall:\ncoxph(formula = y ~ x)\n\n      coef exp(coef) se(coef)      z        p\nx -0.45875   0.63207  0.07584 -6.049 1.46e-09\n\nLikelihood ratio test=37.81  on 1 df, p=7.801e-10\nn= 200, number of events= 192"
+  },
+  {
+    "objectID": "lectures/survival/lecture-survival.html#semi-parametric-survival-model-2",
+    "href": "lectures/survival/lecture-survival.html#semi-parametric-survival-model-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Semi-parametric survival model",
     "text": "Semi-parametric survival model\n\nplot(survfit(cox1, newdata=data.frame(x=c(-2,0,2))),\n     xlab=\"Time\", ylab=\"Survivorship\", col=1:3,\n     main=\"Cox proportional hazards fit\")\nlegend(350, 1, paste(\"x =\", c(-2, 0, 2)), lty=1, col=1:3)"
@@ -277,7 +284,7 @@
     "href": "lectures/survival/lecture-survival.html#assumptions-of-failure-time-models",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Assumptions of failure time models",
-    "text": "Assumptions of failure time models\n\nRandom sampling\n\nVery hard to do in practice\n\nIndependent survival times\n\nProblematic for gregarious species\n\nMortality times are known exactly\n\nAlso hard\n\nCensoring is random and independent of survival\n\nProblematic if transmitters fail when animals die.\n\nWell-defined time origin\n\nAnimals don’t have to be released at the same time"
+    "text": "Assumptions of failure time models\n\n\n\n\nRandom sampling\n\nVery hard to do in practice\n\nIndependent survival times\n\nProblematic for gregarious species\n\nMortality times are known exactly\n\nAlso hard\n\n\n\n\nCensoring is random and independent of survival\n\nProblematic if transmitters fail when animals die.\n\nWell-defined time origin\n\nAnimals don’t have to be released at the same time"
   },
   {
     "objectID": "lectures/survival/lecture-survival.html#looking-ahead",

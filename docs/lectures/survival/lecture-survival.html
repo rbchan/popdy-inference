@@ -486,6 +486,22 @@ n= 200 </code></pre>
 <img data-src="lecture-survival_files/figure-revealjs/plothaz-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
 <section id="semi-parametric-survival-model" class="slide level2">
 <h2>Semi-parametric survival model</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="figs/david_cox.jpeg"></p>
+</div><div class="column" style="width:60%;">
+<div style="font-size: 80%;">
+<blockquote>
+<p>In the light of some of the further results one knows since, I think I would normally want to tackle problems parametrically, so I would take the underlying hazard to be a Weibull or something. I’m not keen on nonparametric formulations usually.</p>
+</blockquote>
+</div>
+<div style="font-size: 60%;">
+<p>Sir David Cox interviewed by Nancy Reid (Statistical Sicence 1994)</p>
+</div>
+</div></div>
+</section>
+<section id="semi-parametric-survival-model-1" class="slide level2">
+<h2>Semi-parametric survival model</h2>
 <div style="font-size: 80%;">
 <p>The Cox proportional hazards model is of the form: <span class="math display">\[
     \lambda_i(t) = \lambda_0(t)\exp(\beta_1 x_{i,1} + \beta_2 x_{i,2} + \cdots)
@@ -505,7 +521,7 @@ n= 200, number of events= 192 </code></pre>
 </div>
 </div>
 </section>
-<section id="semi-parametric-survival-model-1" class="slide level2">
+<section id="semi-parametric-survival-model-2" class="slide level2">
 <h2>Semi-parametric survival model</h2>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">plot</span>(<span class="fu">survfit</span>(cox1, <span class="at">newdata=</span><span class="fu">data.frame</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">2</span>))),</span>
@@ -909,26 +925,34 @@ for(i in 1:n) {
 <section id="assumptions-of-failure-time-models" class="slide level2">
 <h2><span style="font-size: 80%;">Assumptions of failure time models</span></h2>
 <div style="font-size: 75%;">
-<p>Random sampling</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ol type="1">
+<li class="fragment">Random sampling
 <ul>
-<li>Very hard to do in practice</li>
-</ul>
-<p>Independent survival times</p>
+<li class="fragment">Very hard to do in practice</li>
+</ul></li>
+<li class="fragment">Independent survival times
 <ul>
-<li>Problematic for gregarious species</li>
-</ul>
-<p>Mortality times are known exactly</p>
+<li class="fragment">Problematic for gregarious species</li>
+</ul></li>
+<li class="fragment">Mortality times are known exactly
 <ul>
-<li>Also hard</li>
-</ul>
-<p>Censoring is random and independent of survival</p>
+<li class="fragment">Also hard</li>
+</ul></li>
+</ol>
+</div><div class="column" style="width:50%;">
+<ol start="4" type="1">
+<li class="fragment">Censoring is random and independent of survival
 <ul>
-<li>Problematic if transmitters fail when animals die.</li>
-</ul>
-<p>Well-defined time origin</p>
+<li class="fragment">Problematic if transmitters fail when animals die.</li>
+</ul></li>
+<li class="fragment">Well-defined time origin
 <ul>
-<li>Animals don’t have to be released at the same time</li>
-</ul>
+<li class="fragment">Animals don’t have to be released at the same time</li>
+</ul></li>
+</ol>
+</div></div>
 </div>
 </section>
 <section id="looking-ahead" class="slide level2">
