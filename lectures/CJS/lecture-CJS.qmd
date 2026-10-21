@@ -1,0 +1,756 @@
+---
+## title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    pagetitle: 'Cormack-Jolly-Seber Model'
+    slide-number: true
+    echo: true
+lang: en
+---
+
+## {content-align="center" style="font-size: 170%;"}
+
+<br>
+
+<center>
+  
+
+**Open Populations and the Spatial Cormack-Jolly-Seber Model**
+  
+<br>
+
+
+
+::: {style='font-size: 60%;'}
+  WILD(FISH) 8390 <br>
+  Inference for Models of Fish and Wildlife Population Dynamics <br>
+:::
+  
+</center>
+
+
+
+# Overview {visibility="hidden"}
+  
+
+
+
+## Open populations
+  
+Overview
+
+- Population closure is an assumption we make to estimate density in short time periods.
+- If we want to study the processes governing spatial {and temporal} variation in density, we need to move  beyond closed population models.
+- Open population SCR models allow us to model spatial and temporal variation in survival, recruitment, and movement.
+  
+
+
+## Types of closure
+  
+Geographic closure
+    
+- Animals cannot enter or leave the study area
+- But what is the study area in non-spatial settings?
+- What is a non-spatial setting?
+  
+Demographic closure
+  
+- No births or deaths
+- Reasonable over short time periods
+- But temporal dynamics are often of chief interest
+  
+
+
+## Two varieties of open models
+  
+Cormack-Jolly-Seber Model
+    
+- Primarily used to estimate survival
+- When permanent emigration is possible, estimate is of "apparent survival" ($\phi$)
+- Apparent survival is the probability of surviving and not leaving the study area permanently
+- CJS models are not used to estimate abundance or recruitment
+  
+
+::: {.fragment}
+Jolly-Seber model
+  
+- Traditionally used to estimate abundance, (apparent) survival, and recruitment
+:::
+  
+  
+::: {.fragment}
+<center>
+Both classes of models can be made spatially explicit to study movement, among other things
+</center>
+:::
+
+
+
+
+# Non-spatial CJS
+
+
+## Non-spatial CJS model
+  
+Notes
+    
+- Typical scenario involves "releasing" indviduals and recapturing them over time
+- We don't model initial capture process
+- Instead, we "condition on initial capture"
+- As an example, imagine releasing a bunch of tagged animals in a translocation study
+- Because we aren't estimating $N$, no data augmentation required
+- It is possible to estimate parameters using 1 sampling occasion per season
+- Robust design provides more information about $p$
+  
+
+
+## Non-spatial CJS model
+
+State model
+$$
+    z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1} \times \phi)
+$$
+  
+Observation model
+$$
+    y_{i,t} \sim \mbox{Bernoulli}(z_{i,t} \times p)
+$$
+  
+where
+  
+- $z_{i,t}$ is "alive state" of individual $i$ at time $t$
+- $\phi$ is "apparent survival". Probability of being alive and not permanently emigrating. 
+- $y_{i,t}=1$ if individual was encountered, $y_{i,t}=0$ otherwise.
+  
+
+
+
+## Simulating CJS data without robust design
+
+Parameters and dimensions
+
+```{r, echo=-1}
+#| label: sim-norobust
+set.seed(34918)  
+T <- 10               ## primary periods (eg, years)
+K <- 1                ## only 1 secondary sampling occasion
+n <- 25
+phi <- 0.7
+p <- 0.4
+z <- matrix(NA, n, T)
+y <- matrix(NA, n, T)
+first <- rpois(n, 1)+1 ## random release dates
+```
+
+Generate $z$ and $y$
+```{r}
+#| label: sim-norbust2
+for(i in 1:n) {
+    z[i,first[i]] <- 1  ## Known alive at release
+    y[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi) ## Alive/dead state
+        y[i,t] <- rbinom(1, 1, z[i,t]*p)     ## Data
+    }
+}
+```
+
+
+
+## Simulated CJS data
+
+::: {.columns}
+::: {.column width='50%'}
+
+Latent alive/dead state
+```{r}
+#| label: z
+z[,1:7]
+```
+:::
+::: {.column width='50%'}
+Encounter histories (data)
+
+```{r}
+#| label: y
+y[,1:7]
+```
+:::
+:::
+
+
+
+```{r}
+#| label: install-marked
+#| include: false
+#| eval: false
+if(!require(marked)) install.packages("marked")
+library(marked)
+```
+
+## Likelihood analysis
+  
+We can fit CJS models in R with the `RMark' or `marked' packages. We'll use `marked', which requires the capture histories to be formatted as a character vector named `ch`. 
+
+```{r}
+#| label: marked-data
+#| message: false
+#| report: false
+library(marked)
+y.marked <- ifelse(is.na(y), 0, y)
+cap.histories <- data.frame(
+    ch=apply(y.marked, 1, paste, collapse=""))
+head(cap.histories, n=3)
+```
+  
+You can use formulas to model covariate effects.
+
+```{r}
+#| label: marked-fit
+#| results: 'hide'
+#| message: false
+fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
+           model.parameters=list(Phi=list(formula=~1),
+                                 p=list(formula=~1)))
+```
+
+
+## Likelihood analysis
+
+Estimates of apparent survival and capture probability.
+```{r}
+#| label: marked-predict
+predict(fm0)
+```
+
+
+## Non-spatial CJS model in JAGS
+
+[CJS-nonspatial.jag](CJS-nonspatial.jag)
+```{r}
+#| label: jags-nonsp
+#| background: 'beige'
+#| comment: ''
+#| echo: false
+writeLines(readLines("CJS-nonspatial.jag"))
+```
+
+
+
+
+```{r}
+#| label: jagsUI
+#| include: false
+#| results: 'hide'
+library(jagsUI)
+library(coda)
+```
+
+
+
+
+## JAGS
+
+Data
+```{r}
+#| label: nonsp-data
+jags.data.nonsp <- list(y=y, n=n, first=first, T=T)
+```
+  
+Initial values for $z$ matrix
+```{r}
+#| label: zi
+zi.nonsp <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi.nonsp[i,(first[i]+1):T] <- 1
+    }
+jags.inits.nonsp <- function() list(phi=runif(1), p=runif(1), z=zi.nonsp)
+jags.pars.nonsp <- c("phi", "p")
+```
+  
+Fit the model
+
+```{r}
+#| label: jc1
+#| message: false
+#| results: 'hide'
+#| cache: true
+library(jagsUI)
+jags.post.samples.nonsp <- jags.basic(data=jags.data.nonsp,
+                                      inits=jags.inits.nonsp,
+                                      parameters.to.save=jags.pars.nonsp,
+                                      model.file="CJS-nonspatial.jag",
+                                      n.chains=3, n.adapt=100, n.burnin=0,
+                                      n.iter=2000, parallel=TRUE)
+```
+
+
+
+
+## Posterior distributions
+
+```{r}
+#| label: jc1-plot
+#| out-width: "65%"
+#| fig-align: 'center'
+plot(jags.post.samples.nonsp)
+```
+
+
+
+# Spatial CJS
+
+
+
+## Spatial CJS
+  
+Why spatial?
+    
+- Comes with all the benefits of other SCR models
+- Allows for movement between primary periods, making it possible to separate survival from permanent emigration
+- Movement itself may be of interest, such as in studies of dispersal
+  
+We begin by ignoring movement, but we use the robust design
+
+
+
+
+## Simulating spatial CJS data with robust design
+
+::: {.columns}
+::: {.column width='50%'}
+Parameters and data dimensions
+
+```{r}
+#| label: sim2
+T <- 10       # primary occasions
+K <- 3        # secondary occasions
+n <- 25       # nIndividuals
+phi <- 0.7
+p0 <- 0.4     # baseline capture prob
+sigma <- 0.1  # scale parameter
+```
+
+Traps, activity centers, and <br> detection probability
+```{r}
+#| label: X
+co <- seq(0.25, 0.75, length=5)
+x <- cbind(rep(co, each=5),
+           rep(co, times=5))
+J <- nrow(x)
+xlim <- ylim <- c(0,1)
+s <- cbind(runif(n, xlim[1], xlim[2]),
+           runif(n, ylim[1], ylim[2]))
+d <- p.sp <- matrix(NA, n, J)
+for(i in 1:n) {
+    d[i,] <- sqrt((s[i,1]-x[,1])^2 +
+                  (s[i,2]-x[,2])^2)
+    p.sp[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
+}
+```
+:::
+
+
+::: {.column width='50%'}
+Generate $z$ and $y$
+```{r}
+#| label: z2
+z <- matrix(NA, n, T)
+y.sp <- array(NA, c(n, J, K, T)) ## 4D array
+first <- rpois(n, 1)+1 ## random release dates
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1,
+                         z[i,t-1]*phi)
+        for(j in 1:J) {
+            y.sp[i,j,1:K,t] <- rbinom(K, 1,
+                z[i,t]*p.sp[i,j])
+        }
+    }
+}
+```
+:::
+:::
+
+
+
+
+## Likelihood analysis of spatial CJS model
+
+We'll use the R package 'openpopscr'^[Another option is the
+openCR' package.] for model fitting. It isn't on CRAN, but you can install it from github using the following commands.
+```{r}
+#| label: install-openpopscr
+#| message: false
+#| results: 'hide'
+#| eval: false
+library(remotes)
+install_github("r-glennie/openpopscr", build = TRUE,
+               build_opts = c("--no-resave-data", "--no-manual"),
+               build_vignettes = TRUE)
+library(openpopscr)
+library(secr)
+```
+
+If you're on Windows, you might have to install Rtools first.
+
+\url{https://cran.r-project.org/bin/windows/Rtools/}
+
+
+
+```{r}
+#| include: false
+library(secr)
+library(openpopscr)
+```
+
+
+## Likelihood analysis of spatial CJS model
+
+Begin by making a mask in 'secr'
+```{r}
+#| label: mask
+#| out-width: "60%"
+#| fig-align: "center"
+trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
+traps <- read.traps(data=trap.df, detector="proximity")
+mask <- make.mask(traps=traps, buffer=250)
+plot(mask); points(traps, pch=3, col="blue", lwd=2)
+```
+
+
+## Likelihood analysis of spatial CJS model
+
+Format for `secr'
+```{r}
+#| label: CJS-model-new
+y.sp.secr <- y.sp
+y.sp.secr[is.na(y.sp)] <- 0
+caps <- data.frame(session=1,
+                   animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),
+                   occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),
+                   trap=rep(slice.index(y.sp.secr, 2), y.sp.secr))
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=30)
+```
+
+Then format for `openpopscr'
+```{r}
+#| label: format-openpop
+cjs.data <- ScrData$new(capthist, mask, primary=rep(1:10, each=3))
+```
+
+
+## Likelihood analysis
+
+Create the model object and then fit it
+```{r}
+#| label: cjs-mod-fit
+#| results: 'hide'
+#| cache: true
+mod <- CjsModel$new(list(lambda0~1, sigma~1, phi~1), cjs.data,
+                    start=list(lambda0=1.5, sigma=50, phi=0.5))
+mod$fit()
+mod
+```
+
+Back-transform
+```{r}
+#| label: cjs-mod-est
+mod$get_par("lambda0", k = 1, j = 1)
+mod$get_par("sigma", k = 1, j = 1)
+mod$get_par("phi", k = 1, m=1)
+```
+
+
+
+
+
+## Spatial CJS model in JAGS
+
+[CJS-spatial.jag](CJS-spatial.jag)
+
+```{r}
+#| label: jags-sp
+#| background: 'beige'
+#| comment: ''
+#| echo: false
+writeLines(readLines("CJS-spatial.jag"))
+```
+
+
+## JAGS
+
+Data
+```{r}
+#| label: sp-data
+jags.data.sp <- list(y=y.sp, n=n, first=first, x=x,
+                     J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+```
+Initial values for $z$ matrix
+
+```{r}
+#| label: ji2
+zi.sp <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi.sp[i,(first[i]+1):T] <- 1
+    }
+jags.inits.sp <- function() list(phi=runif(1), z=zi.sp)
+jags.pars.sp <- c("phi", "p0", "sigma")
+```
+
+
+Fit the model
+
+```{r}
+#| label: jc2
+#| cache: true
+#| results: 'hide'
+jags.post.samples.sp <- jags.basic(data=jags.data.sp,
+                                   inits=jags.inits.sp,
+                                   parameters.to.save=jags.pars.sp,
+                                   model.file="CJS-spatial.jag",
+                                   n.chains=3, n.adapt=100, n.burnin=0,
+                                   n.iter=2000, parallel=TRUE)
+```
+
+
+
+## Posterior distributions
+
+```{r}
+#| label: jc2-plot
+#| out-width: "60%"
+#| fig-align: 'center'
+plot(jags.post.samples.sp)
+```
+
+
+
+
+
+# Spatial CJS with movement
+
+
+
+## Modeling dispersal among years
+
+What if activity centers move between years?
+  
+- Could affect estimates of detection parameters
+- More importantly, might provide opportunity to study dispersal
+  
+  
+Potential movement models}
+    
+- Random walk: ${\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)$
+- Random walk with attraction point: ${\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)$
+- Extensions can be made to allow for resource selection,
+      landscape resistance, etc.^[https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473]. 
+  
+
+
+
+
+
+## Simulating spatial CJS data with dispersal
+
+::: {.columns}
+::: {.column width='50%'}
+
+Parameters and data dimensions
+```{r}
+#| label: move
+T <- 10; K <- 5; n <- 25 ## same as before
+phi <- 0.9; p0 <- 0.4; sigma <- 0.05
+## dispersal parameter (of random walk)
+tau <- 0.05
+```
+
+Activity centers take a random walk
+```{r}
+#| label: s
+## state-space should be bigger
+xlim <- ylim <- c(0, 1)
+first <- rpois(n, 1)+1
+s <- array(NA, c(n, 2, T))
+for(i in 1:n) {
+    s[i,,first[i]] <-
+        cbind(runif(1, xlim[1], xlim[2]),
+              runif(1, ylim[1], ylim[2]))
+    for(t in (first[i]+1):T) {
+        s[i,1,t] <- rnorm(1, s[i,1,t-1], tau)
+        s[i,2,t] <- rnorm(1, s[i,2,t-1], tau)
+    }
+}
+d <- p <- array(NA, c(n, J, T))
+for(i in 1:n) {
+    for(t in 1:T) {
+        d[i,,t] <- sqrt((s[i,1,t]-x[,1])^2 +
+                        (s[i,2,t]-x[,2])^2)
+        p[i,,t] <- p0*exp(-d[i,,t]^2 /
+                          (2*sigma^2))
+    }
+}
+```
+:::
+    
+::: {.column width='50%'}
+
+Generate $z$ and $y$
+```{r}
+#| label: z3
+z <- matrix(NA, n, T)
+y.move <- array(NA, c(n, J, T)) 
+for(i in 1:n) {
+    z[i,first[i]] <- 1
+    for(t in (first[i]+1):T) {
+        z[i,t] <- rbinom(1, 1, z[i,t-1]*phi)
+        for(j in 1:J) {
+            y.move[i,j,t] <-
+                rbinom(1, K, z[i,t]*p[i,j,t])
+        }
+    }
+}
+```
+:::
+:::
+
+
+
+## Movement of activity center 1
+
+```{r}
+#| label: s1
+#| out-width: "65%"
+#| fig-align: "center"
+plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
+     xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
+points(x, pch=3)
+```
+
+
+
+## Movement of all activity centers
+
+```{r}
+#| label: s-all
+#| out-width: "65%"
+#| fig-align: "center"
+#| echo: false
+par(mai=c(0.1,0.1,0.1,0.1))  
+blue <- seq(0.1, 0.9, length=nrow(s))
+plot(t(s[1,,]), pch=1, type="o", xaxt="n", yaxt="n", frame=FALSE, ann=FALSE,
+     xlim=c(-0.2, 1.2), ylim=c(-0.2, 1.2), asp=1, col=rgb(0,0,blue[1],0.5))
+for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.5))
+points(x, pch=3)
+```
+
+
+## Spatial CJS model with dispersal in JAGS
+  
+[CJS-spatial-move.jag](CJS-spatial-move.jag)
+```{r}
+#| label: jags-sp-move
+#| background: 'beige'
+#| comment: ''
+#| echo: false
+writeLines(readLines("CJS-spatial-move.jag"))
+```
+
+
+
+## JAGS
+  
+Data
+```{r}
+#| label: sp-move-data
+jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
+                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+```
+  Initial values for $z$, and parameters to monitor
+```{r}
+#| label: ji3
+zi <- matrix(NA, n, T)
+for(i in 1:n) {
+    zi[i,(first[i]+1):T] <- 1
+    }
+ji.sp.move <- function() list(phi=runif(1), z=zi, s=s) ## Cheating with s
+jp.sp.move <- c("phi", "p0", "sigma", "tau")
+good1 <- which.max(rowSums(z, na.rm=TRUE)+rowSums(y.move, na.rm=TRUE))
+time1 <- first[good1]:T
+jp.s1x <- paste0("s[", good1, ",1,", time1, "]")
+jp.s1y <- paste0("s[", good1, ",2,", time1, "]")
+jp.z1 <- paste0("z[", good1, ",", time1, "]") 
+```
+  
+Fit the model
+```{r}
+#| label: jc3
+#| results: 'hide'
+#| cache: true
+jps.sp.move <- jags.basic(data=jd.sp.move,
+                          inits=ji.sp.move,
+                          parameters.to.save=
+                              c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),
+                          model.file="CJS-spatial-move.jag",
+                          n.chains=3, n.adapt=100, n.burnin=0,
+                          n.iter=2000, parallel=TRUE)
+```
+
+
+## Posterior distributions
+```{r}
+#| label: jc3-plot
+#| out-width: "60%"
+#| fig-align: 'center'
+plot(jps.sp.move[,jp.sp.move])
+```
+
+
+## Posterior movement path
+
+```{r}
+#| label: jc3-s
+#| out-width: '80%'
+#| fig-align: 'center'
+#| echo: false
+s1.post <- as.matrix(window(jps.sp.move[,c(jp.s1x,jp.s1y)], start=1501, thin=10))
+z1.post <- as.matrix(window(jps.sp.move[,jp.z1], start=1501, thin=10))
+plot(x, pch=3, xlim=c(0,1), ylim=c(0,1), asp=1, ann=FALSE)
+for(i in 1:nrow(s1.post)) {
+    alive1 <- which(z1.post[i,]==1)
+    T1 <- length(alive1)
+    arrows(s1.post[i,alive1[-T1]], s1.post[i,(alive1+T1)[-T1]],
+           s1.post[i,alive1[-1]], s1.post[i,(alive1+T1)[-1]],
+           col=rgb(0,0,1,0.1), length=0.05)
+}
+traps1 <- which(rowSums(y.move[good1,,], na.rm=TRUE)>0)
+points(x[traps1,,drop=FALSE], pch=3, cex=2, lwd=2, col="red")
+lines(t(s[good1,,]), type="o", pch=16, col="blue")
+```
+
+
+
+
+## Summary
+
+Spatial CJS models allow for inference about survival, movement, and capture probability.
+
+We could have considered many other movement models.
+
+Next, we'll use Jolly-Seber models to study spatio-temporal variation in abundance and recruitment.
+
+
+
+
+
+
+
+
+
+
+
+
+
