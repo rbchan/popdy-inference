@@ -184,19 +184,18 @@ y[,1:7]
 ```{r}
 #| label: install-marked
 #| include: false
-#| eval: false
+#| eval: true
 if(!require(marked)) install.packages("marked")
 library(marked)
 ```
 
 ## Likelihood analysis
   
-We can fit CJS models in R with the `RMark' or `marked' packages. We'll use `marked', which requires the capture histories to be formatted as a character vector named `ch`. 
+We can fit CJS models in R with the 'RMark' or 'marked' packages. We'll use 'marked', which requires the capture histories to be formatted as a character vector named `ch`. 
 
 ```{r}
 #| label: marked-data
 #| message: false
-#| report: false
 library(marked)
 y.marked <- ifelse(is.na(y), 0, y)
 cap.histories <- data.frame(
