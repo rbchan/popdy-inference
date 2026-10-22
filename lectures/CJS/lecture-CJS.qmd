@@ -173,7 +173,7 @@ z[,1:7]
 Encounter histories (data)
 
 ```{r}
-#| label: y
+#| label: y-peak
 y[,1:7]
 ```
 :::
@@ -195,7 +195,6 @@ We can fit CJS models in R with the 'RMark' or 'marked' packages. We'll use 'mar
 
 ```{r}
 #| label: marked-data
-#| message: false
 library(marked)
 y.marked <- ifelse(is.na(y), 0, y)
 cap.histories <- data.frame(
@@ -208,7 +207,7 @@ You can use formulas to model covariate effects.
 ```{r}
 #| label: marked-fit
 #| results: 'hide'
-#| message: false
+#| warning: false
 fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
            model.parameters=list(Phi=list(formula=~1),
                                  p=list(formula=~1)))
@@ -395,11 +394,12 @@ library(secr)
 
 If you're on Windows, you might have to install Rtools first.
 
-\url{https://cran.r-project.org/bin/windows/Rtools/}
+[https://cran.r-project.org/bin/windows/Rtools/]
 
 
 
 ```{r}
+#| label: load
 #| include: false
 library(secr)
 library(openpopscr)
@@ -472,8 +472,6 @@ mod$get_par("phi", k = 1, m=1)
 
 ```{r}
 #| label: jags-sp
-#| background: 'beige'
-#| comment: ''
 #| echo: false
 writeLines(readLines("CJS-spatial.jag"))
 ```
