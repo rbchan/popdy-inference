@@ -37,33 +37,42 @@ lang: en
 
 
 ## Open populations
+
+<br>
   
+::: {style='font-size: 90%;'}
 Overview
 
 - Population closure is an assumption we make to estimate density in short time periods.
-- If we want to study the processes governing spatial {and temporal} variation in density, we need to move  beyond closed population models.
+- If we want to study the processes governing spatial *and temporal* variation in density, we need to move  beyond closed population models.
 - Open population SCR models allow us to model spatial and temporal variation in survival, recruitment, and movement.
+:::
   
 
 
 ## Types of closure
   
+::: {style='font-size: 80%;'}
 Geographic closure
     
 - Animals cannot enter or leave the study area
 - But what is the study area in non-spatial settings?
 - What is a non-spatial setting?
   
+::: {.fragment}
 Demographic closure
   
 - No births or deaths
 - Reasonable over short time periods
 - But temporal dynamics are often of chief interest
+:::
+:::
   
 
 
-## Two varieties of open models
+## [Two varieties of open mark-recapture models]{style="font-size: 80%;"}
   
+::: {style='font-size: 80%;'}
 Cormack-Jolly-Seber Model
     
 - Primarily used to estimate survival
@@ -84,6 +93,7 @@ Jolly-Seber model
 Both classes of models can be made spatially explicit to study movement, among other things
 </center>
 :::
+:::
 
 
 
@@ -93,8 +103,11 @@ Both classes of models can be made spatially explicit to study movement, among o
 
 ## Non-spatial CJS model
   
+::: {style='font-size: 80%;'}
 Notes
     
+::: {.incremental}
+
 - Typical scenario involves "releasing" indviduals and recapturing them over time
 - We don't model initial capture process
 - Instead, we "condition on initial capture"
@@ -102,32 +115,42 @@ Notes
 - Because we aren't estimating $N$, no data augmentation required
 - It is possible to estimate parameters using 1 sampling occasion per season
 - Robust design provides more information about $p$
+:::
+:::
+
   
 
 
 ## Non-spatial CJS model
 
+::: {style='font-size: 80%;'}
 State model
 $$
     z_{i,t} \sim \mbox{Bernoulli}(z_{i,t-1} \times \phi)
 $$
   
+::: {.fragment}
 Observation model
 $$
     y_{i,t} \sim \mbox{Bernoulli}(z_{i,t} \times p)
 $$
+:::
   
+::: {.fragment}
 where
   
 - $z_{i,t}$ is "alive state" of individual $i$ at time $t$
 - $\phi$ is "apparent survival". Probability of being alive and not permanently emigrating. 
 - $y_{i,t}=1$ if individual was encountered, $y_{i,t}=0$ otherwise.
+:::
   
+:::
 
 
 
-## Simulating CJS data without robust design
+## [Simulating CJS data without robust design]{style="font-size: 80%;"}
 
+::: {style='font-size: 80%;'}
 Parameters and dimensions
 
 ```{r, echo=-1}
@@ -143,6 +166,7 @@ y <- matrix(NA, n, T)
 first <- rpois(n, 1)+1 ## random release dates
 ```
 
+::: {.fragment}
 Generate $z$ and $y$
 ```{r}
 #| label: sim-norbust2
@@ -155,11 +179,14 @@ for(i in 1:n) {
     }
 }
 ```
+:::
+:::
 
 
 
 ## Simulated CJS data
 
+::: {style='font-size: 80%;'}
 ::: {.columns}
 ::: {.column width='50%'}
 
@@ -178,6 +205,7 @@ y[,1:7]
 ```
 :::
 :::
+:::
 
 
 
@@ -191,6 +219,7 @@ library(marked)
 
 ## Likelihood analysis
   
+::: {style='font-size: 80%;'}
 We can fit CJS models in R with the 'RMark' or 'marked' packages. We'll use 'marked', which requires the capture histories to be formatted as a character vector named `ch`. 
 
 ```{r}
@@ -212,6 +241,7 @@ fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
            model.parameters=list(Phi=list(formula=~1),
                                  p=list(formula=~1)))
 ```
+:::
 
 
 ## Likelihood analysis
@@ -250,6 +280,7 @@ library(coda)
 
 ## JAGS
 
+::: {style='font-size: 80%;'}
 Data
 ```{r}
 #| label: nonsp-data
@@ -282,6 +313,7 @@ jags.post.samples.nonsp <- jags.basic(data=jags.data.nonsp,
                                       n.chains=3, n.adapt=100, n.burnin=0,
                                       n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 
@@ -309,13 +341,16 @@ Why spatial?
 - Allows for movement between primary periods, making it possible to separate survival from permanent emigration
 - Movement itself may be of interest, such as in studies of dispersal
   
+::: {.fragment}
 We begin by ignoring movement, but we use the robust design
+:::
 
 
 
 
-## Simulating spatial CJS data with robust design
+## [Simulating spatial CJS data with robust design]{style="font-size: 80%;"}
 
+::: {style='font-size: 80%;'}
 ::: {.columns}
 ::: {.column width='50%'}
 Parameters and data dimensions
@@ -372,11 +407,13 @@ for(i in 1:n) {
 :::
 :::
 
+:::
 
 
 
-## Likelihood analysis of spatial CJS model
+## [Likelihood analysis of spatial CJS model]{style="font-size: 80%;"}
 
+::: {style='font-size: 80%;'}
 We'll use the R package 'openpopscr'^[Another option is the
 openCR' package.] for model fitting. It isn't on CRAN, but you can install it from github using the following commands.
 ```{r}
@@ -394,7 +431,8 @@ library(secr)
 
 If you're on Windows, you might have to install Rtools first.
 
-[https://cran.r-project.org/bin/windows/Rtools/]
+[Rtools](https://cran.r-project.org/bin/windows/Rtools/)
+:::
 
 
 
@@ -411,6 +449,8 @@ library(openpopscr)
 Begin by making a mask in 'secr'
 ```{r}
 #| label: mask
+#| fig-height: 7
+#| fig-width: 7
 #| out-width: "60%"
 #| fig-align: "center"
 trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
