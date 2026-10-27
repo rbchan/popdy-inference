@@ -54,14 +54,18 @@ Overview
 
 
 ## Types of closure
-  
+
+<br>
+
 ::: {style='font-size: 80%;'}
 Geographic closure
     
 - Animals cannot enter or leave the study area
 - But what is the study area in non-spatial settings?
-- What is a non-spatial setting?
-  
+<!-- - What is a non-spatial setting? -->
+
+<br>
+
 ::: {.fragment}
 Demographic closure
   
@@ -76,7 +80,7 @@ Demographic closure
 ## [Two varieties of open mark-recapture models]{style="font-size: 80%;"}
   
 ::: {style='font-size: 75%;'}
-Cormack-Jolly-Seber Model
+1. Cormack-Jolly-Seber Model
     
 - Primarily used to estimate survival
 - When permanent emigration is possible, estimate is of "apparent survival" ($\phi$)
@@ -85,15 +89,16 @@ Cormack-Jolly-Seber Model
   
 
 ::: {.fragment}
-Jolly-Seber model
+2. Jolly-Seber model
   
 - Traditionally used to estimate abundance, (apparent) survival, and recruitment
 :::
-  
+
+<br>
   
 ::: {.fragment}
 <center>
-Both classes of models can be made spatially explicit to study movement, among other things
+Both classes of models can be made spatially explicit to study movement, among other processes.
 </center>
 :::
 :::
@@ -105,7 +110,9 @@ Both classes of models can be made spatially explicit to study movement, among o
 
 
 ## Non-spatial CJS model
-  
+
+<br>
+
 ::: {style='font-size: 75%;'}
     
 ::: {.incremental}
@@ -113,7 +120,7 @@ Both classes of models can be made spatially explicit to study movement, among o
 - Typical scenario involves "releasing" indviduals and recapturing them over time.
 - We don't model initial capture process.
 - Instead, we "condition on initial capture."
-- As an example, imagine releasing a bunch of tagged animals in a translocation study.
+- As an example, imagine releasing tagged animals in a translocation study.
 - Because we aren't estimating $N$, no data augmentation required.
 - It is possible to estimate parameters using 1 sampling occasion per season.
 - Robust design provides more information about $p$.
@@ -142,7 +149,7 @@ $$
 where
   
 - $z_{i,t}$ is "alive state" of individual $i$ at time $t$
-- $\phi$ is "apparent survival". Probability of being alive and not permanently emigrating. 
+- $\phi$ is "apparent survival": Pr(surviving and not permanently emigrating). 
 - $y_{i,t}=1$ if individual was encountered, $y_{i,t}=0$ otherwise.
 :::
   
@@ -233,6 +240,7 @@ cap.histories <- data.frame(
 head(cap.histories, n=3)
 ```
   
+::: {.fragment}
 You can use formulas to model covariate effects.
 
 ```{r}
@@ -243,6 +251,7 @@ fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
            model.parameters=list(Phi=list(formula=~1),
                                  p=list(formula=~1)))
 ```
+:::
 :::
 
 
@@ -461,7 +470,7 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 ```
 
 
-## Likelihood analysis of spatial CJS model
+## [Likelihood analysis of spatial CJS model]{style="font-size: 80%;"}
 
 Format for 'secr'
 ```{r}
@@ -592,7 +601,7 @@ Potential movement models
     
 - Random walk: ${\bf s}_t \sim \mbox{Normal}({\bf s}_{t-1}, \tau^2)$
 - Random walk with attraction point: ${\bf s}_t \sim \mbox{Normal}({\bf  s}_{t-1} + \rho(\bar{\bf s} - {\bf s}_{t-1}), \tau^2)$
-- Extensions can be made to allow for resource selection, landscape resistance, etc.^[https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473]. 
+- Extensions can be made to allow for [resource selection, landscape resistance, etc.](https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473). 
 :::
   
 :::
@@ -603,6 +612,7 @@ Potential movement models
 
 ## [Simulating spatial CJS data with dispersal]{style="font-size: 80%;"}
 
+::: {style='font-size: 60%;'}
 ::: {.columns}
 ::: {.column width='50%'}
 
@@ -663,6 +673,7 @@ for(i in 1:n) {
 ```
 :::
 :::
+:::
 
 
 
@@ -670,6 +681,8 @@ for(i in 1:n) {
 
 ```{r}
 #| label: s1
+#| fig-height: 7
+#| fig-width: 7
 #| out-width: "65%"
 #| fig-align: "center"
 #| code-fold: true
@@ -718,17 +731,17 @@ Data
 
 ```{r}
 #| label: sp-move-data
-jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
-                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+jd.sp.move <- list(y=y.move, n=n, first=first, x=x, J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 ```
-  Initial values for $z$, and parameters to monitor
+
+Initial values for $z$, and parameters to monitor
 
 ```{r}
 #| label: ji3
 zi <- matrix(NA, n, T)
 for(i in 1:n) {
-    zi[i,(first[i]+1):T] <- 1
-    }
+  zi[i,(first[i]+1):T] <- 1
+}
 ji.sp.move <- function() list(phi=runif(1), z=zi, s=s) ## Cheating with s
 jp.sp.move <- c("phi", "p0", "sigma", "tau")
 good1 <- which.max(rowSums(z, na.rm=TRUE)+rowSums(y.move, na.rm=TRUE))
@@ -744,13 +757,10 @@ Fit the model
 #| label: jc3
 #| results: 'hide'
 #| cache: true
-jps.sp.move <- jags.basic(data=jd.sp.move,
-                          inits=ji.sp.move,
-                          parameters.to.save=
-                              c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),
-                          model.file="CJS-spatial-move.jag",
-                          n.chains=3, n.adapt=100, n.burnin=0,
-                          n.iter=2000, parallel=TRUE)
+jps.sp.move <- jags.basic(data=jd.sp.move, inits=ji.sp.move,
+                          parameters.to.save=c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),
+                          model.file="CJS-spatial-move.jag", n.chains=3, n.adapt=100,
+                          n.burnin=0, n.iter=2000, parallel=TRUE)
 ```
 :::
 
@@ -759,8 +769,11 @@ jps.sp.move <- jags.basic(data=jd.sp.move,
 
 ```{r}
 #| label: jc3-plot
+#| fig-height: 8
+#| fig-width: 7
 #| out-width: "60%"
 #| fig-align: 'center'
+#| echo: false
 plot(jps.sp.move[,jp.sp.move])
 ```
 
@@ -769,12 +782,14 @@ plot(jps.sp.move[,jp.sp.move])
 
 ```{r}
 #| label: jc3-s
-#| out-width: '80%'
+#| fig-width: 7
+#| fig-height: 7
+#| out-width: '90%'
 #| fig-align: 'center'
 #| echo: false
 s1.post <- as.matrix(window(jps.sp.move[,c(jp.s1x,jp.s1y)], start=1501, thin=10))
 z1.post <- as.matrix(window(jps.sp.move[,jp.z1], start=1501, thin=10))
-plot(x, pch=3, xlim=c(0,1), ylim=c(0,1), asp=1, ann=FALSE)
+plot(x, pch=3, xlim=c(0,1), ylim=c(0,1), asp=1, ann=FALSE, axes=FALSE)
 for(i in 1:nrow(s1.post)) {
     alive1 <- which(z1.post[i,]==1)
     T1 <- length(alive1)
@@ -792,11 +807,21 @@ lines(t(s[good1,,]), type="o", pch=16, col="blue")
 
 ## Summary
 
+<br>
+
 Spatial CJS models allow for inference about survival, movement, and capture probability.
 
-We could have considered many other movement models.
+<br>
 
+::: {.fragment}
+We could have considered many other movement models.
+:::
+
+<br>
+
+::: {.fragment}
 Next, we'll use Jolly-Seber models to study spatio-temporal variation in abundance and recruitment.
+:::
 
 
 

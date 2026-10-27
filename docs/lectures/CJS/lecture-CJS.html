@@ -221,13 +221,14 @@
 </section>
 <section id="types-of-closure" class="slide level2">
 <h2>Types of closure</h2>
+<p><br></p>
 <div style="font-size: 80%;">
 <p>Geographic closure</p>
 <ul>
 <li>Animals cannot enter or leave the study area</li>
-<li>But what is the study area in non-spatial settings?</li>
-<li>What is a non-spatial setting?</li>
+<li>But what is the study area in non-spatial settings? <!-- - What is a non-spatial setting? --></li>
 </ul>
+<p><br></p>
 <div class="fragment">
 <p>Demographic closure</p>
 <ul>
@@ -241,7 +242,9 @@
 <section id="two-varieties-of-open-mark-recapture-models" class="slide level2">
 <h2><span style="font-size: 80%;">Two varieties of open mark-recapture models</span></h2>
 <div style="font-size: 75%;">
-<p>Cormack-Jolly-Seber Model</p>
+<ol type="1">
+<li>Cormack-Jolly-Seber Model</li>
+</ol>
 <ul>
 <li>Primarily used to estimate survival</li>
 <li>When permanent emigration is possible, estimate is of “apparent survival” (<span class="math inline">\(\phi\)</span>)</li>
@@ -249,14 +252,17 @@
 <li>CJS models are not used to estimate abundance or recruitment</li>
 </ul>
 <div class="fragment">
-<p>Jolly-Seber model</p>
+<ol start="2" type="1">
+<li>Jolly-Seber model</li>
+</ol>
 <ul>
 <li>Traditionally used to estimate abundance, (apparent) survival, and recruitment</li>
 </ul>
 </div>
+<p><br></p>
 <div class="fragment">
 <center>
-Both classes of models can be made spatially explicit to study movement, among other things
+Both classes of models can be made spatially explicit to study movement, among other processes.
 </center>
 </div>
 </div>
@@ -268,12 +274,13 @@ Both classes of models can be made spatially explicit to study movement, among o
 </section>
 <section id="non-spatial-cjs-model" class="slide level2">
 <h2>Non-spatial CJS model</h2>
+<p><br></p>
 <div style="font-size: 75%;">
 <ul>
 <li class="fragment">Typical scenario involves “releasing” indviduals and recapturing them over time.</li>
 <li class="fragment">We don’t model initial capture process.</li>
 <li class="fragment">Instead, we “condition on initial capture.”</li>
-<li class="fragment">As an example, imagine releasing a bunch of tagged animals in a translocation study.</li>
+<li class="fragment">As an example, imagine releasing tagged animals in a translocation study.</li>
 <li class="fragment">Because we aren’t estimating <span class="math inline">\(N\)</span>, no data augmentation required.</li>
 <li class="fragment">It is possible to estimate parameters using 1 sampling occasion per season.</li>
 <li class="fragment">Robust design provides more information about <span class="math inline">\(p\)</span>.</li>
@@ -295,7 +302,7 @@ Both classes of models can be made spatially explicit to study movement, among o
 <p>where</p>
 <ul>
 <li><span class="math inline">\(z_{i,t}\)</span> is “alive state” of individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span></li>
-<li><span class="math inline">\(\phi\)</span> is “apparent survival”. Probability of being alive and not permanently emigrating.</li>
+<li><span class="math inline">\(\phi\)</span> is “apparent survival”: Pr(surviving and not permanently emigrating).</li>
 <li><span class="math inline">\(y_{i,t}=1\)</span> if individual was encountered, <span class="math inline">\(y_{i,t}=0\)</span> otherwise.</li>
 </ul>
 </div>
@@ -420,11 +427,13 @@ Both classes of models can be made spatially explicit to study movement, among o
 3 0100000000</code></pre>
 </div>
 </div>
+<div class="fragment">
 <p>You can use formulas to model covariate effects.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>fm0 <span class="ot">&lt;-</span> <span class="fu">crm</span>(<span class="at">data=</span>cap.histories, <span class="at">model=</span><span class="st">"CJS"</span>, <span class="at">hessian=</span><span class="cn">TRUE</span>,</span>
 <span id="cb9-2"><a></a>           <span class="at">model.parameters=</span><span class="fu">list</span>(<span class="at">Phi=</span><span class="fu">list</span>(<span class="at">formula=</span><span class="sc">~</span><span class="dv">1</span>),</span>
 <span id="cb9-3"><a></a>                                 <span class="at">p=</span><span class="fu">list</span>(<span class="at">formula=</span><span class="sc">~</span><span class="dv">1</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </section>
@@ -597,7 +606,7 @@ for(i in 1:n) {
 </div>
 <img data-src="lecture-CJS_files/figure-revealjs/mask-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="likelihood-analysis-of-spatial-cjs-model-2" class="slide level2">
-<h2>Likelihood analysis of spatial CJS model</h2>
+<h2><span style="font-size: 80%;">Likelihood analysis of spatial CJS model</span></h2>
 <p>Format for ‘secr’</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>y.sp.secr <span class="ot">&lt;-</span> y.sp</span>
@@ -727,13 +736,14 @@ for(i in 1:n) {      ## Loop over individuals
 <ul>
 <li>Random walk: <span class="math inline">\({\bf s}_t \sim \mbox{Normal}({\bf s}_{t-1}, \tau^2)\)</span></li>
 <li>Random walk with attraction point: <span class="math inline">\({\bf s}_t \sim \mbox{Normal}({\bf  s}_{t-1} + \rho(\bar{\bf s} - {\bf s}_{t-1}), \tau^2)\)</span></li>
-<li>Extensions can be made to allow for resource selection, landscape resistance, etc.<sup>1</sup>.</li>
+<li>Extensions can be made to allow for <a href="https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473">resource selection, landscape resistance, etc.</a>.</li>
 </ul>
 </div>
 </div>
-<aside><ol class="aside-footnotes"><li id="fn2"><p>https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473</p></li></ol></aside></section>
+</section>
 <section id="simulating-spatial-cjs-data-with-dispersal" class="slide level2">
 <h2><span style="font-size: 80%;">Simulating spatial CJS data with dispersal</span></h2>
+<div style="font-size: 60%;">
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Parameters and data dimensions</p>
@@ -785,6 +795,7 @@ for(i in 1:n) {      ## Loop over individuals
 <span id="cb38-12"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div></div>
+</div>
 </section>
 <section id="movement-of-activity-center-1" class="slide level2">
 <h2>Movement of activity center 1</h2>
@@ -845,15 +856,14 @@ for(i in 1:n) {
 <div style="font-size: 80%;">
 <p>Data</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>jd.sp.move <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.move, <span class="at">n=</span>n, <span class="at">first=</span>first, <span class="at">x=</span>x,</span>
-<span id="cb41-2"><a></a>                   <span class="at">J=</span>J, <span class="at">K=</span>K, <span class="at">T=</span>T, <span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>jd.sp.move <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.move, <span class="at">n=</span>n, <span class="at">first=</span>first, <span class="at">x=</span>x, <span class="at">J=</span>J, <span class="at">K=</span>K, <span class="at">T=</span>T, <span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Initial values for <span class="math inline">\(z\)</span>, and parameters to monitor</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>zi <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n, T)</span>
 <span id="cb42-2"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
-<span id="cb42-3"><a></a>    zi[i,(first[i]<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>T] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb42-4"><a></a>    }</span>
+<span id="cb42-3"><a></a>  zi[i,(first[i]<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>T] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb42-4"><a></a>}</span>
 <span id="cb42-5"><a></a>ji.sp.move <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">phi=</span><span class="fu">runif</span>(<span class="dv">1</span>), <span class="at">z=</span>zi, <span class="at">s=</span>s) <span class="do">## Cheating with s</span></span>
 <span id="cb42-6"><a></a>jp.sp.move <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"phi"</span>, <span class="st">"p0"</span>, <span class="st">"sigma"</span>, <span class="st">"tau"</span>)</span>
 <span id="cb42-7"><a></a>good1 <span class="ot">&lt;-</span> <span class="fu">which.max</span>(<span class="fu">rowSums</span>(z, <span class="at">na.rm=</span><span class="cn">TRUE</span>)<span class="sc">+</span><span class="fu">rowSums</span>(y.move, <span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
@@ -864,32 +874,33 @@ for(i in 1:n) {
 </div>
 <p>Fit the model</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>jps.sp.move <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd.sp.move,</span>
-<span id="cb43-2"><a></a>                          <span class="at">inits=</span>ji.sp.move,</span>
-<span id="cb43-3"><a></a>                          <span class="at">parameters.to.save=</span></span>
-<span id="cb43-4"><a></a>                              <span class="fu">c</span>(jp.sp.move, jp.s1x, jp.s1y, jp.z1),</span>
-<span id="cb43-5"><a></a>                          <span class="at">model.file=</span><span class="st">"CJS-spatial-move.jag"</span>,</span>
-<span id="cb43-6"><a></a>                          <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
-<span id="cb43-7"><a></a>                          <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>jps.sp.move <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd.sp.move, <span class="at">inits=</span>ji.sp.move,</span>
+<span id="cb43-2"><a></a>                          <span class="at">parameters.to.save=</span><span class="fu">c</span>(jp.sp.move, jp.s1x, jp.s1y, jp.z1),</span>
+<span id="cb43-3"><a></a>                          <span class="at">model.file=</span><span class="st">"CJS-spatial-move.jag"</span>, <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>,</span>
+<span id="cb43-4"><a></a>                          <span class="at">n.burnin=</span><span class="dv">0</span>, <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
 <section id="posterior-distributions-2" class="slide level2">
 <h2>Posterior distributions</h2>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">plot</span>(jps.sp.move[,jp.sp.move])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-</div>
 <img data-src="lecture-CJS_files/figure-revealjs/jc3-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="posterior-movement-path" class="slide level2">
 <h2>Posterior movement path</h2>
 
-<img data-src="lecture-CJS_files/figure-revealjs/jc3-s-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<img data-src="lecture-CJS_files/figure-revealjs/jc3-s-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
 <section id="summary" class="slide level2">
 <h2>Summary</h2>
+<p><br></p>
 <p>Spatial CJS models allow for inference about survival, movement, and capture probability.</p>
+<p><br></p>
+<div class="fragment">
 <p>We could have considered many other movement models.</p>
+</div>
+<p><br></p>
+<div class="fragment">
 <p>Next, we’ll use Jolly-Seber models to study spatio-temporal variation in abundance and recruitment.</p>
+</div>
 
 
 </section></section>
