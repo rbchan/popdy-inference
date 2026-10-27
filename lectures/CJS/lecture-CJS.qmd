@@ -40,13 +40,16 @@ lang: en
 
 <br>
   
-::: {style='font-size: 90%;'}
+::: {style='font-size: 85%;'}
 Overview
 
+::: {.incremental}
 - Population closure is an assumption we make to estimate density in short time periods.
 - If we want to study the processes governing spatial *and temporal* variation in density, we need to move  beyond closed population models.
 - Open population SCR models allow us to model spatial and temporal variation in survival, recruitment, and movement.
 :::
+:::
+
   
 
 
@@ -72,7 +75,7 @@ Demographic closure
 
 ## [Two varieties of open mark-recapture models]{style="font-size: 80%;"}
   
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 Cormack-Jolly-Seber Model
     
 - Primarily used to estimate survival
@@ -103,18 +106,17 @@ Both classes of models can be made spatially explicit to study movement, among o
 
 ## Non-spatial CJS model
   
-::: {style='font-size: 80%;'}
-Notes
+::: {style='font-size: 75%;'}
     
 ::: {.incremental}
 
-- Typical scenario involves "releasing" indviduals and recapturing them over time
-- We don't model initial capture process
-- Instead, we "condition on initial capture"
-- As an example, imagine releasing a bunch of tagged animals in a translocation study
-- Because we aren't estimating $N$, no data augmentation required
-- It is possible to estimate parameters using 1 sampling occasion per season
-- Robust design provides more information about $p$
+- Typical scenario involves "releasing" indviduals and recapturing them over time.
+- We don't model initial capture process.
+- Instead, we "condition on initial capture."
+- As an example, imagine releasing a bunch of tagged animals in a translocation study.
+- Because we aren't estimating $N$, no data augmentation required.
+- It is possible to estimate parameters using 1 sampling occasion per season.
+- Robust design provides more information about $p$.
 :::
 :::
 
@@ -350,7 +352,7 @@ We begin by ignoring movement, but we use the robust design
 
 ## [Simulating spatial CJS data with robust design]{style="font-size: 80%;"}
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 70%;'}
 ::: {.columns}
 ::: {.column width='50%'}
 Parameters and data dimensions
@@ -414,8 +416,7 @@ for(i in 1:n) {
 ## [Likelihood analysis of spatial CJS model]{style="font-size: 80%;"}
 
 ::: {style='font-size: 80%;'}
-We'll use the R package 'openpopscr'^[Another option is the
-openCR' package.] for model fitting. It isn't on CRAN, but you can install it from github using the following commands.
+We'll use the R package 'openpopscr'^[Another option is the 'openCR' package.] for model fitting. It isn't on CRAN, but you can install it from github using the following commands.
 ```{r}
 #| label: install-openpopscr
 #| message: false
@@ -429,9 +430,9 @@ library(openpopscr)
 library(secr)
 ```
 
-If you're on Windows, you might have to install Rtools first.
+<br>
 
-[Rtools](https://cran.r-project.org/bin/windows/Rtools/)
+If you're on Windows, you might have to install [**Rtools**](https://cran.r-project.org/bin/windows/Rtools/) first.
 :::
 
 
@@ -444,7 +445,7 @@ library(openpopscr)
 ```
 
 
-## Likelihood analysis of spatial CJS model
+## [Likelihood analysis of spatial CJS model]{style="font-size: 80%;"}
 
 Begin by making a mask in 'secr'
 ```{r}
@@ -462,7 +463,7 @@ plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
 ## Likelihood analysis of spatial CJS model
 
-Format for `secr'
+Format for 'secr'
 ```{r}
 #| label: CJS-model-new
 y.sp.secr <- y.sp
@@ -474,11 +475,15 @@ caps <- data.frame(session=1,
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=30)
 ```
 
-Then format for `openpopscr'
+<br>
+
+::: {.fragment}
+Then format for 'openpopscr'
 ```{r}
 #| label: format-openpop
 cjs.data <- ScrData$new(capthist, mask, primary=rep(1:10, each=3))
 ```
+:::
 
 
 ## Likelihood analysis
@@ -519,6 +524,7 @@ writeLines(readLines("CJS-spatial.jag"))
 
 ## JAGS
 
+::: {style='font-size: 80%;'}
 Data
 ```{r}
 #| label: sp-data
@@ -551,6 +557,7 @@ jags.post.samples.sp <- jags.basic(data=jags.data.sp,
                                    n.chains=3, n.adapt=100, n.burnin=0,
                                    n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 
@@ -573,25 +580,28 @@ plot(jags.post.samples.sp)
 
 ## Modeling dispersal among years
 
+::: {style='font-size: 80%;'}
 What if activity centers move between years?
   
-- Could affect estimates of detection parameters
-- More importantly, might provide opportunity to study dispersal
+- Could affect estimates of detection parameters.
+- More importantly, might provide opportunity to study dispersal.
+
   
-  
-Potential movement models}
+::: {.fragment}
+Potential movement models
     
-- Random walk: ${\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)$
-- Random walk with attraction point: ${\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)$
-- Extensions can be made to allow for resource selection,
-      landscape resistance, etc.^[https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473]. 
+- Random walk: ${\bf s}_t \sim \mbox{Normal}({\bf s}_{t-1}, \tau^2)$
+- Random walk with attraction point: ${\bf s}_t \sim \mbox{Normal}({\bf  s}_{t-1} + \rho(\bar{\bf s} - {\bf s}_{t-1}), \tau^2)$
+- Extensions can be made to allow for resource selection, landscape resistance, etc.^[https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473]. 
+:::
   
+:::
 
 
 
 
 
-## Simulating spatial CJS data with dispersal
+## [Simulating spatial CJS data with dispersal]{style="font-size: 80%;"}
 
 ::: {.columns}
 ::: {.column width='50%'}
@@ -662,6 +672,7 @@ for(i in 1:n) {
 #| label: s1
 #| out-width: "65%"
 #| fig-align: "center"
+#| code-fold: true
 plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
      xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
 points(x, pch=3)
@@ -685,9 +696,10 @@ points(x, pch=3)
 ```
 
 
-## Spatial CJS model with dispersal in JAGS
+## [Spatial CJS model with dispersal in JAGS]{style="font-size: 80%;"}
   
 [CJS-spatial-move.jag](CJS-spatial-move.jag)
+
 ```{r}
 #| label: jags-sp-move
 #| background: 'beige'
@@ -700,13 +712,17 @@ writeLines(readLines("CJS-spatial-move.jag"))
 
 ## JAGS
   
+::: {style='font-size: 80%;'}
+
 Data
+
 ```{r}
 #| label: sp-move-data
 jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
                    J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 ```
   Initial values for $z$, and parameters to monitor
+
 ```{r}
 #| label: ji3
 zi <- matrix(NA, n, T)
@@ -723,6 +739,7 @@ jp.z1 <- paste0("z[", good1, ",", time1, "]")
 ```
   
 Fit the model
+
 ```{r}
 #| label: jc3
 #| results: 'hide'
@@ -735,9 +752,11 @@ jps.sp.move <- jags.basic(data=jd.sp.move,
                           n.chains=3, n.adapt=100, n.burnin=0,
                           n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 ## Posterior distributions
+
 ```{r}
 #| label: jc3-plot
 #| out-width: "60%"

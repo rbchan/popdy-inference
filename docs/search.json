@@ -1691,7 +1691,7 @@
     "href": "lectures/CJS/lecture-CJS.html#non-spatial-cjs-model",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Non-spatial CJS model",
-    "text": "Non-spatial CJS model\n\nNotes\n\nTypical scenario involves “releasing” indviduals and recapturing them over time\nWe don’t model initial capture process\nInstead, we “condition on initial capture”\nAs an example, imagine releasing a bunch of tagged animals in a translocation study\nBecause we aren’t estimating \\(N\\), no data augmentation required\nIt is possible to estimate parameters using 1 sampling occasion per season\nRobust design provides more information about \\(p\\)"
+    "text": "Non-spatial CJS model\n\n\nTypical scenario involves “releasing” indviduals and recapturing them over time.\nWe don’t model initial capture process.\nInstead, we “condition on initial capture.”\nAs an example, imagine releasing a bunch of tagged animals in a translocation study.\nBecause we aren’t estimating \\(N\\), no data augmentation required.\nIt is possible to estimate parameters using 1 sampling occasion per season.\nRobust design provides more information about \\(p\\)."
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#non-spatial-cjs-model-1",
@@ -1768,7 +1768,7 @@
     "href": "lectures/CJS/lecture-CJS.html#likelihood-analysis-of-spatial-cjs-model",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Likelihood analysis of spatial CJS model",
-    "text": "Likelihood analysis of spatial CJS model\n\nWe’ll use the R package ‘openpopscr’1 for model fitting. It isn’t on CRAN, but you can install it from github using the following commands.\n\nlibrary(remotes)\ninstall_github(\"r-glennie/openpopscr\", build = TRUE,\n               build_opts = c(\"--no-resave-data\", \"--no-manual\"),\n               build_vignettes = TRUE)\nlibrary(openpopscr)\nlibrary(secr)\n\nIf you’re on Windows, you might have to install Rtools first.\nRtools\n\nAnother option is the openCR’ package."
+    "text": "Likelihood analysis of spatial CJS model\n\nWe’ll use the R package ‘openpopscr’1 for model fitting. It isn’t on CRAN, but you can install it from github using the following commands.\n\nlibrary(remotes)\ninstall_github(\"r-glennie/openpopscr\", build = TRUE,\n               build_opts = c(\"--no-resave-data\", \"--no-manual\"),\n               build_vignettes = TRUE)\nlibrary(openpopscr)\nlibrary(secr)\n\n\nIf you’re on Windows, you might have to install Rtools first.\n\nAnother option is the ‘openCR’ package."
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#likelihood-analysis-of-spatial-cjs-model-1",
@@ -1782,7 +1782,7 @@
     "href": "lectures/CJS/lecture-CJS.html#likelihood-analysis-of-spatial-cjs-model-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Likelihood analysis of spatial CJS model",
-    "text": "Likelihood analysis of spatial CJS model\nFormat for `secr’\n\ny.sp.secr &lt;- y.sp\ny.sp.secr[is.na(y.sp)] &lt;- 0\ncaps &lt;- data.frame(session=1,\n                   animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),\n                   occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),\n                   trap=rep(slice.index(y.sp.secr, 2), y.sp.secr))\ncapthist &lt;- make.capthist(captures=caps, traps=traps, noccasions=30)\n\nThen format for `openpopscr’\n\ncjs.data &lt;- ScrData$new(capthist, mask, primary=rep(1:10, each=3))"
+    "text": "Likelihood analysis of spatial CJS model\nFormat for ‘secr’\n\ny.sp.secr &lt;- y.sp\ny.sp.secr[is.na(y.sp)] &lt;- 0\ncaps &lt;- data.frame(session=1,\n                   animal=rep(slice.index(y.sp.secr, 1), y.sp.secr),\n                   occasion=rep(slice.index(y.sp.secr, 3:4), y.sp.secr),\n                   trap=rep(slice.index(y.sp.secr, 2), y.sp.secr))\ncapthist &lt;- make.capthist(captures=caps, traps=traps, noccasions=30)\n\n\n\nThen format for ‘openpopscr’\n\ncjs.data &lt;- ScrData$new(capthist, mask, primary=rep(1:10, each=3))"
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#likelihood-analysis-2",
@@ -1803,7 +1803,7 @@
     "href": "lectures/CJS/lecture-CJS.html#jags-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "JAGS",
-    "text": "JAGS\nData\n\njags.data.sp &lt;- list(y=y.sp, n=n, first=first, x=x,\n                     J=J, K=K, T=T, xlim=xlim, ylim=ylim)\n\nInitial values for \\(z\\) matrix\n\nzi.sp &lt;- matrix(NA, n, T)\nfor(i in 1:n) {\n    zi.sp[i,(first[i]+1):T] &lt;- 1\n    }\njags.inits.sp &lt;- function() list(phi=runif(1), z=zi.sp)\njags.pars.sp &lt;- c(\"phi\", \"p0\", \"sigma\")\n\nFit the model\n\njags.post.samples.sp &lt;- jags.basic(data=jags.data.sp,\n                                   inits=jags.inits.sp,\n                                   parameters.to.save=jags.pars.sp,\n                                   model.file=\"CJS-spatial.jag\",\n                                   n.chains=3, n.adapt=100, n.burnin=0,\n                                   n.iter=2000, parallel=TRUE)"
+    "text": "JAGS\n\nData\n\njags.data.sp &lt;- list(y=y.sp, n=n, first=first, x=x,\n                     J=J, K=K, T=T, xlim=xlim, ylim=ylim)\n\nInitial values for \\(z\\) matrix\n\nzi.sp &lt;- matrix(NA, n, T)\nfor(i in 1:n) {\n    zi.sp[i,(first[i]+1):T] &lt;- 1\n    }\njags.inits.sp &lt;- function() list(phi=runif(1), z=zi.sp)\njags.pars.sp &lt;- c(\"phi\", \"p0\", \"sigma\")\n\nFit the model\n\njags.post.samples.sp &lt;- jags.basic(data=jags.data.sp,\n                                   inits=jags.inits.sp,\n                                   parameters.to.save=jags.pars.sp,\n                                   model.file=\"CJS-spatial.jag\",\n                                   n.chains=3, n.adapt=100, n.burnin=0,\n                                   n.iter=2000, parallel=TRUE)"
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#posterior-distributions-1",
@@ -1817,7 +1817,7 @@
     "href": "lectures/CJS/lecture-CJS.html#modeling-dispersal-among-years",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Modeling dispersal among years",
-    "text": "Modeling dispersal among years\nWhat if activity centers move between years?\n\nCould affect estimates of detection parameters\nMore importantly, might provide opportunity to study dispersal\n\nPotential movement models}\n\nRandom walk: \\({\\bm s}_t \\sim \\mbox{Normal}({\\bm s}_{t-1}, \\tau^2)\\)\nRandom walk with attraction point: \\({\\bm s}_t \\sim \\mbox{Normal}({\\bm  s}_{t-1} + \\rho(\\bar{\\bm s} - {\\bm s}_{t-1}), \\tau^2)\\)\nExtensions can be made to allow for resource selection, landscape resistance, etc.1.\n\nhttps://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473"
+    "text": "Modeling dispersal among years\n\nWhat if activity centers move between years?\n\nCould affect estimates of detection parameters.\nMore importantly, might provide opportunity to study dispersal.\n\n\nPotential movement models\n\nRandom walk: \\({\\bf s}_t \\sim \\mbox{Normal}({\\bf s}_{t-1}, \\tau^2)\\)\nRandom walk with attraction point: \\({\\bf s}_t \\sim \\mbox{Normal}({\\bf  s}_{t-1} + \\rho(\\bar{\\bf s} - {\\bf s}_{t-1}), \\tau^2)\\)\nExtensions can be made to allow for resource selection, landscape resistance, etc.1.\n\n\n\nhttps://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473"
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#simulating-spatial-cjs-data-with-dispersal",
@@ -1831,7 +1831,7 @@
     "href": "lectures/CJS/lecture-CJS.html#movement-of-activity-center-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Movement of activity center 1",
-    "text": "Movement of activity center 1\n\nplot(t(s[1,,]), pch=16, type=\"o\", xlab=\"x\", ylab=\"y\",\n     xlim=c(0, 1), ylim=c(0, 1), asp=1, col=\"blue\")\npoints(x, pch=3)"
+    "text": "Movement of activity center 1\n\n\nCode\nplot(t(s[1,,]), pch=16, type=\"o\", xlab=\"x\", ylab=\"y\",\n     xlim=c(0, 1), ylim=c(0, 1), asp=1, col=\"blue\")\npoints(x, pch=3)"
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#movement-of-all-activity-centers",
@@ -1852,7 +1852,7 @@
     "href": "lectures/CJS/lecture-CJS.html#jags-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "JAGS",
-    "text": "JAGS\nData\n\njd.sp.move &lt;- list(y=y.move, n=n, first=first, x=x,\n                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)\n\nInitial values for \\(z\\), and parameters to monitor\n\nzi &lt;- matrix(NA, n, T)\nfor(i in 1:n) {\n    zi[i,(first[i]+1):T] &lt;- 1\n    }\nji.sp.move &lt;- function() list(phi=runif(1), z=zi, s=s) ## Cheating with s\njp.sp.move &lt;- c(\"phi\", \"p0\", \"sigma\", \"tau\")\ngood1 &lt;- which.max(rowSums(z, na.rm=TRUE)+rowSums(y.move, na.rm=TRUE))\ntime1 &lt;- first[good1]:T\njp.s1x &lt;- paste0(\"s[\", good1, \",1,\", time1, \"]\")\njp.s1y &lt;- paste0(\"s[\", good1, \",2,\", time1, \"]\")\njp.z1 &lt;- paste0(\"z[\", good1, \",\", time1, \"]\") \n\nFit the model\n\njps.sp.move &lt;- jags.basic(data=jd.sp.move,\n                          inits=ji.sp.move,\n                          parameters.to.save=\n                              c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),\n                          model.file=\"CJS-spatial-move.jag\",\n                          n.chains=3, n.adapt=100, n.burnin=0,\n                          n.iter=2000, parallel=TRUE)"
+    "text": "JAGS\n\nData\n\njd.sp.move &lt;- list(y=y.move, n=n, first=first, x=x,\n                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)\n\nInitial values for \\(z\\), and parameters to monitor\n\nzi &lt;- matrix(NA, n, T)\nfor(i in 1:n) {\n    zi[i,(first[i]+1):T] &lt;- 1\n    }\nji.sp.move &lt;- function() list(phi=runif(1), z=zi, s=s) ## Cheating with s\njp.sp.move &lt;- c(\"phi\", \"p0\", \"sigma\", \"tau\")\ngood1 &lt;- which.max(rowSums(z, na.rm=TRUE)+rowSums(y.move, na.rm=TRUE))\ntime1 &lt;- first[good1]:T\njp.s1x &lt;- paste0(\"s[\", good1, \",1,\", time1, \"]\")\njp.s1y &lt;- paste0(\"s[\", good1, \",2,\", time1, \"]\")\njp.z1 &lt;- paste0(\"z[\", good1, \",\", time1, \"]\") \n\nFit the model\n\njps.sp.move &lt;- jags.basic(data=jd.sp.move,\n                          inits=ji.sp.move,\n                          parameters.to.save=\n                              c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),\n                          model.file=\"CJS-spatial-move.jag\",\n                          n.chains=3, n.adapt=100, n.burnin=0,\n                          n.iter=2000, parallel=TRUE)"
   },
   {
     "objectID": "lectures/CJS/lecture-CJS.html#posterior-distributions-2",

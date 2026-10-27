@@ -210,12 +210,12 @@
 <section id="open-populations" class="slide level2">
 <h2>Open populations</h2>
 <p><br></p>
-<div style="font-size: 90%;">
+<div style="font-size: 85%;">
 <p>Overview</p>
 <ul>
-<li>Population closure is an assumption we make to estimate density in short time periods.</li>
-<li>If we want to study the processes governing spatial <em>and temporal</em> variation in density, we need to move beyond closed population models.</li>
-<li>Open population SCR models allow us to model spatial and temporal variation in survival, recruitment, and movement.</li>
+<li class="fragment">Population closure is an assumption we make to estimate density in short time periods.</li>
+<li class="fragment">If we want to study the processes governing spatial <em>and temporal</em> variation in density, we need to move beyond closed population models.</li>
+<li class="fragment">Open population SCR models allow us to model spatial and temporal variation in survival, recruitment, and movement.</li>
 </ul>
 </div>
 </section>
@@ -240,7 +240,7 @@
 </section>
 <section id="two-varieties-of-open-mark-recapture-models" class="slide level2">
 <h2><span style="font-size: 80%;">Two varieties of open mark-recapture models</span></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <p>Cormack-Jolly-Seber Model</p>
 <ul>
 <li>Primarily used to estimate survival</li>
@@ -268,16 +268,15 @@ Both classes of models can be made spatially explicit to study movement, among o
 </section>
 <section id="non-spatial-cjs-model" class="slide level2">
 <h2>Non-spatial CJS model</h2>
-<div style="font-size: 80%;">
-<p>Notes</p>
+<div style="font-size: 75%;">
 <ul>
-<li class="fragment">Typical scenario involves “releasing” indviduals and recapturing them over time</li>
-<li class="fragment">We don’t model initial capture process</li>
-<li class="fragment">Instead, we “condition on initial capture”</li>
-<li class="fragment">As an example, imagine releasing a bunch of tagged animals in a translocation study</li>
-<li class="fragment">Because we aren’t estimating <span class="math inline">\(N\)</span>, no data augmentation required</li>
-<li class="fragment">It is possible to estimate parameters using 1 sampling occasion per season</li>
-<li class="fragment">Robust design provides more information about <span class="math inline">\(p\)</span></li>
+<li class="fragment">Typical scenario involves “releasing” indviduals and recapturing them over time.</li>
+<li class="fragment">We don’t model initial capture process.</li>
+<li class="fragment">Instead, we “condition on initial capture.”</li>
+<li class="fragment">As an example, imagine releasing a bunch of tagged animals in a translocation study.</li>
+<li class="fragment">Because we aren’t estimating <span class="math inline">\(N\)</span>, no data augmentation required.</li>
+<li class="fragment">It is possible to estimate parameters using 1 sampling occasion per season.</li>
+<li class="fragment">Robust design provides more information about <span class="math inline">\(p\)</span>.</li>
 </ul>
 </div>
 </section>
@@ -521,7 +520,7 @@ for(i in 1:n) {
 </section>
 <section id="simulating-spatial-cjs-data-with-robust-design" class="slide level2">
 <h2><span style="font-size: 80%;">Simulating spatial CJS data with robust design</span></h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Parameters and data dimensions</p>
@@ -582,12 +581,12 @@ for(i in 1:n) {
 <span id="cb20-5"><a></a><span class="fu">library</span>(openpopscr)</span>
 <span id="cb20-6"><a></a><span class="fu">library</span>(secr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>If you’re on Windows, you might have to install Rtools first.</p>
-<p><a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a></p>
+<p><br></p>
+<p>If you’re on Windows, you might have to install <a href="https://cran.r-project.org/bin/windows/Rtools/"><strong>Rtools</strong></a> first.</p>
 </div>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>Another option is the openCR’ package.</p></li></ol></aside></section>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>Another option is the ‘openCR’ package.</p></li></ol></aside></section>
 <section id="likelihood-analysis-of-spatial-cjs-model-1" class="slide level2">
-<h2>Likelihood analysis of spatial CJS model</h2>
+<h2><span style="font-size: 80%;">Likelihood analysis of spatial CJS model</span></h2>
 <p>Begin by making a mask in ‘secr’</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>trap.df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(x<span class="sc">*</span><span class="dv">1000</span>); <span class="fu">colnames</span>(trap.df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x"</span>,<span class="st">"y"</span>)</span>
@@ -599,7 +598,7 @@ for(i in 1:n) {
 <img data-src="lecture-CJS_files/figure-revealjs/mask-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="likelihood-analysis-of-spatial-cjs-model-2" class="slide level2">
 <h2>Likelihood analysis of spatial CJS model</h2>
-<p>Format for `secr’</p>
+<p>Format for ‘secr’</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>y.sp.secr <span class="ot">&lt;-</span> y.sp</span>
 <span id="cb22-2"><a></a>y.sp.secr[<span class="fu">is.na</span>(y.sp)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
@@ -609,9 +608,12 @@ for(i in 1:n) {
 <span id="cb22-6"><a></a>                   <span class="at">trap=</span><span class="fu">rep</span>(<span class="fu">slice.index</span>(y.sp.secr, <span class="dv">2</span>), y.sp.secr))</span>
 <span id="cb22-7"><a></a>capthist <span class="ot">&lt;-</span> <span class="fu">make.capthist</span>(<span class="at">captures=</span>caps, <span class="at">traps=</span>traps, <span class="at">noccasions=</span><span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Then format for `openpopscr’</p>
+<p><br></p>
+<div class="fragment">
+<p>Then format for ‘openpopscr’</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>cjs.data <span class="ot">&lt;-</span> ScrData<span class="sc">$</span><span class="fu">new</span>(capthist, mask, <span class="at">primary=</span><span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">each=</span><span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="likelihood-analysis-2" class="slide level2">
@@ -674,6 +676,7 @@ for(i in 1:n) {      ## Loop over individuals
 </section>
 <section id="jags-1" class="slide level2">
 <h2>JAGS</h2>
+<div style="font-size: 80%;">
 <p>Data</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>jags.data.sp <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.sp, <span class="at">n=</span>n, <span class="at">first=</span>first, <span class="at">x=</span>x,</span>
@@ -697,6 +700,7 @@ for(i in 1:n) {      ## Loop over individuals
 <span id="cb34-5"><a></a>                                   <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
 <span id="cb34-6"><a></a>                                   <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
 </section>
 <section id="posterior-distributions-1" class="slide level2">
 <h2>Posterior distributions</h2>
@@ -712,20 +716,24 @@ for(i in 1:n) {      ## Loop over individuals
 </section>
 <section id="modeling-dispersal-among-years" class="slide level2">
 <h2>Modeling dispersal among years</h2>
+<div style="font-size: 80%;">
 <p>What if activity centers move between years?</p>
 <ul>
-<li>Could affect estimates of detection parameters</li>
-<li>More importantly, might provide opportunity to study dispersal</li>
+<li>Could affect estimates of detection parameters.</li>
+<li>More importantly, might provide opportunity to study dispersal.</li>
 </ul>
-<p>Potential movement models}</p>
+<div class="fragment">
+<p>Potential movement models</p>
 <ul>
-<li>Random walk: <span class="math inline">\({\bm s}_t \sim \mbox{Normal}({\bm s}_{t-1}, \tau^2)\)</span></li>
-<li>Random walk with attraction point: <span class="math inline">\({\bm s}_t \sim \mbox{Normal}({\bm  s}_{t-1} + \rho(\bar{\bm s} - {\bm s}_{t-1}), \tau^2)\)</span></li>
+<li>Random walk: <span class="math inline">\({\bf s}_t \sim \mbox{Normal}({\bf s}_{t-1}, \tau^2)\)</span></li>
+<li>Random walk with attraction point: <span class="math inline">\({\bf s}_t \sim \mbox{Normal}({\bf  s}_{t-1} + \rho(\bar{\bf s} - {\bf s}_{t-1}), \tau^2)\)</span></li>
 <li>Extensions can be made to allow for resource selection, landscape resistance, etc.<sup>1</sup>.</li>
 </ul>
+</div>
+</div>
 <aside><ol class="aside-footnotes"><li id="fn2"><p>https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.3473</p></li></ol></aside></section>
 <section id="simulating-spatial-cjs-data-with-dispersal" class="slide level2">
-<h2>Simulating spatial CJS data with dispersal</h2>
+<h2><span style="font-size: 80%;">Simulating spatial CJS data with dispersal</span></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>Parameters and data dimensions</p>
@@ -781,9 +789,12 @@ for(i in 1:n) {      ## Loop over individuals
 <section id="movement-of-activity-center-1" class="slide level2">
 <h2>Movement of activity center 1</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">plot</span>(<span class="fu">t</span>(s[<span class="dv">1</span>,,]), <span class="at">pch=</span><span class="dv">16</span>, <span class="at">type=</span><span class="st">"o"</span>, <span class="at">xlab=</span><span class="st">"x"</span>, <span class="at">ylab=</span><span class="st">"y"</span>,</span>
 <span id="cb39-2"><a></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">asp=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">"blue"</span>)</span>
 <span id="cb39-3"><a></a><span class="fu">points</span>(x, <span class="at">pch=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 
 </div>
 <img data-src="lecture-CJS_files/figure-revealjs/s1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"></section>
@@ -792,7 +803,7 @@ for(i in 1:n) {      ## Loop over individuals
 
 <img data-src="lecture-CJS_files/figure-revealjs/s-all-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"></section>
 <section id="spatial-cjs-model-with-dispersal-in-jags" class="slide level2">
-<h2>Spatial CJS model with dispersal in JAGS</h2>
+<h2><span style="font-size: 80%;">Spatial CJS model with dispersal in JAGS</span></h2>
 <p><a href="CJS-spatial-move.jag">CJS-spatial-move.jag</a></p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -831,6 +842,7 @@ for(i in 1:n) {
 </section>
 <section id="jags-2" class="slide level2">
 <h2>JAGS</h2>
+<div style="font-size: 80%;">
 <p>Data</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>jd.sp.move <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y.move, <span class="at">n=</span>n, <span class="at">first=</span>first, <span class="at">x=</span>x,</span>
@@ -859,6 +871,7 @@ for(i in 1:n) {
 <span id="cb43-5"><a></a>                          <span class="at">model.file=</span><span class="st">"CJS-spatial-move.jag"</span>,</span>
 <span id="cb43-6"><a></a>                          <span class="at">n.chains=</span><span class="dv">3</span>, <span class="at">n.adapt=</span><span class="dv">100</span>, <span class="at">n.burnin=</span><span class="dv">0</span>,</span>
 <span id="cb43-7"><a></a>                          <span class="at">n.iter=</span><span class="dv">2000</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="posterior-distributions-2" class="slide level2">
