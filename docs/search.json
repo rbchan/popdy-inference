@@ -1579,21 +1579,21 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#individual-based-spatial-population-dynamics",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Individual-based spatial population dynamics",
-    "text": "Individual-based spatial population dynamics\n\nInitial State \\[\n    z_{i,1} \\sim \\mbox{Bernoulli}(\\psi) \\\\\n    {\\bf s}_{i,1} \\propto \\lambda_1(\\bs)\n\\]\nSurvival and Recruitment \\[\n    z_{i,t} \\sim\n    \\begin{cases}\n      \\mbox{Bernoulli}(z_{i,t-1}\\phi) & \\quad \\text{if previously recruited} \\\\\n      \\mbox{Bernoulli}(\\alpha_t) & \\quad \\text{if not yet recruited}\n    \\end{cases}\n\\]\nMovement (Assuming random walk) \\[\n    \\bsit\n    \\begin{cases}\n      \\sim \\mbox{Norm}(\\bsitp, \\tau^2) & \\quad \\text{if previously recruited} &lt;br&gt;\n      \\propto \\lambda_t(\\bs) & \\quad \\text{if not yet recruited}\n    \\end{cases}\n\\]\nAbundance (\\(M\\) is the upper bound of data augmentation) \\[\n    N_t = \\sum_{i=1}^M z_{i,t}\n\\]"
+    "text": "Individual-based spatial population dynamics\n\n\\[\n\\def\\RR{{\\bf R}}\n\\def\\bold#1{{\\bf #1}}\n\\def\\bs{{\\boldsymbol s}}\n\\def\\bsit{{\\boldsymbol s}_{i,t}}\n\\def\\bsitp{{\\boldsymbol s}_{i,t-1}}\n\\def\\but{{\\boldsymbol u_t}}\n\\def\\butp{{\\boldsymbol u_{t+1}}}\n\\def\\beps{{\\boldsymbol \\varepsilon}}\n\\]\n\n\nInitial State \\[\n    z_{i,1} \\sim \\mbox{Bernoulli}(\\psi) \\\\\n    {\\bf s}_{i,1} \\propto \\lambda_1(\\bs)\n\\]\n\nSurvival and Recruitment \\[\n    z_{i,t} \\sim\n    \\begin{cases}\n      \\mbox{Bernoulli}(z_{i,t-1}\\phi) & \\quad \\text{if previously recruited} \\\\\n      \\mbox{Bernoulli}(\\alpha_t) & \\quad \\text{if not yet recruited}\n    \\end{cases}\n\\]\n\n\nMovement (Random walk) \\[\n    \\bsit\n    \\begin{cases}\n      \\sim \\mbox{Norm}(\\bsitp, \\tau^2) & \\quad \\text{if previously recruited} \\\\\n      \\propto \\lambda_t(\\bs) & \\quad \\text{if not yet recruited}\n    \\end{cases}\n\\]\n\n\nAbundance (\\(M\\) is the upper bound of data augmentation) \\[\n    N_t = \\sum_{i=1}^M z_{i,t}\n\\]"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#simulating-spatial-js-data-with-robust-design",
     "href": "lectures/JS/lecture-Jolly-Seber.html#simulating-spatial-js-data-with-robust-design",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Simulating spatial JS data with robust design",
-    "text": "Simulating spatial JS data with robust design\n\nParameters and data dimensions\n\nT &lt;- 10      # years/primary periods\nK &lt;- 3       # 3 secondary sampling occasion\nlambda &lt;- 25 # Expected value of abundance in year 1\nM &lt;- 500     # Easiest way to simulate data is using data augmentation\nphi &lt;- 0.7   # Apparent survival\nbeta &lt;- 0.3 # Per-capital recruitment rate\np0 &lt;- 0.4    # Baseline capture prob\nsigma &lt;- 0.1 # Scale parameter of encounter rate function\n\nTraps, activity centers, and capture probability\n\nset.seed(340)\nco &lt;- seq(0.25, 0.75, length=5)\nx &lt;- cbind(rep(co, each=5), rep(co, times=5))\nJ &lt;- nrow(x)  ## nTraps\nxlim &lt;- ylim &lt;- c(0,1)\n## Activity centers, no dispersal\ns &lt;- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))\nd &lt;- p &lt;- matrix(NA, M, J)\nfor(i in 1:M) {\n    d[i,] &lt;- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)\n    p[i,] &lt;- p0*exp(-d[i,]^2/(2*sigma^2)) } # capture prob"
+    "text": "Simulating spatial JS data with robust design\n\nParameters and data dimensions\n\nT &lt;- 10      # years/primary periods\nK &lt;- 3       # 3 secondary sampling occasion\nlambda &lt;- 25 # Expected value of abundance in year 1\nM &lt;- 500     # Easiest way to simulate data is using data augmentation\nphi &lt;- 0.7   # Apparent survival\nbeta &lt;- 0.3 # Per-capital recruitment rate\np0 &lt;- 0.4    # Baseline capture prob\nsigma &lt;- 0.1 # Scale parameter of encounter rate function\n\n\nTraps, activity centers, and capture probability\n\nset.seed(340)\nco &lt;- seq(0.25, 0.75, length=5)\nx &lt;- cbind(rep(co, each=5), rep(co, times=5))\nJ &lt;- nrow(x)  ## nTraps\nxlim &lt;- ylim &lt;- c(0,1)\n## Activity centers, no dispersal\ns &lt;- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))\nd &lt;- p &lt;- matrix(NA, M, J)\nfor(i in 1:M) {\n    d[i,] &lt;- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)\n    p[i,] &lt;- p0*exp(-d[i,]^2/(2*sigma^2)) } # capture prob"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#simulating-spatial-js-data-with-robust-design-1",
     "href": "lectures/JS/lecture-Jolly-Seber.html#simulating-spatial-js-data-with-robust-design-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Simulating spatial JS data with robust design",
-    "text": "Simulating spatial JS data with robust design\n\nGenerate \\(z\\)\n\nset.seed(034)\nz &lt;- recruitable &lt;- died &lt;- recruited &lt;- matrix(0, M, T)\nz[,1] &lt;- rbinom(M, 1, lambda/M) # alive at t=1\nrecruitable[,1] &lt;- 1-z[,1]\nN &lt;- integer(T)\nN[1] &lt;- sum(z[,1])\nfor(t in 2:T) {\n    ER &lt;- N[t-1]*beta # expected number of recruits\n    prevA &lt;- sum(recruitable[,t-1]) # Number available to be recruited\n    alpha &lt;- ER/prevA\n    if(alpha &gt; 1) stop(\"M isn't big enough\")\n    z[,t] &lt;- rbinom(M, 1, (1-recruitable[,t-1])*z[,t-1]*phi +\n                          recruitable[,t-1]*alpha)\n    recruitable[,t] &lt;- recruitable[,t-1]*(1-z[,t])\n    N[t] &lt;- sum(z[,t])  }\n\nPopulaton size, mortalities, and recruits\n\ndied &lt;- (z[,1:(T-1)]==1) & (z[,2:T]==0)\nrecruited &lt;- (z[,1:(T-1)]==0) & (z[,2:T]==1)\nDeaths &lt;- colSums(died)\nRecruits &lt;- colSums(recruited)\neverAlive &lt;- sum(rowSums(z)&gt;0)"
+    "text": "Simulating spatial JS data with robust design\n\nGenerate \\(\\boldsymbol z\\)\n\nset.seed(034)\nz &lt;- recruitable &lt;- died &lt;- recruited &lt;- matrix(0, M, T)\nz[,1] &lt;- rbinom(M, 1, lambda/M) # alive at t=1\nrecruitable[,1] &lt;- 1-z[,1]\nN &lt;- integer(T)\nN[1] &lt;- sum(z[,1])\nfor(t in 2:T) {\n    ER &lt;- N[t-1]*beta # expected number of recruits\n    prevA &lt;- sum(recruitable[,t-1]) # Number available to be recruited\n    alpha &lt;- ER/prevA\n    if(alpha &gt; 1) stop(\"M isn't big enough\")\n    z[,t] &lt;- rbinom(M, 1, (1-recruitable[,t-1])*z[,t-1]*phi +\n                          recruitable[,t-1]*alpha)\n    recruitable[,t] &lt;- recruitable[,t-1]*(1-z[,t])\n    N[t] &lt;- sum(z[,t])  }\n\n\nPopulaton size, mortalities, and recruits\n\ndied &lt;- (z[,1:(T-1)]==1) & (z[,2:T]==0)\nrecruited &lt;- (z[,1:(T-1)]==0) & (z[,2:T]==1)\nDeaths &lt;- colSums(died)\nRecruits &lt;- colSums(recruited)\neverAlive &lt;- sum(rowSums(z)&gt;0)"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#visualize-dynamics",
@@ -1607,7 +1607,7 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#simulating-spatial-js-data-with-robust-design-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Simulating spatial JS data with robust design",
-    "text": "Simulating spatial JS data with robust design\n\nGenerate encounter histories for all \\(M\\) individuals\n\nyall.bern &lt;- array(NA, c(M, J, K, T))   ## For Bernoulli\nyall &lt;- array(NA, c(M, J, T))           ## For Binomial\nfor(i in 1:M) {\n    for(t in 1:T) {\n        for(j in 1:J) {\n            yall.bern[i,j,1:K,t] &lt;- rbinom(K, 1, z[i,t]*p[i,j])\n            yall[i,j,t] &lt;- rbinom(1, K, z[i,t]*p[i,j])\n        }\n    }\n}\n\n\nDiscard individuals that were never captured\n\ny.bern &lt;- yall.bern[rowSums(yall.bern)&gt;0,,,]\ny &lt;- yall[rowSums(yall)&gt;0,,]\nstr(y)\n\n int [1:72, 1:25, 1:10] 0 0 0 0 0 0 0 0 0 0 ..."
+    "text": "Simulating spatial JS data with robust design\n\nGenerate encounter histories for all \\(M\\) individuals\n\nyall.bern &lt;- array(NA, c(M, J, K, T))   ## For Bernoulli\nyall &lt;- array(NA, c(M, J, T))           ## For Binomial\nfor(i in 1:M) {\n    for(t in 1:T) {\n        for(j in 1:J) {\n            yall.bern[i,j,1:K,t] &lt;- rbinom(K, 1, z[i,t]*p[i,j])\n            yall[i,j,t] &lt;- rbinom(1, K, z[i,t]*p[i,j])\n        }\n    }\n}\n\n\n\nDiscard individuals that were never captured\n\ny.bern &lt;- yall.bern[rowSums(yall.bern)&gt;0,,,]\ny &lt;- yall[rowSums(yall)&gt;0,,]\nstr(y)\n\n int [1:72, 1:25, 1:10] 0 0 0 0 0 0 0 0 0 0 ..."
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-using-opencr",
@@ -1621,7 +1621,7 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-spatial-js-model",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Likelihood analysis of spatial JS model",
-    "text": "Likelihood analysis of spatial JS model\n\nFormat capture histories (with robust design)\n\ny.secr &lt;- y.bern\nyear &lt;- rep(slice.index(y.bern, 4), y.secr)  ## Primary period\nday &lt;- rep(slice.index(y.bern, 3), y.secr)   ## Secondary period \ncaps &lt;- data.frame(session=1, animal=rep(slice.index(y.bern, 1), y.secr),\n                   occasion=(year-1)*K+day,\n                   trap=rep(slice.index(y.bern, 2), y.secr))\ncapthist &lt;- make.capthist(captures=caps, traps=traps, noccasions=T*K)\n\nIndicate the number of primary periods between each sampling occasion.\n\ntimeintervals &lt;- rep(0, K*T-1)\ntimeintervals[seq(from=K, to=K*T-1, by=K)] &lt;- 1\ntimeintervals\n\n [1] 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0\n\nintervals(capthist) &lt;- timeintervals ## Add to capthist"
+    "text": "Likelihood analysis of spatial JS model\n\nFormat capture histories (with robust design)\n\ny.secr &lt;- y.bern\nyear &lt;- rep(slice.index(y.bern, 4), y.secr)  ## Primary period\nday &lt;- rep(slice.index(y.bern, 3), y.secr)   ## Secondary period \ncaps &lt;- data.frame(session=1, animal=rep(slice.index(y.bern, 1), y.secr),\n                   occasion=(year-1)*K+day,\n                   trap=rep(slice.index(y.bern, 2), y.secr))\ncapthist &lt;- make.capthist(captures=caps, traps=traps, noccasions=T*K)\n\n\n\nIndicate the number of primary periods between each sampling occasion.\n\ntimeintervals &lt;- rep(0, K*T-1)\ntimeintervals[seq(from=K, to=K*T-1, by=K)] &lt;- 1\ntimeintervals\n\n [1] 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0\n\nintervals(capthist) &lt;- timeintervals ## Add to capthist"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-non-spatial-js-model",
@@ -1635,14 +1635,14 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-spatial-js-model-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Likelihood analysis of spatial JS model",
-    "text": "Likelihood analysis of spatial JS model\n\nFit the spatial Jolly-Seber model using ‘openCR’\n\nfm.sp &lt;- openCR.fit(capthist, type=\"JSSAsecrf\",\n                    model=list(f~1, phi~1, p~1), mask=mask)\n\nTakes a long time to run! \nParameter estimates on the natural scale:\n\npredict(fm.sp)"
+    "text": "Likelihood analysis of spatial JS model\n\nFit the spatial Jolly-Seber model using ‘openCR’. Takes a long time to run!\n\nfm.sp &lt;- openCR.fit(capthist, type=\"JSSAsecrf\", model=list(f~1, phi~1, p~1), mask=mask)\n\nParameter estimates on the natural scale:\n\npredict(fm.sp)"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-spatial-js-model-2",
     "href": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-spatial-js-model-2",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Likelihood analysis of spatial JS model",
-    "text": "Likelihood analysis of spatial JS model\nFormat data for ‘openpopscr’\n\nlibrary(openpopscr)\njs.data &lt;- ScrData$new(capthist, mask, primary=rep(1:T, each=K))\n\nCreate the model object and then fit it\n\nstart &lt;- get_start_values(js.data, model = \"JsModel\")\nmod &lt;- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,\n                   start=start)\nmod$fit()\n\nBack-transform\n\nmod$get_par(\"lambda0\", k = 1, j = 1) ## Baseline capture probability\n\n[1] 0.449656\n\nmod$get_par(\"sigma\", k = 1, j = 1)   ## Scale parameter of the detection function\n\n[1] 96.1884\n\nmod$get_par(\"D\")                     ## Superpopulation density\n\n[1] 96.00778\n\nmod$get_par(\"beta\", k = 1, m=1)      ## Per-capita recruitment\n\n[1] 0.2811346\n\nmod$get_par(\"phi\", k = 1, m=1)       ## Survival\n\n[1] 0.6503956"
+    "text": "Likelihood analysis of spatial JS model\n\nFormat data for ‘openpopscr’\n\nlibrary(openpopscr)\njs.data &lt;- ScrData$new(capthist, mask, primary=rep(1:T, each=K))\n\n\nCreate the model object and then fit it\n\nstart &lt;- get_start_values(js.data, model = \"JsModel\")\nmod &lt;- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data, start=start)\nmod$fit()\n\n\n\nBack-transform\n\nmod$get_par(\"lambda0\", k = 1, j = 1) ## Baseline capture probability\n\n[1] 0.449656\n\nmod$get_par(\"sigma\", k = 1, j = 1)   ## Scale parameter of the detection function\n\n[1] 96.1884\n\nmod$get_par(\"D\")                     ## Superpopulation density\n\n[1] 96.00778\n\nmod$get_par(\"beta\", k = 1, m=1)      ## Per-capita recruitment\n\n[1] 0.2811346\n\nmod$get_par(\"phi\", k = 1, m=1)       ## Survival\n\n[1] 0.6503956"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#density-estimates",
@@ -1677,21 +1677,21 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#posterior-distributions",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Posterior distributions",
-    "text": "Posterior distributions\n\nplot(jags.post.samples1[,c(\"phi\", \"beta\", \"p0\", \"sigma\")])"
+    "text": "Posterior distributions"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#posterior-distributions-1",
     "href": "lectures/JS/lecture-Jolly-Seber.html#posterior-distributions-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Posterior distributions",
-    "text": "Posterior distributions\n\n\nplot(jags.post.samples1[,c(\"N[1]\", \"N[2]\", \"N[3]\", \"N[4]\")])\n\n\n\n\n\n\n\n\nplot(jags.post.samples1[,c(\"N[5]\", \"N[6]\", \"N[7]\", \"N[8]\")])"
+    "text": "Posterior distributions\n\n\n\nplot(jags.post.samples1[,c(\"N[1]\", \"N[2]\", \"N[3]\", \"N[4]\")])\n\n\n\n\n\n\n\n\nplot(jags.post.samples1[,c(\"N[5]\", \"N[6]\", \"N[7]\", \"N[8]\")])"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-abundance",
     "href": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-abundance",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Actual and estimated abundance",
-    "text": "Actual and estimated abundance\nExtract and summarize posterior samples of \\(N_t\\)\n\nNpost &lt;- as.matrix(jags.post.samples1[,paste(\"N[\", 1:10, \"]\", sep=\"\")])\nNmed &lt;- apply(Npost, 2, median)\nNupper &lt;- apply(Npost, 2, quantile, prob=0.975)\nNlower &lt;- apply(Npost, 2, quantile, prob=0.025)\n\nPlot\n\nplot(1:T, N, type=\"b\", ylim=c(0, 60), xlab=\"Time\",\n     ylab=\"Abundance\", pch=16)\narrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3,\n       length=0.05, col=gray(0.7))\npoints(1:T, Nmed, pch=16, col=gray(0.7))\nlegend(1, 60, c(\"Actual\", \"Estimated\"),\n       col=c(\"black\", gray(0.7)), lty=c(NA,1), pch=c(16,16))"
+    "text": "Actual and estimated abundance\n\nExtract and summarize posterior samples of \\(N_t\\)\n\nNpost &lt;- as.matrix(jags.post.samples1[,paste(\"N[\", 1:10, \"]\", sep=\"\")])\nNmed &lt;- apply(Npost, 2, median)\nNupper &lt;- apply(Npost, 2, quantile, prob=0.975)\nNlower &lt;- apply(Npost, 2, quantile, prob=0.025)\n\nPlot\n\nplot(1:T, N, type=\"b\", ylim=c(0, 60), xlab=\"Time\",\n     ylab=\"Abundance\", pch=16)\narrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3,\n       length=0.05, col=gray(0.7))\npoints(1:T, Nmed, pch=16, col=gray(0.7))\nlegend(1, 60, c(\"Actual\", \"Estimated\"),\n       col=c(\"black\", gray(0.7)), lty=c(NA,1), pch=c(16,16))"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-abundance-output",
@@ -1705,7 +1705,7 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-recruits",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Actual and estimated recruits",
-    "text": "Actual and estimated recruits\nExtract and summarize posterior samples of \\(R_t\\)\n\nRpost &lt;- as.matrix(jags.post.samples1[,paste(\"Recruits[\",1:9,\"]\",sep=\"\")])\nRmed &lt;- apply(Rpost, 2, median)\nRupper &lt;- apply(Rpost, 2, quantile, prob=0.975)\nRlower &lt;- apply(Rpost, 2, quantile, prob=0.025)\n\nPlot\n\nplot(1:(T-1), Recruits, type=\"b\", ylim=c(0, 30), xlab=\"Time\",\n     ylab=\"Recruits\", pch=16, col=\"seagreen2\")\narrows(1:(T-1), Rlower, 1:(T-1), Rupper, angle=90, code=3,\n       length=0.05, col=gray(0.7))\npoints(1:(T-1), Rmed, pch=16, col=gray(0.7))\nlegend(1, 30, c(\"Actual\", \"Estimated\"),\n       col=c(\"seagreen2\", gray(0.7)), lty=c(NA,1), pch=c(16,16))"
+    "text": "Actual and estimated recruits\n\nExtract and summarize posterior samples of \\(R_t\\)\n\nRpost &lt;- as.matrix(jags.post.samples1[,paste(\"Recruits[\",1:9,\"]\",sep=\"\")])\nRmed &lt;- apply(Rpost, 2, median)\nRupper &lt;- apply(Rpost, 2, quantile, prob=0.975)\nRlower &lt;- apply(Rpost, 2, quantile, prob=0.025)\n\nPlot\n\nplot(1:(T-1), Recruits, type=\"b\", ylim=c(0, 30), xlab=\"Time\",\n     ylab=\"Recruits\", pch=16, col=\"seagreen3\")\narrows(1:(T-1), Rlower, 1:(T-1), Rupper, angle=90, code=3,\n       length=0.05, col=gray(0.7))\npoints(1:(T-1), Rmed, pch=16, col=gray(0.7))\nlegend(1, 30, c(\"Actual\", \"Estimated\"),\n       col=c(\"seagreen3\", gray(0.7)), lty=c(NA,1), pch=c(16,16))"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-recruits-output",
@@ -1719,7 +1719,7 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-mortalities",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Actual and estimated mortalities",
-    "text": "Actual and estimated mortalities\nExtract and summarize posterior samples of \\(D_t=N_t-S_t\\)\n\nDpost &lt;- as.matrix(jags.post.samples1[,paste(\"Deaths[\", 1:9, \"]\", sep=\"\")])\nDmed &lt;- apply(Dpost, 2, median)\nDupper &lt;- apply(Dpost, 2, quantile, prob=0.975)\nDlower &lt;- apply(Dpost, 2, quantile, prob=0.025)\n\nPlot\n\nplot(1:(T-1), Deaths, type=\"b\", ylim=c(0, 30), xlab=\"Time\",\n     ylab=\"Mortalities\", pch=16, col=\"red2\")\narrows(1:(T-1), Dlower, 1:(T-1), Dupper, angle=90, code=3,\n       length=0.05, col=gray(0.7))\npoints(1:(T-1), Dmed, pch=16, col=gray(0.7))\nlegend(1, 30, c(\"Actual\", \"Estimated\"),\n       col=c(\"red2\", gray(0.7)), lty=c(NA,1), pch=c(16,16))"
+    "text": "Actual and estimated mortalities\n\nExtract and summarize posterior samples of \\(D_t=N_t-S_t\\)\n\nDpost &lt;- as.matrix(jags.post.samples1[,paste(\"Deaths[\", 1:9, \"]\", sep=\"\")])\nDmed &lt;- apply(Dpost, 2, median)\nDupper &lt;- apply(Dpost, 2, quantile, prob=0.975)\nDlower &lt;- apply(Dpost, 2, quantile, prob=0.025)\n\nPlot\n\nplot(1:(T-1), Deaths, type=\"b\", ylim=c(0, 30), xlab=\"Time\",\n     ylab=\"Mortalities\", pch=16, col=\"coral\")\narrows(1:(T-1), Dlower, 1:(T-1), Dupper, angle=90, code=3,\n       length=0.05, col=gray(0.7))\npoints(1:(T-1), Dmed, pch=16, col=gray(0.7))\nlegend(1, 30, c(\"Actual\", \"Estimated\"),\n       col=c(\"coral\", gray(0.7)), lty=c(NA,1), pch=c(16,16))"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#actual-and-estimated-mortalities-output",
@@ -1733,7 +1733,7 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#summary",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Summary",
-    "text": "Summary\nThis is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process. \nRequires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes. \nIntegrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals."
+    "text": "Summary\n\nThis is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process.\n\n\nRequires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes.\n\n\n\nIntegrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals."
   },
   {
     "objectID": "index.html",
@@ -1761,7 +1761,7 @@
     "href": "index.html#lectures",
     "title": "Inference for models of Fish and Wildlife Population Dynamics",
     "section": "Lectures",
-    "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - Binomial N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\nWeek 5 - Model selection and model fit\n\nLecture 6 - Model selection and model fit\n\n\n\nWeek 6 - Multinomial N-mixture models\n\nLecture 7 - Multinomial N-mixture models\nLecture 8 - Distance sampling\n\n\n\nWeek 7 - Non-spatial mark-recapture\n\nLecture 9 - Mark-recapture\n\n\n\nWeek 8 - Spatial mark-recapture, part I\n\nLecture 10 - Spatial capture-recapture\n\n\n\nWeek 9 - Spatial mark-recapture, part II\n\nLecture 11 - Spatial capture-recapture II\n\n\n\n\nDynamic models\n\nWeek 10 - Dynamic occupancy models\n\nLecture 12 - Dynamic occupancy models\n\n\n\nWeek 11 - Survival models\n\nLecture 13 - Survival models\n\n\n\nWeek 12 - Cormack-Jolly-Seber (CJS) model of (apparent) survival\n\nLecture 14 - CJS models"
+    "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - Binomial N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\nWeek 5 - Model selection and model fit\n\nLecture 6 - Model selection and model fit\n\n\n\nWeek 6 - Multinomial N-mixture models\n\nLecture 7 - Multinomial N-mixture models\nLecture 8 - Distance sampling\n\n\n\nWeek 7 - Non-spatial mark-recapture\n\nLecture 9 - Mark-recapture\n\n\n\nWeek 8 - Spatial mark-recapture, part I\n\nLecture 10 - Spatial capture-recapture\n\n\n\nWeek 9 - Spatial mark-recapture, part II\n\nLecture 11 - Spatial capture-recapture II\n\n\n\n\nDynamic models\n\nWeek 10 - Dynamic occupancy models\n\nLecture 12 - Dynamic occupancy models\n\n\n\nWeek 11 - Survival models\n\nLecture 13 - Survival models\n\n\n\nWeek 12 - Cormack-Jolly-Seber (CJS) model of (apparent) survival\n\nLecture 14 - CJS models\n\n\n\nWeek 13 - Jolly-Seber (JS) model of recruitment, survival, and movement\n\nLecture 15 - JS models"
   },
   {
     "objectID": "IPD-syllabus.html",

@@ -9,7 +9,7 @@ format:
 lang: en
 ---
 
-## {content-align="center" style="font-size: 160%;"}
+## {content-align="center" style="font-size: 140%;"}
 
 <br>
 
@@ -35,18 +35,6 @@ lang: en
   
 
 
-::: {.hidden}
-$$
- \def\RR{{\bf R}}
- \def\bold#1{{\bf #1}}
- \def\bs{{\boldsymbol s}}
- \def\bsit{{\boldsymbol s}_{i,t}}
- \def\bsitp{{\boldsymbol s}_{i,t-1}}
- \def\but{{\boldsymbol u_t}}
- \def\butp{{\boldsymbol u_{t+1}}}
- \def\beps{{\boldsymbol \varepsilon}}
-$$
-:::
 
 
 
@@ -74,15 +62,30 @@ Bigger picture
 
 
 
-##  [Individual-based spatial population dynamics]{style="font-size: 90%;"}
+##  [Individual-based spatial population dynamics]{style="font-size: 70%;"}
 
-::: {style='font-size: 80%;'}
+::: {.hidden}
+$$
+ \def\RR{{\bf R}}
+ \def\bold#1{{\bf #1}}
+ \def\bs{{\boldsymbol s}}
+ \def\bsit{{\boldsymbol s}_{i,t}}
+ \def\bsitp{{\boldsymbol s}_{i,t-1}}
+ \def\but{{\boldsymbol u_t}}
+ \def\butp{{\boldsymbol u_{t+1}}}
+ \def\beps{{\boldsymbol \varepsilon}}
+$$
+:::
+
+
+::: {style='font-size: 60%;'}
 Initial State
 $$
     z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
     {\bf s}_{i,1} \propto \lambda_1(\bs)
 $$
   
+::: {.fragment}
 Survival and Recruitment
 $$
     z_{i,t} \sim
@@ -91,20 +94,25 @@ $$
       \mbox{Bernoulli}(\alpha_t) & \quad \text{if not yet recruited} 
     \end{cases}
 $$
+:::
   
-Movement (Assuming random walk)
+::: {.fragment}
+Movement (Random walk)
 $$
     \bsit 
     \begin{cases}
-      \sim \mbox{Norm}(\bsitp, \tau^2) & \quad \text{if previously recruited} <br>
+      \sim \mbox{Norm}(\bsitp, \tau^2) & \quad \text{if previously recruited} \\
       \propto \lambda_t(\bs) & \quad \text{if not yet recruited} 
     \end{cases}
 $$
+:::
 
+::: {.fragment}
 Abundance ($M$ is the upper bound of data augmentation)
 $$
     N_t = \sum_{i=1}^M z_{i,t}
 $$
+:::
 :::
 
 
@@ -113,9 +121,9 @@ $$
 
 
 
-## [Simulating spatial JS data with robust design]{style="font-size: 90%;"}
+## [Simulating spatial JS data with robust design]{style="font-size: 80%;"}
 
-::: {style='font-size: 80%;'}
+::: {style='font-size: 75%;'}
 Parameters and data dimensions
 
 ```{r}
@@ -130,6 +138,7 @@ p0 <- 0.4    # Baseline capture prob
 sigma <- 0.1 # Scale parameter of encounter rate function
 ```
 
+::: {.fragment}
 Traps, activity centers, and capture probability
 ```{r}
 #| label: sim-p
@@ -146,12 +155,13 @@ for(i in 1:M) {
     p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2)) } # capture prob 
 ```
 :::
+:::
 
 
-## [Simulating spatial JS data with robust design]{style="font-size: 90%;"}
+## [Simulating spatial JS data with robust design]{style="font-size: 80%;"}
 
-::: {style='font-size: 80%;'}
-Generate $z$
+::: {style='font-size: 75%;'}
+Generate $\boldsymbol z$
 
 ```{r}
 #| label: sim-SR
@@ -172,6 +182,7 @@ for(t in 2:T) {
     N[t] <- sum(z[,t])  }
 ```
 
+::: {.fragment}
 Populaton size, mortalities, and recruits
 
 ```{r}
@@ -183,6 +194,7 @@ Recruits <- colSums(recruited)
 everAlive <- sum(rowSums(z)>0)
 ```
 :::
+:::
 
 
 
@@ -190,9 +202,9 @@ everAlive <- sum(rowSums(z)>0)
 
 ```{r, echo=-1}
 #| label: dynamics1
-#| fig-height: 5
+#| fig-height: 6
 #| fig-align: 'center'
-#| out-width: '90%'
+#| out-width: '100%'
 #| code-fold: true
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(1:T, N, type="b", xlab="Year", ylab="", ylim=c(0, 50), pch=16)
@@ -201,7 +213,7 @@ legend(1, 50, c("Abundance","Mortalities","Recruits"), lty=1, pch=16, col=c("bla
 ```
 
 
-## [Simulating spatial JS data with robust design]{style="font-size: 90%;"}
+## [Simulating spatial JS data with robust design]{style="font-size: 80%;"}
 
 ::: {style='font-size: 80%;'}
 Generate encounter histories for all $M$ individuals
@@ -220,6 +232,7 @@ for(i in 1:M) {
 }
 ```
 
+<br>
 
 ::: {.fragment}
 Discard individuals that were never captured
@@ -234,24 +247,6 @@ str(y)
 :::
 
 
-<!-- ```{r} -->
-<!-- #| label: NDR -->
-<!-- #| out-width: '60%' -->
-<!-- #| fig-align: 'center' -->
-<!-- % plot(1:T, N, ylim=c(0, 50), type="o", pch=16, -->
-<!-- %      xlab="Year", ylab="") -->
-<!-- % lines(2:T, Deaths[-1], col="red", type="o", pch=16) -->
-<!-- % lines(2:T, Recruits[-1], col="blue", type="o", pch=16) -->
-<!-- % legend(1, 50, c("Population size", "Deaths", "Recruits"), -->
-<!-- %        col=c("black", "red", "blue"), pch=16, lty=1) -->
-<!-- ``` -->
-<!-- % %  -->
-<!-- % % <center> -->
-<!-- % %   [width=0.8\textwidth]{Open-JS-NDR} -->
-<!-- % % </center> -->
-<!-- %  -->
-
-
 
 
 # Likelihood inference
@@ -264,7 +259,6 @@ Begin by making a mask
 
 ```{r}
 #| label: mask
-#| out-width: "60%"
 #| fig-align: "center"
 #| results: 'hide'
 #| message: false
@@ -294,6 +288,9 @@ caps <- data.frame(session=1, animal=rep(slice.index(y.bern, 1), y.secr),
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
 ```
 
+<br>
+
+::: {.fragment}
 Indicate the number of primary periods between each sampling occasion.
 
 ```{r}
@@ -304,10 +301,11 @@ timeintervals
 intervals(capthist) <- timeintervals ## Add to capthist
 ```
 :::
+:::
 
 
 
-## [Likelihood analysis of non-spatial JS model]{style="font-size: 90%;"}
+## [Likelihood analysis of non-spatial JS model]{style="font-size: 80%;"}
 
 Fit the non-spatial Jolly-Seber model
 
@@ -321,20 +319,16 @@ print(derived.pars, digits=2)
 
 
 
-## [Likelihood analysis of spatial JS model]{style="font-size: 90%;"}
+## [Likelihood analysis of spatial JS model]{style="font-size: 80%;"}
 
 ::: {style='font-size: 80%;'}
-Fit the spatial Jolly-Seber model using 'openCR'
+Fit the spatial Jolly-Seber model using 'openCR'. Takes a long time to run!
 
 ```{r}
 #| label: js-mod-fit-opencr
 #| eval: false
-fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
-                    model=list(f~1, phi~1, p~1), mask=mask)
+fm.sp <- openCR.fit(capthist, type="JSSAsecrf", model=list(f~1, phi~1, p~1), mask=mask)
 ```
-
-Takes a long time to run! <br>
-
 
 Parameter estimates on the natural scale:
 ```{r}
@@ -346,8 +340,9 @@ predict(fm.sp)
 
 
 
-## Likelihood analysis of spatial JS model
+## [Likelihood analysis of spatial JS model]{style="font-size: 80%;"}
 
+::: {style='font-size: 65%;'}
 Format data for 'openpopscr'
 ```{r}
 #| label: format-openpop
@@ -355,6 +350,7 @@ library(openpopscr)
 js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
 ```
 
+::: {.fragment}
 Create the model object and then fit it
 
 ```{r}
@@ -365,11 +361,12 @@ Create the model object and then fit it
 #| warning: false
 #| message: false
 start <- get_start_values(js.data, model = "JsModel")
-mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
-                   start=start)
+mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data, start=start)
 mod$fit()
 ```
+:::
 
+::: {.fragment}
 Back-transform
 
 ```{r}
@@ -381,6 +378,10 @@ mod$get_par("D")                     ## Superpopulation density
 mod$get_par("beta", k = 1, m=1)      ## Per-capita recruitment
 mod$get_par("phi", k = 1, m=1)       ## Survival
 ```
+:::
+:::
+
+
 
 ## Density estimates
 
@@ -485,22 +486,31 @@ abline(v=M, lwd=3, col="blue")
 #| fig-width: 7
 #| out-width: '60%'
 #| fig-align: 'center'
+#| echo: false
 plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
 ```
 
 ## Posterior distributions
 
+::: {style='font-size: 50%;'}
+
 ```{r}
 #| label: jcN1-4
+#| fig-width: 7
+#| fig-height: 9
+#| fig-align: 'center'
+#| out-width: '60%'
 #| output-location: 'column'
 plot(jags.post.samples1[,c("N[1]", "N[2]", "N[3]", "N[4]")])
 plot(jags.post.samples1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
 ```
+:::
 
 
 
 ## Actual and estimated abundance
 
+::: {style='font-size: 80%;'}
 Extract and summarize posterior samples of $N_t$
 
 ```{r}
@@ -527,10 +537,12 @@ points(1:T, Nmed, pch=16, col=gray(0.7))
 legend(1, 60, c("Actual", "Estimated"),
        col=c("black", gray(0.7)), lty=c(NA,1), pch=c(16,16))
 ```
+:::
 
 
 ## Actual and estimated recruits
 
+::: {style='font-size: 80%;'}
 Extract and summarize posterior samples of $R_t$
 
 ```{r}
@@ -545,21 +557,23 @@ Plot
 
 ```{r, echo=-1}
 #| label: Rpost
-#| fig-height: 5
+#| fig-height: 6
 #| output-location: 'slide'
 par(mai=c(0.9,0.9,0.1,0.1))  
 plot(1:(T-1), Recruits, type="b", ylim=c(0, 30), xlab="Time",
-     ylab="Recruits", pch=16, col="seagreen2")
+     ylab="Recruits", pch=16, col="seagreen3")
 arrows(1:(T-1), Rlower, 1:(T-1), Rupper, angle=90, code=3,
        length=0.05, col=gray(0.7))
 points(1:(T-1), Rmed, pch=16, col=gray(0.7))
 legend(1, 30, c("Actual", "Estimated"),
-       col=c("seagreen2", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+       col=c("seagreen3", gray(0.7)), lty=c(NA,1), pch=c(16,16))
 ```
+:::
 
 
 ## Actual and estimated mortalities
 
+::: {style='font-size: 80%;'}
 Extract and summarize posterior samples of $D_t=N_t-S_t$
 
 ```{r}
@@ -574,24 +588,34 @@ Plot
 
 ```{r, echo=-1}
 #| label: Dpost
-#| fig-height: 5
+#| fig-height: 6
 #| output-location: 'slide'
 par(mai=c(0.9,0.9,0.1,0.1))  
 plot(1:(T-1), Deaths, type="b", ylim=c(0, 30), xlab="Time",
-     ylab="Mortalities", pch=16, col="red2")
+     ylab="Mortalities", pch=16, col="coral")
 arrows(1:(T-1), Dlower, 1:(T-1), Dupper, angle=90, code=3,
        length=0.05, col=gray(0.7))
 points(1:(T-1), Dmed, pch=16, col=gray(0.7))
 legend(1, 30, c("Actual", "Estimated"),
-       col=c("red2", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+       col=c("coral", gray(0.7)), lty=c(NA,1), pch=c(16,16))
 ```
+:::
 
 
 ## Summary
 
-This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process. <br>
-   
-Requires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes. <br> 
-   
-Integrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals. <br> 
+::: {style='font-size: 85%;'}
+This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process. 
 
+::: {.fragment}
+<br>
+   
+Requires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes. 
+:::
+
+::: {.fragment}
+<br> 
+   
+Integrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals.
+:::
+:::

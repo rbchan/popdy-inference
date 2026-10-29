@@ -194,7 +194,7 @@
     <div class="slides">
 
 
-<section id="section" class="slide level2" data-content-align="center" style="font-size: 160%;">
+<section id="section" class="slide level2" data-content-align="center" style="font-size: 140%;">
 <h2></h2>
 <p><br></p>
 <center>
@@ -228,12 +228,25 @@
 </div>
 </section>
 <section id="individual-based-spatial-population-dynamics" class="slide level2">
-<h2><span style="font-size: 90%;">Individual-based spatial population dynamics</span></h2>
-<div style="font-size: 80%;">
+<h2><span style="font-size: 70%;">Individual-based spatial population dynamics</span></h2>
+<div class="hidden">
+<p><span class="math display">\[
+\def\RR{{\bf R}}
+\def\bold#1{{\bf #1}}
+\def\bs{{\boldsymbol s}}
+\def\bsit{{\boldsymbol s}_{i,t}}
+\def\bsitp{{\boldsymbol s}_{i,t-1}}
+\def\but{{\boldsymbol u_t}}
+\def\butp{{\boldsymbol u_{t+1}}}
+\def\beps{{\boldsymbol \varepsilon}}
+\]</span></p>
+</div>
+<div style="font-size: 60%;">
 <p>Initial State <span class="math display">\[
     z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
     {\bf s}_{i,1} \propto \lambda_1(\bs)
 \]</span></p>
+<div class="fragment">
 <p>Survival and Recruitment <span class="math display">\[
     z_{i,t} \sim
     \begin{cases}
@@ -241,21 +254,26 @@
       \mbox{Bernoulli}(\alpha_t) &amp; \quad \text{if not yet recruited}
     \end{cases}
 \]</span></p>
-<p>Movement (Assuming random walk) <span class="math display">\[
+</div>
+<div class="fragment">
+<p>Movement (Random walk) <span class="math display">\[
     \bsit
     \begin{cases}
-      \sim \mbox{Norm}(\bsitp, \tau^2) &amp; \quad \text{if previously recruited} &lt;br&gt;
+      \sim \mbox{Norm}(\bsitp, \tau^2) &amp; \quad \text{if previously recruited} \\
       \propto \lambda_t(\bs) &amp; \quad \text{if not yet recruited}
     \end{cases}
 \]</span></p>
+</div>
+<div class="fragment">
 <p>Abundance (<span class="math inline">\(M\)</span> is the upper bound of data augmentation) <span class="math display">\[
     N_t = \sum_{i=1}^M z_{i,t}
 \]</span></p>
 </div>
+</div>
 </section>
 <section id="simulating-spatial-js-data-with-robust-design" class="slide level2">
-<h2><span style="font-size: 90%;">Simulating spatial JS data with robust design</span></h2>
-<div style="font-size: 80%;">
+<h2><span style="font-size: 80%;">Simulating spatial JS data with robust design</span></h2>
+<div style="font-size: 75%;">
 <p>Parameters and data dimensions</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>T <span class="ot">&lt;-</span> <span class="dv">10</span>      <span class="co"># years/primary periods</span></span>
@@ -267,6 +285,7 @@
 <span id="cb1-7"><a></a>p0 <span class="ot">&lt;-</span> <span class="fl">0.4</span>    <span class="co"># Baseline capture prob</span></span>
 <span id="cb1-8"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># Scale parameter of encounter rate function</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <p>Traps, activity centers, and capture probability</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">340</span>)</span>
@@ -282,11 +301,12 @@
 <span id="cb2-11"><a></a>    p[i,] <span class="ot">&lt;-</span> p0<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>d[i,]<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>)) } <span class="co"># capture prob </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
+</div>
 </section>
 <section id="simulating-spatial-js-data-with-robust-design-1" class="slide level2">
-<h2><span style="font-size: 90%;">Simulating spatial JS data with robust design</span></h2>
-<div style="font-size: 80%;">
-<p>Generate <span class="math inline">\(z\)</span></p>
+<h2><span style="font-size: 80%;">Simulating spatial JS data with robust design</span></h2>
+<div style="font-size: 75%;">
+<p>Generate <span class="math inline">\(\boldsymbol z\)</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">034</span>)</span>
 <span id="cb3-2"><a></a>z <span class="ot">&lt;-</span> recruitable <span class="ot">&lt;-</span> died <span class="ot">&lt;-</span> recruited <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, M, T)</span>
@@ -304,6 +324,7 @@
 <span id="cb3-14"><a></a>    recruitable[,t] <span class="ot">&lt;-</span> recruitable[,t<span class="dv">-1</span>]<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>z[,t])</span>
 <span id="cb3-15"><a></a>    N[t] <span class="ot">&lt;-</span> <span class="fu">sum</span>(z[,t])  }</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <p>Populaton size, mortalities, and recruits</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>died <span class="ot">&lt;-</span> (z[,<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>)]<span class="sc">==</span><span class="dv">1</span>) <span class="sc">&amp;</span> (z[,<span class="dv">2</span><span class="sc">:</span>T]<span class="sc">==</span><span class="dv">0</span>)</span>
@@ -311,6 +332,7 @@
 <span id="cb4-3"><a></a>Deaths <span class="ot">&lt;-</span> <span class="fu">colSums</span>(died)</span>
 <span id="cb4-4"><a></a>Recruits <span class="ot">&lt;-</span> <span class="fu">colSums</span>(recruited)</span>
 <span id="cb4-5"><a></a>everAlive <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">rowSums</span>(z)<span class="sc">&gt;</span><span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </div>
 </section>
@@ -325,9 +347,9 @@
 </details>
 
 </div>
-<img data-src="lecture-Jolly-Seber_files/figure-revealjs/dynamics1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"></section>
+<img data-src="lecture-Jolly-Seber_files/figure-revealjs/dynamics1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
 <section id="simulating-spatial-js-data-with-robust-design-2" class="slide level2">
-<h2><span style="font-size: 90%;">Simulating spatial JS data with robust design</span></h2>
+<h2><span style="font-size: 80%;">Simulating spatial JS data with robust design</span></h2>
 <div style="font-size: 80%;">
 <p>Generate encounter histories for all <span class="math inline">\(M\)</span> individuals</p>
 <div class="cell">
@@ -342,6 +364,7 @@
 <span id="cb6-9"><a></a>    }</span>
 <span id="cb6-10"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
 <div class="fragment">
 <p>Discard individuals that were never captured</p>
 <div class="cell">
@@ -354,22 +377,6 @@
 </div>
 </div>
 </div>
-<!-- ```{r} -->
-<!-- #| label: NDR -->
-<!-- #| out-width: '60%' -->
-<!-- #| fig-align: 'center' -->
-<!-- % plot(1:T, N, ylim=c(0, 50), type="o", pch=16, -->
-<!-- %      xlab="Year", ylab="") -->
-<!-- % lines(2:T, Deaths[-1], col="red", type="o", pch=16) -->
-<!-- % lines(2:T, Recruits[-1], col="blue", type="o", pch=16) -->
-<!-- % legend(1, 50, c("Population size", "Deaths", "Recruits"), -->
-<!-- %        col=c("black", "red", "blue"), pch=16, lty=1) -->
-<!-- ``` -->
-<!-- % %  -->
-<!-- % % <center> -->
-<!-- % %   [width=0.8\textwidth]{Open-JS-NDR} -->
-<!-- % % </center> -->
-<!-- %  -->
 </section></section>
 <section>
 <section id="likelihood-inference" class="title-slide slide level1 center">
@@ -389,7 +396,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/mask-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/mask-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
@@ -409,6 +416,8 @@
 <span id="cb10-6"><a></a>                   <span class="at">trap=</span><span class="fu">rep</span>(<span class="fu">slice.index</span>(y.bern, <span class="dv">2</span>), y.secr))</span>
 <span id="cb10-7"><a></a>capthist <span class="ot">&lt;-</span> <span class="fu">make.capthist</span>(<span class="at">captures=</span>caps, <span class="at">traps=</span>traps, <span class="at">noccasions=</span>T<span class="sc">*</span>K)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p><br></p>
+<div class="fragment">
 <p>Indicate the number of primary periods between each sampling occasion.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>timeintervals <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, K<span class="sc">*</span>T<span class="dv">-1</span>)</span>
@@ -420,9 +429,10 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">intervals</span>(capthist) <span class="ot">&lt;-</span> timeintervals <span class="do">## Add to capthist</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
+</div>
 </section>
 <section id="likelihood-analysis-of-non-spatial-js-model" class="slide level2">
-<h2><span style="font-size: 90%;">Likelihood analysis of non-spatial JS model</span></h2>
+<h2><span style="font-size: 80%;">Likelihood analysis of non-spatial JS model</span></h2>
 <p>Fit the non-spatial Jolly-Seber model</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>fm.nonsp <span class="ot">&lt;-</span> <span class="fu">openCR.fit</span>(capthist, <span class="at">type=</span><span class="st">"JSSAf"</span>,</span>
@@ -445,14 +455,12 @@
 </div>
 </section>
 <section id="likelihood-analysis-of-spatial-js-model-1" class="slide level2">
-<h2><span style="font-size: 90%;">Likelihood analysis of spatial JS model</span></h2>
+<h2><span style="font-size: 80%;">Likelihood analysis of spatial JS model</span></h2>
 <div style="font-size: 80%;">
-<p>Fit the spatial Jolly-Seber model using ‘openCR’</p>
+<p>Fit the spatial Jolly-Seber model using ‘openCR’. Takes a long time to run!</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>fm.sp <span class="ot">&lt;-</span> <span class="fu">openCR.fit</span>(capthist, <span class="at">type=</span><span class="st">"JSSAsecrf"</span>,</span>
-<span id="cb16-2"><a></a>                    <span class="at">model=</span><span class="fu">list</span>(f<span class="sc">~</span><span class="dv">1</span>, phi<span class="sc">~</span><span class="dv">1</span>, p<span class="sc">~</span><span class="dv">1</span>), <span class="at">mask=</span>mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>fm.sp <span class="ot">&lt;-</span> <span class="fu">openCR.fit</span>(capthist, <span class="at">type=</span><span class="st">"JSSAsecrf"</span>, <span class="at">model=</span><span class="fu">list</span>(f<span class="sc">~</span><span class="dv">1</span>, phi<span class="sc">~</span><span class="dv">1</span>, p<span class="sc">~</span><span class="dv">1</span>), <span class="at">mask=</span>mask)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Takes a long time to run! <br></p>
 <p>Parameter estimates on the natural scale:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">predict</span>(fm.sp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -460,19 +468,22 @@
 </div>
 </section>
 <section id="likelihood-analysis-of-spatial-js-model-2" class="slide level2">
-<h2>Likelihood analysis of spatial JS model</h2>
+<h2><span style="font-size: 80%;">Likelihood analysis of spatial JS model</span></h2>
+<div style="font-size: 65%;">
 <p>Format data for ‘openpopscr’</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">library</span>(openpopscr)</span>
 <span id="cb18-2"><a></a>js.data <span class="ot">&lt;-</span> ScrData<span class="sc">$</span><span class="fu">new</span>(capthist, mask, <span class="at">primary=</span><span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>T, <span class="at">each=</span>K))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <p>Create the model object and then fit it</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>start <span class="ot">&lt;-</span> <span class="fu">get_start_values</span>(js.data, <span class="at">model =</span> <span class="st">"JsModel"</span>)</span>
-<span id="cb19-2"><a></a>mod <span class="ot">&lt;-</span> JsModel<span class="sc">$</span><span class="fu">new</span>(<span class="fu">list</span>(lambda0<span class="sc">~</span><span class="dv">1</span>, sigma<span class="sc">~</span><span class="dv">1</span>, D<span class="sc">~</span><span class="dv">1</span>, phi<span class="sc">~</span><span class="dv">1</span>, beta<span class="sc">~</span><span class="dv">1</span>), js.data,</span>
-<span id="cb19-3"><a></a>                   <span class="at">start=</span>start)</span>
-<span id="cb19-4"><a></a>mod<span class="sc">$</span><span class="fu">fit</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-2"><a></a>mod <span class="ot">&lt;-</span> JsModel<span class="sc">$</span><span class="fu">new</span>(<span class="fu">list</span>(lambda0<span class="sc">~</span><span class="dv">1</span>, sigma<span class="sc">~</span><span class="dv">1</span>, D<span class="sc">~</span><span class="dv">1</span>, phi<span class="sc">~</span><span class="dv">1</span>, beta<span class="sc">~</span><span class="dv">1</span>), js.data, <span class="at">start=</span>start)</span>
+<span id="cb19-3"><a></a>mod<span class="sc">$</span><span class="fu">fit</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
+<div class="fragment">
 <p>Back-transform</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>mod<span class="sc">$</span><span class="fu">get_par</span>(<span class="st">"lambda0"</span>, <span class="at">k =</span> <span class="dv">1</span>, <span class="at">j =</span> <span class="dv">1</span>) <span class="do">## Baseline capture probability</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -494,6 +505,8 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>mod<span class="sc">$</span><span class="fu">get_par</span>(<span class="st">"phi"</span>, <span class="at">k =</span> <span class="dv">1</span>, <span class="at">m=</span><span class="dv">1</span>)       <span class="do">## Survival</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.6503956</code></pre>
+</div>
+</div>
 </div>
 </div>
 </section>
@@ -606,54 +619,55 @@ Ntot &lt;- sum(everAlive)                     ## Super-population size
 <img data-src="lecture-Jolly-Seber_files/figure-revealjs/Ntot-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="posterior-distributions" class="slide level2">
 <h2>Posterior distributions</h2>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"phi"</span>, <span class="st">"beta"</span>, <span class="st">"p0"</span>, <span class="st">"sigma"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-</div>
 <img data-src="lecture-Jolly-Seber_files/figure-revealjs/jc1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="posterior-distributions-1" class="slide level2">
 <h2>Posterior distributions</h2>
-<div class="cell columns column-output-location">
+<div style="font-size: 50%;">
+<div class="cell columns column-output-location" data-layout-align="center">
 <div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"N[1]"</span>, <span class="st">"N[2]"</span>, <span class="st">"N[3]"</span>, <span class="st">"N[4]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"N[1]"</span>, <span class="st">"N[2]"</span>, <span class="st">"N[3]"</span>, <span class="st">"N[4]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-1.png" width="960"></p>
+<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"N[5]"</span>, <span class="st">"N[6]"</span>, <span class="st">"N[7]"</span>, <span class="st">"N[8]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"N[5]"</span>, <span class="st">"N[6]"</span>, <span class="st">"N[7]"</span>, <span class="st">"N[8]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-2.png" width="960"></p>
+<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-2.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
 </div>
 </div></div>
+</div>
 </section>
 <section id="actual-and-estimated-abundance" class="slide level2">
 <h2>Actual and estimated abundance</h2>
+<div style="font-size: 80%;">
 <p>Extract and summarize posterior samples of <span class="math inline">\(N_t\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>Npost <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples1[,<span class="fu">paste</span>(<span class="st">"N["</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"]"</span>, <span class="at">sep=</span><span class="st">""</span>)])</span>
-<span id="cb40-2"><a></a>Nmed <span class="ot">&lt;-</span> <span class="fu">apply</span>(Npost, <span class="dv">2</span>, median)</span>
-<span id="cb40-3"><a></a>Nupper <span class="ot">&lt;-</span> <span class="fu">apply</span>(Npost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
-<span id="cb40-4"><a></a>Nlower <span class="ot">&lt;-</span> <span class="fu">apply</span>(Npost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>Npost <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples1[,<span class="fu">paste</span>(<span class="st">"N["</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"]"</span>, <span class="at">sep=</span><span class="st">""</span>)])</span>
+<span id="cb39-2"><a></a>Nmed <span class="ot">&lt;-</span> <span class="fu">apply</span>(Npost, <span class="dv">2</span>, median)</span>
+<span id="cb39-3"><a></a>Nupper <span class="ot">&lt;-</span> <span class="fu">apply</span>(Npost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
+<span id="cb39-4"><a></a>Nlower <span class="ot">&lt;-</span> <span class="fu">apply</span>(Npost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Plot</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>T, N, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">60</span>), <span class="at">xlab=</span><span class="st">"Time"</span>,</span>
-<span id="cb41-2"><a></a>     <span class="at">ylab=</span><span class="st">"Abundance"</span>, <span class="at">pch=</span><span class="dv">16</span>)</span>
-<span id="cb41-3"><a></a><span class="fu">arrows</span>(<span class="dv">1</span><span class="sc">:</span>T, Nlower, <span class="dv">1</span><span class="sc">:</span>T, Nupper, <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>,</span>
-<span id="cb41-4"><a></a>       <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
-<span id="cb41-5"><a></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span>T, Nmed, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
-<span id="cb41-6"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">60</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>),</span>
-<span id="cb41-7"><a></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="fu">gray</span>(<span class="fl">0.7</span>)), <span class="at">lty=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">1</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>T, N, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">60</span>), <span class="at">xlab=</span><span class="st">"Time"</span>,</span>
+<span id="cb40-2"><a></a>     <span class="at">ylab=</span><span class="st">"Abundance"</span>, <span class="at">pch=</span><span class="dv">16</span>)</span>
+<span id="cb40-3"><a></a><span class="fu">arrows</span>(<span class="dv">1</span><span class="sc">:</span>T, Nlower, <span class="dv">1</span><span class="sc">:</span>T, Nupper, <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>,</span>
+<span id="cb40-4"><a></a>       <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
+<span id="cb40-5"><a></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span>T, Nmed, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
+<span id="cb40-6"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">60</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>),</span>
+<span id="cb40-7"><a></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"black"</span>, <span class="fu">gray</span>(<span class="fl">0.7</span>)), <span class="at">lty=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">1</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
+</div>
 </section>
 <section id="actual-and-estimated-abundance-output" class="slide level2 output-location-slide"><h2>Actual and estimated abundance</h2><div class="cell output-location-slide">
 <div class="cell-output-display">
@@ -665,24 +679,26 @@ Ntot &lt;- sum(everAlive)                     ## Super-population size
 </div>
 </div></section><section id="actual-and-estimated-recruits" class="slide level2">
 <h2>Actual and estimated recruits</h2>
+<div style="font-size: 80%;">
 <p>Extract and summarize posterior samples of <span class="math inline">\(R_t\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>Rpost <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples1[,<span class="fu">paste</span>(<span class="st">"Recruits["</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>,<span class="st">"]"</span>,<span class="at">sep=</span><span class="st">""</span>)])</span>
-<span id="cb42-2"><a></a>Rmed <span class="ot">&lt;-</span> <span class="fu">apply</span>(Rpost, <span class="dv">2</span>, median)</span>
-<span id="cb42-3"><a></a>Rupper <span class="ot">&lt;-</span> <span class="fu">apply</span>(Rpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
-<span id="cb42-4"><a></a>Rlower <span class="ot">&lt;-</span> <span class="fu">apply</span>(Rpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>Rpost <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples1[,<span class="fu">paste</span>(<span class="st">"Recruits["</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>,<span class="st">"]"</span>,<span class="at">sep=</span><span class="st">""</span>)])</span>
+<span id="cb41-2"><a></a>Rmed <span class="ot">&lt;-</span> <span class="fu">apply</span>(Rpost, <span class="dv">2</span>, median)</span>
+<span id="cb41-3"><a></a>Rupper <span class="ot">&lt;-</span> <span class="fu">apply</span>(Rpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
+<span id="cb41-4"><a></a>Rlower <span class="ot">&lt;-</span> <span class="fu">apply</span>(Rpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Plot</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Recruits, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>), <span class="at">xlab=</span><span class="st">"Time"</span>,</span>
-<span id="cb43-2"><a></a>     <span class="at">ylab=</span><span class="st">"Recruits"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"seagreen2"</span>)</span>
-<span id="cb43-3"><a></a><span class="fu">arrows</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Rlower, <span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Rupper, <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>,</span>
-<span id="cb43-4"><a></a>       <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
-<span id="cb43-5"><a></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Rmed, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
-<span id="cb43-6"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">30</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>),</span>
-<span id="cb43-7"><a></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"seagreen2"</span>, <span class="fu">gray</span>(<span class="fl">0.7</span>)), <span class="at">lty=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">1</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Recruits, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>), <span class="at">xlab=</span><span class="st">"Time"</span>,</span>
+<span id="cb42-2"><a></a>     <span class="at">ylab=</span><span class="st">"Recruits"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"seagreen3"</span>)</span>
+<span id="cb42-3"><a></a><span class="fu">arrows</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Rlower, <span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Rupper, <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>,</span>
+<span id="cb42-4"><a></a>       <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
+<span id="cb42-5"><a></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Rmed, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
+<span id="cb42-6"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">30</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>),</span>
+<span id="cb42-7"><a></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"seagreen3"</span>, <span class="fu">gray</span>(<span class="fl">0.7</span>)), <span class="at">lty=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">1</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
+</div>
 </section>
 <section id="actual-and-estimated-recruits-output" class="slide level2 output-location-slide"><h2>Actual and estimated recruits</h2><div class="cell output-location-slide">
 <div class="cell-output-display">
@@ -694,24 +710,26 @@ Ntot &lt;- sum(everAlive)                     ## Super-population size
 </div>
 </div></section><section id="actual-and-estimated-mortalities" class="slide level2">
 <h2>Actual and estimated mortalities</h2>
+<div style="font-size: 80%;">
 <p>Extract and summarize posterior samples of <span class="math inline">\(D_t=N_t-S_t\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>Dpost <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples1[,<span class="fu">paste</span>(<span class="st">"Deaths["</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="st">"]"</span>, <span class="at">sep=</span><span class="st">""</span>)])</span>
-<span id="cb44-2"><a></a>Dmed <span class="ot">&lt;-</span> <span class="fu">apply</span>(Dpost, <span class="dv">2</span>, median)</span>
-<span id="cb44-3"><a></a>Dupper <span class="ot">&lt;-</span> <span class="fu">apply</span>(Dpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
-<span id="cb44-4"><a></a>Dlower <span class="ot">&lt;-</span> <span class="fu">apply</span>(Dpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>Dpost <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jags.post.samples1[,<span class="fu">paste</span>(<span class="st">"Deaths["</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="st">"]"</span>, <span class="at">sep=</span><span class="st">""</span>)])</span>
+<span id="cb43-2"><a></a>Dmed <span class="ot">&lt;-</span> <span class="fu">apply</span>(Dpost, <span class="dv">2</span>, median)</span>
+<span id="cb43-3"><a></a>Dupper <span class="ot">&lt;-</span> <span class="fu">apply</span>(Dpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.975</span>)</span>
+<span id="cb43-4"><a></a>Dlower <span class="ot">&lt;-</span> <span class="fu">apply</span>(Dpost, <span class="dv">2</span>, quantile, <span class="at">prob=</span><span class="fl">0.025</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Plot</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Deaths, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>), <span class="at">xlab=</span><span class="st">"Time"</span>,</span>
-<span id="cb45-2"><a></a>     <span class="at">ylab=</span><span class="st">"Mortalities"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"red2"</span>)</span>
-<span id="cb45-3"><a></a><span class="fu">arrows</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Dlower, <span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Dupper, <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>,</span>
-<span id="cb45-4"><a></a>       <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
-<span id="cb45-5"><a></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Dmed, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
-<span id="cb45-6"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">30</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>),</span>
-<span id="cb45-7"><a></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"red2"</span>, <span class="fu">gray</span>(<span class="fl">0.7</span>)), <span class="at">lty=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">1</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Deaths, <span class="at">type=</span><span class="st">"b"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30</span>), <span class="at">xlab=</span><span class="st">"Time"</span>,</span>
+<span id="cb44-2"><a></a>     <span class="at">ylab=</span><span class="st">"Mortalities"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="st">"coral"</span>)</span>
+<span id="cb44-3"><a></a><span class="fu">arrows</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Dlower, <span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Dupper, <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>,</span>
+<span id="cb44-4"><a></a>       <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
+<span id="cb44-5"><a></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span>(T<span class="dv">-1</span>), Dmed, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.7</span>))</span>
+<span id="cb44-6"><a></a><span class="fu">legend</span>(<span class="dv">1</span>, <span class="dv">30</span>, <span class="fu">c</span>(<span class="st">"Actual"</span>, <span class="st">"Estimated"</span>),</span>
+<span id="cb44-7"><a></a>       <span class="at">col=</span><span class="fu">c</span>(<span class="st">"coral"</span>, <span class="fu">gray</span>(<span class="fl">0.7</span>)), <span class="at">lty=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">1</span>), <span class="at">pch=</span><span class="fu">c</span>(<span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
+</div>
 </section>
 <section id="actual-and-estimated-mortalities-output" class="slide level2 output-location-slide"><h2>Actual and estimated mortalities</h2><div class="cell output-location-slide">
 <div class="cell-output-display">
@@ -723,9 +741,17 @@ Ntot &lt;- sum(everAlive)                     ## Super-population size
 </div>
 </div></section><section id="summary" class="slide level2">
 <h2>Summary</h2>
-<p>This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process. <br></p>
-<p>Requires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes. <br></p>
-<p>Integrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals. <br></p>
+<div style="font-size: 85%;">
+<p>This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process.</p>
+<div class="fragment">
+<p><br></p>
+<p>Requires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes.</p>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>Integrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals.</p>
+</div>
+</div>
 
 
 </section></section>
