@@ -1,0 +1,558 @@
+---
+## title: "Converted Presentation"
+format:
+  revealjs:
+    theme: default
+    pagetitle: 'Jolly-Seber Model'
+    slide-number: true
+    echo: true
+lang: en
+---
+
+## {content-align="center" style="font-size: 170%;"}
+
+<br>
+
+<center>
+  
+**Spatio-temporal variation in survival, <br> recruitment, movement and abundance with the <br> Jolly-Seber model**
+
+<br>
+
+
+
+::: {style='font-size: 60%;'}
+  WILD(FISH) 8390 <br>
+  Inference for Models of Fish and Wildlife Population Dynamics <br>
+:::
+  
+</center>
+
+
+
+
+# Overview {visibility="hidden"}
+  
+
+
+
+
+
+## Overview
+
+Jolly-Seber model
+    
+- Extend CJS model to allow for recruitment
+- We no longer "condition on first capture"
+- Typically, we use the robust design
+  
+   
+Bigger picture
+
+- We're interested in modeling population dynamics
+- This framework allows for inference on **all** of the key processes 
+- Potential to model spatial, temporal, and individual-level variation vital rates
+- Density-dependence and biotic interactions could be modeled too
+  
+
+
+
+##  Individual-based spatial population dynamics
+
+::: {style='font-size: 80%;'}
+Initial State
+$$
+    z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
+    {\bm s}_{i,1} \propto \lambda_1(\bs)
+$$
+  
+Survival and Recruitment
+$$
+    z_{i,t} \sim
+    \begin{cases}
+      \mbox{Bernoulli}(z_{i,t-1}\phi) & \quad \text{if previously recruited} \\
+      \mbox{Bernoulli}(\alpha_t) & \quad \text{if not yet recruited} 
+    \end{cases}
+$$
+  
+Movement (Assuming random walk)
+$$
+    \bsit 
+    \begin{cases}
+      \sim \mbox{Norm}(\bsitp, \tau^2) & \quad \text{if previously recruited} <br>
+      \propto \lambda_t(\bs) & \quad \text{if not yet recruited} 
+    \end{cases}
+$$
+
+Abundance ($M$ is the upper bound of data augmentation)
+$$
+    N_t = \sum_{i=1}^M z_{i,t}
+$$
+:::
+
+
+
+
+
+
+
+## Simulating spatial JS data with robust design
+
+Parameters and data dimensions
+
+```{r}
+#| label: sim-pars
+T <- 10      # years/primary periods
+K <- 3       # 3 secondary sampling occasion
+lambda <- 25 # Expected value of abundance in year 1
+M <- 500     # Easiest way to simulate data is using data augmentation
+phi <- 0.7   # Apparent survival
+beta <- 0.3 # Per-capital recruitment rate
+p0 <- 0.4    # Baseline capture prob
+sigma <- 0.1 # Scale parameter of encounter rate function
+```
+
+Traps, activity centers, and capture probability
+```{r}
+#| label: sim-p
+set.seed(340)
+co <- seq(0.25, 0.75, length=5)
+x <- cbind(rep(co, each=5), rep(co, times=5))
+J <- nrow(x)  ## nTraps
+xlim <- ylim <- c(0,1)
+## Activity centers, no dispersal
+s <- cbind(runif(M, xlim[1], xlim[2]), runif(M, ylim[1], ylim[2]))
+d <- p <- matrix(NA, M, J)
+for(i in 1:M) {
+    d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
+    p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2)) } # capture prob 
+```
+
+
+
+## Simulating spatial JS data with robust design
+
+Generate $z$
+
+```{r}
+#| label: sim-SR
+set.seed(034)
+z <- recruitable <- died <- recruited <- matrix(0, M, T)
+z[,1] <- rbinom(M, 1, lambda/M) # alive at t=1
+recruitable[,1] <- 1-z[,1]
+N <- integer(T)
+N[1] <- sum(z[,1])
+for(t in 2:T) {
+    ER <- N[t-1]*beta # expected number of recruits
+    prevA <- sum(recruitable[,t-1]) # Number available to be recruited
+    alpha <- ER/prevA
+    if(alpha > 1) stop("M isn't big enough")
+    z[,t] <- rbinom(M, 1, (1-recruitable[,t-1])*z[,t-1]*phi +
+                          recruitable[,t-1]*alpha)
+    recruitable[,t] <- recruitable[,t-1]*(1-z[,t])
+    N[t] <- sum(z[,t])  }
+```
+
+Populaton size, mortalities, and recruits
+
+```{r}
+#| label: sim-N
+died <- (z[,1:(T-1)]==1) & (z[,2:T]==0)
+recruited <- (z[,1:(T-1)]==0) & (z[,2:T]==1)
+Deaths <- colSums(died)
+Recruits <- colSums(recruited)
+everAlive <- sum(rowSums(z)>0)
+```
+
+
+
+## Visualize dynamics
+
+```{r, echo=-1}
+#| label: dynamics1
+#| fig.height: 5
+#| fig.align: 'center'
+#| out.width: '90%'
+par(mai=c(0.9,0.9,0.1,0.1))
+plot(1:T, N, type="b", xlab="Year", ylab="", ylim=c(0, 50), pch=16)
+lines(2:T, Deaths, type="b", col="red2", pch=16); lines(2:T, Recruits, type="b", col="seagreen2", pch=16)
+legend(1, 50, c("Abundance","Mortalities","Recruits"), lty=1, pch=16, col=c("black","red2","seagreen2"))
+```
+
+
+## Simulating spatial JS data with robust design
+
+Generate encounter histories for all $M$ individuals
+
+```{r}
+#| label: sim-yall
+yall.bern <- array(NA, c(M, J, K, T))   ## For Bernoulli
+yall <- array(NA, c(M, J, T))           ## For Binomial
+for(i in 1:M) {
+    for(t in 1:T) {
+        for(j in 1:J) {
+            yall.bern[i,j,1:K,t] <- rbinom(K, 1, z[i,t]*p[i,j])
+            yall[i,j,t] <- rbinom(1, K, z[i,t]*p[i,j])
+        }
+    }
+}
+```
+
+
+Discard individuals that were never captured
+
+```{r}
+#| label: sim-y
+y.bern <- yall.bern[rowSums(yall.bern)>0,,,]
+y <- yall[rowSums(yall)>0,,]
+str(y)
+```
+
+
+<!-- ```{r} -->
+<!-- #| label: NDR -->
+<!-- #| out-width: '60%' -->
+<!-- #| fig-align: 'center' -->
+<!-- % plot(1:T, N, ylim=c(0, 50), type="o", pch=16, -->
+<!-- %      xlab="Year", ylab="") -->
+<!-- % lines(2:T, Deaths[-1], col="red", type="o", pch=16) -->
+<!-- % lines(2:T, Recruits[-1], col="blue", type="o", pch=16) -->
+<!-- % legend(1, 50, c("Population size", "Deaths", "Recruits"), -->
+<!-- %        col=c("black", "red", "blue"), pch=16, lty=1) -->
+<!-- ``` -->
+<!-- % %  -->
+<!-- % % <center> -->
+<!-- % %   [width=0.8\textwidth]{Open-JS-NDR} -->
+<!-- % % </center> -->
+<!-- %  -->
+
+
+
+
+# Likelihood inference
+
+
+## Likelihood analysis using 'openCR'
+
+Begin by making a mask
+
+```{r}
+#| label: mask
+#| out-width: "60%"
+#| fig-align: "center"
+#| results: 'hide'
+#| message: false
+library(openCR)
+trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
+traps <- read.traps(data=trap.df, detector="proximity")
+mask <- make.mask(traps=traps, buffer=250)
+plot(mask); points(traps, pch=3, col="blue", lwd=2)
+```
+
+## Likelihood analysis of spatial JS model
+
+Format capture histories (with robust design)
+
+```{r}
+#| label: JS-model-new
+y.secr <- y.bern
+year <- rep(slice.index(y.bern, 4), y.secr)  ## Primary period
+day <- rep(slice.index(y.bern, 3), y.secr)   ## Secondary period 
+caps <- data.frame(session=1,
+                   animal=rep(slice.index(y.bern, 1), y.secr),
+                   occasion=(year-1)*K+day,
+                   trap=rep(slice.index(y.bern, 2), y.secr))
+capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
+```
+
+Indicate the number of primary periods between each sampling occasion.
+
+```{r}
+#| label: rmark-intervals
+timeintervals <- rep(0, K*T-1)
+timeintervals[seq(from=K, to=K*T-1, by=K)] <- 1
+timeintervals
+intervals(capthist) <- timeintervals ## Add to capthist
+```
+
+
+
+## Likelihood analysis of non-spatial JS model
+
+Fit the non-spatial Jolly-Seber model
+
+```{r}
+#| label: js-mod-fit-opencr-nonsp
+fm.nonsp <- openCR.fit(capthist, type="JSSAf",
+                       model=list(f~1, phi~1, p~1))
+derived.pars <- derived(fm.nonsp)$est[,c("f","phi","lambda","N")]
+print(derived.pars, digits=2)
+```
+
+
+
+## Likelihood analysis of spatial JS model
+
+Fit the spatial Jolly-Seber model using 'openCR'
+
+```{r}
+#| label: js-mod-fit-opencr
+#| eval: false
+fm.sp <- openCR.fit(capthist, type="JSSAsecrf",
+                    model=list(f~1, phi~1, p~1), mask=mask)
+```
+
+Takes a long time to run! <br>
+
+
+Parameter estimates on the natural scale:
+```{r}
+#| label: js-mod-fit-opencr-pred
+#| eval: false
+predict(fm.sp)
+```
+
+
+
+## Likelihood analysis of spatial JS model
+
+Format data for 'openpopscr'
+```{r}
+#| label: format-openpop
+library(openpopscr)
+js.data <- ScrData$new(capthist, mask, primary=rep(1:T, each=K))
+```
+
+Create the model object and then fit it
+
+```{r}
+#| label: js-mod-fit
+#| results: 'hide'
+#| cache: true
+#| eval: true
+#| warning: false
+#| message: false
+start <- get_start_values(js.data, model = "JsModel")
+mod <- JsModel$new(list(lambda0~1, sigma~1, D~1, phi~1, beta~1), js.data,
+                   start=start)
+mod$fit()
+```
+
+Back-transform
+
+```{r}
+#| label: js-mod-est
+#| eval: true
+mod$get_par("lambda0", k = 1, j = 1) ## Baseline capture probability
+mod$get_par("sigma", k = 1, j = 1)   ## Scale parameter of the detection function
+mod$get_par("D")                     ## Superpopulation density
+mod$get_par("beta", k = 1, m=1)      ## Per-capita recruitment
+mod$get_par("phi", k = 1, m=1)       ## Survival
+```
+
+## Density estimates
+
+```{r}
+#| label: js-density
+mod$estimates()$D
+```
+
+
+# Bayesian inference
+
+
+
+
+
+## Spatial JS model in JAGS
+
+```{r}
+#| label: jagsmod1
+#| echo: false
+writeLines(readLines("JS-spatial.jag"))
+```
+
+
+
+
+```{r}
+#| label: load-jagsUI-coda
+#| include: false
+library(jagsUI)
+library(coda)
+```
+
+
+
+## Bayesian analysis
+
+Data augmentation
+
+```{r}
+#| label: sim-aug
+M <- nrow(y) + 50   ## Trial and error
+yz <- array(0, c(M, J, T))
+yz[1:nrow(y),,] <- y
+jags.data1 <- list(y=yz, M=M, x=x, J=J, K=K, T=T, xlim=xlim, ylim=ylim)
+```
+
+
+Initial values and parameters to monitor
+
+```{r}
+#| label: zi
+zi <- matrix(0, M, T)
+zi[1:nrow(y),] <- 1
+ji1 <- function() list(phi=0.01, beta=0.001, z=zi)
+jp1 <- c("phi", "beta", "p0", "sigma", "N", "Deaths", "Recruits", "Ntot")
+```
+
+
+Fit the model
+
+```{r}
+#| label: jags-run
+#| results: 'hide'
+#| message: false
+#| cache: true
+library(jagsUI)
+jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
+                                 parameters.to.save=jp1,
+                                 model.file="JS-spatial.jag",
+                                 n.chains=3, n.adapt=100, n.burnin=0,
+                                 n.iter=2000, parallel=TRUE)
+```
+
+
+
+## Is *M* high enough?
+
+```{r}
+#| label: Ntot
+#| out-width: '70%'
+#| fig-align: 'center'
+hist(as.matrix(jags.post.samples1[,"Ntot"]), xlab="Total population size",
+     ylab="", main="", freq=FALSE, xlim=c(nrow(y), M))
+abline(v=M, lwd=3, col="blue")
+```
+
+
+
+## Posterior distributions
+
+```{r}
+#| label: jc1
+#| out-width: '60%'
+#| fig-align: 'center'
+plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
+```
+
+## Posterior distributions
+
+```{r}
+#| label: jcN1-4
+#| include: false
+#| echo: false
+#| output-location: 'column'
+plot(jags.post.samples1[,c("N[1]", "N[2]", "N[3]", "N[4]")])
+plot(jags.post.samples1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
+```
+
+
+
+## Actual and estimated abundance
+
+Extract and summarize posterior samples of $N_t$
+
+```{r}
+#| label: N-post-samples
+Npost <- as.matrix(jags.post.samples1[,paste("N[", 1:10, "]", sep="")])
+Nmed <- apply(Npost, 2, median)
+Nupper <- apply(Npost, 2, quantile, prob=0.975)
+Nlower <- apply(Npost, 2, quantile, prob=0.025)
+```
+  
+  
+Plot
+
+```{r, echo=-1}
+#| label: Npost
+#| fig-height: 5
+#| output-location: 'slide'
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(1:T, N, type="b", ylim=c(0, 60), xlab="Time",
+     ylab="Abundance", pch=16)
+arrows(1:T, Nlower, 1:T, Nupper, angle=90, code=3,
+       length=0.05, col=gray(0.7))
+points(1:T, Nmed, pch=16, col=gray(0.7))
+legend(1, 60, c("Actual", "Estimated"),
+       col=c("black", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+```
+
+
+## Actual and estimated recruits
+
+Extract and summarize posterior samples of $R_t$
+
+```{r}
+#| label: R-post-samples
+Rpost <- as.matrix(jags.post.samples1[,paste("Recruits[",1:9,"]",sep="")])
+Rmed <- apply(Rpost, 2, median)
+Rupper <- apply(Rpost, 2, quantile, prob=0.975)
+Rlower <- apply(Rpost, 2, quantile, prob=0.025)
+```
+  
+Plot
+
+```{r, echo=-1}
+#| label: Rpost
+#| fig-height: 5
+#| output-location: 'slide'
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(1:(T-1), Recruits, type="b", ylim=c(0, 30), xlab="Time",
+     ylab="Recruits", pch=16, col="seagreen2")
+arrows(1:(T-1), Rlower, 1:(T-1), Rupper, angle=90, code=3,
+       length=0.05, col=gray(0.7))
+points(1:(T-1), Rmed, pch=16, col=gray(0.7))
+legend(1, 30, c("Actual", "Estimated"),
+       col=c("seagreen2", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+```
+
+
+## Actual and estimated mortalities
+
+Extract and summarize posterior samples of $D_t=N_t-S_t$
+
+```{r}
+#| label: D-post-samples
+Dpost <- as.matrix(jags.post.samples1[,paste("Deaths[", 1:9, "]", sep="")])
+Dmed <- apply(Dpost, 2, median)
+Dupper <- apply(Dpost, 2, quantile, prob=0.975)
+Dlower <- apply(Dpost, 2, quantile, prob=0.025)
+```
+  
+Plot
+
+```{r, echo=-1}
+#| label: Dpost
+#| fig-height: 5
+#| output-location: 'slide'
+par(mai=c(0.9,0.9,0.1,0.1))  
+plot(1:(T-1), Deaths, type="b", ylim=c(0, 30), xlab="Time",
+     ylab="Mortalities", pch=16, col="red2")
+arrows(1:(T-1), Dlower, 1:(T-1), Dupper, angle=90, code=3,
+       length=0.05, col=gray(0.7))
+points(1:(T-1), Dmed, pch=16, col=gray(0.7))
+legend(1, 30, c("Actual", "Estimated"),
+       col=c("red2", gray(0.7)), lty=c(NA,1), pch=c(16,16))
+```
+
+
+## Summary
+
+This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process. <br>
+   
+Requires a lot of data on marked individuals, but it should be no surprise that we need a lot of data to understand complex processes. <br> 
+   
+Integrated population models can be used to draw inferences using this model and a combination of data on marked and unmarked individuals. <br> 
+

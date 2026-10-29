@@ -1,22 +1,16 @@
-## ----install-load,include=FALSE,eval=FALSE------------------------------------
-# if(!require(remotes))
-#     install.packages("remotes")
-# library(remotes)
-# install.packages("marked")
-# library(marked)
-# install.packages("igraph")
-# if(!require(openpopscr)) {
-#     install_github("r-glennie/openpopscr", build = TRUE,
-#                    build_opts = c("--no-resave-data", "--no-manual"),
-#                    build_vignettes = TRUE)
-# }
-# library(openpopscr)
-# if(!require(secr))
-#     install.packages("secr")
-# library(secr)
+#' ---
+#' format:
+#'   revealjs:
+#'     theme: default
+#'     pagetitle: Cormack-Jolly-Seber Model
+#'     slide-number: true
+#'     echo: true
+#' lang: en
+#' title: lecture-CJS
+#' ---
+#' 
 
-
-## ----sim-norobust,size='footnotesize',echo=-1---------------------------------
+#| label: sim-norobust
 set.seed(34918)  
 T <- 10               ## primary periods (eg, years)
 K <- 1                ## only 1 secondary sampling occasion
@@ -27,8 +21,7 @@ z <- matrix(NA, n, T)
 y <- matrix(NA, n, T)
 first <- rpois(n, 1)+1 ## random release dates
 
-
-## ----sim-norbust2,size='footnotesize'-----------------------------------------
+#| label: sim-norbust2
 for(i in 1:n) {
     z[i,first[i]] <- 1  ## Known alive at release
     y[i,first[i]] <- 1
@@ -38,55 +31,51 @@ for(i in 1:n) {
     }
 }
 
-
-## ----z,size='tiny'------------------------------------------------------------
+#| label: z
 z[,1:7]
 
-
-## ----y,size='tiny'------------------------------------------------------------
+#| label: y-peak
 y[,1:7]
 
+#| label: install-marked
+#| include: false
+#| eval: true
+if(!require(marked)) install.packages("marked")
+library(marked)
 
-## ----install-marked,include=FALSE,eval=FALSE----------------------------------
-# if(!require(marked)) install.packages("marked")
-# library(marked)
-
-
-## ----marked-data,size='footnotesize',message=FALSE,report=FALSE---------------
+#| label: marked-data
 library(marked)
 y.marked <- ifelse(is.na(y), 0, y)
 cap.histories <- data.frame(
     ch=apply(y.marked, 1, paste, collapse=""))
 head(cap.histories, n=3)
 
-
-## ----marked-fit,size='footnotesize',results='hide',message=FALSE--------------
+#| label: marked-fit
+#| results: hide
+#| warning: false
 fm0 <- crm(data=cap.histories, model="CJS", hessian=TRUE,
            model.parameters=list(Phi=list(formula=~1),
                                  p=list(formula=~1)))
 
-
-## ----marked-predict,size='footnotesize'---------------------------------------
+#| label: marked-predict
 predict(fm0)
 
-
-## ----jags-nonsp0,size='scriptsize',eval=FALSE---------------------------------
-# writeLines(readLines("CJS-nonspatial.jag"))
-
-## ----jags-nonsp,size='scriptsize',background='beige',comment='',echo=FALSE----
+#| label: jags-nonsp
+#| background: beige
+#| comment: ''
+#| echo: false
 writeLines(readLines("CJS-nonspatial.jag"))
 
-
-## ----jagsUI,include=FALSE,results='hide'--------------------------------------
+#| label: jagsUI
+#| include: false
+#| results: hide
 library(jagsUI)
 library(coda)
 
-
-## ----nonsp-data,size='scriptsize'---------------------------------------------
+#| label: nonsp-data
 jags.data.nonsp <- list(y=y, n=n, first=first, T=T)
 
-
-## ----zi,size='scriptsize'-----------------------------------------------------
+#| label: zi
 zi.nonsp <- matrix(NA, n, T)
 for(i in 1:n) {
     zi.nonsp[i,(first[i]+1):T] <- 1
@@ -94,8 +83,10 @@ for(i in 1:n) {
 jags.inits.nonsp <- function() list(phi=runif(1), p=runif(1), z=zi.nonsp)
 jags.pars.nonsp <- c("phi", "p")
 
-
-## ----jc1,size='scriptsize',message=FALSE,results='hide',cache=TRUE------------
+#| label: jc1
+#| results: hide
+#| message: false
+#| cache: true
 library(jagsUI)
 jags.post.samples.nonsp <- jags.basic(data=jags.data.nonsp,
                                       inits=jags.inits.nonsp,
@@ -104,12 +95,12 @@ jags.post.samples.nonsp <- jags.basic(data=jags.data.nonsp,
                                       n.chains=3, n.adapt=100, n.burnin=0,
                                       n.iter=2000, parallel=TRUE)
 
-
-## ----jc1-plot,out.width="65%",fig.align='center',size='scriptsize'------------
+#| label: jc1-plot
+#| out-width: 65%
+#| fig-align: center
 plot(jags.post.samples.nonsp)
 
-
-## ----sim2,size='tiny'---------------------------------------------------------
+#| label: sim2
 T <- 10       # primary occasions
 K <- 3        # secondary occasions
 n <- 25       # nIndividuals
@@ -117,8 +108,7 @@ phi <- 0.7
 p0 <- 0.4     # baseline capture prob
 sigma <- 0.1  # scale parameter
 
-
-## ----X,size='tiny'------------------------------------------------------------
+#| label: X
 co <- seq(0.25, 0.75, length=5)
 x <- cbind(rep(co, each=5),
            rep(co, times=5))
@@ -133,8 +123,7 @@ for(i in 1:n) {
     p.sp[i,] <- p0*exp(-d[i,]^2/(2*sigma^2))
 }
 
-
-## ----z2,size='tiny'-----------------------------------------------------------
+#| label: z2
 z <- matrix(NA, n, T)
 y.sp <- array(NA, c(n, J, K, T)) ## 4D array
 first <- rpois(n, 1)+1 ## random release dates
@@ -150,8 +139,10 @@ for(i in 1:n) {
     }
 }
 
-
-## ----install-openpopscr,size='scriptsize',message=FALSE,results='hide',eval=FALSE----
+#| label: install-openpopscr
+#| eval: false
+#| results: hide
+#| message: false
 # library(remotes)
 # install_github("r-glennie/openpopscr", build = TRUE,
 #                build_opts = c("--no-resave-data", "--no-manual"),
@@ -159,20 +150,22 @@ for(i in 1:n) {
 # library(openpopscr)
 # library(secr)
 
-
-## ----include=FALSE------------------------------------------------------------
+#| label: load
+#| include: false
 library(secr)
 library(openpopscr)
 
-
-## ----mask,size='scriptsize',out.width="60%",fig.align="center"----------------
+#| label: mask
+#| out-width: 60%
+#| fig-align: center
+#| fig-height: 7
+#| fig-width: 7
 trap.df <- data.frame(x*1000); colnames(trap.df) <- c("x","y")
 traps <- read.traps(data=trap.df, detector="proximity")
 mask <- make.mask(traps=traps, buffer=250)
 plot(mask); points(traps, pch=3, col="blue", lwd=2)
 
-
-## ----CJS-model-new,size='scriptsize'------------------------------------------
+#| label: CJS-model-new
 y.sp.secr <- y.sp
 y.sp.secr[is.na(y.sp)] <- 0
 caps <- data.frame(session=1,
@@ -181,37 +174,31 @@ caps <- data.frame(session=1,
                    trap=rep(slice.index(y.sp.secr, 2), y.sp.secr))
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=30)
 
-
-## ----format-openpop,size='scriptsize'-----------------------------------------
+#| label: format-openpop
 cjs.data <- ScrData$new(capthist, mask, primary=rep(1:10, each=3))
 
-
-## ----cjs-mod-fit,size='scriptsize',results='hide',cache=TRUE------------------
+#| label: cjs-mod-fit
+#| results: hide
+#| cache: true
 mod <- CjsModel$new(list(lambda0~1, sigma~1, phi~1), cjs.data,
                     start=list(lambda0=1.5, sigma=50, phi=0.5))
 mod$fit()
 mod
 
-
-## ----cjs-mod-est,size='scriptsize'--------------------------------------------
+#| label: cjs-mod-est
 mod$get_par("lambda0", k = 1, j = 1)
 mod$get_par("sigma", k = 1, j = 1)
 mod$get_par("phi", k = 1, m=1)
 
-
-## ----jags-sp0,size='tiny',eval=FALSE------------------------------------------
-# writeLines(readLines("CJS-spatial.jag"))
-
-## ----jags-sp,size='tiny',background='beige',comment='',echo=FALSE-------------
+#| label: jags-sp
+#| echo: false
 writeLines(readLines("CJS-spatial.jag"))
 
-
-## ----sp-data,size='scriptsize'------------------------------------------------
+#| label: sp-data
 jags.data.sp <- list(y=y.sp, n=n, first=first, x=x,
                      J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 
-
-## ----ji2,size='scriptsize'----------------------------------------------------
+#| label: ji2
 zi.sp <- matrix(NA, n, T)
 for(i in 1:n) {
     zi.sp[i,(first[i]+1):T] <- 1
@@ -219,8 +206,9 @@ for(i in 1:n) {
 jags.inits.sp <- function() list(phi=runif(1), z=zi.sp)
 jags.pars.sp <- c("phi", "p0", "sigma")
 
-
-## ----jc2,size='scriptsize',cache=TRUE,results='hide'--------------------------
+#| label: jc2
+#| results: hide
+#| cache: true
 jags.post.samples.sp <- jags.basic(data=jags.data.sp,
                                    inits=jags.inits.sp,
                                    parameters.to.save=jags.pars.sp,
@@ -228,19 +216,18 @@ jags.post.samples.sp <- jags.basic(data=jags.data.sp,
                                    n.chains=3, n.adapt=100, n.burnin=0,
                                    n.iter=2000, parallel=TRUE)
 
-
-## ----jc2-plot,size='scriptsize',out.width="60%",fig.align='center'------------
+#| label: jc2-plot
+#| out-width: 60%
+#| fig-align: center
 plot(jags.post.samples.sp)
 
-
-## ----move,size='tiny'---------------------------------------------------------
+#| label: move
 T <- 10; K <- 5; n <- 25 ## same as before
 phi <- 0.9; p0 <- 0.4; sigma <- 0.05
 ## dispersal parameter (of random walk)
 tau <- 0.05
 
-
-## ----s,size='tiny'------------------------------------------------------------
+#| label: s
 ## state-space should be bigger
 xlim <- ylim <- c(0, 1)
 first <- rpois(n, 1)+1
@@ -264,8 +251,7 @@ for(i in 1:n) {
     }
 }
 
-
-## ----z3,size='tiny'-----------------------------------------------------------
+#| label: z3
 z <- matrix(NA, n, T)
 y.move <- array(NA, c(n, J, T)) 
 for(i in 1:n) {
@@ -279,14 +265,20 @@ for(i in 1:n) {
     }
 }
 
-
-## ----s1,size='scriptsize',out.width="65%",fig.align="center"------------------
+#| label: s1
+#| out-width: 65%
+#| fig-align: center
+#| fig-height: 7
+#| fig-width: 7
+#| code-fold: true
 plot(t(s[1,,]), pch=16, type="o", xlab="x", ylab="y",
      xlim=c(0, 1), ylim=c(0, 1), asp=1, col="blue")
 points(x, pch=3)
 
-
-## ----s-all,size='scriptsize',out.width="65%",fig.align="center",echo=FALSE----
+#| label: s-all
+#| echo: false
+#| out-width: 65%
+#| fig-align: center
 par(mai=c(0.1,0.1,0.1,0.1))  
 blue <- seq(0.1, 0.9, length=nrow(s))
 plot(t(s[1,,]), pch=1, type="o", xaxt="n", yaxt="n", frame=FALSE, ann=FALSE,
@@ -294,24 +286,20 @@ plot(t(s[1,,]), pch=1, type="o", xaxt="n", yaxt="n", frame=FALSE, ann=FALSE,
 for(i in 2:nrow(s)) lines(t(s[i,,]), pch=i, type="o", col=rgb(0,0,blue[i],0.5))
 points(x, pch=3)
 
-
-## ----jags-sp-move0,size='tiny',eval=FALSE-------------------------------------
-# writeLines(readLines("CJS-spatial-move.jag"))
-
-## ----jags-sp-move,size='tiny',background='beige',comment='',echo=FALSE--------
+#| label: jags-sp-move
+#| background: beige
+#| comment: ''
+#| echo: false
 writeLines(readLines("CJS-spatial-move.jag"))
 
+#| label: sp-move-data
+jd.sp.move <- list(y=y.move, n=n, first=first, x=x, J=J, K=K, T=T, xlim=xlim, ylim=ylim)
 
-## ----sp-move-data,size='tiny'-------------------------------------------------
-jd.sp.move <- list(y=y.move, n=n, first=first, x=x,
-                   J=J, K=K, T=T, xlim=xlim, ylim=ylim)
-
-
-## ----ji3,size='tiny'----------------------------------------------------------
+#| label: ji3
 zi <- matrix(NA, n, T)
 for(i in 1:n) {
-    zi[i,(first[i]+1):T] <- 1
-    }
+  zi[i,(first[i]+1):T] <- 1
+}
 ji.sp.move <- function() list(phi=runif(1), z=zi, s=s) ## Cheating with s
 jp.sp.move <- c("phi", "p0", "sigma", "tau")
 good1 <- which.max(rowSums(z, na.rm=TRUE)+rowSums(y.move, na.rm=TRUE))
@@ -320,25 +308,31 @@ jp.s1x <- paste0("s[", good1, ",1,", time1, "]")
 jp.s1y <- paste0("s[", good1, ",2,", time1, "]")
 jp.z1 <- paste0("z[", good1, ",", time1, "]") 
 
+#| label: jc3
+#| results: hide
+#| cache: true
+jps.sp.move <- jags.basic(data=jd.sp.move, inits=ji.sp.move,
+                          parameters.to.save=c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),
+                          model.file="CJS-spatial-move.jag", n.chains=3, n.adapt=100,
+                          n.burnin=0, n.iter=2000, parallel=TRUE)
 
-## ----jc3,size='tiny',results='hide',cache=TRUE--------------------------------
-jps.sp.move <- jags.basic(data=jd.sp.move,
-                          inits=ji.sp.move,
-                          parameters.to.save=
-                              c(jp.sp.move, jp.s1x, jp.s1y, jp.z1),
-                          model.file="CJS-spatial-move.jag",
-                          n.chains=3, n.adapt=100, n.burnin=0,
-                          n.iter=2000, parallel=TRUE)
-
-
-## ----jc3-plot,size='scriptsize',out.width="60%",fig.align='center'------------
+#| label: jc3-plot
+#| echo: false
+#| out-width: 60%
+#| fig-align: center
+#| fig-height: 8
+#| fig-width: 7
 plot(jps.sp.move[,jp.sp.move])
 
-
-## ----jc3-s,size='scriptsize',out.width='80%',fig.align='center',echo=FALSE----
+#| label: jc3-s
+#| echo: false
+#| out-width: 90%
+#| fig-align: center
+#| fig-height: 7
+#| fig-width: 7
 s1.post <- as.matrix(window(jps.sp.move[,c(jp.s1x,jp.s1y)], start=1501, thin=10))
 z1.post <- as.matrix(window(jps.sp.move[,jp.z1], start=1501, thin=10))
-plot(x, pch=3, xlim=c(0,1), ylim=c(0,1), asp=1, ann=FALSE)
+plot(x, pch=3, xlim=c(0,1), ylim=c(0,1), asp=1, ann=FALSE, axes=FALSE)
 for(i in 1:nrow(s1.post)) {
     alive1 <- which(z1.post[i,]==1)
     T1 <- length(alive1)
