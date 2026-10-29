@@ -326,16 +326,18 @@ Fit the spatial Jolly-Seber model using 'openCR'. Takes a long time to run!
 
 ```{r}
 #| label: js-mod-fit-opencr
-#| eval: false
+#| cache: true
 fm.sp <- openCR.fit(capthist, type="JSSAsecrf", model=list(f~1, phi~1, p~1), mask=mask)
 ```
 
 Parameter estimates on the natural scale:
+
 ```{r}
 #| label: js-mod-fit-opencr-pred
-#| eval: false
-predict(fm.sp)
+#| cache: true
+predict(fm.sp)$phi
 ```
+
 :::
 
 

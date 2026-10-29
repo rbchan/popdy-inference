@@ -1635,7 +1635,7 @@
     "href": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-spatial-js-model-1",
     "title": "Inference for Models of Fish and Wildlife Population Dynamics",
     "section": "Likelihood analysis of spatial JS model",
-    "text": "Likelihood analysis of spatial JS model\n\nFit the spatial Jolly-Seber model using ‘openCR’. Takes a long time to run!\n\nfm.sp &lt;- openCR.fit(capthist, type=\"JSSAsecrf\", model=list(f~1, phi~1, p~1), mask=mask)\n\nParameter estimates on the natural scale:\n\npredict(fm.sp)"
+    "text": "Likelihood analysis of spatial JS model\n\nFit the spatial Jolly-Seber model using ‘openCR’. Takes a long time to run!\n\nfm.sp &lt;- openCR.fit(capthist, type=\"JSSAsecrf\", model=list(f~1, phi~1, p~1), mask=mask)\n\nParameter estimates on the natural scale:\n\npredict(fm.sp)$phi\n\n   session  estimate SE.estimate       lcl       ucl\n1        1 0.6481301  0.03990634 0.5665695 0.7218771\n2        2 0.6481301  0.03990634 0.5665695 0.7218771\n3        3 0.6481301  0.03990634 0.5665695 0.7218771\n4        4 0.6481301  0.03990634 0.5665695 0.7218771\n5        5 0.6481301  0.03990634 0.5665695 0.7218771\n6        6 0.6481301  0.03990634 0.5665695 0.7218771\n7        7 0.6481301  0.03990634 0.5665695 0.7218771\n8        8 0.6481301  0.03990634 0.5665695 0.7218771\n9        9 0.6481301  0.03990634 0.5665695 0.7218771\n10      10        NA          NA        NA        NA"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#likelihood-analysis-of-spatial-js-model-2",
