@@ -9,13 +9,13 @@ format:
 lang: en
 ---
 
-## {content-align="center" style="font-size: 170%;"}
+## {content-align="center" style="font-size: 160%;"}
 
 <br>
 
 <center>
   
-**Spatio-temporal variation in survival, <br> recruitment, movement and abundance with the <br> Jolly-Seber model**
+**Spatio-temporal variation in survival, recruitment, movement and abundance with the Jolly-Seber model**
 
 <br>
 
@@ -35,11 +35,25 @@ lang: en
   
 
 
+::: {.hidden}
+$$
+ \def\RR{{\bf R}}
+ \def\bold#1{{\bf #1}}
+ \def\bs{{\boldsymbol s}}
+ \def\bsit{{\boldsymbol s}_{i,t}}
+ \def\bsitp{{\boldsymbol s}_{i,t-1}}
+ \def\but{{\boldsymbol u_t}}
+ \def\butp{{\boldsymbol u_{t+1}}}
+ \def\beps{{\boldsymbol \varepsilon}}
+$$
+:::
+
 
 
 
 ## Overview
 
+::: {style='font-size: 80%;'}
 Jolly-Seber model
     
 - Extend CJS model to allow for recruitment
@@ -47,23 +61,26 @@ Jolly-Seber model
 - Typically, we use the robust design
   
    
+::: {.fragment}
 Bigger picture
 
 - We're interested in modeling population dynamics
 - This framework allows for inference on **all** of the key processes 
 - Potential to model spatial, temporal, and individual-level variation vital rates
 - Density-dependence and biotic interactions could be modeled too
+:::
+:::
   
 
 
 
-##  Individual-based spatial population dynamics
+##  [Individual-based spatial population dynamics]{style="font-size: 90%;"}
 
 ::: {style='font-size: 80%;'}
 Initial State
 $$
     z_{i,1} \sim \mbox{Bernoulli}(\psi) \\
-    {\bm s}_{i,1} \propto \lambda_1(\bs)
+    {\bf s}_{i,1} \propto \lambda_1(\bs)
 $$
   
 Survival and Recruitment
@@ -96,8 +113,9 @@ $$
 
 
 
-## Simulating spatial JS data with robust design
+## [Simulating spatial JS data with robust design]{style="font-size: 90%;"}
 
+::: {style='font-size: 80%;'}
 Parameters and data dimensions
 
 ```{r}
@@ -127,11 +145,12 @@ for(i in 1:M) {
     d[i,] <- sqrt((s[i,1]-x[,1])^2 + (s[i,2]-x[,2])^2)
     p[i,] <- p0*exp(-d[i,]^2/(2*sigma^2)) } # capture prob 
 ```
+:::
 
 
+## [Simulating spatial JS data with robust design]{style="font-size: 90%;"}
 
-## Simulating spatial JS data with robust design
-
+::: {style='font-size: 80%;'}
 Generate $z$
 
 ```{r}
@@ -163,6 +182,7 @@ Deaths <- colSums(died)
 Recruits <- colSums(recruited)
 everAlive <- sum(rowSums(z)>0)
 ```
+:::
 
 
 
@@ -170,9 +190,10 @@ everAlive <- sum(rowSums(z)>0)
 
 ```{r, echo=-1}
 #| label: dynamics1
-#| fig.height: 5
-#| fig.align: 'center'
-#| out.width: '90%'
+#| fig-height: 5
+#| fig-align: 'center'
+#| out-width: '90%'
+#| code-fold: true
 par(mai=c(0.9,0.9,0.1,0.1))
 plot(1:T, N, type="b", xlab="Year", ylab="", ylim=c(0, 50), pch=16)
 lines(2:T, Deaths, type="b", col="red2", pch=16); lines(2:T, Recruits, type="b", col="seagreen2", pch=16)
@@ -180,8 +201,9 @@ legend(1, 50, c("Abundance","Mortalities","Recruits"), lty=1, pch=16, col=c("bla
 ```
 
 
-## Simulating spatial JS data with robust design
+## [Simulating spatial JS data with robust design]{style="font-size: 90%;"}
 
+::: {style='font-size: 80%;'}
 Generate encounter histories for all $M$ individuals
 
 ```{r}
@@ -199,6 +221,7 @@ for(i in 1:M) {
 ```
 
 
+::: {.fragment}
 Discard individuals that were never captured
 
 ```{r}
@@ -207,6 +230,8 @@ y.bern <- yall.bern[rowSums(yall.bern)>0,,,]
 y <- yall[rowSums(yall)>0,,]
 str(y)
 ```
+:::
+:::
 
 
 <!-- ```{r} -->
@@ -234,6 +259,7 @@ str(y)
 
 ## Likelihood analysis using 'openCR'
 
+::: {style='font-size: 80%;'}
 Begin by making a mask
 
 ```{r}
@@ -248,9 +274,13 @@ traps <- read.traps(data=trap.df, detector="proximity")
 mask <- make.mask(traps=traps, buffer=250)
 plot(mask); points(traps, pch=3, col="blue", lwd=2)
 ```
+:::
 
-## Likelihood analysis of spatial JS model
 
+
+## [Likelihood analysis of spatial JS model]{style="font-size: 90%;"}
+
+::: {style='font-size: 80%;'}
 Format capture histories (with robust design)
 
 ```{r}
@@ -258,8 +288,7 @@ Format capture histories (with robust design)
 y.secr <- y.bern
 year <- rep(slice.index(y.bern, 4), y.secr)  ## Primary period
 day <- rep(slice.index(y.bern, 3), y.secr)   ## Secondary period 
-caps <- data.frame(session=1,
-                   animal=rep(slice.index(y.bern, 1), y.secr),
+caps <- data.frame(session=1, animal=rep(slice.index(y.bern, 1), y.secr),
                    occasion=(year-1)*K+day,
                    trap=rep(slice.index(y.bern, 2), y.secr))
 capthist <- make.capthist(captures=caps, traps=traps, noccasions=T*K)
@@ -274,10 +303,11 @@ timeintervals[seq(from=K, to=K*T-1, by=K)] <- 1
 timeintervals
 intervals(capthist) <- timeintervals ## Add to capthist
 ```
+:::
 
 
 
-## Likelihood analysis of non-spatial JS model
+## [Likelihood analysis of non-spatial JS model]{style="font-size: 90%;"}
 
 Fit the non-spatial Jolly-Seber model
 
@@ -291,8 +321,9 @@ print(derived.pars, digits=2)
 
 
 
-## Likelihood analysis of spatial JS model
+## [Likelihood analysis of spatial JS model]{style="font-size: 90%;"}
 
+::: {style='font-size: 80%;'}
 Fit the spatial Jolly-Seber model using 'openCR'
 
 ```{r}
@@ -311,6 +342,7 @@ Parameter estimates on the natural scale:
 #| eval: false
 predict(fm.sp)
 ```
+:::
 
 
 
@@ -366,6 +398,10 @@ mod$estimates()$D
 
 ## Spatial JS model in JAGS
 
+<center>
+[JS-spatial.jag](JS-spatial.jag)
+</center>
+
 ```{r}
 #| label: jagsmod1
 #| echo: false
@@ -386,6 +422,7 @@ library(coda)
 
 ## Bayesian analysis
 
+::: {style='font-size: 80%;'}
 Data augmentation
 
 ```{r}
@@ -422,6 +459,7 @@ jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
                                  n.chains=3, n.adapt=100, n.burnin=0,
                                  n.iter=2000, parallel=TRUE)
 ```
+:::
 
 
 
@@ -431,6 +469,7 @@ jags.post.samples1 <- jags.basic(data=jags.data1, inits=ji1,
 #| label: Ntot
 #| out-width: '70%'
 #| fig-align: 'center'
+#| code-fold: true
 hist(as.matrix(jags.post.samples1[,"Ntot"]), xlab="Total population size",
      ylab="", main="", freq=FALSE, xlim=c(nrow(y), M))
 abline(v=M, lwd=3, col="blue")
@@ -442,6 +481,8 @@ abline(v=M, lwd=3, col="blue")
 
 ```{r}
 #| label: jc1
+#| fig-height: 9
+#| fig-width: 7
 #| out-width: '60%'
 #| fig-align: 'center'
 plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
@@ -451,8 +492,6 @@ plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
 
 ```{r}
 #| label: jcN1-4
-#| include: false
-#| echo: false
 #| output-location: 'column'
 plot(jags.post.samples1[,c("N[1]", "N[2]", "N[3]", "N[4]")])
 plot(jags.post.samples1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
@@ -471,13 +510,13 @@ Nmed <- apply(Npost, 2, median)
 Nupper <- apply(Npost, 2, quantile, prob=0.975)
 Nlower <- apply(Npost, 2, quantile, prob=0.025)
 ```
-  
+
   
 Plot
 
 ```{r, echo=-1}
 #| label: Npost
-#| fig-height: 5
+#| fig-height: 6
 #| output-location: 'slide'
 par(mai=c(0.9,0.9,0.1,0.1))  
 plot(1:T, N, type="b", ylim=c(0, 60), xlab="Time",
