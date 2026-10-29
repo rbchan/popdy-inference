@@ -492,21 +492,37 @@ abline(v=M, lwd=3, col="blue")
 plot(jags.post.samples1[,c("phi", "beta", "p0", "sigma")])
 ```
 
-## Posterior distributions
+## [Posterior distributions]{style="font-size: 90%;"}
 
 ::: {style='font-size: 50%;'}
 
+::: {.columns}
+
+::: {.column width='50%'}
 ```{r}
-#| label: jcN1-4
+#| label: jcN1-4-1
 #| fig-width: 7
-#| fig-height: 9
-#| fig-align: 'center'
-#| out-width: '60%'
-#| output-location: 'column'
+#| fig-height: 8
+#| out-width: '90%'
 plot(jags.post.samples1[,c("N[1]", "N[2]", "N[3]", "N[4]")])
+```
+:::
+
+::: {.column width='50%'}
+```{r}
+#| label: jcN1-4-2
+#| fig-width: 7
+#| fig-height: 8
+#| out-width: '90%'
 plot(jags.post.samples1[,c("N[5]", "N[6]", "N[7]", "N[8]")])
 ```
 :::
+
+
+
+:::
+:::
+
 
 
 
@@ -607,6 +623,9 @@ legend(1, 30, c("Actual", "Estimated"),
 ## Summary
 
 ::: {style='font-size: 85%;'}
+
+<br>
+
 This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process. 
 
 ::: {.fragment}

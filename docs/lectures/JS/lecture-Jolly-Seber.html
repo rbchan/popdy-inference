@@ -635,25 +635,29 @@ Ntot &lt;- sum(everAlive)                     ## Super-population size
 
 <img data-src="lecture-Jolly-Seber_files/figure-revealjs/jc1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="posterior-distributions-1" class="slide level2">
-<h2>Posterior distributions</h2>
+<h2><span style="font-size: 90%;">Posterior distributions</span></h2>
 <div style="font-size: 50%;">
-<div class="cell columns column-output-location" data-layout-align="center">
-<div class="column">
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"N[1]"</span>, <span class="st">"N[2]"</span>, <span class="st">"N[3]"</span>, <span class="st">"N[4]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div><div class="column">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure>
-<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-1-1.png" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">plot</span>(jags.post.samples1[,<span class="fu">c</span>(<span class="st">"N[5]"</span>, <span class="st">"N[6]"</span>, <span class="st">"N[7]"</span>, <span class="st">"N[8]"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure>
-<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-2.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+<p><img data-src="lecture-Jolly-Seber_files/figure-revealjs/jcN1-4-2-1.png" style="width:90.0%"></p>
 </figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -755,6 +759,7 @@ Ntot &lt;- sum(everAlive)                     ## Super-population size
 </div></section><section id="summary" class="slide level2">
 <h2>Summary</h2>
 <div style="font-size: 85%;">
+<p><br></p>
 <p>This is perhaps the most general approach to modeling population dynamics, especially when the model includes a movement process.</p>
 <div class="fragment">
 <p><br></p>
