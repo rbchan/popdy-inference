@@ -508,14 +508,14 @@
     "href": "lectures/movement/lecture-movement.html#biased-random-walk",
     "title": "Movement models",
     "section": "Biased random walk",
-    "text": "Biased random walk\n\\[\\begin{equation}\n  {\\boldsymbol u_{t+1}} = \\but + {\\bf B}(\\but-{\\boldsymbol s}) + \\beps\n  \\label{eq:brwalk}\n\\end{equation}\\]\nwhere, typically\n\\[\n\\begin{equation}\n  {\\bf B}   =\n  \\begin{pmatrix}\n    \\rho & 0 \\\\\n    0    & \\rho\n  \\end{pmatrix}\n\\end{equation}\n\\]\nwith \\(\\rho \\in [0,1]\\)"
+    "text": "Biased random walk\n\\[\\begin{equation}\n  {\\boldsymbol u_{t+1}} = \\but + {\\bf B}(\\but-{\\boldsymbol s}) + \\beps\n  \\label{eq:brwalk}\n\\end{equation}\\]\nwhere, typically:\n\\[\n\\begin{equation}\n  {\\bf B}   =\n  \\begin{pmatrix}\n    \\rho & 0 \\\\\n    0    & \\rho\n  \\end{pmatrix}\n\\end{equation}\n\\]\nwith \\(\\rho \\in [0,1]\\)"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#biased-random-walk-simulation",
     "href": "lectures/movement/lecture-movement.html#biased-random-walk-simulation",
     "title": "Movement models",
     "section": "Biased random walk simulation",
-    "text": "Biased random walk simulation\n\n\n\n\n\nsigma &lt;- 0.05\nrho &lt;- 0.1           # Bias towards activity center\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\ns &lt;- c(0.5,0.5)\nB &lt;- diag(rho,2)\nfor(t in 2:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + B%*%(s-u[t-1,]) + epsilon\n}\n\n\n\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\npoints(s[1], s[2], pch=16, col=rgb(0,0,1,0.5), cex=2.5)\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
+    "text": "Biased random walk simulation\n\n\n\n\n\n\nset.seed(4887730)\nsigma &lt;- 0.05\nrho &lt;- 0.1           # Bias towards activity center\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\ns &lt;- c(0.5,0.5)\nB &lt;- diag(rho,2)\nfor(t in 2:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + B%*%(s-u[t-1,]) + epsilon\n}\n\n\n\n#| fig-height: 7\n#| fig.show: hide\n\n##| output-location: column\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\npoints(s[1], s[2], pch=16, col=rgb(0,0,1,0.5), cex=2.5)\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")\n\n\n\n\n\n\n\nFigure 1"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#correlated-random-walk",
@@ -529,7 +529,7 @@
     "href": "lectures/movement/lecture-movement.html#correlated-random-walk-simulation",
     "title": "Movement models",
     "section": "Correlated random walk simulation",
-    "text": "Correlated random walk simulation\n\n\nsigma &lt;- 0.05\ngamma &lt;- 0.8      ## Damping of correlated walk\ntheta &lt;- 0        ## Correlation (-pi,pi)\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nu[2,] &lt;- rnorm(2, u[1,], sd=0.05)\nR &lt;- gamma*matrix(c(cos(theta),sin(theta),-sin(theta),cos(theta)),\n                  nrow=2, ncol=2)\nfor(t in 3:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) + epsilon\n}\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")\n\n\n\n\n\n\n\n\nFigure 1"
+    "text": "Correlated random walk simulation\n\n\n\nset.seed(4887730)\nsigma &lt;- 0.05\ngamma &lt;- 0.8      ## Damping of correlated walk\ntheta &lt;- 0        ## Correlation (-pi,pi)\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nu[2,] &lt;- rnorm(2, u[1,], sd=0.05)\nR &lt;- gamma*matrix(c(cos(theta),sin(theta),-sin(theta),cos(theta)),\n                  nrow=2, ncol=2)\nfor(t in 3:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) + epsilon\n}\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=range(u[1,]), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")\n\n\n\n\n\n\n\n\nFigure 2"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#random-walks-along-environmental-gradients",
