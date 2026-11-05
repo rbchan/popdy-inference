@@ -155,6 +155,26 @@ arrows(u[1:49,1], u[1:49,2],
 legend(0.5, -1, c("Foraging", "Traveling"), lwd=1:2,
        col=c("black", "orange"), lty=1, pch=1, cex=1.5)
 
+#| label: crw-behave-jags
+#| echo: false
+writeLines(readLines("crw-behave.jag"))
+
+#| label: jags-crw-behave
+#| fig-width: 7
+#| fig-height: 8
+#| results: hide
+#| output-location: column
+#| cache: true
+library(jagsUI)
+jd <- list(u=u, T=T)
+## Sprinkle in 10 missing values
+jd$u[sample(T, size=10),] <- NA
+jp <- c("sigma", "theta", "gamma", "psi")
+jc <- jags.basic(data=jd, parameters.to.save=jp,
+                 model.file="crw-behave.jag",
+                 n.chains=1, n.iter=1000)
+plot(jc)
+
 #| label: pde
 #| cache: true
 set.seed(430)
@@ -198,8 +218,8 @@ for(t in 2:T) {
 
 #| label: pde-fig
 #| fig-show: hide
-#| cache: true
 #| echo: false
+#| cache: true
 library(lattice)
 library(latticeExtra)
 colrs <- colorRampPalette(c("#333a7b","#4b6982","#70c6c7","#b4ffd8","#ffffff"), alpha=0.9)
