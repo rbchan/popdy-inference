@@ -130,6 +130,7 @@ arrows(u[1:49,1], u[1:49,2],
 
 ## Biased random walk
 
+::: {style='font-size: 80%;'}
 <br>
 
 $$
@@ -150,7 +151,15 @@ $$
 
 with $\rho \in [0,1]$
 
+<br>
 
+::: {.fragment}
+<center>
+Treating $\boldsymbol s$ as an activity center opens possibilities for joint SCR movement models for true population-level inference on movement and density/demography. 
+</center>
+:::
+
+:::
 
 
 ## Biased random walk simulation
@@ -549,9 +558,15 @@ plot(c(levPlot,wirePlot))
 
 ## Summary
 
-Technical treatment of movement models for telemetry data given in [Hooten et al. 2017](https://www.routledge.com/Animal-Movement-Statistical-Models-for-Telemetry-Data/Hooten-Johnson-McClintock-Morales/p/book/9781032097183)
+Technical treatment of movement models for telemetry data given in [Hooten et al. 2017](https://www.routledge.com/Animal-Movement-Statistical-Models-for-Telemetry-Data/Hooten-Johnson-McClintock-Morales/p/book/9781032097183).
 
-See [Mcclintock et al. 2002](https://doi.org/10.1002/ecy.3473) for connecting movement and SCR models. 
+<br>
+
+See [Mcclintock et al. 2002](https://doi.org/10.1002/ecy.3473) and related papers in the special issue of Ecology on joint movement and SCR models. 
+
+<br>
+
+Consider random walks as alternatives to GLMM approximations of step-selection models.
 
 
 
