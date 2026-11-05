@@ -9,8 +9,6 @@
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.26">
 
-  <meta name="author" content="Richard Chandler">
-  <meta name="dcterms.date" content="2025-11-18">
   <title>Inference for Models of Fish and Wildlife Population Dynamics – Movement models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -197,50 +195,11 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Movement models</h1>
+  <p class="subtitle">WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br></p>
 
 <div class="quarto-title-authors">
-<div class="quarto-title-author">
-<div class="quarto-title-author-name">
-Richard Chandler 
-</div>
-</div>
 </div>
 
-  <p class="date">2025-11-18</p>
-</section><section id="TOC">
-<nav role="doc-toc"> 
-<h2 id="toc-title">Outline</h2>
-<ul>
-
-
-<li><a href="#/random-walks" id="/toc-random-walks">Random walks</a>
-<ul>
-<li><a href="#/simple-random-walk" id="/toc-simple-random-walk">Simple random walk</a></li>
-<li><a href="#/simple-random-walk-simulation" id="/toc-simple-random-walk-simulation">Simple random walk simulation</a></li>
-<li><a href="#/biased-random-walk" id="/toc-biased-random-walk">Biased random walk</a></li>
-<li><a href="#/biased-random-walk-simulation" id="/toc-biased-random-walk-simulation">Biased random walk simulation</a></li>
-<li><a href="#/correlated-random-walk" id="/toc-correlated-random-walk">Correlated random walk</a></li>
-<li><a href="#/correlated-random-walk-simulation" id="/toc-correlated-random-walk-simulation">Correlated random walk simulation</a></li>
-<li><a href="#/random-walks-along-environmental-gradients" id="/toc-random-walks-along-environmental-gradients">Random walks along environmental gradients</a></li>
-<li><a href="#/environment" id="/toc-environment">Environment</a></li>
-<li><a href="#/simulating-random-walks-along-environmental-gradients" id="/toc-simulating-random-walks-along-environmental-gradients">Simulating random walks along environmental gradients</a></li>
-</ul></li>
-<li><a href="#/point-process-models" id="/toc-point-process-models">Point process models</a></li>
-</ul>
-</nav>
-</section>
-<section class="slide level2">
-
-<!-- ## {content-align="center" style="font-size: 170%;"} -->
-<!-- <br> -->
-<!-- <center> -->
-<!-- **Spatio-temporal variation in survival, <br> recruitment, movement and abundance with the <br> Jolly-Seber model** -->
-<!-- <br> -->
-<!-- ::: {style='font-size: 60%;'} -->
-<!--   WILD(FISH) 8390 <br> -->
-<!--   Inference for Models of Fish and Wildlife Population Dynamics <br> -->
-<!-- ::: -->
-<!-- </center> -->
 </section>
 <section>
 
@@ -352,52 +311,34 @@ Richard Chandler
 <h2>Biased random walk simulation</h2>
 <!-- <br> -->
 <div class="columns">
-<!-- <br> --><div class="column" style="width:55%;">
+<!-- <br> --><div class="column" style="width:50%;">
 <p><br></p>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">4887730</span>)</span>
-<span id="cb3-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb3-3"><a></a>rho <span class="ot">&lt;-</span> <span class="fl">0.1</span>           <span class="co"># Bias towards activity center</span></span>
-<span id="cb3-4"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb3-5"><a></a>u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>T, <span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb3-6"><a></a>u[<span class="dv">1</span>,] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)</span>
-<span id="cb3-7"><a></a>s <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)</span>
-<span id="cb3-8"><a></a>B <span class="ot">&lt;-</span> <span class="fu">diag</span>(rho,<span class="dv">2</span>)</span>
-<span id="cb3-9"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T) {</span>
-<span id="cb3-10"><a></a>  epsilon <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n=</span><span class="dv">2</span>, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sd=</span>sigma)</span>
-<span id="cb3-11"><a></a>  u[t,] <span class="ot">&lt;-</span> u[t<span class="dv">-1</span>,] <span class="sc">+</span> B<span class="sc">%*%</span>(s<span class="sc">-</span>u[t<span class="dv">-1</span>,]) <span class="sc">+</span> epsilon</span>
-<span id="cb3-12"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p><br></p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb4-2"><a></a><span class="co">#| fig.show: hide</span></span>
-<span id="cb4-3"><a></a></span>
-<span id="cb4-4"><a></a><span class="do">##| output-location: column</span></span>
-<span id="cb4-5"><a></a><span class="fu">par</span>(<span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.7</span>,<span class="fl">0.7</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>))</span>
-<span id="cb4-6"><a></a><span class="fu">plot</span>(u, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
-<span id="cb4-7"><a></a>     <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>)</span>
-<span id="cb4-8"><a></a><span class="fu">points</span>(s[<span class="dv">1</span>], s[<span class="dv">2</span>], <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>), <span class="at">cex=</span><span class="fl">2.5</span>)</span>
-<span id="cb4-9"><a></a><span class="fu">arrows</span>(u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">1</span>], u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">2</span>],</span>
-<span id="cb4-10"><a></a>       u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">1</span>], u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">2</span>], <span class="at">length=</span><span class="fl">0.1</span>,</span>
-<span id="cb4-11"><a></a>       <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div id="fig-brw-simple" class="quarto-float quarto-figure quarto-figure-center" width="960">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-brw-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lecture-movement_files/figure-revealjs/fig-brw-simple-1.png" id="fig-brw-simple" width="960">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-brw-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
-</figcaption>
-</figure>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb3-2"><a></a>rho <span class="ot">&lt;-</span> <span class="fl">0.1</span>        <span class="co"># Bias towards activity center</span></span>
+<span id="cb3-3"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb3-4"><a></a>u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>T, <span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb3-5"><a></a>u[<span class="dv">1</span>,] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)</span>
+<span id="cb3-6"><a></a>s <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)</span>
+<span id="cb3-7"><a></a>B <span class="ot">&lt;-</span> <span class="fu">diag</span>(rho,<span class="dv">2</span>)</span>
+<span id="cb3-8"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T) {</span>
+<span id="cb3-9"><a></a>  epsilon <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n=</span><span class="dv">2</span>, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sd=</span>sigma)</span>
+<span id="cb3-10"><a></a>  u[t,] <span class="ot">&lt;-</span> u[t<span class="dv">-1</span>,] <span class="sc">+</span> B<span class="sc">%*%</span>(s<span class="sc">-</span>u[t<span class="dv">-1</span>,]) <span class="sc">+</span> epsilon</span>
+<span id="cb3-11"><a></a>}</span>
+<span id="cb3-12"><a></a></span>
+<span id="cb3-13"><a></a><span class="fu">par</span>(<span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.7</span>,<span class="fl">0.7</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>))</span>
+<span id="cb3-14"><a></a><span class="fu">plot</span>(u, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb3-15"><a></a>     <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>)</span>
+<span id="cb3-16"><a></a><span class="fu">points</span>(s[<span class="dv">1</span>], s[<span class="dv">2</span>], <span class="at">pch=</span><span class="dv">16</span>, <span class="at">col=</span><span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.5</span>),</span>
+<span id="cb3-17"><a></a>       <span class="at">cex=</span><span class="fl">2.5</span>)</span>
+<span id="cb3-18"><a></a><span class="fu">arrows</span>(u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">1</span>], u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">2</span>],</span>
+<span id="cb3-19"><a></a>       u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">1</span>], u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">2</span>], <span class="at">length=</span><span class="fl">0.1</span>,</span>
+<span id="cb3-20"><a></a>       <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-</div>
-</div>
-</div><div class="column" style="width:45%;">
-<p><img data-src="lecture-movement_files/figure-revealjs/fig-brw-simple-1.png" style="width:100.0%"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="lecture-movement_files/figure-revealjs/brw-simple-1.png" style="width:100.0%"></p>
 </div></div>
 </section>
 <section id="correlated-random-walk" class="slide level2">
@@ -417,78 +358,107 @@ Figure&nbsp;1
 </section>
 <section id="correlated-random-walk-simulation" class="slide level2">
 <h2>Correlated random walk simulation</h2>
-<div style="font-size: 80%;">
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">set.seed</span>(<span class="dv">4887730</span>)</span>
-<span id="cb5-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb5-3"><a></a>gamma <span class="ot">&lt;-</span> <span class="fl">0.8</span>      <span class="do">## Damping of correlated walk</span></span>
-<span id="cb5-4"><a></a>theta <span class="ot">&lt;-</span> <span class="dv">0</span>        <span class="do">## Correlation (-pi,pi)</span></span>
-<span id="cb5-5"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb5-6"><a></a>u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>T, <span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb5-7"><a></a>u[<span class="dv">1</span>,] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)</span>
-<span id="cb5-8"><a></a>u[<span class="dv">2</span>,] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, u[<span class="dv">1</span>,], <span class="at">sd=</span><span class="fl">0.05</span>)</span>
-<span id="cb5-9"><a></a>R <span class="ot">&lt;-</span> gamma<span class="sc">*</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">cos</span>(theta),<span class="fu">sin</span>(theta),<span class="sc">-</span><span class="fu">sin</span>(theta),<span class="fu">cos</span>(theta)),</span>
-<span id="cb5-10"><a></a>                  <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb5-11"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">3</span><span class="sc">:</span>T) {</span>
-<span id="cb5-12"><a></a>  epsilon <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n=</span><span class="dv">2</span>, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">sd=</span>sigma)</span>
-<span id="cb5-13"><a></a>  u[t,] <span class="ot">&lt;-</span> u[t<span class="dv">-1</span>,] <span class="sc">+</span> R<span class="sc">%*%</span>(u[t<span class="dv">-1</span>,]<span class="sc">-</span>u[t<span class="dv">-2</span>,]) <span class="sc">+</span> epsilon</span>
-<span id="cb5-14"><a></a>}</span>
-<span id="cb5-15"><a></a><span class="fu">par</span>(<span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.7</span>,<span class="fl">0.7</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>))</span>
-<span id="cb5-16"><a></a><span class="fu">plot</span>(u, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlim=</span><span class="fu">range</span>(u[<span class="dv">1</span>,]), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
-<span id="cb5-17"><a></a>     <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>)</span>
-<span id="cb5-18"><a></a><span class="fu">arrows</span>(u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">1</span>], u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">2</span>],</span>
-<span id="cb5-19"><a></a>       u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">1</span>], u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">2</span>], <span class="at">length=</span><span class="fl">0.1</span>,</span>
-<span id="cb5-20"><a></a>       <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div><div class="column">
-<div class="cell-output-display">
-<div id="fig-crw-simple" class="quarto-float quarto-figure quarto-figure-center" width="672">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-crw-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lecture-movement_files/figure-revealjs/fig-crw-simple-1.png" id="fig-crw-simple" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-crw-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2
-</figcaption>
-</figure>
+<div class="columns">
+<!-- <br> --><div class="column" style="width:50%;">
+<p><br></p>
+<div style="font-size: 70%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">set.seed</span>(<span class="dv">4887730</span>)</span>
+<span id="cb4-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb4-3"><a></a>gamma <span class="ot">&lt;-</span> <span class="fl">0.8</span>      <span class="do">## Damping of correlated walk</span></span>
+<span id="cb4-4"><a></a>theta <span class="ot">&lt;-</span> <span class="dv">0</span>        <span class="do">## Correlation (-pi,pi)</span></span>
+<span id="cb4-5"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb4-6"><a></a>u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>T, <span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb4-7"><a></a>u[<span class="dv">1</span>,] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>)</span>
+<span id="cb4-8"><a></a>u[<span class="dv">2</span>,] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, u[<span class="dv">1</span>,], <span class="at">sd=</span><span class="fl">0.05</span>)</span>
+<span id="cb4-9"><a></a>R <span class="ot">&lt;-</span> gamma<span class="sc">*</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">cos</span>(theta),<span class="fu">sin</span>(theta),</span>
+<span id="cb4-10"><a></a>                    <span class="sc">-</span><span class="fu">sin</span>(theta),<span class="fu">cos</span>(theta)),</span>
+<span id="cb4-11"><a></a>                  <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb4-12"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">3</span><span class="sc">:</span>T) {</span>
+<span id="cb4-13"><a></a>  epsilon <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n=</span><span class="dv">2</span>, <span class="at">mean=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>),</span>
+<span id="cb4-14"><a></a>                   <span class="at">sd=</span>sigma)</span>
+<span id="cb4-15"><a></a>  u[t,] <span class="ot">&lt;-</span> u[t<span class="dv">-1</span>,] <span class="sc">+</span> R<span class="sc">%*%</span>(u[t<span class="dv">-1</span>,]<span class="sc">-</span>u[t<span class="dv">-2</span>,]) <span class="sc">+</span></span>
+<span id="cb4-16"><a></a>      epsilon</span>
+<span id="cb4-17"><a></a>}</span>
+<span id="cb4-18"><a></a><span class="fu">par</span>(<span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.7</span>,<span class="fl">0.7</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>))</span>
+<span id="cb4-19"><a></a><span class="fu">plot</span>(u, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">xlim=</span><span class="fu">range</span>(u[,<span class="dv">1</span>]),</span>
+<span id="cb4-20"><a></a>     <span class="at">ylim=</span><span class="fu">range</span>(u[,<span class="dv">2</span>]),</span>
+<span id="cb4-21"><a></a>     <span class="at">xlab=</span><span class="st">""</span>, <span class="at">ylab=</span><span class="st">""</span>)</span>
+<span id="cb4-22"><a></a><span class="fu">arrows</span>(u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">1</span>], u[<span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>,<span class="dv">2</span>],</span>
+<span id="cb4-23"><a></a>       u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">1</span>], u[<span class="dv">2</span><span class="sc">:</span><span class="dv">50</span>,<span class="dv">2</span>], <span class="at">length=</span><span class="fl">0.1</span>,</span>
+<span id="cb4-24"><a></a>       <span class="at">col=</span><span class="st">"blue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
+</div><div class="column" style="width:50%;">
+<p><img data-src="lecture-movement_files/figure-revealjs/fig-crw-simple-1.png" style="width:100.0%"></p>
 </div></div>
-</div>
 </section>
 <section id="random-walks-along-environmental-gradients" class="slide level2">
-<h2>Random walks along environmental gradients</h2>
+<h2><span style="font-size: 80%;">Random walks along environmental gradients</span></h2>
+<div style="font-size: 80%;">
 <p><span class="math display">\[
   \butp = \but + {\bf D}\nabla x(\but) + \beps
 \]</span></p>
 <p>where <span class="math inline">\(\bf D = \alpha {\bf I}\)</span> is a <span class="math inline">\(2\times2\)</span> matrix describing the effect of the gradient in the environment (<span class="math inline">\(\nabla x\)</span>) at location <span class="math inline">\(\but\)</span>.</p>
+<p><br></p>
+<div class="fragment">
 <p>Positive values of <span class="math inline">\(\alpha\)</span> describe the scenario in which the organism tends to move in the direction of the gradient. If <span class="math inline">\(\alpha=0\)</span>, the individual will ignore the environment as it follows a simple random walk.</p>
+</div>
+</div>
 </section>
 <section id="environment" class="slide level2">
 <h2>Environment</h2>
+<div style="font-size: 80%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">set.seed</span>(<span class="dv">430</span>)</span>
-<span id="cb6-2"><a></a><span class="fu">library</span>(terra)</span>
-<span id="cb6-3"><a></a>delta <span class="ot">&lt;-</span> <span class="fl">0.025</span>                          <span class="do">## Resolution</span></span>
-<span id="cb6-4"><a></a>grid0 <span class="ot">&lt;-</span> <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, delta)    </span>
-<span id="cb6-5"><a></a>grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(grid0, <span class="at">each=</span><span class="fu">length</span>(grid0)), <span class="fu">rep</span>(grid0, <span class="at">times=</span><span class="fu">length</span>(grid0)))</span>
-<span id="cb6-6"><a></a>distmat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(grid))        <span class="do">## Distance b/w grid points</span></span>
-<span id="cb6-7"><a></a>npixels <span class="ot">&lt;-</span> <span class="fu">nrow</span>(distmat)</span>
-<span id="cb6-8"><a></a>V <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.1</span><span class="sc">*</span>distmat)                  <span class="do">## Covariance</span></span>
-<span id="cb6-9"><a></a>R <span class="ot">&lt;-</span> <span class="fu">chol</span>(V)</span>
-<span id="cb6-10"><a></a>X <span class="ot">&lt;-</span> <span class="fu">t</span>(R) <span class="sc">%*%</span> <span class="fu">rnorm</span>(npixels)            <span class="do">## Gaussian random field</span></span>
-<span id="cb6-11"><a></a>Xr <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">cbind</span>(grid, X), <span class="at">type=</span><span class="st">"xyz"</span>,     <span class="do">## Convert to raster</span></span>
-<span id="cb6-12"><a></a>    <span class="at">crs=</span><span class="st">"+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs"</span>)</span>
-<span id="cb6-13"><a></a>terr <span class="ot">&lt;-</span> <span class="fu">terrain</span>(Xr, <span class="at">v=</span><span class="fu">c</span>(<span class="st">"slope"</span>,<span class="st">"aspect"</span>))  <span class="do">## Slope and aspect</span></span>
-<span id="cb6-14"><a></a>vfieldU <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">sin</span>(terr<span class="sc">$</span>aspect)      <span class="do">## x-coord of arrow head</span></span>
-<span id="cb6-15"><a></a>vfieldV <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">cos</span>(terr<span class="sc">$</span>aspect)      <span class="do">## y-coord of arrow head</span></span>
-<span id="cb6-16"><a></a>vfieldData <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">as.data.frame</span>(Xr, <span class="at">xy=</span><span class="cn">TRUE</span>), <span class="at">v1=</span><span class="fu">values</span>(vfieldU), <span class="at">v2=</span><span class="fu">values</span>(vfieldV))</span>
-<span id="cb6-17"><a></a><span class="fu">names</span>(vfieldData) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>,<span class="st">"X"</span>,<span class="st">"v1"</span>,<span class="st">"v2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">set.seed</span>(<span class="dv">430</span>)</span>
+<span id="cb5-2"><a></a><span class="fu">library</span>(terra)</span>
+<span id="cb5-3"><a></a>delta <span class="ot">&lt;-</span> <span class="fl">0.025</span>                          <span class="do">## Resolution</span></span>
+<span id="cb5-4"><a></a>grid0 <span class="ot">&lt;-</span> <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, delta)    </span>
+<span id="cb5-5"><a></a>grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(grid0, <span class="at">each=</span><span class="fu">length</span>(grid0)), <span class="fu">rep</span>(grid0, <span class="at">times=</span><span class="fu">length</span>(grid0)))</span>
+<span id="cb5-6"><a></a>distmat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(grid))        <span class="do">## Distance b/w grid points</span></span>
+<span id="cb5-7"><a></a>npixels <span class="ot">&lt;-</span> <span class="fu">nrow</span>(distmat)</span>
+<span id="cb5-8"><a></a>V <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.1</span><span class="sc">*</span>distmat)                  <span class="do">## Covariance</span></span>
+<span id="cb5-9"><a></a>R <span class="ot">&lt;-</span> <span class="fu">chol</span>(V)</span>
+<span id="cb5-10"><a></a>X <span class="ot">&lt;-</span> <span class="fu">t</span>(R) <span class="sc">%*%</span> <span class="fu">rnorm</span>(npixels)            <span class="do">## Gaussian random field</span></span>
+<span id="cb5-11"><a></a>Xr <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">cbind</span>(grid, X), <span class="at">type=</span><span class="st">"xyz"</span>,      <span class="do">## Convert to raster</span></span>
+<span id="cb5-12"><a></a>    <span class="at">crs=</span><span class="st">"+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs"</span>)</span>
+<span id="cb5-13"><a></a>terr <span class="ot">&lt;-</span> <span class="fu">terrain</span>(Xr, <span class="at">v=</span><span class="fu">c</span>(<span class="st">"slope"</span>,<span class="st">"aspect"</span>), <span class="at">unit=</span><span class="st">"radians"</span>)  <span class="do">## Slope and aspect</span></span>
+<span id="cb5-14"><a></a>vfieldU <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">sin</span>(terr<span class="sc">$</span>aspect)    <span class="do">## x-coord of arrow head</span></span>
+<span id="cb5-15"><a></a>vfieldV <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">cos</span>(terr<span class="sc">$</span>aspect)    <span class="do">## y-coord of arrow head</span></span>
+<span id="cb5-16"><a></a>vfieldData <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">as.data.frame</span>(Xr, <span class="at">xy=</span><span class="cn">TRUE</span>), <span class="at">v1=</span><span class="fu">values</span>(vfieldU), <span class="at">v2=</span><span class="fu">values</span>(vfieldV))</span>
+<span id="cb5-17"><a></a><span class="fu">names</span>(vfieldData) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>,<span class="st">"X"</span>,<span class="st">"v1"</span>,<span class="st">"v2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="simulating-random-walks-along-environmental-gradients" class="slide level2">
-<h2>Simulating random walks along environmental gradients</h2>
-</section></section>
+<h2><span style="font-size: 60%;">Simulating random walks along environmental gradients</span></h2>
+<div style="font-size: 80%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">set.seed</span>(<span class="dv">311409</span>)</span>
+<span id="cb6-2"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb6-3"><a></a>uERW <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fl">0.5</span>, T, <span class="dv">2</span>)                   <span class="do">## Initial location</span></span>
+<span id="cb6-4"><a></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.02</span>; D <span class="ot">&lt;-</span> <span class="fu">diag</span>(alpha,<span class="dv">2</span>)                <span class="do">## Effect of envi gradient</span></span>
+<span id="cb6-5"><a></a>xmin <span class="ot">&lt;-</span> ymin <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">+</span>delta; xmax <span class="ot">&lt;-</span> ymax <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span>delta <span class="do">## Bounds</span></span>
+<span id="cb6-6"><a></a>enviro <span class="ot">&lt;-</span> <span class="fu">numeric</span>(T)                        <span class="do">## Environment along path</span></span>
+<span id="cb6-7"><a></a>enviro[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">extract</span>(Xr, uERW[<span class="dv">1</span>,,<span class="at">drop=</span><span class="cn">FALSE</span>]))</span>
+<span id="cb6-8"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T) {</span>
+<span id="cb6-9"><a></a>    ulast <span class="ot">&lt;-</span> uERW[t<span class="dv">-1</span>,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb6-10"><a></a>    grad <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">c</span>(<span class="fu">extract</span>(vfieldU, ulast), <span class="fu">extract</span>(vfieldV, ulast)))</span>
+<span id="cb6-11"><a></a>    unew <span class="ot">&lt;-</span> ulast <span class="sc">+</span> <span class="fu">t</span>(D<span class="sc">%*%</span>grad) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, <span class="dv">0</span>, sigma)</span>
+<span id="cb6-12"><a></a>    <span class="cf">if</span>(unew[<span class="dv">1</span>]<span class="sc">&lt;</span>xmin) unew[<span class="dv">1</span>] <span class="ot">&lt;-</span> xmin<span class="sc">+</span>(xmin<span class="sc">-</span>unew[<span class="dv">1</span>]) <span class="do">## Reflection at boundary</span></span>
+<span id="cb6-13"><a></a>    <span class="cf">if</span>(unew[<span class="dv">1</span>]<span class="sc">&gt;</span>xmax) unew[<span class="dv">1</span>] <span class="ot">&lt;-</span> xmax<span class="sc">-</span>(unew[<span class="dv">1</span>]<span class="sc">-</span>xmax)</span>
+<span id="cb6-14"><a></a>    <span class="cf">if</span>(unew[<span class="dv">2</span>]<span class="sc">&lt;</span>ymin) unew[<span class="dv">2</span>] <span class="ot">&lt;-</span> ymin<span class="sc">+</span>(ymin<span class="sc">-</span>unew[<span class="dv">2</span>])</span>
+<span id="cb6-15"><a></a>    <span class="cf">if</span>(unew[<span class="dv">2</span>]<span class="sc">&gt;</span>ymax) unew[<span class="dv">2</span>] <span class="ot">&lt;-</span> ymax<span class="sc">-</span>(unew[<span class="dv">2</span>]<span class="sc">-</span>ymax)</span>
+<span id="cb6-16"><a></a>    uERW[t,] <span class="ot">&lt;-</span> unew                   <span class="do">## New location</span></span>
+<span id="cb6-17"><a></a>    enviro[t] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">extract</span>(Xr, unew))     <span class="do">## Environment at new location</span></span>
+<span id="cb6-18"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="simulating-random-walks-along-environmental-gradients-1" class="slide level2">
+<h2><span style="font-size: 60%;">Simulating random walks along environmental gradients</span></h2>
+
+<img data-src="lecture-movement_files/figure-revealjs/pde-fig-1.png" style="width:100.0%" class="r-stretch"></section></section>
 <section id="point-process-models" class="title-slide slide level1 center">
 <h1>Point process models</h1>
 
