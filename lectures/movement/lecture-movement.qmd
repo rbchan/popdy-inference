@@ -411,6 +411,42 @@ legend(0.5, -1, c("Foraging", "Traveling"), lwd=1:2,
 
 
 
+## Behavioral state switching inference
+
+[crw-behave.jag](crw-behave.jag)
+
+```{r}
+#| label: crw-behave-jags
+#| echo: false
+writeLines(readLines("crw-behave.jag"))
+```
+
+## Behavioral state switching inference
+
+
+::: {style='font-size: 70%;'}
+
+```{r}
+#| label: jags-crw-behave
+#| results: 'hide'
+#| fig-width: 7
+#| fig-height: 8
+#| output-location: 'column'
+#| cache: true
+library(jagsUI)
+jd <- list(u=u, T=T)
+## Sprinkle in 10 missing values
+jd$u[sample(T, size=10),] <- NA
+jp <- c("sigma", "theta", "gamma", "psi")
+jc <- jags.basic(data=jd, parameters.to.save=jp,
+                 model.file="crw-behave.jag",
+                 n.chains=1, n.iter=1000)
+plot(jc)
+```
+:::
+
+
+
 
 ## [Random walks along environmental gradients]{style="font-size: 80%;"}
 
@@ -558,11 +594,11 @@ plot(c(levPlot,wirePlot))
 
 ## Summary
 
-Technical treatment of movement models for telemetry data given in [Hooten et al. 2017](https://www.routledge.com/Animal-Movement-Statistical-Models-for-Telemetry-Data/Hooten-Johnson-McClintock-Morales/p/book/9781032097183).
+Typically, these models would be fit to data on multiple individuals, with individual-level random effects. 
 
 <br>
 
-See [Mcclintock et al. 2002](https://doi.org/10.1002/ecy.3473) and related papers in the special issue of Ecology on joint movement and SCR models. 
+But actual population-level inference requires a model describing how the sample relates to the entire population. See [Mcclintock et al. 2002](https://doi.org/10.1002/ecy.3473) and related papers in the special issue of Ecology on joint movement and SCR models. 
 
 <br>
 

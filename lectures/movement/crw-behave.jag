@@ -1,0 +1,40 @@
+model {
+
+sigma ~ dexp(1)
+tau <- 1/sigma^2
+gamma ~ dunif(0,1)
+theta ~ dunif(-3.14, 3.14)
+psi ~ dunif(0,1)
+probs <- c(psi, 1-psi)
+
+# Initial location
+u[1,1] ~ dunif(0,1)
+u[1,2] ~ dunif(0,1)
+m[1] <- 1
+
+# Second location
+u[2,1] ~ dnorm(u[1,1], tau)
+u[2,2] ~ dnorm(u[1,1], tau)
+m[2] <- 1
+
+# Rotation matrix
+R[1,1] <- gamma*cos(theta)
+R[2,1] <- gamma*-sin(theta)
+R[1,2] <- gamma*sin(theta)
+R[2,2] <- gamma*cos(theta)
+
+
+
+for(t in 3:T) {
+  m[t] ~ dcat(probs)
+  deltaU[t,1:2] <- R%*%(u[t-1,]-u[t-2,])
+  mu[t,1] <- ifelse(m[t]==1, u[t-1,1],
+                    u[t-1,1] + deltaU[t,1])
+  mu[t,2] <- ifelse(m[t]==1, u[t-1,2],
+                    u[t-1,2] + deltaU[t,2])
+  u[t,1] ~ dnorm(mu[t,1], tau)
+  u[t,2] ~ dnorm(mu[t,2], tau)
+}
+
+
+}

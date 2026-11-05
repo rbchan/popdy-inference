@@ -475,6 +475,79 @@ Possible to have more than 2 states, but additional information (eg, acceleromet
 <p><img data-src="lecture-movement_files/figure-revealjs/fig-crw-behave-1.png" style="width:100.0%"></p>
 </div></div>
 </section>
+<section id="behavioral-state-switching-inference" class="slide level2">
+<h2>Behavioral state switching inference</h2>
+<p><a href="crw-behave.jag">crw-behave.jag</a></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+sigma ~ dexp(1)
+tau &lt;- 1/sigma^2
+gamma ~ dunif(0,1)
+theta ~ dunif(-3.14, 3.14)
+psi ~ dunif(0,1)
+probs &lt;- c(psi, 1-psi)
+
+# Initial location
+u[1,1] ~ dunif(0,1)
+u[1,2] ~ dunif(0,1)
+m[1] &lt;- 1
+
+# Second location
+u[2,1] ~ dnorm(u[1,1], tau)
+u[2,2] ~ dnorm(u[1,1], tau)
+m[2] &lt;- 1
+
+# Rotation matrix
+R[1,1] &lt;- gamma*cos(theta)
+R[2,1] &lt;- gamma*-sin(theta)
+R[1,2] &lt;- gamma*sin(theta)
+R[2,2] &lt;- gamma*cos(theta)
+
+
+
+for(t in 3:T) {
+  m[t] ~ dcat(probs)
+  deltaU[t,1:2] &lt;- R%*%(u[t-1,]-u[t-2,])
+  mu[t,1] &lt;- ifelse(m[t]==1, u[t-1,1],
+                    u[t-1,1] + deltaU[t,1])
+  mu[t,2] &lt;- ifelse(m[t]==1, u[t-1,2],
+                    u[t-1,2] + deltaU[t,2])
+  u[t,1] ~ dnorm(mu[t,1], tau)
+  u[t,2] ~ dnorm(mu[t,2], tau)
+}
+
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="behavioral-state-switching-inference-1" class="slide level2">
+<h2>Behavioral state switching inference</h2>
+<div style="font-size: 70%;">
+<div class="cell columns column-output-location">
+<div class="column">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb7-2"><a></a>jd <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">u=</span>u, <span class="at">T=</span>T)</span>
+<span id="cb7-3"><a></a><span class="do">## Sprinkle in 10 missing values</span></span>
+<span id="cb7-4"><a></a>jd<span class="sc">$</span>u[<span class="fu">sample</span>(T, <span class="at">size=</span><span class="dv">10</span>),] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb7-5"><a></a>jp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sigma"</span>, <span class="st">"theta"</span>, <span class="st">"gamma"</span>, <span class="st">"psi"</span>)</span>
+<span id="cb7-6"><a></a>jc <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd, <span class="at">parameters.to.save=</span>jp,</span>
+<span id="cb7-7"><a></a>                 <span class="at">model.file=</span><span class="st">"crw-behave.jag"</span>,</span>
+<span id="cb7-8"><a></a>                 <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">1000</span>)</span>
+<span id="cb7-9"><a></a><span class="fu">plot</span>(jc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-movement_files/figure-revealjs/jags-crw-behave-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div></div>
+</div>
+</section>
 <section id="random-walks-along-environmental-gradients" class="slide level2">
 <h2><span style="font-size: 80%;">Random walks along environmental gradients</span></h2>
 <p><br></p>
@@ -498,23 +571,23 @@ Possible to have more than 2 states, but additional information (eg, acceleromet
 <p><br></p>
 <div style="font-size: 80%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">set.seed</span>(<span class="dv">430</span>)</span>
-<span id="cb6-2"><a></a><span class="fu">library</span>(terra)</span>
-<span id="cb6-3"><a></a>delta <span class="ot">&lt;-</span> <span class="fl">0.025</span>                          <span class="do">## Resolution</span></span>
-<span id="cb6-4"><a></a>grid0 <span class="ot">&lt;-</span> <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, delta)</span>
-<span id="cb6-5"><a></a>grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(grid0, <span class="at">each=</span><span class="fu">length</span>(grid0)), <span class="fu">rep</span>(grid0, <span class="at">times=</span><span class="fu">length</span>(grid0)))</span>
-<span id="cb6-6"><a></a>distmat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(grid))        <span class="do">## Distance b/w grid points</span></span>
-<span id="cb6-7"><a></a>npixels <span class="ot">&lt;-</span> <span class="fu">nrow</span>(distmat)</span>
-<span id="cb6-8"><a></a>V <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.1</span><span class="sc">*</span>distmat)                  <span class="do">## Covariance</span></span>
-<span id="cb6-9"><a></a>R <span class="ot">&lt;-</span> <span class="fu">chol</span>(V)</span>
-<span id="cb6-10"><a></a>X <span class="ot">&lt;-</span> <span class="fu">t</span>(R) <span class="sc">%*%</span> <span class="fu">rnorm</span>(npixels)            <span class="do">## Gaussian random field</span></span>
-<span id="cb6-11"><a></a>Xr <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">cbind</span>(grid, X), <span class="at">type=</span><span class="st">"xyz"</span>,      <span class="do">## Convert to raster</span></span>
-<span id="cb6-12"><a></a>    <span class="at">crs=</span><span class="st">"+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs"</span>)</span>
-<span id="cb6-13"><a></a>terr <span class="ot">&lt;-</span> <span class="fu">terrain</span>(Xr, <span class="at">v=</span><span class="fu">c</span>(<span class="st">"slope"</span>,<span class="st">"aspect"</span>), <span class="at">unit=</span><span class="st">"radians"</span>)  <span class="do">## Slope and aspect</span></span>
-<span id="cb6-14"><a></a>vfieldU <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">sin</span>(terr<span class="sc">$</span>aspect)    <span class="do">## x-coord of arrow head</span></span>
-<span id="cb6-15"><a></a>vfieldV <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">cos</span>(terr<span class="sc">$</span>aspect)    <span class="do">## y-coord of arrow head</span></span>
-<span id="cb6-16"><a></a>vfieldData <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">as.data.frame</span>(Xr, <span class="at">xy=</span><span class="cn">TRUE</span>), <span class="at">v1=</span><span class="fu">values</span>(vfieldU), <span class="at">v2=</span><span class="fu">values</span>(vfieldV))</span>
-<span id="cb6-17"><a></a><span class="fu">names</span>(vfieldData) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>,<span class="st">"X"</span>,<span class="st">"v1"</span>,<span class="st">"v2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">set.seed</span>(<span class="dv">430</span>)</span>
+<span id="cb8-2"><a></a><span class="fu">library</span>(terra)</span>
+<span id="cb8-3"><a></a>delta <span class="ot">&lt;-</span> <span class="fl">0.025</span>                          <span class="do">## Resolution</span></span>
+<span id="cb8-4"><a></a>grid0 <span class="ot">&lt;-</span> <span class="fu">seq</span>(delta<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>delta<span class="sc">/</span><span class="dv">2</span>, delta)</span>
+<span id="cb8-5"><a></a>grid <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rep</span>(grid0, <span class="at">each=</span><span class="fu">length</span>(grid0)), <span class="fu">rep</span>(grid0, <span class="at">times=</span><span class="fu">length</span>(grid0)))</span>
+<span id="cb8-6"><a></a>distmat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(grid))        <span class="do">## Distance b/w grid points</span></span>
+<span id="cb8-7"><a></a>npixels <span class="ot">&lt;-</span> <span class="fu">nrow</span>(distmat)</span>
+<span id="cb8-8"><a></a>V <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.1</span><span class="sc">*</span>distmat)                  <span class="do">## Covariance</span></span>
+<span id="cb8-9"><a></a>R <span class="ot">&lt;-</span> <span class="fu">chol</span>(V)</span>
+<span id="cb8-10"><a></a>X <span class="ot">&lt;-</span> <span class="fu">t</span>(R) <span class="sc">%*%</span> <span class="fu">rnorm</span>(npixels)            <span class="do">## Gaussian random field</span></span>
+<span id="cb8-11"><a></a>Xr <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">cbind</span>(grid, X), <span class="at">type=</span><span class="st">"xyz"</span>,      <span class="do">## Convert to raster</span></span>
+<span id="cb8-12"><a></a>    <span class="at">crs=</span><span class="st">"+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs"</span>)</span>
+<span id="cb8-13"><a></a>terr <span class="ot">&lt;-</span> <span class="fu">terrain</span>(Xr, <span class="at">v=</span><span class="fu">c</span>(<span class="st">"slope"</span>,<span class="st">"aspect"</span>), <span class="at">unit=</span><span class="st">"radians"</span>)  <span class="do">## Slope and aspect</span></span>
+<span id="cb8-14"><a></a>vfieldU <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">sin</span>(terr<span class="sc">$</span>aspect)    <span class="do">## x-coord of arrow head</span></span>
+<span id="cb8-15"><a></a>vfieldV <span class="ot">&lt;-</span> terr<span class="sc">$</span>slope <span class="sc">*</span> <span class="fu">cos</span>(terr<span class="sc">$</span>aspect)    <span class="do">## y-coord of arrow head</span></span>
+<span id="cb8-16"><a></a>vfieldData <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">as.data.frame</span>(Xr, <span class="at">xy=</span><span class="cn">TRUE</span>), <span class="at">v1=</span><span class="fu">values</span>(vfieldU), <span class="at">v2=</span><span class="fu">values</span>(vfieldV))</span>
+<span id="cb8-17"><a></a><span class="fu">names</span>(vfieldData) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>,<span class="st">"X"</span>,<span class="st">"v1"</span>,<span class="st">"v2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -523,24 +596,24 @@ Possible to have more than 2 states, but additional information (eg, acceleromet
 <p><br></p>
 <div style="font-size: 80%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">set.seed</span>(<span class="dv">311409</span>)</span>
-<span id="cb7-2"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb7-3"><a></a>uERW <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fl">0.5</span>, T, <span class="dv">2</span>)                        <span class="do">## Initial location</span></span>
-<span id="cb7-4"><a></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.02</span>; D <span class="ot">&lt;-</span> <span class="fu">diag</span>(alpha,<span class="dv">2</span>)                <span class="do">## Effect of envi gradient</span></span>
-<span id="cb7-5"><a></a>xmin <span class="ot">&lt;-</span> ymin <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">+</span>delta; xmax <span class="ot">&lt;-</span> ymax <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span>delta <span class="do">## Bounds</span></span>
-<span id="cb7-6"><a></a>enviro <span class="ot">&lt;-</span> <span class="fu">numeric</span>(T)                             <span class="do">## Environment along path</span></span>
-<span id="cb7-7"><a></a>enviro[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">extract</span>(Xr, uERW[<span class="dv">1</span>,,<span class="at">drop=</span><span class="cn">FALSE</span>]))</span>
-<span id="cb7-8"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T) {</span>
-<span id="cb7-9"><a></a>    ulast <span class="ot">&lt;-</span> uERW[t<span class="dv">-1</span>,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
-<span id="cb7-10"><a></a>    grad <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">c</span>(<span class="fu">extract</span>(vfieldU, ulast), <span class="fu">extract</span>(vfieldV, ulast)))</span>
-<span id="cb7-11"><a></a>    unew <span class="ot">&lt;-</span> ulast <span class="sc">+</span> <span class="fu">t</span>(D<span class="sc">%*%</span>grad) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, <span class="dv">0</span>, sigma)</span>
-<span id="cb7-12"><a></a>    <span class="cf">if</span>(unew[<span class="dv">1</span>]<span class="sc">&lt;</span>xmin) unew[<span class="dv">1</span>] <span class="ot">&lt;-</span> xmin<span class="sc">+</span>(xmin<span class="sc">-</span>unew[<span class="dv">1</span>]) <span class="do">## Reflection at boundary</span></span>
-<span id="cb7-13"><a></a>    <span class="cf">if</span>(unew[<span class="dv">1</span>]<span class="sc">&gt;</span>xmax) unew[<span class="dv">1</span>] <span class="ot">&lt;-</span> xmax<span class="sc">-</span>(unew[<span class="dv">1</span>]<span class="sc">-</span>xmax)</span>
-<span id="cb7-14"><a></a>    <span class="cf">if</span>(unew[<span class="dv">2</span>]<span class="sc">&lt;</span>ymin) unew[<span class="dv">2</span>] <span class="ot">&lt;-</span> ymin<span class="sc">+</span>(ymin<span class="sc">-</span>unew[<span class="dv">2</span>])</span>
-<span id="cb7-15"><a></a>    <span class="cf">if</span>(unew[<span class="dv">2</span>]<span class="sc">&gt;</span>ymax) unew[<span class="dv">2</span>] <span class="ot">&lt;-</span> ymax<span class="sc">-</span>(unew[<span class="dv">2</span>]<span class="sc">-</span>ymax)</span>
-<span id="cb7-16"><a></a>    uERW[t,] <span class="ot">&lt;-</span> unew                               <span class="do">## New location</span></span>
-<span id="cb7-17"><a></a>    enviro[t] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">extract</span>(Xr, unew))     <span class="do">## Environment at new location</span></span>
-<span id="cb7-18"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">set.seed</span>(<span class="dv">311409</span>)</span>
+<span id="cb9-2"><a></a>T <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb9-3"><a></a>uERW <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fl">0.5</span>, T, <span class="dv">2</span>)                        <span class="do">## Initial location</span></span>
+<span id="cb9-4"><a></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.02</span>; D <span class="ot">&lt;-</span> <span class="fu">diag</span>(alpha,<span class="dv">2</span>)                <span class="do">## Effect of envi gradient</span></span>
+<span id="cb9-5"><a></a>xmin <span class="ot">&lt;-</span> ymin <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">+</span>delta; xmax <span class="ot">&lt;-</span> ymax <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">-</span>delta <span class="do">## Bounds</span></span>
+<span id="cb9-6"><a></a>enviro <span class="ot">&lt;-</span> <span class="fu">numeric</span>(T)                             <span class="do">## Environment along path</span></span>
+<span id="cb9-7"><a></a>enviro[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">extract</span>(Xr, uERW[<span class="dv">1</span>,,<span class="at">drop=</span><span class="cn">FALSE</span>]))</span>
+<span id="cb9-8"><a></a><span class="cf">for</span>(t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T) {</span>
+<span id="cb9-9"><a></a>    ulast <span class="ot">&lt;-</span> uERW[t<span class="dv">-1</span>,,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb9-10"><a></a>    grad <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">c</span>(<span class="fu">extract</span>(vfieldU, ulast), <span class="fu">extract</span>(vfieldV, ulast)))</span>
+<span id="cb9-11"><a></a>    unew <span class="ot">&lt;-</span> ulast <span class="sc">+</span> <span class="fu">t</span>(D<span class="sc">%*%</span>grad) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">2</span>, <span class="dv">0</span>, sigma)</span>
+<span id="cb9-12"><a></a>    <span class="cf">if</span>(unew[<span class="dv">1</span>]<span class="sc">&lt;</span>xmin) unew[<span class="dv">1</span>] <span class="ot">&lt;-</span> xmin<span class="sc">+</span>(xmin<span class="sc">-</span>unew[<span class="dv">1</span>]) <span class="do">## Reflection at boundary</span></span>
+<span id="cb9-13"><a></a>    <span class="cf">if</span>(unew[<span class="dv">1</span>]<span class="sc">&gt;</span>xmax) unew[<span class="dv">1</span>] <span class="ot">&lt;-</span> xmax<span class="sc">-</span>(unew[<span class="dv">1</span>]<span class="sc">-</span>xmax)</span>
+<span id="cb9-14"><a></a>    <span class="cf">if</span>(unew[<span class="dv">2</span>]<span class="sc">&lt;</span>ymin) unew[<span class="dv">2</span>] <span class="ot">&lt;-</span> ymin<span class="sc">+</span>(ymin<span class="sc">-</span>unew[<span class="dv">2</span>])</span>
+<span id="cb9-15"><a></a>    <span class="cf">if</span>(unew[<span class="dv">2</span>]<span class="sc">&gt;</span>ymax) unew[<span class="dv">2</span>] <span class="ot">&lt;-</span> ymax<span class="sc">-</span>(unew[<span class="dv">2</span>]<span class="sc">-</span>ymax)</span>
+<span id="cb9-16"><a></a>    uERW[t,] <span class="ot">&lt;-</span> unew                               <span class="do">## New location</span></span>
+<span id="cb9-17"><a></a>    enviro[t] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">extract</span>(Xr, unew))     <span class="do">## Environment at new location</span></span>
+<span id="cb9-18"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -558,9 +631,9 @@ Possible to have more than 2 states, but additional information (eg, acceleromet
 </section>
 <section id="summary" class="slide level2">
 <h2>Summary</h2>
-<p>Technical treatment of movement models for telemetry data given in <a href="https://www.routledge.com/Animal-Movement-Statistical-Models-for-Telemetry-Data/Hooten-Johnson-McClintock-Morales/p/book/9781032097183">Hooten et al.&nbsp;2017</a>.</p>
+<p>Typically, these models would be fit to data on multiple individuals, with individual-level random effects.</p>
 <p><br></p>
-<p>See <a href="https://doi.org/10.1002/ecy.3473">Mcclintock et al.&nbsp;2002</a> and related papers in the special issue of Ecology on joint movement and SCR models.</p>
+<p>But actual population-level inference requires a model describing how the sample relates to the entire population. See <a href="https://doi.org/10.1002/ecy.3473">Mcclintock et al.&nbsp;2002</a> and related papers in the special issue of Ecology on joint movement and SCR models.</p>
 <p><br></p>
 <p>Consider random walks as alternatives to GLMM approximations of step-selection models.</p>
 
