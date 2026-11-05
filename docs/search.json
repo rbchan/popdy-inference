@@ -487,70 +487,84 @@
     "href": "lectures/movement/lecture-movement.html#movement-models",
     "title": "Movement models",
     "section": "Movement models",
-    "text": "Movement models\n\n\\[\n\\def\\RR{{\\bf R}}\n\\def\\bold#1{{\\bf #1}}\n\\def\\but{{\\boldsymbol u_t}}\n\\def\\butp{{\\boldsymbol u_{t+1}}}\n\\def\\beps{{\\boldsymbol \\varepsilon}}\n\\]\n\n\nRandom walks\n\nSimple random walk\nCorrelated random walk\nBiased random walk\nPDE\n\nPoint process models\n\nStep-selection models\n\n\n\nSpeaker notes go here."
+    "text": "Movement models\n\n\\[\n\\def\\RR{{\\bf R}}\n\\def\\bold#1{{\\bf #1}}\n\\def\\but{{\\boldsymbol u_t}}\n\\def\\butp{{\\boldsymbol u_{t+1}}}\n\\def\\beps{{\\boldsymbol \\varepsilon}}\n\\]\n\n\nRandom walks\n\nSimple random walk\nCorrelated random walk\nBiased random walk\nEnvironmental gradients (PDEs)\n\nPoint process models\n\nStep-selection models\n\n\n\nSpeaker notes go here."
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#simple-random-walk",
     "href": "lectures/movement/lecture-movement.html#simple-random-walk",
     "title": "Movement models",
     "section": "Simple random walk",
-    "text": "Simple random walk\n\\[\n  {\\boldsymbol u_{t+1}} = \\but + \\beps\n\\]\nwhere\n\\[\n  {\\boldsymbol \\varepsilon} = \\text{Norm}(0, \\sigma^2 {\\bf I})\n\\]"
+    "text": "Simple random walk\n\n\\[\n  {\\boldsymbol u_{t+1}} = \\but + \\beps\n\\]\nwhere\n\\[\n  {\\boldsymbol \\varepsilon} = \\text{Norm}(0, \\sigma^2 {\\bf I})\n\\]"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#simple-random-walk-simulation",
     "href": "lectures/movement/lecture-movement.html#simple-random-walk-simulation",
     "title": "Movement models",
     "section": "Simple random walk simulation",
-    "text": "Simple random walk simulation\n\n\n\n\nsigma &lt;- 0.05\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nfor(t in 2:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + epsilon\n  ## Equivalent to two lines above\n  ## u[t,] &lt;- rnorm(n=2, mean=u[t-1,], sd=0.05)  \n}\n\n\n\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
+    "text": "Simple random walk simulation\n\n\n\n\nsigma &lt;- 0.05\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nfor(t in 2:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + epsilon\n  ## Equivalent to two lines above\n  ## u[t,] &lt;- rnorm(n=2, mean=u[t-1,], sd=0.05)  \n}\n\n\n\n\nCode\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#biased-random-walk",
     "href": "lectures/movement/lecture-movement.html#biased-random-walk",
     "title": "Movement models",
     "section": "Biased random walk",
-    "text": "Biased random walk\n\\[\\begin{equation}\n  {\\boldsymbol u_{t+1}} = \\but + {\\bf B}(\\but-{\\boldsymbol s}) + \\beps\n  \\label{eq:brwalk}\n\\end{equation}\\]\nwhere, typically:\n\\[\n\\begin{equation}\n  {\\bf B}   =\n  \\begin{pmatrix}\n    \\rho & 0 \\\\\n    0    & \\rho\n  \\end{pmatrix}\n\\end{equation}\n\\]\nwith \\(\\rho \\in [0,1]\\)"
+    "text": "Biased random walk\n\n\\[\n  {\\boldsymbol u_{t+1}} = \\but + {\\bf B}(\\but-{\\boldsymbol s}) + \\beps\n\\]\nwhere, typically:\n\\[\n\\begin{equation}\n  {\\bf B}   =\n  \\begin{pmatrix}\n    \\rho & 0 \\\\\n    0    & \\rho\n  \\end{pmatrix}\n\\end{equation}\n\\]\nwith \\(\\rho \\in [0,1]\\)"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#biased-random-walk-simulation",
     "href": "lectures/movement/lecture-movement.html#biased-random-walk-simulation",
     "title": "Movement models",
     "section": "Biased random walk simulation",
-    "text": "Biased random walk simulation\n\n\n\n\n\n\nsigma &lt;- 0.05\nrho &lt;- 0.1        # Bias towards activity center\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\ns &lt;- c(0.5,0.5)\nB &lt;- diag(rho,2)\nfor(t in 2:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + B%*%(s-u[t-1,]) + epsilon\n}\n\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\npoints(s[1], s[2], pch=16, col=rgb(0,0,1,0.5),\n       cex=2.5)\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
+    "text": "Biased random walk simulation\n\n\n\n\n\nsigma &lt;- 0.05\nrho &lt;- 0.1        # Bias towards activity center\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\ns &lt;- c(0.5,0.5)\nB &lt;- diag(rho,2)\nfor(t in 2:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0), sd=sigma)\n  u[t,] &lt;- u[t-1,] + B%*%(s-u[t-1,]) + epsilon\n}\n\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=c(0,1), ylim=c(0,1),\n     xlab=\"\", ylab=\"\")\npoints(s[1], s[2], pch=16, col=rgb(0,0,1,0.9),\n       cex=2.5)\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#correlated-random-walk",
     "href": "lectures/movement/lecture-movement.html#correlated-random-walk",
     "title": "Movement models",
     "section": "Correlated random walk",
-    "text": "Correlated random walk\n\\[\\begin{equation}\n  \\butp = \\but + {\\bf R}(\\but-{\\boldsymbol u}_{t-1}) + \\beps\n  \\label{eq:crwalk}\n\\end{equation}\\]\nwhere\n\\[\n  {\\bf R} = \\gamma\n  \\begin{pmatrix}\n    \\cos(\\theta) & -\\sin(\\theta) \\\\\n    \\sin(\\theta) & \\cos(\\theta)\n  \\end{pmatrix}\n\\] with \\(\\theta \\in [-\\pi,\\pi]\\) being the expected turn angle, and \\(\\gamma \\in [0,1]\\) dampening the persistence."
+    "text": "Correlated random walk\n\n\\[\n  \\butp = \\but + {\\bf R}(\\but-{\\boldsymbol u}_{t-1}) + \\beps\n\\]\nwhere\n\\[\n  {\\bf R} = \\gamma\n  \\begin{pmatrix}\n    \\cos(\\theta) & -\\sin(\\theta) \\\\\n    \\sin(\\theta) & \\cos(\\theta)\n  \\end{pmatrix}\n\\] with \\(\\theta \\in [-\\pi,\\pi]\\) being the expected turn angle, and \\(\\gamma \\in [0,1]\\) dampening the persistence."
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#correlated-random-walk-simulation",
     "href": "lectures/movement/lecture-movement.html#correlated-random-walk-simulation",
     "title": "Movement models",
     "section": "Correlated random walk simulation",
-    "text": "Correlated random walk simulation\n\n\n\n\n\nset.seed(4887730)\nsigma &lt;- 0.05\ngamma &lt;- 0.8      ## Damping of correlated walk\ntheta &lt;- 0        ## Correlation (-pi,pi)\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nu[2,] &lt;- rnorm(2, u[1,], sd=0.05)\nR &lt;- gamma*matrix(c(cos(theta),sin(theta),\n                    -sin(theta),cos(theta)),\n                  nrow=2, ncol=2)\nfor(t in 3:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0),\n                   sd=sigma)\n  u[t,] &lt;- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) +\n      epsilon\n}\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=range(u[,1]),\n     ylim=range(u[,2]),\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
+    "text": "Correlated random walk simulation\n\n\n\n\n\nsigma &lt;- 0.05\ngamma &lt;- 0.8      ## Damping of correlated walk\ntheta &lt;- 0        ## Correlation (-pi,pi)\nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nu[2,] &lt;- rnorm(2, u[1,], sd=0.05)\nR &lt;- gamma*matrix(c(cos(theta),sin(theta),\n                    -sin(theta),cos(theta)),\n                  nrow=2, ncol=2)\nfor(t in 3:T) {\n  epsilon &lt;- rnorm(n=2, mean=c(0,0),\n                   sd=sigma)\n  u[t,] &lt;- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) +\n      epsilon\n}\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=range(u[,1]),\n     ylim=range(u[,2]),\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       col=\"blue\")"
+  },
+  {
+    "objectID": "lectures/movement/lecture-movement.html#behavioral-state-switching",
+    "href": "lectures/movement/lecture-movement.html#behavioral-state-switching",
+    "title": "Movement models",
+    "section": "Behavioral state switching",
+    "text": "Behavioral state switching\n\n\n\\[\n  \\butp =\n  \\begin{cases}\n    \\but + \\beps & \\text{if} \\qquad m_t=1 \\\\\n    \\but + {\\bf R}(\\but-{\\boldsymbol u}_{t-1}) + \\beps & \\text{if} \\qquad m_t=2\n  \\end{cases}\n\\]\nwith:\n\\[\nm_t \\sim \\mathrm{Categorical}(\\pi_1, \\pi_2)\n\\]\n\n\n\nPossible to have more than 2 states, but additional information (eg, accelerometer data) often needed."
+  },
+  {
+    "objectID": "lectures/movement/lecture-movement.html#behavioral-state-switching-simulation",
+    "href": "lectures/movement/lecture-movement.html#behavioral-state-switching-simulation",
+    "title": "Movement models",
+    "section": "Behavioral state switching simulation",
+    "text": "Behavioral state switching simulation\n\n\n\n\nsigma &lt;- 0.05\ngamma &lt;- 0.8      ## Damping of correlated walk\ntheta &lt;- 0        ## Correlation (-pi,pi)\npsi &lt;- 0.2        ## Pr(correlated walk)\nprobs &lt;- c(psi, 1-psi) \nT &lt;- 50\nu &lt;- matrix(NA, nrow=T, ncol=2)\nu[1,] &lt;- c(0.5,0.5)\nu[2,] &lt;- rnorm(2, u[1,], sd=0.05)\nR &lt;- gamma*matrix(c(cos(theta),sin(theta),\n                    -sin(theta),cos(theta)),\n                  nrow=2, ncol=2)\nm &lt;- rep(1, T)\nfor(t in 3:T) {\n  m[t] &lt;- which(rmultinom(1, 1, probs)==1)\n  epsilon &lt;- rnorm(n=2, mean=c(0,0),\n                   sd=sigma)\n  if(m[t]==1) {\n    u[t,] &lt;- u[t-1,] + epsilon\n  } else  if(m[t]==2) {\n    u[t,] &lt;- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) +\n        epsilon\n  }\n}\n\n\n\npar(mai=c(0.7,0.7,0.1,0.1))\nplot(u, asp=1, xlim=range(u[,1]),\n     ylim=range(u[,2]), col=c(\"black\", \"orange\")[m],\n     xlab=\"\", ylab=\"\")\narrows(u[1:49,1], u[1:49,2],\n       u[2:50,1], u[2:50,2], length=0.1,\n       lwd=c(1,2)[m],\n       col=c(\"black\", \"orange\")[m])\nlegend(0.5, -1, c(\"Foraging\", \"Traveling\"), lwd=1:2,\n       col=c(\"black\", \"orange\"), lty=1, pch=1, cex=1.5)"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#random-walks-along-environmental-gradients",
     "href": "lectures/movement/lecture-movement.html#random-walks-along-environmental-gradients",
     "title": "Movement models",
     "section": "Random walks along environmental gradients",
-    "text": "Random walks along environmental gradients\n\n\\[\n  \\butp = \\but + {\\bf D}\\nabla x(\\but) + \\beps\n\\]\nwhere \\(\\bf D = \\alpha {\\bf I}\\) is a \\(2\\times2\\) matrix describing the effect of the gradient in the environment (\\(\\nabla x\\)) at location \\(\\but\\).\n\n\nPositive values of \\(\\alpha\\) describe the scenario in which the organism tends to move in the direction of the gradient. If \\(\\alpha=0\\), the individual will ignore the environment as it follows a simple random walk."
+    "text": "Random walks along environmental gradients\n\n\n\\[\n  \\butp = \\but + {\\bf D}\\nabla x(\\but) + \\beps\n\\]\nwhere \\(\\bf D = \\alpha {\\bf I}\\) is a \\(2\\times2\\) matrix describing the effect of the gradient in the environment (\\(\\nabla x\\)) at location \\(\\but\\).\n\n\nPositive values of \\(\\alpha\\) describe the scenario in which the organism tends to move in the direction of the gradient. If \\(\\alpha=0\\), the individual will ignore the environment as it follows a simple random walk.\n\n\n\nNatural method for studying resource selection and space use."
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#environment",
     "href": "lectures/movement/lecture-movement.html#environment",
     "title": "Movement models",
     "section": "Environment",
-    "text": "Environment\n\n\nset.seed(430)\nlibrary(terra)\ndelta &lt;- 0.025                          ## Resolution\ngrid0 &lt;- seq(delta/2, 1-delta/2, delta)    \ngrid &lt;- cbind(rep(grid0, each=length(grid0)), rep(grid0, times=length(grid0)))\ndistmat &lt;- as.matrix(dist(grid))        ## Distance b/w grid points\nnpixels &lt;- nrow(distmat)\nV &lt;- exp(-0.1*distmat)                  ## Covariance\nR &lt;- chol(V)\nX &lt;- t(R) %*% rnorm(npixels)            ## Gaussian random field\nXr &lt;- rast(cbind(grid, X), type=\"xyz\",      ## Convert to raster\n    crs=\"+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs\")\nterr &lt;- terrain(Xr, v=c(\"slope\",\"aspect\"), unit=\"radians\")  ## Slope and aspect\nvfieldU &lt;- terr$slope * sin(terr$aspect)    ## x-coord of arrow head\nvfieldV &lt;- terr$slope * cos(terr$aspect)    ## y-coord of arrow head\nvfieldData &lt;- cbind(as.data.frame(Xr, xy=TRUE), v1=values(vfieldU), v2=values(vfieldV))\nnames(vfieldData) &lt;- c(\"s1\",\"s2\",\"X\",\"v1\",\"v2\")"
+    "text": "Environment\n\n\n\nset.seed(430)\nlibrary(terra)\ndelta &lt;- 0.025                          ## Resolution\ngrid0 &lt;- seq(delta/2, 1-delta/2, delta)\ngrid &lt;- cbind(rep(grid0, each=length(grid0)), rep(grid0, times=length(grid0)))\ndistmat &lt;- as.matrix(dist(grid))        ## Distance b/w grid points\nnpixels &lt;- nrow(distmat)\nV &lt;- exp(-0.1*distmat)                  ## Covariance\nR &lt;- chol(V)\nX &lt;- t(R) %*% rnorm(npixels)            ## Gaussian random field\nXr &lt;- rast(cbind(grid, X), type=\"xyz\",      ## Convert to raster\n    crs=\"+proj=utm +zone=17 +datum=NAD83 +units=m +no_defs +type=crs\")\nterr &lt;- terrain(Xr, v=c(\"slope\",\"aspect\"), unit=\"radians\")  ## Slope and aspect\nvfieldU &lt;- terr$slope * sin(terr$aspect)    ## x-coord of arrow head\nvfieldV &lt;- terr$slope * cos(terr$aspect)    ## y-coord of arrow head\nvfieldData &lt;- cbind(as.data.frame(Xr, xy=TRUE), v1=values(vfieldU), v2=values(vfieldV))\nnames(vfieldData) &lt;- c(\"s1\",\"s2\",\"X\",\"v1\",\"v2\")"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#simulating-random-walks-along-environmental-gradients",
     "href": "lectures/movement/lecture-movement.html#simulating-random-walks-along-environmental-gradients",
     "title": "Movement models",
     "section": "Simulating random walks along environmental gradients",
-    "text": "Simulating random walks along environmental gradients\n\n\nset.seed(311409)\nT &lt;- 50\nuERW &lt;- matrix(0.5, T, 2)                   ## Initial location\nalpha &lt;- 0.02; D &lt;- diag(alpha,2)                ## Effect of envi gradient\nxmin &lt;- ymin &lt;- 0+delta; xmax &lt;- ymax &lt;- 1-delta ## Bounds\nenviro &lt;- numeric(T)                        ## Environment along path\nenviro[1] &lt;- as.numeric(extract(Xr, uERW[1,,drop=FALSE]))\nfor(t in 2:T) {\n    ulast &lt;- uERW[t-1,,drop=FALSE]\n    grad &lt;- as.numeric(c(extract(vfieldU, ulast), extract(vfieldV, ulast)))\n    unew &lt;- ulast + t(D%*%grad) + rnorm(2, 0, sigma)\n    if(unew[1]&lt;xmin) unew[1] &lt;- xmin+(xmin-unew[1]) ## Reflection at boundary\n    if(unew[1]&gt;xmax) unew[1] &lt;- xmax-(unew[1]-xmax)\n    if(unew[2]&lt;ymin) unew[2] &lt;- ymin+(ymin-unew[2])\n    if(unew[2]&gt;ymax) unew[2] &lt;- ymax-(unew[2]-ymax)\n    uERW[t,] &lt;- unew                   ## New location\n    enviro[t] &lt;- as.numeric(extract(Xr, unew))     ## Environment at new location\n}"
+    "text": "Simulating random walks along environmental gradients\n\n\n\nset.seed(311409)\nT &lt;- 50\nuERW &lt;- matrix(0.5, T, 2)                        ## Initial location\nalpha &lt;- 0.02; D &lt;- diag(alpha,2)                ## Effect of envi gradient\nxmin &lt;- ymin &lt;- 0+delta; xmax &lt;- ymax &lt;- 1-delta ## Bounds\nenviro &lt;- numeric(T)                             ## Environment along path\nenviro[1] &lt;- as.numeric(extract(Xr, uERW[1,,drop=FALSE]))\nfor(t in 2:T) {\n    ulast &lt;- uERW[t-1,,drop=FALSE]\n    grad &lt;- as.numeric(c(extract(vfieldU, ulast), extract(vfieldV, ulast)))\n    unew &lt;- ulast + t(D%*%grad) + rnorm(2, 0, sigma)\n    if(unew[1]&lt;xmin) unew[1] &lt;- xmin+(xmin-unew[1]) ## Reflection at boundary\n    if(unew[1]&gt;xmax) unew[1] &lt;- xmax-(unew[1]-xmax)\n    if(unew[2]&lt;ymin) unew[2] &lt;- ymin+(ymin-unew[2])\n    if(unew[2]&gt;ymax) unew[2] &lt;- ymax-(unew[2]-ymax)\n    uERW[t,] &lt;- unew                               ## New location\n    enviro[t] &lt;- as.numeric(extract(Xr, unew))     ## Environment at new location\n}"
   },
   {
     "objectID": "lectures/movement/lecture-movement.html#simulating-random-walks-along-environmental-gradients-1",
@@ -558,6 +572,20 @@
     "title": "Movement models",
     "section": "Simulating random walks along environmental gradients",
     "text": "Simulating random walks along environmental gradients"
+  },
+  {
+    "objectID": "lectures/movement/lecture-movement.html#step-selection-models",
+    "href": "lectures/movement/lecture-movement.html#step-selection-models",
+    "title": "Movement models",
+    "section": "Step selection models",
+    "text": "Step selection models"
+  },
+  {
+    "objectID": "lectures/movement/lecture-movement.html#summary",
+    "href": "lectures/movement/lecture-movement.html#summary",
+    "title": "Movement models",
+    "section": "Summary",
+    "text": "Summary\nTechnical treatment of movement models for telemetry data given in Hooten et al. 2017\nSee Mcclintock et al. 2002 for connecting movement and SCR models."
   },
   {
     "objectID": "lectures/dynamic-occupancy/lecture-dynamic-occupancy.html#section",

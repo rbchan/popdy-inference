@@ -38,7 +38,7 @@ $$
   * Simple random walk
   * Correlated random walk
   * Biased random walk
-  * PDE
+  * Environmental gradients (PDEs)
 
 - Point process models
   * Step-selection models
@@ -53,6 +53,8 @@ Speaker notes go here.
 # Random walks
 
 ## Simple random walk
+
+<br>
 
 $$
   {\boldsymbol u_{t+1}} = \but + \beps
@@ -103,7 +105,8 @@ for(t in 2:T) {
 #| attr-source: 'style="font-size: 0.85em;"'
 #| fig-width: 7
 #| fig-height: 7
-#| fig.show: hide
+#| fig-show: hide
+#| code-fold: true
 
 par(mai=c(0.7,0.7,0.1,0.1))
 plot(u, asp=1, xlim=c(0,1), ylim=c(0,1),
@@ -127,11 +130,11 @@ arrows(u[1:49,1], u[1:49,2],
 
 ## Biased random walk
 
+<br>
 
-\begin{equation}
+$$
   {\boldsymbol u_{t+1}} = \but + {\bf B}(\but-{\boldsymbol s}) + \beps
-  \label{eq:brwalk}
-\end{equation}
+$$
 
 where, typically:
 
@@ -153,25 +156,23 @@ with $\rho \in [0,1]$
 ## Biased random walk simulation
 
 
-<!-- <br> -->
-
 :::: {.columns}
 
-<!-- <br> -->
+
+::: {.column width="45%"}
 
 
-::: {.column width="50%"}
+::: {style='font-size: 65%;'}
+
 
 <br>
-
-
-::: {style='font-size: 70%;'}
 
 ```{r, echo=-(1:2)}
 #| label: brw-simple
 #| fig-width: 7
 #| fig-height: 7
 #| fig-show: hide
+#| code-line-numbers: "1-11"
 
 ## #| attr-source: 'style="font-size: 0.85em;"'
 set.seed(4887730)
@@ -190,7 +191,7 @@ for(t in 2:T) {
 par(mai=c(0.7,0.7,0.1,0.1))
 plot(u, asp=1, xlim=c(0,1), ylim=c(0,1),
      xlab="", ylab="")
-points(s[1], s[2], pch=16, col=rgb(0,0,1,0.5),
+points(s[1], s[2], pch=16, col=rgb(0,0,1,0.9),
        cex=2.5)
 arrows(u[1:49,1], u[1:49,2],
        u[2:50,1], u[2:50,2], length=0.1,
@@ -201,7 +202,7 @@ arrows(u[1:49,1], u[1:49,2],
 :::
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 
 ![](lecture-movement_files/figure-revealjs/brw-simple-1.png){width="100%"}
 
@@ -215,10 +216,11 @@ arrows(u[1:49,1], u[1:49,2],
 
 ## Correlated random walk
 
-\begin{equation}
+<br>
+
+$$
   \butp = \but + {\bf R}(\but-{\boldsymbol u}_{t-1}) + \beps
-  \label{eq:crwalk}
-\end{equation}
+$$
 
 where
 
@@ -239,22 +241,20 @@ $\gamma \in [0,1]$ dampening the persistence.
 
 ::: {.columns}
 
-<!-- <br> -->
 
+::: {.column width="45%"}
 
-::: {.column width="50%"}
+::: {style='font-size: 65%;'}
 
 <br>
 
 
-
-::: {style='font-size: 70%;'}
-
-```{r, echo=-1}
+```{r, echo=-(1:2)}
 #| label: fig-crw-simple
 #| fig-width: 7
 #| fig-height: 7
 #| fig-show: hide
+#| code-line-numbers: "1-16"
 
 ## #| attr-source: 'style="font-size: 0.85em;"'
 set.seed(4887730)
@@ -286,7 +286,7 @@ arrows(u[1:49,1], u[1:49,2],
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 
 ![](lecture-movement_files/figure-revealjs/fig-crw-simple-1.png){width="100%"}
 
@@ -297,8 +297,115 @@ arrows(u[1:49,1], u[1:49,2],
 
 
 
+## Behavioral state switching
+
+::: {style='font-size: 90%;'}
+
+<br>
+
+$$
+  \butp = 
+  \begin{cases}
+    \but + \beps & \text{if} \qquad m_t=1 \\
+    \but + {\bf R}(\but-{\boldsymbol u}_{t-1}) + \beps & \text{if} \qquad m_t=2
+  \end{cases}
+$$
+
+with: 
+
+$$
+m_t \sim \mathrm{Categorical}(\pi_1, \pi_2)
+$$
+
+<br>
+
+::: {.fragment}
+<center>
+Possible to have more than 2 states, but additional information (eg, accelerometer data) often needed. 
+</center>
+:::
+:::
+
+
+
+## Behavioral state switching simulation
+
+
+::: {.columns}
+
+
+::: {.column width="45%"}
+
+::: {style='font-size: 65%;'}
+
+
+```{r, echo=-(1:2)}
+#| label: fig-crw-behave
+#| fig-width: 7
+#| fig-height: 7
+#| fig-show: hide
+#| code-line-numbers: "1-24"
+
+set.seed(4887730)
+
+sigma <- 0.05
+gamma <- 0.8      ## Damping of correlated walk
+theta <- 0        ## Correlation (-pi,pi)
+psi <- 0.2        ## Pr(correlated walk)
+probs <- c(psi, 1-psi) 
+T <- 50
+u <- matrix(NA, nrow=T, ncol=2)
+u[1,] <- c(0.5,0.5)
+u[2,] <- rnorm(2, u[1,], sd=0.05)
+R <- gamma*matrix(c(cos(theta),sin(theta),
+                    -sin(theta),cos(theta)),
+                  nrow=2, ncol=2)
+m <- rep(1, T)
+for(t in 3:T) {
+  m[t] <- which(rmultinom(1, 1, probs)==1)
+  epsilon <- rnorm(n=2, mean=c(0,0),
+                   sd=sigma)
+  if(m[t]==1) {
+    u[t,] <- u[t-1,] + epsilon
+  } else  if(m[t]==2) {
+    u[t,] <- u[t-1,] + R%*%(u[t-1,]-u[t-2,]) +
+        epsilon
+  }
+}
+
+
+
+par(mai=c(0.7,0.7,0.1,0.1))
+plot(u, asp=1, xlim=range(u[,1]),
+     ylim=range(u[,2]), col=c("black", "orange")[m],
+     xlab="", ylab="")
+arrows(u[1:49,1], u[1:49,2],
+       u[2:50,1], u[2:50,2], length=0.1,
+       lwd=c(1,2)[m],
+       col=c("black", "orange")[m])
+legend(0.5, -1, c("Foraging", "Traveling"), lwd=1:2,
+       col=c("black", "orange"), lty=1, pch=1, cex=1.5)
+```
+:::
+
+:::
+
+::: {.column width="55%"}
+
+![](lecture-movement_files/figure-revealjs/fig-crw-behave-1.png){width="100%"}
+
+
+:::
+
+:::
+
+
+
+
+
 ## [Random walks along environmental gradients]{style="font-size: 80%;"}
 
+<br>
 
 ::: {style='font-size: 80%;'}
 $$
@@ -313,26 +420,35 @@ $\but$.
 
 
 ::: {.fragment}
-
 Positive values of $\alpha$ describe the scenario in which the
 organism tends to move in the direction of the gradient. If
 $\alpha=0$, the individual will ignore the environment as it follows a
 simple random walk.
 :::
 
+<br>
+
+::: {.fragment}
+Natural method for studying resource selection and space use.
+:::
+
+
 :::
 
 
 ## Environment
 
+<br>
+
 ::: {style='font-size: 80%;'}
 
 ```{r}
 #| label: pde
+#| cache: true
 set.seed(430)
 library(terra)
 delta <- 0.025                          ## Resolution
-grid0 <- seq(delta/2, 1-delta/2, delta)    
+grid0 <- seq(delta/2, 1-delta/2, delta)
 grid <- cbind(rep(grid0, each=length(grid0)), rep(grid0, times=length(grid0)))
 distmat <- as.matrix(dist(grid))        ## Distance b/w grid points
 npixels <- nrow(distmat)
@@ -352,16 +468,18 @@ names(vfieldData) <- c("s1","s2","X","v1","v2")
 
 ## [Simulating random walks along environmental gradients]{style="font-size: 60%;"}
 
+<br>
 
 ::: {style='font-size: 80%;'}
 ```{r}
 #| label: pde-sim
+#| cache: true
 set.seed(311409)
 T <- 50
-uERW <- matrix(0.5, T, 2)                   ## Initial location
+uERW <- matrix(0.5, T, 2)                        ## Initial location
 alpha <- 0.02; D <- diag(alpha,2)                ## Effect of envi gradient
 xmin <- ymin <- 0+delta; xmax <- ymax <- 1-delta ## Bounds
-enviro <- numeric(T)                        ## Environment along path
+enviro <- numeric(T)                             ## Environment along path
 enviro[1] <- as.numeric(extract(Xr, uERW[1,,drop=FALSE]))
 for(t in 2:T) {
     ulast <- uERW[t-1,,drop=FALSE]
@@ -371,7 +489,7 @@ for(t in 2:T) {
     if(unew[1]>xmax) unew[1] <- xmax-(unew[1]-xmax)
     if(unew[2]<ymin) unew[2] <- ymin+(ymin-unew[2])
     if(unew[2]>ymax) unew[2] <- ymax-(unew[2]-ymax)
-    uERW[t,] <- unew                   ## New location
+    uERW[t,] <- unew                               ## New location
     enviro[t] <- as.numeric(extract(Xr, unew))     ## Environment at new location
 }
 ```
@@ -382,6 +500,7 @@ for(t in 2:T) {
 #| label: pde-fig
 #| echo: false
 #| fig-show: 'hide'
+#| cache: true
 library(lattice)
 library(latticeExtra)
 colrs <- colorRampPalette(c("#333a7b","#4b6982","#70c6c7","#b4ffd8","#ffffff"), alpha=0.9)
@@ -423,3 +542,16 @@ plot(c(levPlot,wirePlot))
 
 
 # Point process models
+
+## Step selection models
+
+
+
+## Summary
+
+Technical treatment of movement models for telemetry data given in [Hooten et al. 2017](https://www.routledge.com/Animal-Movement-Statistical-Models-for-Telemetry-Data/Hooten-Johnson-McClintock-Morales/p/book/9781032097183)
+
+See [Mcclintock et al. 2002](https://doi.org/10.1002/ecy.3473) for connecting movement and SCR models. 
+
+
+
