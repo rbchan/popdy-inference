@@ -1,0 +1,71 @@
+---
+title: "Multi-species occupancy models"
+subtitle: WILD(FISH) 8390 <br> Inference for Models of Fish and Wildlife Population Dynamics <br>
+## author: "Richard Chandler"
+## date: "2025-11-18"
+format: 
+  revealjs:
+    theme: default
+    embed-resources: false
+    toc: false
+    toc-depth: 2
+    toc-title: Outline
+    code-fold: false
+    echo: true
+description: |
+  Two-species and community occupancy models
+---
+
+
+
+# Overview {visibility="hidden"}
+
+# Two-species models
+
+
+
+# Community occupancy models
+
+## Community occupancy model
+
+Species may go undetected for a couple reason:
+
+1. They are rare and are not present in our sample
+2. They are present in our sample but are cryptic
+
+We have to address both issues to obtain unbiased estimates of community parameters like species richness. 
+
+
+## Community occupancy model
+
+::: {style='font-size: 80%;'}
+Is species $i$ present at site $j$?
+
+$$
+  z_{i,j} \sim \mathrm{Bern}(\psi_i)
+$$
+
+::: {.fragment}
+Do we detect species $i$ at site $j$ on occasion $k$?
+
+$$
+  y_{i,j,k} \sim \mathrm{Bern}(z_{i,j} p_i)
+$$
+:::
+
+::: {.fragment}
+Typically, species-specific effects will be regarded as random:
+
+$$
+  \mathrm{logit}(\psi_j) \sim \mathrm{Norm}(\mu_{\psi}, \sigma^2_{\psi})
+$$
+
+$$
+  \mathrm{logit}(p_j) \sim \mathrm{Norm}(\mu_{p}, \sigma^2_{p})
+$$
+
+:::
+:::
+
+
+
