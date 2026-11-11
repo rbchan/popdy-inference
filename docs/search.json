@@ -487,14 +487,14 @@
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#community-occupancy-model",
     "title": "Multi-species occupancy models",
     "section": "Community occupancy model",
-    "text": "Community occupancy model\nSpecies may go undetected for a couple reason:\n\nThey are rare and are not present in our sample\nThey are present in our sample but are cryptic\n\n\n\nOlder methods like rarefaction attempt to address the first issue but not the second.\n\n\nWe have to address both issues to obtain unbiased estimates of community parameters like species richness."
+    "text": "Community occupancy model\nSpecies may go undetected for a couple reason:\n\nThey are rare and are not present in our sample.\nThey are present in our sample but are cryptic.\n\n\n\nOlder methods like rarefaction attempt to address the first issue but not the second.\n\n\nWe have to address both issues to obtain unbiased estimates of community parameters like species richness."
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#community-occupancy-model-1",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#community-occupancy-model-1",
     "title": "Multi-species occupancy models",
     "section": "Community occupancy model",
-    "text": "Community occupancy model\n\nOccupancy of species \\(i\\) present at site \\(j\\)?\n\\[\n  z_{ij} \\sim \\mathrm{Bern}(\\psi_i)\n\\]\n\nDetection data for species \\(i\\) at site \\(j\\) on occasion \\(k\\)?\n\\[\n  y_{ijk} \\sim \\mathrm{Bern}(z_{ij} \\times p_i)\n\\]\n\n\n\nSpecies-specific effects can be modeled as functions of covariates and/or regarded as random. Here’s an example without covariates:\n\\[\n  \\mathrm{logit}(\\psi_j) \\sim \\mathrm{Norm}(\\mu_{\\psi}, \\sigma^2_{\\psi})\n\\]\n\\[\n  \\mathrm{logit}(p_j) \\sim \\mathrm{Norm}(\\mu_{p}, \\sigma^2_{p})\n\\]"
+    "text": "Community occupancy model\n\nOccupancy of species \\(i\\) present at site \\(j\\):\n\\[\n  z_{ij} \\sim \\mathrm{Bern}(\\psi_i)\n\\]\n\nDetection data for species \\(i\\) at site \\(j\\) on occasion \\(k\\):\n\\[\n  y_{ijk} \\sim \\mathrm{Bern}(z_{ij} \\times p_i)\n\\]\n\n\n\nSpecies-specific parameters can be modeled as functions of covariates and/or regarded as random effects. Here’s an example without covariates:\n\\[\n  \\mathrm{logit}(\\psi_j) \\sim \\mathrm{Norm}(\\mu_{\\psi}, \\sigma^2_{\\psi})\n\\]\n\\[\n  \\mathrm{logit}(p_j) \\sim \\mathrm{Norm}(\\mu_{p}, \\sigma^2_{p})\n\\]"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#species-richness",
@@ -515,14 +515,14 @@
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-1",
     "title": "Multi-species occupancy models",
     "section": "Simulation without covariates",
-    "text": "Simulation without covariates\n\n\n\nhist(psi, xlab=\"Species-level occupancy\",\n     cex.lab=1.5)\n\n\n\n\n\n\n\n\n\n\n\nhist(p, xlab=\"Species-level detection probability\",\n     cex.lab=1.5)"
+    "text": "Simulation without covariates\n\n\nhist(psi, xlab=\"Species-level occupancy (psi)\", cex.lab=1.5, main=\"\")\nhist(p, xlab=\"Species-level detection probability (p)\", cex.lab=1.5, main=\"\")"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-2",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-2",
     "title": "Multi-species occupancy models",
     "section": "Simulation without covariates",
-    "text": "Simulation without covariates\nNotice that some species were not detected, and thus can’t be part of the dataset.\n\ndetected &lt;- rowSums(yall)&gt;0\ntable(detected)\n\ndetected\nFALSE  TRUE \n    5    45 \n\ny &lt;- yall[detected,,] # Discard species that weren't detected"
+    "text": "Simulation without covariates\n\nSome species were not detected, and thus can’t be part of the dataset.\n\ndetected &lt;- rowSums(yall)&gt;0\ntable(detected)\n\ndetected\nFALSE  TRUE \n    5    45 \n\n\nWe discard them like so:\n\ny &lt;- yall[detected,,] # Discard species that weren't detected"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species",
@@ -536,7 +536,7 @@
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species-1",
     "title": "Multi-species occupancy models",
     "section": "JAGS model pretending we know all the species",
-    "text": "JAGS model pretending we know all the species\n\nlibrary(jagsUI)\njd_fixedN &lt;- list(y=y, n_species=nrow(y), n_sites=ncol(y), n_occasions=dim(y)[3])\njp_fixedN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\")\nji_fixedN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=rexp(1),\n                             mu_logit_p=rnorm(1), sd_logit_p=rexp(1),\n                             z=matrix(1, nrow=nrow(y), ncol=ncol(y)))\n\npost_fixedN &lt;- jags.basic(data=jd_fixedN, inits=ji_fixedN, parameters.to.save=jp_fixedN,\n                          model.file=\"comm-occ-knownN.jag\", n.chains=1, n.iter=2000)\n\nplot(post_fixedN)"
+    "text": "JAGS model pretending we know all the species\n\n\nlibrary(jagsUI)\njd_fixedN &lt;- list(y=y, n_species=nrow(y), n_sites=ncol(y), n_occasions=dim(y)[3])\njp_fixedN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\")\nji_fixedN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=rexp(1),\n                             mu_logit_p=rnorm(1), sd_logit_p=rexp(1),\n                             z=matrix(1, nrow=nrow(y), ncol=ncol(y)))\n\npost_fixedN &lt;- jags.basic(data=jd_fixedN, inits=ji_fixedN, parameters.to.save=jp_fixedN,\n                          model.file=\"comm-occ-knownN.jag\", n.chains=1, n.iter=2000)\n\nplot(post_fixedN)"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species-1-output",
@@ -546,25 +546,32 @@
     "text": "JAGS model pretending we know all the species"
   },
   {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#expanding-the-model-to-estimate-richness",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#expanding-the-model-to-estimate-richness",
+    "title": "Multi-species occupancy models",
+    "section": "Expanding the model to estimate richness",
+    "text": "Expanding the model to estimate richness\n We can use data augmentation to infer how many species were missed, and thus estimate the size of the entire community.\n\n\nHere’s the expanded part of the model:\n\\[\nw_i \\sim \\mathrm{Bern}(\\Omega) \\\\\nz_{ij} \\sim \\mathrm{Bern}(w_i \\times \\psi_{i})\n\\]"
+  },
+  {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness",
     "title": "Multi-species occupancy models",
     "section": "JAGS model estimating richness",
-    "text": "JAGS model estimating richness\n\n\nmodel {\n\nmu_logit_psi ~ dnorm(0, 1)\nsd_logit_psi ~ dexp(1)\n\nmu_logit_p ~ dnorm(0, 1)\nsd_logit_p ~ dexp(1)\n\nomega ~ dunif(0,1)\n\nfor(i in 1:M) {\n  w[i] ~ dbern(omega)\n  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)\n  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)\n  psi[i] &lt;- ilogit(logit_psi[i])\n  p[i] &lt;- ilogit(logit_p[i])\n  for(j in 1:n_sites) {\n    z[i,j] ~ dbern(psi[i])\n    for(k in 1:n_occasions) {\n      y[i,j,k] ~ dbern(w[i]*z[i,j]*p[i])\n    }\n  }\n}\n\nN &lt;- sum(w) # Species richness\n\n\n}"
+    "text": "JAGS model estimating richness\n\n\nmodel {\n\nmu_logit_psi ~ dnorm(0, 1)\nsd_logit_psi ~ dexp(1)\n\nmu_logit_p ~ dnorm(0, 1)\nsd_logit_p ~ dexp(1)\n\nomega ~ dunif(0,1)\n\nfor(i in 1:M) {\n  w[i] ~ dbern(omega)\n  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)\n  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)\n  psi[i] &lt;- ilogit(logit_psi[i])\n  p[i] &lt;- ilogit(logit_p[i])\n  for(j in 1:n_sites) {\n    z[i,j] ~ dbern(w[i]*psi[i])\n    for(k in 1:n_occasions) {\n      y[i,j,k] ~ dbern(z[i,j]*p[i])\n    }\n  }\n}\n\nN &lt;- sum(w) # Species richness\n\n\n}"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1",
     "title": "Multi-species occupancy models",
     "section": "JAGS model estimating richness",
-    "text": "JAGS model estimating richness\n\nM &lt;- 100\ny_aug &lt;- array(0, c(M,J,K))\ny_aug[1:nrow(y),,] &lt;- y\n\njd_unknownN &lt;- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])\njp_unknownN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\", \"N\")\nji_unknownN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=0.1,\n                               mu_logit_p=rnorm(1), sd_logit_p=0.1,\n                               w=rep(1, M), z=matrix(1, nrow=M, ncol=ncol(y)))\n\npost_unknownN &lt;- jags.basic(data=jd_unknownN, inits=ji_unknownN,\n                            parameters.to.save=jp_unknownN,\n                            model.file=\"comm-occ-unknownN.jag\", n.chains=1, n.iter=5000)\n\nplot(post_unknownN)"
+    "text": "JAGS model estimating richness\n\n\nM &lt;- 100                       # Augment to M=100 possible species\ny_aug &lt;- array(0, c(M,J,K))\ny_aug[1:nrow(y),,] &lt;- y        # Insert observed data\n\njd_unknownN &lt;- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])\njp_unknownN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\", \"N\")\nji_unknownN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=0.1,\n                               mu_logit_p=rnorm(1), sd_logit_p=0.1,\n                               w=rep(1, M), z=matrix(1, nrow=M, ncol=ncol(y)))\n\npost_unknownN &lt;- jags.basic(data=jd_unknownN, inits=ji_unknownN,\n                            parameters.to.save=jp_unknownN,\n                            model.file=\"comm-occ-unknownN.jag\", n.chains=1, n.iter=5000)\n\npar(mfrow=c(1,2))\nplot(post_unknownN[,1:3])"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1-output",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1-output",
     "title": "Multi-species occupancy models",
     "section": "JAGS model estimating richness",
-    "text": "JAGS model estimating richness"
+    "text": "JAGS model estimating richness\n\n\n\n\n\n\n\nplot(post_unknownN[,4:5])"
   },
   {
     "objectID": "lectures/intro/lecture-intro.html#section",
@@ -1957,7 +1964,7 @@
     "href": "index.html#lectures",
     "title": "Inference for models of Fish and Wildlife Population Dynamics",
     "section": "Lectures",
-    "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - Binomial N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\nWeek 5 - Model selection and model fit\n\nLecture 6 - Model selection and model fit\n\n\n\nWeek 6 - Multinomial N-mixture models\n\nLecture 7 - Multinomial N-mixture models\nLecture 8 - Distance sampling\n\n\n\nWeek 7 - Non-spatial mark-recapture\n\nLecture 9 - Mark-recapture\n\n\n\nWeek 8 - Spatial mark-recapture, part I\n\nLecture 10 - Spatial capture-recapture\n\n\n\nWeek 9 - Spatial mark-recapture, part II\n\nLecture 11 - Spatial capture-recapture II\n\n\n\n\nDynamic models\n\nWeek 10 - Dynamic occupancy models\n\nLecture 12 - Dynamic occupancy models\n\n\n\nWeek 11 - Survival models\n\nLecture 13 - Survival models\n\n\n\nWeek 12 - Cormack-Jolly-Seber (CJS) model of (apparent) survival\n\nLecture 14 - CJS models\n\n\n\nWeek 13 - Jolly-Seber (JS) model of recruitment, survival, and movement\n\nLecture 15 - JS models\nLecture 16 - Movement models"
+    "text": "Lectures\n\nBackground\n\nWeek 1 - Classical statistical models\n\nLecture 1 - Introduction\nLecture 2 - Linear and generalized linear models\n\n\n\n\nStatic models\n\nWeek 2 - Occupancy models\n\nLecture 3 - Single season occupancy models without covariates\n\n\n\nWeek 3 - Occupancy models\n\nLecture 4 - Single season occupancy models with covariates\n\n\n\nWeek 4 - Binomial N-mixture models\n\nLecture 5 - Binomial N-mixture models\n\n\n\nWeek 5 - Model selection and model fit\n\nLecture 6 - Model selection and model fit\n\n\n\nWeek 6 - Multinomial N-mixture models\n\nLecture 7 - Multinomial N-mixture models\nLecture 8 - Distance sampling\n\n\n\nWeek 7 - Non-spatial mark-recapture\n\nLecture 9 - Mark-recapture\n\n\n\nWeek 8 - Spatial mark-recapture, part I\n\nLecture 10 - Spatial capture-recapture\n\n\n\nWeek 9 - Spatial mark-recapture, part II\n\nLecture 11 - Spatial capture-recapture II\n\n\n\n\nDynamic models\n\nWeek 10 - Dynamic occupancy models\n\nLecture 12 - Dynamic occupancy models\n\n\n\nWeek 11 - Survival models\n\nLecture 13 - Survival models\n\n\n\nWeek 12 - Cormack-Jolly-Seber (CJS) model of (apparent) survival\n\nLecture 14 - CJS models\n\n\n\nWeek 13 - Jolly-Seber (JS) model of recruitment, survival, and movement\n\nLecture 15 - JS models\nLecture 16 - Movement models\n\n\n\nWeek 14 - Multi-species occupancy models\n\nLecture 17 - Multi-species occupancy"
   },
   {
     "objectID": "lectures/JS/lecture-Jolly-Seber.html#section",

@@ -95,6 +95,7 @@
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../../custom.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -217,8 +218,8 @@
 <h2>Community occupancy model</h2>
 <p>Species may go undetected for a couple reason:</p>
 <ol type="1">
-<li class="fragment">They are rare and are not present in our sample</li>
-<li class="fragment">They are present in our sample but are cryptic</li>
+<li class="fragment">They are rare and are not present in our sample.</li>
+<li class="fragment">They are present in our sample but are cryptic.</li>
 </ol>
 <p><br></p>
 <div class="fragment">
@@ -231,19 +232,19 @@
 <section id="community-occupancy-model-1" class="slide level2">
 <h2>Community occupancy model</h2>
 <div style="font-size: 75%;">
-<p>Occupancy of species <span class="math inline">\(i\)</span> present at site <span class="math inline">\(j\)</span>?</p>
+<p>Occupancy of species <span class="math inline">\(i\)</span> present at site <span class="math inline">\(j\)</span>:</p>
 <p><span class="math display">\[
   z_{ij} \sim \mathrm{Bern}(\psi_i)
 \]</span></p>
 <div class="fragment">
-<p>Detection data for species <span class="math inline">\(i\)</span> at site <span class="math inline">\(j\)</span> on occasion <span class="math inline">\(k\)</span>?</p>
+<p>Detection data for species <span class="math inline">\(i\)</span> at site <span class="math inline">\(j\)</span> on occasion <span class="math inline">\(k\)</span>:</p>
 <p><span class="math display">\[
   y_{ijk} \sim \mathrm{Bern}(z_{ij} \times p_i)
 \]</span></p>
 </div>
 <p><br></p>
 <div class="fragment">
-<p>Species-specific effects can be modeled as functions of covariates and/or regarded as random. Here’s an example without covariates:</p>
+<p>Species-specific parameters can be modeled as functions of covariates and/or regarded as random effects. Here’s an example without covariates:</p>
 <p><span class="math display">\[
   \mathrm{logit}(\psi_j) \sim \mathrm{Norm}(\mu_{\psi}, \sigma^2_{\psi})
 \]</span></p>
@@ -313,11 +314,9 @@
 <section id="simulation-without-covariates-1" class="slide level2">
 <h2>Simulation without covariates</h2>
 <div style="font-size: 70%;">
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">hist</span>(psi, <span class="at">xlab=</span><span class="st">"Species-level occupancy"</span>,</span>
-<span id="cb2-2"><a></a>     <span class="at">cex.lab=</span><span class="fl">1.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div><div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">hist</span>(psi, <span class="at">xlab=</span><span class="st">"Species-level occupancy (psi)"</span>, <span class="at">cex.lab=</span><span class="fl">1.5</span>, <span class="at">main=</span><span class="st">""</span>)</span>
+<span id="cb2-2"><a></a><span class="fu">hist</span>(p, <span class="at">xlab=</span><span class="st">"Species-level detection probability (p)"</span>, <span class="at">cex.lab=</span><span class="fl">1.5</span>, <span class="at">main=</span><span class="st">""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -325,34 +324,26 @@
 </figure>
 </div>
 </div>
-</div></div>
-<div class="cell columns column-output-location">
-<div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">hist</span>(p, <span class="at">xlab=</span><span class="st">"Species-level detection probability"</span>,</span>
-<span id="cb3-2"><a></a>     <span class="at">cex.lab=</span><span class="fl">1.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div><div class="column">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/p-re-1.png" width="960"></p>
-</figure>
 </div>
-</div>
-</div></div>
 </div>
 </section>
 <section id="simulation-without-covariates-2" class="slide level2">
 <h2>Simulation without covariates</h2>
-<p>Notice that some species were not detected, and thus can’t be part of the dataset.</p>
+<div style="font-size: 80%;">
+<p>Some species were not detected, and thus can’t be part of the dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>detected <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(yall)<span class="sc">&gt;</span><span class="dv">0</span></span>
-<span id="cb4-2"><a></a><span class="fu">table</span>(detected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>detected <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(yall)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb3-2"><a></a><span class="fu">table</span>(detected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>detected
 FALSE  TRUE 
     5    45 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>y <span class="ot">&lt;-</span> yall[detected,,] <span class="co"># Discard species that weren't detected</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We discard them like so:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>y <span class="ot">&lt;-</span> yall[detected,,] <span class="co"># Discard species that weren't detected</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section id="jags-model-pretending-we-know-all-the-species" class="slide level2">
@@ -387,30 +378,44 @@ for(i in 1:n_species) {
 </section>
 <section id="jags-model-pretending-we-know-all-the-species-1" class="slide level2">
 <h2>JAGS model pretending we know all the species</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">library</span>(jagsUI)</span>
-<span id="cb8-2"><a></a>jd_fixedN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">n_species=</span><span class="fu">nrow</span>(y), <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
-<span id="cb8-3"><a></a>jp_fixedN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu_logit_psi"</span>, <span class="st">"sd_logit_psi"</span>, <span class="st">"mu_logit_p"</span>, <span class="st">"sd_logit_p"</span>)</span>
-<span id="cb8-4"><a></a>ji_fixedN <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">mu_logit_psi=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_psi=</span><span class="fu">rexp</span>(<span class="dv">1</span>),</span>
-<span id="cb8-5"><a></a>                             <span class="at">mu_logit_p=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_p=</span><span class="fu">rexp</span>(<span class="dv">1</span>),</span>
-<span id="cb8-6"><a></a>                             <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span><span class="fu">nrow</span>(y), <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
-<span id="cb8-7"><a></a></span>
-<span id="cb8-8"><a></a>post_fixedN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_fixedN, <span class="at">inits=</span>ji_fixedN, <span class="at">parameters.to.save=</span>jp_fixedN,</span>
-<span id="cb8-9"><a></a>                          <span class="at">model.file=</span><span class="st">"comm-occ-knownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">2000</span>)</span>
-<span id="cb8-10"><a></a></span>
-<span id="cb8-11"><a></a><span class="fu">plot</span>(post_fixedN)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="font-size: 80%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb7-2"><a></a>jd_fixedN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">n_species=</span><span class="fu">nrow</span>(y), <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
+<span id="cb7-3"><a></a>jp_fixedN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu_logit_psi"</span>, <span class="st">"sd_logit_psi"</span>, <span class="st">"mu_logit_p"</span>, <span class="st">"sd_logit_p"</span>)</span>
+<span id="cb7-4"><a></a>ji_fixedN <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">mu_logit_psi=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_psi=</span><span class="fu">rexp</span>(<span class="dv">1</span>),</span>
+<span id="cb7-5"><a></a>                             <span class="at">mu_logit_p=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_p=</span><span class="fu">rexp</span>(<span class="dv">1</span>),</span>
+<span id="cb7-6"><a></a>                             <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span><span class="fu">nrow</span>(y), <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
+<span id="cb7-7"><a></a></span>
+<span id="cb7-8"><a></a>post_fixedN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_fixedN, <span class="at">inits=</span>ji_fixedN, <span class="at">parameters.to.save=</span>jp_fixedN,</span>
+<span id="cb7-9"><a></a>                          <span class="at">model.file=</span><span class="st">"comm-occ-knownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">2000</span>)</span>
+<span id="cb7-10"><a></a></span>
+<span id="cb7-11"><a></a><span class="fu">plot</span>(post_fixedN)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
+</div>
 </section>
-<section id="jags-model-pretending-we-know-all-the-species-1-output" class="slide level2 output-location-slide"><h2>JAGS model pretending we know all the species</h2><div class="cell output-location-slide">
+<section id="jags-model-pretending-we-know-all-the-species-1-output" class="slide level2 output-location-slide"><h2>JAGS model pretending we know all the species</h2><div class="cell output-location-slide" data-layout-align="center">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-knownN-1.png" width="960"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-knownN-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
 </figure>
 </div>
 </div>
-</div></section><section id="jags-model-estimating-richness" class="slide level2">
+</div></section><section id="expanding-the-model-to-estimate-richness" class="slide level2">
+<h2>Expanding the model to estimate richness</h2>
+<p><br> We can use data augmentation to infer how many species were missed, and thus estimate the size of the entire community.</p>
+<div class="fragment">
+<p><br></p>
+<p>Here’s the expanded part of the model:</p>
+<p><span class="math display">\[
+w_i \sim \mathrm{Bern}(\Omega) \\
+z_{ij} \sim \mathrm{Bern}(w_i \times \psi_{i})
+\]</span></p>
+</div>
+</section>
+<section id="jags-model-estimating-richness" class="slide level2">
 <h2>JAGS model estimating richness</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -431,9 +436,9 @@ for(i in 1:M) {
   psi[i] &lt;- ilogit(logit_psi[i])
   p[i] &lt;- ilogit(logit_p[i])
   for(j in 1:n_sites) {
-    z[i,j] ~ dbern(psi[i])
+    z[i,j] ~ dbern(w[i]*psi[i])
     for(k in 1:n_occasions) {
-      y[i,j,k] ~ dbern(w[i]*z[i,j]*p[i])
+      y[i,j,k] ~ dbern(z[i,j]*p[i])
     }
   }
 }
@@ -447,38 +452,42 @@ N &lt;- sum(w) # Species richness
 </section>
 <section id="jags-model-estimating-richness-1" class="slide level2">
 <h2>JAGS model estimating richness</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb10-2"><a></a>y_aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M,J,K))</span>
-<span id="cb10-3"><a></a>y_aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),,] <span class="ot">&lt;-</span> y</span>
-<span id="cb10-4"><a></a></span>
-<span id="cb10-5"><a></a>jd_unknownN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y_aug, <span class="at">M=</span>M, <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
-<span id="cb10-6"><a></a>jp_unknownN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu_logit_psi"</span>, <span class="st">"sd_logit_psi"</span>, <span class="st">"mu_logit_p"</span>, <span class="st">"sd_logit_p"</span>, <span class="st">"N"</span>)</span>
-<span id="cb10-7"><a></a>ji_unknownN <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">mu_logit_psi=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_psi=</span><span class="fl">0.1</span>,</span>
-<span id="cb10-8"><a></a>                               <span class="at">mu_logit_p=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_p=</span><span class="fl">0.1</span>,</span>
-<span id="cb10-9"><a></a>                               <span class="at">w=</span><span class="fu">rep</span>(<span class="dv">1</span>, M), <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span>M, <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
-<span id="cb10-10"><a></a></span>
-<span id="cb10-11"><a></a>post_unknownN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_unknownN, <span class="at">inits=</span>ji_unknownN,</span>
-<span id="cb10-12"><a></a>                            <span class="at">parameters.to.save=</span>jp_unknownN,</span>
-<span id="cb10-13"><a></a>                            <span class="at">model.file=</span><span class="st">"comm-occ-unknownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">5000</span>)</span>
-<span id="cb10-14"><a></a></span>
-<span id="cb10-15"><a></a><span class="fu">plot</span>(post_unknownN)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div style="font-size: 80%;">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">100</span>                       <span class="co"># Augment to M=100 possible species</span></span>
+<span id="cb9-2"><a></a>y_aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M,J,K))</span>
+<span id="cb9-3"><a></a>y_aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),,] <span class="ot">&lt;-</span> y        <span class="co"># Insert observed data</span></span>
+<span id="cb9-4"><a></a></span>
+<span id="cb9-5"><a></a>jd_unknownN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y_aug, <span class="at">M=</span>M, <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
+<span id="cb9-6"><a></a>jp_unknownN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu_logit_psi"</span>, <span class="st">"sd_logit_psi"</span>, <span class="st">"mu_logit_p"</span>, <span class="st">"sd_logit_p"</span>, <span class="st">"N"</span>)</span>
+<span id="cb9-7"><a></a>ji_unknownN <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">mu_logit_psi=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_psi=</span><span class="fl">0.1</span>,</span>
+<span id="cb9-8"><a></a>                               <span class="at">mu_logit_p=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_p=</span><span class="fl">0.1</span>,</span>
+<span id="cb9-9"><a></a>                               <span class="at">w=</span><span class="fu">rep</span>(<span class="dv">1</span>, M), <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span>M, <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
+<span id="cb9-10"><a></a></span>
+<span id="cb9-11"><a></a>post_unknownN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_unknownN, <span class="at">inits=</span>ji_unknownN,</span>
+<span id="cb9-12"><a></a>                            <span class="at">parameters.to.save=</span>jp_unknownN,</span>
+<span id="cb9-13"><a></a>                            <span class="at">model.file=</span><span class="st">"comm-occ-unknownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">5000</span>)</span>
+<span id="cb9-14"><a></a></span>
+<span id="cb9-15"><a></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb9-16"><a></a><span class="fu">plot</span>(post_unknownN[,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
 </div>
 
 
-
-</section><section id="jags-model-estimating-richness-1-output" class="slide level2 output-location-slide"><h2>JAGS model estimating richness</h2><div class="cell output-location-slide">
+</section><section id="jags-model-estimating-richness-1-output" class="slide level2 output-location-slide"><h2>JAGS model estimating richness</h2><div class="cell output-location-slide" data-layout-align="center">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-1.png" width="960"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-1.png" class="quarto-figure quarto-figure-center" style="width:40.0%"></p>
 </figure>
 </div>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">plot</span>(post_unknownN[,<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-2.png" width="960"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-2.png" class="quarto-figure quarto-figure-center" style="width:40.0%"></p>
 </figure>
 </div>
 </div>

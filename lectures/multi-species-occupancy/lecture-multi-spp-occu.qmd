@@ -7,6 +7,7 @@ format:
   revealjs:
     theme: default
     embed-resources: false
+    css: ../../custom.css
     toc: false
     toc-depth: 2
     toc-title: Outline
@@ -31,8 +32,8 @@ description: |
 Species may go undetected for a couple reason:
 
 ::: {.incremental}
-1. They are rare and are not present in our sample
-2. They are present in our sample but are cryptic
+1. They are rare and are not present in our sample.
+2. They are present in our sample but are cryptic.
 :::
 
 <br>
@@ -50,14 +51,14 @@ We have to address both issues to obtain unbiased estimates of community paramet
 ## Community occupancy model
 
 ::: {style='font-size: 75%;'}
-Occupancy of species $i$ present at site $j$?
+Occupancy of species $i$ present at site $j$:
 
 $$
   z_{ij} \sim \mathrm{Bern}(\psi_i)
 $$
 
 ::: {.fragment}
-Detection data for species $i$ at site $j$ on occasion $k$?
+Detection data for species $i$ at site $j$ on occasion $k$:
 
 $$
   y_{ijk} \sim \mathrm{Bern}(z_{ij} \times p_i)
@@ -67,7 +68,7 @@ $$
 <br>
 
 ::: {.fragment}
-Species-specific effects can be modeled as functions of covariates and/or regarded as random. Here's an example without covariates:
+Species-specific parameters can be modeled as functions of covariates and/or regarded as random effects. Here's an example without covariates:
 
 $$
   \mathrm{logit}(\psi_j) \sim \mathrm{Norm}(\mu_{\psi}, \sigma^2_{\psi})
@@ -146,19 +147,12 @@ for(i in 1:N) {
 
 
 ::: {style='font-size: 70%;'}
-```{r}
+
+```{r, echo=-1}
 #| label: psi-re
-#| output-location: column
-hist(psi, xlab="Species-level occupancy",
-     cex.lab=1.5)
-```
-
-
-```{r}
-#| label: p-re
-#| output-location: column
-hist(p, xlab="Species-level detection probability",
-     cex.lab=1.5)
+par(mfrow=c(1,2))
+hist(psi, xlab="Species-level occupancy (psi)", cex.lab=1.5, main="")
+hist(p, xlab="Species-level detection probability (p)", cex.lab=1.5, main="")
 ```
 :::
 
@@ -167,21 +161,22 @@ hist(p, xlab="Species-level detection probability",
 ## Simulation without covariates
 
 
-Notice that some species were not detected, and thus can't be part of the dataset. 
+::: {style='font-size: 80%;'}
+
+Some species were not detected, and thus can't be part of the dataset. 
 
 ```{r}
 #| label: missed-spp
-
 detected <- rowSums(yall)>0
 table(detected)
-
-y <- yall[detected,,] # Discard species that weren't detected
-
-
-
-
 ```
 
+We discard them like so:
+```{r}
+y <- yall[detected,,] # Discard species that weren't detected
+```
+
+:::
 
 
 ## JAGS model pretending we know all the species
@@ -196,9 +191,14 @@ writeLines(readLines("comm-occ-knownN.jag"))
 
 ## JAGS model pretending we know all the species
 
+::: {style='font-size: 80%;'}
 
 ```{r}
 #| label: jags-fit-knownN
+#| fig-width: 7
+#| fig-height: 8
+#| out-width: '50%'
+#| fig-align: 'center'
 #| output-location: slide
 #| results: hide
 library(jagsUI)
@@ -213,9 +213,25 @@ post_fixedN <- jags.basic(data=jd_fixedN, inits=ji_fixedN, parameters.to.save=jp
 
 plot(post_fixedN)
 ```
+:::
 
 
 
+## Expanding the model to estimate richness
+
+<br>
+We can use data augmentation to infer how many species were missed, and thus estimate the size of the entire community. 
+
+::: {.fragment}
+<br>
+
+Here's the expanded part of the model:
+
+$$
+w_i \sim \mathrm{Bern}(\Omega) \\
+z_{ij} \sim \mathrm{Bern}(w_i \times \psi_{i})
+$$
+:::
 
 ## JAGS model estimating richness
 
@@ -230,14 +246,19 @@ writeLines(readLines("comm-occ-unknownN.jag"))
 
 ## JAGS model estimating richness
 
+::: {style='font-size: 80%;'}
 
-```{r}
+```{r echo=1:13}
 #| label: jags-fit-unknownN
+#| fig-width: 7
+#| fig-height: 8
+#| out-width: '40%'
+#| fig-align: 'center'
 #| output-location: slide
 #| results: hide
-M <- 100
+M <- 100                       # Augment to M=100 possible species
 y_aug <- array(0, c(M,J,K))
-y_aug[1:nrow(y),,] <- y
+y_aug[1:nrow(y),,] <- y        # Insert observed data
 
 jd_unknownN <- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])
 jp_unknownN <- c("mu_logit_psi", "sd_logit_psi", "mu_logit_p", "sd_logit_p", "N")
@@ -249,5 +270,9 @@ post_unknownN <- jags.basic(data=jd_unknownN, inits=ji_unknownN,
                             parameters.to.save=jp_unknownN,
                             model.file="comm-occ-unknownN.jag", n.chains=1, n.iter=5000)
 
-plot(post_unknownN)
+par(mfrow=c(1,2))
+plot(post_unknownN[,1:3])
+plot(post_unknownN[,4:5])
+
 ```
+:::

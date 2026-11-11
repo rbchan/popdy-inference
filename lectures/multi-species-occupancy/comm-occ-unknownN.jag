@@ -15,9 +15,9 @@ for(i in 1:M) {
   psi[i] <- ilogit(logit_psi[i])
   p[i] <- ilogit(logit_p[i])
   for(j in 1:n_sites) {
-    z[i,j] ~ dbern(psi[i])
+    z[i,j] ~ dbern(w[i]*psi[i])
     for(k in 1:n_occasions) {
-      y[i,j,k] ~ dbern(w[i]*z[i,j]*p[i])
+      y[i,j,k] ~ dbern(z[i,j]*p[i])
     }
   }
 }
