@@ -466,32 +466,47 @@ N &lt;- sum(w) # Species richness
 <span id="cb9-10"><a></a></span>
 <span id="cb9-11"><a></a>post_unknownN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_unknownN, <span class="at">inits=</span>ji_unknownN,</span>
 <span id="cb9-12"><a></a>                            <span class="at">parameters.to.save=</span>jp_unknownN,</span>
-<span id="cb9-13"><a></a>                            <span class="at">model.file=</span><span class="st">"comm-occ-unknownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">5000</span>)</span>
-<span id="cb9-14"><a></a></span>
-<span id="cb9-15"><a></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb9-16"><a></a><span class="fu">plot</span>(post_unknownN[,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-13"><a></a>                            <span class="at">model.file=</span><span class="st">"comm-occ-unknownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">5000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 </div>
+</section>
+<section id="jags-model-estimating-richness-1-output" class="slide level2 output-location-slide"><h2>JAGS model estimating richness</h2><div class="cell output-location-slide" data-layout-align="center">
 
-
-</section><section id="jags-model-estimating-richness-1-output" class="slide level2 output-location-slide"><h2>JAGS model estimating richness</h2><div class="cell output-location-slide" data-layout-align="center">
+</div></section><section id="jags-model-estimating-richness-2" class="slide level2">
+<h2>JAGS model estimating richness</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-1.png" class="quarto-figure quarto-figure-center" style="width:40.0%"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-unkownN-1-1.png" width="960"></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">plot</span>(post_unknownN[,<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-2.png" class="quarto-figure quarto-figure-center" style="width:40.0%"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-unkownN-2-1.png" width="960"></p>
 </figure>
 </div>
 </div>
-</div></section></section>
+</div>
+</div></div>
+</section>
+<section id="additional-community-parameters" class="slide level2">
+<h2>Additional community parameters</h2>
+<p>We can use the <span class="math inline">\(z\)</span> matrix to estimate community parameters other than richness, including evenness, similarity, diversity, etc…</p>
+<p>Jaccard similarity index comparing sites: <span class="math display">\[
+  S_{j,j'} = \frac{\sum z_j z_{j'}}{\sum z_j + \sum z_{j'} - \sum z_j z_j'}
+\]</span></p>
+
+
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

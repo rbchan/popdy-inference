@@ -270,9 +270,44 @@ post_unknownN <- jags.basic(data=jd_unknownN, inits=ji_unknownN,
                             parameters.to.save=jp_unknownN,
                             model.file="comm-occ-unknownN.jag", n.chains=1, n.iter=5000)
 
-par(mfrow=c(1,2))
-plot(post_unknownN[,1:3])
-plot(post_unknownN[,4:5])
+```
 
+:::
+
+
+
+## JAGS model estimating richness
+
+
+::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| label: jags-mcmc-unkownN-1
+#| echo: false
+plot(post_unknownN[,1:3])
 ```
 :::
+
+::: {.column width="50%"}
+```{r}
+#| label: jags-mcmc-unkownN-2
+#| echo: false
+plot(post_unknownN[,4:5])
+```
+:::
+
+:::
+
+
+
+## Additional community parameters
+
+We can use the $z$ matrix to estimate community parameters other than richness, including evenness, similarity, diversity, etc...
+
+Jaccard similarity index comparing sites:
+$$
+  S_{j,j'} = \frac{\sum z_j z_{j'}}{\sum z_j + \sum z_{j'} - \sum z_j z_j'}
+$$
+
+

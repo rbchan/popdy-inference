@@ -564,14 +564,28 @@
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1",
     "title": "Multi-species occupancy models",
     "section": "JAGS model estimating richness",
-    "text": "JAGS model estimating richness\n\n\nM &lt;- 100                       # Augment to M=100 possible species\ny_aug &lt;- array(0, c(M,J,K))\ny_aug[1:nrow(y),,] &lt;- y        # Insert observed data\n\njd_unknownN &lt;- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])\njp_unknownN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\", \"N\")\nji_unknownN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=0.1,\n                               mu_logit_p=rnorm(1), sd_logit_p=0.1,\n                               w=rep(1, M), z=matrix(1, nrow=M, ncol=ncol(y)))\n\npost_unknownN &lt;- jags.basic(data=jd_unknownN, inits=ji_unknownN,\n                            parameters.to.save=jp_unknownN,\n                            model.file=\"comm-occ-unknownN.jag\", n.chains=1, n.iter=5000)\n\npar(mfrow=c(1,2))\nplot(post_unknownN[,1:3])"
+    "text": "JAGS model estimating richness\n\n\nM &lt;- 100                       # Augment to M=100 possible species\ny_aug &lt;- array(0, c(M,J,K))\ny_aug[1:nrow(y),,] &lt;- y        # Insert observed data\n\njd_unknownN &lt;- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])\njp_unknownN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\", \"N\")\nji_unknownN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=0.1,\n                               mu_logit_p=rnorm(1), sd_logit_p=0.1,\n                               w=rep(1, M), z=matrix(1, nrow=M, ncol=ncol(y)))\n\npost_unknownN &lt;- jags.basic(data=jd_unknownN, inits=ji_unknownN,\n                            parameters.to.save=jp_unknownN,\n                            model.file=\"comm-occ-unknownN.jag\", n.chains=1, n.iter=5000)"
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1-output",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1-output",
     "title": "Multi-species occupancy models",
     "section": "JAGS model estimating richness",
-    "text": "JAGS model estimating richness\n\n\n\n\n\n\n\nplot(post_unknownN[,4:5])"
+    "text": "JAGS model estimating richness"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-2",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-2",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model estimating richness",
+    "text": "JAGS model estimating richness"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#additional-community-parameters",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#additional-community-parameters",
+    "title": "Multi-species occupancy models",
+    "section": "Additional community parameters",
+    "text": "Additional community parameters\nWe can use the \\(z\\) matrix to estimate community parameters other than richness, including evenness, similarity, diversity, etc…\nJaccard similarity index comparing sites: \\[\n  S_{j,j'} = \\frac{\\sum z_j z_{j'}}{\\sum z_j + \\sum z_{j'} - \\sum z_j z_j'}\n\\]"
   },
   {
     "objectID": "lectures/intro/lecture-intro.html#section",
