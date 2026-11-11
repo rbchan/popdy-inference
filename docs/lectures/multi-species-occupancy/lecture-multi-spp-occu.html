@@ -27,6 +27,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -151,26 +217,33 @@
 <h2>Community occupancy model</h2>
 <p>Species may go undetected for a couple reason:</p>
 <ol type="1">
-<li>They are rare and are not present in our sample</li>
-<li>They are present in our sample but are cryptic</li>
+<li class="fragment">They are rare and are not present in our sample</li>
+<li class="fragment">They are present in our sample but are cryptic</li>
 </ol>
+<p><br></p>
+<div class="fragment">
+<p>Older methods like rarefaction attempt to address the first issue but not the second.</p>
+</div>
+<div class="fragment">
 <p>We have to address both issues to obtain unbiased estimates of community parameters like species richness.</p>
+</div>
 </section>
 <section id="community-occupancy-model-1" class="slide level2">
 <h2>Community occupancy model</h2>
-<div style="font-size: 80%;">
-<p>Is species <span class="math inline">\(i\)</span> present at site <span class="math inline">\(j\)</span>?</p>
+<div style="font-size: 75%;">
+<p>Occupancy of species <span class="math inline">\(i\)</span> present at site <span class="math inline">\(j\)</span>?</p>
 <p><span class="math display">\[
-  z_{i,j} \sim \mathrm{Bern}(\psi_i)
+  z_{ij} \sim \mathrm{Bern}(\psi_i)
 \]</span></p>
 <div class="fragment">
-<p>Do we detect species <span class="math inline">\(i\)</span> at site <span class="math inline">\(j\)</span> on occasion <span class="math inline">\(k\)</span>?</p>
+<p>Detection data for species <span class="math inline">\(i\)</span> at site <span class="math inline">\(j\)</span> on occasion <span class="math inline">\(k\)</span>?</p>
 <p><span class="math display">\[
-  y_{i,j,k} \sim \mathrm{Bern}(z_{i,j} p_i)
+  y_{ijk} \sim \mathrm{Bern}(z_{ij} \times p_i)
 \]</span></p>
 </div>
+<p><br></p>
 <div class="fragment">
-<p>Typically, species-specific effects will be regarded as random:</p>
+<p>Species-specific effects can be modeled as functions of covariates and/or regarded as random. Here’s an example without covariates:</p>
 <p><span class="math display">\[
   \mathrm{logit}(\psi_j) \sim \mathrm{Norm}(\mu_{\psi}, \sigma^2_{\psi})
 \]</span></p>
@@ -179,9 +252,237 @@
 \]</span></p>
 </div>
 </div>
+</section>
+<section id="species-richness" class="slide level2">
+<h2>Species richness</h2>
+<div style="font-size: 80%;">
+<p>What do we do if we don’t know how many species are in the community?</p>
+<div class="fragment">
+<p>Two options:</p>
+</div>
+<div class="fragment">
+<ol type="1">
+<li>Model only the species that were in the sample.
+<ul>
+<li>This won’t let you estimate actual richness, but it will let you account for species (in the sample) that were present but not detected at some sites.</li>
+</ul></li>
+</ol>
+</div>
+<div class="fragment">
+<ol start="2" type="1">
+<li>Estimate the number of species that were <em>not</em> detected in the sample.
+<ul>
+<li>This can be accomplished using data augmentation.</li>
+<li>Ideally, we would use some sort of “species checklist” to focus on species that <em>could have been present</em>.</li>
+</ul></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="simulation-without-covariates" class="slide level2">
+<h2>Simulation without covariates</h2>
+<div style="font-size: 80%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1-3|5-9|11-14|16-24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>N <span class="ot">&lt;-</span> <span class="dv">50</span>    <span class="co"># n_species</span></span>
+<span id="cb1-2"><a></a>J <span class="ot">&lt;-</span> <span class="dv">40</span>    <span class="co"># n_sites</span></span>
+<span id="cb1-3"><a></a>K <span class="ot">&lt;-</span> <span class="dv">3</span>     <span class="co"># n_visits</span></span>
+<span id="cb1-4"><a></a></span>
+<span id="cb1-5"><a></a><span class="do">## Occupancy as logit-normal random effects </span></span>
+<span id="cb1-6"><a></a><span class="fu">set.seed</span>(<span class="dv">34020</span>)</span>
+<span id="cb1-7"><a></a>mu_logit_psi <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span></span>
+<span id="cb1-8"><a></a>sd_logit_psi <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb1-9"><a></a>psi <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fu">rnorm</span>(<span class="at">n=</span>N, <span class="at">mean=</span>mu_logit_psi, <span class="at">sd=</span>sd_logit_psi))</span>
+<span id="cb1-10"><a></a></span>
+<span id="cb1-11"><a></a><span class="do">## Detection prob as logit-normal random effects</span></span>
+<span id="cb1-12"><a></a>mu_logit_p <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb1-13"><a></a>sd_logit_p <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb1-14"><a></a>p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="fu">rnorm</span>(<span class="at">n=</span>N, <span class="at">mean=</span>mu_logit_p, <span class="at">sd=</span>sd_logit_p))</span>
+<span id="cb1-15"><a></a></span>
+<span id="cb1-16"><a></a><span class="do">## Occupancy and data</span></span>
+<span id="cb1-17"><a></a>z <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span>N, <span class="at">ncol=</span>J) <span class="co"># latent occupancy state for species i at site j</span></span>
+<span id="cb1-18"><a></a>yall <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(N,J,K)) <span class="co"># Data (except we don't know spp that weren't detected)</span></span>
+<span id="cb1-19"><a></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb1-20"><a></a>  z[i,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n=</span>J, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>psi[i])</span>
+<span id="cb1-21"><a></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>J) {</span>
+<span id="cb1-22"><a></a>    yall[i,j,] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n=</span>K, <span class="at">size=</span><span class="dv">1</span>, <span class="at">prob=</span>z[i,j]<span class="sc">*</span>p[i])</span>
+<span id="cb1-23"><a></a>  }</span>
+<span id="cb1-24"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="simulation-without-covariates-1" class="slide level2">
+<h2>Simulation without covariates</h2>
+<div style="font-size: 70%;">
+<div class="cell columns column-output-location">
+<div class="column">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">hist</span>(psi, <span class="at">xlab=</span><span class="st">"Species-level occupancy"</span>,</span>
+<span id="cb2-2"><a></a>     <span class="at">cex.lab=</span><span class="fl">1.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/psi-re-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></div>
+<div class="cell columns column-output-location">
+<div class="column">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">hist</span>(p, <span class="at">xlab=</span><span class="st">"Species-level detection probability"</span>,</span>
+<span id="cb3-2"><a></a>     <span class="at">cex.lab=</span><span class="fl">1.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/p-re-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></div>
+</div>
+</section>
+<section id="simulation-without-covariates-2" class="slide level2">
+<h2>Simulation without covariates</h2>
+<p>Notice that some species were not detected, and thus can’t be part of the dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>detected <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(yall)<span class="sc">&gt;</span><span class="dv">0</span></span>
+<span id="cb4-2"><a></a><span class="fu">table</span>(detected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>detected
+FALSE  TRUE 
+    5    45 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>y <span class="ot">&lt;-</span> yall[detected,,] <span class="co"># Discard species that weren't detected</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="jags-model-pretending-we-know-all-the-species" class="slide level2">
+<h2>JAGS model pretending we know all the species</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+mu_logit_psi ~ dnorm(0, 1)
+sd_logit_psi ~ dexp(1)
+
+mu_logit_p ~ dnorm(0, 1)
+sd_logit_p ~ dexp(1)
+
+for(i in 1:n_species) {
+  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)
+  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)
+  psi[i] &lt;- ilogit(logit_psi[i])
+  p[i] &lt;- ilogit(logit_p[i])
+  for(j in 1:n_sites) {
+    z[i,j] ~ dbern(psi[i])
+    for(k in 1:n_occasions) {
+      y[i,j,k] ~ dbern(z[i,j]*p[i])
+    }
+  }
+}
 
 
-</section></section>
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="jags-model-pretending-we-know-all-the-species-1" class="slide level2">
+<h2>JAGS model pretending we know all the species</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">library</span>(jagsUI)</span>
+<span id="cb8-2"><a></a>jd_fixedN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">n_species=</span><span class="fu">nrow</span>(y), <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
+<span id="cb8-3"><a></a>jp_fixedN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu_logit_psi"</span>, <span class="st">"sd_logit_psi"</span>, <span class="st">"mu_logit_p"</span>, <span class="st">"sd_logit_p"</span>)</span>
+<span id="cb8-4"><a></a>ji_fixedN <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">mu_logit_psi=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_psi=</span><span class="fu">rexp</span>(<span class="dv">1</span>),</span>
+<span id="cb8-5"><a></a>                             <span class="at">mu_logit_p=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_p=</span><span class="fu">rexp</span>(<span class="dv">1</span>),</span>
+<span id="cb8-6"><a></a>                             <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span><span class="fu">nrow</span>(y), <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
+<span id="cb8-7"><a></a></span>
+<span id="cb8-8"><a></a>post_fixedN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_fixedN, <span class="at">inits=</span>ji_fixedN, <span class="at">parameters.to.save=</span>jp_fixedN,</span>
+<span id="cb8-9"><a></a>                          <span class="at">model.file=</span><span class="st">"comm-occ-knownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">2000</span>)</span>
+<span id="cb8-10"><a></a></span>
+<span id="cb8-11"><a></a><span class="fu">plot</span>(post_fixedN)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+</section>
+<section id="jags-model-pretending-we-know-all-the-species-1-output" class="slide level2 output-location-slide"><h2>JAGS model pretending we know all the species</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-knownN-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section><section id="jags-model-estimating-richness" class="slide level2">
+<h2>JAGS model estimating richness</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>model {
+
+mu_logit_psi ~ dnorm(0, 1)
+sd_logit_psi ~ dexp(1)
+
+mu_logit_p ~ dnorm(0, 1)
+sd_logit_p ~ dexp(1)
+
+omega ~ dunif(0,1)
+
+for(i in 1:M) {
+  w[i] ~ dbern(omega)
+  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)
+  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)
+  psi[i] &lt;- ilogit(logit_psi[i])
+  p[i] &lt;- ilogit(logit_p[i])
+  for(j in 1:n_sites) {
+    z[i,j] ~ dbern(psi[i])
+    for(k in 1:n_occasions) {
+      y[i,j,k] ~ dbern(w[i]*z[i,j]*p[i])
+    }
+  }
+}
+
+N &lt;- sum(w) # Species richness
+
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="jags-model-estimating-richness-1" class="slide level2">
+<h2>JAGS model estimating richness</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb10-2"><a></a>y_aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M,J,K))</span>
+<span id="cb10-3"><a></a>y_aug[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(y),,] <span class="ot">&lt;-</span> y</span>
+<span id="cb10-4"><a></a></span>
+<span id="cb10-5"><a></a>jd_unknownN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y_aug, <span class="at">M=</span>M, <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
+<span id="cb10-6"><a></a>jp_unknownN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu_logit_psi"</span>, <span class="st">"sd_logit_psi"</span>, <span class="st">"mu_logit_p"</span>, <span class="st">"sd_logit_p"</span>, <span class="st">"N"</span>)</span>
+<span id="cb10-7"><a></a>ji_unknownN <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">list</span>(<span class="at">mu_logit_psi=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_psi=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-8"><a></a>                               <span class="at">mu_logit_p=</span><span class="fu">rnorm</span>(<span class="dv">1</span>), <span class="at">sd_logit_p=</span><span class="fl">0.1</span>,</span>
+<span id="cb10-9"><a></a>                               <span class="at">w=</span><span class="fu">rep</span>(<span class="dv">1</span>, M), <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span>M, <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
+<span id="cb10-10"><a></a></span>
+<span id="cb10-11"><a></a>post_unknownN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_unknownN, <span class="at">inits=</span>ji_unknownN,</span>
+<span id="cb10-12"><a></a>                            <span class="at">parameters.to.save=</span>jp_unknownN,</span>
+<span id="cb10-13"><a></a>                            <span class="at">model.file=</span><span class="st">"comm-occ-unknownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">5000</span>)</span>
+<span id="cb10-14"><a></a></span>
+<span id="cb10-15"><a></a><span class="fu">plot</span>(post_unknownN)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+
+</section><section id="jags-model-estimating-richness-1-output" class="slide level2 output-location-slide"><h2>JAGS model estimating richness</h2><div class="cell output-location-slide">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-unknownN-2.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
@@ -399,6 +700,44 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

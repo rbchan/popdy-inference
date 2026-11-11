@@ -487,14 +487,84 @@
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#community-occupancy-model",
     "title": "Multi-species occupancy models",
     "section": "Community occupancy model",
-    "text": "Community occupancy model\nSpecies may go undetected for a couple reason:\n\nThey are rare and are not present in our sample\nThey are present in our sample but are cryptic\n\nWe have to address both issues to obtain unbiased estimates of community parameters like species richness."
+    "text": "Community occupancy model\nSpecies may go undetected for a couple reason:\n\nThey are rare and are not present in our sample\nThey are present in our sample but are cryptic\n\n\n\nOlder methods like rarefaction attempt to address the first issue but not the second.\n\n\nWe have to address both issues to obtain unbiased estimates of community parameters like species richness."
   },
   {
     "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#community-occupancy-model-1",
     "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#community-occupancy-model-1",
     "title": "Multi-species occupancy models",
     "section": "Community occupancy model",
-    "text": "Community occupancy model\n\nIs species \\(i\\) present at site \\(j\\)?\n\\[\n  z_{i,j} \\sim \\mathrm{Bern}(\\psi_i)\n\\]\n\nDo we detect species \\(i\\) at site \\(j\\) on occasion \\(k\\)?\n\\[\n  y_{i,j,k} \\sim \\mathrm{Bern}(z_{i,j} p_i)\n\\]\n\n\nTypically, species-specific effects will be regarded as random:\n\\[\n  \\mathrm{logit}(\\psi_j) \\sim \\mathrm{Norm}(\\mu_{\\psi}, \\sigma^2_{\\psi})\n\\]\n\\[\n  \\mathrm{logit}(p_j) \\sim \\mathrm{Norm}(\\mu_{p}, \\sigma^2_{p})\n\\]"
+    "text": "Community occupancy model\n\nOccupancy of species \\(i\\) present at site \\(j\\)?\n\\[\n  z_{ij} \\sim \\mathrm{Bern}(\\psi_i)\n\\]\n\nDetection data for species \\(i\\) at site \\(j\\) on occasion \\(k\\)?\n\\[\n  y_{ijk} \\sim \\mathrm{Bern}(z_{ij} \\times p_i)\n\\]\n\n\n\nSpecies-specific effects can be modeled as functions of covariates and/or regarded as random. Here’s an example without covariates:\n\\[\n  \\mathrm{logit}(\\psi_j) \\sim \\mathrm{Norm}(\\mu_{\\psi}, \\sigma^2_{\\psi})\n\\]\n\\[\n  \\mathrm{logit}(p_j) \\sim \\mathrm{Norm}(\\mu_{p}, \\sigma^2_{p})\n\\]"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#species-richness",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#species-richness",
+    "title": "Multi-species occupancy models",
+    "section": "Species richness",
+    "text": "Species richness\n\nWhat do we do if we don’t know how many species are in the community?\n\nTwo options:\n\n\n\nModel only the species that were in the sample.\n\nThis won’t let you estimate actual richness, but it will let you account for species (in the sample) that were present but not detected at some sites.\n\n\n\n\n\nEstimate the number of species that were not detected in the sample.\n\nThis can be accomplished using data augmentation.\nIdeally, we would use some sort of “species checklist” to focus on species that could have been present."
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates",
+    "title": "Multi-species occupancy models",
+    "section": "Simulation without covariates",
+    "text": "Simulation without covariates\n\n\nN &lt;- 50    # n_species\nJ &lt;- 40    # n_sites\nK &lt;- 3     # n_visits\n\n## Occupancy as logit-normal random effects \nset.seed(34020)\nmu_logit_psi &lt;- -2\nsd_logit_psi &lt;- 1\npsi &lt;- plogis(rnorm(n=N, mean=mu_logit_psi, sd=sd_logit_psi))\n\n## Detection prob as logit-normal random effects\nmu_logit_p &lt;- -1\nsd_logit_p &lt;- 0.5\np &lt;- plogis(rnorm(n=N, mean=mu_logit_p, sd=sd_logit_p))\n\n## Occupancy and data\nz &lt;- matrix(NA, nrow=N, ncol=J) # latent occupancy state for species i at site j\nyall &lt;- array(NA, dim=c(N,J,K)) # Data (except we don't know spp that weren't detected)\nfor(i in 1:N) {\n  z[i,] &lt;- rbinom(n=J, size=1, prob=psi[i])\n  for(j in 1:J) {\n    yall[i,j,] &lt;- rbinom(n=K, size=1, prob=z[i,j]*p[i])\n  }\n}"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-1",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-1",
+    "title": "Multi-species occupancy models",
+    "section": "Simulation without covariates",
+    "text": "Simulation without covariates\n\n\n\nhist(psi, xlab=\"Species-level occupancy\",\n     cex.lab=1.5)\n\n\n\n\n\n\n\n\n\n\n\nhist(p, xlab=\"Species-level detection probability\",\n     cex.lab=1.5)"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-2",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#simulation-without-covariates-2",
+    "title": "Multi-species occupancy models",
+    "section": "Simulation without covariates",
+    "text": "Simulation without covariates\nNotice that some species were not detected, and thus can’t be part of the dataset.\n\ndetected &lt;- rowSums(yall)&gt;0\ntable(detected)\n\ndetected\nFALSE  TRUE \n    5    45 \n\ny &lt;- yall[detected,,] # Discard species that weren't detected"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model pretending we know all the species",
+    "text": "JAGS model pretending we know all the species\n\n\nmodel {\n\nmu_logit_psi ~ dnorm(0, 1)\nsd_logit_psi ~ dexp(1)\n\nmu_logit_p ~ dnorm(0, 1)\nsd_logit_p ~ dexp(1)\n\nfor(i in 1:n_species) {\n  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)\n  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)\n  psi[i] &lt;- ilogit(logit_psi[i])\n  p[i] &lt;- ilogit(logit_p[i])\n  for(j in 1:n_sites) {\n    z[i,j] ~ dbern(psi[i])\n    for(k in 1:n_occasions) {\n      y[i,j,k] ~ dbern(z[i,j]*p[i])\n    }\n  }\n}\n\n\n}"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species-1",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species-1",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model pretending we know all the species",
+    "text": "JAGS model pretending we know all the species\n\nlibrary(jagsUI)\njd_fixedN &lt;- list(y=y, n_species=nrow(y), n_sites=ncol(y), n_occasions=dim(y)[3])\njp_fixedN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\")\nji_fixedN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=rexp(1),\n                             mu_logit_p=rnorm(1), sd_logit_p=rexp(1),\n                             z=matrix(1, nrow=nrow(y), ncol=ncol(y)))\n\npost_fixedN &lt;- jags.basic(data=jd_fixedN, inits=ji_fixedN, parameters.to.save=jp_fixedN,\n                          model.file=\"comm-occ-knownN.jag\", n.chains=1, n.iter=2000)\n\nplot(post_fixedN)"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species-1-output",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-pretending-we-know-all-the-species-1-output",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model pretending we know all the species",
+    "text": "JAGS model pretending we know all the species"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model estimating richness",
+    "text": "JAGS model estimating richness\n\n\nmodel {\n\nmu_logit_psi ~ dnorm(0, 1)\nsd_logit_psi ~ dexp(1)\n\nmu_logit_p ~ dnorm(0, 1)\nsd_logit_p ~ dexp(1)\n\nomega ~ dunif(0,1)\n\nfor(i in 1:M) {\n  w[i] ~ dbern(omega)\n  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)\n  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)\n  psi[i] &lt;- ilogit(logit_psi[i])\n  p[i] &lt;- ilogit(logit_p[i])\n  for(j in 1:n_sites) {\n    z[i,j] ~ dbern(psi[i])\n    for(k in 1:n_occasions) {\n      y[i,j,k] ~ dbern(w[i]*z[i,j]*p[i])\n    }\n  }\n}\n\nN &lt;- sum(w) # Species richness\n\n\n}"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model estimating richness",
+    "text": "JAGS model estimating richness\n\nM &lt;- 100\ny_aug &lt;- array(0, c(M,J,K))\ny_aug[1:nrow(y),,] &lt;- y\n\njd_unknownN &lt;- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])\njp_unknownN &lt;- c(\"mu_logit_psi\", \"sd_logit_psi\", \"mu_logit_p\", \"sd_logit_p\", \"N\")\nji_unknownN &lt;- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=0.1,\n                               mu_logit_p=rnorm(1), sd_logit_p=0.1,\n                               w=rep(1, M), z=matrix(1, nrow=M, ncol=ncol(y)))\n\npost_unknownN &lt;- jags.basic(data=jd_unknownN, inits=ji_unknownN,\n                            parameters.to.save=jp_unknownN,\n                            model.file=\"comm-occ-unknownN.jag\", n.chains=1, n.iter=5000)\n\nplot(post_unknownN)"
+  },
+  {
+    "objectID": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1-output",
+    "href": "lectures/multi-species-occupancy/lecture-multi-spp-occu.html#jags-model-estimating-richness-1-output",
+    "title": "Multi-species occupancy models",
+    "section": "JAGS model estimating richness",
+    "text": "JAGS model estimating richness"
   },
   {
     "objectID": "lectures/intro/lecture-intro.html#section",

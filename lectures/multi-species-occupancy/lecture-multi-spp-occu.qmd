@@ -30,31 +30,44 @@ description: |
 
 Species may go undetected for a couple reason:
 
+::: {.incremental}
 1. They are rare and are not present in our sample
 2. They are present in our sample but are cryptic
+:::
 
+<br>
+
+::: {.fragment}
+Older methods like rarefaction attempt to address the first issue but not the second. 
+:::
+
+::: {.fragment}
 We have to address both issues to obtain unbiased estimates of community parameters like species richness. 
+:::
+
 
 
 ## Community occupancy model
 
-::: {style='font-size: 80%;'}
-Is species $i$ present at site $j$?
+::: {style='font-size: 75%;'}
+Occupancy of species $i$ present at site $j$?
 
 $$
-  z_{i,j} \sim \mathrm{Bern}(\psi_i)
+  z_{ij} \sim \mathrm{Bern}(\psi_i)
 $$
 
 ::: {.fragment}
-Do we detect species $i$ at site $j$ on occasion $k$?
+Detection data for species $i$ at site $j$ on occasion $k$?
 
 $$
-  y_{i,j,k} \sim \mathrm{Bern}(z_{i,j} p_i)
+  y_{ijk} \sim \mathrm{Bern}(z_{ij} \times p_i)
 $$
 :::
 
+<br>
+
 ::: {.fragment}
-Typically, species-specific effects will be regarded as random:
+Species-specific effects can be modeled as functions of covariates and/or regarded as random. Here's an example without covariates:
 
 $$
   \mathrm{logit}(\psi_j) \sim \mathrm{Norm}(\mu_{\psi}, \sigma^2_{\psi})
@@ -69,3 +82,172 @@ $$
 
 
 
+## Species richness
+
+::: {style='font-size: 80%;'}
+What do we do if we don't know how many species are in the community?
+
+::: {.fragment}
+Two options:
+:::
+
+::: {.fragment}
+1. Model only the species that were in the sample.
+    * This won't let you estimate actual richness, but it will let you account for species (in the sample) that were present but not detected at some sites.
+:::
+
+::: {.fragment}
+2. Estimate the number of species that were *not* detected in the sample.
+    * This can be accomplished using data augmentation.
+    * Ideally, we would use some sort of "species checklist" to focus on species that *could have been present*. 
+:::
+
+:::
+
+
+
+## Simulation without covariates
+
+::: {style='font-size: 80%;'}
+```{r}
+#| label: sim-mso-nocov
+#| code-line-numbers: "1-3|5-9|11-14|16-24"
+
+N <- 50    # n_species
+J <- 40    # n_sites
+K <- 3     # n_visits
+
+## Occupancy as logit-normal random effects 
+set.seed(34020)
+mu_logit_psi <- -2
+sd_logit_psi <- 1
+psi <- plogis(rnorm(n=N, mean=mu_logit_psi, sd=sd_logit_psi))
+
+## Detection prob as logit-normal random effects
+mu_logit_p <- -1
+sd_logit_p <- 0.5
+p <- plogis(rnorm(n=N, mean=mu_logit_p, sd=sd_logit_p))
+
+## Occupancy and data
+z <- matrix(NA, nrow=N, ncol=J) # latent occupancy state for species i at site j
+yall <- array(NA, dim=c(N,J,K)) # Data (except we don't know spp that weren't detected)
+for(i in 1:N) {
+  z[i,] <- rbinom(n=J, size=1, prob=psi[i])
+  for(j in 1:J) {
+    yall[i,j,] <- rbinom(n=K, size=1, prob=z[i,j]*p[i])
+  }
+}
+```
+:::
+
+
+
+## Simulation without covariates
+
+
+::: {style='font-size: 70%;'}
+```{r}
+#| label: psi-re
+#| output-location: column
+hist(psi, xlab="Species-level occupancy",
+     cex.lab=1.5)
+```
+
+
+```{r}
+#| label: p-re
+#| output-location: column
+hist(p, xlab="Species-level detection probability",
+     cex.lab=1.5)
+```
+:::
+
+
+
+## Simulation without covariates
+
+
+Notice that some species were not detected, and thus can't be part of the dataset. 
+
+```{r}
+#| label: missed-spp
+
+detected <- rowSums(yall)>0
+table(detected)
+
+y <- yall[detected,,] # Discard species that weren't detected
+
+
+
+
+```
+
+
+
+## JAGS model pretending we know all the species
+
+
+```{r}
+#| label: comm-occ-knownN
+#| echo: false
+writeLines(readLines("comm-occ-knownN.jag"))
+```
+
+
+## JAGS model pretending we know all the species
+
+
+```{r}
+#| label: jags-fit-knownN
+#| output-location: slide
+#| results: hide
+library(jagsUI)
+jd_fixedN <- list(y=y, n_species=nrow(y), n_sites=ncol(y), n_occasions=dim(y)[3])
+jp_fixedN <- c("mu_logit_psi", "sd_logit_psi", "mu_logit_p", "sd_logit_p")
+ji_fixedN <- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=rexp(1),
+                             mu_logit_p=rnorm(1), sd_logit_p=rexp(1),
+                             z=matrix(1, nrow=nrow(y), ncol=ncol(y)))
+
+post_fixedN <- jags.basic(data=jd_fixedN, inits=ji_fixedN, parameters.to.save=jp_fixedN,
+                          model.file="comm-occ-knownN.jag", n.chains=1, n.iter=2000)
+
+plot(post_fixedN)
+```
+
+
+
+
+## JAGS model estimating richness
+
+
+```{r}
+#| label: comm-occ-unknownN
+#| echo: false
+writeLines(readLines("comm-occ-unknownN.jag"))
+```
+
+
+
+## JAGS model estimating richness
+
+
+```{r}
+#| label: jags-fit-unknownN
+#| output-location: slide
+#| results: hide
+M <- 100
+y_aug <- array(0, c(M,J,K))
+y_aug[1:nrow(y),,] <- y
+
+jd_unknownN <- list(y=y_aug, M=M, n_sites=ncol(y), n_occasions=dim(y)[3])
+jp_unknownN <- c("mu_logit_psi", "sd_logit_psi", "mu_logit_p", "sd_logit_p", "N")
+ji_unknownN <- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=0.1,
+                               mu_logit_p=rnorm(1), sd_logit_p=0.1,
+                               w=rep(1, M), z=matrix(1, nrow=M, ncol=ncol(y)))
+
+post_unknownN <- jags.basic(data=jd_unknownN, inits=ji_unknownN,
+                            parameters.to.save=jp_unknownN,
+                            model.file="comm-occ-unknownN.jag", n.chains=1, n.iter=5000)
+
+plot(post_unknownN)
+```

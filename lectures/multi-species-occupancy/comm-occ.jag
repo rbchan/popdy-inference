@@ -1,0 +1,23 @@
+model {
+
+mu_logit_psi ~ dnorm(0, 1)
+sd_logit_psi ~ dexp(1)
+
+mu_logit_p ~ dnorm(0, 1)
+sd_logit_p ~ dexp(1)
+
+for(i in 1:n_species) {
+  logit_psi[i] ~ dnorm(mu_logit_psi, 1/sd_logit_psi^2)
+  logit_p[i] ~ dnorm(mu_logit_p, 1/sd_logit_p^2)
+  psi[i] <- invlogit(logit_psi[i])
+  p[i] <- invlogit(logit_p[i])
+  for(j in 1:n_sites) {
+    z[i,j] ~ dbern(psi[i])
+    for(k in 1:n_occasions) {
+      y[i,j,k] ~ dbern(z[i,j]*p[i])
+    }
+  }
+}
+
+
+}
