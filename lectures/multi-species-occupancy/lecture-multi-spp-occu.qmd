@@ -179,7 +179,7 @@ y <- yall[detected,,] # Discard species that weren't detected
 :::
 
 
-## JAGS model pretending we know all the species
+## JAGS model ignoring missed species
 
 
 ```{r}
@@ -189,9 +189,11 @@ writeLines(readLines("comm-occ-knownN.jag"))
 ```
 
 
-## JAGS model pretending we know all the species
+## JAGS model ignoring missed species
 
 ::: {style='font-size: 80%;'}
+
+<br>
 
 ```{r}
 #| label: jags-fit-knownN
@@ -199,7 +201,6 @@ writeLines(readLines("comm-occ-knownN.jag"))
 #| fig-height: 8
 #| out-width: '50%'
 #| fig-align: 'center'
-#| output-location: slide
 #| results: hide
 library(jagsUI)
 jd_fixedN <- list(y=y, n_species=nrow(y), n_sites=ncol(y), n_occasions=dim(y)[3])
@@ -211,14 +212,48 @@ ji_fixedN <- function() list(mu_logit_psi=rnorm(1), sd_logit_psi=rexp(1),
 post_fixedN <- jags.basic(data=jd_fixedN, inits=ji_fixedN, parameters.to.save=jp_fixedN,
                           model.file="comm-occ-knownN.jag", n.chains=1, n.iter=2000)
 
-plot(post_fixedN)
 ```
+:::
+
+
+## JAGS model ignoring missed species
+
+
+::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| label: jags-mcmc-fixedN-1
+#| fig-width: 7
+#| fig-height: 6
+#| echo: false
+plot(post_fixedN[,2:3])
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| label: jags-mcmc-fixedN-2
+#| fig-width: 7
+#| fig-height: 6
+#| echo: false
+plot(post_fixedN[,4:5])
+```
+:::
+
+:::
+
+::: {style='font-size: 80%;'}
+<center>
+We shouldn't be surprised by upward bias in estimation of occupancy and detection parameters because we're ignoring species with low detection/occupancy probabilities.
+</center>
 :::
 
 
 
 ## Expanding the model to estimate richness
 
+::: {style='font-size: 80%;'}
 <br>
 We can use data augmentation to infer how many species were missed, and thus estimate the size of the entire community. 
 
@@ -231,6 +266,12 @@ $$
 w_i \sim \mathrm{Bern}(\Omega) \\
 z_{ij} \sim \mathrm{Bern}(w_i \times \psi_{i})
 $$
+:::
+
+::: {.fragment}
+where $w_i$ indicates if species $i$ is part of the community such that $N=\sum_{i=1}^M w_i$, and the expected number of species in the community is $E(N)=M \Omega$.
+:::
+
 :::
 
 ## JAGS model estimating richness
@@ -248,13 +289,14 @@ writeLines(readLines("comm-occ-unknownN.jag"))
 
 ::: {style='font-size: 80%;'}
 
+<br>
+
 ```{r echo=1:13}
 #| label: jags-fit-unknownN
 #| fig-width: 7
 #| fig-height: 8
 #| out-width: '40%'
 #| fig-align: 'center'
-#| output-location: slide
 #| results: hide
 M <- 100                       # Augment to M=100 possible species
 y_aug <- array(0, c(M,J,K))
@@ -284,16 +326,20 @@ post_unknownN <- jags.basic(data=jd_unknownN, inits=ji_unknownN,
 ::: {.column width="50%"}
 ```{r}
 #| label: jags-mcmc-unkownN-1
+#| fig-width: 7
+#| fig-height: 6
 #| echo: false
-plot(post_unknownN[,1:3])
+plot(post_unknownN[,c(1,3,4)])
 ```
 :::
 
 ::: {.column width="50%"}
 ```{r}
 #| label: jags-mcmc-unkownN-2
+#| fig-width: 7
+#| fig-height: 6
 #| echo: false
-plot(post_unknownN[,4:5])
+plot(post_unknownN[,5:6])
 ```
 :::
 
@@ -303,11 +349,15 @@ plot(post_unknownN[,4:5])
 
 ## Additional community parameters
 
-We can use the $z$ matrix to estimate community parameters other than richness, including evenness, similarity, diversity, etc...
+::: {style='font-size: 80%;'}
+We can use the $z$ matrix to estimate community parameters other than richness, including the Jaccard similarity index, comparing any two sites ($j$ and $j'$):
 
-Jaccard similarity index comparing sites:
+
+::: {.fragment}
 $$
-  S_{j,j'} = \frac{\sum z_j z_{j'}}{\sum z_j + \sum z_{j'} - \sum z_j z_j'}
+  S_{j,j'} = \frac{\sum_i z_{ij} z_{ij'}}{\sum_i z_{ij} + \sum_i z_{ij'} - \sum_i z_{ij} z_{ij'}}
 $$
+:::
+:::
 
 

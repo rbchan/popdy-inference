@@ -346,8 +346,8 @@ FALSE  TRUE
 </div>
 </div>
 </section>
-<section id="jags-model-pretending-we-know-all-the-species" class="slide level2">
-<h2>JAGS model pretending we know all the species</h2>
+<section id="jags-model-ignoring-missed-species" class="slide level2">
+<h2>JAGS model ignoring missed species</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>model {
@@ -376,9 +376,10 @@ for(i in 1:n_species) {
 </div>
 </div>
 </section>
-<section id="jags-model-pretending-we-know-all-the-species-1" class="slide level2">
-<h2>JAGS model pretending we know all the species</h2>
+<section id="jags-model-ignoring-missed-species-1" class="slide level2">
+<h2>JAGS model ignoring missed species</h2>
 <div style="font-size: 80%;">
+<p><br></p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(jagsUI)</span>
 <span id="cb7-2"><a></a>jd_fixedN <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">y=</span>y, <span class="at">n_species=</span><span class="fu">nrow</span>(y), <span class="at">n_sites=</span><span class="fu">ncol</span>(y), <span class="at">n_occasions=</span><span class="fu">dim</span>(y)[<span class="dv">3</span>])</span>
@@ -388,23 +389,43 @@ for(i in 1:n_species) {
 <span id="cb7-6"><a></a>                             <span class="at">z=</span><span class="fu">matrix</span>(<span class="dv">1</span>, <span class="at">nrow=</span><span class="fu">nrow</span>(y), <span class="at">ncol=</span><span class="fu">ncol</span>(y)))</span>
 <span id="cb7-7"><a></a></span>
 <span id="cb7-8"><a></a>post_fixedN <span class="ot">&lt;-</span> <span class="fu">jags.basic</span>(<span class="at">data=</span>jd_fixedN, <span class="at">inits=</span>ji_fixedN, <span class="at">parameters.to.save=</span>jp_fixedN,</span>
-<span id="cb7-9"><a></a>                          <span class="at">model.file=</span><span class="st">"comm-occ-knownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">2000</span>)</span>
-<span id="cb7-10"><a></a></span>
-<span id="cb7-11"><a></a><span class="fu">plot</span>(post_fixedN)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-9"><a></a>                          <span class="at">model.file=</span><span class="st">"comm-occ-knownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">2000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-
 </div>
 </section>
-<section id="jags-model-pretending-we-know-all-the-species-1-output" class="slide level2 output-location-slide"><h2>JAGS model pretending we know all the species</h2><div class="cell output-location-slide" data-layout-align="center">
+<section id="jags-model-ignoring-missed-species-2" class="slide level2">
+<h2>JAGS model ignoring missed species</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div>
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-fit-knownN-1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-fixedN-1-1.png" width="672"></p>
 </figure>
 </div>
 </div>
-</div></section><section id="expanding-the-model-to-estimate-richness" class="slide level2">
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-fixedN-2-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div style="font-size: 80%;">
+<center>
+We shouldn’t be surprised by upward bias in estimation of occupancy and detection parameters because we’re ignoring species with low detection/occupancy probabilities.
+</center>
+</div>
+</section>
+<section id="expanding-the-model-to-estimate-richness" class="slide level2">
 <h2>Expanding the model to estimate richness</h2>
+<div style="font-size: 80%;">
 <p><br> We can use data augmentation to infer how many species were missed, and thus estimate the size of the entire community.</p>
 <div class="fragment">
 <p><br></p>
@@ -413,6 +434,10 @@ for(i in 1:n_species) {
 w_i \sim \mathrm{Bern}(\Omega) \\
 z_{ij} \sim \mathrm{Bern}(w_i \times \psi_{i})
 \]</span></p>
+</div>
+<div class="fragment">
+<p>where <span class="math inline">\(w_i\)</span> indicates if species <span class="math inline">\(i\)</span> is part of the community such that <span class="math inline">\(N=\sum_{i=1}^M w_i\)</span>, and the expected number of species in the community is <span class="math inline">\(E(N)=M \Omega\)</span>.</p>
+</div>
 </div>
 </section>
 <section id="jags-model-estimating-richness" class="slide level2">
@@ -436,9 +461,11 @@ for(i in 1:M) {
   psi[i] &lt;- ilogit(logit_psi[i])
   p[i] &lt;- ilogit(logit_p[i])
   for(j in 1:n_sites) {
-    z[i,j] ~ dbern(w[i]*psi[i])
+    # z[i,j] ~ dbern(w[i]*psi[i])
+    z[i,j] ~ dbern(psi[i])
     for(k in 1:n_occasions) {
-      y[i,j,k] ~ dbern(z[i,j]*p[i])
+      # y[i,j,k] ~ dbern(z[i,j]*p[i])
+      y[i,j,k] ~ dbern(w[i]*z[i,j]*p[i])
     }
   }
 }
@@ -453,6 +480,7 @@ N &lt;- sum(w) # Species richness
 <section id="jags-model-estimating-richness-1" class="slide level2">
 <h2>JAGS model estimating richness</h2>
 <div style="font-size: 80%;">
+<p><br></p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>M <span class="ot">&lt;-</span> <span class="dv">100</span>                       <span class="co"># Augment to M=100 possible species</span></span>
 <span id="cb9-2"><a></a>y_aug <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">0</span>, <span class="fu">c</span>(M,J,K))</span>
@@ -468,12 +496,9 @@ N &lt;- sum(w) # Species richness
 <span id="cb9-12"><a></a>                            <span class="at">parameters.to.save=</span>jp_unknownN,</span>
 <span id="cb9-13"><a></a>                            <span class="at">model.file=</span><span class="st">"comm-occ-unknownN.jag"</span>, <span class="at">n.chains=</span><span class="dv">1</span>, <span class="at">n.iter=</span><span class="dv">5000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-
 </div>
 </section>
-<section id="jags-model-estimating-richness-1-output" class="slide level2 output-location-slide"><h2>JAGS model estimating richness</h2><div class="cell output-location-slide" data-layout-align="center">
-
-</div></section><section id="jags-model-estimating-richness-2" class="slide level2">
+<section id="jags-model-estimating-richness-2" class="slide level2">
 <h2>JAGS model estimating richness</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -481,7 +506,7 @@ N &lt;- sum(w) # Species richness
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-unkownN-1-1.png" width="960"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-unkownN-1-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -491,7 +516,7 @@ N &lt;- sum(w) # Species richness
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-unkownN-2-1.png" width="960"></p>
+<p><img data-src="lecture-multi-spp-occu_files/figure-revealjs/jags-mcmc-unkownN-2-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -500,10 +525,14 @@ N &lt;- sum(w) # Species richness
 </section>
 <section id="additional-community-parameters" class="slide level2">
 <h2>Additional community parameters</h2>
-<p>We can use the <span class="math inline">\(z\)</span> matrix to estimate community parameters other than richness, including evenness, similarity, diversity, etc…</p>
-<p>Jaccard similarity index comparing sites: <span class="math display">\[
-  S_{j,j'} = \frac{\sum z_j z_{j'}}{\sum z_j + \sum z_{j'} - \sum z_j z_j'}
+<div style="font-size: 80%;">
+<p>We can use the <span class="math inline">\(z\)</span> matrix to estimate community parameters other than richness, including the Jaccard similarity index, comparing any two sites (<span class="math inline">\(j\)</span> and <span class="math inline">\(j'\)</span>):</p>
+<div class="fragment">
+<p><span class="math display">\[
+  S_{j,j'} = \frac{\sum_i z_{ij} z_{ij'}}{\sum_i z_{ij} + \sum_i z_{ij'} - \sum_i z_{ij} z_{ij'}}
 \]</span></p>
+</div>
+</div>
 
 
 </section></section>
